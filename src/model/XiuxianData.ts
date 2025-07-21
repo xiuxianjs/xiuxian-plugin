@@ -369,7 +369,7 @@ class XiuxianData {
     try {
       data = fs.readFileSync(dir, 'utf8')
     } catch (error) {
-      console.error('读取文件错误：' + error)
+      logger.error('读取文件错误：' + error)
       return 'error'
     }
     //将字符串数据转变成json格式
@@ -413,7 +413,7 @@ class XiuxianData {
     try {
       data = fs.readFileSync(dir, 'utf8')
     } catch (error) {
-      console.error('读取文件错误：' + error)
+      logger.error('读取文件错误：' + error)
       return 'error'
     }
     //将字符串数据转变成json格式

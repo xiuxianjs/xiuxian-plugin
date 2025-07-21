@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
   if (player_level == list_level[x]) {
     //判断是否满级
     let thing = data.xianchon.find(item => item.id == player.仙宠.id + 1) //查找下个等级仙宠
-    console.log(thing)
+    logger.info(thing)
     player.仙宠 = thing
     player.仙宠.等级 = player_level //赋值之前的等级
     player.仙宠.加成 = last_jiachen //赋值之前的加成

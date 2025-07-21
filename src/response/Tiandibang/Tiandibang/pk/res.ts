@@ -197,7 +197,7 @@ export default onResponse(selects, async e => {
     }
     await Add_灵石(usr_qq, lingshi)
     if (msg.length > 50) {
-      console.log('通过')
+      logger.info('通过')
     } else {
       // await ForwardMsg(e, msg)
       Send(Text(msg))
@@ -253,7 +253,7 @@ export default onResponse(selects, async e => {
     }
     await Add_灵石(usr_qq, lingshi)
     if (msg.length > 50) {
-      console.log('通过')
+      logger.info('通过')
     } else {
       // await ForwardMsg(e, msg)
       Send(Text(msg))

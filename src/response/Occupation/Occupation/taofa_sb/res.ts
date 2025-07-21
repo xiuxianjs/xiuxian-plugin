@@ -108,7 +108,7 @@ export default onResponse(selects, async e => {
       last_msg += player_B.名号 + '反杀了你,只获得了部分辛苦钱'
     }
     if (msg.length > 100) {
-      console.log('通过')
+      logger.info('通过')
     } else {
       // await ForwardMsg(e, msg)
       Send(Text(msg))

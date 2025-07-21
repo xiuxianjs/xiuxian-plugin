@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
   let pd = await find_qinmidu(A, B)
   let hunyin_B = await exist_hunyin(A)
   let hunyin_A = await exist_hunyin(B)
-  //console.log(`pd = `+pd+` hunyin = `+hunyin);
+  //logger.info(`pd = `+pd+` hunyin = `+hunyin);
   //双方有一人已婚
   if (hunyin_B != '' || hunyin_A != '') {
     //不是对方

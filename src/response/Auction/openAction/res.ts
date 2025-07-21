@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   const groupList = await redis.smembers(redisGlKey)
   if (groupList.length > 0) {
     if (await redis.sismember(redisGlKey, String(e.ChannelId))) {
-      console.log(await redis.smembers(redisGlKey))
+      logger.info(await redis.smembers(redisGlKey))
       Send(Text('星阁拍卖行已经开啦'))
       return false
     }
@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
   try {
     await redis.del(redisGlKey)
   } catch (err) {
-    console.log(err)
+    logger.info(err)
   }
   await redis.sadd(redisGlKey, String(e.ChannelId))
   Send(Text('星阁体系在本群开启！'))

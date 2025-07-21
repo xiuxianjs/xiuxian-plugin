@@ -19,4 +19,4 @@ import './Taopaotask'
 import './SecretPlaceTask'
 import './Tiandibang'
 import './Xijietask'
-console.log('定时任务启动')
+logger.info('定时任务启动')

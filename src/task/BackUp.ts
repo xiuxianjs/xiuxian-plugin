@@ -5,7 +5,7 @@ import fs from 'fs'
 
 scheduleJob('0 0 4 * * ?', async () => {
   try {
-    console.log('开始备份存档')
+    logger.info('开始备份存档')
 
     const needSave = [
       'association',
@@ -67,7 +67,7 @@ scheduleJob('0 0 4 * * ?', async () => {
     const saveFolder = `${__PATH.backup}/${nowTimeStamp}`
     if (fs.existsSync(saveFolder)) {
       // e?.reply('致命错误...')
-      console.error('致命错误...')
+      logger.error('致命错误...')
       return
     }
     fs.mkdirSync(saveFolder)
@@ -94,11 +94,11 @@ scheduleJob('0 0 4 * * ?', async () => {
 
     const timeStr = getTimeStr(nowTimeStamp)
     // e?.reply(`存档已备份：${timeStr}`)
-    console.log(`存档已备份：${timeStr}`)
+    logger.info(`存档已备份：${timeStr}`)
     return false
   } catch (err) {
     // await e?.reply(`备份失败，${err}`)
-    console.error(`备份失败，${err}`)
+    logger.error(`备份失败，${err}`)
     throw err
   }
 })

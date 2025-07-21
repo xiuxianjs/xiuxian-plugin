@@ -20,7 +20,7 @@ export async function Read_tiandibang() {
 export async function getLastbisai(usr_qq) {
   //查询redis中的人物动作
   let time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastbisai_time')
-  console.log(time)
+  logger.info(time)
   if (time != null) {
     let data = await shijianc(parseInt(time))
     return data

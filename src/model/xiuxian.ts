@@ -1276,7 +1276,7 @@ export function bigNumberTransform(value) {
   while (value / fr >= 1) {
     fr *= 10
     num += 1
-    // console.log('数字', value / fr, 'num:', num)
+    // logger.info('数字', value / fr, 'num:', num)
   }
   if (num <= 4) {
     // 千
@@ -1353,7 +1353,7 @@ export async function Add_仙宠(usr_qq, thing_name, n, thing_level = null) {
     //无中生有
     let newthing = data.xianchon.find(item => item.name == name)
     if (!isNotNull(newthing)) {
-      console.log('没有这个东西')
+      logger.info('没有这个东西')
       return
     }
     if (thing_level != null) {
@@ -1445,12 +1445,12 @@ export async function setu(e) {
     let response = await fetch(url)
     res = await response.json()
   } catch (error) {
-    console.log('Request Failed', error)
+    logger.info('Request Failed', error)
   }
   if (res !== '{}') {
-    console.log('res不为空')
+    logger.info('res不为空')
   } else {
-    console.log('res为空')
+    logger.info('res为空')
   }
   let link = res.data[0].urls.original //获取图链
   link = link.replace('pixiv.cat', 'pixiv.re') //链接改为国内可访问的域名

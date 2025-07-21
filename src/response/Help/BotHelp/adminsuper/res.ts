@@ -11,7 +11,7 @@ export const selects = createSelects([
 export const regular = /^(#|\/)修仙管理$/
 
 export default onResponse(selects, async e => {
-  console.log(await e.UserAvatar.toURL())
+  logger.info(await e.UserAvatar.toURL())
   const Send = useSend(e)
   let data = await Help.setup(e)
   if (!data) return false

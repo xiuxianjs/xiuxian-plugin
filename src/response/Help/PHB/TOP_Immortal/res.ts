@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
   }
   //根据力量排序
   temp.sort(sortBy('power'))
-  console.log(temp)
+  logger.info(temp)
   let length
   if (temp.length > 20) {
     //只要十个

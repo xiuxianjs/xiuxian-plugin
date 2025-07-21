@@ -11,7 +11,7 @@ export const selects = createSelects([
 export const regular = /^(#|\/)?修仙帮助$/
 
 export default onResponse(selects, async e => {
-  console.log('修仙帮助')
+  logger.info('修仙帮助')
 
   const Send = useSend(e)
   let data = await Help.get(e)

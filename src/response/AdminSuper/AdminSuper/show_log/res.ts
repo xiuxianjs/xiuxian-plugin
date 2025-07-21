@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
       let t = ''
       for (let x = i; x < temp.length; x++) {
         t += temp[x]
-        //console.log(t)
+        //logger.info(t)
         if (x == temp.length - 2 || x == temp.length - 3) {
           t += '\t'
         }

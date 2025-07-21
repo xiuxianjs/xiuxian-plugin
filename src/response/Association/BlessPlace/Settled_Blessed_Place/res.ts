@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   }
   //职位不符
   if (player.宗门.职位 == '宗主') {
-    console.log('通过')
+    logger.info('通过')
   } else {
     Send(Text('只有宗主可以操作'))
     return false
