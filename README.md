@@ -4,6 +4,14 @@
 
 开发文档 [https://alemonjs.com/](https://alemonjs.com/)
 
+必要环境 `nodejs` 、`redis` 、`chrome`
+
+该扩展推荐使用`@alemonjs/onebot`进行连接
+
+该推荐推荐使用`alemongo`作为生产环境
+
+https://github.com/lemonade-lab/alemongo
+
 ## 安装
 
 - alemongo
@@ -16,14 +24,14 @@ https://github.com/xiuxianjs/xiuxian-plugin.git
 
 分支
 
-```
+```sh
 release
 ```
 
 - 本地模板
 
 ```sh
-git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git
+git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git ./packages/xiuxian-plugin
 ```
 
 ## 开发
@@ -36,12 +44,18 @@ git clone --depth=1 -b alemonjs/1.3  https://github.com/xiuxianjs/xiuxian-plugin
 yarn install
 ```
 
+```sh
+yarn dev --login gui
+```
+
+> 可在vscode中安装alemonjs扩展以支持沙河环境登录
+
 ## 配置
 
 > alemon.config.yaml
 
 ```yaml
-# 新增redis配置
+login: 'onebot'
 redis:
   host: 'localhost'
   port: '6379'
