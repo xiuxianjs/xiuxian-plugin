@@ -1,0 +1,38 @@
+import { Text, useSend, createSelects } from 'alemonjs'
+import fs from 'fs'
+import { createEventName } from '@src/response/util'
+import { data } from 'api/api'
+import { Write_player } from 'model'
+export const name = createEventName(import.meta.url)
+export const selects = createSelects([
+  'message.create',
+  'private.message.create'
+])
+export const regular = /^(#|\/)解散宗门.*$/
+
+export default onResponse(selects, async e => {
+  const Send = useSend(e)
+  {
+    if (!e.IsMaster) return false
+
+    let didian = e.MessageText.replace('#解散宗门', '')
+    didian = didian.trim()
+    let ass = data.getAssociation(didian)
+    if (ass == 'error') {
+      Send(Text('该宗门不存在'))
+      return false
+    }
+    for (let qq of ass.所有成员) {
+      let player = await data.getData('player', qq)
+      if (player.宗门) {
+        if (player.宗门.宗门名称 == didian) {
+          delete player.宗门
+          await Write_player(qq, player)
+        }
+      }
+    }
+    fs.rmSync(`${data.filePathMap.association}/${didian}.json`)
+    Send(Text('解散成功!'))
+    return false
+  }
+})

@@ -1,0 +1,13 @@
+# Node dependencies
+node_modules
+
+# alemon dev/config
+/data/
+
+# Logs
+logs
+*.log
+
+# Local env files
+.env.*
+!.env.example

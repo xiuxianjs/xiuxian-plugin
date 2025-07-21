@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@xiuxian/*": ["src/xiuxian/*"]
+    }
+  },
+  "include": ["src/**/*", "jsxp.config.tsx"],
+  "extends": "lvyjs/tsconfig.json"
+}
