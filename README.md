@@ -8,13 +8,13 @@
 
 该扩展推荐使用`@alemonjs/onebot`进行连接
 
-该推荐推荐使用`alemongo`作为生产环境
+该扩展推荐使用`alemongo`作为生产环境
 
 https://github.com/lemonade-lab/alemongo
 
 ## 安装
 
-- alemongo
+### alemongo
 
 地址
 
@@ -28,13 +28,13 @@ https://github.com/xiuxianjs/xiuxian-plugin.git
 release
 ```
 
-- 本地模板
+### 本地模板
 
 ```sh
 git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git ./packages/xiuxian-plugin
 ```
 
-## 开发
+### 开发
 
 ```sh
 git clone --depth=1 -b alemonjs/1.3  https://github.com/xiuxianjs/xiuxian-plugin.git
