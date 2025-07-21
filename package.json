@@ -1,10 +1,9 @@
 {
-  "name": "xiuxian-1.3",
-  "version": "0.0.1",
+  "name": "alemonjs-xiuxian",
+  "version": "0.1.3",
   "description": "凡人修仙文字游戏",
   "author": "ningmengchongshui",
   "type": "module",
-  "private": true,
   "main": "./lib/index.js",
   "exports": {
     ".": {
@@ -22,24 +21,23 @@
     "check-format": "git diff --exit-code"
   },
   "dependencies": {
-    "@alemonjs/gui": "0.4.1",
-    "@alemonjs/kook": "0.2.9",
-    "@alemonjs/qq": "0.3.5",
-    "@alemonjs/qq-bot": "^0.0.23",
-    "@alemonjs/qq-group-bot": "0.2.5",
-    "@types/md5": "^2.3.5",
-    "@types/node": "^22.10.5",
-    "@types/node-schedule": "^2.1.7",
     "art-template": "^4.13.2",
     "chokidar": "^4.0.3",
     "ioredis": "^5.3.2",
     "jsxp": "1.2.1",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
-    "node-schedule": "^2.1.1",
-    "typescript": "^5.7.3"
+    "node-schedule": "^2.1.1"
   },
   "devDependencies": {
+    "@types/md5": "^2.3.5",
+    "@types/node": "^22.10.5",
+    "@types/node-schedule": "^2.1.7",
+    "@alemonjs/gui": "0.4.1",
+    "@alemonjs/kook": "0.2.9",
+    "@alemonjs/qq": "0.3.5",
+    "@alemonjs/qq-bot": "^0.0.23",
+    "@alemonjs/qq-group-bot": "0.2.5",
     "@eslint/js": "^9.18.0",
     "alemonjs": "^2.0.0-rc.85",
     "eslint": "^9.18.0",

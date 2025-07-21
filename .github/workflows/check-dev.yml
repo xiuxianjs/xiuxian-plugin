@@ -1,0 +1,43 @@
+name: 推送检验
+
+on:
+  push:
+    branches:
+      - dev-*
+      - for/dev-*
+
+jobs:
+  build-to-deploy:
+    runs-on: macos-latest
+
+    steps:
+      - name: 检出代码库
+        uses: actions/checkout@v2
+
+      - name: 缓存Node.js模块
+        uses: actions/cache@v3
+        with:
+          path: |
+            frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json', 'frontend/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 设置nodejs版本
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: 加载依赖
+        run: |
+          npm install yarn@1.19.1 -g
+          yarn install --ignore-engines
+
+      - name: 格式化检查
+        run: |
+          yarn format
+          yarn eslint
+
+      - name: 打包测试
+        run: |
+          yarn build

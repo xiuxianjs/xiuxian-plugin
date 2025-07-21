@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "gui",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--login", "gui"],
+      "runtimeExecutable": "yarn",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "qq-bot",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--login", "qq-bot"],
+      "runtimeExecutable": "yarn",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "jsxp",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--view"],
+      "runtimeExecutable": "yarn",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    }
+  ]
+}

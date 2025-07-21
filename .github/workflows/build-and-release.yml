@@ -1,0 +1,97 @@
+name: 构建和发布
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (例: 0.0.1)'
+        required: true
+      message:
+        description: '发布信息'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: 构建和上传发布资产
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 结账代码
+        uses: actions/checkout@v3
+
+      - name: 检查分支
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "错误: 该工作流只能在 main 分支上运行。"
+          exit 1
+
+      - name: 设置Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 安装依赖项
+        run: |
+          npm install yarn@1.19.1 -g
+          yarn install --ignore-engines
+
+      - name: 打包
+        run: |
+          yarn build
+          mkdir -p dist
+          cp -rf ./lib dist/lib
+          cp -rf ./.puppeteerrc.cjs dist/.puppeteerrc.cjs
+          cp -rf ./package.json dist/package.json
+          cp -rf ./README.md dist/README.md
+          # 检查 dist 目录是否存在且不为空
+          if [[ ! -d dist || -z $(ls -A dist) ]]; then
+            echo "错误: 'dist' 目录不存在或为空，构建步骤可能失败。"
+            exit 1
+          fi
+          # 转移产物
+          mv dist ../dist
+
+      - name: 推送 release
+        run: |
+          DEPLOY_BRANCH="release"
+          git fetch origin $DEPLOY_BRANCH || echo "远程分支 $DEPLOY_BRANCH 不存在，准备创建..."
+          if ! git show-ref --verify --quiet refs/remotes/origin/$DEPLOY_BRANCH; then
+             git checkout -b $DEPLOY_BRANCH
+             git push origin $DEPLOY_BRANCH
+          else
+            git checkout $DEPLOY_BRANCH
+          fi
+
+          # 删除依赖
+          rm -rf node_modules
+          rm -rf .gitignore
+
+          # 清理非 git 文件夹的其他内容
+          find . -mindepth 1 ! -path './.git*' -exec rm -rf {} + || {
+            echo "错误: 文件查找并删除出现意外"
+          }
+
+          # 移动 dist 文件夹内容到根目录
+          mv ../dist/* ./ || {
+            echo "错误: 无法将 'dist' 目录中的文件移动到根目录，目录可能为空。"
+            exit 1
+          }
+
+          # 去除 package.json 中的 devDependencies
+          jq 'del(.devDependencies)' package.json > package.json.tmp && mv package.json.tmp package.json
+
+          # 开始产出
+          git config --local user.email "ningmengchongshui@gmail.com"
+          git config --local user.name "ningmengchongshui"
+          git config --local push.autoSetupRemote true
+          git add -A
+          git commit -m "${{github.event.inputs.version}} ${{ github.event.inputs.message }}"
+          git push origin $DEPLOY_BRANCH || {
+            echo "错误：推送失败，请检查..."
+            exit 1
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

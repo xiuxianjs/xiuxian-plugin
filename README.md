@@ -4,6 +4,20 @@
 
 开发文档 [https://alemonjs.com/](https://alemonjs.com/)
 
+## 安装
+
+- alemongo
+
+```sh
+git clone --depth=1 -b   https://github.com/xiuxianjs/xiuxian-plugin.git
+```
+
+## 开发
+
+```sh
+git clone --depth=1 -b alemonjs/1.3  https://github.com/xiuxianjs/xiuxian-plugin.git
+```
+
 ## 使用指南
 
 ### 配置
@@ -11,29 +25,12 @@
 > alemon.config.yaml
 
 ```yaml
-apps:
-  - 'alemonjs-xiuxian'
-
-gui:
-  port: 9602
-
-pm2:
-  name: 'gui'
-  script: 'node index.js --login gui'
-
 # 新增redis配置
 redis:
   host: 'localhost'
   port: '6379'
   password: ''
   db: '1'
-# 新增db配置
-db:
-  host: 'localhost'
-  port: '3306'
-  user: 'root'
-  password: 'Mm002580!'
-  database: 'xiuxian_test'
 ```
 
 > 唤醒 `/帮助`
