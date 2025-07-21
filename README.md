@@ -37,7 +37,7 @@ git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git 
 ### 开发
 
 ```sh
-git clone --depth=1 -b alemonjs/1.3  https://github.com/xiuxianjs/xiuxian-plugin.git
+git clone --depth=10  https://github.com/xiuxianjs/xiuxian-plugin.git
 ```
 
 ```sh
