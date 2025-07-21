@@ -1,12 +1,15 @@
-import { client as clientICQQ } from '@alemonjs/qq'
-import { client as clientQQBot } from '@alemonjs/qq-bot'
-import { client as clientQQGroup } from '@alemonjs/qq-group-bot'
 import config from '../model/Config'
 import data from '../model/XiuxianData'
 import Show from '../model/show'
 import { Redis } from 'ioredis'
 import puppeteer from '@src/image/index'
+import { getConfigValue, Image, sendToChannel, sendToUser } from 'alemonjs'
 
+/**
+ *
+ * @param param0
+ * @returns
+ */
 export const verc = ({ e }) => {
   const { whitecrowd, blackid } = config.getConfig('parameter', 'namelist')
   if (whitecrowd.indexOf(e.group_id) == -1) return false
@@ -15,52 +18,39 @@ export const verc = ({ e }) => {
 }
 
 export { data, config, Show, puppeteer }
+
+const value = getConfigValue()
+const redisValue = value.redis || {}
+
+/**
+ *
+ */
 export const redis = new Redis({
-  port: 6379, // Redis port
-  host: '127.0.0.1', // Redis host
-  db: 3 // use the first database
+  port: redisValue.port || 6379, // Redis port
+  host: redisValue.host || '127.0.0.1', // Redis host
+  db: redisValue.db || 3, // use the first database
+  password: redisValue.password || '' // Redis password
 })
+
+/**
+ *
+ * @param platform
+ * @param guild_id
+ * @param isGroup
+ * @param msg
+ * @returns
+ */
 export async function pushInfo(
-  platform,
-  guild_id,
-  isGroup,
-  msg: Buffer | string
+  platform: string,
+  guild_id: string,
+  isGroup: boolean,
+  msg: Buffer
 ) {
-  switch (platform) {
-    case 'qq':
-      if (isGroup) {
-        await clientICQQ.sendGroupMsg(
-          guild_id,
-          Buffer.isBuffer(msg) ? { type: 'image', file: msg } : msg
-        )
-      } else {
-        await clientICQQ.sendPrivateMsg(
-          guild_id,
-          Buffer.isBuffer(msg) ? { type: 'image', file: msg } : msg
-        )
-      }
-      break
-    case 'qq-bot':
-      const key = Buffer.isBuffer(msg) ? 'image' : 'content'
-      if (isGroup) {
-        await clientQQBot.channelsMessagesPost(guild_id, { [key]: msg })
-      } else {
-        await clientQQBot.dmsMessage(guild_id, { [key]: msg })
-      }
-      break
-    case 'qq-group-bot':
-      const msg_type = Buffer.isBuffer(msg) ? 7 : 0
-      const key1 = Buffer.isBuffer(msg) ? 'image' : 'content'
-      if (isGroup) {
-        await clientQQGroup.groupOpenMessages(guild_id, {
-          msg_type,
-          [key1]: msg
-        })
-      } else {
-        await clientQQGroup.usersOpenMessages(guild_id, {
-          msg_type,
-          [key1]: msg
-        })
-      }
+  if (isGroup) {
+    // 向指定频道发送消息 。SpaceId 从消息中获得，注意这可能不是 ChannelId
+    sendToChannel(guild_id, format(Image(msg)))
+    return
   }
+  // 向指定用户发送消息  OpenID 从消息中获得，注意这可能不是 UserId
+  sendToUser(guild_id, format(Image(msg)))
 }

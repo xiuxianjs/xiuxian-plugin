@@ -3,7 +3,7 @@ import xiuxianCfg from './Config.js'
 export default class Help {
   versionData: any
 
-  static async get(e) {
+  static async get() {
     const html = new Help()
     return await html.getData()
   }

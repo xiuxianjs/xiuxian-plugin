@@ -37,7 +37,6 @@ class Config {
    * @param name
    */
   getConfig(_app: string, name: keyof typeof paths) {
-    // const file = `${MyDirPath}/config/${app}/${name}.yaml
     const fileURL = paths[name]
     const data = YAML.parse(fs.readFileSync(fileURL, 'utf8'))
     return data

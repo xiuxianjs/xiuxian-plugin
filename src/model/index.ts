@@ -1,4 +1,3 @@
-export * from './base'
 export * from './Config'
 export * from './show'
 export * from './shituhelp'
@@ -6,7 +5,12 @@ export * from './version'
 export * from './help'
 export * from './duanzaofu'
 export * from './xiuxian'
-export function getTimeStr(timeStamp) {
+/**
+ *
+ * @param timeStamp 时间戳
+ * @returns
+ */
+export function getTimeStr(timeStamp: number): string {
   const options = {
     second: '2-digit',
     minute: '2-digit',
