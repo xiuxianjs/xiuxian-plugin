@@ -1,10 +1,10 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './forbidden_area.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import forbiddenAreaBgURL from '../../img/forbidden_area/forbidden_area.jpg'
-import userStateURL from '../../img/state/user_state.png'
-import cardBgURL from '../../img/forbidden_area/card.jpg'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import forbiddenAreaBgURL from '@src/resources/img/forbidden_area/forbidden_area.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
+import cardBgURL from '@src/resources/img/forbidden_area/card.jpg'
 
 const ForbiddenArea = ({ didian_list = [] }) => {
   return (

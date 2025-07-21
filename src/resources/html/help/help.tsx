@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import commonCssURL from './common.css'
 import helpCssURL from './help.css'
-import backgroundURL from '../../img/help/xiuxian.jpg'
-import iconURL from '../../img/help/icon.png'
+import backgroundURL from '@src/resources/img/help/xiuxian.jpg'
+import iconURL from '@src/resources/img/help/icon.png'
 
 const Help = ({ helpData = [] }) => {
   return (

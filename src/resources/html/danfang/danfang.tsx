@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './danfang.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import danfangURL from '../../img/danfang/danfang.jpg'
-import user_stateURL from '../../img/state/user_state.png'
+import cssURL from '@src/resources/html/danfang/danfang.css'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import danfangURL from '@src/resources/img/danfang/danfang.jpg'
+import user_stateURL from '@src/resources/img/state/user_state.png'
 
 const Danfang = ({ danfang_list }) => {
   const renderItemInfo = item => {

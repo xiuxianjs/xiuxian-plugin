@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './association.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import playerURL from '../../img/player/player.jpg'
-import user_stateURL from '../../img/state/user_state.png'
+import cssURL from '@src/resources/html/association/association.css'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import playerURL from '@src/resources/img/player/player.jpg'
+import user_stateURL from '@src/resources/img/state/user_state.png'
 
 const Association = ({
   user_id,

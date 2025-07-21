@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './tuzhi.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import tuzhiURL from '../../img/tuzhi/tuzhi.jpg'
-import userStateURL from '../../img/state/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import tuzhiURL from '@src/resources/img/tuzhi/tuzhi.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
 
 const Tuzhi = ({ tuzhi_list }) => {
   return (

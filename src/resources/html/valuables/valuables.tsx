@@ -1,8 +1,8 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './valuables.css'
-import valuablesTopURL from '../../img/valuables/valuables-top.jpg'
-import valuablesDanyaoURL from '../../img/valuables/valuables-danyao.jpg'
+import valuablesTopURL from '@src/resources/img/valuables/valuables-top.jpg'
+import valuablesDanyaoURL from '@src/resources/img/valuables/valuables-danyao.jpg'
 
 const Valuables = () => {
   return (

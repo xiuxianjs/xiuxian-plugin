@@ -1,10 +1,10 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './player.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import NZBZURL from '../../font/NZBZ.ttf'
-import backgroundURL from '../../img/player_pifu/0.jpg'
-import user_stateURL from '../../img/player/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import NZBZURL from '@src/resources/font/NZBZ.ttf'
+import backgroundURL from '@src/resources/img/player_pifu/0.jpg'
+import user_stateURL from '@src/resources/img/player/user_state.png'
 
 const Player = ({
   avatar,

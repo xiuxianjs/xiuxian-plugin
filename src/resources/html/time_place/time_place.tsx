@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './time_place.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import timePlaceURL from '../../img/time_place/time_place.jpg'
-import userStateURL from '../../img/state/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import timePlaceURL from '@src/resources/img/time_place/time_place.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
 
 const TimePlace = ({ didian_list }) => {
   return (

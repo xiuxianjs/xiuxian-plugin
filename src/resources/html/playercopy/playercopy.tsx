@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './player.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import playerURL from '../../img/player/player.jpg'
-import userStateURL from '../../img/state/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import playerURL from '@src/resources/img/player/player.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
 
 const PlayerCopy = ({
   user_id,
@@ -18,7 +18,7 @@ const PlayerCopy = ({
   learned_gongfa
 }) => {
   const whenError = img => {
-    img.src = '../../img/player/default-avatar.png'
+    img.src = '@src/resources/img/player/default-avatar.png'
   }
 
   return (

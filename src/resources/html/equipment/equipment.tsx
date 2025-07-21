@@ -1,8 +1,8 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './equipment.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import backgroundURL from '../../img/equipment_pifu/0.jpg'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import backgroundURL from '@src/resources/img/equipment_pifu/0.jpg'
 
 const Equipment = ({
   arms = {},

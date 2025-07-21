@@ -1,10 +1,10 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './secret_place.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import secretPlaceURL from '../../img/secret_place/secret_place.jpg'
-import userStateURL from '../../img/state/user_state.png'
-import cardURL from '../../img/secret_place/card.jpg'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import secretPlaceURL from '@src/resources/img/secret_place/secret_place.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
+import cardURL from '@src/resources/img/secret_place/card.jpg'
 
 const SecretPlace = ({ didian_list }) => {
   return (

@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './adminset.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import stateURL from '../../img/state/state.jpg'
-import user_state from '../../img/state/satte.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import stateURL from '@src/resources/img/state/state.jpg'
+import user_state from '@src/resources/img/state/user_state.png'
 
 const XiuxianSettings = ({
   CDassociation,

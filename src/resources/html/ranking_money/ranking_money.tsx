@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../state/state.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import stateURL from '../../img/state/state.jpg'
-import user_stateURL from '../../img/state/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import stateURL from '@src/resources/img/state/state.jpg'
+import user_stateURL from '@src/resources/img/state/user_state.png'
 
 const RankingMoney = ({
   user_id,
@@ -53,7 +53,7 @@ const RankingMoney = ({
                   className="user_top_img"
                   src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
                   onError={e => {
-                    e.target.src = '../../img/default_avatar.png'
+                    e.target.src = '@src/resources/img/default_avatar.png'
                   }}
                 />
               </div>

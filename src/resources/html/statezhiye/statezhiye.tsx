@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './statezhiye.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import stateURL from '../../img/state/state.jpg'
-import userStateURL from '../../img/state/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import stateURL from '@src/resources/img/state/state.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
 
 const Statezhiye = ({ Level_list }) => {
   return (

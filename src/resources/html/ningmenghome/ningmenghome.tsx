@@ -1,9 +1,9 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './ningmenghome.css'
-import tttgbnumberURL from '../../font/tttgbnumber.ttf'
-import ningmenghomeURL from '../../img/ningmenghome/ningmenghome.jpg'
-import userStateURL from '../../img/state/user_state.png'
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import ningmenghomeURL from '@src/resources/img/ningmenghome/ningmenghome.jpg'
+import userStateURL from '@src/resources/img/state/user_state.png'
 
 const Ningmenghome = ({ commodities_list }) => {
   return (
