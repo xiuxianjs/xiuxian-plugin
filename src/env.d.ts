@@ -6,3 +6,9 @@ declare module '*.yaml' {
   const content: string
   export default content
 }
+
+// .ttf
+declare module '*.ttf' {
+  const content: string
+  export default content
+}

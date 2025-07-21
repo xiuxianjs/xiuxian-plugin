@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(A_qq)
   if (!ifexistplay) return false
   //对方
-  const Mentions = await useMention(e)
+  const Mentions = (await useMention(e)[0].findOne()).data
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }

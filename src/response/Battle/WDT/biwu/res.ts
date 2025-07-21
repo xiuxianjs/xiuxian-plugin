@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
   }
 
   //判断对方
-  const Mentions = await useMention(e)
+  const Mentions = (await useMention(e)[0].findOne()).data
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }

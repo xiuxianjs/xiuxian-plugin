@@ -19,7 +19,7 @@ export default defineConfig({
     ]
   },
   assets: {
-    filter: /\.(png|jpg|jpeg|svg|webp|.css|.scss|.yaml|.txt)$/g
+    filter: /\.(png|jpg|jpeg|svg|webp|.css|.scss|.yaml|.txt|.ttf)$/g
   },
   build: {
     typescript: {
