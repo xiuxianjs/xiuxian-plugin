@@ -1,4 +1,4 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
@@ -12,10 +12,7 @@ import {
 } from '@src/model'
 import { Read_tiandibang, Write_tiandibang, getLastbisai } from '../tian'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)比试$/
 
 export default onResponse(selects, async e => {
@@ -197,7 +194,7 @@ export default onResponse(selects, async e => {
     }
     await Add_灵石(usr_qq, lingshi)
     if (msg.length > 50) {
-      logger.info('通过')
+      console.log('通过')
     } else {
       // await ForwardMsg(e, msg)
       Send(Text(msg))
@@ -253,7 +250,7 @@ export default onResponse(selects, async e => {
     }
     await Add_灵石(usr_qq, lingshi)
     if (msg.length > 50) {
-      logger.info('通过')
+      console.log('通过')
     } else {
       // await ForwardMsg(e, msg)
       Send(Text(msg))

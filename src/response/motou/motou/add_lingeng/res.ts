@@ -9,7 +9,7 @@ import {
   Write_player
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects(['message.create'])
+export const selects = onSelects(['message.create'])
 export const regular = /^(#|\/)供奉魔石$/
 
 const Res = onResponse(selects, async (e, next) => {

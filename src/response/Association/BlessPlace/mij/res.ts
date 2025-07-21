@@ -4,10 +4,7 @@ import { data } from '@src/api/api'
 import { createSelects } from 'alemonjs'
 
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门秘境$/
 
 export default onResponse(selects, async e => {

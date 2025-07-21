@@ -1,13 +1,10 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 import fs from 'node:fs'
 import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import { isNotNull, Read_player } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)入驻洞天.*$/
 
 export default onResponse(selects, async e => {
@@ -24,7 +21,7 @@ export default onResponse(selects, async e => {
   }
   //职位不符
   if (player.宗门.职位 == '宗主') {
-    logger.info('通过')
+    console.log('通过')
   } else {
     Send(Text('只有宗主可以操作'))
     return false

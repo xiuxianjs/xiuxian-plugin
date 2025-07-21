@@ -1,13 +1,10 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
 import { existplayer, Read_player, Add_灵石 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)(采矿$)|(采矿(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {

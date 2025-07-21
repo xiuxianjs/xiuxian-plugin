@@ -1,13 +1,10 @@
-import { Image, useSend, createSelects } from 'alemonjs'
+import { Image, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { cache } from '../../help'
 import Help from 'model/help'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)修仙扩展$/
 
 export default onResponse(selects, async e => {

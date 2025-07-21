@@ -1,11 +1,8 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 // import { Add_najie_thing } from 'model/xiuxian'
 import { createEventName } from '@src/response/util'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular =
   /^(#|\/)将米娜桑的纳戒里叫.*的的的(装备|道具|丹药|功法|草药|材料|仙宠|口粮)(抹除|替换为叫.*之之之(装备|道具|丹药|功法|草药|材料|仙宠|口粮))$/
 

@@ -1,14 +1,11 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
 import { existplayer, shijianc, Read_player, Write_player } from '@src/model'
 import { Show_player } from '../user'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)(改名.*)|(设置道宣.*)$/
 
 export default onResponse(selects, async e => {

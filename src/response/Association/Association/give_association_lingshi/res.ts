@@ -1,13 +1,10 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { isNotNull, setFileValue } from '@src/model'
 import { data } from '@src/api/api'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门(上交|上缴|捐赠)灵石[1-9]d*/
 const 宗门灵石池上限 = [
   2000000, 5000000, 8000000, 11000000, 15000000, 20000000, 25000000, 30000000

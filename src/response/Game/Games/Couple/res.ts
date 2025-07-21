@@ -11,10 +11,7 @@ import {
   add_qinmidu
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)^双修$/
 
 export default onResponse(selects, async e => {
@@ -28,7 +25,7 @@ export default onResponse(selects, async e => {
   let A = e.UserId
   //全局状态判断
   //B
-  const Mentions = await useMention(event)
+  const Mentions = await useMention(e)
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }
@@ -90,7 +87,7 @@ export default onResponse(selects, async e => {
   let pd = await find_qinmidu(A, B)
   let hunyin_B = await exist_hunyin(A)
   let hunyin_A = await exist_hunyin(B)
-  //logger.info(`pd = `+pd+` hunyin = `+hunyin);
+  //console.log(`pd = `+pd+` hunyin = `+hunyin);
   //双方有一人已婚
   if (hunyin_B != '' || hunyin_A != '') {
     //不是对方

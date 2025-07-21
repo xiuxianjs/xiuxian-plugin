@@ -4,10 +4,7 @@ import { getPlayerAction } from '@src/model'
 import { mine_jiesuan } from '../../api'
 import { createSelects } from 'alemonjs'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)结束采矿$/
 
 export default onResponse(selects, async e => {

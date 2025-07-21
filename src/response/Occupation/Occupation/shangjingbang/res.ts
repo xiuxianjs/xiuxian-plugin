@@ -4,10 +4,7 @@ import { createEventName } from '@src/response/util'
 import { redis, Show, puppeteer } from '@src/api/api'
 import { existplayer } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)赏金榜$/
 
 export default onResponse(selects, async e => {

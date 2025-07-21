@@ -1,4 +1,4 @@
-import { Text, Image, useSend, createSelects } from 'alemonjs'
+import { Text, Image, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis, data, Show, puppeteer } from '@src/api/api'
@@ -11,10 +11,7 @@ import {
   existshop
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)探查.*$/
 
 export default onResponse(selects, async e => {

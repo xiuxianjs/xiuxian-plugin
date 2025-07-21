@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { redis } from 'api/api.js'
+import { redis } from '@src/api/api.js'
 
 import data from './XiuxianData.js'
 import { Writeit, Read_it } from './duanzaofu.js'

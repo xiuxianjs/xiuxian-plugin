@@ -1,13 +1,10 @@
-import { Image, useSend, createSelects } from 'alemonjs'
+import { Image, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { Read_updata_log } from '@src/model'
 import { Show, puppeteer } from '@src/api/api'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)查看日志$/
 
 export default onResponse(selects, async e => {
@@ -33,7 +30,7 @@ export default onResponse(selects, async e => {
       let t = ''
       for (let x = i; x < temp.length; x++) {
         t += temp[x]
-        //logger.info(t)
+        //console.log(t)
         if (x == temp.length - 2 || x == temp.length - 3) {
           t += '\t'
         }

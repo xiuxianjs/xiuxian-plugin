@@ -3,10 +3,7 @@ import { createSelects } from 'alemonjs'
 import { data } from '@src/api/api'
 import { jindi } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)禁地$/
 
 export default onResponse(selects, async e => {

@@ -1,12 +1,9 @@
-import { Text, useSend, useMention, createSelects } from 'alemonjs'
+import { Text, useSend, useMention } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { existplayer, Read_player, Write_player } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)打落凡间.*$/
 
 export default onResponse(selects, async e => {

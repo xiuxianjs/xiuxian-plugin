@@ -14,10 +14,7 @@ import {
 } from '@src/model'
 
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)^比武$/
 
 export default onResponse(selects, async e => {
@@ -223,7 +220,7 @@ export default onResponse(selects, async e => {
   let msg = Data_battle.msg
   //战斗回合过长会导致转发失败报错，所以超过30回合的就不转发了
   if (msg.length > 35) {
-    logger.info('通过')
+    console.log('通过')
   } else {
     // await ForwardMsg(e, msg)
     Send(Text(msg))

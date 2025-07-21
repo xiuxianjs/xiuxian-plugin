@@ -11,10 +11,7 @@ import {
 } from '@src/model'
 import { found, chaoshi } from '../daolv'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)^(断绝姻缘)$/
 
 export default onResponse(selects, async e => {
@@ -47,7 +44,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const Mentions = await useMention(event)
+  const Mentions = await useMention(e)
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }

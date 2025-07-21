@@ -1,4 +1,4 @@
-import { Text, useSend, Image, createSelects } from 'alemonjs'
+import { Text, useSend, Image } from 'alemonjs'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
@@ -12,10 +12,7 @@ import {
   get_ranking_power_img
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)天榜$/
 
 export default onResponse(selects, async e => {

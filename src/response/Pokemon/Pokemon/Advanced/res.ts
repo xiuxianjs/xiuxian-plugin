@@ -1,13 +1,10 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import { exist_najie_thing, Add_najie_thing, Write_player } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)进阶仙宠$/
 
 export default onResponse(selects, async e => {
@@ -47,7 +44,7 @@ export default onResponse(selects, async e => {
   if (player_level == list_level[x]) {
     //判断是否满级
     let thing = data.xianchon.find(item => item.id == player.仙宠.id + 1) //查找下个等级仙宠
-    logger.info(thing)
+    console.log(thing)
     player.仙宠 = thing
     player.仙宠.等级 = player_level //赋值之前的等级
     player.仙宠.加成 = last_jiachen //赋值之前的加成

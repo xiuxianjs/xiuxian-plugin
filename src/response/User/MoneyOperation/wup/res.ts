@@ -10,10 +10,7 @@ import {
   Add_najie_thing
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)发.*$/
 
 export default onResponse(selects, async e => {

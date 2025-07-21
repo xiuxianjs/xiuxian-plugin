@@ -1,4 +1,4 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { pushInfo, redis } from '@src/api/api'
@@ -10,10 +10,7 @@ import {
   Write_player
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)刺杀目标.*$/
 
 export default onResponse(selects, async e => {
@@ -128,7 +125,7 @@ export default onResponse(selects, async e => {
       player.名号 //优化下文案，比如xxx在刺杀xxx中
   }
   if (msg.length > 100) {
-    logger.info('通过')
+    console.log('通过')
   } else {
     // await ForwardMsg(e, msg)
     Send(Text(msg))

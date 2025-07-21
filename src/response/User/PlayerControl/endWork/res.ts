@@ -3,10 +3,7 @@ import { createSelects } from 'alemonjs'
 import { config, redis } from '@src/api/api'
 import { getPlayerAction } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)降妖归来$/
 
 export default onResponse(selects, async e => {

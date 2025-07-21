@@ -1,4 +1,4 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis, data, pushInfo } from '@src/api/api'
@@ -11,7 +11,7 @@ import {
   WorldBossBattle
 } from '../../boss'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects(['message.create'])
+export const selects = onSelects(['message.create'])
 export const regular = /^(#|\/)讨伐妖王$/
 
 export default onResponse(selects, async e => {
@@ -200,7 +200,7 @@ export default onResponse(selects, async e => {
         await pushInfo(platform, group_id, true, msg2)
       }
       await Add_灵石(usr_qq, 1000000)
-      logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
+      console.log(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
       WorldBossStatus.KilledTime = new Date().getTime()
       redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
@@ -250,7 +250,7 @@ export default onResponse(selects, async e => {
             PlayerRecordJSON.QQ[PlayerList[i]],
             CurrentPlayer
           )
-          logger.info(
+          console.log(
             `[妖王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励${Reward}`
@@ -258,7 +258,7 @@ export default onResponse(selects, async e => {
           continue
         } else {
           CurrentPlayer.灵石 += 200000
-          logger.info(
+          console.log(
             `[妖王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励200000`

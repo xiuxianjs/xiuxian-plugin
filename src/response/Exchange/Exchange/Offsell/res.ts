@@ -1,4 +1,4 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
@@ -10,10 +10,7 @@ import {
   Add_najie_thing
 } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)下架[1-9]d*/
 
 export default onResponse(selects, async e => {

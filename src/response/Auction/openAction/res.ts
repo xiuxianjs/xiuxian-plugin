@@ -1,10 +1,10 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { config, redis } from '@src/api/api'
 import { openAU, Read_player } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects(['message.create'])
+export const selects = onSelects(['message.create'])
 export const regular = /^(#|\/)开启星阁体系$/
 
 export default onResponse(selects, async e => {
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   const groupList = await redis.smembers(redisGlKey)
   if (groupList.length > 0) {
     if (await redis.sismember(redisGlKey, String(e.ChannelId))) {
-      logger.info(await redis.smembers(redisGlKey))
+      console.log(await redis.smembers(redisGlKey))
       Send(Text('星阁拍卖行已经开啦'))
       return false
     }
@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
   try {
     await redis.del(redisGlKey)
   } catch (err) {
-    logger.info(err)
+    console.log(err)
   }
   await redis.sadd(redisGlKey, String(e.ChannelId))
   Send(Text('星阁体系在本群开启！'))

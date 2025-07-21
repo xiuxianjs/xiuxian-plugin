@@ -1,11 +1,8 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 import { exec } from 'child_process'
 import { createEventName } from '@src/response/util'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)修仙更新/
 
 export default onResponse(selects, e => {

@@ -4,10 +4,7 @@ import { createEventName } from '@src/response/util'
 import { cache } from '../../help'
 import Help from 'model/help'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门管理$/
 
 export default onResponse(selects, async e => {

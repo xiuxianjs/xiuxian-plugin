@@ -1,13 +1,10 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
 import { existplayer, Read_player, shijianc, Write_player } from '@src/model'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)踏入神界$/
 
 export default onResponse(selects, async e => {
@@ -125,7 +122,7 @@ async function getLastdagong(usr_qq) {
   let time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':lastdagong_time'
   )
-  logger.info(time)
+  console.log(time)
   if (time != null) {
     let data = await shijianc(parseInt(time))
     return data

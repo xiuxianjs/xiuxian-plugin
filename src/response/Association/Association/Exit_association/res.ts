@@ -1,14 +1,11 @@
-import { Text, useSend, createSelects } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 import { get_random_fromARR, isNotNull, player_efficiency } from '@src/model'
 import { createEventName } from '@src/response/util'
 import { config, data } from '@src/api/api'
 import fs from 'fs'
 
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)退出宗门$/
 
 export default onResponse(selects, async e => {

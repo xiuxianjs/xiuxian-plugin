@@ -1,13 +1,10 @@
-import { Text, Image, useSend, createSelects } from 'alemonjs'
+import { Text, Image, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { existplayer } from '@src/model'
 import { Read_tiandibang, Write_tiandibang, get_tianditang_img } from '../tian'
 export const name = createEventName(import.meta.url)
-export const selects = createSelects([
-  'message.create',
-  'private.message.create'
-])
+export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)天地堂/
 
 export default onResponse(selects, async e => {
