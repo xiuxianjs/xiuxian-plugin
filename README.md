@@ -1,6 +1,6 @@
-# YunzaiJS Xiuxian
+# Yunzai修仙
 
-## 部署
+## Next
 
 - 安装项目
 
@@ -20,18 +20,19 @@ yarn add yz-xiuxian jsxp -W
 
 发送`/个人信息`开启存档并展示游玩指令
 
+
 ## V3
 
 - 1.3
 
 ```sh
-git clone --depth=1 -b xiuxian@1.3 https://github.com/xiuxianjs/xiuxian-plugin.git ./plugins/xiuxian-plugin
+git clone --depth=1 -b version/1.3 https://github.com/xiuxianjs/xiuxian-plugin.git ./plugins/xiuxian-plugin
 ```
 
 - 1.2
   
 ```sh
-git clone --depth=1 -b xiuxian@1.2 https://github.com/xiuxianjs/xiuxian-plugin.git ./plugins/xiuxian-plugin
+git clone --depth=1 -b version/1.2 https://github.com/xiuxianjs/xiuxian-plugin.git ./plugins/xiuxian-plugin
 ```
 
 > 旧版本仅维护不更新。 
