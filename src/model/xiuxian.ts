@@ -286,7 +286,7 @@ export async function get_XianChong_img(e) {
     XianChong_need,
     Kouliang
   }
-  const data1 = await new Show(e).get_xianchong(player_data)
+  const data1 = await new Show().get_xianchong(player_data)
   return await puppeteer.screenshot('xianchong', e.UserId, {
     ...data1
   })
@@ -319,7 +319,7 @@ export async function get_daoju_img(e) {
     daoju_have,
     daoju_need
   }
-  const data1 = await new Show(e).get_daojuData(player_data)
+  const data1 = await new Show().get_daojuData(player_data)
   return await puppeteer.screenshot('daoju', e.UserId, {
     ...data1
   })
@@ -373,7 +373,7 @@ export async function get_wuqi_img(e) {
     wuqi_have,
     wuqi_need
   }
-  const data1 = await new Show(e).get_wuqiData(player_data)
+  const data1 = await new Show().get_wuqiData(player_data)
   return await puppeteer.screenshot('wuqi', e.UserId, {
     ...data1
   })
@@ -412,7 +412,7 @@ export async function get_danyao_img(e) {
     danyao_have,
     danyao_need
   }
-  const data1 = await new Show(e).get_danyaoData(player_data)
+  const data1 = await new Show().get_danyaoData(player_data)
   return await puppeteer.screenshot('danyao', e.UserId, {
     ...data1
   })
@@ -451,7 +451,7 @@ export async function get_gongfa_img(e) {
     gongfa_have,
     gongfa_need
   }
-  const data1 = await new Show(e).get_gongfaData(player_data)
+  const data1 = await new Show().get_gongfaData(player_data)
   return await puppeteer.screenshot('gongfa', e.UserId, {
     ...data1
   })
@@ -506,7 +506,7 @@ export async function get_power_img(e) {
     learned_gongfa: player.学习的功法,
     association: this_association
   }
-  const data1 = await new Show(e).get_playercopyData(playercopy)
+  const data1 = await new Show().get_playercopyData(playercopy)
   return await puppeteer.screenshot('playercopy', e.UserId, {
     ...data1
   })
@@ -763,7 +763,7 @@ export async function get_player_img(e) {
     法宝评级: 法宝评级,
     avatar: player.avatar
   }
-  const data1 = await new Show(e).get_playerData(player_data)
+  const data1 = await new Show().get_playerData(player_data)
   return await puppeteer.screenshot('player', e.UserId, {
     ...data1
   })
@@ -882,7 +882,7 @@ export async function get_association_img(e) {
     waimen: waimen,
     state: state
   }
-  const data1 = await new Show(e).get_associationData(association_data)
+  const data1 = await new Show().get_associationData(association_data)
   return await puppeteer.screenshot('association', e.UserId, {
     ...data1
   })
@@ -915,7 +915,7 @@ export async function get_equipment_img(e) {
     player_nowHP: player.当前血量,
     pifu: Number(player.装备皮肤)
   }
-  const data1 = await new Show(e).get_equipmnetData(player_data)
+  const data1 = await new Show().get_equipmnetData(player_data)
   return await puppeteer.screenshot('equipment', e.UserId, {
     ...data1
   })
@@ -957,7 +957,7 @@ export async function get_najie_img(e) {
     strand_lingshi: strand_lingshi,
     pifu: player.练气皮肤
   }
-  const data1 = await new Show(e).get_najieData(player_data)
+  const data1 = await new Show().get_najieData(player_data)
   return await puppeteer.screenshot('najie', e.UserId, {
     ...data1
   })
@@ -989,7 +989,7 @@ export async function get_state_img(e, all_level) {
     user_id: usr_qq,
     Level_list: Level_list
   }
-  const data1 = await new Show(e).get_stateData(state_data)
+  const data1 = await new Show().get_stateData(state_data)
   return await puppeteer.screenshot('state', e.UserId, {
     ...data1
   })
@@ -1017,7 +1017,7 @@ export async function get_statezhiye_img(e, all_level) {
     user_id: usr_qq,
     Level_list: Level_list
   }
-  const data1 = await new Show(e).get_stateDatazhiye(state_data)
+  const data1 = await new Show().get_stateDatazhiye(state_data)
   return await puppeteer.screenshot('statezhiye', e.UserId, {
     ...data1
   })
@@ -1049,7 +1049,7 @@ export async function get_statemax_img(e, all_level) {
     user_id: usr_qq,
     LevelMax_list: LevelMax_list
   }
-  const data1 = await new Show(e).get_statemaxData(statemax_data)
+  const data1 = await new Show().get_statemaxData(statemax_data)
   return await puppeteer.screenshot('statemax', e.UserId, {
     ...data1
   })
@@ -1068,7 +1068,7 @@ export async function get_talent_img(e) {
     user_id: usr_qq,
     talent_list: talent_list
   }
-  const data1 = await new Show(e).get_talentData(talent_data)
+  const data1 = await new Show().get_talentData(talent_data)
   return await puppeteer.screenshot('talent', e.UserId, {
     ...data1
   })
@@ -1122,7 +1122,7 @@ export async function get_adminset_img(e) {
     SecretPlacetwo: cf.SecretPlace.two,
     SecretPlacethree: cf.SecretPlace.three
   }
-  const data1 = await new Show(e).get_adminsetData(adminset)
+  const data1 = await new Show().get_adminsetData(adminset)
   return await puppeteer.screenshot('adminset', e.UserId, {
     ...data1
   })
@@ -1142,7 +1142,7 @@ export async function get_ranking_power_img(e, Data, usr_paiming, thisplayer) {
     usr_paiming: usr_paiming,
     allplayer: Data
   }
-  const data1 = await new Show(e).get_ranking_powerData(ranking_power_data)
+  const data1 = await new Show().get_ranking_powerData(ranking_power_data)
   return await puppeteer.screenshot('ranking_power', e.UserId, {
     ...data1
   })
@@ -1166,7 +1166,7 @@ export async function get_ranking_money_img(
     usr_paiming: usr_paiming,
     allplayer: Data
   }
-  const data1 = await new Show(e).get_ranking_moneyData(ranking_money_data)
+  const data1 = await new Show().get_ranking_moneyData(ranking_money_data)
   return await puppeteer.screenshot('ranking_money', e.UserId, {
     ...data1
   })
@@ -1218,7 +1218,7 @@ export async function get_ningmenghome_img(e, thing_type) {
     user_id: usr_qq,
     commodities_list: commodities_list
   }
-  const data1 = await new Show(e).get_ningmenghomeData(ningmenghome_data)
+  const data1 = await new Show().get_ningmenghomeData(ningmenghome_data)
   let img = await puppeteer.screenshot('ningmenghome', e.UserId, {
     ...data1
   })
@@ -1237,7 +1237,7 @@ export async function get_valuables_img(e) {
   let valuables_data = {
     user_id: usr_qq
   }
-  const data1 = await new Show(e).get_valuablesData(valuables_data)
+  const data1 = await new Show().get_valuablesData(valuables_data)
   let img = await puppeteer.screenshot('valuables', e.UserId, {
     ...data1
   })
@@ -1400,7 +1400,7 @@ export async function get_danfang_img(e) {
     user_id: usr_qq,
     danfang_list: danfang_list
   }
-  const data1 = await new Show(e).get_danfangData(danfang_data)
+  const data1 = await new Show().get_danfangData(danfang_data)
   let img = await puppeteer.screenshot('danfang', e.UserId, {
     ...data1
   })
@@ -1420,7 +1420,7 @@ export async function get_tuzhi_img(e) {
     user_id: usr_qq,
     tuzhi_list: tuzhi_list
   }
-  const data1 = await new Show(e).get_tuzhiData(tuzhi_data)
+  const data1 = await new Show().get_tuzhiData(tuzhi_data)
   let img = await puppeteer.screenshot('tuzhi', e.UserId, {
     ...data1
   })
@@ -2842,7 +2842,7 @@ export async function get_supermarket_img(e, thing_class) {
     user_id: usr_qq,
     Exchange_list: Exchange_list
   }
-  const data1 = await new Show(e).get_supermarketData(supermarket_data)
+  const data1 = await new Show().get_supermarketData(supermarket_data)
   let img = await puppeteer.screenshot('supermarket', e.UserId, {
     ...data1
   })
@@ -2876,7 +2876,7 @@ export async function get_forum_img(e, thing_class) {
     user_id: usr_qq,
     Forum: Forum
   }
-  const data1 = await new Show(e).get_forumData(forum_data)
+  const data1 = await new Show().get_forumData(forum_data)
   let img = await puppeteer.screenshot('forum', e.UserId, {
     ...data1
   })

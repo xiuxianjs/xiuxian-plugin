@@ -1,4 +1,4 @@
-import { createSelects, Image, useSend } from 'alemonjs'
+import { Image, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import Help from 'model/help'

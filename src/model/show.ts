@@ -1,468 +1,127 @@
-import base from './base.js'
+export default class Game {
+  get_playerData = data => data
 
-export default class Game extends base {
-  constructor(e) {
-    super(e)
-    this.model = 'show'
-  }
-
-  async get_playerData(myData) {
-    this.model = 'player'
-    return {
-      ...this.screenData,
-      saveId: 'player',
-      ...myData
-    }
-  }
   //师徒商城
-  async get_shitujifenData(myData) {
-    this.model = 'shitujifen'
-    return {
-      ...this.screenData,
-      saveId: 'shitujifen',
-      ...myData
-    }
-  }
+  get_shitujifenData = data => data
+
   //我的弟子
-  async get_shituData(myData) {
-    this.model = 'shitu'
-    return {
-      ...this.screenData,
-      saveId: 'shitu',
-      ...myData
-    }
-  }
+  get_shituData = data => data
+
   //我的师门
-  async get_shifuData(myData) {
-    this.model = 'shifu'
-    return {
-      ...this.screenData,
-      saveId: 'shifu',
-      ...myData
-    }
-  }
-  async get_gongfaData(myData) {
-    this.model = 'gongfa'
-    return {
-      ...this.screenData,
-      saveId: 'gongfa',
-      ...myData
-    }
-  }
+  get_shifuData = data => data
 
-  async get_danyaoData(myData) {
-    this.model = 'danyao'
-    return {
-      ...this.screenData,
-      saveId: 'danyao',
-      ...myData
-    }
-  }
+  get_gongfaData = data => data
 
-  async get_xianchong(myData) {
-    this.model = 'xianchong'
-    return {
-      ...this.screenData,
-      saveId: 'xianchong',
-      ...myData
-    }
-  }
+  get_danyaoData = data => data
 
-  async get_daojuData(myData) {
-    this.model = 'daoju'
-    return {
-      ...this.screenData,
-      saveId: 'daoju',
-      ...myData
-    }
-  }
+  get_xianchong = data => data
 
-  async get_wuqiData(myData) {
-    this.model = 'wuqi'
-    return {
-      ...this.screenData,
-      saveId: 'wuqi',
-      ...myData
-    }
-  }
+  get_daojuData = data => data
 
-  async get_playercopyData(myData) {
-    this.model = 'playercopy'
-    return {
-      ...this.screenData,
-      saveId: 'playercopy',
-      ...myData
-    }
-  }
+  get_wuqiData = data => data
 
-  async get_equipmnetData(myData) {
-    this.model = 'equipment'
-    return {
-      ...this.screenData,
-      saveId: 'equipment',
-      ...myData
-    }
-  }
-  async get_equipmnetData2(myData) {
-    this.model = 'equipment2'
-    return {
-      ...this.screenData,
-      saveId: 'equipment2',
-      ...myData
-    }
-  }
-  async get_najieData(myData) {
-    this.model = 'najie'
-    return {
-      ...this.screenData,
-      saveId: 'najie',
-      ...myData
-    }
-  }
+  get_playercopyData = data => data
 
-  async get_stateData(myData) {
-    this.model = 'state'
-    return {
-      ...this.screenData,
-      saveId: 'state',
-      ...myData
-    }
-  }
+  get_equipmnetData = data => data
 
-  async get_stateDatazhiye(myData) {
-    this.model = 'statezhiye'
-    return {
-      ...this.screenData,
-      saveId: 'statezhiye',
-      ...myData
-    }
-  }
-  async get_statemaxData(myData) {
-    this.model = 'statemax'
-    return {
-      ...this.screenData,
-      saveId: 'statemax',
-      ...myData
-    }
-  }
+  get_equipmnetData2 = data => data
+
+  get_najieData = data => data
+
+  get_stateData = data => data
+
+  get_stateDatazhiye = data => data
+
+  get_statemaxData = data => data
+
   //searchforum
-  async get_searchforumData(myData) {
-    this.model = 'searchforum'
-    return {
-      ...this.screenData,
-      saveId: 'searchforum',
-      ...myData
-    }
-  }
+  get_searchforumData = data => data
+
   //天地堂
-  async get_tianditangData(myData) {
-    this.model = 'tianditang'
-    return {
-      ...this.screenData,
-      saveId: 'tianditang',
-      ...myData
-    }
-  }
+  get_tianditangData = data => data
+
   //悬赏名单
-  async get_msg(myData) {
-    this.model = 'msg'
-    return {
-      ...this.screenData,
-      saveId: 'msg',
-      ...myData
-    }
-  }
+  get_msg = data => data
+
   //我的宗门
-  async get_associationData(myData) {
-    this.model = 'association'
-    return {
-      ...this.screenData,
-      saveId: 'association',
-      ...myData
-    }
-  }
+  get_associationData = data => data
 
   //shop
-  async get_didianData(myData) {
-    this.model = 'shop'
-    return {
-      ...this.screenData,
-      saveId: 'shop',
-      ...myData
-    }
-  }
+  get_didianData = data => data
 
   //宗门
-  async get_zongmeng_data(myData) {
-    this.model = 'zongmeng'
-    return {
-      ...this.screenData,
-      saveId: 'zongmeng',
-      ...myData
-    }
-  }
+  get_zongmeng_data = data => data
 
   //temp
-  async get_tempData(myData) {
-    this.model = 'temp'
-    return {
-      ...this.screenData,
-      saveId: 'temp',
-      ...myData
-    }
-  }
+  get_tempData = data => data
 
   //log
-  async get_logData(myData) {
-    this.model = 'log'
-    return {
-      ...this.screenData,
-      saveId: 'log',
-      ...myData
-    }
-  }
+  get_logData = data => data
+
   //柠檬堂
-  async get_ningmenghomeData(myData) {
-    this.model = 'ningmenghome'
-    return {
-      ...this.screenData,
-      saveId: 'ningmenghome',
-      ...myData
-    }
-  }
+  get_ningmenghomeData = data => data
 
   //万宝楼
-  async get_valuablesData(myData) {
-    this.model = 'valuables'
-    return {
-      ...this.screenData,
-      saveId: 'valuables',
-      ...myData
-    }
-  }
+  get_valuablesData = data => data
 
   //法宝楼
-  async get_valuables_fabaoData(myData) {
-    this.model = 'valuables_fabao'
-    return {
-      ...this.screenData,
-      saveId: 'valuables_fabao',
-      ...myData
-    }
-  }
+  get_valuables_fabaoData = data => data
 
   //武器楼
-  async get_valuables_wuqiData(myData) {
-    this.model = 'valuables_wuqi'
-    return {
-      ...this.screenData,
-      saveId: 'valuables_wuqi',
-      ...myData
-    }
-  }
+  get_valuables_wuqiData = data => data
 
   //护具楼
-  async get_valuables_hujuData(myData) {
-    this.model = 'valuables_huju'
-    return {
-      ...this.screenData,
-      saveId: 'valuables_huju',
-      ...myData
-    }
-  }
+  get_valuables_hujuData = data => data
 
   //丹药楼
-  async get_valuables_drugData(myData) {
-    this.model = 'valuables_drug'
-    return {
-      ...this.screenData,
-      saveId: 'valuables_drug',
-      ...myData
-    }
-  }
+  get_valuables_drugData = data => data
 
   //功法楼
-  async get_valuables_skillData(myData) {
-    this.model = 'valuables_skill'
-    return {
-      ...this.screenData,
-      saveId: 'valuables_skill',
-      ...myData
-    }
-  }
+  get_valuables_skillData = data => data
 
   //道具楼
-  async get_valuables_propData(myData) {
-    this.model = 'valuables_prop'
-    return {
-      ...this.screenData,
-      saveId: 'valuables_prop',
-      ...myData
-    }
-  }
+  get_valuables_propData = data => data
 
   //数独
-  async get_sudokuData(myData) {
-    this.model = 'sudoku'
-    return {
-      ...this.screenData,
-      saveId: 'sudoku',
-      ...myData
-    }
-  }
+  get_sudokuData = data => data
 
   //修为榜
-  async get_ranking_powerData(myData) {
-    this.model = 'ranking_power'
-    return {
-      ...this.screenData,
-      saveId: 'ranking_power',
-      ...myData
-    }
-  }
+  get_ranking_powerData = data => data
 
   //灵石榜
-  async get_ranking_moneyData(myData) {
-    this.model = 'ranking_money'
-    return {
-      ...this.screenData,
-      saveId: 'ranking_money',
-      ...myData
-    }
-  }
+  get_ranking_moneyData = data => data
 
-  async get_updataData(myData) {
-    this.model = 'updata'
-    return {
-      ...this.screenData,
-      saveId: 'updata',
-      ...myData
-    }
-  }
+  get_updataData = data => data
 
   //修仙设置
-  async get_adminsetData(myData) {
-    this.model = 'adminset'
-    return {
-      ...this.screenData,
-      saveId: 'adminset',
-      ...myData
-    }
-  }
+  get_adminsetData = data => data
 
-  async get_secret_placeData(myData) {
-    this.model = 'secret_place'
-    return {
-      ...this.screenData,
-      saveId: 'secret_place',
-      ...myData
-    }
-  }
+  get_secret_placeData = data => data
 
-  async get_forbidden_areaData(myData) {
-    this.model = 'forbidden_area'
-    return {
-      ...this.screenData,
-      saveId: 'forbidden_area',
-      ...myData
-    }
-  }
+  get_forbidden_areaData = data => data
 
-  async get_time_placeData(myData) {
-    this.model = 'time_place'
-    return {
-      ...this.screenData,
-      saveId: 'time_place',
-      ...myData
-    }
-  }
+  get_time_placeData = data => data
 
-  async get_fairyrealmData(myData) {
-    this.model = 'fairyrealm'
-    return {
-      ...this.screenData,
-      saveId: 'fairyrealm',
-      ...myData
-    }
-  }
+  get_fairyrealmData = data => data
 
-  async get_supermarketData(myData) {
-    this.model = 'supermarket'
-    return {
-      ...this.screenData,
-      saveId: 'supermarket',
-      ...myData
-    }
-  }
+  get_supermarketData = data => data
 
-  async get_forumData(myData) {
-    this.model = 'forum'
-    return {
-      ...this.screenData,
-      saveId: 'forum',
-      ...myData
-    }
-  }
+  get_forumData = data => data
+
   //斩首堂
-  async get_yuansu(myData) {
-    this.model = 'tujian'
-    return {
-      ...this.screenData,
-      saveId: 'tujian',
-      ...myData
-    }
-  }
+  get_yuansu = data => data
+
   // 金银坊记录
-  async get_jinyin(myData) {
-    this.model = 'moneyCheck'
-    return {
-      ...this.screenData,
-      saveId: 'moneyCheck',
-      ...myData
-    }
-  }
+  get_jinyin = data => data
 
-  async get_talentData(myData) {
-    this.model = 'talent'
-    return {
-      ...this.screenData,
-      saveId: 'talent',
-      ...myData
-    }
-  }
+  get_talentData = data => data
 
-  async get_danfangData(myData) {
-    this.model = 'danfang'
-    return {
-      ...this.screenData,
-      saveId: 'danfang',
-      ...myData
-    }
-  }
+  get_danfangData = data => data
 
-  async get_tuzhiData(myData) {
-    this.model = 'tuzhi'
-    return {
-      ...this.screenData,
-      saveId: 'tuzhi',
-      ...myData
-    }
-  }
-  async get_NIANGJIU(myData) {
-    this.model = 'niangjiu'
-    return {
-      ...this.screenData,
-      saveId: 'niangjiu',
-      ...myData
-    }
-  }
+  get_tuzhiData = data => data
+
+  get_NIANGJIU = data => data
+
   //神兵榜
-  async get_shenbing(myData) {
-    this.model = 'shenbing'
-    return {
-      ...this.screenData,
-      saveId: 'shenbing',
-      ...myData
-    }
-  }
+  get_shenbing = data => data
 }

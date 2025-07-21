@@ -100,7 +100,7 @@ export default onResponse(selects, async e => {
     newwupin = newwupin.slice(0, 20)
   }
   let bd_date = { newwupin }
-  const data1 = await new Show(e).get_shenbing(bd_date)
+  const data1 = await new Show().get_shenbing(bd_date)
   const tu = await puppeteer.screenshot('shenbing', e.UserId, { ...data1 })
   Send(Text(tu))
 })

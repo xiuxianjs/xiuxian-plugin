@@ -1,4 +1,4 @@
-import { createSelects, Image, Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
 import { data, Show, puppeteer } from '@src/api/api'
@@ -72,7 +72,7 @@ export default onResponse(selects, async e => {
     temp.push(arr)
   }
   let zongmeng_data = { temp }
-  const data1 = await new Show(e).get_zongmeng_data(zongmeng_data)
+  const data1 = await new Show().get_zongmeng_data(zongmeng_data)
   let img = await puppeteer.screenshot('zongmeng', e.UserId, { ...data1 })
   if (img) Send(Image(img))
 })

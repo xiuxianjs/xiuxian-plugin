@@ -15,7 +15,7 @@ const paths = {
   help,
   helpCopy: helpcopy,
   set,
-  shituHelp: shituhelp,
+  shituhelp: shituhelp,
   nameList: namelist,
   task,
   version,

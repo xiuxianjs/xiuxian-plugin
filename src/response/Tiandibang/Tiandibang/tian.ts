@@ -37,7 +37,7 @@ export async function get_tianditang_img(e, jifen) {
     jifen,
     commodities_list: commodities_list
   }
-  const data1 = await new Show(e).get_tianditangData(tianditang_data)
+  const data1 = await new Show().get_tianditangData(tianditang_data)
   let img = await puppeteer.screenshot('tianditang', e.UserId, {
     ...data1
   })

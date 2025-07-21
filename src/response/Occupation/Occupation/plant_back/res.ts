@@ -2,7 +2,7 @@ import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
 import { getPlayerAction } from '@src/model'
 import { plant_jiesuan } from '../../api'
-import { createSelects } from 'alemonjs'
+
 export const name = createEventName(import.meta.url)
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)结束采药$/

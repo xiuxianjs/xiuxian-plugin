@@ -1,5 +1,5 @@
 import { createEventName } from '@src/response/util'
-import { createSelects } from 'alemonjs'
+
 import { data } from '@src/api/api'
 import { jindi } from '@src/model'
 export const name = createEventName(import.meta.url)

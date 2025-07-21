@@ -1,4 +1,4 @@
-import { createSelects, Image, Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
 import { redis, Show, puppeteer } from '@src/api/api'
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
     if (action.end_time > new Date().getTime()) {
       msg = action.arm
       let msg_data = { msg, type }
-      const data1 = await new Show(e).get_msg(msg_data)
+      const data1 = await new Show().get_msg(msg_data)
       let img = await puppeteer.screenshot('msg', e.UserId, { ...data1 })
       Send(Image(img))
       return false
@@ -81,7 +81,7 @@ export default onResponse(selects, async e => {
   }
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':shangjing', JSON.stringify(arr))
   let msg_data = { msg, type }
-  const data1 = await new Show(e).get_msg(msg_data)
+  const data1 = await new Show().get_msg(msg_data)
   let img = await puppeteer.screenshot('msg', e.UserId, { ...data1 })
   if (img) Send(Image(img))
 })

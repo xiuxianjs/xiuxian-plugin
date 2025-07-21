@@ -1,4 +1,4 @@
-import { createSelects, Text, useMention, useSend } from 'alemonjs'
+import { Text, useMention, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import { data, redis, config } from '@src/api/api'

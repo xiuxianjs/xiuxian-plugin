@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
       }
     }
     let log_data = { log: str }
-    const data1 = await new Show(e).get_logData(log_data)
+    const data1 = await new Show().get_logData(log_data)
     let img = await puppeteer.screenshot('log', e.UserId, { ...data1 })
     if (img) Send(Image(img))
     return false

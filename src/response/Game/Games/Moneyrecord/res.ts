@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
   } else {
     shenglv = ((victory / (victory + defeated)) * 100).toFixed(2)
   }
-  const data1 = await new Show(e).get_jinyin({
+  const data1 = await new Show().get_jinyin({
     user_qq: qq,
     victory,
     victory_num,

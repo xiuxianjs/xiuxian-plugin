@@ -1,4 +1,4 @@
-import { createSelects, Text, useObserver, useSend } from 'alemonjs'
+import { Text, useObserver, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
 import {

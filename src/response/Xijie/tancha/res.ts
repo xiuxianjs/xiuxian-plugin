@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
       break
   }
   let didian_data = { name: shop[i].name, level, state, thing }
-  const data1 = await new Show(e).get_didianData(didian_data)
+  const data1 = await new Show().get_didianData(didian_data)
   let img = await puppeteer.screenshot('shop', e.UserId, { ...data1 })
   if (img) Send(Image(img))
   return false
