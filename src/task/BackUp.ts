@@ -1,5 +1,5 @@
-import { redis } from 'api/api'
-import { __PATH, getTimeStr } from 'model'
+import { redis } from '@src/api/api'
+import { __PATH, getTimeStr } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

@@ -1,5 +1,5 @@
 import { Text, useSend, createSelects } from 'alemonjs'
-import { redis } from 'api/api'
+import { redis } from '@src/api/api'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
 export const name = createEventName(import.meta.url)

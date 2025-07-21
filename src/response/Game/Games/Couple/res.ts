@@ -1,7 +1,7 @@
 import { createSelects, Text, useMention, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { config, redis } from 'api/api'
+import { config, redis } from '@src/api/api'
 import {
   existplayer,
   find_qinmidu,
@@ -9,7 +9,7 @@ import {
   fstadd_qinmidu,
   Add_修为,
   add_qinmidu
-} from 'model'
+} from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

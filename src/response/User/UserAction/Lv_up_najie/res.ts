@@ -8,8 +8,8 @@ import {
   Read_player,
   Add_灵石,
   Write_najie
-} from 'model'
-import { config } from 'api/api'
+} from '@src/model'
+import { config } from '@src/api/api'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

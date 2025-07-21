@@ -1,7 +1,7 @@
 import { createSelects, Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
-import { data, Show, puppeteer } from 'api/api'
+import { data, Show, puppeteer } from '@src/api/api'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

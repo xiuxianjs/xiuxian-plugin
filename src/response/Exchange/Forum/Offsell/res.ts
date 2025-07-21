@@ -7,7 +7,7 @@ import {
   Read_Forum,
   Write_Forum,
   Add_灵石
-} from 'model'
+} from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

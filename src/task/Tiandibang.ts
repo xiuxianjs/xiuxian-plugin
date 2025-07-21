@@ -1,6 +1,6 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-import { data } from 'api/api'
-import { __PATH, Read_player } from 'model'
+import { data } from '@src/api/api'
+import { __PATH, Read_player } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

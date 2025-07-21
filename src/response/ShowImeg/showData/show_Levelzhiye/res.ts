@@ -1,7 +1,7 @@
 import { Image, useSend, createSelects } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { get_statezhiye_img } from 'model'
+import { get_statezhiye_img } from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

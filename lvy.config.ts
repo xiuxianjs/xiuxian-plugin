@@ -18,6 +18,9 @@ export default defineConfig({
       { find: '@xiuxian', replacement: join(__dirname, 'src', 'xiuxian') }
     ]
   },
+  assets: {
+    filter: /\.(png|jpg|jpeg|svg|webp|.css|.scss|.yaml|.txt)$/g
+  },
   build: {
     typescript: {
       removeComments: true

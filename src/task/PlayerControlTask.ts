@@ -1,4 +1,4 @@
-import { redis, data, config } from 'api/api'
+import { redis, data, config } from '@src/api/api'
 import {
   isNotNull,
   Read_danyao,
@@ -8,7 +8,7 @@ import {
   Add_血气,
   setFileValue,
   Write_danyao
-} from 'model'
+} from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 import fs from 'fs'

@@ -1,4 +1,4 @@
-import { Read_qinmidu } from 'model'
+import { Read_qinmidu } from '@src/model'
 
 global.x = 0
 // let chaoshi_time

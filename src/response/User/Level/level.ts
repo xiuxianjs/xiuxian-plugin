@@ -1,5 +1,5 @@
 import { useSend, Text } from 'alemonjs'
-import { redis, data, config } from 'api/api'
+import { redis, data, config } from '@src/api/api'
 import {
   existplayer,
   Read_player,
@@ -11,7 +11,7 @@ import {
   Write_equipment,
   Add_HP,
   Add_血气
-} from 'model'
+} from '@src/model'
 
 export async function Level_up(e, luck = false) {
   let usr_qq = e.UserId

@@ -1,7 +1,7 @@
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
-import { redis, data, pushInfo } from 'api/api'
-import { isNotNull, Add_职业经验, Add_najie_thing } from 'model'
+import { redis, data, pushInfo } from '@src/api/api'
+import { isNotNull, Add_职业经验, Add_najie_thing } from '@src/model'
 scheduleJob('0 0/1 * * * ?', async () => {
   let playerList = []
   let files = fs

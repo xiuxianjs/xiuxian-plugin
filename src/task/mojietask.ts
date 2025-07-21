@@ -1,6 +1,6 @@
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
-import { redis, data, pushInfo } from 'api/api'
+import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   Read_player,
@@ -10,7 +10,7 @@ import {
   Add_修为,
   Read_temp,
   Write_temp
-} from 'model'
+} from '@src/model'
 scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
   let playerList = []
@@ -167,9 +167,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.power_up = 1 //渡劫状态
             arr.Place_action = 1 //秘境
             arr.Place_actionplus = 1 //沉迷状态
-            ;(arr.mojie = 1), //魔界状态---关闭
+            ;((arr.mojie = 1), //魔界状态---关闭
               //结束的时间也修改为当前时间
-              (arr.end_time = new Date().getTime())
+              (arr.end_time = new Date().getTime()))
             //结算完去除group_id
             delete arr.group_id
             //写入redis

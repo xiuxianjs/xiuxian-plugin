@@ -1,7 +1,7 @@
 import { Text, useSend, Image, createSelects } from 'alemonjs'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
-import { data } from 'api/api'
+import { data } from '@src/api/api'
 import {
   existplayer,
   __PATH,
@@ -10,7 +10,7 @@ import {
   isNotNull,
   sortBy,
   get_ranking_power_img
-} from 'model'
+} from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

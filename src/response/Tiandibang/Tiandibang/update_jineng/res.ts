@@ -1,8 +1,8 @@
 import { Text, useSend, createSelects } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { data } from 'api/api'
-import { existplayer, Read_player } from 'model'
+import { data } from '@src/api/api'
+import { existplayer, Read_player } from '@src/model'
 import { Read_tiandibang, Write_tiandibang } from '../tian'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
@@ -47,9 +47,9 @@ export default onResponse(selects, async e => {
   tiandibang[m].当前血量 = player.血量上限
   tiandibang[m].暴击率 = player.暴击率
   tiandibang[m].学习的功法 = player.学习的功法
-  ;(tiandibang[m].灵根 = player.灵根),
+  ;((tiandibang[m].灵根 = player.灵根),
     (tiandibang[m].法球倍率 = player.灵根.法球倍率),
-    Write_tiandibang(tiandibang)
+    Write_tiandibang(tiandibang))
   tiandibang = await Read_tiandibang()
   tiandibang[m].暴击率 = Math.trunc(tiandibang[m].暴击率 * 100)
   let msg = []

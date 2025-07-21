@@ -1,5 +1,5 @@
-import { redis, config, pushInfo } from 'api/api'
-import { openAU, Read_player, Add_灵石, Add_najie_thing } from 'model'
+import { redis, config, pushInfo } from '@src/api/api'
+import { openAU, Read_player, Add_灵石, Add_najie_thing } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 const set = config.getConfig('xiuxian', 'xiuxian')

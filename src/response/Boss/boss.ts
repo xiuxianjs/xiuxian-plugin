@@ -1,7 +1,7 @@
 import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
-import { data, pushInfo, redis } from 'api/api'
+import { data, pushInfo, redis } from '@src/api/api'
 import fs from 'fs'
-import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from 'model'
+import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
 
 global.WorldBOSSBattleCD = {}
 global.WorldBOSSBattleLock = 0 //BOSS战斗锁，防止打架频率过高造成奖励多发

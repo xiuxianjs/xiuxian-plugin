@@ -1,4 +1,4 @@
-import { Read_shop, Write_shop } from 'model'
+import { Read_shop, Write_shop } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 59 20 * * ?', async () => {

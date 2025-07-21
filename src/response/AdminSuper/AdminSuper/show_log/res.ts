@@ -1,8 +1,8 @@
 import { Image, useSend, createSelects } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { Read_updata_log } from 'model'
-import { Show, puppeteer } from 'api/api'
+import { Read_updata_log } from '@src/model'
+import { Show, puppeteer } from '@src/api/api'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

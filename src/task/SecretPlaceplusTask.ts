@@ -1,4 +1,4 @@
-import { redis, data, config } from 'api/api'
+import { redis, data, config } from '@src/api/api'
 import {
   isNotNull,
   Read_player,
@@ -13,7 +13,7 @@ import {
   Add_HP,
   Read_temp,
   Write_temp
-} from 'model'
+} from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

@@ -1,4 +1,4 @@
-import { redis, data } from 'api/api'
+import { redis, data } from '@src/api/api'
 import {
   isNotNull,
   zd_battle,
@@ -6,7 +6,7 @@ import {
   Read_shop,
   Write_shop,
   existshop
-} from 'model'
+} from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

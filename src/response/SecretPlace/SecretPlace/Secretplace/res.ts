@@ -1,6 +1,6 @@
 import { createEventName } from '@src/response/util'
-import { Goweizhi } from 'model'
-import { data } from 'api/api'
+import { Goweizhi } from '@src/model'
+import { data } from '@src/api/api'
 import { createSelects } from 'alemonjs'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([

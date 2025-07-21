@@ -1,6 +1,6 @@
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
-import { redis } from 'api/api'
+import { redis } from '@src/api/api'
 
 scheduleJob('0 */5 * * * ?', async () => {
   //获取缓存中人物列表

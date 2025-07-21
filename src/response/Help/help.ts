@@ -1,4 +1,4 @@
-import { puppeteer } from 'api/api'
+import { puppeteer } from '@src/api/api'
 import md5 from 'md5'
 
 const helpData = {

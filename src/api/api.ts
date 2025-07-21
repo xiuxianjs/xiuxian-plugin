@@ -5,7 +5,7 @@ import config from '../model/Config'
 import data from '../model/XiuxianData'
 import Show from '../model/show'
 import { Redis } from 'ioredis'
-import puppeteer from 'image/index'
+import puppeteer from '@src/image/index'
 
 export const verc = ({ e }) => {
   const { whitecrowd, blackid } = config.getConfig('parameter', 'namelist')

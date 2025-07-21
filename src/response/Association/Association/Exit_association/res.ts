@@ -1,7 +1,7 @@
 import { Text, useSend, createSelects } from 'alemonjs'
-import { get_random_fromARR, isNotNull, player_efficiency } from 'model'
+import { get_random_fromARR, isNotNull, player_efficiency } from '@src/model'
 import { createEventName } from '@src/response/util'
-import { config, data } from 'api/api'
+import { config, data } from '@src/api/api'
 import fs from 'fs'
 
 export const name = createEventName(import.meta.url)

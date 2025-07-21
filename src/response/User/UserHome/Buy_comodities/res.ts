@@ -8,8 +8,8 @@ import {
   existplayer,
   Go,
   Read_player
-} from 'model'
-import { data } from 'api/api'
+} from '@src/model'
+import { data } from '@src/api/api'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

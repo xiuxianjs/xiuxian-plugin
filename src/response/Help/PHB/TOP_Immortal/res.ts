@@ -1,7 +1,7 @@
 import { Text, useSend, createSelects } from 'alemonjs'
 import fs from 'fs'
 import { createEventName } from '@src/response/util'
-import { existplayer, Read_player, sortBy } from 'model'
+import { existplayer, Read_player, sortBy } from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

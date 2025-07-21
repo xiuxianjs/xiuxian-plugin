@@ -1,8 +1,8 @@
 import { Text, useSend, createSelects } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { redis, data, config } from 'api/api'
-import { existplayer, Go } from 'model'
+import { redis, data, config } from '@src/api/api'
+import { existplayer, Go } from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

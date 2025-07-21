@@ -23,6 +23,7 @@
   "dependencies": {
     "art-template": "^4.13.2",
     "chokidar": "^4.0.3",
+    "dayjs": "^1.11.13",
     "ioredis": "^5.3.2",
     "jsxp": "1.2.1",
     "lodash": "^4.17.21",
@@ -30,15 +31,15 @@
     "node-schedule": "^2.1.1"
   },
   "devDependencies": {
-    "@types/md5": "^2.3.5",
-    "@types/node": "^22.10.5",
-    "@types/node-schedule": "^2.1.7",
     "@alemonjs/gui": "0.4.1",
     "@alemonjs/kook": "0.2.9",
     "@alemonjs/qq": "0.3.5",
     "@alemonjs/qq-bot": "^0.0.23",
     "@alemonjs/qq-group-bot": "0.2.5",
     "@eslint/js": "^9.18.0",
+    "@types/md5": "^2.3.5",
+    "@types/node": "^22.10.5",
+    "@types/node-schedule": "^2.1.7",
     "alemonjs": "^2.0.0-rc.85",
     "eslint": "^9.18.0",
     "eslint-plugin-react": "^7.37.3",

@@ -1,7 +1,7 @@
 import { Text, useSend, createSelects } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { Read_player, Read_qinmidu, Write_qinmidu } from 'model'
+import { Read_player, Read_qinmidu, Write_qinmidu } from '@src/model'
 import { found } from '../daolv'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([

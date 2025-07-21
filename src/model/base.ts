@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { AppName } from '../app.config.js'
+const AppName = 'xiuxian-plugin'
 export default class base {
   e: any
   userId: any
@@ -8,7 +7,7 @@ export default class base {
   constructor(e: any = {}) {
     this.e = e
     this.userId = e?.user_id ?? ''
-    this.model = AppName
+    // this.model = AppName
     this._path = process.cwd().replace(/\\/g, '/')
   }
 

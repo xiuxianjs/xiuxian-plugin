@@ -7,7 +7,7 @@ import {
   Read_player,
   Write_player,
   Add_najie_thing
-} from 'model'
+} from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

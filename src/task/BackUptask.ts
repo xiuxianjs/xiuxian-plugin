@@ -1,4 +1,4 @@
-import { Read_najie, __PATH } from 'model'
+import { Read_najie, __PATH } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

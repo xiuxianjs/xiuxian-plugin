@@ -8,8 +8,8 @@ import {
   ifbaoji,
   Read_player,
   sleep
-} from 'model'
-import { data, redis } from 'api/api'
+} from '@src/model'
+import { data, redis } from '@src/api/api'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

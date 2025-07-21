@@ -8,8 +8,8 @@ import {
   SortPlayer,
   WorldBossBattle
 } from '../../boss'
-import { redis, data, pushInfo } from 'api/api'
-import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from 'model'
+import { redis, data, pushInfo } from '@src/api/api'
+import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

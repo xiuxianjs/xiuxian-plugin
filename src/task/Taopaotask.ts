@@ -1,5 +1,11 @@
-import { redis, data } from 'api/api'
-import { isNotNull, Harm, Read_shop, Add_najie_thing, Write_shop } from 'model'
+import { redis, data } from '@src/api/api'
+import {
+  isNotNull,
+  Harm,
+  Read_shop,
+  Add_najie_thing,
+  Write_shop
+} from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

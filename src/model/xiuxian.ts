@@ -8,7 +8,7 @@ import { MyDirPath } from '../app.config.js'
 import config from './Config.js'
 import Show from './show.js'
 import { useSend, Text } from 'alemonjs'
-import puppeteer from 'image/index.js'
+import puppeteer from '@src/image/index.js'
 // 文件存放路径
 export const __PATH = {
   //更新日志

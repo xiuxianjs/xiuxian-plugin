@@ -7,7 +7,7 @@ import {
   exist_najie_thing,
   Add_najie_thing,
   Write_player
-} from 'model'
+} from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects(['message.create'])
 export const regular = /^(#|\/)供奉魔石$/

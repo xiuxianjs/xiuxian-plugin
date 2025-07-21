@@ -1,6 +1,6 @@
-import { dirname, basename, resolve } from 'node:path'
+import { dirname, basename, resolve, join } from 'node:path'
 import { fileURLToPath } from 'url'
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = join(dirname(fileURLToPath(import.meta.url)), '../')
 // 插件名
 export const AppName = basename(__dirname)
 // 项目根目录

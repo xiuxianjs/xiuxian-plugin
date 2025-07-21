@@ -6,7 +6,7 @@ import {
   Read_qinmidu,
   Write_qinmidu,
   Add_najie_thing
-} from 'model'
+} from '@src/model'
 import { found } from '../daolv'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([

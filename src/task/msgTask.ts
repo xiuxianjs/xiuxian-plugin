@@ -1,5 +1,5 @@
-import { Show, puppeteer, pushInfo } from 'api/api'
-import { Read_temp, Write_temp } from 'model'
+import { Show, puppeteer, pushInfo } from '@src/api/api'
+import { Read_temp, Write_temp } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('20 0/5 * * * ?', async () => {

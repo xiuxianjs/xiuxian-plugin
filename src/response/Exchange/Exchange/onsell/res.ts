@@ -12,7 +12,7 @@ import {
   Read_player,
   Add_灵石,
   Add_najie_thing
-} from 'model'
+} from '@src/model'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
   'message.create',

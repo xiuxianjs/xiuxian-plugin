@@ -1,5 +1,5 @@
-import { data } from 'api/api'
-import { Read_shop, Write_shop } from 'model'
+import { data } from '@src/api/api'
+import { Read_shop, Write_shop } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 21 ? * 1,5', async () => {

@@ -1,4 +1,4 @@
-import { redis, data, config } from 'api/api'
+import { redis, data, config } from '@src/api/api'
 import {
   isNotNull,
   Read_player,
@@ -9,7 +9,7 @@ import {
   Add_血气,
   Add_修为,
   Add_HP
-} from 'model'
+} from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 

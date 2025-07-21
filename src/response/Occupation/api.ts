@@ -1,5 +1,5 @@
-import { data, pushInfo } from 'api/api'
-import { Add_najie_thing, Add_职业经验 } from 'model'
+import { data, pushInfo } from '@src/api/api'
+import { Add_najie_thing, Add_职业经验 } from '@src/model'
 
 export async function plant_jiesuan(user_id, time, group_id, platform) {
   let usr_qq = user_id

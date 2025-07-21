@@ -1,8 +1,8 @@
 import { Text, useSend, createSelects } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { data, redis } from 'api/api'
-import { isNotNull, shijianc } from 'model'
+import { data, redis } from '@src/api/api'
+import { isNotNull, shijianc } from '@src/model'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([

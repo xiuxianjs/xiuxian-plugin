@@ -1,6 +1,6 @@
 import { createEventName } from '@src/response/util'
-import { redis } from 'api/api'
-import { getPlayerAction } from 'model'
+import { redis } from '@src/api/api'
+import { getPlayerAction } from '@src/model'
 import { mine_jiesuan } from '../../api'
 import { createSelects } from 'alemonjs'
 export const name = createEventName(import.meta.url)

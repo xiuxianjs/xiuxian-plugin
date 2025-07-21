@@ -1,5 +1,5 @@
-import { redis } from 'api/api'
-import { shijianc } from 'model'
+import { redis } from '@src/api/api'
+import { shijianc } from '@src/model'
 
 /**
  * 判断宗门是否需要维护

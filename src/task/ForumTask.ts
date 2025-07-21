@@ -1,4 +1,4 @@
-import { Read_Forum, Write_Forum, Add_灵石 } from 'model'
+import { Read_Forum, Write_Forum, Add_灵石 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 4 * * ?', async () => {

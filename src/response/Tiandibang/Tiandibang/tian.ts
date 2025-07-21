@@ -1,5 +1,5 @@
-import { redis, data, Show, puppeteer } from 'api/api'
-import { __PATH, shijianc, Read_player } from 'model'
+import { redis, data, Show, puppeteer } from '@src/api/api'
+import { __PATH, shijianc, Read_player } from '@src/model'
 import path from 'path'
 import fs from 'fs'
 export async function Write_tiandibang(wupin) {

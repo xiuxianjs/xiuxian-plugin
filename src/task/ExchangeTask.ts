@@ -1,4 +1,4 @@
-import { Read_Exchange, Write_Exchange, Add_najie_thing } from 'model'
+import { Read_Exchange, Write_Exchange, Add_najie_thing } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 4 * * ?', async () => {

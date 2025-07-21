@@ -1,14 +1,14 @@
 import { createSelects, Text, useMention, useSend } from 'alemonjs'
 
 import { createEventName } from '@src/response/util'
-import { redis } from 'api/api'
+import { redis } from '@src/api/api'
 import {
   existplayer,
   Read_qinmidu,
   Write_qinmidu,
   find_qinmidu,
   Read_player
-} from 'model'
+} from '@src/model'
 import { found, chaoshi } from '../daolv'
 export const name = createEventName(import.meta.url)
 export const selects = createSelects([
