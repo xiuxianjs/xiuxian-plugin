@@ -13,10 +13,10 @@ import xiuxian from '@src/config/xiuxian/xiuxian.yaml'
 const paths = {
   Association,
   help,
-  helpCopy: helpcopy,
+  helpcopy,
   set,
-  shituhelp: shituhelp,
-  nameList: namelist,
+  shituhelp,
+  namelist,
   task,
   version,
   xiuxian
