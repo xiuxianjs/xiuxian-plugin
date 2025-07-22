@@ -36,9 +36,7 @@ export default onResponse(selects, async e => {
     sex: 0, //性别
     名号: `路人甲${n}号`,
     宣言: '这个人很懒还没有写',
-    avatar:
-      (await e.UserAvatar?.toURL()) ||
-      'https://s1.ax1x.com/2022/08/09/v8XV3q.jpg',
+    avatar: e.UserAvatar || 'https://s1.ax1x.com/2022/08/09/v8XV3q.jpg',
     level_id: 1, //练气境界
     Physique_id: 1, //练体境界
     race: 1, //种族

@@ -1221,19 +1221,15 @@ export async function get_valuables_img(e) {
  */
 function Strand(now, max) {
   let num = ((now / max) * 100).toFixed(0)
-  let mini
-  if (Number(num) > 100) {
-    mini = 100
-  } else {
-    mini = num
-  }
+  let mini = Number(num) > 100 ? 100 : num
+
   let strand = {
-    style: `style=width:${mini}%`,
+    style: { width: `${mini}%` },
     num: num
   }
+
   return strand
 }
-
 /**
  * 大数字转换，将大额数字转换为万、千万、亿等
  * @param value 数字值
