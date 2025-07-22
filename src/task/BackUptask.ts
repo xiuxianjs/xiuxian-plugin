@@ -1,14 +1,13 @@
 import { Read_najie, __PATH } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
-
+const player_path = __PATH.player_path
 scheduleJob('20 0/5 * * * ?', async () => {
   try {
     let playerList = []
-    // Check if directory exists first
-    if (fs.existsSync('./resources/data/xiuxian_player')) {
+    if (fs.existsSync(player_path)) {
       let files = fs
-        .readdirSync('./resources/data/xiuxian_player')
+        .readdirSync(player_path)
         .filter(file => file.endsWith('.json'))
 
       if (files.length === 0) {
@@ -21,7 +20,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
         playerList.push(file)
       }
     } else {
-      console.log('Directory ./resources/data/xiuxian_player 不存在')
+      console.log(`Directory ${player_path} 不存在`)
       return
     }
 
