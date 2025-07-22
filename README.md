@@ -50,7 +50,7 @@ yarn dev --login gui
 
 > 可在vscode中安装alemonjs扩展以支持沙河环境登录
 
-## 配置
+## 运行配置
 
 > alemon.config.yaml
 
@@ -62,6 +62,18 @@ redis:
   password: ''
   db: '1'
 ```
+
+## 修仙配置
+
+如果自定义修仙配置 ？
+
+请 [点击打开配置文件](./src/config/xiuxian.yaml) 了解配置
+
+并在机器人目录下新建 `./config/alemonjs-xiuxian` 目录
+
+该目录下新建与之对应的配置文件
+
+即 `/config/alemonjs-xiuxian/xiuxian.yaml` 覆盖 `./src/config/xiuxian.yaml`
 
 ## 使用
 
