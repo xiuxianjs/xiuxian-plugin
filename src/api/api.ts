@@ -1,15 +1,9 @@
 import config from '../model/Config'
 import data from '../model/XiuxianData'
 import Show from '../model/show'
-import { Redis } from 'ioredis'
+import { getIoRedis } from '@alemonjs/db'
 import puppeteer from '@src/image/index'
-import {
-  getConfigValue,
-  Image,
-  sendToChannel,
-  sendToUser,
-  Text
-} from 'alemonjs'
+import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
 
 /**
  *
@@ -25,18 +19,10 @@ export const verc = ({ e }) => {
 
 export { data, config, Show, puppeteer }
 
-const value = getConfigValue()
-const redisValue = value.redis || {}
-
 /**
  *
  */
-export const redis = new Redis({
-  port: redisValue.port || 6379, // Redis port
-  host: redisValue.host || '127.0.0.1', // Redis host
-  db: redisValue.db || 3, // use the first database
-  password: redisValue.password || '' // Redis password
-})
+export const redis = getIoRedis()
 
 /**
  *
