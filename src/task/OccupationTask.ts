@@ -106,9 +106,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
             JSON.stringify(arr)
           )
           if (is_group) {
-            await pushInfo(push_address, is_group, msg)
+            await pushInfo('', push_address, is_group, msg.join('\n'))
           } else {
-            await pushInfo(player_id, is_group, msg)
+            await pushInfo('', player_id, is_group, msg.join('\n'))
           }
         }
       }
@@ -196,9 +196,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           )
           //msg.push("\n增加修为:" + xiuwei * time, "血量增加:" + blood * time);
           if (is_group) {
-            // await this.pushInfo(push_address, is_group, msg)
+            await pushInfo('', push_address, is_group, msg.join('\n'))
           } else {
-            // await this.pushInfo(player_id, is_group, msg)
+            await pushInfo('', player_id, is_group, msg.join('\n'))
           }
         }
       }

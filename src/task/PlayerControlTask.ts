@@ -1,4 +1,4 @@
-import { redis, data, config } from '@src/api/api'
+import { redis, data, config, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   Read_danyao,
@@ -172,9 +172,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
             JSON.stringify(arr)
           )
           if (is_group) {
-            // await this.pushInfo(push_address, is_group, msg)
+            await pushInfo('', push_address, is_group, msg.join('\n'))
           } else {
-            // await this.pushInfo(player_id, is_group, msg)
+            await pushInfo('', player_id, is_group, msg.join('\n'))
           }
 
           if (dy.lianti <= 0) {
@@ -259,9 +259,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           msg.push('\n降妖得到' + get_lingshi + '灵石')
           log_mag += '收入' + get_lingshi
           if (is_group) {
-            // await this.pushInfo(push_address, is_group, msg)
+            await pushInfo('', push_address, is_group, msg.join('\n'))
           } else {
-            // await this.pushInfo(player_id, is_group, msg)
+            await pushInfo('', player_id, is_group, msg.join('\n'))
           }
         }
       }

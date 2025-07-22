@@ -1,4 +1,4 @@
-import { redis, data, config } from '@src/api/api'
+import { redis, data, config, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   Read_player,
@@ -271,9 +271,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await Add_HP(player_id, Data_battle.A_xue)
             //发送消息
             if (is_group) {
-              // await this.pushInfo(push_address, is_group, msg)
+              await pushInfo('', push_address, is_group, msg.join('\n'))
             } else {
-              // await this.pushInfo(player_id, is_group, msg)
+              await pushInfo('', player_id, is_group, msg.join('\n'))
             }
           } else {
             arr.cishu--

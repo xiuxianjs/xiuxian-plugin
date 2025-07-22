@@ -1,4 +1,4 @@
-import { redis, data } from '@src/api/api'
+import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   zd_battle,
@@ -162,9 +162,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           )
           msg.push('\n' + last_msg)
           if (is_group) {
-            // await this.pushInfo(push_address, is_group, msg)
+            await pushInfo('', push_address, is_group, msg.join('\n'))
           } else {
-            // await this.pushInfo(player_id, is_group, msg)
+            await pushInfo('', player_id, is_group, msg.join('\n'))
           }
         }
       } else if (action.xijie == '-1') {
@@ -229,9 +229,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           )
           msg.push('\n' + last_msg)
           if (is_group) {
-            // await this.pushInfo(push_address, is_group, msg)
+            await pushInfo('', push_address, is_group, msg.join('\n'))
           } else {
-            // await this.pushInfo(player_id, is_group, msg)
+            await pushInfo('', player_id, is_group, msg.join('\n'))
           }
         }
       }

@@ -1,7 +1,7 @@
 import path, { join } from 'path'
 import { existsSync, mkdirSync } from 'fs'
 
-const MyDirPath = join(process.cwd(), 'data')
+const MyDirPath = join(process.cwd(), 'src')
 
 // 文件存放路径
 const __PATH = {

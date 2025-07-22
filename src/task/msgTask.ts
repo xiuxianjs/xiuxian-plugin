@@ -29,7 +29,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
       let temp_data = {
         temp: msg
       }
-      const data1 = await new Show({}).get_tempData(temp_data)
+      const data1 = await new Show().get_tempData(temp_data)
       let img = await puppeteer.screenshot('temp', i.qq, {
         ...data1
       })
