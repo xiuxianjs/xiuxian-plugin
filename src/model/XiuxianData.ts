@@ -1,7 +1,6 @@
 import fs from 'fs'
 import Config from './Config.js'
 import path from 'path'
-import { MyDirPath } from '../app.config.js'
 import 灵根列表 from '../resources/data/item/灵根列表.json'
 import 怪物列表 from '../resources/data/item/怪物列表.json'
 import 商品列表 from '../resources/data/item/商品列表.json'
@@ -142,10 +141,10 @@ class XiuxianData {
       equipment: __PATH.equipment_path,
       najie: __PATH.najie_path,
       lib: __PATH.lib_path,
-      Timelimit:__PATH.Timelimit, //限定
+      Timelimit: __PATH.Timelimit, //限定
       Level: __PATH.Level, //境界
       association: __PATH.association,
-      occupation: __PATH.occupation,
+      occupation: __PATH.occupation
     }
     this.lib_path = this.filePathMap.lib
     this.Timelimit = this.filePathMap.Timelimit

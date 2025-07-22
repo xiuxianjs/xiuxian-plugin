@@ -11,8 +11,8 @@ import {
   __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
-
 import fs from 'fs'
+
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表
   let playerList = []

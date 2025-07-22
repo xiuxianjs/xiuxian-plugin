@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import {
   BossIsAlive,
   InitWorldBoss,
@@ -10,7 +9,7 @@ import {
 } from '../../boss'
 import { redis, data, pushInfo } from '@src/api/api'
 import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)讨伐金角大王$/
 

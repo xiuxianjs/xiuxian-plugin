@@ -45,8 +45,7 @@ export async function convert2integer(amount) {
 }
 
 export async function Read_updata_log() {
-  const dir = path.join(`${__PATH.updata_log_path}`)
-  const update_log = fs.readFileSync(dir, 'utf8')
+  const update_log = fs.readFileSync('', 'utf8')
   return update_log
 }
 

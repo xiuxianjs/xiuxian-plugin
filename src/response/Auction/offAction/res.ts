@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
-import { createEventName } from '@src/response/util'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)关闭星阁体系$/
 

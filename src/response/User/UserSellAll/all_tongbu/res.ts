@@ -1,7 +1,5 @@
-import { createEventName } from '@src/response/util'
-
 import { synchronization, Synchronization_ASS } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)一键同步$/
 

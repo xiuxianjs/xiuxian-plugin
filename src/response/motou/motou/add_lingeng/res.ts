@@ -1,6 +1,5 @@
 import { Text, useObserver, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import {
   existplayer,
   Read_player,
@@ -8,7 +7,7 @@ import {
   Add_najie_thing,
   Write_player
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|\/)供奉魔石$/
 

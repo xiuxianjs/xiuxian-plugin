@@ -1,6 +1,5 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data, redis, config } from '@src/api/api'
 import {
   existplayer,
@@ -11,7 +10,7 @@ import {
   exist_najie_thing,
   Add_najie_thing
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)赠送.*$/
 

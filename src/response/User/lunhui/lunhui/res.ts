@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { createEventName } from '@src/response/util'
 import { data, redis } from '@src/api/api'
 import {
   existplayer,
@@ -13,7 +12,7 @@ import {
   Write_equipment,
   Add_HP
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)轮回$/
 

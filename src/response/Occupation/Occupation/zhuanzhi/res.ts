@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import { existplayer, Read_player, isNotNull, Write_player } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)猎户转.*$/
 

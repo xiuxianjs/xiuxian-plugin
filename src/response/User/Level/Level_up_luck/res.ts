@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { exist_najie_thing } from '@src/model'
 import { Level_up } from '../level'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)幸运突破$/
 

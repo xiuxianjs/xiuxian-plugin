@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { redis, data, Show, puppeteer } from '@src/api/api'
 import {
   Read_it,
@@ -9,7 +8,7 @@ import {
   Read_najie,
   Read_equipment
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)神兵榜/
 

@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import { exist_najie_thing, Add_najie_thing, Write_player } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)进阶仙宠$/
 

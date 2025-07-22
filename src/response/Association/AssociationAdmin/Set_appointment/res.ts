@@ -1,9 +1,8 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import { isNotNull } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)^任命.*/
 const 副宗主人数上限 = [1, 1, 1, 1, 2, 2, 3, 3]

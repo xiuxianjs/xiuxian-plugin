@@ -1,6 +1,5 @@
 import { Image, useSend } from 'alemonjs'
 import fs from 'fs'
-import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import {
   existplayer,
@@ -13,7 +12,7 @@ import {
   Write_danyao,
   get_player_img
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)踏入仙途$/
 

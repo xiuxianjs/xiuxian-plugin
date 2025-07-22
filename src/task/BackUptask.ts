@@ -1,8 +1,8 @@
 import { Read_najie, __PATH } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
-const player_path = __PATH.player_path
 scheduleJob('20 0/5 * * * ?', async () => {
+  const player_path = __PATH.player_path
   try {
     let playerList = []
     if (fs.existsSync(player_path)) {

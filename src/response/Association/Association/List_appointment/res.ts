@@ -1,8 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { createEventName } from '@src/response/util'
 import { data, Show, puppeteer } from '@src/api/api'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门列表$/
 import { __PATH } from '@src/model'

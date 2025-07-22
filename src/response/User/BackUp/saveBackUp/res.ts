@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { createEventName } from '@src/response/util'
 import { redis } from '@src/api/api'
 import { __PATH, getTimeStr } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)备份存档$/
 

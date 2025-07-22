@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import { isNotNull, sortBy } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门捐献记录$/
 

@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data, redis } from '@src/api/api'
 import {
   isNotNull,
@@ -9,7 +8,7 @@ import {
   Write_danyao,
   Add_najie_thing
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)神兽赐福$/
 

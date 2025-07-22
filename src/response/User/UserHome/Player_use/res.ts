@@ -1,6 +1,5 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { createEventName } from '@src/response/util'
 import { data } from '@src/api/api'
 import {
   existplayer,
@@ -27,7 +26,7 @@ import {
   player_efficiency,
   Add_player_学习功法
 } from '@src/model'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)(装备|消耗|服用|学习|兑换)((.*)|(.*)*(.*))$/
 

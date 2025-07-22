@@ -1,10 +1,9 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { createEventName } from '@src/response/util'
 import { __PATH } from '@src/model'
 import { Write_player } from '@src/model'
 import { data } from '@src/api/api'
-export const name = createEventName(import.meta.url)
+
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)解散宗门.*$/
 
