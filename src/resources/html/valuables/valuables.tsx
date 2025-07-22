@@ -10,8 +10,8 @@ const Valuables = () => {
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style dangerouslySetInnerHTML = {{
+          _html: `
           body {
             transform: scale(1);
             width: 100%;
@@ -39,7 +39,9 @@ const Valuables = () => {
             background-size: 100% auto;
             padding-top: 20px;
           }
-        `}
+        `
+        }}>
+          {}
         </style>
       </head>
 

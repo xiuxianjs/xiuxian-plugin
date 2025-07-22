@@ -12,8 +12,9 @@ const FairyRealm = ({ didian_list = [] }) => {
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -42,8 +43,9 @@ const FairyRealm = ({ didian_list = [] }) => {
             background-size: cover;
             background-image: url('${cardBgURL}');
           }
-          `}
-        </style>
+          `
+          }}
+        />
       </head>
 
       <body>

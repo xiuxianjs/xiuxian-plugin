@@ -12,8 +12,8 @@ const Help = ({ helpData = [] }) => {
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={commonCssURL} />
         <LinkStyleSheet src={helpCssURL} />
-        <style>
-          {`
+        <style dangerouslySetInnerHTML={{
+          _html: `
           * {
             margin: 0;
             padding: 0;
@@ -49,7 +49,7 @@ const Help = ({ helpData = [] }) => {
             top: 12px;
             transform: scale(0.85);
           }
-        `}
+        `}}>
         </style>
       </head>
 

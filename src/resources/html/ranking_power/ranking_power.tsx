@@ -17,8 +17,9 @@ const RankingPower = ({
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -41,8 +42,9 @@ const RankingPower = ({
             width: 280px;
             height: 280px;
           }
-        `}
-        </style>
+        `
+          }}
+        />
       </head>
       <body>
         <div>

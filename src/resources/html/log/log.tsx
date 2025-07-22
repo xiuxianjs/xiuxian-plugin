@@ -10,8 +10,9 @@ const Log = ({ log }) => {
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -34,8 +35,9 @@ const Log = ({ log }) => {
             width: 280px;
             height: 280px;
           }
-        `}
-        </style>
+        `
+          }}
+        />
       </head>
       <body>
         <div className="user_bottom1">

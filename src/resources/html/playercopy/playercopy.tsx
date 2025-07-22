@@ -26,8 +26,9 @@ const PlayerCopy = ({
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -50,8 +51,9 @@ const PlayerCopy = ({
             width: 280px;
             height: 280px;
           }
-        `}
-        </style>
+        `
+          }}
+        />
       </head>
 
       <body>

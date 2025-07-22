@@ -37,8 +37,8 @@ const Najie = ({
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style dangerouslySetInnerHTML={{
+          __html: `
           body {
             width: 100%;
             text-align: center;
@@ -67,8 +67,8 @@ const Najie = ({
             width: 280px;
             height: 280px;
           }
-        `}
-        </style>
+        `
+        }} />
       </head>
 
       <body>

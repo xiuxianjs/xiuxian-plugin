@@ -29,8 +29,8 @@ const Shitu = ({
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style dangerouslySetInnerHTML = {{
+          _html:`
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -53,7 +53,9 @@ const Shitu = ({
             width: 280px;
             height: 280px;
           }
-        `}
+        `
+        }}>
+          {}
         </style>
       </head>
 

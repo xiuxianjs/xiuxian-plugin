@@ -10,8 +10,8 @@ const TianDiTang = ({ name, jifen, commodities_list }) => {
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style dangerouslySetInnerHTML = {{
+          _html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -34,7 +34,9 @@ const TianDiTang = ({ name, jifen, commodities_list }) => {
             width: 280px;
             height: 280px;
           }
-        `}
+        `
+        }}>
+          {}
         </style>
       </head>
       <body>

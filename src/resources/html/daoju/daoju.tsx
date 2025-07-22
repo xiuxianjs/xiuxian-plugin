@@ -12,8 +12,9 @@ const Daoju = ({ nickname, daoju_have = [], daoju_need = [] }) => {
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style>
-          {`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -42,8 +43,9 @@ const Daoju = ({ nickname, daoju_have = [], daoju_need = [] }) => {
             width: 280px;
             height: 280px;
           }
-        `}
-        </style>
+        `,
+          }}
+        />
       </head>
 
       <body>
