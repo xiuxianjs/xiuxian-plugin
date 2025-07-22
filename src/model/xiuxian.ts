@@ -1219,7 +1219,13 @@ export async function get_valuables_img(e) {
  * @param {Number} res 百分比小数
  * @return {*} css样式
  */
-function Strand(now, max) {
+function Strand(
+  now: number,
+  max: number
+): {
+  style: { width: string }
+  num: string
+} {
   let num = ((now / max) * 100).toFixed(0)
   let mini = Number(num) > 100 ? 100 : num
 
