@@ -3,24 +3,46 @@ import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 
 scheduleJob('20 0/5 * * * ?', async () => {
-  let playerList = []
-  let files = fs
-    .readdirSync('./resources/data/xiuxian_player')
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
-  for (let player_id of playerList) {
-    let usr_qq = player_id
-    try {
-      await Read_najie(usr_qq)
-      fs.copyFileSync(
-        `${__PATH.najie_path}/${usr_qq}.json`,
-        `${__PATH.auto_backup}/najie/${usr_qq}.json`
-      )
-    } catch {
-      continue
+  try {
+    let playerList = []
+    // Check if directory exists first
+    if (fs.existsSync('./resources/data/xiuxian_player')) {
+      let files = fs
+        .readdirSync('./resources/data/xiuxian_player')
+        .filter(file => file.endsWith('.json'))
+
+      if (files.length === 0) {
+        console.log('无存档可备份')
+        return
+      }
+
+      for (let file of files) {
+        file = file.replace('.json', '')
+        playerList.push(file)
+      }
+    } else {
+      console.log('Directory ./resources/data/xiuxian_player 不存在')
+      return
     }
+
+    if (!fs.existsSync(`${__PATH.auto_backup}/najie`)) {
+      fs.mkdirSync(`${__PATH.auto_backup}/najie`, { recursive: true })
+    }
+
+    for (let player_id of playerList) {
+      let usr_qq = player_id
+      try {
+        await Read_najie(usr_qq)
+        fs.copyFileSync(
+          `${__PATH.najie_path}/${usr_qq}.json`,
+          `${__PATH.auto_backup}/najie/${usr_qq}.json`
+        )
+      } catch (err) {
+        console.error(`Error processing player ${usr_qq}:`, err)
+        continue
+      }
+    }
+  } catch (err) {
+    console.error('Error in scheduled job:', err)
   }
 })
