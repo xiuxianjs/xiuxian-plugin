@@ -5,6 +5,7 @@ export * from './version'
 export * from './help'
 export * from './duanzaofu'
 export * from './xiuxian'
+export * from './pub'
 /**
  *
  * @param timeStamp 时间戳

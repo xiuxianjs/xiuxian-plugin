@@ -2,12 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
-import { Writeit, Read_it } from './duanzaofu.js'
+import { Read_it } from './duanzaofu.js'
 import config from './Config.js'
 import Show from './show.js'
 import { useSend, Text } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
 import { __PATH } from './paths.js'
+import { Write_player, Writeit } from './pub.js'
 
 export { __PATH }
 
@@ -136,14 +137,6 @@ export async function LevelTask(e, power_n, power_m, power_Grade, aconut) {
       return 0
     }
   }
-}
-
-//写入存档信息,第二个参数是一个JavaScript对象
-export async function Write_player(usr_qq, player) {
-  let dir = path.join(__PATH.player_path, `${usr_qq}.json`)
-  let new_ARR = JSON.stringify(player)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
-  return
 }
 
 //读取装备信息，返回成一个JavaScript对象

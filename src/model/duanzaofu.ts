@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs'
 import path from 'path'
-import { __PATH } from './xiuxian.js'
+import { __PATH } from './paths.js'
 
 import data from './XiuxianData.js'
-
-import { Write_player } from './xiuxian.js'
+import { Write_player } from './pub.js'
 
 export async function settripod(qq) {
   let tripod1
@@ -197,12 +196,6 @@ export async function Restraint(shuju, main) {
   houzui = `地${main}双生`
   jiaceng = 0.08
   return [houzui, jiaceng]
-}
-export async function Writeit(custom) {
-  const dir = path.join(__PATH.custom, `custom.json`)
-  const new_ARR = JSON.stringify(custom, () => {}, '\t')
-  fs.writeFileSync(dir, new_ARR, 'utf8')
-  return
 }
 export async function Read_it() {
   const dir = path.join(`${__PATH.custom}/custom.json`)
