@@ -5,7 +5,7 @@ import { createEventName } from '@src/response/util'
 export const name = createEventName(import.meta.url)
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)解除所有$/
-
+import { __PATH } from '@src/model'
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   {
@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
     Send(Text('开始行动！'))
     let playerList = []
     let files = fs
-      .readdirSync('./resources/data/xiuxian_player')
+      .readdirSync(__PATH.player_path)
       .filter(file => file.endsWith('.json'))
     for (let file of files) {
       file = file.replace('.json', '')

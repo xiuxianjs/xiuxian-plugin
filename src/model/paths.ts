@@ -19,6 +19,7 @@ const __PATH = {
   lib_path: path.join(MyDirPath, '/resources/data/item'),
   Timelimit: path.join(MyDirPath, '/resources/data/Timelimit'),
   Exchange: path.join(MyDirPath, '/resources/data/Exchange'),
+  Level: path.join(MyDirPath, '/resources/data/Level'),
   shop: path.join(MyDirPath, '/resources/data/shop'),
   log_path: path.join(MyDirPath, '/resources/data/suduku'),
   association: path.join(MyDirPath, '/resources/data/association'),
@@ -31,7 +32,8 @@ const __PATH = {
   duanlu: path.join(MyDirPath, '/resources/data/duanlu'),
   temp_path: path.join(MyDirPath, '/resources/data/temp'),
   custom: path.join(MyDirPath, '/resources/data/custom'),
-  auto_backup: path.join(MyDirPath, '/resources/data/auto_backup')
+  auto_backup: path.join(MyDirPath, '/resources/data/auto_backup'),
+  occupation: path.join(MyDirPath, '/resources/data/occupation')
 }
 for (const key in __PATH) {
   if (!existsSync(__PATH[key])) {

@@ -5,14 +5,14 @@ import { data, Show, puppeteer } from '@src/api/api'
 export const name = createEventName(import.meta.url)
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门列表$/
-
+import { __PATH } from '@src/model'
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return
-  let dir = data.filePathMap.association
+  let dir = __PATH.association
   let File = fs.readdirSync(dir)
   File = File.filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
   let temp = []

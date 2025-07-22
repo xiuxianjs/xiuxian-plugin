@@ -51,7 +51,7 @@ import 锻造宝物 from '../resources/data/item/锻造宝物.json'
 import 隐藏灵根 from '../resources/data/item/隐藏灵根.json'
 import 锻造杂类 from '../resources/data/item/锻造杂类.json'
 import 技能列表 from '../resources/data/item/技能列表.json'
-
+import { __PATH } from './paths'
 // 类型定义
 type JSONData = Record<string, any> | Array<any>
 
@@ -138,14 +138,14 @@ class XiuxianData {
     this.configData = Config.getConfig('version', 'version')
     //插件根目录
     this.filePathMap = {
-      player: path.join(MyDirPath, '/resources/data/xiuxian_player'), //用户数据
-      equipment: path.join(MyDirPath, '/resources/data/xiuxian_equipment'),
-      najie: path.join(MyDirPath, '/resources/data/xiuxian_najie'),
-      lib: path.join(MyDirPath, '/resources/data/item'),
-      Timelimit: path.join(MyDirPath, '/resources/data/Timelimit'), //限定
-      Level: path.join(MyDirPath, '/resources/data/Level'), //境界
-      association: path.join(MyDirPath, '/resources/data/association'),
-      occupation: path.join(MyDirPath, '/resources/data/occupation')
+      player: __PATH.player_path,
+      equipment: __PATH.equipment_path,
+      najie: __PATH.najie_path,
+      lib: __PATH.lib_path,
+      Timelimit:__PATH.Timelimit, //限定
+      Level: __PATH.Level, //境界
+      association: __PATH.association,
+      occupation: __PATH.occupation,
     }
     this.lib_path = this.filePathMap.lib
     this.Timelimit = this.filePathMap.Timelimit
