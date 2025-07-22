@@ -42,8 +42,9 @@ const XiuxianSettings = ({
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML={{
-          _html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -67,8 +68,9 @@ const XiuxianSettings = ({
             height: 280px;
           }
         `
-        }}>
-          { }
+          }}
+        >
+          {}
         </style>
       </head>
       <body>

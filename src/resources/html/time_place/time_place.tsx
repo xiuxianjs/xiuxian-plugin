@@ -12,7 +12,7 @@ const TimePlace = ({ didian_list }) => {
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
         <style dangerouslySetInnerHTML = {{
-          _html:`
+          __html:`
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');

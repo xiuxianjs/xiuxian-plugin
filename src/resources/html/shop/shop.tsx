@@ -11,8 +11,9 @@ const Shop = ({ name, level, state, thing = [] }) => {
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML= {{
-          _html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -36,7 +37,8 @@ const Shop = ({ name, level, state, thing = [] }) => {
             height: 280px;
           }
         `
-        }}>
+          }}
+        >
           {}
         </style>
       </head>

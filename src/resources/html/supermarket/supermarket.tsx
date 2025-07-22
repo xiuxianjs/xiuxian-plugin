@@ -10,8 +10,9 @@ const Supermarket = ({ Exchange_list }) => {
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML = {{
-          _html:`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -35,7 +36,8 @@ const Supermarket = ({ Exchange_list }) => {
             height: 280px;
           }
         `
-        }}>
+          }}
+        >
           {}
         </style>
       </head>

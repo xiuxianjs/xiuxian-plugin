@@ -12,7 +12,7 @@ const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
       <head>
         <LinkStyleSheet src={cssURL} />
         <style dangerouslySetInnerHTML= {{
-          _html:`
+          __html:`
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');

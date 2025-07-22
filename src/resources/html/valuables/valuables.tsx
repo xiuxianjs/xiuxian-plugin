@@ -11,7 +11,7 @@ const Valuables = () => {
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
         <style dangerouslySetInnerHTML = {{
-          _html: `
+          __html: `
           body {
             transform: scale(1);
             width: 100%;

@@ -17,8 +17,9 @@ const ShituHelp = ({ version, helpData = [] }) => {
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={commonCssURL} />
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML = {{
-          _html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'HWZS';
             src: url('${HWZSURL}');
@@ -83,7 +84,10 @@ const ShituHelp = ({ version, helpData = [] }) => {
             transform: scale(0.85);
           }
         `
-        }}>{}</style>
+          }}
+        >
+          {}
+        </style>
       </head>
       <body className="elem-default default-mode">
         <div className="container" id="container">
