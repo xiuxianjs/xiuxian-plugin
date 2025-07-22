@@ -218,7 +218,7 @@ export default onResponse(selects, async e => {
   let msg = Data_battle.msg
   //战斗回合过长会导致转发失败报错，所以超过30回合的就不转发了
   if (msg.length > 35) {
-    console.log('通过')
+    logger.info('通过')
   } else {
     // await ForwardMsg(e, msg)
     Send(Text(msg))

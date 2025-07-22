@@ -124,7 +124,7 @@ export default onResponse(selects, async e => {
       player.名号 //优化下文案，比如xxx在刺杀xxx中
   }
   if (msg.length > 100) {
-    console.log('通过')
+    logger.info('通过')
   } else {
     // await ForwardMsg(e, msg)
     Send(Text(msg))

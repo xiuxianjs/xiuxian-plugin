@@ -11,7 +11,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
         .filter(file => file.endsWith('.json'))
 
       if (files.length === 0) {
-        console.log('无存档可备份')
+        logger.info('无存档可备份')
         return
       }
 
@@ -20,7 +20,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
         playerList.push(file)
       }
     } else {
-      console.log(`Directory ${player_path} 不存在`)
+      logger.info(`Directory ${player_path} 不存在`)
       return
     }
 
@@ -37,11 +37,11 @@ scheduleJob('20 0/5 * * * ?', async () => {
           `${__PATH.auto_backup}/najie/${usr_qq}.json`
         )
       } catch (err) {
-        console.error(`Error processing player ${usr_qq}:`, err)
+        logger.error(`Error processing player ${usr_qq}:`, err)
         continue
       }
     }
   } catch (err) {
-    console.error('Error in scheduled job:', err)
+    logger.error('Error in scheduled job:', err)
   }
 })

@@ -104,7 +104,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             A_player.当前血量 += Data_battle.B_xue
           }
           let msgg = Data_battle.msg
-          console.log(msgg)
+          logger.info(msgg)
           let A_win = `${A_player.名号}击败了${B_player.名号}`
           let B_win = `${B_player.名号}击败了${A_player.名号}`
           let arr = action

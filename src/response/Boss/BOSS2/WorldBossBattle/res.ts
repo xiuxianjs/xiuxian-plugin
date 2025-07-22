@@ -210,7 +210,7 @@ export default onResponse(selects, async e => {
         //  todo 通知群聊
       }
       await Add_灵石(usr_qq, 500000)
-      console.log(`[金角大王] 结算:${usr_qq}增加奖励500000`)
+      logger.info(`[金角大王] 结算:${usr_qq}增加奖励500000`)
 
       WorldBossStatus.KilledTime = new Date().getTime()
       redis.set('Xiuxian:WorldBossStatus2', JSON.stringify(WorldBossStatus))
@@ -260,7 +260,7 @@ export default onResponse(selects, async e => {
             PlayerRecordJSON.QQ[PlayerList[i]],
             CurrentPlayer
           )
-          console.log(
+          logger.info(
             `[金角大王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励${Reward}`
@@ -268,7 +268,7 @@ export default onResponse(selects, async e => {
           continue
         } else {
           CurrentPlayer.灵石 += 200000
-          console.log(
+          logger.info(
             `[金角大王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励200000`

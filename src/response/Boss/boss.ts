@@ -18,8 +18,8 @@ export async function InitWorldBoss() {
   }
   if (player_quantity < 5) Reward = 6000000
   let X = AverageDamage * 0.01
-  console.log(`[妖王] 化神玩家总数：${player_quantity}`)
-  console.log(`[妖王] 生成基数:${X}`)
+  logger.info(`[妖王] 化神玩家总数：${player_quantity}`)
+  logger.info(`[妖王] 生成基数:${X}`)
   let Health = Math.trunc(X * 150 * player_quantity * 2) //血量要根据人数来
   let WorldBossStatus = {
     Health: Health,
@@ -53,7 +53,7 @@ export async function GetAverageDamage() {
     let player = await data.getData('player', this_qq)
     if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
       temp[TotalPlayer] = parseInt(player.攻击)
-      console.log(`[金角大王] ${this_qq}玩家攻击:${temp[TotalPlayer]}`)
+      logger.info(`[金角大王] ${this_qq}玩家攻击:${temp[TotalPlayer]}`)
       TotalPlayer++
     }
   }
@@ -318,7 +318,7 @@ export async function WorldBossBattle(e) {
         await pushInfo(platform, group_id, true, msg2)
       }
       await Add_灵石(usr_qq, 1000000)
-      console.log(`[妖王] 结算:${usr_qq}增加奖励1000000`)
+      logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
       WorldBossStatus.KilledTime = new Date().getTime()
       redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
@@ -368,7 +368,7 @@ export async function WorldBossBattle(e) {
             PlayerRecordJSON.QQ[PlayerList[i]],
             CurrentPlayer
           )
-          console.log(
+          logger.info(
             `[妖王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励${Reward}`
@@ -376,7 +376,7 @@ export async function WorldBossBattle(e) {
           continue
         } else {
           CurrentPlayer.灵石 += 200000
-          console.log(
+          logger.info(
             `[妖王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励200000`

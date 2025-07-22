@@ -121,7 +121,7 @@ async function getLastdagong(usr_qq) {
   let time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':lastdagong_time'
   )
-  console.log(time)
+  logger.info(time)
   if (time != null) {
     let data = await shijianc(parseInt(time))
     return data
