@@ -1,11 +1,11 @@
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 import { redis, data, pushInfo } from '@src/api/api'
-import { isNotNull, Add_职业经验, Add_najie_thing } from '@src/model'
+import { isNotNull, Add_职业经验, Add_najie_thing, __PATH } from '@src/model'
 scheduleJob('0 0/1 * * * ?', async () => {
   let playerList = []
   let files = fs
-    .readdirSync('./resources/data/xiuxian_player')
+    .readdirSync(__PATH.player_path)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')

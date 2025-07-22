@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-// import { Add_najie_thing } from 'model/xiuxian'
+// import { Add_najie_thing } from '@src/model/xiuxian'
 import { createEventName } from '@src/response/util'
 export const name = createEventName(import.meta.url)
 export const selects = onSelects(['message.create', 'private.message.create'])

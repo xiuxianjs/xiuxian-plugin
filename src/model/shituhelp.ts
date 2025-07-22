@@ -1,7 +1,7 @@
 import xiuxianCfg from './Config.js'
 
 export default class Help2 {
-  versionData: any
+  versionData: any = {}
 
   static async shituhelp() {
     const html = new Help2()

@@ -6,7 +6,8 @@ import {
   Add_血气,
   Add_修为,
   Read_temp,
-  Write_temp
+  Write_temp,
+  __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
@@ -15,7 +16,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
   let playerList = []
   let files = fs
-    .readdirSync('./resources/data/xiuxian_player')
+    .readdirSync(__PATH.player_path)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')
