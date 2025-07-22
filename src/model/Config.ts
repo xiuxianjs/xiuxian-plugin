@@ -1,19 +1,20 @@
 import YAML from 'yaml'
 import fs from 'fs'
-import Association from '@src/config/help/Association.yaml'
-import help from '@src/config/help/help.yaml'
-import helpcopy from '@src/config/help/helpcopy.yaml'
-import set from '@src/config/help/set.yaml'
-import shituhelp from '@src/config/help/shituhelp.yaml'
-import namelist from '@src/config/parameter/namelist.yaml'
-import task from '@src/config/task/task.yaml'
-import version from '@src/config/version/version.yaml'
-import xiuxian from '@src/config/xiuxian/xiuxian.yaml'
+import Association from '@src/config/Association.yaml'
+import help from '@src/config/help.yaml'
+import help2 from '@src/config/help2.yaml'
+import set from '@src/config/set.yaml'
+import shituhelp from '@src/config/shituhelp.yaml'
+import namelist from '@src/config/namelist.yaml'
+import task from '@src/config/task.yaml'
+import version from '@src/config/version.yaml'
+import xiuxian from '@src/config/xiuxian.yaml'
+import { join } from 'path'
 
 const paths = {
   Association,
   help,
-  helpcopy,
+  help2,
   set,
   shituhelp,
   namelist,
@@ -21,14 +22,6 @@ const paths = {
   version,
   xiuxian
 }
-
-// const appMap = {
-//   help: 'help',
-//   parameter: 'parameter',
-//   task: 'task',
-//   version: 'version',
-//   xiuxian: 'xiuxian'
-// }
 
 class Config {
   /**
@@ -39,6 +32,21 @@ class Config {
   getConfig(_app: string, name: keyof typeof paths) {
     const fileURL = paths[name]
     const data = YAML.parse(fs.readFileSync(fileURL, 'utf8'))
+    // 先检查是否存在 自定义配置
+    const curPath = join(
+      process.cwd(),
+      'config',
+      'alemonjs-xiuxian',
+      `${name}.yaml`
+    )
+    // 如果存在则读取自定义配置
+    if (fs.existsSync(curPath)) {
+      const curData = YAML.parse(fs.readFileSync(curPath, 'utf8'))
+      return {
+        ...data,
+        ...curData
+      }
+    }
     return data
   }
 }

@@ -24,7 +24,7 @@ export default class Help {
   }
 
   async getDatahelpcopy() {
-    const helpData = xiuxianCfg.getConfig('help', 'helpcopy')
+    const helpData = xiuxianCfg.getConfig('help', 'help2')
     return {
       version: this.versionData.version,
       helpData
