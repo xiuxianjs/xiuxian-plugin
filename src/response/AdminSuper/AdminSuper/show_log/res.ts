@@ -1,7 +1,7 @@
 import { Image, useSend } from 'alemonjs'
 
 import { Read_updata_log } from '@src/model'
-import { Show, puppeteer } from '@src/api/api'
+import {  puppeteer } from '@src/api/api'
 
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)查看日志$/
@@ -55,8 +55,8 @@ export default onResponse(selects, async e => {
       }
     }
     let log_data = { log: str }
-    const data1 = await new Show().get_logData(log_data)
-    let img = await puppeteer.screenshot('log', e.UserId, { ...data1 })
+
+    let img = await puppeteer.screenshot('log', e.UserId, log_data)
     if (img) Send(Image(img))
     return false
   }

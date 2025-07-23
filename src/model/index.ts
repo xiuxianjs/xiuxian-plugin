@@ -1,5 +1,5 @@
 export * from './Config'
-export * from './show'
+
 export * from './shituhelp'
 export * from './version'
 export * from './help'

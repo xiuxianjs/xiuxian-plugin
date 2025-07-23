@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs'
 
-import { data, Show, puppeteer } from '@src/api/api'
+import { data, puppeteer } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
 export const selects = onSelects(['message.create', 'private.message.create'])
@@ -25,13 +25,13 @@ export default onResponse(selects, async e => {
   } else {
     shenglv = ((victory / (victory + defeated)) * 100).toFixed(2)
   }
-  const data1 = await new Show().get_jinyin({
+
+  let img = await puppeteer.screenshot('moneyCheck', e.UserId, {
     user_qq: qq,
     victory,
     victory_num,
     defeated,
     defeated_num
   })
-  let img = await puppeteer.screenshot('moneyCheck', e.UserId, { ...data1 })
   if (img) Send(Image(img))
 })

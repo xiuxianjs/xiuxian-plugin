@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { redis, Show, puppeteer } from '@src/api/api'
+import { redis,  puppeteer } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 export const selects = onSelects(['message.create', 'private.message.create'])
@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
   await redis.set('xiuxian@1.3.0:' + 1 + ':shangjing', JSON.stringify(action))
   let type = 1
   let msg_data = { msg: action, type }
-  const data1 = await new Show().get_msg(msg_data)
-  let img = await puppeteer.screenshot('msg', e.UserId, { ...data1 })
+
+  let img = await puppeteer.screenshot('msg', e.UserId, msg_data)
   if (img) Send(Image(img))
 })

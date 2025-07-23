@@ -4,7 +4,6 @@ import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { Read_it } from './duanzaofu.js'
 import config from './Config.js'
-import Show from './show.js'
 import { useSend, Text } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
 import { __PATH } from './paths.js'
@@ -249,10 +248,7 @@ export async function get_XianChong_img(e) {
     XianChong_need,
     Kouliang
   }
-  const data1 = await new Show().get_xianchong(player_data)
-  return await puppeteer.screenshot('xianchong', e.UserId, {
-    ...data1
-  })
+  return await puppeteer.screenshot('xianchong', e.UserId, player_data)
 }
 
 /**
@@ -282,10 +278,8 @@ export async function get_daoju_img(e) {
     daoju_have,
     daoju_need
   }
-  const data1 = await new Show().get_daojuData(player_data)
-  return await puppeteer.screenshot('daoju', e.UserId, {
-    ...data1
-  })
+
+  return await puppeteer.screenshot('daoju', e.UserId, player_data)
 }
 
 /**
@@ -336,10 +330,8 @@ export async function get_wuqi_img(e) {
     wuqi_have,
     wuqi_need
   }
-  const data1 = await new Show().get_wuqiData(player_data)
-  return await puppeteer.screenshot('wuqi', e.UserId, {
-    ...data1
-  })
+
+  return await puppeteer.screenshot('wuqi', e.UserId, player_data)
 }
 
 /**
@@ -375,10 +367,8 @@ export async function get_danyao_img(e) {
     danyao_have,
     danyao_need
   }
-  const data1 = await new Show().get_danyaoData(player_data)
-  return await puppeteer.screenshot('danyao', e.UserId, {
-    ...data1
-  })
+
+  return await puppeteer.screenshot('danyao', e.UserId, player_data)
 }
 
 /**
@@ -414,10 +404,8 @@ export async function get_gongfa_img(e) {
     gongfa_have,
     gongfa_need
   }
-  const data1 = await new Show().get_gongfaData(player_data)
-  return await puppeteer.screenshot('gongfa', e.UserId, {
-    ...data1
-  })
+
+  return await puppeteer.screenshot('gongfa', e.UserId, player_data)
 }
 
 /**
@@ -469,10 +457,7 @@ export async function get_power_img(e) {
     learned_gongfa: player.学习的功法,
     association: this_association
   }
-  const data1 = await new Show().get_playercopyData(playercopy)
-  return await puppeteer.screenshot('playercopy', e.UserId, {
-    ...data1
-  })
+  return await puppeteer.screenshot('playercopy', e.UserId, playercopy)
 }
 
 /**
@@ -2763,10 +2748,7 @@ export async function get_supermarket_img(e, thing_class) {
     user_id: usr_qq,
     Exchange_list: Exchange_list
   }
-  const data1 = await new Show().get_supermarketData(supermarket_data)
-  let img = await puppeteer.screenshot('supermarket', e.UserId, {
-    ...data1
-  })
+  let img = await puppeteer.screenshot('supermarket', e.UserId, supermarket_data)
   return img
 }
 
@@ -2797,10 +2779,8 @@ export async function get_forum_img(e, thing_class) {
     user_id: usr_qq,
     Forum: Forum
   }
-  const data1 = await new Show().get_forumData(forum_data)
-  let img = await puppeteer.screenshot('forum', e.UserId, {
-    ...data1
-  })
+
+  let img = await puppeteer.screenshot('forum', e.UserId,forum_data)
   return img
 }
 

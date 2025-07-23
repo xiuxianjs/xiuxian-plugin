@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { data, Show, puppeteer } from '@src/api/api'
+import { data,  puppeteer } from '@src/api/api'
 
 export const selects = onSelects(['message.create', 'private.message.create'])
 export const regular = /^(#|\/)宗门列表$/
@@ -71,7 +71,7 @@ export default onResponse(selects, async e => {
     temp.push(arr)
   }
   let zongmeng_data = { temp }
-  const data1 = await new Show().get_zongmeng_data(zongmeng_data)
-  let img = await puppeteer.screenshot('zongmeng', e.UserId, { ...data1 })
+
+  let img = await puppeteer.screenshot('zongmeng', e.UserId, zongmeng_data)
   if (img) Send(Image(img))
 })

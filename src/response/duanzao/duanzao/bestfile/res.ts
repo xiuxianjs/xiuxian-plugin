@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data, Show, puppeteer } from '@src/api/api'
+import { redis, data, puppeteer } from '@src/api/api'
 import {
   Read_it,
   Writeit,
@@ -99,7 +99,7 @@ export default onResponse(selects, async e => {
     newwupin = newwupin.slice(0, 20)
   }
   let bd_date = { newwupin }
-  const data1 = await new Show().get_shenbing(bd_date)
-  const tu = await puppeteer.screenshot('shenbing', e.UserId, { ...data1 })
+
+  const tu = await puppeteer.screenshot('shenbing', e.UserId, bd_date)
   Send(Text(tu))
 })

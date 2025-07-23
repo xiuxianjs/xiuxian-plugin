@@ -1,4 +1,4 @@
-import { redis, data, Show, puppeteer } from '@src/api/api'
+import { redis, data, puppeteer } from '@src/api/api'
 import { __PATH, shijianc, Read_player } from '@src/model'
 import path from 'path'
 import fs from 'fs'
@@ -37,10 +37,8 @@ export async function get_tianditang_img(e, jifen) {
     jifen,
     commodities_list: commodities_list
   }
-  const data1 = await new Show().get_tianditangData(tianditang_data)
-  let img = await puppeteer.screenshot('tianditang', e.UserId, {
-    ...data1
-  })
+
+  let img = await puppeteer.screenshot('tianditang', e.UserId, tianditang_data)
   return img
 }
 

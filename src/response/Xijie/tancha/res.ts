@@ -1,6 +1,6 @@
 import { Text, Image, useSend } from 'alemonjs'
 
-import { redis, data, Show, puppeteer } from '@src/api/api'
+import { redis, data, puppeteer } from '@src/api/api'
 import {
   existplayer,
   Read_shop,
@@ -89,8 +89,8 @@ export default onResponse(selects, async e => {
       break
   }
   let didian_data = { name: shop[i].name, level, state, thing }
-  const data1 = await new Show().get_didianData(didian_data)
-  let img = await puppeteer.screenshot('shop', e.UserId, { ...data1 })
+
+  let img = await puppeteer.screenshot('shop', e.UserId, didian_data)
   if (img) Send(Image(img))
   return false
 })

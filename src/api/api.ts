@@ -1,6 +1,6 @@
 import config from '../model/Config'
 import data from '../model/XiuxianData'
-import Show from '../model/show'
+
 import { getIoRedis } from '@alemonjs/db'
 import puppeteer from '@src/image/index'
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
@@ -17,7 +17,7 @@ export const verc = ({ e }) => {
   return true
 }
 
-export { data, config, Show, puppeteer }
+export { data, config,  puppeteer }
 
 /**
  *
