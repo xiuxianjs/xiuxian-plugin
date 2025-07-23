@@ -15,7 +15,6 @@ const Najie = ({
   const whenError = img => {
     img.src = 'default-avatar.png'
   }
-
   const qualities = ['劣', '普', '优', '精', '极', '绝', '顶']
   const lockStatus = ['未锁定', '已锁定']
   const elements = ['金', '木', '土', '水', '火']
@@ -106,7 +105,29 @@ const Najie = ({
             </div>
           </div>
         </div>
-
+        {/* 道具 */}
+        {najie.道具?.length > 0 && (
+          <div className="card_box">
+            <div className="use_data">
+              <div className="user_font user_font_title">【道具】</div>
+              <div className="user_font wupin">
+                {najie.道具.map((item, index) => {
+                  return (
+                    <div key={index} className="item">
+                      <div className="item_title">
+                        【{item.type}】{item.name}
+                      </div>
+                      <div className="item_int">介绍：{item.desc}</div>
+                      <div className="item_int">数量：{item.数量}</div>
+                      <div className="item_int">出售价：{item.出售价}灵石</div>
+                      <div className="item_int">代号：{index + 101}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
         {/* 装备 */}
         {najie.装备?.length > 0 && (
           <div className="card_box">
