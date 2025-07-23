@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)召唤神兽$/
+export const regular = /^(#|＃|\/)?召唤神兽$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

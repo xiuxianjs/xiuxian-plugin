@@ -4,7 +4,7 @@ import { existplayer, Read_player } from '@src/model'
 import { Level_up } from '../level'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)自动突破$/
+export const regular = /^(#|＃|\/)?自动突破$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { BossIsAlive } from '../../boss'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)关闭金角大王$/
+export const regular = /^(#|＃|\/)?关闭金角大王$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

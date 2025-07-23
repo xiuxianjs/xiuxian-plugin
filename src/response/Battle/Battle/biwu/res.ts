@@ -3,7 +3,7 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { existplayer, Read_player, zd_battle } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(以武会友)$/
+export const regular = /^(#|＃|\/)?^(以武会友)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

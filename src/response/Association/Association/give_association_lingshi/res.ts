@@ -4,7 +4,7 @@ import { isNotNull, setFileValue } from '@src/model'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)宗门(上交|上缴|捐赠)灵石[1-9]d*/
+export const regular = /^(#|＃|\/)?宗门(上交|上缴|捐赠)灵石[1-9]d*/
 const 宗门灵石池上限 = [
   2000000, 5000000, 8000000, 11000000, 15000000, 20000000, 25000000, 30000000
 ]

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { Read_danyao, Read_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)我的药效$/
+export const regular = /^(#|＃|\/)?我的药效$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

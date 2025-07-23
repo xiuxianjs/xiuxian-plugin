@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull, Read_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)入驻洞天.*$/
+export const regular = /^(#|＃|\/)?入驻洞天.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
   let ass = data.getAssociation(player.宗门.宗门名称)
 
   //输入的洞天是否存在
-  let blessed_name = e.MessageText.replace('#入驻洞天', '')
+  let blessed_name = e.MessageText.replace('(#|＃|/)?入驻洞天', '')
   blessed_name = blessed_name.trim()
   //洞天不存在
   let dongTan = await data.bless_list.find(item => item.name == blessed_name)

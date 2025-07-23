@@ -28,7 +28,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(装备|消耗|服用|学习|兑换)((.*)|(.*)*(.*))$/
+export const regular = /^(#|＃|\/)?(装备|消耗|服用|学习|兑换)((.*)|(.*)*(.*))$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

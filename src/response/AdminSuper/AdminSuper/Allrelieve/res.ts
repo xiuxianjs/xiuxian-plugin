@@ -3,7 +3,7 @@ import { redis } from '@src/api/api'
 import fs from 'fs'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)解除所有$/
+export const regular = /^(#|＃|\/)?解除所有$/
 import { __PATH } from '@src/model'
 export default onResponse(selects, async e => {
   const Send = useSend(e)

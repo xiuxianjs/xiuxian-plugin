@@ -4,7 +4,7 @@ import { exist_najie_thing } from '@src/model'
 import { Level_up } from '../level'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)幸运突破$/
+export const regular = /^(#|＃|\/)?幸运突破$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

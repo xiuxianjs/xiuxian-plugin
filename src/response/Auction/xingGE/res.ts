@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer, isNotNull, Read_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)星阁拍卖行$/
+export const regular = /^(#|＃|\/)?星阁拍卖行$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -11,7 +11,7 @@ import {
 import { data, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^切磋$/
+export const regular = /^(#|＃|\/)?^切磋$/
 global.A_QQ = []
 global.B_QQ = []
 

@@ -5,7 +5,7 @@ import { isNotNull, shijianc } from '@src/model'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)宗门俸禄$/
+export const regular = /^(#|＃|\/)?宗门俸禄$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

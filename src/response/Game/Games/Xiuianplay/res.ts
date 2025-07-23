@@ -11,7 +11,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)怡红院$/
+export const regular = /^(#|＃|\/)?怡红院$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

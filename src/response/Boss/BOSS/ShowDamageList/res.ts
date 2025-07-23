@@ -5,7 +5,7 @@ import { sleep } from '@src/model'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
 export const selects = onSelects(['message.create'])
-export const regular = /^(#|\/)妖王贡献榜$/
+export const regular = /^(#|＃|\/)?妖王贡献榜$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

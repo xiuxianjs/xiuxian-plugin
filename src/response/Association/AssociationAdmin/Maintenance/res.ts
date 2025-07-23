@@ -4,7 +4,7 @@ import { config, data } from '@src/api/api'
 import { isNotNull, shijianc } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(宗门维护|维护宗门)$/
+export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

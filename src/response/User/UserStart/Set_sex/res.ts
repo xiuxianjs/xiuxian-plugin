@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, Read_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)设置性别.*$/
+export const regular = /^(#|＃|\/)?设置性别.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
     return
   }
   //命令判断
-  let msg = e.MessageText.replace('#设置性别', '')
+  let msg = e.MessageText.replace('(#|＃|/)?设置性别', '')
   if (msg != '男' && msg != '女') {
     Send(Text('请发送#设置性别男 或 #设置性别女'))
     return

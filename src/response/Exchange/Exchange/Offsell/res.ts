@@ -10,7 +10,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)下架[1-9]d*/
+export const regular = /^(#|＃|\/)?下架[1-9]d*/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
   let player = await Read_player(usr_qq)
-  let x = parseInt(e.MessageText.replace('#下架', '')) - 1
+  let x = parseInt(e.MessageText.replace('(#|＃|/)?下架', '')) - 1
   try {
     Exchange = await Read_Exchange()
   } catch {

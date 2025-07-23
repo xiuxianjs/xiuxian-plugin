@@ -7,7 +7,7 @@ import { selects } from '@src/response/index'
 const currentDir = dirname(fileURLToPath(import.meta.url))
 const mdDir = join(currentDir, '../../../../../')
 
-export const regular = /^(#|\/)修仙更新/
+export const regular = /^(#|＃|\/)?修仙更新/
 export default onResponse(selects, e => {
   const Send = useSend(e)
   if (!e.IsMaster) return

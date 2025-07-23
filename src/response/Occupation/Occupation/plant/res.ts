@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer, Read_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(采药$)|(采药(.*)(分|分钟)$)/
+export const regular = /^(#|＃|\/)?(采药$)|(采药(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -27,7 +27,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取时间
-  let time: any = e.MessageText.replace('#采药', '')
+  let time: any = e.MessageText.replace('(#|＃|/)?采药', '')
   time = time.replace('分钟', '')
   if (parseInt(time) == parseInt(time)) {
     time = parseInt(time)

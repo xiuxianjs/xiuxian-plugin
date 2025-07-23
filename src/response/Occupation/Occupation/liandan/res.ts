@@ -12,7 +12,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)炼制.*(\*[0-9]*)?$/
+export const regular = /^(#|＃|\/)?炼制.*(\*[0-9]*)?$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
     Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'))
     return false
   }
-  let t: any = e.MessageText.replace('#炼制', '').split('*')
+  let t: any = e.MessageText.replace('(#|＃|/)?炼制', '').split('*')
   if (+t <= 0) {
     t = 1
   }

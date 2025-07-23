@@ -4,12 +4,12 @@ import { data } from '@src/api/api'
 import { isNotNull, setFileValue, timestampToTime } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)开宗立派/
+export const regular = /^(#|＃|\/)?开宗立派/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  const name = e.MessageText.replace(/^(#|\/)开宗立派/, '')
+  const name = e.MessageText.replace(/^(#|＃|\/)?开宗立派/, '')
   if (!name) {
     Send(Text('请发送文本,请重新输入:'))
     return

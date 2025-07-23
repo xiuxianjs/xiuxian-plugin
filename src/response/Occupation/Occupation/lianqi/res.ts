@@ -11,7 +11,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)打造.*(\*[0-9]*)?$/
+export const regular = /^(#|＃|\/)?打造.*(\*[0-9]*)?$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     Send(Text('铜都不炼你还炼器？'))
     return false
   }
-  let t = e.MessageText.replace('#打造', '').split('*')
+  let t = e.MessageText.replace('(#|＃|/)?打造', '').split('*')
   let equipment_name = t[0]
   let suc_rate = 0
   let tmp_msg1 = ''

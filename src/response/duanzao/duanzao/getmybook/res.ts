@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, settripod } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)炼器师能力评测/
+export const regular = /^(#|＃|\/)?炼器师能力评测/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

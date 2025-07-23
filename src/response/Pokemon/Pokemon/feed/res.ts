@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)喂给仙宠.*$/
+export const regular = /^(#|＃|\/)?喂给仙宠.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     Send(Text('你没有仙宠'))
     return false
   }
-  let thing = e.MessageText.replace('#', '')
+  let thing = e.MessageText.replace('(#|＃|/)?', '')
   thing = thing.replace('喂给仙宠', '')
   let code = thing.split('*')
   let thing_name = code[0] //物品

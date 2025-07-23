@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { __PATH, getTimeStr } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)备份存档$/
+export const regular = /^(#|＃|\/)?备份存档$/
 
 export default onResponse(selects, async (e: any) => {
   const Send = useSend(e)

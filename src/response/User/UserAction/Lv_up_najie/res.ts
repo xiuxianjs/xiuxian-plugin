@@ -11,7 +11,7 @@ import {
 import { config } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)升级纳戒$/
+export const regular = /^(#|＃|\/)?升级纳戒$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -3,7 +3,7 @@ import fs from 'fs'
 import { __PATH, getTimeStr } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)存档列表$/
+export const regular = /^(#|＃|\/)?存档列表$/
 
 export default onResponse(
   selects,

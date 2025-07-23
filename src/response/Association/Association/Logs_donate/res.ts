@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)宗门捐献记录$/
+export const regular = /^(#|＃|\/)?宗门捐献记录$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

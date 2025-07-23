@@ -4,7 +4,7 @@ import { config, data, redis } from '@src/api/api'
 import { Go } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)金银坊$/
+export const regular = /^(#|＃|\/)?金银坊$/
 import '../game'
 
 export default onResponse(selects, async e => {

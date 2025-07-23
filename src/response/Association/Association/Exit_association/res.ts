@@ -4,7 +4,7 @@ import { config, data } from '@src/api/api'
 import fs from 'fs'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)退出宗门$/
+export const regular = /^(#|＃|\/)?退出宗门$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

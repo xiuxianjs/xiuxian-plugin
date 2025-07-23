@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(闭关$)|(闭关(.*)(分|分钟)$)/
+export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   }
 
   //获取时间
-  let time: any = e.MessageText.replace('#', '')
+  let time: any = e.MessageText.replace('(#|＃|/)?', '')
   time = time.replace('闭关', '')
   time = time.replace('分', '')
   time = time.replace('钟', '')

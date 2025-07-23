@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { __PATH, Write_duanlu } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)全体清空锻炉/
+export const regular = /^(#|＃|\/)?全体清空锻炉/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

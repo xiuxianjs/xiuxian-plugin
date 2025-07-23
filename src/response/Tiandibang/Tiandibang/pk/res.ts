@@ -12,7 +12,7 @@ import {
 import { Read_tiandibang, Write_tiandibang, getLastbisai } from '../tian'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)比试$/
+export const regular = /^(#|＃|\/)?比试$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

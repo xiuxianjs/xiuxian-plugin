@@ -1,7 +1,7 @@
 import { config, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)出关$/
+export const regular = /^(#|＃|\/)?出关$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)

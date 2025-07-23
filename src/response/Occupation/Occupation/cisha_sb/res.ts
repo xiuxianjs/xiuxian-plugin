@@ -10,7 +10,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)刺杀目标.*$/
+export const regular = /^(#|＃|\/)?刺杀目标.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -34,7 +34,7 @@ export default onResponse(selects, async e => {
   }
   let action: any = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
   action = await JSON.parse(action)
-  let num: any = e.MessageText.replace('#刺杀目标', '')
+  let num: any = e.MessageText.replace('(#|＃|/)?刺杀目标', '')
   num = num.trim() - 1
   let qq
   try {

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { existplayer, looktripod, Read_mytripod } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)我的锻炉/
+export const regular = /^(#|＃|\/)?我的锻炉/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

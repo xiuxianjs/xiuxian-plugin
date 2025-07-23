@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, Add_najie_thing, Add_灵石, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)一键出售(.*)$/
+export const regular = /^(#|＃|\/)?一键出售(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
   ]
   let wupin1 = []
   if (e.MessageText != '#一键出售') {
-    let thing = e.MessageText.replace('#一键出售', '')
+    let thing = e.MessageText.replace('(#|＃|/)?一键出售', '')
     for (let i of wupin) {
       if (thing == i) {
         wupin1.push(i)

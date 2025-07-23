@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
 import { __PATH } from '@src/model'
-export const regular = /^(#|\/)修仙世界$/
+export const regular = /^(#|＃|\/)?修仙世界$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

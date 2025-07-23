@@ -10,7 +10,7 @@ import {
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)渡劫$/
+export const regular = /^(#|＃|\/)?渡劫$/
 let dj = 0
 
 export default onResponse(selects, async e => {

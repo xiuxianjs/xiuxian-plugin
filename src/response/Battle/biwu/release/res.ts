@@ -3,14 +3,14 @@ import { Text, useSend } from 'alemonjs'
 import { redis, data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)释放技能.*$/
+export const regular = /^(#|＃|\/)?释放技能.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let action_res = await redis.get('xiuxian@1.3.0:' + e.UserId + ':bisai')
   const action = await JSON.parse(action_res)
   if (!action) return false
-  let msg = e.MessageText.replace('#释放技能', '')
+  let msg = e.MessageText.replace('(#|＃|/)?释放技能', '')
   const jineng = Number(msg) - 1
   if (!action.技能[jineng]) return false
   else {

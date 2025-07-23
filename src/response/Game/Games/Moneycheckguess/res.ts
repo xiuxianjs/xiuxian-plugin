@@ -4,7 +4,7 @@ import { redis, data, config } from '@src/api/api'
 import { existplayer, Read_player, isNotNull, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(大|小)$/
+export const regular = /^(#|＃|\/)?^(大|小)$/
 import '../game'
 
 export default onResponse(selects, async e => {

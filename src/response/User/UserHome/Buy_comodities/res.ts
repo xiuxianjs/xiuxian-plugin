@@ -11,7 +11,7 @@ import {
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)购买((.*)|(.*)*(.*))$/
+export const regular = /^(#|＃|\/)?购买((.*)|(.*)*(.*))$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let thing = e.MessageText.replace('#', '')
+  let thing = e.MessageText.replace('(#|＃|/)?', '')
   thing = thing.replace('购买', '')
   let code = thing.split('*')
   let thing_name = code[0]

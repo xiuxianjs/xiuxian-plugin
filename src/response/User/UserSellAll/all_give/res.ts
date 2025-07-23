@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, Add_najie_thing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)一键赠送(.*)$/
+export const regular = /^(#|＃|\/)?一键赠送(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
   ]
   let wupin1 = []
   if (e.MessageText != '#一键赠送') {
-    let thing = e.MessageText.replace('#一键赠送', '')
+    let thing = e.MessageText.replace('(#|＃|/)?一键赠送', '')
     for (let i of wupin) {
       if (thing == i) {
         wupin1.push(i)

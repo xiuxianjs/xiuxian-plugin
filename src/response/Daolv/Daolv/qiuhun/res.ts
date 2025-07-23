@@ -10,7 +10,7 @@ import {
 import { chaoshi } from '../daolv'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(结为道侣)$/
+export const regular = /^(#|＃|\/)?^(结为道侣)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

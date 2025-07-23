@@ -4,7 +4,7 @@ import Help from '@src/model/help'
 import { cache } from '../../help'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)?修仙帮助$/
+export const regular = /^(#|＃|\/)??修仙帮助$/
 
 export default onResponse(selects, async e => {
   logger.info('修仙帮助')

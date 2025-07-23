@@ -3,7 +3,7 @@ import fs from 'fs'
 import { __PATH, Read_player, Read_najie, Read_equipment } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)检查存档.*$/
+export const regular = /^(#|＃|\/)?检查存档.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

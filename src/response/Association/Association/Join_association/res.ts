@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull, timestampToTime, player_efficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)加入宗门.*$/
+export const regular = /^(#|＃|\/)?加入宗门.*$/
 
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
     Send(Text('请先#同步信息'))
     return false
   }
-  let association_name = e.MessageText.replace('#加入宗门', '')
+  let association_name = e.MessageText.replace(/^(#|＃|\/)?加入宗门/, '')
   association_name = association_name.trim()
   let ifexistass = data.existData('association', association_name)
   if (!ifexistass) {

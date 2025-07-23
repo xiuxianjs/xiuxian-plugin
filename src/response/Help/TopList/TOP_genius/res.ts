@@ -3,7 +3,7 @@ import fs from 'fs'
 import { __PATH, existplayer, Read_player, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)至尊榜$/
+export const regular = /^(#|＃|\/)?至尊榜$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

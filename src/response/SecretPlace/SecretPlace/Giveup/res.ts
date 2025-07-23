@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)逃离/
+export const regular = /^(#|＃|\/)?逃离/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

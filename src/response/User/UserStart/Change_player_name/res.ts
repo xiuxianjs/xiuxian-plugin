@@ -5,7 +5,7 @@ import { existplayer, shijianc, Read_player, Write_player } from '@src/model'
 import { Show_player } from '../user'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(改名.*)|(设置道宣.*)$/
+export const regular = /^(#|＃|\/)?(改名.*)|(设置道宣.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

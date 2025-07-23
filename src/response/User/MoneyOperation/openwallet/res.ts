@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)打开钱包$/
+export const regular = /^(#|＃|\/)?打开钱包$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

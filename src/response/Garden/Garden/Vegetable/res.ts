@@ -4,7 +4,7 @@ import { data, redis } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)药园*$/
+export const regular = /^(#|＃|\/)?药园*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

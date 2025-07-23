@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { exist_najie_thing, Add_najie_thing, Write_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)进阶仙宠$/
+export const regular = /^(#|＃|\/)?进阶仙宠$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

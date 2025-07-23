@@ -5,7 +5,7 @@ import { existplayer, Read_player } from '@src/model'
 import { Read_tiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)更新属性$/
+export const regular = /^(#|＃|\/)?更新属性$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -3,7 +3,7 @@ import fs from 'fs'
 import { __PATH, find_qinmidu, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)查询亲密度$/
+export const regular = /^(#|＃|\/)?查询亲密度$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

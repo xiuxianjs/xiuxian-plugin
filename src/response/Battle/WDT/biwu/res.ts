@@ -13,7 +13,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^比武$/
+export const regular = /^(#|＃|\/)?^比武$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

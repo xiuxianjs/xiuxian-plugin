@@ -9,7 +9,7 @@ import {
 import { found } from '../daolv'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(我愿意|我拒绝)$/
+export const regular = /^(#|＃|\/)?^(我愿意|我拒绝)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

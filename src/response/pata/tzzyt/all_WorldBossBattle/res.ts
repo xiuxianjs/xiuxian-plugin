@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, Harm, ifbaoji } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)一键挑战镇妖塔$/
+export const regular = /^(#|＃|\/)?一键挑战镇妖塔$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

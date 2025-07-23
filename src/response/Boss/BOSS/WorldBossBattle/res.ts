@@ -11,7 +11,7 @@ import {
 } from '../../boss'
 
 export const selects = onSelects(['message.create'])
-export const regular = /^(#|\/)讨伐妖王$/
+export const regular = /^(#|＃|\/)?讨伐妖王$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

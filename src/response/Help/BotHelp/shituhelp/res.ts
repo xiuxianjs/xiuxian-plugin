@@ -3,7 +3,7 @@ import Help2 from '@src/model/shituhelp'
 import { cache } from '../../help'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)师徒帮助$/
+export const regular = /^(#|＃|\/)?师徒帮助$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

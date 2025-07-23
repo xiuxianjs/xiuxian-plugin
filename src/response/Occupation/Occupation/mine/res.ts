@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer, Read_player, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(采矿$)|(采矿(.*)(分|分钟)$)/
+export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取时间
-  let time: any = e.MessageText.replace('#采矿', '')
+  let time: any = e.MessageText.replace('(#|＃|/)?采矿', '')
   time = time.replace('分钟', '')
   if (parseInt(time) == parseInt(time)) {
     time = parseInt(time)

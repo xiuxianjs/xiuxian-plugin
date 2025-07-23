@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { Read_najie, isNotNull, Add_仙宠, Write_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)出战仙宠.*$/
+export const regular = /^(#|＃|\/)?出战仙宠.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = data.getData('player', usr_qq)
-  let name = e.MessageText.replace('#', '')
+  let name = e.MessageText.replace('(#|＃|/)?', '')
   name = name.replace('出战仙宠', '')
   let num = parseInt(name)
   let najie = await Read_najie(usr_qq)

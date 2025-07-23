@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)回收.*$/
+export const regular = /^(#|＃|\/)?回收.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let thing_name = e.MessageText.replace('#回收', '')
+  let thing_name = e.MessageText.replace('(#|＃|/)?回收', '')
   thing_name = thing_name.trim()
   let thing_exist = await foundthing(thing_name)
   if (thing_exist) {

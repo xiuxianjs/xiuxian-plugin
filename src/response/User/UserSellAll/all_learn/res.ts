@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)一键学习$/
+export const regular = /^(#|＃|\/)?一键学习$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

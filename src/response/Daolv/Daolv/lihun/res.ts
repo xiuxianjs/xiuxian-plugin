@@ -11,7 +11,7 @@ import {
 import { found, chaoshi } from '../daolv'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(断绝姻缘)$/
+export const regular = /^(#|＃|\/)?^(断绝姻缘)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

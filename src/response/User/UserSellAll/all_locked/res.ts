@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, Write_najie } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)一键锁定(.*)$/
+export const regular = /^(#|＃|\/)?一键锁定(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
   ]
   let wupin1 = []
   if (e.MessageText != '#一键锁定') {
-    let thing = e.MessageText.replace('#一键锁定', '')
+    let thing = e.MessageText.replace('(#|＃|/)?一键锁定', '')
     for (let i of wupin) {
       if (thing == i) {
         wupin1.push(i)

@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)洞天福地列表$/
+export const regular = /^(#|＃|\/)?洞天福地列表$/
 
 export default onResponse(selects, async e => {
   let addres = '洞天福地'

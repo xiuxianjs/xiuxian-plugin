@@ -11,7 +11,7 @@ import { redis, data, pushInfo } from '@src/api/api'
 import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)讨伐金角大王$/
+export const regular = /^(#|＃|\/)?讨伐金角大王$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

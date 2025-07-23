@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull, player_efficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)逐出.*$/
+export const regular = /^(#|＃|\/)?逐出.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let menpai = e.MessageText.replace('#', '')
+  let menpai = e.MessageText.replace(/^(#|＃|\/)?/, '')
 
   menpai = menpai.replace('逐出', '')
 

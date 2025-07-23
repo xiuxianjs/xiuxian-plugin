@@ -4,7 +4,7 @@ import { redis, puppeteer } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)赏金榜$/
+export const regular = /^(#|＃|\/)?赏金榜$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

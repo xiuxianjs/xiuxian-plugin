@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { BossIsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
 
 export const selects = onSelects(['message.create'])
-export const regular = /^(#|\/)妖王状态$/
+export const regular = /^(#|＃|\/)?妖王状态$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

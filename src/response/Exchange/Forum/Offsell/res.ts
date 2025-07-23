@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)取消[1-9]d*/
+export const regular = /^(#|＃|\/)?取消[1-9]d*/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let Forum
   let player = await Read_player(usr_qq)
-  let x = parseInt(e.MessageText.replace('#取消', '')) - 1
+  let x = parseInt(e.MessageText.replace('(#|＃|/)?取消', '')) - 1
   try {
     Forum = await Read_Forum()
   } catch {

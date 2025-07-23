@@ -4,7 +4,7 @@ import { redis, data, config } from '@src/api/api'
 import { existplayer, Go } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)再入仙途$/
+export const regular = /^(#|＃|\/)?再入仙途$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

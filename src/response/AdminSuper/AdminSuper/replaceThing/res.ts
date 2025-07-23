@@ -3,14 +3,14 @@ import { Text, useSend } from 'alemonjs'
 
 import { selects } from '@src/response/index'
 export const regular =
-  /^(#|\/)将米娜桑的纳戒里叫.*的的的(装备|道具|丹药|功法|草药|材料|仙宠|口粮)(抹除|替换为叫.*之之之(装备|道具|丹药|功法|草药|材料|仙宠|口粮))$/
+  /^(#|＃|\/)?将米娜桑的纳戒里叫.*的的的(装备|道具|丹药|功法|草药|材料|仙宠|口粮)(抹除|替换为叫.*之之之(装备|道具|丹药|功法|草药|材料|仙宠|口粮))$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   Send(Text('功能暂未开放'))
   //   {
   //   if (!e.IsMaster) return false
-  //   const msg1 = e.MessageText.replace('#将米娜桑的纳戒里叫', '')
+  //   const msg1 = e.MessageText.replace('(#|＃|/)?将米娜桑的纳戒里叫', '')
   //   const [thingName, msg2] = msg1.split('的的的')
 
   //   // #将米娜桑的纳戒里叫.*的的的(装备|道具|丹药|功法|草药|材料|盒子|仙宠|口粮|项链|食材)(抹除|替换为叫.*之之之(装备|道具|丹药|功法|草药|材料|盒子|仙宠|口粮|项链|食材))$

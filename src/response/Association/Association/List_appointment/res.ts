@@ -3,7 +3,7 @@ import fs from 'fs'
 import { data, puppeteer } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)宗门列表$/
+export const regular = /^(#|＃|\/)?宗门列表$/
 import { __PATH } from '@src/model'
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {

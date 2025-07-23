@@ -14,7 +14,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)上架.*$/
+export const regular = /^(#|＃|\/)?上架.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let najie = await Read_najie(usr_qq)
-  let thing = e.MessageText.replace('#', '')
+  let thing = e.MessageText.replace('(#|＃|/)?', '')
   thing = thing.replace('上架', '')
   let code: any = thing.split('*')
   let thing_name = code[0] //物品

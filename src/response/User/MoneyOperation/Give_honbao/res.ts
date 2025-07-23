@@ -4,7 +4,7 @@ import { data, redis } from '@src/api/api'
 import { existplayer, Go, convert2integer, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)发红包.*$/
+export const regular = /^(#|＃|\/)?发红包.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取发送灵石数量
-  let lingshi: any = e.MessageText.replace('#', '')
+  let lingshi: any = e.MessageText.replace('(#|＃|/)?', '')
   lingshi = lingshi.replace('发红包', '')
   let flag = await Go(e)
   if (!flag) {

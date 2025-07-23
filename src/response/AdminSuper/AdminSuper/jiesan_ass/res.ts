@@ -5,14 +5,14 @@ import { Write_player } from '@src/model'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)解散宗门.*$/
+export const regular = /^(#|＃|\/)?解散宗门.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   {
     if (!e.IsMaster) return false
 
-    let didian = e.MessageText.replace('#解散宗门', '')
+    let didian = e.MessageText.replace(/^(#|＃|\/)?解散宗门/, '')
     didian = didian.trim()
     let ass = data.getAssociation(didian)
     if (ass == 'error') {

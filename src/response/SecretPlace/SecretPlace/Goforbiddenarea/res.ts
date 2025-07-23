@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/api/api'
 import { Go, Read_player, isNotNull, Add_灵石, Add_修为 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)前往禁地.*$/
+export const regular = /^(#|＃|\/)?前往禁地.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
     Send(Text('没有达到化神之前还是不要去了'))
     return false
   }
-  let didian = await e.MessageText.replace('#前往禁地', '')
+  let didian = await e.MessageText.replace('(#|＃|/)?前往禁地', '')
   didian = didian.trim()
   let weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
   // if (player.power_place == 0 && weizhi.id != 666) {

@@ -3,7 +3,7 @@ import { getPlayerAction } from '@src/model'
 import { mine_jiesuan } from '../../api'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)结束采矿$/
+export const regular = /^(#|＃|\/)?结束采矿$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)

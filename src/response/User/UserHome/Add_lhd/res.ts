@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)供奉奇怪的石头$/
+export const regular = /^(#|＃|\/)?供奉奇怪的石头$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

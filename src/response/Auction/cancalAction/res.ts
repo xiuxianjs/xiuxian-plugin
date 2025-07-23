@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 
 export const selects = onSelects(['message.create'])
-export const regular = /^(#|\/)取消星阁体系$/
+export const regular = /^(#|＃|\/)?取消星阁体系$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -10,7 +10,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)抽(天地卡池|灵界卡池|凡界卡池)$/
+export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let tianluoRandom
-  let thing = e.MessageText.replace('#', '')
+  let thing = e.MessageText.replace('(#|＃|/)?', '')
   thing = thing.replace('抽', '')
   if (thing == '天地卡池') {
     let x = await exist_najie_thing(usr_qq, '天罗地网', '道具')

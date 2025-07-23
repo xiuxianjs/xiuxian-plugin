@@ -2,7 +2,7 @@ import { config, redis } from '@src/api/api'
 import { getPlayerAction } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)降妖归来$/
+export const regular = /^(#|＃|\/)?降妖归来$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)

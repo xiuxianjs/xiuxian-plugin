@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { Go, existplayer, Read_player, Write_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)转换副职$/
+export const regular = /^(#|＃|\/)?转换副职$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

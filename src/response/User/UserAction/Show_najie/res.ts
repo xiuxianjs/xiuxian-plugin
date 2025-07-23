@@ -3,7 +3,7 @@ import { Image, useSend } from 'alemonjs'
 import { existplayer, get_najie_img } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)我的纳戒$/
+export const regular = /^(#|＃|\/)?我的纳戒$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

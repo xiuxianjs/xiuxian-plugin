@@ -4,7 +4,7 @@ import { Text, useSend } from 'alemonjs'
 // import { exist_najie_thing, Add_najie_thing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(禁言术|残云封天剑).*$/
+export const regular = /^(#|＃|\/)?^(禁言术|残云封天剑).*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { existplayer, Read_najie, foundthing, re_najie_thing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(锁定|解锁).*$/
+export const regular = /^(#|＃|\/)?(锁定|解锁).*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //命令判断
-  let msg = e.MessageText.replace('#', '')
+  let msg = e.MessageText.replace('(#|＃|/)?', '')
   let un_lock = msg.substring(0, 2)
   let thing: any = msg.substring(2).split('*')
   let thing_name = thing[0]

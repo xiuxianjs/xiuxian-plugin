@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)设置门槛.*$/
+export const regular = /^(#|＃|\/)?设置门槛.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主或长老可以操作'))
     return false
   }
-  let jiar = e.MessageText.replace('#设置门槛', '')
+  let jiar = e.MessageText.replace('(#|＃|/)?设置门槛', '')
   jiar = jiar.trim()
   if (!data.Level_list.some(item => item.level == jiar)) return false
   let jr_level_id = data.Level_list.find(item => item.level == jiar).level_id

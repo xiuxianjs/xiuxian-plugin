@@ -4,7 +4,7 @@ import { existplayer } from '@src/model'
 import { Read_tiandibang, Write_tiandibang, get_tianditang_img } from '../tian'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)天地堂/
+export const regular = /^(#|＃|\/)?天地堂/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

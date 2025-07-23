@@ -14,7 +14,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)轮回$/
+export const regular = /^(#|＃|\/)?轮回$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

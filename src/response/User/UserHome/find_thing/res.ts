@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { foundthing, exist_najie_thing, Add_najie_thing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)哪里有(.*)$/
+export const regular = /^(#|＃|\/)?哪里有(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -4,7 +4,7 @@ import { cache } from '../../help'
 import Help from '@src/model/help'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)修仙扩展$/
+export const regular = /^(#|＃|\/)?修仙扩展$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

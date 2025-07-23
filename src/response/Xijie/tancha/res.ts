@@ -11,7 +11,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)探查.*$/
+export const regular = /^(#|＃|\/)?探查.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let didian = e.MessageText.replace('#探查', '')
+  let didian = e.MessageText.replace('(#|＃|/)?探查', '')
   didian = didian.trim()
   let shop
   try {

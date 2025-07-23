@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/api/api'
 import { existplayer, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)抢红包$/
+export const regular = /^(#|＃|\/)?抢红包$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer, looktripod, Read_tripod, Write_duanlu } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)清空锻炉/
+export const regular = /^(#|＃|\/)?清空锻炉/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

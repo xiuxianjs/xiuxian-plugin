@@ -15,7 +15,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)熔炼.*$/
+export const regular = /^(#|＃|\/)?熔炼.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
     Send(Text(`切换到炼器师后再来吧,宝贝`))
     return false
   }
-  let thing = e.MessageText.replace('#', '')
+  let thing = e.MessageText.replace('(#|＃|/)?', '')
   thing = thing.replace('熔炼', '')
   const code = thing.split('*')
   const thing_name = code[0] //物品

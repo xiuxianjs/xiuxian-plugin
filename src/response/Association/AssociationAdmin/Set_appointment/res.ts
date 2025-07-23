@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^任命.*/
+export const regular = /^(#|＃|\/)?^任命.*/
 const 副宗主人数上限 = [1, 1, 1, 1, 2, 2, 3, 3]
 const 长老人数上限 = [1, 2, 3, 4, 5, 7, 8, 9]
 const 内门弟子上限 = [2, 3, 4, 5, 6, 8, 10, 12]

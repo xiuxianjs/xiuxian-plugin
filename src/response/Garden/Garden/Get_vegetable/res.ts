@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/api/api'
 import { isNotNull, Add_najie_thing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)拔苗助长.*$/
+export const regular = /^(#|＃|\/)?拔苗助长.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -51,7 +51,7 @@ export default onResponse(selects, async e => {
   }
 
   let vegetable = ass.药园.作物
-  let vagetable_name = e.MessageText.replace('#拔苗助长', '')
+  let vagetable_name = e.MessageText.replace('(#|＃|/)?拔苗助长', '')
   for (let i = 0; i < vegetable.length; i++) {
     if (vegetable[i].name == vagetable_name) {
       let ts = vegetable[i].ts

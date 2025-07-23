@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/api/api'
 import { Go, Read_player, isNotNull, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)探索宗门秘境.*$/
+export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     Send(Text(`你的宗门还没有驻地，不能探索秘境哦`))
     return false
   }
-  let didian = e.MessageText.replace('#探索宗门秘境', '')
+  let didian = e.MessageText.replace('(#|＃|/)?探索宗门秘境', '')
   didian = didian.trim()
   let weizhi = await data.guildSecrets_list.find(item => item.name == didian)
   if (!isNotNull(weizhi)) {

@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { isNotNull, player_efficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(升级宗门|宗门升级)$/
+export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
   const Send = useSend(e)

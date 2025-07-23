@@ -4,7 +4,7 @@ import { Read_player, Read_qinmidu, Write_qinmidu } from '@src/model'
 import { found } from '../daolv'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)^(我同意|我拒绝)$/
+export const regular = /^(#|＃|\/)?^(我同意|我拒绝)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

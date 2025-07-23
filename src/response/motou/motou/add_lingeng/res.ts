@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 
 export const selects = onSelects(['message.create'])
-export const regular = /^(#|\/)供奉魔石$/
+export const regular = /^(#|＃|\/)?供奉魔石$/
 
 const Res = onResponse(selects, async (e, next) => {
   const Send = useSend(e)

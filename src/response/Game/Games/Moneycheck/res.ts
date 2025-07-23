@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer, Read_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)(梭哈)|(投入.*)$/
+export const regular = /^(#|＃|\/)?(梭哈)|(投入.*)$/
 import '../game'
 
 export default onResponse(selects, async e => {
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //梭哈|投入999。如果是投入。就留下999
-  let es = e.MessageText.replace('#投入', '').trim()
+  let es = e.MessageText.replace('(#|＃|/)?投入', '').trim()
   //去掉投入，发现得到的是梭哈
   //梭哈，全部灵石
   if (es == '#梭哈') {

@@ -4,7 +4,7 @@ import { config, redis } from '@src/api/api'
 import { openAU, Read_player } from '@src/model'
 
 export const selects = onSelects(['message.create'])
-export const regular = /^(#|\/)开启星阁体系$/
+export const regular = /^(#|＃|\/)?开启星阁体系$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

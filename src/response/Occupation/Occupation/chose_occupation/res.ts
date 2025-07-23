@@ -12,7 +12,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)转职.*$/
+export const regular = /^(#|＃|\/)?转职.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  let occupation = e.MessageText.replace('#转职', '')
+  let occupation = e.MessageText.replace('(#|＃|/)?转职', '')
   let player = await Read_player(usr_qq)
   let player_occupation = player.occupation
   let x = data.occupation_list.find(item => item.name == occupation)

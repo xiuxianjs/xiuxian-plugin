@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, Read_player, isNotNull, Write_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)猎户转.*$/
+export const regular = /^(#|＃|\/)?猎户转.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
     Send(Text('你不是猎户,无法自选职业'))
     return false
   }
-  let occupation = e.MessageText.replace('#猎户转', '')
+  let occupation = e.MessageText.replace('(#|＃|/)?猎户转', '')
   let x = data.occupation_list.find(item => item.name == occupation)
   if (!isNotNull(x)) {
     Send(Text(`没有[${occupation}]这项职业`))

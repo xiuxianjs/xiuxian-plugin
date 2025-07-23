@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { __PATH, getTimeStr } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|\/)读取存档(.*)/
+export const regular = /^(#|＃|\/)?读取存档(.*)/
 
 export default onResponse(selects, async (e: any) => {
   const Send = useSend(e)
@@ -13,7 +13,9 @@ export default onResponse(selects, async (e: any) => {
       Send(Text('只有主人可以执行操作'))
       return false
     }
-    const saveDataNum = Number(e.MessageText.replace('#读取存档', '').trim())
+    const saveDataNum = Number(
+      e.MessageText.replace('(#|＃|/)?读取存档', '').trim()
+    )
     if (!(1 <= saveDataNum && saveDataNum <= 80)) {
       Send(Text('正确格式：#读取存档[1~80]\n如：#读取存档18'))
       return false
