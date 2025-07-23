@@ -3,7 +3,7 @@ import { Image, useSend } from 'alemonjs'
 import { data, puppeteer } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)金银坊记录$/
 
 export default onResponse(selects, async e => {

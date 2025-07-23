@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { Add_najie_thing, exist_najie_thing, existplayer } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)敲开闪闪发光的石头$/
 
 export default onResponse(selects, async e => {

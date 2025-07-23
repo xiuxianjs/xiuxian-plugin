@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)仙府$/
 
 export default onResponse(selects, async e => {

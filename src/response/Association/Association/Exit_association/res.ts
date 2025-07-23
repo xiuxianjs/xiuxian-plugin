@@ -3,7 +3,7 @@ import { get_random_fromARR, isNotNull, player_efficiency } from '@src/model'
 import { config, data } from '@src/api/api'
 import fs from 'fs'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)退出宗门$/
 
 export default onResponse(selects, async e => {

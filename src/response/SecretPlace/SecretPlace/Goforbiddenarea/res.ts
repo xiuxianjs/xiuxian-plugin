@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis, config } from '@src/api/api'
 import { Go, Read_player, isNotNull, Add_灵石, Add_修为 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)前往禁地.*$/
 
 export default onResponse(selects, async e => {

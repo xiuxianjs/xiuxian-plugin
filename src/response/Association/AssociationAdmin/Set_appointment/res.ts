@@ -3,7 +3,7 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import { isNotNull } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)^任命.*/
 const 副宗主人数上限 = [1, 1, 1, 1, 2, 2, 3, 3]
 const 长老人数上限 = [1, 2, 3, 4, 5, 7, 8, 9]

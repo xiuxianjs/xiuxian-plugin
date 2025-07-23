@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 import { chaoshi } from '../daolv'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)^(结为道侣)$/
 
 export default onResponse(selects, async e => {

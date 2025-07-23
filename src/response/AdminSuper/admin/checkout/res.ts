@@ -1,7 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 import { exec } from 'child_process'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
+
 export const regular = /^(#|\/)修仙更新/
 
 export default onResponse(selects, e => {

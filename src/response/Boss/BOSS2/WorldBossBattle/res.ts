@@ -10,7 +10,7 @@ import {
 import { redis, data, pushInfo } from '@src/api/api'
 import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)讨伐金角大王$/
 
 export default onResponse(selects, async e => {

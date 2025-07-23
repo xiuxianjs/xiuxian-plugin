@@ -4,7 +4,7 @@ import { data, redis } from '@src/api/api'
 import { isNotNull, shijianc } from '@src/model'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)宗门俸禄$/
 
 export default onResponse(selects, async e => {

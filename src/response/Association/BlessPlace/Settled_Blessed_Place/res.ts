@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { data } from '@src/api/api'
 import { isNotNull, Read_player } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)入驻洞天.*$/
 
 export default onResponse(selects, async e => {

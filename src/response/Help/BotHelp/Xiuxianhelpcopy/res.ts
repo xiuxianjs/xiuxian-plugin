@@ -3,7 +3,7 @@ import { Image, useSend } from 'alemonjs'
 import { cache } from '../../help'
 import Help from '@src/model/help'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)修仙扩展$/
 
 export default onResponse(selects, async e => {

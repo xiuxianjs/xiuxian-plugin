@@ -10,7 +10,7 @@ import {
 } from '@src/model'
 import { config } from '@src/api/api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)升级纳戒$/
 
 export default onResponse(selects, async e => {

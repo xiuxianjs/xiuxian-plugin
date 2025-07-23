@@ -3,7 +3,7 @@ import fs from 'fs'
 import { redis } from '@src/api/api'
 import { Write_duanlu } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)全体清空锻炉/
 
 export default onResponse(selects, async e => {

@@ -1,7 +1,7 @@
 import { data } from '@src/api/api'
 import { jindi } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)禁地$/
 
 export default onResponse(selects, async e => {

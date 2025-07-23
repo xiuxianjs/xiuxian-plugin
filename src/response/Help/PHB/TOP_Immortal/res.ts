@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { existplayer, Read_player, sortBy } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)魔道榜$/
 
 export default onResponse(selects, async e => {

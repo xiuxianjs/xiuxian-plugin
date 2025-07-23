@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis, config } from '@src/api/api'
 import { isNotNull, Add_najie_thing } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)拔苗助长.*$/
 
 export default onResponse(selects, async e => {

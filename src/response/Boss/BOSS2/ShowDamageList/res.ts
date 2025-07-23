@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { sleep } from '@src/model'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)金角大王贡献榜$/
 
 export default onResponse(selects, async e => {

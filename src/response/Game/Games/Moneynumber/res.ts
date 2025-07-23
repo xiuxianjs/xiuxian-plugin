@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { config, data, redis } from '@src/api/api'
 import { Go } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)金银坊$/
 import '../game'
 

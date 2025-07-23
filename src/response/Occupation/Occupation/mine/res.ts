@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import { existplayer, Read_player, Add_灵石 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)(采矿$)|(采矿(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {

@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { redis, data } from '@src/api/api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)释放技能.*$/
 
 export default onResponse(selects, async e => {

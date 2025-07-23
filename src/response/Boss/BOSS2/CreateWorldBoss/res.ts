@@ -1,6 +1,6 @@
 import { InitWorldBoss } from '../../boss'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)开启金角大王$/
 
 export default onResponse(selects, async e => {

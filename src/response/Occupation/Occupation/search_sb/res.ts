@@ -1,9 +1,9 @@
 import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { redis,  puppeteer } from '@src/api/api'
+import { redis, puppeteer } from '@src/api/api'
 import { existplayer, Read_player, __PATH } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)悬赏目标$/
 
 export default onResponse(selects, async e => {

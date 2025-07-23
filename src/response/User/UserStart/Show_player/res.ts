@@ -2,7 +2,7 @@ import { Image, useSend } from 'alemonjs'
 
 import { existplayer, get_player_img } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)我的练气$/
 
 export default onResponse(selects, async e => {

@@ -10,7 +10,7 @@ import {
 } from '@src/model'
 import { data, redis } from '@src/api/api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)^切磋$/
 global.A_QQ = []
 global.B_QQ = []

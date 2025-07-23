@@ -8,7 +8,7 @@ import {
   Add_灵石
 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)取消[1-9]d*/
 
 export default onResponse(selects, async e => {

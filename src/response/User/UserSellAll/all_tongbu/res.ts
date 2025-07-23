@@ -1,6 +1,6 @@
 import { synchronization, Synchronization_ASS } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)一键同步$/
 
 export default onResponse(selects, async e => {

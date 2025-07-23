@@ -27,7 +27,7 @@ import {
   Add_player_学习功法
 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)(装备|消耗|服用|学习|兑换)((.*)|(.*)*(.*))$/
 
 export default onResponse(selects, async e => {

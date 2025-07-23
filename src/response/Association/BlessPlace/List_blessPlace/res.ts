@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import fs from 'node:fs'
 import { data } from '@src/api/api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)洞天福地列表$/
 
 export default onResponse(selects, async e => {

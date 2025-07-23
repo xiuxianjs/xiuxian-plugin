@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { __PATH, getTimeStr } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)存档列表$/
 
 export default onResponse(

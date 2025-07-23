@@ -8,7 +8,7 @@ import {
   Add_player_学习功法
 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)一键学习$/
 
 export default onResponse(selects, async e => {

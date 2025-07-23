@@ -2,7 +2,7 @@ import { Image, useSend } from 'alemonjs'
 
 import { get_ningmenghome_img } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular =
   /^(#|\/)柠檬堂(装备|丹药|功法|道具|草药|武器|护具|法宝|血量|修为|血气|天赋)?$/
 

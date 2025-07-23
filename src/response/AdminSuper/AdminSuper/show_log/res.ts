@@ -1,9 +1,9 @@
 import { Image, useSend } from 'alemonjs'
 
 import { Read_updata_log } from '@src/model'
-import {  puppeteer } from '@src/api/api'
+import { puppeteer } from '@src/api/api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)查看日志$/
 
 export default onResponse(selects, async e => {

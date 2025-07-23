@@ -1,6 +1,6 @@
 import { Level_up } from '../level'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)突破$/
 
 export default onResponse(selects, async e => {

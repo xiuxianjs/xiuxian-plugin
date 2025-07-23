@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { config, data } from '@src/api/api'
 import { isNotNull, shijianc } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)(宗门维护|维护宗门)$/
 
 export default onResponse(selects, async e => {

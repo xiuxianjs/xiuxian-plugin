@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { Read_player, Read_qinmidu, Write_qinmidu } from '@src/model'
 import { found } from '../daolv'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)^(我同意|我拒绝)$/
 
 export default onResponse(selects, async e => {

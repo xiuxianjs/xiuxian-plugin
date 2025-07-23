@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import fs from 'fs'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)解除所有$/
 import { __PATH } from '@src/model'
 export default onResponse(selects, async e => {

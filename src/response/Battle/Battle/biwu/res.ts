@@ -2,7 +2,7 @@ import { Text, useMention, useSend } from 'alemonjs'
 
 import { existplayer, Read_player, zd_battle } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)^(以武会友)$/
 
 export default onResponse(selects, async e => {

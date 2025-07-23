@@ -12,7 +12,7 @@ import {
   Add_修为
 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)沉迷禁地.*$/
 
 export default onResponse(selects, async e => {

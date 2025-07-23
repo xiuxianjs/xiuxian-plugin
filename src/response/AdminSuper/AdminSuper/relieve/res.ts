@@ -3,7 +3,7 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import { existplayer } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)解封.*$/
 
 export default onResponse(selects, async e => {

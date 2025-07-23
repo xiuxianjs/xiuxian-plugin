@@ -2,7 +2,7 @@ import { Image, useSend } from 'alemonjs'
 import Help2 from '@src/model/shituhelp'
 import { cache } from '../../help'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)师徒帮助$/
 
 export default onResponse(selects, async e => {

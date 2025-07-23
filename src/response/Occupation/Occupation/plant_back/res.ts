@@ -2,7 +2,7 @@ import { redis } from '@src/api/api'
 import { getPlayerAction } from '@src/model'
 import { plant_jiesuan } from '../../api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)结束采药$/
 
 export default onResponse(selects, async e => {

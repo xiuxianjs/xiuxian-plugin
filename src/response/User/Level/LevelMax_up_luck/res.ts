@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { exist_najie_thing } from '@src/model'
 import { LevelMax_up } from '../level'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)幸运破体$/
 
 export default onResponse(selects, async e => {

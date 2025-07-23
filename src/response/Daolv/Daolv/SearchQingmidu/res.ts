@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { __PATH, find_qinmidu, sleep } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)查询亲密度$/
 
 export default onResponse(selects, async e => {

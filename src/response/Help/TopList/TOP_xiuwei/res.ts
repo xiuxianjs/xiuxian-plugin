@@ -11,7 +11,7 @@ import {
   get_ranking_power_img
 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)天榜$/
 
 export default onResponse(selects, async e => {

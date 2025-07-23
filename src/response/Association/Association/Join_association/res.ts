@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import { isNotNull, timestampToTime, player_efficiency } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)加入宗门.*$/
 
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]

@@ -9,7 +9,7 @@ import {
   Read_equipment
 } from '@src/model'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)神兵榜/
 
 export default onResponse(selects, async e => {

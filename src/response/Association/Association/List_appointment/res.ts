@@ -1,8 +1,8 @@
 import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { data,  puppeteer } from '@src/api/api'
+import { data, puppeteer } from '@src/api/api'
 
-export const selects = onSelects(['message.create', 'private.message.create'])
+import { selects } from '@src/response/index'
 export const regular = /^(#|\/)宗门列表$/
 import { __PATH } from '@src/model'
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
