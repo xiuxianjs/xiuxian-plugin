@@ -4,12 +4,55 @@ import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { Read_it } from './duanzaofu.js'
 import config from './Config.js'
-import { useSend, Text } from 'alemonjs'
+import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
 import { __PATH } from './paths.js'
 import { Write_player, Writeit } from './pub.js'
+import type { Player, Equipment, Najie, TalentInfo } from '../types/player.js'
+
+interface DanyaoStatus {
+  biguan: number
+  biguanxl: number
+  xingyun: number
+  lianti: number
+  ped: number
+  modao: number
+  beiyong1: number
+  beiyong2: number
+  beiyong3: number
+  beiyong4: number
+  beiyong5: number
+}
+
+interface StrandResult {
+  style: { width: string }
+  num: string
+}
 
 export { __PATH }
+
+// 辅助函数：安全获取玩家数据
+function getPlayerDataSafe(usr_qq: string): Player | null {
+  const playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return null
+  }
+  return playerData as Player
+}
+
+// 辅助函数：安全设置玩家数据
+function setPlayerDataSafe(usr_qq: string, player: Player): void {
+  data.setData('player', usr_qq, player as any)
+}
+
+// 辅助函数：安全获取装备数据
+function getEquipmentDataSafe(usr_qq: string): Equipment | null {
+  const equipmentData = data.getData('equipment', usr_qq)
+  if (equipmentData === 'error' || Array.isArray(equipmentData)) {
+    return null
+  }
+  return equipmentData as Equipment
+}
 
 const 体质概率 = 0.2
 const 伪灵根概率 = 0.37
@@ -20,7 +63,7 @@ const 圣体概率 = 0.01
 //   1 - 体质概率 - 伪灵根概率 - 真灵根概率 - 天灵根概率 - 圣体概率
 
 //检查存档是否存在，存在返回true;
-export async function existplayer(usr_qq) {
+export async function existplayer(usr_qq: string): Promise<boolean> {
   const exist_player = fs.existsSync(`${__PATH.player_path}/${usr_qq}.json`)
   if (exist_player) {
     return true
@@ -30,39 +73,51 @@ export async function existplayer(usr_qq) {
 
 /**
  *
- * @param {*} amount 输入数量
+ * @param amount 输入数量
  * @returns 返回正整数
  */
-export async function convert2integer(amount) {
+export async function convert2integer(
+  amount: string | number
+): Promise<number> {
   const number = 1
   const reg = new RegExp(/^[1-9][0-9]{0,12}$/)
-  if (!reg.test(amount)) {
+  if (!reg.test(String(amount))) {
     return number
   } else {
-    return Math.floor(amount)
+    return Math.floor(Number(amount))
   }
 }
 
-export async function Read_updata_log() {
+export async function Read_updata_log(): Promise<string> {
   const update_log = fs.readFileSync('', 'utf8')
   return update_log
 }
 
 //读取存档信息，返回成一个JavaScript对象
-export async function Read_player(usr_qq) {
+export async function Read_player(usr_qq: string): Promise<Player | null> {
   let dir = path.join(`${__PATH.player_path}/${usr_qq}.json`)
   let player = fs.readFileSync(dir, 'utf8')
   //将字符串数据转变成数组格式
-  const data = JSON.parse(decodeURIComponent(player))
-  return data
+  const playerData = JSON.parse(decodeURIComponent(player))
+  return playerData as Player
 }
 
-export async function LevelTask(e, power_n, power_m, power_Grade, aconut) {
+export async function LevelTask(
+  e: PublicEventMessageCreate,
+  power_n: number,
+  power_m: number,
+  power_Grade: number,
+  aconut: number
+): Promise<number> {
   const usr_qq = e.UserId
-  const Send = useSend(e)
-  const msg: any[] = [Number(usr_qq)]
+  const Send = useSend(e as any) // 临时类型断言，等待 alemonjs 类型更新
+  const msg: string[] = [Number(usr_qq).toString()]
   //用户信息
-  const player: any = await Read_player(usr_qq)
+  const player: Player | null = await Read_player(usr_qq)
+  if (!player) {
+    Send(Text('玩家数据不存在'))
+    return 0
+  }
   //当前系数计算
   let power_distortion = await dujie(usr_qq)
   const yaocaolist = ['凝血草', '小吉祥草', '大吉祥草']
@@ -135,55 +190,59 @@ export async function LevelTask(e, power_n, power_m, power_Grade, aconut) {
       return 0
     }
   }
+  return 0 // 添加默认返回值
 }
 
 //读取装备信息，返回成一个JavaScript对象
-export async function Read_equipment(usr_qq) {
+export async function Read_equipment(
+  usr_qq: string
+): Promise<Equipment | null> {
   let dir = path.join(`${__PATH.equipment_path}/${usr_qq}.json`)
   let equipment = fs.readFileSync(dir, 'utf8')
   //将字符串数据转变成数组格式
   const data = JSON.parse(equipment)
-  return data
+  return data as Equipment
 }
 
 //写入装备信息,第二个参数是一个JavaScript对象
-export async function Write_equipment(usr_qq, equipment) {
-  let player: any = await Read_player(usr_qq)
+export async function Write_equipment(
+  usr_qq: string,
+  equipment: Equipment
+): Promise<void> {
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   player.攻击 =
-    data.Level_list.find(item => item.level_id == player.level_id).基础攻击 +
+    data.Level_list.find(item => item.level_id == player.level_id)?.基础攻击 +
     player.攻击加成 +
     data.LevelMax_list.find(item => item.level_id == player.Physique_id)
-      .基础攻击
+      ?.基础攻击
   player.防御 =
-    data.Level_list.find(item => item.level_id == player.level_id).基础防御 +
+    data.Level_list.find(item => item.level_id == player.level_id)?.基础防御 +
     player.防御加成 +
     data.LevelMax_list.find(item => item.level_id == player.Physique_id)
-      .基础防御
+      ?.基础防御
   player.血量上限 =
-    data.Level_list.find(item => item.level_id == player.level_id).基础血量 +
+    data.Level_list.find(item => item.level_id == player.level_id)?.基础血量 +
     player.生命加成 +
     data.LevelMax_list.find(item => item.level_id == player.Physique_id)
-      .基础血量
+      ?.基础血量
   player.暴击率 =
-    data.Level_list.find(item => item.level_id == player.level_id).基础暴击 +
+    data.Level_list.find(item => item.level_id == player.level_id)?.基础暴击 +
     data.LevelMax_list.find(item => item.level_id == player.Physique_id)
-      .基础暴击
-  let type = ['武器', '护具', '法宝']
+      ?.基础暴击
+  let type = ['武器', '护具', '法宝'] as const
   for (let i of type) {
-    if (
-      equipment[i].atk > 10 ||
-      equipment[i].def > 10 ||
-      equipment[i].HP > 10
-    ) {
-      player.攻击 += equipment[i].atk
-      player.防御 += equipment[i].def
-      player.血量上限 += equipment[i].HP
+    const equipItem = equipment[i]
+    if (equipItem.atk > 10 || equipItem.def > 10 || equipItem.HP > 10) {
+      player.攻击 += equipItem.atk
+      player.防御 += equipItem.def
+      player.血量上限 += equipItem.HP
     } else {
-      player.攻击 = Math.trunc(player.攻击 * (1 + equipment[i].atk))
-      player.防御 = Math.trunc(player.防御 * (1 + equipment[i].def))
-      player.血量上限 = Math.trunc(player.血量上限 * (1 + equipment[i].HP))
+      player.攻击 = Math.trunc(player.攻击 * (1 + equipItem.atk))
+      player.防御 = Math.trunc(player.防御 * (1 + equipItem.def))
+      player.血量上限 = Math.trunc(player.血量上限 * (1 + equipItem.HP))
     }
-    player.暴击率 += equipment[i].bao
+    player.暴击率 += equipItem.bao
   }
   player.暴击伤害 = player.暴击率 + 1.5
   if (player.暴击伤害 > 2.5) player.暴击伤害 = 2.5
@@ -197,37 +256,44 @@ export async function Write_equipment(usr_qq, equipment) {
 }
 
 //读取纳戒信息，返回成一个JavaScript对象
-export async function Read_najie(usr_qq) {
+export async function Read_najie(usr_qq: string): Promise<Najie | null> {
   let dir = path.join(`${__PATH.najie_path}/${usr_qq}.json`)
   let najie: any = fs.readFileSync(dir, 'utf8')
-  let data
+  let najieData
   //将字符串数据转变成数组格式
   try {
     // najie = JSON.parse(najie)
-    data = JSON.parse(najie)
+    najieData = JSON.parse(najie)
   } catch {
     //转换不了，纳戒错误
     await fixed(usr_qq)
-    data = await Read_najie(usr_qq)
+    najieData = await Read_najie(usr_qq)
   }
-  return data
+  return najieData as Najie
 }
 /**
  * 返回该玩家的仙宠图片
  * @return image
  */
-export async function get_XianChong_img(e) {
-  let i
+export async function get_XianChong_img(
+  e: PublicEventMessageCreate
+): Promise<any> {
+  let i: number
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
-  let najie: any = await Read_najie(usr_qq)
-  let XianChong_have: any = []
-  let XianChong_need: any = []
-  let Kouliang: any = []
+  let playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return
+  }
+  let player = playerData as Player
+  let najie: Najie | null = await Read_najie(usr_qq)
+  if (!najie) return
+  let XianChong_have: any[] = []
+  let XianChong_need: any[] = []
+  let Kouliang: any[] = []
   let XianChong_list = data.xianchon
   let Kouliang_list = data.xianchonkouliang
   for (i = 0; i < XianChong_list.length; i++) {
@@ -255,16 +321,21 @@ export async function get_XianChong_img(e) {
  * 返回该玩家的道具图片
  * @return image
  */
-export async function get_daoju_img(e) {
+export async function get_daoju_img(e: PublicEventMessageCreate): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
-  let najie: any = await Read_najie(usr_qq)
-  let daoju_have: any = []
-  let daoju_need: any = []
+  let playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return
+  }
+  let player = playerData as Player
+  let najie: Najie | null = await Read_najie(usr_qq)
+  if (!najie) return
+  let daoju_have: any[] = []
+  let daoju_need: any[] = []
   for (const i of data.daoju_list) {
     if (najie.道具.find(item => item.name == i.name)) {
       daoju_have.push(i)
@@ -286,17 +357,20 @@ export async function get_daoju_img(e) {
  * 返回该玩家的武器图片
  * @return image
  */
-export async function get_wuqi_img(e) {
+export async function get_wuqi_img(e: PublicEventMessageCreate): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
-  let najie: any = await Read_najie(usr_qq)
+  let player = getPlayerDataSafe(usr_qq)
+  if (!player) return
+  let najie: Najie | null = await Read_najie(usr_qq)
+  if (!najie) return
   let equipment = await Read_equipment(usr_qq)
-  let wuqi_have: any = []
-  let wuqi_need: any = []
+  if (!equipment) return
+  let wuqi_have: any[] = []
+  let wuqi_need: any[] = []
   const wuqi_list = [
     'equipment_list',
     'timeequipmen_list',
@@ -338,16 +412,20 @@ export async function get_wuqi_img(e) {
  * 返回该玩家的丹药图片
  * @return image
  */
-export async function get_danyao_img(e) {
+export async function get_danyao_img(
+  e: PublicEventMessageCreate
+): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  const player: any = await Read_player(usr_qq)
+  const player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   const najie = await Read_najie(usr_qq)
-  let danyao_have: any = []
-  let danyao_need: any = []
+  if (!najie) return
+  let danyao_have: any[] = []
+  let danyao_need: any[] = []
   const danyao = ['danyao_list', 'timedanyao_list', 'newdanyao_list']
   for (const i of danyao) {
     for (const j of data[i]) {
@@ -375,13 +453,16 @@ export async function get_danyao_img(e) {
  * 返回该玩家的功法图片
  * @return image
  */
-export async function get_gongfa_img(e) {
+export async function get_gongfa_img(e: PublicEventMessageCreate) {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
+  const player = await getPlayerDataSafe(usr_qq)
+  if (!player) {
+    return
+  }
   let xuexi_gongfa = player.学习的功法
   let gongfa_have: any = []
   let gongfa_need: any = []
@@ -412,15 +493,19 @@ export async function get_gongfa_img(e) {
  * 返回该玩家的法体
  * @return image
  */
-export async function get_power_img(e) {
+export async function get_power_img(e: PublicEventMessageCreate) {
   let usr_qq = e.UserId
-  const Send = useSend(e)
-  let player = await data.getData('player', usr_qq)
+  const Send = useSend(e) as any
+  const player = await getPlayerDataSafe(usr_qq)
+  if (!player) {
+    Send(Text('玩家数据获取失败'))
+    return
+  }
   let lingshi: any = Math.trunc(player.灵石)
   if (player.灵石 > 999999999999) {
     lingshi = 999999999999
   }
-  data.setData('player', usr_qq, player)
+  await setPlayerDataSafe(usr_qq, player)
   await player_efficiency(usr_qq)
   if (!isNotNull(player.level_id)) {
     Send(Text('请先#同步信息'))
@@ -464,8 +549,8 @@ export async function get_power_img(e) {
  * 返回该玩家的存档图片
  * @return image
  */
-export async function get_player_img(e) {
-  const Send = useSend(e)
+export async function get_player_img(e: PublicEventMessageCreate) {
+  const Send = useSend(e) as any
   let 法宝评级
   let 护具评级
   let 武器评级
@@ -474,8 +559,16 @@ export async function get_player_img(e) {
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
-  let equipment = await data.getData('equipment', usr_qq)
+  const player = await getPlayerDataSafe(usr_qq)
+  if (!player) {
+    Send(Text('玩家数据获取失败'))
+    return
+  }
+  const equipment = getEquipmentDataSafe(usr_qq)
+  if (!equipment) {
+    Send(Text('装备数据获取失败'))
+    return
+  }
   let player_status: any = await getPlayerAction(usr_qq)
   let status = '空闲'
   if (player_status.time != null) {
@@ -491,7 +584,7 @@ export async function get_player_img(e) {
   if (player.灵根 == null || player.灵根 == undefined) {
     player.灵根 = await get_random_talent()
   }
-  data.setData('player', usr_qq, player)
+  await setPlayerDataSafe(usr_qq, player)
   await player_efficiency(usr_qq) // 注意这里刷新了修炼效率提升
   if ((await player.linggenshow) != 0) {
     player.灵根.type = '无'
@@ -535,7 +628,7 @@ export async function get_player_img(e) {
       player.防御 * 1.1 +
       player.血量上限 * 0.6 +
       player.暴击率 * player.攻击 * 0.5 +
-      player.灵根.法球倍率 * player.攻击) /
+      Number(player.灵根?.法球倍率 || 0) * player.攻击) /
     10000
   power = Number(power)
   power = power.toFixed(2)
@@ -616,9 +709,18 @@ export async function get_player_img(e) {
   let Power = GetPower(player.攻击, player.防御, player.血量上限, player.暴击率)
   let PowerMini = bigNumberTransform(Power)
   let bao: any = Math.floor(player.暴击率 * 100) + '%'
-  equipment.武器.bao = Math.floor(equipment.武器.bao * 100) + '%'
-  equipment.护具.bao = Math.floor(equipment.护具.bao * 100) + '%'
-  equipment.法宝.bao = Math.floor(equipment.法宝.bao * 100) + '%'
+  // 创建装备数据的副本以进行修改
+  const equipmentCopy = {
+    武器: {
+      ...equipment.武器,
+      bao: Math.floor(equipment.武器.bao * 100) + '%'
+    },
+    护具: {
+      ...equipment.护具,
+      bao: Math.floor(equipment.护具.bao * 100) + '%'
+    },
+    法宝: { ...equipment.法宝, bao: Math.floor(equipment.法宝.bao * 100) + '%' }
+  }
   lingshi = bigNumberTransform(lingshi)
   let hunyin = '未知'
   let A = usr_qq
@@ -657,7 +759,7 @@ export async function get_player_img(e) {
     rank_liandan, // 炼丹境界
     expmax_liandan, // 炼丹需求经验
     equipment, // 装备数据
-    talent: Math.floor(player.修炼效率提升 * 100), //
+    talent: Math.floor(Number(player.修炼效率提升 || 0) * 100), //
     player_action: status, // 当前状态
     this_association, // 宗门信息
     strand_hp,
@@ -700,9 +802,9 @@ export async function get_player_img(e) {
     occupation_level: occupation_level_name,
     occupation_exp: occupation_exp,
     occupation_need_exp: occupation_need_exp,
-    arms: equipment.武器,
-    armor: equipment.护具,
-    treasure: equipment.法宝,
+    arms: equipmentCopy.武器,
+    armor: equipmentCopy.护具,
+    treasure: equipmentCopy.法宝,
     association: this_association,
     learned_gongfa: player.学习的功法,
     婚姻状况: hunyin,
@@ -718,18 +820,18 @@ export async function get_player_img(e) {
  * 我的宗门
  * @return image
  */
-export async function get_association_img(e) {
+export async function get_association_img(e: PublicEventMessageCreate) {
   let item
   let usr_qq = e.UserId
-  const Send = useSend(e)
+  const Send = useSend(e) as any
   //无存档
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
   //门派
-  let player = data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) {
+  const player = getPlayerDataSafe(usr_qq)
+  if (!player || !isNotNull(player.宗门)) {
     return
   }
   //境界
@@ -739,9 +841,20 @@ export async function get_association_img(e) {
     return
   }
   //有加入宗门
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  const zongmenName =
+    typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
+  const ass = data.getAssociation(zongmenName)
+  if (ass === 'error' || Array.isArray(ass)) {
+    Send(Text('宗门数据获取失败'))
+    return
+  }
   //寻找
-  let mainqq = await data.getData('player', ass.宗主)
+  const mainqqData = data.getData('player', ass.宗主)
+  if (mainqqData === 'error' || Array.isArray(mainqqData)) {
+    Send(Text('宗主数据获取失败'))
+    return
+  }
+  const mainqq = mainqqData as Player
   //仙宗
   let xian = ass.power
   let weizhi
@@ -835,15 +948,22 @@ export async function get_association_img(e) {
  * 返回该玩家的装备图片
  * @return image
  */
-export async function get_equipment_img(e) {
+export async function get_equipment_img(
+  e: PublicEventMessageCreate
+): Promise<any> {
   let usr_qq = e.UserId
-  let player = await data.getData('player', usr_qq)
+  let playerData = data.getData('player', usr_qq)
   let ifexistplay = data.existData('player', usr_qq)
-  if (!ifexistplay) {
+  if (!ifexistplay || playerData === 'error' || Array.isArray(playerData)) {
     return
   }
+  let player = playerData as Player
   const bao = Math.trunc(Math.floor(player.暴击率 * 100))
-  let equipment = await data.getData('equipment', usr_qq)
+  let equipmentData = data.getData('equipment', usr_qq)
+  if (equipmentData === 'error' || Array.isArray(equipmentData)) {
+    return
+  }
+  let equipment = equipmentData as Equipment
   let player_data = {
     user_id: usr_qq,
     mdz: player.魔道值,
@@ -856,7 +976,7 @@ export async function get_equipment_img(e) {
     player_bao: bao,
     player_maxHP: player.血量上限,
     player_nowHP: player.当前血量,
-    pifu: Number(player.装备皮肤)
+    pifu: Number(player.装备皮肤 || 0)
   }
   return await puppeteer.screenshot('equipment', e.UserId, player_data)
 }
@@ -864,25 +984,30 @@ export async function get_equipment_img(e) {
  * 返回该玩家的纳戒图片
  * @return image
  */
-export async function get_najie_img(e) {
+export async function get_najie_img(e: PublicEventMessageCreate): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
-  let najie: any = await Read_najie(usr_qq)
+  let playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return
+  }
+  let player = playerData as Player
+  let najie: Najie | null = await Read_najie(usr_qq)
+  if (!najie) return
   const lingshi = Math.trunc(najie.灵石)
-  const lingshi2 = Math.trunc(najie.灵石上限)
-  let strand_hp = Strand(player.当前血量, player.血量上限)
-  let strand_lingshi = Strand(najie.灵石, najie.灵石上限)
+  const lingshi2 = Math.trunc(najie.灵石上限 || 0)
+  let strand_hp: StrandResult = Strand(player.当前血量, player.血量上限)
+  let strand_lingshi: StrandResult = Strand(najie.灵石, najie.灵石上限 || 0)
   let player_data = {
     user_id: usr_qq,
     player: player,
     najie: najie,
     mdz: player.魔道值,
     nickname: player.名号,
-    najie_lv: najie.等级,
+    najie_lv: najie.等级 || 1,
     player_maxHP: player.血量上限,
     player_nowHP: player.当前血量,
     najie_maxlingshi: lingshi2,
@@ -895,7 +1020,7 @@ export async function get_najie_img(e) {
     najie_cailiao: najie.材料,
     strand_hp: strand_hp,
     strand_lingshi: strand_lingshi,
-    pifu: player.练气皮肤
+    pifu: player.练气皮肤 || 0
   }
   return await puppeteer.screenshot('najie', e.UserId, player_data)
 }
@@ -904,13 +1029,20 @@ export async function get_najie_img(e) {
  * 返回境界列表图片
  * @return image
  */
-export async function get_state_img(e, all_level) {
+export async function get_state_img(
+  e: PublicEventMessageCreate,
+  all_level: boolean
+): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
+  let playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return
+  }
+  let player = playerData as Player
   let Level_id = player.level_id
   let Level_list = data.Level_list
   //循环删除表信息
@@ -929,14 +1061,21 @@ export async function get_state_img(e, all_level) {
   return await puppeteer.screenshot('state', e.UserId, state_data)
 }
 
-export async function get_statezhiye_img(e, all_level) {
+export async function get_statezhiye_img(
+  e: PublicEventMessageCreate,
+  all_level: boolean
+): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
-  let Level_id = player.occupation_level
+  let playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return
+  }
+  let player = playerData as Player
+  let Level_id = player.occupation_level || 0
   let Level_list = data.occupation_exp_list
   //循环删除表信息
   if (!all_level) {
@@ -958,13 +1097,20 @@ export async function get_statezhiye_img(e, all_level) {
  * 返回境界列表图片
  * @return image
  */
-export async function get_statemax_img(e, all_level) {
+export async function get_statemax_img(
+  e: PublicEventMessageCreate,
+  all_level: boolean
+): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await data.getData('player', usr_qq)
+  let playerData = data.getData('player', usr_qq)
+  if (playerData === 'error' || Array.isArray(playerData)) {
+    return
+  }
+  let player = playerData as Player
   let Level_id = player.Physique_id
   let LevelMax_list = data.LevelMax_list
   //循环删除表信息
@@ -983,7 +1129,9 @@ export async function get_statemax_img(e, all_level) {
   return await puppeteer.screenshot('statemax', e.UserId, statemax_data)
 }
 
-export async function get_talent_img(e) {
+export async function get_talent_img(
+  e: PublicEventMessageCreate
+): Promise<any> {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -1003,7 +1151,9 @@ export async function get_talent_img(e) {
  * 返回修仙设置
  * @return image
  */
-export async function get_adminset_img(e) {
+export async function get_adminset_img(
+  e: PublicEventMessageCreate
+): Promise<any> {
   const cf = config.getConfig('xiuxian', 'xiuxian')
   let adminset = {
     //CD：分
@@ -1050,7 +1200,12 @@ export async function get_adminset_img(e) {
   return await puppeteer.screenshot('adminset', e.UserId, adminset)
 }
 
-export async function get_ranking_power_img(e, Data, usr_paiming, thisplayer) {
+export async function get_ranking_power_img(
+  e: PublicEventMessageCreate,
+  Data: any[],
+  usr_paiming: number,
+  thisplayer: Player
+): Promise<any> {
   let usr_qq = e.UserId
   let level = data.Level_list.find(
     item => item.level_id == thisplayer.level_id
@@ -1064,7 +1219,11 @@ export async function get_ranking_power_img(e, Data, usr_paiming, thisplayer) {
     usr_paiming: usr_paiming,
     allplayer: Data
   }
-  return await puppeteer.screenshot('ranking_power', e.UserId, ranking_power_data)
+  return await puppeteer.screenshot(
+    'ranking_power',
+    e.UserId,
+    ranking_power_data
+  )
 }
 
 export async function get_ranking_money_img(
@@ -1085,7 +1244,11 @@ export async function get_ranking_money_img(
     usr_paiming: usr_paiming,
     allplayer: Data
   }
-  return await puppeteer.screenshot('ranking_money', e.UserId, ranking_money_data)
+  return await puppeteer.screenshot(
+    'ranking_money',
+    e.UserId,
+    ranking_money_data
+  )
 }
 export async function fixed(usr_qq) {
   fs.copyFileSync(
@@ -1134,7 +1297,11 @@ export async function get_ningmenghome_img(e, thing_type) {
     user_id: usr_qq,
     commodities_list: commodities_list
   }
-  let img = await puppeteer.screenshot('ningmenghome', e.UserId, ningmenghome_data)
+  let img = await puppeteer.screenshot(
+    'ningmenghome',
+    e.UserId,
+    ningmenghome_data
+  )
   return img
 }
 /**
@@ -1179,7 +1346,7 @@ function Strand(
  * 大数字转换，将大额数字转换为万、千万、亿等
  * @param value 数字值
  */
-export function bigNumberTransform(value) {
+export function bigNumberTransform(value: number): string {
   const newValue = ['', '', '']
   let fr = 1000
   let num = 3
@@ -1238,7 +1405,12 @@ export function bigNumberTransform(value) {
 /**
  * 计算战力
  */
-export function GetPower(atk, def, hp, bao) {
+export function GetPower(
+  atk: number,
+  def: number,
+  hp: number,
+  bao: number
+): number {
   let power = (atk + def * 0.8 + hp * 0.6) * (bao + 1)
   power = Math.floor(power)
   return power
@@ -1388,7 +1560,7 @@ export async function setu(e) {
 }
 
 //改变数据格式
-export async function datachange(data) {
+export async function datachange(data: number): Promise<string> {
   if (data / 1000000000000 > 1) {
     return Math.floor((data * 100) / 1000000000000) / 100 + '万亿'
   } else if (data / 100000000 > 1) {
@@ -1396,11 +1568,11 @@ export async function datachange(data) {
   } else if (data / 10000 > 1) {
     return Math.floor((data * 100) / 10000) / 100 + '万'
   } else {
-    return data
+    return data.toString()
   }
 }
 //写入纳戒信息,第二个参数是一个JavaScript对象
-export async function Write_najie(usr_qq, najie) {
+export async function Write_najie(usr_qq: string, najie: Najie): Promise<void> {
   let dir = path.join(__PATH.najie_path, `${usr_qq}.json`)
   let new_ARR = JSON.stringify(najie)
   fs.writeFileSync(dir, new_ARR, 'utf8')
@@ -1409,33 +1581,53 @@ export async function Write_najie(usr_qq, najie) {
 
 //修为数量和灵石数量正增加,负减少
 //使用时记得加await
-export async function Add_灵石(usr_qq, 灵石数量 = 0) {
-  let player: any = await Read_player(usr_qq)
+export async function Add_灵石(
+  usr_qq: string,
+  灵石数量: number = 0
+): Promise<void> {
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   player.灵石 += Math.trunc(灵石数量)
   await Write_player(usr_qq, player)
   return
 }
 
-export async function Add_修为(usr_qq, 修为数量 = 0) {
-  let player: any = await Read_player(usr_qq)
+export async function Add_修为(
+  usr_qq: string,
+  修为数量: number = 0
+): Promise<void> {
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   player.修为 += Math.trunc(修为数量)
   await Write_player(usr_qq, player)
   return
 }
-export async function Add_魔道值(usr_qq, 魔道值 = 0) {
-  let player: any = await Read_player(usr_qq)
+
+export async function Add_魔道值(
+  usr_qq: string,
+  魔道值: number = 0
+): Promise<void> {
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   player.魔道值 += Math.trunc(魔道值)
   await Write_player(usr_qq, player)
   return
 }
-export async function Add_血气(usr_qq, 血气 = 0) {
-  let player: any = await Read_player(usr_qq)
+
+export async function Add_血气(
+  usr_qq: string,
+  血气: number = 0
+): Promise<void> {
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   player.血气 += Math.trunc(血气)
   await Write_player(usr_qq, player)
   return
 }
-export async function Add_HP(usr_qq, blood = 0) {
-  let player: any = await Read_player(usr_qq)
+
+export async function Add_HP(usr_qq: string, blood: number = 0): Promise<void> {
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return
   player.当前血量 += Math.trunc(blood)
   if (player.当前血量 > player.血量上限) {
     player.当前血量 = player.血量上限
@@ -1501,9 +1693,12 @@ export async function Reduse_player_学习功法(usr_qq, gongfa_name) {
 
 //---------------------------------------------分界线------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //修炼效率综合
-export async function player_efficiency(usr_qq) {
+export async function player_efficiency(usr_qq: string) {
   //这里有问题
-  let player = await data.getData('player', usr_qq) //修仙个人信息
+  const player = getPlayerDataSafe(usr_qq) //修仙个人信息
+  if (!player) {
+    return
+  }
   let ass
   let Assoc_efficiency //宗门效率加成
   let linggen_efficiency //灵根效率加成
@@ -1513,17 +1708,23 @@ export async function player_efficiency(usr_qq) {
     //是否存在宗门信息
     Assoc_efficiency = 0 //不存在，宗门效率为0
   } else {
-    ass = await data.getAssociation(player.宗门.宗门名称) //修仙对应宗门信息
-    if (ass.宗门驻地 == 0) {
-      Assoc_efficiency = ass.宗门等级 * 0.05
+    const zongmenName =
+      typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
+    ass = await data.getAssociation(zongmenName) //修仙对应宗门信息
+    if (ass === 'error' || Array.isArray(ass)) {
+      Assoc_efficiency = 0
     } else {
-      let dongTan = await data.bless_list.find(
-        item => item.name == ass.宗门驻地
-      )
-      try {
-        Assoc_efficiency = ass.宗门等级 * 0.05 + dongTan.efficiency
-      } catch {
-        Assoc_efficiency = ass.宗门等级 * 0.05 + 0.5
+      if (ass.宗门驻地 == 0) {
+        Assoc_efficiency = ass.宗门等级 * 0.05
+      } else {
+        let dongTan = await data.bless_list.find(
+          item => item.name == ass.宗门驻地
+        )
+        try {
+          Assoc_efficiency = ass.宗门等级 * 0.05 + dongTan.efficiency
+        } catch {
+          Assoc_efficiency = ass.宗门等级 * 0.05 + 0.5
+        }
       }
     }
   }
@@ -1539,25 +1740,28 @@ export async function player_efficiency(usr_qq) {
         continue label1
       }
     }
-    player.学习的功法.splice(i, 1)
+    player.学习的功法.splice(Number(i), 1)
   }
-  if (player.仙宠.type == '修炼') {
+  if (player.仙宠?.type == '修炼') {
     // 是否存在修炼仙宠
     xianchong_efficiency = player.仙宠.加成 // 存在修炼仙宠，仙宠效率为仙宠效率加成
   }
   let dy: any = await Read_danyao(usr_qq)
   let bgdan = dy.biguanxl
-  if (Math.floor(player.修炼效率提升) != Math.floor(player.修炼效率提升)) {
+  const currentXiulianEfficiency = Number(player.修炼效率提升 || 0)
+  if (
+    Math.floor(currentXiulianEfficiency) != Math.floor(currentXiulianEfficiency)
+  ) {
     player.修炼效率提升 = 0
   }
 
   player.修炼效率提升 =
-    linggen_efficiency +
+    (linggen_efficiency || 0) +
     Assoc_efficiency +
     gongfa_efficiency +
     xianchong_efficiency +
     bgdan //修炼效率综合
-  data.setData('player', usr_qq, player)
+  await setPlayerDataSafe(usr_qq, player)
   return
 }
 /**
@@ -1812,9 +2016,10 @@ export async function instead_equipment(usr_qq, equipment_data) {
   }
   return
 }
-export async function dujie(user_qq) {
+export async function dujie(user_qq: string): Promise<number> {
   let usr_qq = user_qq
-  let player: any = await Read_player(usr_qq)
+  let player: Player | null = await Read_player(usr_qq)
+  if (!player) return 0
   //根据当前血量才算
   //计算系数
   let new_blood = player.当前血量
@@ -1894,7 +2099,7 @@ export async function Get_xiuwei(usr_qq) {
 }
 
 //获取随机灵根
-export async function get_random_talent() {
+export async function get_random_talent(): Promise<TalentInfo> {
   let talent
   if (get_random_res(体质概率)) {
     talent = data.talent_list.filter(item => item.type == '体质')
@@ -2039,12 +2244,12 @@ export async function dataverification(e) {
  * @param obj 对象
  * @returns
  */
-export function isNotNull(obj) {
+export function isNotNull(obj: any): boolean {
   if (obj == undefined || obj == null) return false
   return true
 }
 
-export function isNotBlank(value) {
+export function isNotBlank(value: any): boolean {
   if (value ?? '' !== '') {
     return true
   } else {
@@ -2748,7 +2953,11 @@ export async function get_supermarket_img(e, thing_class) {
     user_id: usr_qq,
     Exchange_list: Exchange_list
   }
-  let img = await puppeteer.screenshot('supermarket', e.UserId, supermarket_data)
+  let img = await puppeteer.screenshot(
+    'supermarket',
+    e.UserId,
+    supermarket_data
+  )
   return img
 }
 
@@ -2780,7 +2989,7 @@ export async function get_forum_img(e, thing_class) {
     Forum: Forum
   }
 
-  let img = await puppeteer.screenshot('forum', e.UserId,forum_data)
+  let img = await puppeteer.screenshot('forum', e.UserId, forum_data)
   return img
 }
 
@@ -2857,30 +3066,40 @@ export async function Goweizhi(e, weizhi, addres) {
 
 /**
  * 增加player文件某属性的值（在原本的基础上增加）
- * @param user_qq
+ * @param user_qq 用户QQ号
  * @param num 属性的value
  * @param type 修改的属性
  * @returns {Promise<void>}
  */
-export async function setFileValue(user_qq, num, type) {
+export async function setFileValue(
+  user_qq: string,
+  num: number,
+  type: string
+): Promise<void> {
   let user_data = data.getData('player', user_qq)
-  let current_num = user_data[type] //当前灵石数量
-  let new_num = current_num + num
-  if (type == '当前血量' && new_num > user_data.血量上限) {
-    new_num = user_data.血量上限 //治疗血量需要判读上限
+  if (user_data === 'error' || Array.isArray(user_data)) {
+    return
   }
-  user_data[type] = new_num
-  await data.setData('player', user_qq, user_data)
+  const player = user_data as Player
+  let current_num = player[type] || 0 //当前属性数量
+  let new_num = current_num + num
+  if (type == '当前血量' && new_num > player.血量上限) {
+    new_num = player.血量上限 //治疗血量需要判读上限
+  }
+  player[type] = new_num
+  await data.setData('player', user_qq, player as any)
   return
 }
 
-export async function Synchronization_ASS(e) {
+export async function Synchronization_ASS(
+  e: PublicEventMessageCreate
+): Promise<void> {
   if (!e.IsMaster) {
     return
   }
-  const Send = useSend(e)
+  const Send = useSend(e as any)
   Send(Text('宗门开始同步'))
-  let assList = []
+  let assList: string[] = []
   let files = fs
     .readdirSync('./resources/data/association')
     .filter(file => file.endsWith('.json'))
@@ -2890,57 +3109,67 @@ export async function Synchronization_ASS(e) {
   }
   for (let ass_name of assList) {
     let ass = await data.getAssociation(ass_name)
-    let player = data.getData('player', ass.宗主)
-    let now_level_id = data.Level_list.find(
-      item => item.level_id == player.level_id
-    ).level_id
+    if (ass === 'error' || Array.isArray(ass)) {
+      continue
+    }
+    const association = ass as any // 使用 any 来处理复杂的宗门数据结构
+    let playerData = data.getData('player', association.宗主)
+    if (playerData === 'error' || Array.isArray(playerData)) {
+      continue
+    }
+    let player = playerData as Player
+    let now_level_id =
+      data.Level_list.find(item => item.level_id == player.level_id)
+        ?.level_id || 1
     //补
-    if (!isNotNull(ass.power)) {
-      ass.power = 0
+    if (!isNotNull(association.power)) {
+      association.power = 0
     }
     if (now_level_id < 42) {
-      ass.power = 0 // 凡界
+      association.power = 0 // 凡界
     } else {
-      ass.power = 1 //  仙界
+      association.power = 1 //  仙界
     }
-    if (ass.power == 1) {
-      if (ass.大阵血量 == 114514) {
-        ass.大阵血量 = 1145140
+    if (association.power == 1) {
+      if (association.大阵血量 == 114514) {
+        association.大阵血量 = 1145140
       }
-      let level = ass.最低加入境界
+      let level = association.最低加入境界
       if (level < 42) {
-        ass.最低加入境界 = 42
+        association.最低加入境界 = 42
       }
     }
-    if (ass.power == 0 && ass.最低加入境界 > 41) {
-      ass.最低加入境界 = 41
+    if (association.power == 0 && association.最低加入境界 > 41) {
+      association.最低加入境界 = 41
     }
-    if (!isNotNull(ass.宗门驻地)) {
-      ass.宗门驻地 = 0
+    if (!isNotNull(association.宗门驻地)) {
+      association.宗门驻地 = 0
     }
-    if (!isNotNull(ass.宗门建设等级)) {
-      ass.宗门建设等级 = 0
+    if (!isNotNull(association.宗门建设等级)) {
+      association.宗门建设等级 = 0
     }
-    if (!isNotNull(ass.宗门神兽)) {
-      ass.宗门神兽 = 0
+    if (!isNotNull(association.宗门神兽)) {
+      association.宗门神兽 = 0
     }
-    if (!isNotNull(ass.副宗主)) {
-      ass.副宗主 = []
+    if (!isNotNull(association.副宗主)) {
+      association.副宗主 = []
     }
-    await data.setAssociation(ass_name, ass)
+    await data.setAssociation(ass_name, association)
   }
 
   Send(Text('宗门同步结束'))
   return
 }
 
-export async function synchronization(e) {
+export async function synchronization(
+  e: PublicEventMessageCreate
+): Promise<void> {
   if (!e.IsMaster) {
     return
   }
-  const Send = useSend(e)
+  const Send = useSend(e as any)
   Send(Text('存档开始同步'))
-  let playerList: any = []
+  let playerList: string[] = []
   let files = fs
     .readdirSync('./resources/data/xiuxian_player')
     .filter(file => file.endsWith('.json'))
@@ -2950,10 +3179,18 @@ export async function synchronization(e) {
   }
   for (let player_id of playerList) {
     let usr_qq = player_id
-    let player = await data.getData('player', usr_qq)
-    let najie: any = await Read_najie(usr_qq)
-    let equipment: any = await Read_equipment(usr_qq)
-    let ziduan = [
+    let playerData = data.getData('player', usr_qq)
+    if (playerData === 'error' || Array.isArray(playerData)) {
+      continue
+    }
+    let player = playerData as any // 使用 any 处理复杂的玩家数据结构
+    let najie: Najie | null = await Read_najie(usr_qq)
+    let equipment: Equipment | null = await Read_equipment(usr_qq)
+    if (!najie || !equipment) {
+      continue
+    }
+
+    const ziduan: string[] = [
       '镇妖塔层数',
       '神魄段数',
       '魔道值',
@@ -2974,7 +3211,7 @@ export async function synchronization(e) {
       'addluckyNo',
       '神石'
     ]
-    let ziduan2 = [
+    const ziduan2: string[] = [
       'Physique_id',
       'linggenshow',
       'power_place',
@@ -2984,8 +3221,9 @@ export async function synchronization(e) {
       '攻击',
       '防御'
     ]
-    let ziduan3 = ['linggen', 'occupation', '仙宠']
-    let ziduan4 = ['材料', '草药', '仙宠', '仙宠口粮']
+    const ziduan3: string[] = ['linggen', 'occupation', '仙宠']
+    const ziduan4: string[] = ['材料', '草药', '仙宠', '仙宠口粮']
+
     for (let k of ziduan) {
       if (!isNotNull(player[k])) {
         player[k] = 0
@@ -3002,8 +3240,8 @@ export async function synchronization(e) {
       }
     }
     for (let k of ziduan4) {
-      if (!isNotNull(najie[k])) {
-        najie[k] = []
+      if (!isNotNull((najie as any)[k])) {
+        ;(najie as any)[k] = []
       }
     }
     if (!isNotNull(player.breakthrough)) {
@@ -3013,12 +3251,12 @@ export async function synchronization(e) {
       player.id = usr_qq
     }
     if (!isNotNull(player.轮回点) || player.轮回点 > 10) {
-      player.轮回点 = 10 - player.lunhui
+      player.轮回点 = 10 - (player.lunhui || 0)
     }
     try {
       await Read_danyao(usr_qq)
     } catch {
-      const arr = {
+      const arr: DanyaoStatus = {
         biguan: 0, //闭关状态
         biguanxl: 0, //增加效率
         xingyun: 0,
@@ -3034,7 +3272,7 @@ export async function synchronization(e) {
       await Write_danyao(usr_qq, arr)
     }
 
-    let suoding = [
+    const suoding: string[] = [
       '装备',
       '丹药',
       '道具',
@@ -3045,53 +3283,83 @@ export async function synchronization(e) {
       '仙宠口粮'
     ]
     for (let j of suoding) {
-      najie[j].forEach(item => {
-        if (!isNotNull(item.islockd)) {
-          item.islockd = 0
-        }
-      })
+      const items = (najie as any)[j] as any[]
+      if (Array.isArray(items)) {
+        items.forEach(item => {
+          if (!isNotNull(item.islockd)) {
+            item.islockd = 0
+          }
+        })
+      }
     }
     //仙宠调整
-    if (player.仙宠.id > 2930 && player.仙宠.id < 2936) {
+    if (player.仙宠?.id > 2930 && player.仙宠?.id < 2936) {
       player.仙宠.初始加成 = 0.002
       player.仙宠.每级增加 = 0.002
-      player.仙宠.加成 = player.仙宠.每级增加 * player.仙宠.等级
-      player.幸运 = player.addluckyNo + player.仙宠.加成
-    } else player.幸运 = player.addluckyNo
-    for (let j of najie.仙宠) {
-      if (j.id > 2930 && player.仙宠.id < 2936) {
-        j.初始加成 = 0.002
-        j.每级增加 = 0.002
-      }
+      player.仙宠.加成 = player.仙宠.每级增加 * (player.仙宠.等级 || 1)
+      player.幸运 = (player.addluckyNo || 0) + player.仙宠.加成
+    } else {
+      player.幸运 = player.addluckyNo || 0
     }
-    //装备调整
-    let wuqi = ['雾切之回光', '护摩之杖', '磐岩结绿', '三圣器·朗基努斯之枪']
-    let wuqi2 = ['紫云剑', '炼血竹枪', '少阴玉剑', '纯阴金枪']
-    for (let j of najie.装备) {
-      for (let k in wuqi) {
-        if (j.name == wuqi[k]) {
-          j.name = wuqi2[k]
+
+    const najieXianchong = (najie as any).仙宠 as any[]
+    if (Array.isArray(najieXianchong)) {
+      for (let j of najieXianchong) {
+        if (j.id > 2930 && j.id < 2936) {
+          j.初始加成 = 0.002
+          j.每级增加 = 0.002
         }
-        if (equipment.武器.name == wuqi[k]) equipment.武器.name = wuqi2[k]
-        if (equipment.法宝.name == wuqi[k]) equipment.法宝.name = wuqi2[k]
       }
     }
-    //口粮调整
-    for (let j of najie.仙宠口粮) {
-      j.class = '仙宠口粮'
+
+    //装备调整
+    const wuqi: string[] = [
+      '雾切之回光',
+      '护摩之杖',
+      '磐岩结绿',
+      '三圣器·朗基努斯之枪'
+    ]
+    const wuqi2: string[] = ['紫云剑', '炼血竹枪', '少阴玉剑', '纯阴金枪']
+
+    const najieEquipment = (najie as any).装备 as any[]
+    if (Array.isArray(najieEquipment)) {
+      for (let j of najieEquipment) {
+        for (let k in wuqi) {
+          if (j.name == wuqi[k]) {
+            j.name = wuqi2[k]
+          }
+          if (equipment.武器.name == wuqi[k]) equipment.武器.name = wuqi2[k]
+          if (equipment.法宝.name == wuqi[k]) equipment.法宝.name = wuqi2[k]
+        }
+      }
     }
-    let linggeng = data.talent_list.find(item => item.name == player.灵根.name)
+
+    //口粮调整
+    const najieKouliang = (najie as any).仙宠口粮 as any[]
+    if (Array.isArray(najieKouliang)) {
+      for (let j of najieKouliang) {
+        j.class = '仙宠口粮'
+      }
+    }
+
+    const linggeng = data.talent_list.find(
+      item => item.name == player.灵根?.name
+    )
     if (linggeng) player.灵根 = linggeng
 
     //隐藏灵根
-    if (player.隐藏灵根)
-      player.隐藏灵根 = data.yincang.find(
-        item => item.name == player.隐藏灵根.name
+    if (player.隐藏灵根) {
+      const yincang = data.yincang.find(
+        item => item.name == player.隐藏灵根?.name
       )
+      if (yincang) player.隐藏灵根 = yincang
+    }
+
     //重新根据id去重置仙门
-    let now_level_id = await data.Level_list.find(
+    const levelInfo = data.Level_list.find(
       item => item.level_id == player.level_id
-    ).level_id
+    )
+    const now_level_id = levelInfo?.level_id || 1
     if (now_level_id < 42) {
       player.power_place = 1
     }
@@ -3107,7 +3375,7 @@ export async function synchronization(e) {
     const thingName = ''; // 填写欲抹除物品名称
   
     const objArr = await clearNajieThing(thingType, thingName);
-    Send(Text('物品自动抹除结束');
+    Send(Text('物品自动抹除结束'));
   
     const newThingType = '';
     const newThingName = ''; // 填写新物品
@@ -3117,7 +3385,7 @@ export async function synchronization(e) {
       const usrId = Object.entries(uid_tnum)[0][0];
       Add_najie_thing(usrId, newThingName, newThingType, uid_tnum.usrId * N);
     });
-    Send(Text('物品自动替换结束');
+    Send(Text('物品自动替换结束'));
   */
   return
 }
