@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../supermarket/supermarket.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import supermarketURL from '@src/resources/img/supermarket/supermarket.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import supermarketURL from '@src/resources/img/fairyrealm.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const Forum = ({ Forum: forumData }) => {
   return (
@@ -35,7 +35,7 @@ const Forum = ({ Forum: forumData }) => {
             width: 280px;
             height: 280px;
           }
-        `,
+        `
           }}
         />
       </head>

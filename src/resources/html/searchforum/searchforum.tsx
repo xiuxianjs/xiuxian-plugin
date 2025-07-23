@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../ningmenghome/ningmenghome.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import ningmenghomeURL from '@src/resources/img/ningmenghome/ningmenghome.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const SearchForum = ({ Forum, nowtime }) => {
   return (
@@ -35,7 +35,7 @@ const SearchForum = ({ Forum, nowtime }) => {
             width: 280px;
             height: 280px;
           }
-        `,
+        `
           }}
         />
       </head>

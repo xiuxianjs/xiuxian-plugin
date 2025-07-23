@@ -2,16 +2,17 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../ningmenghome/ningmenghome.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import ningmenghomeURL from '@src/resources/img/ningmenghome/ningmenghome.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const ZongMeng = ({ temp }) => {
   return (
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML = {{
-          __html:`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -35,7 +36,8 @@ const ZongMeng = ({ temp }) => {
             height: 280px;
           }
         `
-        }}>
+          }}
+        >
           {}
         </style>
       </head>

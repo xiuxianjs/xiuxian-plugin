@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './forbidden_area.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import forbiddenAreaBgURL from '@src/resources/img/forbidden_area/forbidden_area.jpg'
-import userStateURL from '@src/resources/img/state/user_state.png'
+import forbiddenAreaBgURL from '@src/resources/img/fairyrealm.jpg'
+import userStateURL from '@src/resources/img/user_state.png'
 import cardBgURL from '@src/resources/img/forbidden_area/card.jpg'
 
 const ForbiddenArea = ({ didian_list = [] }) => {
@@ -43,7 +43,7 @@ const ForbiddenArea = ({ didian_list = [] }) => {
             background-size: cover;
             background-image: url('${cardBgURL}');
           }
-          `,
+          `
           }}
         />
       </head>

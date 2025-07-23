@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './shitu.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import playerURL from '@src/resources/img/player/player.jpg'
-import userStateURL from '@src/resources/img/state/user_state.png'
+import playerURL from '@src/resources/img/player.jpg'
+import userStateURL from '@src/resources/img/user_state.png'
 
 const Shitu = ({
   user_id,
@@ -20,10 +20,6 @@ const Shitu = ({
   wancheng3,
   chengyuan
 }) => {
-  const whenError = img => {
-    img.src = '@src/resources/img/player/default-avatar.png'
-  }
-
   return (
     <html>
       <head>
@@ -69,7 +65,6 @@ const Shitu = ({
               <img
                 className="user_top_img"
                 src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-                onError={e => whenError(e.target)}
               />
             </div>
             <div className="user_top_left_qq">QQ:{user_id}</div>

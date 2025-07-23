@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './shenbing.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import stateURL from '@src/resources/img/state/state.jpg'
-import userStateURL from '@src/resources/img/state/user_state.png'
+import stateURL from '@src/resources/img/state.jpg'
+import userStateURL from '@src/resources/img/user_state.png'
 
 const Shenbing = ({ newwupin }) => {
   return (
@@ -36,7 +36,7 @@ const Shenbing = ({ newwupin }) => {
             width: 280px;
             height: 280px;
           }
-        `,
+        `
           }}
         />
       </head>

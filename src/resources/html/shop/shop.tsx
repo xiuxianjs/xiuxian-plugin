@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './shop.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import backgroundURL from '@src/resources/img/najie/najie.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import backgroundURL from '@src/resources/img/najie.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const Shop = ({ name, level, state, thing = [] }) => {
   return (

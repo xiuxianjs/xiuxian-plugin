@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './gongfa.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import playerURL from '@src/resources/img/player/player.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import playerURL from '@src/resources/img/player.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const Gongfa = ({ nickname, gongfa_need = [], gongfa_have = [] }) => {
   return (

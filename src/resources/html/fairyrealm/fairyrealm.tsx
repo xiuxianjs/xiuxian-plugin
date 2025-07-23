@@ -2,9 +2,9 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './fairyrealm.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import fairyrealmBgURL from '@src/resources/img/fairyrealm/fairyrealm.jpg'
-import userStateURL from '@src/resources/img/state/user_state.png'
-import cardBgURL from '@src/resources/img/fairyrealm/card.jpg'
+import fairyrealmBgURL from '@src/resources/img/fairyrealm.jpg'
+import userStateURL from '@src/resources/img/user_state.png'
+import cardBgURL from '@src/resources/img/card.jpg'
 
 const FairyRealm = ({ didian_list = [] }) => {
   return (

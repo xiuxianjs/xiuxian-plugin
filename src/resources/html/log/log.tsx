@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './log.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import najieURL from '@src/resources/img/najie/najie.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import najieURL from '@src/resources/img/najie.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const Log = ({ log }) => {
   return (

@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './tuzhi.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import tuzhiURL from '@src/resources/img/tuzhi/tuzhi.jpg'
-import userStateURL from '@src/resources/img/state/user_state.png'
+import tuzhiURL from '@src/resources/img/fairyrealm.jpg'
+import userStateURL from '@src/resources/img/user_state.png'
 
 const Tuzhi = ({ tuzhi_list }) => {
   return (
@@ -11,8 +11,9 @@ const Tuzhi = ({ tuzhi_list }) => {
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML = {{
-          __html:`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
@@ -36,7 +37,8 @@ const Tuzhi = ({ tuzhi_list }) => {
             height: 280px;
           }
         `
-        }}>
+          }}
+        >
           {}
         </style>
       </head>

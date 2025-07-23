@@ -3,8 +3,8 @@ import React from 'react'
 import commonCssURL from './common.css'
 import cssURL from './shituhelp.css'
 import NumberURL from '@src/resources/font/tttgbnumber.ttf'
-import bgURL from '@src/resources/img/help/shituhelp.jpg'
-import iconURL from '@src/resources/img/help/icon.png'
+import bgURL from '@src/resources/img/shituhelp.jpg'
+import iconURL from '@src/resources/img/icon.png'
 
 const ShituHelp = ({ version, helpData = [] }) => {
   return (

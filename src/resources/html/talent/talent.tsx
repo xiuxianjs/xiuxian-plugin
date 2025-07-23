@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './talent.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import talentURL from '@src/resources/img/talent/talent.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import talentURL from '@src/resources/img/fairyrealm.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const Talent = ({ talent_list = [] }) => {
   return (

@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../state/state.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import stateURL from '@src/resources/img/state/state.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import stateURL from '@src/resources/img/state.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const RankingPower = ({
   user_id,

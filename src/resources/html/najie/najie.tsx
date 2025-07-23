@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './najie.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import backgroundURL from '@src/resources/img/player_pifu/0.jpg'
-import user_stateURL from '@src/resources/img/state/user_state.png'
+import backgroundURL from '@src/resources/img/player.jpg'
+import user_stateURL from '@src/resources/img/user_state.png'
 
 const Najie = ({
   user_id,
@@ -12,9 +12,6 @@ const Najie = ({
   najie = {},
   strand_lingshi = {}
 }) => {
-  const whenError = img => {
-    img.src = 'default-avatar.png'
-  }
   const qualities = ['劣', '普', '优', '精', '极', '绝', '顶']
   const lockStatus = ['未锁定', '已锁定']
   const elements = ['金', '木', '土', '水', '火']
@@ -75,7 +72,6 @@ const Najie = ({
                 <img
                   className="user_top_img"
                   src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-                  onError={e => whenError(e.target)}
                 />
               </div>
               <div className="user_top_font_left">{user_id}</div>

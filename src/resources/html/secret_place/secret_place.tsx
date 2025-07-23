@@ -2,8 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './secret_place.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import secretPlaceURL from '@src/resources/img/secret_place/secret_place.jpg'
-import userStateURL from '@src/resources/img/state/user_state.png'
+import secretPlaceURL from '@src/resources/img/fairyrealm.jpg'
+import userStateURL from '@src/resources/img/user_state.png'
 import cardURL from '@src/resources/img/secret_place/card.jpg'
 
 const SecretPlace = ({ didian_list }) => {
@@ -43,7 +43,7 @@ const SecretPlace = ({ didian_list }) => {
             background-size: cover;
             background-image: url('${cardURL}');
           }
-        `,
+        `
           }}
         />
       </head>

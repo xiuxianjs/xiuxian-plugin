@@ -1,8 +1,8 @@
 import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './valuables.css'
-import valuablesTopURL from '@src/resources/img/valuables/valuables-top.jpg'
-import valuablesDanyaoURL from '@src/resources/img/valuables/valuables-danyao.jpg'
+import valuablesTopURL from '@src/resources/img/valuables-top.jpg'
+import valuablesDanyaoURL from '@src/resources/img/valuables-danyao.jpg'
 
 const Valuables = () => {
   return (
@@ -10,8 +10,9 @@ const Valuables = () => {
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML = {{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           body {
             transform: scale(1);
             width: 100%;
@@ -40,7 +41,8 @@ const Valuables = () => {
             padding-top: 20px;
           }
         `
-        }}>
+          }}
+        >
           {}
         </style>
       </head>
