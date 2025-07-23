@@ -2,13 +2,13 @@ import { Text, useSend } from 'alemonjs'
 import { exec } from 'child_process'
 
 import { selects } from '@src/response/index'
-import { createRequire } from 'module'
-import { dirname } from 'path'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 
 export const regular = /^(#|\/)修仙更新/
 
-const require = createRequire(import.meta.url)
-const mdDir = dirname(require.resolve('../../../../../README_DEV.md'))
+const currentDir = dirname(fileURLToPath(import.meta.url))
+const mdDir = join(currentDir, '../../../../../')
 
 export default onResponse(selects, e => {
   const Send = useSend(e)
