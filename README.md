@@ -50,6 +50,14 @@ yarn dev --login gui
 
 > 可在vscode中安装alemonjs扩展以支持沙河环境登录
 
+- 启动图片开发工具
+
+> mock数据来源于开发时触发的指令，请先出发图片对应指令，生产mock数据后进行
+
+```sh
+yarn view
+```
+
 ## 运行配置
 
 > alemon.config.yaml

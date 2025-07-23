@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs, { mkdirSync, writeFileSync } from 'fs'
 import path from 'path'
 import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
@@ -812,6 +812,11 @@ export async function get_player_img(e: PublicEventMessageCreate) {
     护具评级: 护具评级,
     法宝评级: 法宝评级,
     avatar: player.avatar
+  }
+  if (process.env.NODE_ENV === 'development') {
+    const dir = './views'
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(`${dir}/user.json`, JSON.stringify(player_data, null, 2))
   }
   return await puppeteer.screenshot('player', e.UserId, player_data)
 }
