@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   //对方
-  const Mentions = (await useMention(e)[0].findOne()).data
+  const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }

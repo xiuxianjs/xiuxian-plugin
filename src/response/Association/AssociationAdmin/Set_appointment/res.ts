@@ -12,7 +12,7 @@ const 内门弟子上限 = [2, 3, 4, 5, 6, 8, 10, 12]
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  const Mentions = (await useMention(e)[0].findOne()).data
+  const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }

@@ -3,13 +3,13 @@ import { Text, useSend, useMention } from 'alemonjs'
 import { existplayer, Read_player, Write_player } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?打落凡间.*$/
+export const regular = /^(#|\/)打落凡间.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   {
     if (!e.IsMaster) return false
-    const Mentions = (await useMention(e)[0].findOne()).data
+    const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
     if (!Mentions || Mentions.length === 0) {
       return // @ 提及为空
     }
