@@ -7,9 +7,8 @@ import { selects } from '@src/response/index'
 export const regular = /^(#|\/)修仙管理$/
 
 export default onResponse(selects, async e => {
-  logger.info(await e.UserAvatar.toURL())
   const Send = useSend(e)
-  let data = await Help.setup(e)
+  let data = await Help.setup()
   if (!data) return false
   let img = await cache(data, e.UserId)
   await Send(Image(img))
