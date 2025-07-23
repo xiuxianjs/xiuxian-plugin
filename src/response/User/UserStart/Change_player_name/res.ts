@@ -1,32 +1,30 @@
 import { Text, useSend } from 'alemonjs'
-
 import { redis } from '@src/api/api'
 import { existplayer, shijianc, Read_player, Write_player } from '@src/model'
 import { Show_player } from '../user'
-
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?(改名.*)|(设置道宣.*)$/
+
+export const regular = /^(#|＃|\/)?(改名|设置道宣).*$/
+
+// 切割正则
+const regularCut = /^(#|＃|\/)?(改名|设置道宣)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  //检索方法
-  let reg = new RegExp(/改名|设置道宣/)
-  let func = reg.exec(e.MessageText)[0]
-  //
-  if (func == '改名') {
-    let new_name = e.MessageText.replace(/(#|\/)改名/, '')
+  if (!ifexistplay) return
+  if (/改名/.test(e.MessageText)) {
+    let new_name = e.MessageText.replace(regularCut, '')
     new_name = new_name.replace(' ', '')
     new_name = new_name.replace('+', '')
     if (new_name.length == 0) {
       Send(Text('改名格式为:【#改名张三】请输入正确名字'))
-      return false
+      return
     } else if (new_name.length > 8) {
       Send(Text('玩家名字最多八字'))
-      return false
+      return
     }
     let player: any = {}
     let now = new Date()
@@ -44,12 +42,12 @@ export default onResponse(selects, async e => {
       Today.D == lastsetname_time.D
     ) {
       Send(Text('每日只能改名一次'))
-      return false
+      return
     }
     player = await Read_player(usr_qq)
     if (player.灵石 < 1000) {
       Send(Text('改名需要1000灵石'))
-      return false
+      return
     }
     player.名号 = new_name
     redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setname_time', nowTime) //redis设置本次改名时间戳
@@ -57,18 +55,18 @@ export default onResponse(selects, async e => {
     await Write_player(usr_qq, player)
     //Add_灵石(usr_qq, -100);
     Show_player(e)
-    return false
+    return
   }
   //设置道宣
-  else if (func == '设置道宣') {
-    let new_msg = e.MessageText.replace(/(#|\/)设置道宣/, '')
+  else {
+    let new_msg = e.MessageText.replace(regularCut, '')
     new_msg = new_msg.replace(' ', '')
     new_msg = new_msg.replace('+', '')
     if (new_msg.length == 0) {
-      return false
+      return
     } else if (new_msg.length > 50) {
       Send(Text('道宣最多50字符'))
-      return false
+      return
     }
     let player: any = {}
     let now = new Date()
@@ -88,7 +86,7 @@ export default onResponse(selects, async e => {
       Today.D == lastsetxuanyan_time.D
     ) {
       Send(Text('每日仅可更改一次'))
-      return false
+      return
     }
     //这里有问题，写不进去
     player = await Read_player(usr_qq)
@@ -96,6 +94,6 @@ export default onResponse(selects, async e => {
     redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setxuanyan_time', nowTime) //redis设置本次设道置宣时间戳
     await Write_player(usr_qq, player)
     Show_player(e)
-    return false
+    return
   }
 })
