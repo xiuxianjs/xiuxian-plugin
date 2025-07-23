@@ -983,6 +983,11 @@ export async function get_equipment_img(
     player_nowHP: player.当前血量,
     pifu: Number(player.装备皮肤 || 0)
   }
+  if (process.env.NODE_ENV === 'development') {
+    const dir = './views'
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(`${dir}/equipment.json`, JSON.stringify(player_data, null, 2))
+  }
   return await puppeteer.screenshot('equipment', e.UserId, player_data)
 }
 /**
@@ -1505,6 +1510,11 @@ export async function get_tuzhi_img(e) {
   let tuzhi_data = {
     user_id: usr_qq,
     tuzhi_list: tuzhi_list
+  }
+  if (process.env.NODE_ENV === 'development') {
+    const dir = './views'
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(`${dir}/tuzhi.json`, JSON.stringify(tuzhi_data, null, 2))
   }
   let img = await puppeteer.screenshot('tuzhi', e.UserId, tuzhi_data)
   return img

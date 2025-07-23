@@ -173,7 +173,7 @@
   white-space: nowrap;
   border-radius: 10px;
   background-color: rgb(73 88 74 / 65%);
-  padding: 0 7px;
+  /* padding: 0 7px; */
 }
 
 .xueliang {
@@ -318,7 +318,7 @@
   width: 300px;
   height: 100%;
   font-weight: 500;
-  font-family: 'NZBZ';
+  /* font-family: 'NZBZ'; */
   font-size: 20px;
   color: aliceblue;
 }

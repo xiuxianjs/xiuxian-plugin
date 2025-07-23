@@ -4,10 +4,84 @@ import cssURL from './equipment.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import backgroundURL from '@src/resources/img/0.jpg'
 
-const Equipment = ({
-  arms = {},
-  armor = {},
-  treasure = {},
+/**
+ * 装备项接口
+ */
+interface EquipmentItem {
+  name: string
+  pinji: number
+  id: number
+  atk: number
+  def: number
+  HP: number
+  bao: number
+}
+
+/**
+ * 装备页面属性接口
+ */
+interface EquipmentProps {
+  arms?: EquipmentItem
+  armor?: EquipmentItem
+  treasure?: EquipmentItem
+  nickname: string
+  player_maxHP: number
+  player_atk: number
+  player_def: number
+  player_bao: number
+}
+
+/**
+ * 装备信息组件
+ */
+const EquipmentCard: React.FC<{
+  title: string
+  equipment: EquipmentItem
+  qualities: string[]
+  renderStats: (item: EquipmentItem) => {
+    attribute: string
+    atk: string
+    def: string
+    HP: string
+  }
+}> = ({ title, equipment, qualities, renderStats }) => (
+  <div className="equipment-card">
+    <div className="user_font_title">{title}</div>
+    <div className="user_font">
+      名称:{equipment.name}({qualities[equipment.pinji]})
+    </div>
+    <div className="user_font">属性:{renderStats(equipment).attribute}</div>
+    <div className="user_font">攻击:{renderStats(equipment).atk}</div>
+    <div className="user_font">防御:{renderStats(equipment).def}</div>
+    <div className="user_font">血量:{renderStats(equipment).HP}</div>
+    <div className="user_font">暴击率:{(equipment.bao * 100).toFixed(0)}%</div>
+  </div>
+)
+
+/**
+ * 属性板组件
+ */
+const PlayerStats: React.FC<{
+  nickname: string
+  player_maxHP: number
+  player_atk: number
+  player_def: number
+  player_bao: number
+}> = ({ nickname, player_maxHP, player_atk, player_def, player_bao }) => (
+  <div className="equipment-card">
+    <div className="user_font_title">[属性板]</div>
+    <div className="user_font2">道号:{nickname}</div>
+    <div className="user_font2">血量:{player_maxHP.toFixed(0)}</div>
+    <div className="user_font2">攻击:{player_atk.toFixed(0)}</div>
+    <div className="user_font2">防御:{player_def.toFixed(0)}</div>
+    <div className="user_font2">暴击率:{player_bao.toFixed(0)}%</div>
+  </div>
+)
+
+const Equipment: React.FC<EquipmentProps> = ({
+  arms = { name: '无', pinji: 0, id: 1, atk: 0, def: 0, HP: 0, bao: 0 },
+  armor = { name: '无', pinji: 0, id: 1, atk: 0, def: 0, HP: 0, bao: 0 },
+  treasure = { name: '无', pinji: 0, id: 1, atk: 0, def: 0, HP: 0, bao: 0 },
   nickname,
   player_maxHP,
   player_atk,
@@ -46,11 +120,13 @@ const Equipment = ({
           body {
             transform: scale(1);
             width: 100%;
-            height: 480px;
+            // height: 600px;
             margin: 0;
-            text-align: center;
             background-image: url('${backgroundURL}');
             background-size: 100% auto;
+            // display: flex;
+            // align-items: center;
+            // justify-content: center;
           }
         `
           }}
@@ -58,64 +134,35 @@ const Equipment = ({
       </head>
 
       <body>
-        <div className="user_width">
-          <div className="user_left">
-            <div className="user_left_top">
-              <div className="user_font_title">[武器]</div>
-              <div className="user_font">
-                名称:{arms.name}({qualities[arms.pinji]})
-              </div>
-              <div className="user_font">
-                属性:{renderStats(arms).attribute}
-              </div>
-              <div className="user_font">攻击:{renderStats(arms).atk}</div>
-              <div className="user_font">防御:{renderStats(arms).def}</div>
-              <div className="user_font">血量:{renderStats(arms).HP}</div>
-              <div className="user_font">
-                暴击率:{(arms.bao * 100).toFixed(0)}%
-              </div>
-            </div>
-            <div className="user_left_buttom">
-              <div className="user_font_title">[护具]</div>
-              <div className="user_font">
-                名称:{armor.name}({qualities[armor.pinji]})
-              </div>
-              <div className="user_font">
-                属性:{renderStats(armor).attribute}
-              </div>
-              <div className="user_font">攻击:{renderStats(armor).atk}</div>
-              <div className="user_font">防御:{renderStats(armor).def}</div>
-              <div className="user_font">血量:{renderStats(armor).HP}</div>
-              <div className="user_font">
-                暴击率:{(armor.bao * 100).toFixed(0)}%
-              </div>
-            </div>
-          </div>
-          <div className="user_right">
-            <div className="user_right_top">
-              <div className="user_font_title">[法宝]</div>
-              <div className="user_font">
-                名称:{treasure.name}({qualities[treasure.pinji]})
-              </div>
-              <div className="user_font">
-                属性:{renderStats(treasure).attribute}
-              </div>
-              <div className="user_font">攻击:{renderStats(treasure).atk}</div>
-              <div className="user_font">防御:{renderStats(treasure).def}</div>
-              <div className="user_font">血量:{renderStats(treasure).HP}</div>
-              <div className="user_font">
-                暴击率:{(treasure.bao * 100).toFixed(0)}%
-              </div>
-            </div>
-            <div className="user_right_buttom">
-              <div className="user_font_title">[属性板]</div>
-              <div className="user_font2">道号:{nickname}</div>
-              <div className="user_font2">血量:{player_maxHP.toFixed(0)}</div>
-              <div className="user_font2">攻击:{player_atk.toFixed(0)}</div>
-              <div className="user_font2">防御:{player_def.toFixed(0)}</div>
-              <div className="user_font2">暴击率:{player_bao.toFixed(0)}%</div>
-            </div>
-          </div>
+        <div className="equipment-container">
+          <EquipmentCard
+            title="[武器]"
+            equipment={arms}
+            qualities={qualities}
+            renderStats={renderStats}
+          />
+
+          <EquipmentCard
+            title="[护具]"
+            equipment={armor}
+            qualities={qualities}
+            renderStats={renderStats}
+          />
+
+          <EquipmentCard
+            title="[法宝]"
+            equipment={treasure}
+            qualities={qualities}
+            renderStats={renderStats}
+          />
+
+          <PlayerStats
+            nickname={nickname}
+            player_maxHP={player_maxHP}
+            player_atk={player_atk}
+            player_def={player_def}
+            player_bao={player_bao}
+          />
         </div>
       </body>
     </html>

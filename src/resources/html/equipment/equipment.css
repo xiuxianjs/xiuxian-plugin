@@ -6,32 +6,33 @@
 .user_font {
   margin: auto;
   text-align: left;
-  font-size: 15px;
+  font-size: 21px;
   color: rgb(255, 255, 255);
   margin: 5px;
   padding-left: 20px;
-  background-color: rgba(60, 73, 82, 0.486);
+  /* background-color: rgba(60, 73, 82, 0.486); */
   border-radius: 20px;
 }
 
 .user_font_title {
   margin: auto;
   text-align: center;
-  font-size: 15px;
+  font-size: 21px;
   margin: 5px;
   color: rgb(255, 255, 255);
-  background-color: rgba(60, 73, 82, 0.486);
-  border-radius: 20px;
+    background-color: rgb(66 74 79 / 82%);
+  border-radius: 8px;
+  padding: 2px 5px;
 }
 
 .user_font2 {
   margin: auto;
   text-align: left;
-  font-size: 15px;
+  font-size: 21px;
   color: rgb(255, 255, 255);
   margin: 5px;
   padding-left: 20px;
-  background-color: rgba(60, 73, 82, 0.486);
+  /* background-color: rgba(60, 73, 82, 0.486); */
   border-radius: 20px;
 }
 
@@ -56,20 +57,16 @@
 }
 
 .user_left_top {
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.245),
-    rgba(164, 193, 231, 0.408)
-  );
+  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
+      rgba(164, 193, 231, 0.408));
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
 }
 
 .user_left_buttom {
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.245),
-    rgba(164, 193, 231, 0.408)
-  );
+  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
+      rgba(164, 193, 231, 0.408));
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
@@ -82,21 +79,51 @@
 }
 
 .user_right_top {
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.245),
-    rgba(164, 193, 231, 0.408)
-  );
+  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
+      rgba(164, 193, 231, 0.408));
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
 }
 
 .user_right_buttom {
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.245),
-    rgba(164, 193, 231, 0.408)
-  );
+  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
+      rgba(164, 193, 231, 0.408));
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
+}
+
+
+
+.equipment-container {
+  /* display: grid; */
+  /* grid-template-columns: 1fr 1fr; */
+  /* grid-template-rows: 1fr 1fr; */
+  /* gap: 20px; */
+  /* width: 80%; */
+  /* max-width: 800px; */
+  /* height: 80%; */
+  /* max-height: 500px; */
+  background-color: rgb(69 73 75 / 49%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  height: 448px;
+}
+
+.equipment-card {
+
+  border-radius: 20px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.equipment-card .user_font,
+.equipment-card .user_font2,
+.equipment-card .user_font_title {
+  margin: 3px 0;
 }
