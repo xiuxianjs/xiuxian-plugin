@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { existplayer, Read_player, sortBy } from '@src/model'
+import { __PATH, existplayer, Read_player, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|\/)镇妖塔榜$/
@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
   //数组
   let temp = []
   let files = fs
-    .readdirSync('./resources/data/xiuxian_player')
+    .readdirSync(__PATH.player_path)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')

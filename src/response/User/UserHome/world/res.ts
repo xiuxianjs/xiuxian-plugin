@@ -3,13 +3,14 @@ import fs from 'fs'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
+import { __PATH } from '@src/model'
 export const regular = /^(#|\/)修仙世界$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let playerList = []
   let files = fs
-    .readdirSync('./resources/data/xiuxian_player')
+    .readdirSync(__PATH.player_path)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')

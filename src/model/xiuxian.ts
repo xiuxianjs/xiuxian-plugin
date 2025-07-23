@@ -3111,7 +3111,7 @@ export async function Synchronization_ASS(
   Send(Text('宗门开始同步'))
   let assList: string[] = []
   let files = fs
-    .readdirSync('./resources/data/association')
+    .readdirSync(__PATH.association)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')
@@ -3181,7 +3181,7 @@ export async function synchronization(
   Send(Text('存档开始同步'))
   let playerList: string[] = []
   let files = fs
-    .readdirSync('./resources/data/xiuxian_player')
+    .readdirSync(__PATH.player_path)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')
