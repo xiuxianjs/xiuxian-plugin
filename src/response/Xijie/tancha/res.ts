@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let didian = e.MessageText.replace('(#|＃|/)?探查', '')
+  let didian = e.MessageText.replace(/^(#|＃|\/)?探查/, '')
   didian = didian.trim()
   let shop
   try {

@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let didian = e.MessageText.replace('(#|＃|/)?沉迷秘境', '')
+  let didian = e.MessageText.replace(/^(#|＃|\/)?沉迷秘境/, '')
   let code = didian.split('*')
   didian = code[0]
   let i = await convert2integer(code[1])

@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   File = File.filter(file => file.endsWith('.json'))
   let File_length = File.length
   //获取发送灵石数量
-  let thing_name = e.MessageText.replace('(#|＃|/)?全体发', '')
+  let thing_name = e.MessageText.replace(/^(#|＃|\/)?全体发/, '')
   let code = thing_name.split('*')
   thing_name = code[0]
   let thing_amount: any = code[1] //数量

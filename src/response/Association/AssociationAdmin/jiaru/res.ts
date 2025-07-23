@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主或长老可以操作'))
     return false
   }
-  let jiar = e.MessageText.replace('(#|＃|/)?设置门槛', '')
+  let jiar = e.MessageText.replace(/^(#|＃|\/)?设置门槛/, '')
   jiar = jiar.trim()
   if (!data.Level_list.some(item => item.level == jiar)) return false
   let jr_level_id = data.Level_list.find(item => item.level == jiar).level_id

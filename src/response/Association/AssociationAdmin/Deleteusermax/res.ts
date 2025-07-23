@@ -16,9 +16,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let menpai = e.MessageText.replace(/^(#|＃|\/)?/, '')
-
-  menpai = menpai.replace('逐出', '')
+  let menpai = e.MessageText.replace(/^(#|＃|\/)?逐出/, '')
 
   let member_qq = menpai
 

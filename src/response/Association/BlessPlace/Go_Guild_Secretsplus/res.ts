@@ -31,7 +31,7 @@ export default onResponse(selects, async e => {
     Send(Text(`你的宗门还没有驻地，不能探索秘境哦`))
     return false
   }
-  let didian = e.MessageText.replace('(#|＃|/)?沉迷宗门秘境', '')
+  let didian = e.MessageText.replace(/^(#|＃|\/)?沉迷宗门秘境/, '')
   let code = didian.split('*')
   didian = code[0]
   let i = await convert2integer(code[1])

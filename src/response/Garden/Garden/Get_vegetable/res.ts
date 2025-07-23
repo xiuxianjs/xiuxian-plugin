@@ -51,7 +51,7 @@ export default onResponse(selects, async e => {
   }
 
   let vegetable = ass.药园.作物
-  let vagetable_name = e.MessageText.replace('(#|＃|/)?拔苗助长', '')
+  let vagetable_name = e.MessageText.replace(/^(#|＃|\/)?拔苗助长/, '')
   for (let i = 0; i < vegetable.length; i++) {
     if (vegetable[i].name == vagetable_name) {
       let ts = vegetable[i].ts

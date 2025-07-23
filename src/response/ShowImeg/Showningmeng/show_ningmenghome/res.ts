@@ -8,7 +8,7 @@ export const regular =
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let thing_type = e.MessageText.replace('(#|＃|/)?柠檬堂', '')
+  let thing_type = e.MessageText.replace(/^(#|＃|\/)?柠檬堂/, '')
   let img = await get_ningmenghome_img(e, thing_type)
   if (img) Send(Image(img))
 })

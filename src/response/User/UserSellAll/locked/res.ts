@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //命令判断
-  let msg = e.MessageText.replace('(#|＃|/)?', '')
+  let msg = e.MessageText.replace(/^(#|＃|\/)?/, '')
   let un_lock = msg.substring(0, 2)
   let thing: any = msg.substring(2).split('*')
   let thing_name = thing[0]

@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let player = await Read_player(usr_qq)
-  let didian = e.MessageText.replace('(#|＃|/)?降临秘境', '')
+  let didian = e.MessageText.replace(/^(#|＃|\/)?降临秘境/, '')
   didian = didian.trim()
   let weizhi = await data.didian_list.find(item => item.name == didian)
   if (!isNotNull(weizhi)) {

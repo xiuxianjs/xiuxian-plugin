@@ -25,8 +25,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let najie = await Read_najie(usr_qq)
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('上架', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?上架/, '')
   let code: any = thing.split('*')
   let thing_name = code[0] //物品
   code[0] = parseInt(code[0])

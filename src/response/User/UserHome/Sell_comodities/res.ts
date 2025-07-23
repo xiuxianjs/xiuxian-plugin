@@ -21,8 +21,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //命令判断
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('出售', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?出售/, '')
   let code: any = thing.split('*')
   let thing_name = code[0] //物品
   code[0] = parseInt(code[0])

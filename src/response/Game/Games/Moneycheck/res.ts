@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //梭哈|投入999。如果是投入。就留下999
-  let es = e.MessageText.replace('(#|＃|/)?投入', '').trim()
+  let es = e.MessageText.replace(/^(#|＃|\/)?/, '').trim()
   //去掉投入，发现得到的是梭哈
   //梭哈，全部灵石
   if (es == '#梭哈') {

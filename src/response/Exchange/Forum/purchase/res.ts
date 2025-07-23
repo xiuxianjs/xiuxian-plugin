@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
     await Write_Forum([])
     Forum = await Read_Forum()
   }
-  let t = e.MessageText.replace('(#|＃|/)?接取', '').split('*')
+  let t = e.MessageText.replace(/^(#|＃|\/)?/, '').split('*')
   let x = (await convert2integer(t[0])) - 1
   if (x >= Forum.length) {
     return false

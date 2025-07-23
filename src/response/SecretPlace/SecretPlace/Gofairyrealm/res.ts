@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let player = await Read_player(usr_qq)
-  let didian = e.MessageText.replace('(#|＃|/)?镇守仙境', '')
+  let didian = e.MessageText.replace(/^(#|＃|\/)?镇守仙境/, '')
   didian = didian.trim()
   let weizhi = await data.Fairyrealm_list.find(item => item.name == didian)
   if (!isNotNull(weizhi)) {

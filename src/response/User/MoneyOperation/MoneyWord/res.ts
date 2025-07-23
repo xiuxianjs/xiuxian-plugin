@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { existplayer, convert2integer, Read_player, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?#交税[1-9]d*/
+export const regular = /^(#|＃|\/)?交税[1-9]d*/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -13,8 +13,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取发送灵石数量
-  let lingshi: any = e.MessageText.replace('(#|＃|/)?', '')
-  lingshi = lingshi.replace('交税', '')
+  let lingshi: any = e.MessageText.replace(/^(#|＃|\/)?交税/, '')
   lingshi = await convert2integer(lingshi)
   let player = await Read_player(usr_qq)
   if (player.灵石 <= lingshi) {

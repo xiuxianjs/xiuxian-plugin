@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let name = e.MessageText.replace('(#|＃|/)?活动兑换', '')
+  let name = e.MessageText.replace(/^(#|＃|\/)?活动兑换/, '')
   name = name.trim()
   let i //获取对应npc列表的位置
   for (i = 0; i < data.duihuan.length; i++) {

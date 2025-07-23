@@ -21,8 +21,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('发布', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?发布/, '')
   let code = thing.split('*')
   let thing_name = code[0] //物品
   let value = code[1] //价格

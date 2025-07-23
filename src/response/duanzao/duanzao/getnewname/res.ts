@@ -17,8 +17,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId //用户qq
   if (!(await existplayer(user_qq))) return false
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('赋名', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?赋名/, '')
   const code = thing.split('*')
   const thing_name = code[0] //原物品
   let new_name = code[1] //新名字

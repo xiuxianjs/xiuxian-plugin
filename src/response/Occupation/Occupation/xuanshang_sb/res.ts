@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let player = await Read_player(usr_qq)
-  let qq = e.MessageText.replace('(#|＃|/)?悬赏', '')
+  let qq = e.MessageText.replace(/^(#|＃|\/)?悬赏/, '')
   let code = qq.split('*')
   qq = code[0]
   let money = await convert2integer(code[1])

@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let reg = new RegExp(/哪里有/)
   let msg = e.MessageText.replace(reg, '')
-  msg = msg.replace('#', '')
+  msg = msg.replace(/^(#|＃|\/)?/, '')
   let thing_name = msg.replace('哪里有', '')
   let didian = [
     'guildSecrets_list',

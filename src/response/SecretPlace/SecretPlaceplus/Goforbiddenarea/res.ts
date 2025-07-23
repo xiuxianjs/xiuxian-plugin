@@ -39,7 +39,7 @@ export default onResponse(selects, async e => {
     Send(Text('没有达到化神之前还是不要去了'))
     return false
   }
-  let didian = await e.MessageText.replace('(#|＃|/)?沉迷禁地', '')
+  let didian = await e.MessageText.replace(/^(#|＃|\/)?沉迷禁地/, '')
   let code = didian.split('*')
   didian = code[0]
   let i = await convert2integer(code[1])

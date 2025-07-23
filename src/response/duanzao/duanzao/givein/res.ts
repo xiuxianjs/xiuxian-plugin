@@ -42,8 +42,7 @@ export default onResponse(selects, async e => {
     Send(Text(`切换到炼器师后再来吧,宝贝`))
     return false
   }
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('熔炼', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?熔炼/, '')
   const code = thing.split('*')
   const thing_name = code[0] //物品
   let account = code[1] //数量

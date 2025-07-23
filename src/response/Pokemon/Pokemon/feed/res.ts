@@ -23,8 +23,7 @@ export default onResponse(selects, async e => {
     Send(Text('你没有仙宠'))
     return false
   }
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('喂给仙宠', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?喂给仙宠/, '')
   let code = thing.split('*')
   let thing_name = code[0] //物品
   let thing_value = await convert2integer(code[1]) //数量

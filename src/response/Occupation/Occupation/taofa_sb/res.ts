@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
     Send(Text('每日限杀,请等待20小时后新的赏金目标')) //悬赏做完了(20h后刷新)
     return false
   }
-  let num: any = e.MessageText.replace('(#|＃|/)?讨伐目标', '')
+  let num: any = e.MessageText.replace(/^(#|＃|\/)?讨伐目标/, '')
   num = num.trim() - 1
   let qq
   try {

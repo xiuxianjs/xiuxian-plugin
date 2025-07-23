@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   let reg = new RegExp(/取|存/)
   let func = reg.exec(e.MessageText)[0]
   let msg = e.MessageText.replace(reg, '')
-  msg = msg.replace('#', '')
+  msg = msg.replace(/^(#|＃|\/)?/, '')
   let lingshi: any = msg.replace('灵石', '')
   if (func == '存' && lingshi == '全部') {
     let P = await Read_player(usr_qq)

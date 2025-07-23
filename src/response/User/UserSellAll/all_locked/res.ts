@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
   ]
   let wupin1 = []
   if (e.MessageText != '#一键锁定') {
-    let thing = e.MessageText.replace('(#|＃|/)?一键锁定', '')
+    let thing = e.MessageText.replace(/^(#|＃|\/)?一键锁定/, '')
     for (let i of wupin) {
       if (thing == i) {
         wupin1.push(i)

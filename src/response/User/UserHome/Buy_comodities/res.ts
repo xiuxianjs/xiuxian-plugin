@@ -23,8 +23,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let thing = e.MessageText.replace('(#|＃|/)?', '')
-  thing = thing.replace('购买', '')
+  let thing = e.MessageText.replace(/^(#|＃|\/)?购买/, '')
   let code = thing.split('*')
   let thing_name = code[0]
   let ifexist = data.commodities_list.find(item => item.name == thing_name)

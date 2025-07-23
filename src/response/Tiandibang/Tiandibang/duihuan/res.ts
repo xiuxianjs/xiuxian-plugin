@@ -20,10 +20,7 @@ export default onResponse(selects, async e => {
   //查看存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let reg = new RegExp(/积分兑换/)
-  let msg = e.MessageText.replace(reg, '')
-  msg = msg.replace('#', '')
-  let thing_name = msg.replace('积分兑换', '')
+  let thing_name = e.MessageText.replace(/^(#|＃|\/)?积分兑换/, '')
   let ifexist = data.tianditang.find(item => item.name == thing_name)
   if (!ifexist) {
     Send(Text(`天地堂还没有这样的东西:${thing_name}`))

@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?重置.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
-  let didian = e.MessageText.replace('(#|＃|/)?重置', '')
+  let didian = e.MessageText.replace(/^(#|＃|\/)?重置/, '')
   didian = didian.trim()
   let shop
   try {

@@ -17,8 +17,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let thing_name = e.MessageText.replace('(#|＃|/)?', '')
-  thing_name = thing_name.replace('打磨', '')
+  let thing_name = e.MessageText.replace(/^(#|＃|\/)?打磨/, '')
   let code = thing_name.split('*')
   thing_name = code[0]
   let thing_exist = await foundthing(thing_name)

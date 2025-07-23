@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     Send(Text('铜都不炼你还炼器？'))
     return false
   }
-  let t = e.MessageText.replace('(#|＃|/)?打造', '').split('*')
+  let t = e.MessageText.replace(/^(#|＃|\/)?打造/, '').split('*')
   let equipment_name = t[0]
   let suc_rate = 0
   let tmp_msg1 = ''

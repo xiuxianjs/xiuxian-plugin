@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
   let A_player = await data.getData('player', A_qq)
   let B_player = await data.getData('player', B_qq)
   //获取发送灵石数量
-  let msg = e.MessageText.replace('(#|＃|/)?赠送', '')
+  let msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '')
   const cf = config.getConfig('xiuxian', 'xiuxian')
   if (msg.startsWith('灵石')) {
     let lingshi: any = msg.replace('灵石*', '')

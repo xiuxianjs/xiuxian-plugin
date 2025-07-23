@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取发送灵石数量
-  let thing_name = e.MessageText.replace('(#|＃|/)?发', '')
+  let thing_name = e.MessageText.replace(/^(#|＃|\/)?发/, '')
   let code = thing_name.split('*')
   thing_name = code[0]
   let thing_amount: any = code[1] //数量

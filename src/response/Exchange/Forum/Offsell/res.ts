@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let Forum
   let player = await Read_player(usr_qq)
-  let x = parseInt(e.MessageText.replace('(#|＃|/)?取消', '')) - 1
+  let x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1
   try {
     Forum = await Read_Forum()
   } catch {

@@ -54,7 +54,7 @@ export default onResponse(selects, async e => {
     await Write_Exchange([])
     Exchange = await Read_Exchange()
   }
-  let t = e.MessageText.replace('(#|＃|/)?选购', '').split('*')
+  let t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*')
   let x = (await convert2integer(t[0])) - 1
   if (x >= Exchange.length) {
     return false

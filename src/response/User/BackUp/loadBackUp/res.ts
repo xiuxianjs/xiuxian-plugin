@@ -14,7 +14,7 @@ export default onResponse(selects, async (e: any) => {
       return false
     }
     const saveDataNum = Number(
-      e.MessageText.replace('(#|＃|/)?读取存档', '').trim()
+      e.MessageText.replace(/^(#|＃|\/)?读取存档/, '').trim()
     )
     if (!(1 <= saveDataNum && saveDataNum <= 80)) {
       Send(Text('正确格式：#读取存档[1~80]\n如：#读取存档18'))

@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
     Send(Text('没有达到化神之前还是不要去了'))
     return false
   }
-  let didian = await e.MessageText.replace('(#|＃|/)?前往禁地', '')
+  let didian = await e.MessageText.replace(/^(#|＃|\/)?前往禁地/, '')
   didian = didian.trim()
   let weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
   // if (player.power_place == 0 && weizhi.id != 666) {

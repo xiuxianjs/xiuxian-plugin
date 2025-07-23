@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取时间
-  let time: any = e.MessageText.replace('(#|＃|/)?采矿', '')
+  let time: any = e.MessageText.replace(/^(#|＃|\/)?采矿/, '')
   time = time.replace('分钟', '')
   if (parseInt(time) == parseInt(time)) {
     time = parseInt(time)

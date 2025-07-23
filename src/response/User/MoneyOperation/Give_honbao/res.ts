@@ -14,8 +14,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取发送灵石数量
-  let lingshi: any = e.MessageText.replace('(#|＃|/)?', '')
-  lingshi = lingshi.replace('发红包', '')
+  let lingshi: any = e.MessageText.replace(/^(#|＃|\/)?发红包/, '')
   let flag = await Go(e)
   if (!flag) {
     return false

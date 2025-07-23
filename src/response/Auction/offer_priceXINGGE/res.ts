@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
   const auctionData = JSON.parse(auction)
   // let start_price = auction.start_price;
   let last_price = auctionData.last_price
-  let reg = e.MessageText.replace('(#|＃|/)?星阁出价', '')
+  let reg = e.MessageText.replace(/^(#|＃|\/)?星阁出价/, '')
   if (auctionData.last_offer_player == usr_qq) {
     Send(Text('不能自己给自己抬价哦!'))
     return false

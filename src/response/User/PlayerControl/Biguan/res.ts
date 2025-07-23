@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   }
 
   //获取时间
-  let time: any = e.MessageText.replace('(#|＃|/)?', '')
+  let time: any = e.MessageText.replace(/^(#|＃|\/)?/, '')
   time = time.replace('闭关', '')
   time = time.replace('分', '')
   time = time.replace('钟', '')
