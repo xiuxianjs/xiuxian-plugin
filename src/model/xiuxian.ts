@@ -88,11 +88,6 @@ export async function convert2integer(
   }
 }
 
-export async function Read_updata_log(): Promise<string> {
-  const update_log = fs.readFileSync('', 'utf8')
-  return update_log
-}
-
 //读取存档信息，返回成一个JavaScript对象
 export async function Read_player(usr_qq: string): Promise<Player | null> {
   let dir = path.join(`${__PATH.player_path}/${usr_qq}.json`)

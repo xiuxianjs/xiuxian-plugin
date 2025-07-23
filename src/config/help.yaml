@@ -233,8 +233,5 @@
       title: '#修仙管理'
       desc: '查看管理员功能'
     - icon: help-icon_14
-      title: '#查看日志'
-      desc: '查看更新日志'
-    - icon: help-icon_14
       title: '#师徒帮助'
       desc: '查看师徒指令'
