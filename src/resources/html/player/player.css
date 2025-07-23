@@ -27,7 +27,7 @@
   margin-top: 20px;
   margin-right: 20px;
   border-radius: 20px;
-  backdrop-filter: blur(40px);
+  /* backdrop-filter: blur(40px); */
 }
 
 .user_top_img {
@@ -42,7 +42,7 @@
   position: inherit;
   margin: 9px;
   width: 260px;
-  padding: 10px;
+  padding: 4px 10px;
   font-weight: 700;
   font-size: 32px;
   font-family: 'NZBZ';
@@ -84,8 +84,8 @@
 
 .use_data {
   margin: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  /* padding-top: 20px; */
+  /* padding-bottom: 20px; */
   width: 740px;
 }
 
@@ -98,9 +98,9 @@
 
 .user_font {
   text-align: left;
-  margin: 9px;
+  /* margin: 9px; */
   font-size: 22px;
-  padding: 15px;
+  /* padding: 15px; */
   font-weight: 600;
   font-family: 'tttgbnumber';
   border-radius: 20px;
@@ -111,6 +111,7 @@
   text-align: center;
   padding-left: 0px;
   font-size: 30px;
+  padding: 10px 0;
 }
 
 .gonfa {
@@ -171,7 +172,8 @@
 .xuetiao {
   white-space: nowrap;
   border-radius: 10px;
-  background-color: rgb(6, 6, 7, 0.55);
+  background-color: rgb(73 88 74 / 65%);
+  padding: 0 7px;
 }
 
 .xueliang {
@@ -201,11 +203,12 @@
   border-left: 1px solid #ffcc80;
   border-right: 1px solid #bb8020;
   border-bottom: 1px solid #bb8020;
-  box-shadow: 1px 2px 6px rgba(170, 31, 0, 0.2),
-    3px 8px 12px rgba(71, 35, 22, 0.3);
+  /* box-shadow: 1px 2px 6px rgba(170, 31, 0, 0.2),
+    3px 8px 12px rgba(71, 35, 22, 0.3); */
   z-index: 999;
   border-radius: 20px;
   margin-bottom: 20px;
+  backdrop-filter: blur(6px);
 }
 
 .card_box2 {
@@ -229,20 +232,21 @@
 }
 
 .item {
-  margin: 10px;
+  /* margin: 10px; */
   padding: 10px;
   flex-grow: 2;
   width: 135px;
   opacity: 0.95;
-  background: #ffcc4d80;
+  background: #f8eed680;
   border-top: 1px solid #395b39a3;
   border-left: 1px solid #1c6d3cb3;
   border-right: 1px solid #1c6d3cb3;
   border-bottom: 1px solid #1c6d3cb3;
-  box-shadow: 1px 2px 6px #1c6d3cb3, 3px 8px 12px #b7b7b7d1;
+  /* box-shadow: 1px 2px 6px #1c6d3cb3, 3px 8px 12px #b7b7b7d1; */
   z-index: 999;
   border-radius: 5px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
+  margin: 6px 10px 10px;
 }
 
 .item_title {
@@ -303,7 +307,7 @@
   position: relative;
   width: 30%;
   height: 100%;
-  background-color: rgb(217, 36, 31, 0.66);
+  background-color: rgb(248 15 9 / 98%);
   border-radius: 14px;
 }
 

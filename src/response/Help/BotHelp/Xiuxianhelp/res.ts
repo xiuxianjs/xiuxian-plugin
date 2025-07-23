@@ -10,7 +10,7 @@ export default onResponse(selects, async e => {
   logger.info('修仙帮助')
 
   const Send = useSend(e)
-  let data = await Help.get(e)
+  let data = await Help.get()
   if (!data) return false
   let img = await cache(data, e.UserId)
   if (img) Send(Image(img))

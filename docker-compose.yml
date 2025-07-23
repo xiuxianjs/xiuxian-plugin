@@ -4,3 +4,9 @@ services:
     container_name: redis-container
     ports:
       - '6379:6379'
+    ## 持久化配置
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
