@@ -2,14 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './player.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-<<<<<<< HEAD
 import backgroundURL from '@src/resources/img/player.jpg'
 import user_stateURL from '@src/resources/img/user_state.png'
-=======
-import backgroundURL from '@src/resources/img/player_pifu/0.jpg'
-import user_stateURL from '@src/resources/img/player/user_state.png'
-import { log } from 'console'
->>>>>>> 1e8f019ce4f00b65f26f5bc7eae002fb040923f4
 
 const Player = ({
   avatar,
