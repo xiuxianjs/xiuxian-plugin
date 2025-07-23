@@ -4,7 +4,7 @@ import cssURL from './secret_place.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import secretPlaceURL from '@src/resources/img/fairyrealm.jpg'
 import userStateURL from '@src/resources/img/user_state.png'
-import cardURL from '@src/resources/img/secret_place/card.jpg'
+import cardURL from '@src/resources/img/road.jpg'
 
 const SecretPlace = ({ didian_list }) => {
   return (

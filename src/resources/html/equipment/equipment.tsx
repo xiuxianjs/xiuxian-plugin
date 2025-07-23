@@ -2,7 +2,7 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './equipment.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import backgroundURL from '@src/resources/img/0.jpg'
+import backgroundURL from '@src/resources/img/equipment.jpg'
 
 /**
  * 装备项接口
@@ -120,13 +120,9 @@ const Equipment: React.FC<EquipmentProps> = ({
           body {
             transform: scale(1);
             width: 100%;
-            // height: 600px;
             margin: 0;
             background-image: url('${backgroundURL}');
             background-size: 100% auto;
-            // display: flex;
-            // align-items: center;
-            // justify-content: center;
           }
         `
           }}

@@ -22,14 +22,6 @@ const Help = ({ helpData = [] }) => {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-          }
-
           body {
             font-size: 18px;
             color: #47ada8;
@@ -38,11 +30,6 @@ const Help = ({ helpData = [] }) => {
             width: 100%;
             background: url('${backgroundURL}') top left no-repeat;
             background-size: 100% 100%;
-          }
-
-          .container {
-            width: 100%;
-            padding: 40px !important;
           }
 
           .help-icon {

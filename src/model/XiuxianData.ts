@@ -146,10 +146,10 @@ class XiuxianData {
       association: __PATH.association,
       occupation: __PATH.occupation
     }
-    this.lib_path = this.filePathMap.lib
-    this.Timelimit = this.filePathMap.Timelimit
-    this.Level = this.filePathMap.Level
-    this.Occupation = this.filePathMap.occupation
+    this.lib_path = __PATH.lib_path
+    this.Timelimit = __PATH.Timelimit
+    this.Level = __PATH.Level
+    this.Occupation = __PATH.occupation
 
     //加载灵根列表
     this.talent_list = 灵根列表
@@ -281,7 +281,7 @@ class XiuxianData {
       dir = path.join(file_path + '/' + user_qq + '.json')
     } else {
       //不带参数的查询item下文件
-      file_path = this.filePathMap.lib
+      file_path = __PATH.lib_path
       dir = path.join(file_path + '/' + file_name + '.json')
     }
     try {
@@ -330,7 +330,7 @@ class XiuxianData {
     let file_path: string
     let dir: string
     let data: string
-    file_path = this.filePathMap.association
+    file_path = __PATH.association
     dir = path.join(file_path + '/' + file_name + '.json')
     try {
       data = fs.readFileSync(dir, 'utf8')
@@ -351,7 +351,7 @@ class XiuxianData {
   setAssociation(file_name: string, data: JSONData): void {
     let file_path: string
     let dir: string
-    file_path = this.filePathMap.association
+    file_path = __PATH.association
     dir = path.join(file_path + '/' + file_name + '.json')
     let new_ARR = JSON.stringify(data) //json转string
     fs.writeFileSync(dir, new_ARR, 'utf-8')
