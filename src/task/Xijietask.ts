@@ -152,7 +152,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
               B_player.名号 +
               '抓进了地牢,希望大家遵纪守法,引以为戒'
             for (const group_id of groupList) {
-              // this.pushInfo(group_id, true, xx)
+              pushInfo('', group_id, true, xx)
             }
           }
           //写入redis
