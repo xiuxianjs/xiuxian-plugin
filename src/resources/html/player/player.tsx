@@ -4,6 +4,7 @@ import cssURL from './player.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import backgroundURL from '@src/resources/img/player_pifu/0.jpg'
 import user_stateURL from '@src/resources/img/player/user_state.png'
+import { log } from 'console'
 
 const Player = ({
   avatar,
@@ -202,7 +203,7 @@ const Player = ({
                     {player.血气}/{expmax_llianti}
                   </div>
                 </div>
-                {player.occupation === '' ? (
+                {player.occupation.length == 0 ? (
                   <div className="item">
                     <div className="item_title font_left">职业：</div>
                     <div className="item_title font_left">无业游民</div>
@@ -242,6 +243,7 @@ const Player = ({
                         {(player.灵根?.法球倍率 * 100).toFixed(1)}%
                       </>
                     )}
+                    <br />
                     镇妖：【{player.镇妖塔层数}层】
                     <br />
                     神魂：【{player.神魄段数}层】
@@ -261,7 +263,7 @@ const Player = ({
             <div className="use_data">
               <div className="user_font user_font_title">[仙宠]</div>
               <div className="user_font wupin">
-                {!player.仙宠 || player.仙宠 === '' ? (
+                {!player.仙宠 || player.仙宠.length == 0 ? (
                   <div className="item_title3">【仙宠暂无】</div>
                 ) : (
                   <>
