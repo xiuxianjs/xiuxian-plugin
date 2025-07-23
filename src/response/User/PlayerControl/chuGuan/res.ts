@@ -1,6 +1,7 @@
 import { config, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
+import { Text, useMessage } from 'alemonjs'
 export const regular = /^(#|＃|\/)?出关$/
 
 export default onResponse(selects, async e => {
@@ -56,7 +57,11 @@ export default onResponse(selects, async e => {
   arr.Place_action = 1 //秘境
   arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
   delete arr.group_id //结算完去除group_id
+
   await redis.set('xiuxian@1.3.0:' + e.UserId + ':action', JSON.stringify(arr))
+
+  const [message] = useMessage(e)
+  message.send(format(Text(`恭喜你完成了${action.action}，历时${time}分钟`)))
 })
 async function getPlayerAction(usr_qq) {
   let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
