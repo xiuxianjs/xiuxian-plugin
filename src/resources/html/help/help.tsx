@@ -4,6 +4,13 @@ import commonCssURL from './common.css'
 import helpCssURL from './help.css'
 import backgroundURL from '@src/resources/img/help/xiuxian.jpg'
 import iconURL from '@src/resources/img/help/icon.png'
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
+const pkg = require('../../../../package.json') as {
+  name: string
+  version: string
+}
 
 const Help = ({ helpData = [] }) => {
   return (
@@ -59,7 +66,7 @@ const Help = ({ helpData = [] }) => {
         <div className="container" id="container">
           <div className="info_box">
             <div className="head-box type">
-              <div className="title">xiuxian@1.3.0</div>
+              <div className="title">{pkg.name}</div>
             </div>
           </div>
 
@@ -81,7 +88,8 @@ const Help = ({ helpData = [] }) => {
           ))}
 
           <div className="copyright">
-            Xiuxian-Plugin<span className="version">@1.3.0</span>
+            {pkg.name}
+            <span className="version">v{pkg.version}</span>
           </div>
         </div>
       </body>

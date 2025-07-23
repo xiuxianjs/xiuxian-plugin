@@ -2,11 +2,7 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import commonCssURL from './common.css'
 import cssURL from './shituhelp.css'
-import HWZSURL from '@src/resources/font/华文中宋x.ttf'
 import NumberURL from '@src/resources/font/tttgbnumber.ttf'
-import NZBZURL from '@src/resources/font/NZBZ.ttf'
-import YSURL from '@src/resources/font/HYWH-85W.ttf'
-import YS2URL from '@src/resources/font/HYWH-65W.ttf'
 import bgURL from '@src/resources/img/help/shituhelp.jpg'
 import iconURL from '@src/resources/img/help/icon.png'
 
@@ -21,32 +17,8 @@ const ShituHelp = ({ version, helpData = [] }) => {
           dangerouslySetInnerHTML={{
             __html: `
           @font-face {
-            font-family: 'HWZS';
-            src: url('${HWZSURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-          @font-face {
             font-family: 'Number';
             src: url('${NumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-          @font-face {
-            font-family: 'NZBZ';
-            src: url('${NZBZURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-          @font-face {
-            font-family: 'YS';
-            src: url('${YSURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-          @font-face {
-            font-family: 'YS2';
-            src: url('${YS2URL}');
             font-weight: normal;
             font-style: normal;
           }

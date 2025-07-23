@@ -2,7 +2,6 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../gongfa/gongfa.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import NZBZURL from '@src/resources/font/NZBZ.ttf'
 import playerURL from '@src/resources/img/player/player.jpg'
 import user_stateURL from '@src/resources/img/state/user_state.png'
 
@@ -21,14 +20,6 @@ const Daoju = ({ nickname, daoju_have = [], daoju_need = [] }) => {
             font-weight: normal;
             font-style: normal;
           }
-
-          @font-face {
-            font-family: 'NZBZ';
-            src: url('${NZBZURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
           body {
             width: 100%;
             text-align: center;
@@ -43,7 +34,7 @@ const Daoju = ({ nickname, daoju_have = [], daoju_need = [] }) => {
             width: 280px;
             height: 280px;
           }
-        `,
+        `
           }}
         />
       </head>

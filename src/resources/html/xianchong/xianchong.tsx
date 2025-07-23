@@ -2,7 +2,6 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from '../gongfa/gongfa.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import NZBZURL from '@src/resources/font/NZBZ.ttf'
 import playerURL from '@src/resources/img/player/player.jpg'
 import user_stateURL from '@src/resources/img/state/user_state.png'
 
@@ -11,18 +10,12 @@ const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML= {{
-          __html:`
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @font-face {
             font-family: 'tttgbnumber';
             src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          @font-face {
-            font-family: 'NZBZ';
-            src: url('${NZBZURL}');
             font-weight: normal;
             font-style: normal;
           }
@@ -42,7 +35,8 @@ const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
             height: 280px;
           }
         `
-        }}>
+          }}
+        >
           {}
         </style>
       </head>

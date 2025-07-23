@@ -2,7 +2,6 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './najie.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import NZBZURL from '@src/resources/font/NZBZ.ttf'
 import backgroundURL from '@src/resources/img/player_pifu/0.jpg'
 import user_stateURL from '@src/resources/img/state/user_state.png'
 
@@ -37,8 +36,9 @@ const Najie = ({
       <head>
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           body {
             width: 100%;
             text-align: center;
@@ -53,13 +53,6 @@ const Najie = ({
             font-style: normal;
           }
 
-          @font-face {
-            font-family: 'NZBZ';
-            src: url('${NZBZURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
           .user_top_img_bottom {
             margin: auto;
             background-image: url('${user_stateURL}');
@@ -68,7 +61,8 @@ const Najie = ({
             height: 280px;
           }
         `
-        }} />
+          }}
+        />
       </head>
 
       <body>

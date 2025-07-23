@@ -54,9 +54,9 @@ const RankingPower = ({
                 <img
                   className="user_top_img"
                   src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-                  onError={e => {
-                    e.target.src = '@src/resources/img/default_avatar.png'
-                  }}
+                  // onError={e => {
+                  //   e.target.src = '@src/resources/img/default_avatar.png'
+                  // }}
                 />
               </div>
               <div className="user_top_left_qq">QQ:{user_id}</div>
