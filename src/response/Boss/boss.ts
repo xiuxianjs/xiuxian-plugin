@@ -1,4 +1,5 @@
 import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
+import * as _ from 'lodash-es'
 import { data, pushInfo, redis } from '@src/api/api'
 import fs from 'fs'
 import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
@@ -111,7 +112,8 @@ export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
 //排序
 export async function SortPlayer(PlayerRecordJSON) {
   if (PlayerRecordJSON) {
-    let Temp0 = JSON.parse(JSON.stringify(PlayerRecordJSON))
+    // let Temp0 = JSON.parse(JSON.stringify(PlayerRecordJSON))
+    let Temp0 = _.cloneDeep(PlayerRecordJSON)
     let Temp = Temp0.TotalDamage
     let SortResult = []
     Temp.sort(function (a, b) {
@@ -247,7 +249,8 @@ export async function WorldBossBattle(e) {
     let B_win = `${Boss.名号}击败了${player.名号}`
     if (msg.length <= 60) await send(Text(msg.join('\n')))
     else {
-      let msgg = JSON.parse(JSON.stringify(msg))
+      // let msgg = JSON.parse(JSON.stringify(msg))
+      let msgg = _.cloneDeep(msg)
       msgg.length = 60
       await send(Text(msgg.join('\n')))
       send(Text('战斗过长，仅展示部分内容'))

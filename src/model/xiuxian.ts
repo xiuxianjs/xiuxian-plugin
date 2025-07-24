@@ -9,6 +9,7 @@ import puppeteer from '@src/image/index.js'
 import { __PATH } from './paths.js'
 import { Write_player, Writeit } from './pub.js'
 import type { Player, Equipment, Najie, TalentInfo } from '../types/player.js'
+import * as _ from 'lodash-es'
 
 interface DanyaoStatus {
   biguan: number
@@ -1888,7 +1889,8 @@ export async function Add_najie_thing(usr_qq, name, thing_class, x, pinji?) {
         for (let i of list) {
           let thing = data[i].find(item => item.name == name)
           if (thing) {
-            let equ = JSON.parse(JSON.stringify(thing))
+            // let equ = JSON.parse(JSON.stringify(thing))
+            let equ = _.cloneDeep(thing)
             equ.pinji = pinji
             equ.atk *= z[pinji]
             equ.def *= z[pinji]
@@ -1910,13 +1912,25 @@ export async function Add_najie_thing(usr_qq, name, thing_class, x, pinji?) {
       }
     }
     if (typeof name != 'object') {
-      najie[thing_class].find(
+      // najie[thing_class].find(
+      //   item => item.name == name && item.pinji == pinji
+      // ).数量 += x
+      const fb = najie[thing_class].find(
         item => item.name == name && item.pinji == pinji
-      ).数量 += x
+      )
+      if (fb) {
+        fb.数量 += x
+      }
     } else {
-      najie[thing_class].find(
+      // najie[thing_class].find(
+      //   item => item.name == name.name && item.pinji == pinji
+      // ).数量 += x
+      const fb = najie[thing_class].find(
         item => item.name == name.name && item.pinji == pinji
-      ).数量 += x
+      )
+      if (fb) {
+        fb.数量 += x
+      }
     }
     najie.装备 = najie.装备.filter(item => item.数量 > 0)
     await Write_najie(usr_qq, najie)
@@ -1926,7 +1940,7 @@ export async function Add_najie_thing(usr_qq, name, thing_class, x, pinji?) {
       if (typeof name != 'object') {
         let thing = data.xianchon.find(item => item.name == name)
         if (thing) {
-          thing = JSON.parse(JSON.stringify(thing))
+          thing = _.cloneDeep(thing)
           thing.数量 = x
           thing.islockd = 0
           najie[thing_class].push(thing)
@@ -1942,9 +1956,16 @@ export async function Add_najie_thing(usr_qq, name, thing_class, x, pinji?) {
       }
     }
     if (typeof name != 'object') {
-      najie[thing_class].find(item => item.name == name).数量 += x
+      const fb = najie[thing_class].find(item => item.name == name)
+      if (fb) {
+        fb.数量 += x
+      }
+      // najie[thing_class].find(item => item.name == name).数量 += x
     } else {
-      najie[thing_class].find(item => item.name == name.name).数量 += x
+      const fb = najie[thing_class].find(item => item.name == name.name)
+      if (fb) {
+        fb.数量 += x
+      }
     }
     najie.仙宠 = najie.仙宠.filter(item => item.数量 > 0)
     await Write_najie(usr_qq, najie)
@@ -1968,14 +1989,23 @@ export async function Add_najie_thing(usr_qq, name, thing_class, x, pinji?) {
       thing = data[i].find(item => item.name == name)
       if (thing) {
         najie[thing_class].push(thing)
-        najie[thing_class].find(item => item.name == name).数量 = x
-        najie[thing_class].find(item => item.name == name).islockd = 0
+        const fb = najie[thing_class].find(item => item.name == name)
+        if (fb) {
+          fb.数量 = x
+          fb.islockd = 0
+        }
+        // najie[thing_class].find(item => item.name == name).数量 = x
+        // najie[thing_class].find(item => item.name == name).islockd = 0
         await Write_najie(usr_qq, najie)
         return
       }
     }
   }
-  najie[thing_class].find(item => item.name == name).数量 += x
+  // najie[thing_class].find(item => item.name == name).数量 += x
+  const fb = najie[thing_class].find(item => item.name == name)
+  if (fb) {
+    fb.数量 += x
+  }
   najie[thing_class] = najie[thing_class].filter(item => item.数量 > 0)
   await Write_najie(usr_qq, najie)
   return
@@ -2614,8 +2644,11 @@ export async function existshop(didian) {
   }
 }
 export async function zd_battle(AA_player, BB_player) {
-  let A_player = JSON.parse(JSON.stringify(BB_player))
-  let B_player = JSON.parse(JSON.stringify(AA_player))
+  // let A_player = JSON.parse(JSON.stringify(BB_player))
+  //深拷贝
+  let A_player = _.cloneDeep(BB_player)
+  // let B_player = JSON.parse(JSON.stringify(AA_player))
+  let B_player = _.cloneDeep(AA_player)
   let cnt = 0 //回合数
   let cnt2
   let A_xue = 0 //最后要扣多少血

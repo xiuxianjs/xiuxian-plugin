@@ -1,5 +1,5 @@
 import { Text, useMention, useMessage, useSend } from 'alemonjs'
-
+import * as _ from 'lodash-es'
 import {
   baojishanghai,
   existplayer,
@@ -11,6 +11,7 @@ import {
 import { data, pushInfo, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
+
 export const regular = /^(#|＃|\/)?^切磋$/
 global.A_QQ = []
 global.B_QQ = []
@@ -100,8 +101,10 @@ async function battle(e, num) {
   A_player.血量上限 = B_player.血量上限
   A_player.暴击率 = B_player.暴击率
   //记录初始属性
-  const A = JSON.parse(JSON.stringify(A_player))
-  const B = JSON.parse(JSON.stringify(B_player))
+  // const A = JSON.parse(JSON.stringify(A_player))
+  const A = _.cloneDeep(A_player)
+  // const B = JSON.parse(JSON.stringify(B_player))
+  const B = _.cloneDeep(B_player)
   let msg_A = [`指令样式:#选择技能1,2,3\n请选择你本局携带的技能:`]
   for (const i in A_QQ[num].技能) {
     const cd = data.jineng.find(item => item.name == A_QQ[num].技能[i]).cd

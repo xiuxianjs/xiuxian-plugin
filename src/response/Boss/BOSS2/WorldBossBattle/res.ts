@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-
+import * as _ from 'lodash-es'
 import {
   BossIsAlive,
   InitWorldBoss,
@@ -138,7 +138,8 @@ export default onResponse(selects, async e => {
     let B_win = `${Boss.名号}击败了${player.名号}`
     if (msg.length <= 60) await Send(Text(msg.join('\n')))
     else {
-      let msgg = JSON.parse(JSON.stringify(msg))
+      // let msgg = JSON.parse(JSON.stringify(msg))
+      let msgg = _.cloneDeep(msg)
       msgg.length = 60
       await Send(Text(msgg.join('\n')))
       Send(Text('战斗过长，仅展示部分内容'))

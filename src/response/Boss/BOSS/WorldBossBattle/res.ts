@@ -1,4 +1,5 @@
 import { Text, useSend } from 'alemonjs'
+import * as _ from 'lodash-es'
 
 import { redis, data, pushInfo } from '@src/api/api'
 import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
@@ -129,7 +130,8 @@ export default onResponse(selects, async e => {
     let B_win = `${Boss.名号}击败了${player.名号}`
     if (msg.length <= 60) await Send(Text(msg.join('\n')))
     else {
-      let msgg = JSON.parse(JSON.stringify(msg))
+      // let msgg = JSON.parse(JSON.stringify(msg))
+      let msgg = _.cloneDeep(msg)
       msgg.length = 60
       // await ForwardMsg(e, msgg)
       Send(Text(msgg.join('\n')))
