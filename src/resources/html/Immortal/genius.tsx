@@ -64,7 +64,7 @@ const Immortal = ({ allplayer = [] }) => {
               <div className="use_data">
                 <div className="use_data_head">
                   <div className="user_font">
-                    [第{item.名次}名]{item.名号}
+                    [第{index + 1 }名]{item.name}
                   </div>
                   <div className="user_font">道号: {item.灵石}</div>
                   <div className="user_font">战力: {item.灵石}</div>
