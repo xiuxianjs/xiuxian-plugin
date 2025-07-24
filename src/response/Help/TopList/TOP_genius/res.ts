@@ -1,71 +1,57 @@
-import { Text, useSend } from 'alemonjs'
+import { Image, useSend,Text } from 'alemonjs'
 import fs from 'fs'
 import { __PATH, existplayer, Read_player, sortBy } from '@src/model'
-
+import puppeteer from '@src/image/index.js'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?至尊榜$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  let msg = ['___[至尊榜]___']
-  let playerList = []
+  const usr_qq = e.UserId
+  if (!(await existplayer(usr_qq))) return false
   //数组
   let temp = []
-  let files = fs
+  const files = fs
     .readdirSync(__PATH.player_path)
     .filter(file => file.endsWith('.json'))
   for (let file of files) {
     file = file.replace('.json', '')
-    playerList.push(file)
-  }
-  let i = 0
-  for (let player_id of playerList) {
     //(攻击+防御+生命*0.5)*暴击率=理论战力
-    let player = await Read_player(player_id)
-    //计算并保存到数组
-    let power =
-      (player.攻击 + player.防御 * 0.8 + player.血量上限 * 0.6) *
-      (player.暴击率 + 1)
+    const player = await Read_player(file)
     if (player.level_id >= 42) {
       //跳过仙人的记录
       continue
     }
-    power = Math.trunc(power)
-    temp[i] = {
+    //计算并保存到数组
+    const power = Math.trunc(
+      (player.攻击 + player.防御 * 0.8 + player.血量上限 * 0.6) *
+        (player.暴击率 + 1)
+    )
+
+    temp.push({
       power: power,
-      qq: player_id,
+      qq: file,
       name: player.名号,
-      level_id: player.level_id
-    }
-    i++
+      level_id: player.level_id,
+      灵石: player.灵石
+    })
   }
   //根据力量排序
   temp.sort(sortBy('power'))
   logger.info(temp)
-  let length
-  if (temp.length > 10) {
-    //只要十个
-    length = 10
-  } else {
-    length = temp.length
+  //取前10名
+  const top = temp.slice(0, 10)
+  const image = await puppeteer.screenshot(
+    'immortal_genius',
+   usr_qq,
+    {
+      allplayer: top
+    }
+  )
+  if(!image){
+    Send(Text('图片生产失败'))
+    return false
   }
-  let j
-  for (j = 0; j < length; j++) {
-    msg.push(
-      '第' +
-        (j + 1) +
-        '名' +
-        '\n道号：' +
-        temp[j].name +
-        '\n战力：' +
-        temp[j].power +
-        '\nQQ:' +
-        temp[j].qq
-    )
-  }
-  // await ForwardMsg(e, msg)
-  Send(Text(msg.join('\n')))
+  Send(Image(image))
 })
+// #至尊榜

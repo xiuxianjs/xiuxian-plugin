@@ -43,16 +43,16 @@ const EquipmentCard: React.FC<{
     atk: string
     def: string
     HP: string
+    attributeClass: string
   }
 }> = ({ title, equipment, qualities, renderStats }) => (
   <div className="equipment-card">
     <div className="user_font_title">{title}</div>
     <div className="user_font">
-      名称:{equipment.name}({qualities[equipment.pinji]})
+      名称: <span className={`quality-${equipment.pinji}`}>
+        {equipment.name} ({qualities[equipment.pinji]})
+      </span>
     </div>
-    <div className="user_font">属性:{renderStats(equipment).attribute}</div>
-    <div className="user_font">攻击:{renderStats(equipment).atk}</div>
-    <div className="user_font">防御:{renderStats(equipment).def}</div>
     <div className="user_font">血量:{renderStats(equipment).HP}</div>
     <div className="user_font">暴击率:{(equipment.bao * 100).toFixed(0)}%</div>
   </div>

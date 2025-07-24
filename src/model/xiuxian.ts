@@ -4,7 +4,7 @@ import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { Read_it } from './duanzaofu.js'
 import config from './Config.js'
-import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
+import { useSend, Text, PublicEventMessageCreate,Image } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
 import { __PATH } from './paths.js'
 import { Write_player, Writeit } from './pub.js'
@@ -3055,25 +3055,12 @@ export async function jindi(e, weizhi, addres) {
 export async function Goweizhi(e, weizhi, addres) {
   let adr = addres
   const Send = useSend(e)
-  let msg = ['***' + adr + '***']
-  for (let i = 0; i < weizhi.length; i++) {
-    msg.push(
-      weizhi[i].name +
-        '\n' +
-        '等级：' +
-        weizhi[i].Grade +
-        '\n' +
-        '极品：' +
-        weizhi[i].Best[0] +
-        '\n' +
-        '灵石：' +
-        weizhi[i].Price +
-        '灵石'
-    )
-  }
-  Send(Text(msg.join('\n')))
+  const image = await puppeteer.screenshot('secret_place', e.UserId, {
+    didian_list:weizhi
+  })
+  Send(Image(image))
 }
-
+// #秘境
 /**
  * 增加player文件某属性的值（在原本的基础上增加）
  * @param user_qq 用户QQ号
