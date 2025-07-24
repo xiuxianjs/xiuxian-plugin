@@ -1,4 +1,4 @@
-import { Text, useSend } from 'alemonjs'
+import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/api/api'
 import { existplayer, Add_najie_thing, Add_灵石, sleep } from '@src/model'
@@ -7,7 +7,7 @@ import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
 
 export default onResponse(selects, async e => {
-  const Send = useSend(e)
+  const [message] = useMessage(e)
   let usr_qq = e.UserId
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
@@ -49,7 +49,7 @@ export default onResponse(selects, async e => {
       }
     }
     await Add_灵石(usr_qq, commodities_price)
-    Send(Text(`出售成功!  获得${commodities_price}灵石 `))
+    message.send(format(Text(`出售成功!  获得${commodities_price}灵石 `)))
     return false
   }
   let goodsNum = 0
@@ -66,16 +66,66 @@ export default onResponse(selects, async e => {
     }
   }
   if (goodsNum == 0) {
-    Send(Text('没有东西可以出售'))
+    message.send(format(Text('没有东西可以出售')))
     return false
   }
   goods.push('\n回复[1]出售,回复[0]取消出售')
   /** 设置上下文 */
-  //todo 上下文
-  // this.setContext('noticeSellAllGoods')
   for (let i = 0; i < goods.length; i += 8) {
-    Send(Text(goods.slice(i, i + 8).join('')))
+    message.send(format(Text(goods.slice(i, i + 8).join(''))))
     await sleep(500)
   }
-  /** 回复 */
+  const [subscribe] = useSubscribe(e, selects)
+  const sub = subscribe.mount(
+    async event => {
+      // 创建
+      const [message] = useMessage(event)
+      // 获取文本
+      let new_msg = event.MessageText
+      let difficulty = new_msg === '1'
+      if (!difficulty) {
+        message.send(format(Text('已取消出售')))
+
+        clearTimeout(timeout)
+
+        return
+      }
+      clearTimeout(timeout)
+      /**出售*/
+
+      let usr_qq = event.UserId
+      //有无存档
+      let najie = data.getData('najie', usr_qq)
+      let commodities_price = 0
+      let wupin = [
+        '装备',
+        '丹药',
+        '道具',
+        '功法',
+        '草药',
+        '材料',
+        '仙宠',
+        '仙宠口粮'
+      ]
+      for (let i of wupin) {
+        for (let l of najie[i]) {
+          if (l && l.islockd == 0) {
+            //纳戒中的数量
+            let quantity = l.数量
+            await Add_najie_thing(usr_qq, l.name, l.class, -quantity, l.pinji)
+            commodities_price = commodities_price + l.出售价 * quantity
+          }
+        }
+      }
+      await Add_灵石(usr_qq, commodities_price)
+      message.send(format(Text(`出售成功!  获得${commodities_price}灵石 `)))
+    },
+    ['UserId']
+  )
+  const timeout = setTimeout(() => {
+    // 取消订阅
+    subscribe.cancel(sub)
+    // 发送消息
+    message.send(format(Text('超时自动取消出售')))
+  }, 30000)
 })
