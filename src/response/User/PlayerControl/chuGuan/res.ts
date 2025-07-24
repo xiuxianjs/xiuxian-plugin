@@ -110,7 +110,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   //额外修为
   let other_xiuwei = 0
 
-  let msg = []
+  let msg = [Mention(usr_qq)]
   //炼丹师丹药修正
   let transformation = '修为'
   let xueqi = 0
@@ -208,9 +208,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo('', group_id, true, msg.join('\n'))
+    await pushInfo('', group_id, true, msg.join(''))
   } else {
-    await pushInfo('', usr_qq, false, msg.join('\n'))
+    await pushInfo('', usr_qq, false, msg.join(''))
   }
   if (dy.lianti <= 0) {
     dy.lianti = 0

@@ -91,7 +91,7 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   )
   let other_lingshi = 0 //额外的灵石
   let Time = time
-  let msg: any[] = []
+  let msg: any[] = [Mention(usr_qq)]
   if (is_random) {
     //随机事件预留空间
     let rand = Math.random()
@@ -120,9 +120,9 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo('', group_id, true, msg.join('\n'))
+    await pushInfo('', group_id, true, msg.join(''))
   } else {
-    await pushInfo('', usr_qq, false, msg.join('\n'))
+    await pushInfo('', usr_qq, false, msg.join(''))
   }
 
   return false
