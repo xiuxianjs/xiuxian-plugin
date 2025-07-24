@@ -1,4 +1,4 @@
-import {  puppeteer, pushInfo } from '@src/api/api'
+import { puppeteer, pushInfo } from '@src/api/api'
 import { Read_temp, Write_temp } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
@@ -29,7 +29,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
       let temp_data = {
         temp: msg
       }
- 
+
       let img = await puppeteer.screenshot('temp', i.qq, temp_data)
       const [platform, group_id] = i.split(':')
       if (img) await pushInfo(platform, group_id, true, img)

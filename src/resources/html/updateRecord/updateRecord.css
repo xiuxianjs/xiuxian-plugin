@@ -1,65 +1,60 @@
 .changelog-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .changelog-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .changelog-item {
-    display: flex;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 15px;
-    min-width: 80px;
-  }
-  
-  .user-avatar, .user-avatar-placeholder {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .user-avatar {
-    object-fit: cover;
-  }
-  
-  .user-avatar-placeholder {
-    background-color: #4a90e2;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .user-name {
-    font-size: 0.9em;
-    color: #666;
-  }
-  
-  .changelog-content {
-    flex: 1;
-  }
-  
-  .changelog-text {
-    margin: 0 0 5px 0;
-    font-size: 1.1em;
-  }
-  
-  .changelog-time {
-    font-size: 0.8em;
-    color: #999;
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.changelog-list {
+  list-style: none;
+  padding: 0;
+}
+
+.changelog-item {
+  display: flex;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 15px;
+  min-width: 80px;
+}
+
+.user-avatar,
+.user-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-avatar {
+  object-fit: cover;
+}
+.user-avatar-placeholder {
+  background: #4a90e2;
+  color: #fff;
+  font-weight: bold;
+}
+.user-name {
+  font-size: 0.9em;
+  color: #666;
+}
+.changelog-content {
+  flex: 1;
+}
+.changelog-text {
+  margin: 0 0 5px;
+  font-size: 1.1em;
+}
+.changelog-time {
+  font-size: 0.8em;
+  color: #999;
+}

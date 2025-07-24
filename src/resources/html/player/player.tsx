@@ -263,7 +263,7 @@ const Player = ({
               <div className="user_font user_font_title">[仙宠]</div>
               <div className="user_font wupin">
                 {!player.仙宠 || player.仙宠.length == 0 ? (
-                  <div className="item_title3">【仙宠暂无】</div>
+                  <div />
                 ) : (
                   <>
                     <div className="item_title2">

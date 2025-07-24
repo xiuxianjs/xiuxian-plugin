@@ -92,20 +92,19 @@
   padding: 15px;
   font-weight: 600;
   font-family: 'tttgbnumber';
-  color: #000000;
+  color: #000;
 }
 
 .user_font_title {
-  margin: 10px 30px 10px 30px;
+  margin: 10px 30px;
   text-align: center;
   border-bottom: 1px solid #bb8020;
   font-size: 30px;
   font-weight: 600;
-  color: #000000;
+  color: #000;
 }
 
 .wupin {
-  display: -webkit-flex;
   display: flex;
   flex-wrap: wrap;
 }

@@ -11,15 +11,14 @@
 }
 
 .user_top_img {
-  margin-top: 52px;
-  margin-left: 2px;
+  margin: 52px 0 0 2px;
   width: 172px;
   height: 172px;
-  border-radius: 100px;
+  border-radius: 50%;
 }
 
 .user_top_left_qq {
-  background-color: rgba(19, 21, 22, 0.486);
+  background: rgba(19, 21, 22, 0.49);
   border-radius: 20px;
   color: azure;
   margin-left: 13px;
@@ -34,53 +33,56 @@
   text-align: left;
   margin-top: 65px;
   width: 60%;
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.078),
-    rgba(164, 193, 231, 0.408)
+  background: radial-gradient(
+    rgba(206, 226, 226, 0.08),
+    rgba(164, 193, 231, 0.41)
   );
   border-radius: 20px;
 }
 
-.user_bottom0 {
-  padding-top: 80px;
-  padding-bottom: 20px;
-  border-radius: 20px;
-  width: 90%;
-  height: 370px;
-  margin: auto;
-}
-
-.user_bottom1 {
-  border-radius: 20px;
-  width: 90%;
-  margin: auto;
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.078),
-    rgba(164, 193, 231, 0.408)
-  );
-}
-
+.user_bottom0,
+.user_bottom1,
 .user_bottom2 {
   border-radius: 20px;
   width: 90%;
   margin: auto;
+}
+.user_bottom0 {
+  padding: 80px 0 20px 0;
+  height: 370px;
+}
+.user_bottom1 {
+  background: radial-gradient(
+    rgba(206, 226, 226, 0.08),
+    rgba(164, 193, 231, 0.41)
+  );
+}
+.user_bottom2 {
   height: 20px;
 }
 
 .use_data {
   margin: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px 0;
 }
 
-.user_font {
+.user_font,
+.user_font0 {
   text-align: left;
   font-size: 30px;
+  font-weight: 600;
+  border-radius: 20px;
+}
+.user_font {
   padding: 15px 15px 15px 100px;
   margin: 0 0 -10px;
-  font-weight: 600;
-  color: rgb(0, 0, 0);
-  border-radius: 20px;
+  color: #000;
+}
+.user_font0 {
+  margin: 9px;
+  padding: 15px;
+  color: #fff;
+  background: rgba(19, 21, 22, 0.49);
 }
 
 .user_font2 {
@@ -88,39 +90,23 @@
   flex-wrap: wrap;
 }
 
-.user_font3 {
-  padding-top: 15px;
-  height: 60px;
+.user_font3,
+.user_font4 {
   font-size: 30px;
   font-weight: 600;
-  color: rgb(255, 255, 255);
+  color: #fff;
   border-radius: 20px;
-  background-color: rgba(19, 21, 22, 0.486);
+  background: rgba(19, 21, 22, 0.49);
   display: flex;
   width: 50%;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
 }
-
+.user_font3 {
+  padding-top: 15px;
+  height: 60px;
+}
 .user_font4 {
   text-align: left;
   padding-top: 15px;
   height: 300px;
-  font-size: 30px;
-  font-weight: 600;
-  color: rgb(255, 255, 255);
-  border-radius: 20px;
-  background-color: rgba(19, 21, 22, 0.486);
-  width: 50%;
-  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
-}
-
-.user_font0 {
-  text-align: left;
-  margin: 9px;
-  font-size: 30px;
-  padding: 15px;
-  font-weight: 600;
-  color: rgb(255, 255, 255);
-  border-radius: 20px;
-  background-color: rgba(19, 21, 22, 0.486);
 }

@@ -4,7 +4,7 @@ import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { Read_it } from './duanzaofu.js'
 import config from './Config.js'
-import { useSend, Text, PublicEventMessageCreate,Image } from 'alemonjs'
+import { useSend, Text, PublicEventMessageCreate, Image } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
 import { __PATH } from './paths.js'
 import { Write_player, Writeit } from './pub.js'
@@ -3063,7 +3063,7 @@ export async function Goweizhi(e, weizhi, addres) {
   let adr = addres
   const Send = useSend(e)
   const image = await puppeteer.screenshot('secret_place', e.UserId, {
-    didian_list:weizhi
+    didian_list: weizhi
   })
   Send(Image(image))
 }

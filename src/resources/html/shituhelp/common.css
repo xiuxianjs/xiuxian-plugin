@@ -1,19 +1,24 @@
 .container {
   width: 600px;
-  padding: 20px 15px 10px 15px;
+  padding: 20px 15px 10px;
   background-size: contain;
+}
+.head-box,
+.copyright {
+  color: #fff;
 }
 .head-box {
   border-radius: 15px;
   padding: 10px 20px;
   position: relative;
-  color: #fff;
   margin-top: 30px;
 }
 .head-box .title {
   font-size: 36px;
   font-family: NZBZ, sans-serif;
-  text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+  text-shadow:
+    0 0 1px #000,
+    1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 .head-box .genshin_logo {
   position: absolute;
@@ -23,9 +28,12 @@
 }
 .head-box .label {
   font-size: 16px;
-  text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+  text-shadow:
+    0 0 1px #000,
+    1px 1px 3px rgba(0, 0, 0, 0.9);
 }
-.head-box .label span {
+.head-box .label span,
+.copyright .version {
   color: #d3bc8e;
   padding: 0 2px;
 }
@@ -41,10 +49,10 @@
   margin-bottom: 10px;
   text-shadow: 1px 1px 1px #333;
 }
+
 .copyright {
   font-size: 16px;
   text-align: center;
-  color: #fff;
   position: relative;
   padding-left: 10px;
   text-shadow: 1px 1px 1px #000;
@@ -52,111 +60,88 @@
 }
 .copyright .version {
   font-size: 13px;
-  color: #d3bc8e;
   display: inline-block;
   padding: 0 3px;
 }
-/*  */
-.cons {
+
+.cons,
+.cons2-0,
+.cons2-1,
+.cons2-2,
+.cons2-3,
+.cons2-4,
+.cons2-5,
+.cons2-6 {
   display: inline-block;
   vertical-align: middle;
   padding: 0 5px;
   border-radius: 4px;
-}
-.cons-0 {
-  background: #666;
   color: #fff;
+}
+.cons-0,
+.cons2-0 {
+  background: #666;
 }
 .cons-n0 {
   background: #404949;
-  color: #fff;
 }
 .cons-1 {
   background: #5cbac2;
-  color: #fff;
 }
-.cons-2 {
+.cons-2,
+.cons2-2 {
   background: #339d61;
-  color: #fff;
 }
 .cons-3 {
   background: #3e95b9;
-  color: #fff;
 }
 .cons-4 {
   background: #3955b7;
-  color: #fff;
 }
-.cons-5 {
+.cons-5,
+.cons2-5 {
   background: #531ba9cf;
-  color: #fff;
 }
-.cons-6 {
+.cons-6,
+.cons2-6 {
   background: #ff5722;
-  color: #fff;
-}
-.cons2-0 {
-  border-radius: 4px;
-  background: #666;
-  color: #fff;
 }
 .cons2-1 {
-  border-radius: 4px;
   background: #71b1b7;
-  color: #fff;
-}
-.cons2-2 {
-  border-radius: 4px;
-  background: #369961;
-  color: #fff;
 }
 .cons2-3 {
-  border-radius: 4px;
   background: #4596b9;
-  color: #fff;
 }
 .cons2-4 {
-  border-radius: 4px;
   background: #4560b9;
-  color: #fff;
-}
-.cons2-5 {
-  border-radius: 4px;
-  background: #531ba9cf;
-  color: #fff;
-}
-.cons2-6 {
-  border-radius: 4px;
-  background: #ff5722;
-  color: #fff;
 }
 
 .fetter.fetter1 {
   background-position: 0% 0;
 }
 .fetter.fetter2 {
-  background-position: 11.11111111% 0;
+  background-position: 11.1111% 0;
 }
 .fetter.fetter3 {
-  background-position: 22.22222222% 0;
+  background-position: 22.2222% 0;
 }
 .fetter.fetter4 {
-  background-position: 33.33333333% 0;
+  background-position: 33.3333% 0;
 }
 .fetter.fetter5 {
-  background-position: 44.44444444% 0;
+  background-position: 44.4444% 0;
 }
 .fetter.fetter6 {
-  background-position: 55.55555556% 0;
+  background-position: 55.5556% 0;
 }
 .fetter.fetter7 {
-  background-position: 66.66666667% 0;
+  background-position: 66.6667% 0;
 }
 .fetter.fetter8 {
-  background-position: 77.77777778% 0;
+  background-position: 77.7778% 0;
 }
 .fetter.fetter9 {
-  background-position: 88.88888889% 0;
+  background-position: 88.8889% 0;
 }
 .fetter.fetter10 {
   background-position: 100% 0;

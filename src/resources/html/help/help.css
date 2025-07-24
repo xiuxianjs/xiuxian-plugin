@@ -3,7 +3,6 @@
 }
 
 .head-box {
-  /* margin: 60px 0 0 0; */
   padding-bottom: 0;
 }
 
@@ -13,9 +12,7 @@
 
 .cont-box {
   border-radius: 15px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  /* padding: 5px 15px; */
+  margin: 20px 0;
   overflow: hidden;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
   position: relative;
@@ -34,7 +31,6 @@
 .help-table {
   text-align: center;
   border-collapse: collapse;
-  /* margin: 5px -10px -10px -15px; */
   border-radius: 0 0 10px 10px;
   display: table;
   overflow: hidden;
@@ -58,14 +54,6 @@
   width: calc(100% / 3);
   text-align: left;
 }
-
-/* .help-table .tr:nth-child(odd) {
-  background: rgb(0 0 0 / 41%);
-}
-
-.help-table .tr:nth-child(even) {
-  background: rgba(19, 21, 22, 0.448);
-} */
 
 .help-table .tr:last-child .td {
   padding-bottom: 12px;
@@ -329,7 +317,6 @@
   color: #ffffff;
 }
 
-
 * {
   margin: 0;
   padding: 0;
@@ -337,7 +324,6 @@
   -webkit-user-select: none;
   user-select: none;
 }
-
 
 .container {
   width: 100%;

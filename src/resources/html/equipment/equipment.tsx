@@ -49,7 +49,8 @@ const EquipmentCard: React.FC<{
   <div className="equipment-card">
     <div className="user_font_title">{title}</div>
     <div className="user_font">
-      名称: <span className={`quality-${equipment.pinji}`}>
+      名称:{' '}
+      <span className={`quality-${equipment.pinji}`}>
         {equipment.name} ({qualities[equipment.pinji]})
       </span>
     </div>

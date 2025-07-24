@@ -1,35 +1,25 @@
 .user_float {
   float: left;
-  margin-top: 70px;
-  margin-left: 260px;
+  margin: 70px 0 0 260px;
 }
 
-.use_data0 {
-  padding: 50px;
-}
-
-.user_font_0 {
-  text-align: center;
-  font-size: 50px;
-  font-weight: 600;
-  color: rgb(0, 102, 255);
-  border-radius: 5px;
-  background-color: rgba(244, 117, 174, 0.386);
-}
-
+.use_data0,
 .use_data {
-  padding: 50px;
-  padding-left: 150px;
-  padding-right: 150px;
+  padding: 50px 150px;
 }
 
+.user_font_0,
 .user_font {
   text-align: center;
-  margin: 5px;
-  font-size: 22.6px;
-  padding: 5px;
-  font-weight: 600;
-  color: rgb(0, 102, 255);
+  font: 600 22.6px sans-serif;
+  color: #06f;
   border-radius: 5px;
-  background-color: rgba(244, 117, 174, 0.386);
+  background: rgba(244, 117, 174, 0.386);
+}
+.user_font_0 {
+  font-size: 50px;
+}
+.user_font {
+  margin: 5px;
+  padding: 5px;
 }

@@ -1,86 +1,59 @@
-/* ==========================================================================
-   纳戒CSS样式 - 简化版本
-   ========================================================================== */
-
-/* ==========================================================================
-   基础设置
-   ========================================================================== */
-
-/* 通用容器基础样式 */
 .header {
   display: flex;
   top: 50px;
 }
 
-/* 共用的容器样式 */
-.box,
-.card_box {
+.box {
   margin: 20px auto;
   width: 740px;
   display: flex;
   flex-wrap: nowrap;
   border-radius: 20px;
   z-index: 999;
-  backdrop-filter: blur(6px);
-}
-
-/* 毛玻璃容器 */
-.box {
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.45);
   -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-/* 卡片容器 */
-.card_box {
-  background: radial-gradient(at top left, #ffffff10, #d7edea10);
-  border-top: 1px solid #ffcc80;
-  border-left: 1px solid #ffcc80;
-  border-right: 1px solid #bb8020;
-  border-bottom: 1px solid #bb8020;
-  backdrop-filter: blur(6px);
-}
-
-/* 宽版卡片容器 */
+.card_box,
 .card_box2 {
   margin: 20px auto;
-  width: 800px;
   display: flex;
   flex-wrap: nowrap;
- 
+  border-radius: 20px;
+  z-index: 999;
   background: radial-gradient(at top left, #ffffff10, #d7edea10);
   border-top: 1px solid #ffcc80;
   border-left: 1px solid #ffcc80;
   border-right: 1px solid #bb8020;
   border-bottom: 1px solid #bb8020;
   backdrop-filter: blur(6px);
-  z-index: 999;
 }
-
-/* ==========================================================================
-   用户信息区域
-   ========================================================================== */
+.card_box {
+  width: 740px;
+}
+.card_box2 {
+  width: 800px;
+}
 
 .user_top_left {
   text-align: center;
   margin: 30px 0 0 25px;
 }
-
 .user_top_right {
   float: right;
   text-align: left;
   margin: 20px 20px 0 0;
   border-radius: 20px;
 }
-
 .user_top_img {
   margin: 52px 0 0 2px;
   width: 172px;
   height: 172px;
   border-radius: 100px;
 }
-
 .user_top_font_left {
   margin: 9px;
   width: 260px;
@@ -91,7 +64,6 @@
   border-style: dashed;
   border-radius: 20px;
 }
-
 .user_top_font_right {
   display: flex;
   flex-wrap: nowrap;
@@ -102,7 +74,6 @@
   font: 600 22px 'tttgbnumber';
   color: #000;
 }
-
 .user_top_left_dh {
   font: 35px 'NZBZ';
   background-color: rgba(19, 21, 22, 0.486);
@@ -116,41 +87,28 @@
   box-shadow: 3px 2px 3px #ccc;
 }
 
-/* ==========================================================================
-   数据区域
-   ========================================================================== */
-
 .use_data {
   margin: 20px;
   width: 740px;
 }
-
 .use_data2 {
   margin: 20px;
   padding: 20px 0;
   width: 800px;
 }
-
-/* 字体样式 */
 .user_font {
   font: 600 22px 'tttgbnumber';
   color: #000;
   border-radius: 20px;
 }
-
 .user_font_title {
   padding: 10px 0;
   font-size: 30px;
   text-align: center;
 }
-
 .font_left {
   text-align: left;
 }
-
-/* ==========================================================================
-   物品和装备展示
-   ========================================================================== */
 
 .wupin,
 .wuqi,
@@ -158,8 +116,6 @@
   display: flex;
   flex-wrap: wrap;
 }
-
-/* 物品项目 */
 .item {
   margin: 6px 10px 10px;
   padding: 10px;
@@ -172,8 +128,6 @@
   border-radius: 5px;
   z-index: 999;
 }
-
-/* 物品标题样式 */
 .item_title,
 .item_title2,
 .item_title3 {
@@ -182,35 +136,27 @@
   font: 600 20px 'tttgbnumber';
   color: #000;
 }
-
 .item_title2 {
   height: 50px;
 }
-
 .item_title3 {
   line-height: 200px;
 }
-
-/* 物品描述 */
 .item_int,
 .item_int2 {
   display: block;
   font: 500 16px 'tttgbnumber';
   color: #393535;
 }
-
 .item_int2 {
   margin-left: 5px;
 }
-
-/* 武器展示 */
 .wuqi1 {
   display: flex;
   flex-grow: 2;
   width: 100%;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
 }
-
 .wuqi2 {
   display: flex;
   flex-grow: 2;
@@ -218,15 +164,12 @@
   font: 500 20px 'tttgbnumber';
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
 }
-
-/* 功法相关 */
 .gonfa2 {
   display: flex;
   flex-grow: 2;
   width: 33.33%;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
 }
-
 .jichu {
   display: block;
   flex-grow: 2;
@@ -243,7 +186,10 @@
   border-radius: 20px;
   width: 90%;
   margin: auto;
-  background-image: radial-gradient(rgba(180, 153, 152, 0.408), rgba(230, 222, 128, 0.312));
+  background-image: radial-gradient(
+    rgba(180, 153, 152, 0.408),
+    rgba(230, 222, 128, 0.312)
+  );
 }
 
 .user_bottom2 {
@@ -469,8 +415,10 @@
   border-radius: 20px;
   width: 90%;
   margin: auto;
-  background-image: radial-gradient(rgba(180, 153, 152, 0.408),
-      rgba(230, 222, 128, 0.312));
+  background-image: radial-gradient(
+    rgba(180, 153, 152, 0.408),
+    rgba(230, 222, 128, 0.312)
+  );
 }
 
 .user_bottom2 {
@@ -506,7 +454,6 @@
   font-family: 'NZBZ';
   font-size: 20px;
 }
-
 
 .header {
   display: flex;

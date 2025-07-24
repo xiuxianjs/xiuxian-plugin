@@ -11,15 +11,14 @@
 }
 
 .user_top_img {
-  margin-top: 52px;
-  margin-left: 2px;
+  margin: 52px 0 0 2px;
   width: 172px;
   height: 172px;
-  border-radius: 100px;
+  border-radius: 50%;
 }
 
 .user_top_left_qq {
-  background-color: rgba(19, 21, 22, 0.486);
+  background: rgba(19, 21, 22, 0.486);
   border-radius: 20px;
   color: azure;
   margin-left: 13px;
@@ -31,67 +30,56 @@
 
 .user_top_right {
   float: right;
-  text-align: left;
   margin-top: 65px;
   width: 60%;
-  background-image: radial-gradient(
+  background: radial-gradient(
     rgba(206, 226, 226, 0.078),
     rgba(164, 193, 231, 0.408)
   );
   border-radius: 20px;
 }
 
-.user_bottom0 {
-  padding-top: 80px;
-  padding-bottom: 20px;
-  border-radius: 20px;
-  width: 90%;
-  height: 370px;
-  margin: auto;
-}
-
-.user_bottom1 {
-  border-radius: 20px;
-  width: 90%;
-  margin: auto;
-  background-image: radial-gradient(
-    rgba(206, 226, 226, 0.078),
-    rgba(164, 193, 231, 0.408)
-  );
-}
-
+.user_bottom0,
+.user_bottom1,
 .user_bottom2 {
   border-radius: 20px;
   width: 90%;
   margin: auto;
+}
+.user_bottom0 {
+  padding: 80px 0 20px 0;
+  height: 370px;
+}
+.user_bottom1 {
+  background: radial-gradient(
+    rgba(206, 226, 226, 0.078),
+    rgba(164, 193, 231, 0.408)
+  );
+}
+.user_bottom2 {
   height: 20px;
 }
 
 .use_data {
   margin: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px 0;
 }
 
 .user_font {
-  text-align: left;
-  margin: 0px;
-  font-size: 30px;
+  margin: 0;
   padding: 15px;
-  font-weight: 600;
-  color: rgb(203, 253, 242);
+  font: 600 30px sans-serif;
+  color: #cbfdf2;
   border-top: 1px solid rgba(102, 180, 219, 0.888);
 }
 
 .use_data_head {
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  background-color: rgba(19, 21, 22, 0.666);
+  border-radius: 20px 20px 0 0;
+  background: rgba(19, 21, 22, 0.666);
 }
 .use_data_body {
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  background-color: rgba(19, 21, 22, 0.486);
+  border-radius: 0 0 20px 20px;
+  background: rgba(19, 21, 22, 0.486);
 }
 
 .info {
@@ -107,12 +95,10 @@
   padding-right: 20px;
 }
 .user_font0 {
-  text-align: left;
   margin: 9px;
-  font-size: 30px;
   padding: 15px;
-  font-weight: 600;
-  color: rgb(255, 255, 255);
+  font: 600 30px sans-serif;
+  color: #fff;
   border-radius: 20px;
-  background-color: rgba(19, 21, 22, 0.486);
+  background: rgba(19, 21, 22, 0.486);
 }

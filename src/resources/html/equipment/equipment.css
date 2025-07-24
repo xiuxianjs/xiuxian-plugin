@@ -3,37 +3,24 @@
   margin: auto;
 }
 
-.user_font {
-  margin: auto;
+.user_font,
+.user_font2 {
+  margin: auto 5px;
   text-align: left;
   font-size: 16px;
-  color: rgb(255, 255, 255);
-  margin: 5px;
+  color: #fff;
   padding-left: 20px;
-  /* background-color: rgba(60, 73, 82, 0.486); */
   border-radius: 20px;
 }
 
 .user_font_title {
-  margin: auto;
+  margin: auto 5px;
   text-align: center;
   font-size: 16px;
-  margin: 5px;
-  color: rgb(255, 255, 255);
-    background-color: rgb(66 74 79 / 82%);
+  color: #fff;
+  background-color: rgb(66 74 79 / 82%);
   border-radius: 8px;
   padding: 2px 5px;
-}
-
-.user_font2 {
-  margin: auto;
-  text-align: left;
-  font-size: 16px;
-  color: rgb(255, 255, 255);
-  margin: 5px;
-  padding-left: 20px;
-  /* background-color: rgba(60, 73, 82, 0.486); */
-  border-radius: 20px;
 }
 
 .user_head {
@@ -57,16 +44,20 @@
 }
 
 .user_left_top {
-  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
-      rgba(164, 193, 231, 0.408));
+  background-image: radial-gradient(
+    rgba(206, 226, 226, 0.245),
+    rgba(164, 193, 231, 0.408)
+  );
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
 }
 
 .user_left_buttom {
-  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
-      rgba(164, 193, 231, 0.408));
+  background-image: radial-gradient(
+    rgba(206, 226, 226, 0.245),
+    rgba(164, 193, 231, 0.408)
+  );
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
@@ -79,32 +70,26 @@
 }
 
 .user_right_top {
-  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
-      rgba(164, 193, 231, 0.408));
+  background-image: radial-gradient(
+    rgba(206, 226, 226, 0.245),
+    rgba(164, 193, 231, 0.408)
+  );
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
 }
 
 .user_right_buttom {
-  background-image: radial-gradient(rgba(206, 226, 226, 0.245),
-      rgba(164, 193, 231, 0.408));
+  background-image: radial-gradient(
+    rgba(206, 226, 226, 0.245),
+    rgba(164, 193, 231, 0.408)
+  );
   border-radius: 20px;
   margin-top: 15px;
   padding: 15px;
 }
 
-
-
 .equipment-container {
-  /* display: grid; */
-  /* grid-template-columns: 1fr 1fr; */
-  /* grid-template-rows: 1fr 1fr; */
-  /* gap: 20px; */
-  /* width: 80%; */
-  /* max-width: 800px; */
-  /* height: 80%; */
-  /* max-height: 500px; */
   background-color: rgb(126 126 126 / 52%);
   display: flex;
   flex-wrap: wrap;
@@ -114,7 +99,6 @@
 }
 
 .equipment-card {
-
   border-radius: 20px;
   padding: 15px;
   display: flex;

@@ -1,4 +1,4 @@
-import { Image, useSend,Text } from 'alemonjs'
+import { Image, useSend, Text } from 'alemonjs'
 import fs from 'fs'
 import { __PATH, existplayer, Read_player, sortBy } from '@src/model'
 import puppeteer from '@src/image/index.js'
@@ -41,14 +41,10 @@ export default onResponse(selects, async e => {
   logger.info(temp)
   //取前10名
   const top = temp.slice(0, 10)
-  const image = await puppeteer.screenshot(
-    'immortal_genius',
-   usr_qq,
-    {
-      allplayer: top
-    }
-  )
-  if(!image){
+  const image = await puppeteer.screenshot('immortal_genius', usr_qq, {
+    allplayer: top
+  })
+  if (!image) {
     Send(Text('图片生产失败'))
     return false
   }

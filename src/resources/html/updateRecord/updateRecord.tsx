@@ -1,22 +1,19 @@
-import React from 'react';
+import React from 'react'
 import { LinkStyleSheet } from 'jsxp'
 import cssURL from './updateRecord.css'
 // 定义更新日志项的类型
 interface ChangelogItem {
-//   id: number;
+  //   id: number;
   user: {
-    name: string;
-    avatar?: string;
-  };
-  text: string;
-  time: Date;
+    name: string
+    avatar?: string
+  }
+  text: string
+  time: Date
 }
 
-
 // 更新日志组件
-export default ({
-    Record
-}) => {
+export default ({ Record }) => {
   return (
     <>
       <LinkStyleSheet src={cssURL} />
@@ -48,5 +45,5 @@ export default ({
         </ul>
       </div>
     </>
-  );
-};
+  )
+}

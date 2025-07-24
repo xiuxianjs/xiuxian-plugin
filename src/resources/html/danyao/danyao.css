@@ -69,10 +69,9 @@
 .user_top_left_dh {
   font-family: 'NZBZ';
   background-color: rgba(19, 21, 22, 0.486);
-  margin: 9px;
   border-radius: 20px;
   color: azure;
-  margin-left: 13px;
+  margin: 9px 0 0 13px;
   width: 240px;
   height: 40px;
   padding: 5px;
@@ -87,25 +86,22 @@
 
 .user_font {
   text-align: left;
-  /* margin: 10px; */
   font-size: 22px;
   padding: 15px;
   font-weight: 600;
   font-family: 'tttgbnumber';
-  color: #000000;
+  color: #000;
 }
 
 .user_font_title {
-  /* margin: 10px 30px 10px 30px; */
   text-align: center;
   border-bottom: 1px solid #bb8020;
   font-size: 30px;
   font-weight: 600;
-  color: #000000;
+  color: #000;
 }
 
 .wupin {
-  display: -webkit-flex;
   display: flex;
   flex-wrap: wrap;
 }

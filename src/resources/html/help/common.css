@@ -6,15 +6,15 @@
 
 .head-box {
   border-radius: 15px;
-  /* padding: 10px 20px; */
   position: relative;
   color: #fff;
-  /* margin-top: 30px; */
 }
 
 .head-box .title {
   font-size: 36px;
-  text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+  text-shadow:
+    0 0 1px #000,
+    1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .head-box .genshin_logo {
@@ -26,50 +26,47 @@
 
 .head-box .label {
   font-size: 16px;
-  text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+  text-shadow:
+    0 0 1px #000,
+    1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .head-box .label span {
   color: #d3bc8e;
-  /* padding: 0 2px; */
 }
 
 .notice {
-  color: #888;
-  font-size: 12px;
-  text-align: right;
-  padding: 12px 5px 5px;
-}
-
-.notice-center {
-  color: #fff;
-  text-align: center;
-  margin-bottom: 10px;
-  text-shadow: 1px 1px 1px #333;
-}
-
-.copyright {
-  font-size: 16px;
-  text-align: center;
-  color: #fff;
-  position: relative;
-  padding-left: 10px;
-  text-shadow: 1px 1px 1px #000;
-  margin: 10px 0;
-}
-
-.copyright .version {
-  font-size: 13px;
-  color: #d3bc8e;
-  display: inline-block;
-  padding: 0 3px;
-}
-
-/*  */
-.cons {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0 5px;
+  .cons2-0,
+  .cons2-1,
+  .cons2-2,
+  .cons2-3,
+  .cons2-4,
+  .cons2-5,
+  .cons2-6 {
+    border-radius: 4px;
+    color: #fff;
+  }
+  .cons2-0 {
+    background: #666;
+  }
+  .cons2-1 {
+    background: #71b1b7;
+  }
+  .cons2-2 {
+    background: #369961;
+  }
+  .cons2-3 {
+    background: #4596b9;
+  }
+  .cons2-4 {
+    background: #4560b9;
+  }
+  .cons2-5 {
+    background: #531ba9cf;
+  }
+  .cons2-6 {
+    background: #ff5722;
+  }
   border-radius: 4px;
 }
 
@@ -155,7 +152,6 @@
   color: #fff;
 }
 
-/********  Fetter  ********/
 .fetter {
   width: 50px;
   height: 50px;
@@ -209,7 +205,9 @@
   background-size: auto 100%;
   margin: 5px 15px 5px 10px;
   position: relative;
-  box-shadow: 0 0 1px 0 #ccc, 2px 2px 4px 0 rgba(50, 50, 50, 0.8);
+  box-shadow:
+    0 0 1px 0 #ccc,
+    2px 2px 4px 0 rgba(50, 50, 50, 0.8);
   overflow: hidden;
   color: #fff;
   font-size: 16px;
@@ -331,7 +329,6 @@ ul.cont-msg li strong,
   margin: 20px 0 10px 0;
 }
 
-/* item-icon */
 .item-icon {
   width: 100%;
   height: 100%;
