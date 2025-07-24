@@ -11,23 +11,19 @@ export default onResponse(selects, async e => {
     if (!e.IsMaster) return false
 
     Send(Text('开始行动！'))
-    let playerList = []
-    let files = fs
+
+    const files = fs
       .readdirSync(__PATH.player_path)
       .filter(file => file.endsWith('.json'))
-    for (let file of files) {
-      file = file.replace('.json', '')
-      playerList.push(file)
-    }
-    for (let player_id of playerList) {
+    for (const file of files) {
+      const player_id = file.replace('.json', '')
       //清除游戏状态
       await redis.set('xiuxian@1.3.0:' + player_id + ':game_action', 1)
-      let action: any = await redis.get(
-        'xiuxian@1.3.0:' + player_id + ':action'
-      )
+      const record = 'xiuxian@1.3.0:' + player_id + ':action'
+      const action: any = await redis.get(record)
       //不为空，存在动作
       if (action) {
-        await redis.del('xiuxian@1.3.0:' + player_id + ':action')
+        await redis.del(record)
         let arr = JSON.parse(action)
         arr.is_jiesuan = 1 //结算状态
         arr.shutup = 1 //闭关状态
@@ -37,10 +33,7 @@ export default onResponse(selects, async e => {
         arr.Place_actionplus = 1 //沉迷状态
         arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
         delete arr.group_id //结算完去除group_id
-        await redis.set(
-          'xiuxian@1.3.0:' + player_id + ':action',
-          JSON.stringify(arr)
-        )
+        await redis.set(record, JSON.stringify(arr))
       }
     }
     Send(Text('行动结束！'))
