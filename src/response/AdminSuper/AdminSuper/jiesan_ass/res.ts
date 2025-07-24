@@ -12,8 +12,8 @@ export default onResponse(selects, async e => {
   {
     if (!e.IsMaster) return false
 
-    let didian = e.MessageText.replace(/^(#|＃|\/)?解散宗门/, '')
-    didian = didian.trim()
+    let didian = (e.MessageText.replace(/^(#|＃|\/)?解散宗门/, '')).trim()
+
     let ass = data.getAssociation(didian)
     if (ass == 'error') {
       Send(Text('该宗门不存在'))
