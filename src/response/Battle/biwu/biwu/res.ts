@@ -1,4 +1,4 @@
-import { Text, useMention, useSend } from 'alemonjs'
+import { Text, useMention, useMessage, useSend } from 'alemonjs'
 
 import {
   baojishanghai,
@@ -8,7 +8,7 @@ import {
   Read_player,
   sleep
 } from '@src/model'
-import { data, redis } from '@src/api/api'
+import { data, pushInfo, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^切磋$/
@@ -90,6 +90,7 @@ async function battle(e, num) {
   const A_QQ = global.A_QQ
   const B_QQ = global.B_QQ
   const Send = useSend(e)
+  const [message] = useMessage(e)
   let A_player = await Read_player(A_QQ[num].QQ)
   let B_player = await Read_player(B_QQ[num].QQ)
   //策划专用
@@ -424,6 +425,7 @@ async function battle(e, num) {
     // todo 推送私人
     // Bot.pickMember(e.group_id, A_QQ[num].QQ).sendMsg(msg)
     // Bot.pickMember(e.group_id, B_QQ[num].QQ).sendMsg(msg)
+    pushInfo('', e.ChannelId, true, msg)
     msgg.push(msg)
     action_A.use = -1
     action_B.use = -1
@@ -447,9 +449,9 @@ async function battle(e, num) {
   Send(Text(msgg.join('\n')))
   await sleep(200)
   if (A_player.当前血量 <= 0) {
-    e.reply(`${B_player.名号}win!`)
+    message.send(format(Text(`${B_player.名号}win!`)))
   } else if (B_player.当前血量 <= 0) {
-    e.reply(`${A_player.名号}win!`)
+    message.send(format(Text(`${A_player.名号}win!`)))
   }
   //删除配置
   action_A = null
