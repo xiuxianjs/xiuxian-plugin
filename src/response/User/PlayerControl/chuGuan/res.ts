@@ -17,7 +17,8 @@ export const regular = /^(#|＃|\/)?出关$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)
-  if (action.shutup == 1) return false
+  if (!action) return
+  if (action.shutup == 1) return
 
   //结算
   let end_time = action.end_time
@@ -78,6 +79,9 @@ export default onResponse(selects, async e => {
 })
 async function getPlayerAction(usr_qq) {
   let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  if (!action) {
+    return false
+  }
   action = JSON.parse(action) //转为json格式数据
   return action
 }
