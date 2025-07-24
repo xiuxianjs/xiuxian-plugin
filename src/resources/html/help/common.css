@@ -6,7 +6,7 @@
 
 .head-box {
   border-radius: 15px;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   position: relative;
   color: #fff;
   /* margin-top: 30px; */
@@ -31,7 +31,7 @@
 
 .head-box .label span {
   color: #d3bc8e;
-  padding: 0 2px;
+  /* padding: 0 2px; */
 }
 
 .notice {
