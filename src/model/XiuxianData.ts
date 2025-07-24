@@ -50,6 +50,7 @@ import 锻造宝物 from '../resources/data/item/锻造宝物.json'
 import 隐藏灵根 from '../resources/data/item/隐藏灵根.json'
 import 锻造杂类 from '../resources/data/item/锻造杂类.json'
 import 技能列表 from '../resources/data/item/技能列表.json'
+import updateRecord from '../config/updateRecord.json'
 import { __PATH } from './paths'
 // 类型定义
 type JSONData = Record<string, any> | Array<any>
@@ -131,7 +132,7 @@ class XiuxianData {
   yincang: typeof 隐藏灵根
   zalei: typeof 锻造杂类
   jineng: typeof 技能列表
-
+  updateRecord: typeof updateRecord
   constructor() {
     //获取配置文件参数
     this.configData = Config.getConfig('version', 'version')
@@ -246,6 +247,8 @@ class XiuxianData {
     this.zalei = 锻造杂类
     //加载技能列表
     this.jineng = 技能列表
+    //加载更新日志
+    this.updateRecord = updateRecord
   }
 
   /**
