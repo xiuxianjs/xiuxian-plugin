@@ -61,8 +61,8 @@ export default onResponse(selects, async e => {
     }
   }
 
-  if (e.isGroup) {
-    await biguan_jiesuan(e.UserId, time, false, e.group_id) //提前闭关结束不会触发随机事件
+  if (e.name === 'message.create' || e.name === 'interaction.create') {
+    await biguan_jiesuan(e.UserId, time, false, e.ChannelId) //提前闭关结束不会触发随机事件
   } else {
     await biguan_jiesuan(e.UserId, time, false) //提前闭关结束不会触发随机事件
   }
@@ -201,12 +201,12 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     if (is_random) {
       msg.push(
         '\n增加气血:' + xiuwei * time,
-        '  获得治疗,血量增加:' + blood * time + '炼神之力消散了'
+        ',获得治疗,血量增加:' + blood * time + '炼神之力消散了'
       )
     } else {
       msg.push(
         '\n增加修为:' + xiuwei * time,
-        '  获得治疗,血量增加:' + blood * time
+        ',获得治疗,血量增加:' + blood * time
       )
     }
   }

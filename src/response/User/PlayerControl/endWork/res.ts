@@ -49,7 +49,7 @@ export default onResponse(selects, async e => {
       time = 0
     }
   }
-  if (e.isGroup) {
+  if (e.name === 'message.create' || e.name === 'interaction.create') {
     await dagong_jiesuan(e.UserId, time, false, e.group_id) //提前闭关结束不会触发随机事件
   } else {
     await dagong_jiesuan(e.UserId, time, false) //提前闭关结束不会触发随机事件
