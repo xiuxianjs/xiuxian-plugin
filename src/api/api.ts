@@ -3,7 +3,7 @@ import data from '../model/XiuxianData'
 
 import { getIoRedis } from '@alemonjs/db'
 import puppeteer from '@src/image/index'
-import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
+import { DataMention, Image, sendToChannel, sendToUser, Text } from 'alemonjs'
 
 /**
  *
@@ -36,19 +36,24 @@ export async function pushInfo(
   _platform: string,
   guild_id: string,
   isGroup: boolean,
-  msg: Buffer | string
+  msg: Buffer | string | Array<string | DataMention>
 ) {
+  let message: any
+  if (typeof msg == 'string') message = format(Text(msg))
+  else if (Buffer.isBuffer(msg)) message = format(Image(msg))
+  else {
+    const list = msg.map(item => {
+      if (typeof item == 'string') return Text(item)
+      else return item
+    })
+    message = format(...list)
+  }
+
   if (isGroup) {
     // 向指定频道发送消息 。SpaceId 从消息中获得，注意这可能不是 ChannelId
-    sendToChannel(
-      String(guild_id),
-      format(typeof msg === 'string' ? Text(msg) : Image(msg))
-    )
+    sendToChannel(String(guild_id), message)
     return
   }
   // 向指定用户发送消息  OpenID 从消息中获得，注意这可能不是 UserId
-  sendToUser(
-    String(guild_id),
-    format(typeof msg === 'string' ? Text(msg) : Image(msg))
-  )
+  sendToUser(String(guild_id), message)
 }

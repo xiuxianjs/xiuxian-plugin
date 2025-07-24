@@ -17,6 +17,7 @@ import {
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
+import { DataMention, Mention } from 'alemonjs'
 
 scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
@@ -45,7 +46,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
         }
       }
       //最后发送的消息
-      let msg = []
+      let msg: Array<DataMention | string> = [Mention(player_id)]
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
@@ -271,9 +272,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await Add_HP(player_id, Data_battle.A_xue)
             //发送消息
             if (is_group) {
-              await pushInfo('', push_address, is_group, msg.join('\n'))
+              await pushInfo('', push_address, is_group, msg)
             } else {
-              await pushInfo('', player_id, is_group, msg.join('\n'))
+              await pushInfo('', player_id, is_group, msg)
             }
           } else {
             arr.cishu--

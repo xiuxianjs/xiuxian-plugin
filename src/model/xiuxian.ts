@@ -440,7 +440,14 @@ export async function get_danyao_img(
     danyao_have,
     danyao_need
   }
-
+  if (process.env.NODE_ENV === 'development') {
+    const dir = './views'
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(
+      path.join(dir, 'danyao.json'),
+      JSON.stringify(player_data, null, 2)
+    )
+  }
   return await puppeteer.screenshot('danyao', e.UserId, player_data)
 }
 

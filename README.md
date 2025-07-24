@@ -52,7 +52,7 @@ yarn dev --login gui
 
 - 启动图片开发工具
 
-> mock数据来源于开发时触发的指令，请先出发图片对应指令，生产mock数据后进行
+> 请先触发图片对应指令，生产mock数据后进行
 
 ```sh
 yarn view
@@ -83,10 +83,26 @@ redis:
 
 即 `/config/alemonjs-xiuxian/xiuxian.yaml` 覆盖 `./src/config/xiuxian.yaml`
 
+> 使用alemongo，其内部bot在work/resources/bots 目录
+
 ## 使用
 
-> 唤醒 `/帮助`
+> 唤醒 `/修仙帮助`
 
-## 交流
+## 其他版本
 
-QQ Group 806943302
+| Project          | Status | Description            |
+| ---------------- | ------ | ---------------------- |
+| 👉[yunzaijs/1.2] |        | yunzaijs 版 修仙v1.2   |
+| 👉[version/1.2]  |        | yunzai-bot 版 修仙v1.2 |
+| 👉[version/1.3]  |        | yunzai-bot 版 修仙v1.3 |
+
+[yunzaijs/1.2]: https://github.com/xiuxianjs/xiuxian-plugin/tree/yunzaijs/1.2
+[version/1.2]: https://github.com/xiuxianjs/xiuxian-plugin/tree/version/1.2
+[version/1.3]: https://github.com/xiuxianjs/xiuxian-plugin/tree/version/1.3
+
+## 贡献
+
+<a href="https://github.com/xiuxianjs/xiuxian-plugin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xiuxianjs/xiuxian-plugin" />
+</a>
