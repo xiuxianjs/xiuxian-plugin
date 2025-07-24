@@ -7,6 +7,7 @@ export const regular = /^(#|＃|\/)?降妖归来$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)
+  if (!action) return
   if (action.working == 1) return false
   //结算
   let end_time = action.end_time
@@ -48,7 +49,7 @@ export default onResponse(selects, async e => {
       time = 0
     }
   }
-  if (e.isGroup) {
+  if (e.name === 'message.create' || e.name === 'interaction.create') {
     await dagong_jiesuan(e.UserId, time, false, e.group_id) //提前闭关结束不会触发随机事件
   } else {
     await dagong_jiesuan(e.UserId, time, false) //提前闭关结束不会触发随机事件

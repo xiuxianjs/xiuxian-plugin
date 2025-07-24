@@ -1,4 +1,5 @@
 import { Read_qinmidu } from '@src/model'
+import { useMessage, Text } from 'alemonjs'
 
 global.x = 0
 // let chaoshi_time
@@ -7,10 +8,11 @@ global.user_A = null
 global.user_B = null
 
 export async function chaoshi(e) {
+  const [message] = useMessage(e)
   global.chaoshi_time = setTimeout(() => {
     if (global.x == 1 || global.x == 2) {
       global.x = 0
-      e.reply('对方没有搭理你')
+      message.send(format(Text('对方没有搭理你')))
       return false
     }
   }, 30000)

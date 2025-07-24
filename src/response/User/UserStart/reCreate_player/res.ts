@@ -100,7 +100,8 @@ export default onResponse(selects, async e => {
         )
         //
         if (+acount >= 15) {
-          e.reply('灵魂虚弱，已不可转世！')
+          // e.reply('')
+          message.send(format(Text('灵魂虚弱，已不可转世！')))
           return
         }
         acount = Number(acount)

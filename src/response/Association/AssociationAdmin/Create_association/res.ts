@@ -18,15 +18,15 @@ export default onResponse(selects, async e => {
   ).level_id
 
   if (now_level_id < 22) {
-    e.reply('修为达到化神再来吧')
+    message.send(format(Text('修为达到化神再来吧')))
     return false
   }
   if (isNotNull(player.宗门)) {
-    e.reply('已经有宗门了')
+    message.send(format(Text('已经有宗门了')))
     return false
   }
   if (player.灵石 < 10000) {
-    e.reply('开宗立派是需要本钱的,攒到一万灵石再来吧')
+    message.send(format(Text('开宗立派是需要本钱的,攒到一万灵石再来吧')))
     return false
   }
   /** 回复 */
