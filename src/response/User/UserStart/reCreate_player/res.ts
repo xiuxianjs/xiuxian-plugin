@@ -177,7 +177,7 @@ export default onResponse(selects, async e => {
     /** 停止上下文 */
     subscribe.cancel(sub)
     Send(Text('超时自动取消'))
-  }, 60 * 1000)
+  }, 30 * 1000)
 })
 
 async function Create_player(e) {
