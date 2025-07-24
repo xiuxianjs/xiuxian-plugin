@@ -120,9 +120,9 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo('', group_id, true, msg.join(''))
+    await pushInfo('', group_id, true, msg)
   } else {
-    await pushInfo('', usr_qq, false, msg.join(''))
+    await pushInfo('', usr_qq, false, msg)
   }
 
   return false

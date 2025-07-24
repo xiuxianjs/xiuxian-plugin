@@ -480,9 +480,9 @@ export default onResponse(selects, async e => {
       await player_efficiency(usr_qq)
       message.send(
         format(
+          Mention(usr_qq),
           Text(
             [
-              Mention(usr_qq),
               `  服用成功,剩余 ${thing_name}数量: ${x - 1}，新的灵根为 "${
                 player.灵根.type
               }"：${player.灵根.name}`,

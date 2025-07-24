@@ -12,7 +12,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-import { Mention } from 'alemonjs'
+import { DataMention, Mention } from 'alemonjs'
 export const regular = /^(#|＃|\/)?出关$/
 
 export default onResponse(selects, async e => {
@@ -110,7 +110,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   //额外修为
   let other_xiuwei = 0
 
-  let msg = [Mention(usr_qq)]
+  let msg: Array<DataMention | string> = [Mention(usr_qq)]
   //炼丹师丹药修正
   let transformation = '修为'
   let xueqi = 0
@@ -208,9 +208,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo('', group_id, true, msg.join(''))
+    await pushInfo('', group_id, true, msg)
   } else {
-    await pushInfo('', usr_qq, false, msg.join(''))
+    await pushInfo('', usr_qq, false, msg)
   }
   if (dy.lianti <= 0) {
     dy.lianti = 0
