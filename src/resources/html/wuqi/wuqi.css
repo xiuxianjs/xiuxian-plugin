@@ -115,13 +115,11 @@
   margin: 10px;
   padding: 10px;
   width: 185px;
-  background: radial-gradient(at top left, #ffcc4d80, #ff9800d0);
-  border-top: 1px solid #ffcc80;
-  border-left: 1px solid #ffcc80;
-  border-right: 1px solid #bb8020;
-  border-bottom: 1px solid #bb8020;
-  box-shadow: 1px 2px 6px rgba(170, 31, 0, 0.2),
-    3px 8px 12px rgba(71, 35, 22, 0.3);
+  background: #f8eed680;
+  border-top: 1px solid #395b39a3;
+  border-left: 1px solid #1c6d3cb3;
+  border-right: 1px solid #1c6d3cb3;
+  border-bottom: 1px solid #1c6d3cb3;
   border-radius: 5px;
   position: relative;
 }

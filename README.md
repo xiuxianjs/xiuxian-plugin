@@ -1,9 +1,5 @@
 # 修仙机器人
 
-开发文档 https://lvyjs.dev/
-
-开发文档 [https://alemonjs.com/](https://alemonjs.com/)
-
 必要环境 `nodejs` 、`redis` 、`chrome`
 
 该扩展推荐使用`@alemonjs/onebot`进行连接
@@ -35,6 +31,10 @@ git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git 
 ```
 
 ### 开发
+
+开发环境 https://lvyjs.dev/
+
+开发文档 https://alemonjs.com/
 
 ```sh
 git clone --depth=10  https://github.com/xiuxianjs/xiuxian-plugin.git
@@ -83,7 +83,7 @@ redis:
 
 即 `/config/alemonjs-xiuxian/xiuxian.yaml` 覆盖 `./src/config/xiuxian.yaml`
 
-> 使用alemongo，其内部bot在work/resources/bots 目录
+> 若使用alemongo，其内部bot在work/resources/bots 目录，可借助于vscode或vscode的ssh编辑进行
 
 ## 使用
 
