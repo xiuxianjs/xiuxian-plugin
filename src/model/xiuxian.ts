@@ -1232,6 +1232,14 @@ export async function get_ranking_power_img(
     usr_paiming: usr_paiming,
     allplayer: Data
   }
+  if (process.env.NODE_ENV === 'development') {
+    const dir = './views'
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(
+      `${dir}/ranking_power.json`,
+      JSON.stringify(ranking_power_data, null, 2)
+    )
+  }
   return await puppeteer.screenshot(
     'ranking_power',
     e.UserId,

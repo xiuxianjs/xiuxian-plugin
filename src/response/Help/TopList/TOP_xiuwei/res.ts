@@ -26,8 +26,7 @@ export default onResponse(selects, async e => {
   let File_length = File.length
   let temp = []
   for (let i = 0; i < File_length; i++) {
-    let this_qq = File[i].replace('.json', '')
-    this_qq = parseInt(this_qq)
+    let this_qq = parseInt(File[i].replace('.json', ''))
     let player = await Read_player(this_qq)
     let sum_exp = await Get_xiuwei(this_qq)
     if (!isNotNull(player.level_id)) {

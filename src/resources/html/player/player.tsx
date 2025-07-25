@@ -45,6 +45,16 @@ const Player = ({
 
   const genders = ['未知', '女', '男', '扶她']
 
+  player.仙宠 = {
+    品级: '无',
+    name: '无',
+    type: '无',
+    灵魂绑定: 0,
+    等级: 0,
+    atk: 0,
+    加成: 0
+  }
+
   return (
     <html>
       <head>
@@ -265,7 +275,7 @@ const Player = ({
                 {!player.仙宠 || player.仙宠.length == 0 ? (
                   <div />
                 ) : (
-                  <>
+                  <div className="item wupin ">
                     <div className="item_title2">
                       【{player.仙宠.品级}】{player.仙宠.name}
                     </div>
@@ -281,7 +291,7 @@ const Player = ({
                     <div className="item_int2">
                       绑定：{player.仙宠.灵魂绑定 === 1 ? '有' : '无'}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </div>

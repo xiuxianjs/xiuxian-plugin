@@ -47,7 +47,7 @@ import 锻造宝物 from '../resources/data/item/锻造宝物.json'
 import 隐藏灵根 from '../resources/data/item/隐藏灵根.json'
 import 锻造杂类 from '../resources/data/item/锻造杂类.json'
 import 技能列表 from '../resources/data/item/技能列表.json'
-import updateRecord from '../config/updateRecord.json'
+import updateRecord from '../resources/data/updateRecord.json'
 import { __PATH } from './paths.js'
 
 export class DataList {

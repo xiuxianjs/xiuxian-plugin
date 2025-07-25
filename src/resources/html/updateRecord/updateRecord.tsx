@@ -1,28 +1,9 @@
 import React from 'react'
 import { LinkStyleSheet } from 'jsxp'
 import cssURL from './updateRecord.css'
-import Mingzi from '../../data/avatar/Mingzi.jpg'
-// 定义更新日志项的类型
-interface ChangelogItem {
-  //   id: number;
-  user: {
-    name: string
-    avatar?: string
-  }
-  text: string
-  time: Date
-}
 
 // 更新日志组件
 export default ({ Record }) => {
-  const avatarMap = { 
-    'Mingzi.jpg': Mingzi
-  }
-  const getAvatarSrc = (avatar: string | undefined): string => {
-    if (!avatar) return '';
-    return avatarMap[avatar] || '';
-  };
-
   return (
     <>
       <LinkStyleSheet src={cssURL} />
@@ -34,7 +15,7 @@ export default ({ Record }) => {
               <div className="user-info">
                 {item.user.avatar ? (
                   <img
-                    src={getAvatarSrc(item.user.avatar)}
+                    src={item.user.avatar}
                     alt={item.user.name}
                     className="user-avatar"
                   />
