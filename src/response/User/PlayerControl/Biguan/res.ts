@@ -4,6 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
@@ -45,7 +46,7 @@ export default onResponse(selects, async e => {
   }
 
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  let action: any = await getDataByUserId(usr_qq, 'action')
   action = JSON.parse(action)
   if (action != null) {
     //人物有动作查询动作结束时间

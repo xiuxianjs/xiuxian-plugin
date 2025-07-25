@@ -10,6 +10,7 @@ import { __PATH } from './paths.js'
 import { Write_player, Writeit } from './pub.js'
 import type { Player, Equipment, Najie, TalentInfo } from '../types/player.js'
 import * as _ from 'lodash-es'
+import { getDataByUserId } from './Redis.js'
 
 interface DanyaoStatus {
   biguan: number
@@ -2248,7 +2249,7 @@ export async function shijianc(time) {
 //获取上次签到时间
 export async function getLastsign(usr_qq) {
   //查询redis中的人物动作
-  let time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastsign_time')
+  const time: any = await getDataByUserId(usr_qq, 'lastsign_time')
   if (time != null) {
     let data = await shijianc(parseInt(time))
     return data
@@ -2259,7 +2260,7 @@ export async function getLastsign(usr_qq) {
 export async function getPlayerAction(usr_qq) {
   //查询redis中的人物动作
   let arr: any = {}
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  let action: any = await getDataByUserId(usr_qq, 'action')
   action = JSON.parse(action)
   //动作不为空闲
   if (action != null) {
@@ -2586,16 +2587,15 @@ export async function Go(e) {
     return 0
   }
   //获取游戏状态
-  let game_action: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  let game_action: any = await getDataByUserId(usr_qq, 'game_action')
   //防止继续其他娱乐行为
   if (game_action == 0) {
     Send(Text('修仙：游戏进行中...'))
     return 0
   }
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  let action: any = await getDataByUserId(usr_qq, 'action')
+
   action = JSON.parse(action)
   if (action != null) {
     //人物有动作查询动作结束时间

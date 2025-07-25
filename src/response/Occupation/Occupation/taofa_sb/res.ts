@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
-  action = await JSON.parse(action)
+  action = JSON.parse(action)
   if (action == null) {
     Send(Text('还没有接取到悬赏,请查看后再来吧')) //没接取悬赏
     return false

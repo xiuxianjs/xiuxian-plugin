@@ -11,6 +11,7 @@ import {
 import { found, chaoshi } from '../daolv'
 
 import { selects } from '@src/response/index'
+import { getDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?^(断绝姻缘)$/
 
 export default onResponse(selects, async e => {
@@ -20,7 +21,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay_A) {
     return false
   }
-  let A_action: any = await redis.get('xiuxian@1.3.0:' + A + ':action')
+  let A_action: any = await getDataByUserId(A, 'action')
   A_action = JSON.parse(A_action)
   if (A_action != null) {
     let now_time = new Date().getTime()

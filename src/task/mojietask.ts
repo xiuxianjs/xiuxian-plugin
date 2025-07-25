@@ -12,6 +12,7 @@ import {
   Write_temp,
   __PATH
 } from '@src/model'
+import { getDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
   let playerList = []
@@ -27,7 +28,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
 
-    let action: any = await redis.get('xiuxian@1.3.0:' + player_id + ':action')
+    let action: any = await getDataByUserId(player_id, 'action')
     action = await JSON.parse(action)
     //不为空，存在动作
     if (action != null) {

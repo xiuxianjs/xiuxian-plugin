@@ -10,6 +10,7 @@ import {
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表
@@ -26,7 +27,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
 
-    let action: any = await redis.get('xiuxian@1.3.0:' + player_id + ':action')
+    let action: any = await getDataByUserId(player_id, 'action')
     action = await JSON.parse(action)
     //不为空，存在动作
     if (action != null) {
@@ -156,10 +157,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             }
           }
           //写入redis
-          await redis.set(
-            'xiuxian@1.3.0:' + player_id + ':action',
-            JSON.stringify(arr)
-          )
+          await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           msg.push('\n' + last_msg)
           if (is_group) {
             await pushInfo('', push_address, is_group, msg.join('\n'))
@@ -223,10 +221,8 @@ scheduleJob('0 0/1 * * * ?', async () => {
           arr.thing = thing_name
           arr.cishu = shop[i].Grade + 1
           //写入redis
-          await redis.set(
-            'xiuxian@1.3.0:' + player_id + ':action',
-            JSON.stringify(arr)
-          )
+          await setDataByUserId(player_id, 'action', JSON.stringify(arr))
+
           msg.push('\n' + last_msg)
           if (is_group) {
             await pushInfo('', push_address, is_group, msg.join('\n'))

@@ -14,6 +14,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?登仙$/
 
 export default onResponse(selects, async e => {
@@ -44,7 +45,8 @@ export default onResponse(selects, async e => {
     return false
   }
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+
+  let action: any = await getDataByUserId(usr_qq, 'action')
   action = JSON.parse(action)
   //不为空
   if (action != null) {

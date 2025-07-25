@@ -3,6 +3,7 @@ import fs from 'fs'
 import { redis, data, pushInfo } from '@src/api/api'
 import { isNotNull, Add_职业经验, Add_najie_thing, __PATH } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/1 * * * ?', async () => {
   let playerList = []
   let files = fs
@@ -16,7 +17,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
-    let action: any = await redis.get('xiuxian@1.3.0:' + player_id + ':action')
+    let action: any = await getDataByUserId(player_id, 'action')
     action = JSON.parse(action)
     //不为空，存在动作
     if (action != null) {
@@ -102,10 +103,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           arr.Place_action = 1 //秘境
           arr.Place_actionplus = 1 //沉迷状态
           delete arr.group_id //结算完去除group_id
-          await redis.set(
-            'xiuxian@1.3.0:' + player_id + ':action',
-            JSON.stringify(arr)
-          )
+          await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           if (is_group) {
             await pushInfo('', push_address, is_group, msg)
           } else {
@@ -191,10 +189,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           arr.Place_action = 1 //秘境
           arr.Place_actionplus = 1 //沉迷状态
           delete arr.group_id //结算完去除group_id
-          await redis.set(
-            'xiuxian@1.3.0:' + player_id + ':action',
-            JSON.stringify(arr)
-          )
+          await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           //msg.push("\n增加修为:" + xiuwei * time, "血量增加:" + blood * time);
           if (is_group) {
             await pushInfo('', push_address, is_group, msg)

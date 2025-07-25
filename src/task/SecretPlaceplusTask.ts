@@ -18,6 +18,7 @@ import {
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 import { DataMention, Mention } from 'alemonjs'
+import { getDataByUserId } from '@src/model/Redis'
 
 scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
@@ -33,7 +34,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
-    let action: any = await redis.get('xiuxian@1.3.0:' + player_id + ':action')
+    let action: any = await getDataByUserId(player_id, 'action')
     action = await JSON.parse(action)
     //不为空，存在动作
     if (action != null) {
