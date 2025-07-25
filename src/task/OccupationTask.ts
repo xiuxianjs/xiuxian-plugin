@@ -2,6 +2,7 @@ import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 import { redis, data, pushInfo } from '@src/api/api'
 import { isNotNull, Add_职业经验, Add_najie_thing, __PATH } from '@src/model'
+import { DataMention, Mention } from 'alemonjs'
 scheduleJob('0 0/1 * * * ?', async () => {
   let playerList = []
   let files = fs
@@ -28,7 +29,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         }
       }
       //最后发送的消息
-      let msg = []
+      let msg: Array<DataMention | string> = [Mention(player_id)]
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
@@ -73,7 +74,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             0.17, 0.22, 0.17, 0.17, 0.17, 0.024, 0.024, 0.024, 0.024, 0.024,
             0.024, 0.024, 0.012, 0.011
           ]
-          let msg = []
+          let msg: Array<DataMention | string> = [Mention(player_id)]
           msg.push(`\n恭喜你获得了经验${exp},草药:`)
           let newsum = sum3.map(item => item * sum)
           if (player.level_id < 36) {
@@ -106,9 +107,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
             JSON.stringify(arr)
           )
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg.join('\n'))
+            await pushInfo('', push_address, is_group, msg)
           } else {
-            await pushInfo('', player_id, is_group, msg.join('\n'))
+            await pushInfo('', player_id, is_group, msg)
           }
         }
       }
@@ -196,9 +197,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           )
           //msg.push("\n增加修为:" + xiuwei * time, "血量增加:" + blood * time);
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg.join('\n'))
+            await pushInfo('', push_address, is_group, msg)
           } else {
-            await pushInfo('', player_id, is_group, msg.join('\n'))
+            await pushInfo('', player_id, is_group, msg)
           }
         }
       }
