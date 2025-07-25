@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import { __PATH } from './paths.js'
-
 import data from './XiuxianData.js'
 import { Write_player } from './pub.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'

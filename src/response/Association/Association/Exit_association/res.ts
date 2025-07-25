@@ -40,7 +40,7 @@ export default onResponse(selects, async e => {
   } else {
     let ass = data.getAssociation(player.宗门.宗门名称)
     if (ass.所有成员.length < 2) {
-      fs.rmSync(`${data.filePathMap.association}/${player.宗门.宗门名称}.json`)
+      fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
       delete player.宗门 //删除存档里的宗门信息
       data.setData('player', usr_qq, player)
       await player_efficiency(usr_qq)

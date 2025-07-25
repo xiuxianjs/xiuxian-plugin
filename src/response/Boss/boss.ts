@@ -44,7 +44,7 @@ export async function InitWorldBoss() {
 }
 //获取玩家平均实力和化神以上人数
 export async function GetAverageDamage() {
-  let File = fs.readdirSync(data.filePathMap.player)
+  let File = fs.readdirSync(data.player)
   File = File.filter(file => file.endsWith('.json'))
   let temp = []
   let TotalPlayer = 0

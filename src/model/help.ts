@@ -1,56 +1,30 @@
-import xiuxianCfg from './Config.js'
+import Config from './Config.js'
 
 export default class Help {
-  versionData: any = {}
-
   static async get() {
-    const html = new Help()
-    return await html.getData()
+    const helpData = Config.getConfig('help', 'help')
+    return {
+      helpData
+    }
   }
 
   static async gethelpcopy() {
-    const html = new Help()
-    return await html.getDatahelpcopy()
+    const helpData = Config.getConfig('help', 'help2')
+    return {
+      helpData
+    }
   }
 
   static async setup() {
-    const html = new Help()
-    return await html.Getset()
+    const helpData = Config.getConfig('help', 'set')
+    return {
+      helpData
+    }
   }
 
   static async Association() {
-    const html = new Help()
-    return await html.GetAssociationt()
-  }
-
-  async getDatahelpcopy() {
-    const helpData = xiuxianCfg.getConfig('help', 'help2')
+    const helpData = Config.getConfig('help', 'Association')
     return {
-      version: this.versionData.version,
-      helpData
-    }
-  }
-
-  async getData() {
-    const helpData = xiuxianCfg.getConfig('help', 'help')
-    return {
-      version: this.versionData.version,
-      helpData
-    }
-  }
-
-  async Getset() {
-    const helpData = xiuxianCfg.getConfig('help', 'set')
-    return {
-      version: this.versionData.version,
-      helpData
-    }
-  }
-
-  async GetAssociationt() {
-    const helpData = xiuxianCfg.getConfig('help', 'Association')
-    return {
-      version: this.versionData.version,
       helpData
     }
   }

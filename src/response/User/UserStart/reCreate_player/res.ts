@@ -123,9 +123,7 @@ export default onResponse(selects, async e => {
             //是宗主
             let ass: any = data.getAssociation(player.宗门.宗门名称)
             if (ass.所有成员.length < 2) {
-              fs.rmSync(
-                `${data.filePathMap.association}/${player.宗门.宗门名称}.json`
-              )
+              fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
             } else {
               ass['所有成员'] = ass['所有成员'].filter(item => item != usr_qq) //原来的成员表删掉这个B
               //随机一个幸运儿的QQ,优先挑选等级高的

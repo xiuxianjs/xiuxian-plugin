@@ -1,5 +1,14 @@
 import path, { join } from 'path'
 import { existsSync, mkdirSync } from 'fs'
+import Association from '@src/config/Association.yaml'
+import help from '@src/config/help.yaml'
+import help2 from '@src/config/help2.yaml'
+import set from '@src/config/set.yaml'
+import shituhelp from '@src/config/shituhelp.yaml'
+import namelist from '@src/config/namelist.yaml'
+import task from '@src/config/task.yaml'
+import version from '@src/config/version.yaml'
+import xiuxian from '@src/config/xiuxian.yaml'
 
 const dataPath = join(process.cwd(), 'data')
 
@@ -33,3 +42,15 @@ for (const key in __PATH) {
   }
 }
 export { __PATH }
+
+export const __PATH_CONFIG = {
+  Association,
+  help,
+  help2,
+  set,
+  shituhelp,
+  namelist,
+  task,
+  version,
+  xiuxian
+}

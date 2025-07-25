@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
 
   //洞天是否已绑定宗门
 
-  let dir = data.filePathMap.association
+  let dir = data.association
   let File = fs.readdirSync(dir)
   File = File.filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
 
