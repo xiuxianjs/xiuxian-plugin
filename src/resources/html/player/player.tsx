@@ -39,22 +39,7 @@ const Player = ({
   neidan,
   player_action
 }) => {
-  const whenError = img => {
-    img.src = 'default-avatar.png' // 或其他默认头像
-  }
-
   const genders = ['未知', '女', '男', '扶她']
-
-  player.仙宠 = {
-    品级: '无',
-    name: '无',
-    type: '无',
-    灵魂绑定: 0,
-    等级: 0,
-    atk: 0,
-    加成: 0
-  }
-
   return (
     <html>
       <head>
@@ -97,11 +82,7 @@ const Player = ({
             {/* 左 */}
             <div className="user_top_left">
               <div className="user_top_img_bottom">
-                <img
-                  className="user_top_img"
-                  src={avatar}
-                  onError={e => whenError(e.target)}
-                />
+                <img className="user_top_img" src={avatar} />
               </div>
               <div className="user_top_font_left">战力 {PowerMini}</div>
             </div>

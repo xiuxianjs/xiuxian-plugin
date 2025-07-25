@@ -19,11 +19,6 @@ const Association = ({
   neimen,
   waimen
 }) => {
-  const whenError = img => {
-    // 处理图片加载错误的函数
-    img.src = 'default-avatar.png' // 或其他默认头像
-  }
-
   return (
     <html>
       <head>
@@ -68,7 +63,6 @@ const Association = ({
                 <img
                   className="user_top_img"
                   src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-                  onError={e => whenError(e.target)}
                 />
               </div>
               <div className="user_top_left_qq">QQ:{user_id}</div>
