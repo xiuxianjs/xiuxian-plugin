@@ -189,7 +189,28 @@ const Najie = ({
             </div>
           </div>
         )}
-
+        {najie.草药?.length > 0 && (
+          <div className="card_box">
+            <div className="use_data">
+              <div className="user_font user_font_title">【草药】</div>
+              <div className="user_font wupin">
+                {najie.草药.map((item, index) => (
+                  <div key={index} className="item">
+                    <div className="item_title">
+                      {item.name}({lockStatus[item.islockd]})
+                    </div>
+                    <div className="item_int">功能：{item.type}</div>
+                    <div className="item_int">介绍：{item.desc}</div>
+                    <div className="item_int">数量：{item.数量}</div>
+                    <div className="item_int">出售价：{item.出售价}灵石</div>
+                    <div className="item_int">代号：{index + 301}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* 仙宠口粮 */}
         {najie.仙宠口粮?.length > 0 && (
           <div className="card_box">
