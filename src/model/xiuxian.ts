@@ -2256,15 +2256,10 @@ export async function getPlayerAction(usr_qq) {
   //动作不为空闲
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
-    if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
-      arr.action = action.action //当期那动作
-      arr.time = m + '分' + s + '秒' //剩余时间
-      return arr
-    }
+    arr.action = action.action //当期那动作
+    arr.time = action.time //剩余时间
+    arr.end_time = action.end_time
+    return arr
   }
   arr.action = '空闲'
   return arr

@@ -7,6 +7,8 @@ export const regular = /^(#|＃|\/)?结束采矿$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)
+  if (action.action == '空闲') return
+
   if (action.mine == 1) return false
   //结算
   let end_time = action.end_time

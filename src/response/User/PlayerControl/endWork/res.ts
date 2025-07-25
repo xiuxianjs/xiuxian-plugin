@@ -7,7 +7,7 @@ export const regular = /^(#|＃|\/)?降妖归来$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)
-  if (!action) return
+  if (action.action == '空闲') return
   if (action.working == 1) return false
   //结算
   let end_time = action.end_time

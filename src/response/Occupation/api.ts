@@ -1,10 +1,11 @@
 import { data, pushInfo } from '@src/api/api'
 import { Add_najie_thing, Add_职业经验 } from '@src/model'
+import { DataMention, Mention } from 'alemonjs'
 
 export async function plant_jiesuan(user_id, time, group_id, platform) {
   let usr_qq = user_id
   let player = data.getData('player', usr_qq)
-  let msg = []
+  let msg: Array<DataMention | string> = [Mention(usr_qq)]
   let exp = 0
   exp = time * 10
   let k = 1
@@ -50,9 +51,9 @@ export async function plant_jiesuan(user_id, time, group_id, platform) {
   }
   await Add_职业经验(usr_qq, exp)
   if (group_id) {
-    await pushInfo(platform, group_id, true, msg.join(''))
+    await pushInfo(platform, group_id, true, msg)
   } else {
-    await pushInfo(platform, usr_qq, false, msg.join(''))
+    await pushInfo(platform, usr_qq, false, msg)
   }
   // todo 推送消息
 

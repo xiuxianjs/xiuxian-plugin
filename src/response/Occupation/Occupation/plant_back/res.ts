@@ -7,6 +7,8 @@ export const regular = /^(#|＃|\/)?结束采药$/
 
 export default onResponse(selects, async e => {
   let action: any = await getPlayerAction(e.UserId)
+  if (action.action == '空闲') return
+
   if (action.plant == 1) {
     return false
   }
@@ -21,6 +23,7 @@ export default onResponse(selects, async e => {
   if (end_time > now_time) {
     //属于提前结束
     time = Math.floor((new Date().getTime() - start_time) / 1000 / 60)
+
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
@@ -38,6 +41,7 @@ export default onResponse(selects, async e => {
     time = Math.floor(action.time / 1000 / 60)
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
+
     for (let i = x; i > 0; i--) {
       if (time >= y * i) {
         time = y * i
@@ -49,6 +53,7 @@ export default onResponse(selects, async e => {
       time = 0
     }
   }
+
   if (e.name === 'message.create') {
     await plant_jiesuan(e.UserId, time, e.ChannelId, e.Platform) //提前闭关结束不会触发随机事件
   } else {
