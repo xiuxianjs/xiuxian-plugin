@@ -18,15 +18,18 @@ export default onResponse(selects, async e => {
   if (!isNotNull(player.宗门)) {
     return false
   }
+
   //获取灵石数量
-  let reg = new RegExp(/#宗门(上交|上缴|捐赠)灵石/)
+  let reg = new RegExp(/(#|＃|\/)?宗门(上交|上缴|捐赠)灵石/)
   let msg = e.MessageText.replace(reg, '').trim()
   if (msg == '' || msg == undefined) {
     Send(Text('请输入灵石数量'))
     return false
   }
-  let lingshi: any = parseInt(msg)
-  if (isNaN(lingshi) || isFinite(lingshi)) {
+
+  let lingshi = parseInt(msg)
+
+  if (isNaN(lingshi) || !isFinite(lingshi)) {
     Send(Text('请输入正确的灵石数量'))
     return false
   }
