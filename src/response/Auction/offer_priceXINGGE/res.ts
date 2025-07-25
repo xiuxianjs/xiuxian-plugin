@@ -67,5 +67,5 @@ export default onResponse(selects, async e => {
   auctionData.last_price = new_price
   auctionData.last_offer_player = usr_qq
   auctionData.last_offer_price = new Date().getTime() // NOTE: Big SB
-  await redis.set('xiuxian:AuctionofficialTask', JSON.stringify(auction))
+  await redis.set('xiuxian:AuctionofficialTask', JSON.stringify(auctionData))
 })
