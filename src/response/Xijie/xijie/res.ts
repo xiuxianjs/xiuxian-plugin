@@ -11,7 +11,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId } from '@src/model/Redis'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?洗劫.*$/
 
 export default onResponse(selects, async e => {
@@ -148,8 +148,8 @@ export default onResponse(selects, async e => {
     Place_address: shop[i],
     A_player: A_player
   }
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr))
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':lastxijie_time', now_time)
+  await setDataByUserId(usr_qq, 'action', JSON.stringify(arr))
+  await setDataByUserId(usr_qq, 'lastxijie_time', now_time)
   msg += '\n开始前往' + didian + ',祝你好运!'
   Send(Text(msg))
 })

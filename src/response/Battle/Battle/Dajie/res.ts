@@ -13,6 +13,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?^打劫$/
 
 export default onResponse(selects, async e => {
@@ -123,7 +124,7 @@ export default onResponse(selects, async e => {
     }
   }
 
-  let A_action_res = await redis.get('xiuxian@1.3.0:' + A + ':action')
+  let A_action_res = await getDataByUserId(A, 'action')
   const A_action = JSON.parse(A_action_res)
   if (A_action != null) {
     let now_time = new Date().getTime()

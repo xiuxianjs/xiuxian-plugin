@@ -1,5 +1,6 @@
 import { config, data, pushInfo, redis } from '@src/api/api'
 import { getPlayerAction, isNotNull, setFileValue } from '@src/model'
+import { setDataByUserId } from '@src/model/Redis'
 
 import { selects } from '@src/response/index'
 import { Mention } from 'alemonjs'
@@ -64,7 +65,7 @@ export default onResponse(selects, async e => {
   //结束的时间也修改为当前时间
   arr.end_time = new Date().getTime()
   delete arr.group_id //结算完去除group_id
-  await redis.set('xiuxian@1.3.0:' + e.UserId + ':action', JSON.stringify(arr))
+  await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
 })
 
 /**

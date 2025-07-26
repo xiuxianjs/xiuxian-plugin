@@ -2,6 +2,7 @@ import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 import { redis } from '@src/api/api'
 import { __PATH } from '@src/model'
+import { setDataByUserId } from '@src/model/Redis'
 
 scheduleJob('0 */5 * * * ?', async () => {
   //获取缓存中人物列表
@@ -20,7 +21,7 @@ scheduleJob('0 */5 * * * ?', async () => {
     )
     //防止继续其他娱乐行为
     if (+game_action == 0) {
-      await redis.set('xiuxian@1.3.0:' + player_id + ':game_action', 1)
+      await setDataByUserId(player_id, 'game_action', 1)
       return false
     }
   }

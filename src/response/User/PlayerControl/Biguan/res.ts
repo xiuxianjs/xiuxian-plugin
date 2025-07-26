@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId } from '@src/model/Redis'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
@@ -76,6 +76,6 @@ export default onResponse(selects, async e => {
     mine: '1' //采矿-开启
   }
 
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr)) //redis设置动作
+  await setDataByUserId(usr_qq, 'action', JSON.stringify(arr)) //redis设置动作
   Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`))
 })

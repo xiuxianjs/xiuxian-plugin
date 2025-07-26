@@ -4,6 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?解封.*$/
 
 export default onResponse(selects, async e => {
@@ -29,7 +30,7 @@ export default onResponse(selects, async e => {
     //清除游戏状态
     await redis.set('xiuxian@1.3.0:' + qq + ':game_action', 1)
     //查询redis中的人物动作
-    let action: any = await redis.get('xiuxian@1.3.0:' + qq + ':action')
+    let action: any = await getDataByUserId(qq, 'action')
     //不为空，有状态
     if (action) {
       //把状态都关了
@@ -42,7 +43,7 @@ export default onResponse(selects, async e => {
       arr.Place_actionplus = 1 //沉迷状态
       arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
       delete arr.group_id //结算完去除group_id
-      await redis.set('xiuxian@1.3.0:' + qq + ':action', JSON.stringify(arr))
+      await setDataByUserId(qq, 'action', JSON.stringify(arr))
       Send(Text('已解除！'))
       return false
     }

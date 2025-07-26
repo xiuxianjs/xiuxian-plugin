@@ -12,7 +12,7 @@ import {
   Write_temp,
   __PATH
 } from '@src/model'
-import { getDataByUserId } from '@src/model/Redis'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
   let playerList = []
@@ -175,10 +175,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             //结算完去除group_id
             delete arr.group_id
             //写入redis
-            await redis.set(
-              'xiuxian@1.3.0:' + player_id + ':action',
-              JSON.stringify(arr)
-            )
+            await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
             await Add_血气(player_id, qixue)
             await Add_修为(player_id, xiuwei)
@@ -187,10 +184,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await pushInfo(platform, address, is_group, msg.join(''))
           } else {
             arr.cishu--
-            await redis.set(
-              'xiuxian@1.3.0:' + player_id + ':action',
-              JSON.stringify(arr)
-            )
+
+            await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
             await Add_血气(player_id, qixue)
             await Add_修为(player_id, xiuwei)

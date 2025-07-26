@@ -4,7 +4,7 @@ import { redis } from '@src/api/api'
 import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId } from '@src/model/Redis'
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
@@ -83,6 +83,6 @@ export default onResponse(selects, async e => {
     xijie: '1', //洗劫状态开启
     mine: '1' //采矿-开启
   }
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr)) //redis设置动作
+  await setDataByUserId(usr_qq, 'action', JSON.stringify(arr))
   Send(Text(`现在开始降妖${time}分钟`))
 })
