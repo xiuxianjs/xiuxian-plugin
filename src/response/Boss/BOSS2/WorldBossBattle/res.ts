@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
     Send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
-  if (data.existData('player', usr_qq)) {
+  if (await data.existData('player', usr_qq)) {
     let player = await await data.getData('player', usr_qq)
     if (player.level_id > 41 || player.lunhui > 0) {
       Send(Text('仙人不得下凡'))

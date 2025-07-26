@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?药园*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
 
   if (!ifexistplay) return false
 

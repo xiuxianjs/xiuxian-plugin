@@ -10,7 +10,7 @@ const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   if (isNotNull(player.宗门)) return false
@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   }
   let association_name = e.MessageText.replace(/^(#|＃|\/)?加入宗门/, '')
   association_name = association_name.trim()
-  let ifexistass = data.existData('association', association_name)
+  let ifexistass = await data.existData('association', association_name)
   if (!ifexistass) {
     Send(Text('这方天地不存在' + association_name))
     return false

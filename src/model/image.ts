@@ -30,7 +30,7 @@ import {
 
 export async function getSupermarketImage(e, thing_class) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -64,7 +64,7 @@ export async function getSupermarketImage(e, thing_class) {
 
 export async function getForumImage(e, thing_class) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -95,7 +95,7 @@ export async function getForumImage(e, thing_class) {
 
 export async function getdanfangImage(e) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -112,7 +112,7 @@ export async function getdanfangImage(e) {
 
 export async function getTuzhiImage(e) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -138,7 +138,7 @@ export async function getTuzhiImage(e) {
  */
 export async function getNingmenghomeImage(e, thing_type) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -185,7 +185,7 @@ export async function getNingmenghomeImage(e, thing_type) {
  */
 export async function getValuablesImage(e) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -227,7 +227,7 @@ export async function getXianChongImage(
 ): Promise<any> {
   let i: number
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -270,7 +270,7 @@ export async function getXianChongImage(
  */
 export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -306,7 +306,7 @@ export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
  */
 export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -363,7 +363,7 @@ export async function getDanyaoImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -409,7 +409,7 @@ export async function getDanyaoImage(
  */
 export async function getGongfaImage(e: PublicEventMessageCreate) {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -509,7 +509,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   let 护具评级
   let 武器评级
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -792,7 +792,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   let usr_qq = e.UserId
   const Send = useSend(e) as any
   //无存档
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -920,7 +920,7 @@ export async function getQquipmentImage(
 ): Promise<any> {
   let usr_qq = e.UserId
   let playerData = await data.getData('player', usr_qq)
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay || !playerData || Array.isArray(playerData)) {
     return
   }
@@ -958,7 +958,7 @@ export async function getQquipmentImage(
  */
 export async function getNajieImage(e: PublicEventMessageCreate): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -1006,7 +1006,7 @@ export async function getStateImage(
   all_level: boolean
 ): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -1038,7 +1038,7 @@ export async function getStatezhiyeImage(
   all_level: boolean
 ): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -1074,7 +1074,7 @@ export async function getStatemaxImage(
   all_level: boolean
 ): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -1105,7 +1105,7 @@ export async function getTalentImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }

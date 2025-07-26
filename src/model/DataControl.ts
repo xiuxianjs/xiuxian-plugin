@@ -90,8 +90,11 @@ class DataControl {
    * @param file_name
    * @deprecated
    */
-  existData(file_path_type: FilePathType, file_name: string) {
-    return redis.exists(`${filePathMap[file_path_type]}:${file_name}`)
+  async existData(file_path_type: FilePathType, file_name: string) {
+    const res = await redis.exists(
+      `${filePathMap[file_path_type]}:${file_name}`
+    )
+    return res === 1
   }
 
   /**

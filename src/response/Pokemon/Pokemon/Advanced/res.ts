@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?进阶仙宠$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   let list = ['仙胎', '仙仔', '仙兽', '仙道', '仙灵']

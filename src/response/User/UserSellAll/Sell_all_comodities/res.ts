@@ -78,6 +78,7 @@ export default onResponse(selects, async e => {
   const [subscribe] = useSubscribe(e, selects)
   const sub = subscribe.mount(
     async event => {
+      clearTimeout(timeout)
       // 创建
       const [message] = useMessage(event)
       // 获取文本
@@ -85,12 +86,8 @@ export default onResponse(selects, async e => {
       let difficulty = new_msg === '1'
       if (!difficulty) {
         message.send(format(Text('已取消出售')))
-
-        clearTimeout(timeout)
-
         return
       }
-      clearTimeout(timeout)
       /**出售*/
 
       let usr_qq = event.UserId
@@ -122,10 +119,17 @@ export default onResponse(selects, async e => {
     },
     ['UserId']
   )
-  const timeout = setTimeout(() => {
-    // 取消订阅
-    subscribe.cancel(sub)
-    // 发送消息
-    message.send(format(Text('超时自动取消出售')))
-  }, 30000)
+  const timeout = setTimeout(
+    () => {
+      try {
+        // 不能在回调中执行
+        subscribe.cancel(sub)
+        // 发送消息
+        message.send(format(Text('超时自动取消出售')))
+      } catch (e) {
+        logger.error('取消订阅失败', e)
+      }
+    },
+    1000 * 60 * 1
+  )
 })

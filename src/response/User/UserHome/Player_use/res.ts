@@ -399,7 +399,7 @@ export default onResponse(selects, async e => {
         /** 设置上下文 */
         const [subscribe] = useSubscribe(e, selects)
         const sub = subscribe.mount(
-          async (event, next) => {
+          async event => {
             let usr_qq = event.UserId
             const [message] = useMessage(event)
             /** 内容 */
@@ -407,10 +407,11 @@ export default onResponse(selects, async e => {
             let code = choice.split('*')
             let les = code[0] //条件
             let gonfa = code[1] //功法
+
+            clearTimeout(timeout)
+
             if (les == '还是算了') {
               message.send(format(Text('取消兑换')))
-              /** 结束上下文 */
-              clearTimeout(timeout)
               return
             } else if (les == '兑换') {
               let ifexist2 = data.bapin.find(item => item.name == gonfa)
@@ -418,21 +419,27 @@ export default onResponse(selects, async e => {
                 await addNajieThing(usr_qq, '残卷', '道具', -10)
                 await addNajieThing(usr_qq, gonfa, '功法', 1)
                 message.send(format(Text(`兑换${gonfa}成功`)))
-                clearTimeout(timeout)
                 return
               } else {
                 message.send(format(Text('残卷无法兑换该功法')))
-                clearTimeout(timeout)
                 return
               }
             }
           },
           ['UserId']
         )
-        const timeout = setTimeout(() => {
-          subscribe.cancel(sub)
-          message.send(format(Text('已取消操作')))
-        }, 1000 * 30)
+        const timeout = setTimeout(
+          () => {
+            try {
+              // 不能在回调中执行
+              subscribe.cancel(sub)
+              message.send(format(Text('已取消操作')))
+            } catch (e) {
+              logger.error('取消订阅失败', e)
+            }
+          },
+          1000 * 60 * 1
+        )
         return
       } else {
         message.send(format(Text('你没有足够的残卷')))

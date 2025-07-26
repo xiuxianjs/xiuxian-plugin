@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?逐出.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let ifexistplayB = data.existData('player', member_qq)
+  let ifexistplayB = await data.existData('player', member_qq)
   if (!ifexistplayB) {
     Send(Text('此人未踏入仙途！'))
     return false

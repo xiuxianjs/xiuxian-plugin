@@ -172,11 +172,19 @@ export default onResponse(selects, async e => {
     },
     ['UserId']
   )
-  const timeout = setTimeout(() => {
-    /** 停止上下文 */
-    subscribe.cancel(sub)
-    Send(Text('超时自动取消'))
-  }, 30 * 1000)
+  const timeout = setTimeout(
+    () => {
+      try {
+        // 不能在回调中执行
+        subscribe.cancel(sub)
+        // message.send(format(Text('超时自动取消')))
+        Send(Text('超时自动取消操作'))
+      } catch (e) {
+        logger.error('取消订阅失败', e)
+      }
+    },
+    1000 * 60 * 1
+  ) //2分钟超时
 })
 
 async function Create_player(e) {

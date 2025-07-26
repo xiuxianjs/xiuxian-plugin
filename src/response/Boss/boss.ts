@@ -149,7 +149,7 @@ export async function WorldBossBattle(e) {
     send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
-  if (data.existData('player', usr_qq)) {
+  if (await data.existData('player', usr_qq)) {
     let player = await data.getData('player', usr_qq)
     if (player.level_id < 42 && player.lunhui == 0) {
       send(Text('你在仙界吗'))

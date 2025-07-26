@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {

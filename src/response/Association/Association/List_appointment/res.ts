@@ -8,7 +8,7 @@ const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return
   const keys = await redis.keys(`${__PATH.association}:*`)
   const assList = keys.map(key => key.replace(`${__PATH.association}:`, ''))
