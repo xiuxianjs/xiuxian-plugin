@@ -113,8 +113,8 @@ export default onResponse(selects, async e => {
     Send(Text('咋的，自己弄自己啊？'))
     return false
   }
-  let playerA = data.getData('player', A)
-  let playerB = data.getData('player', B)
+  let playerA = await data.getData('player', A)
+  let playerB = await data.getData('player', B)
   if (isNotNull(playerA.宗门) && isNotNull(playerB.宗门)) {
     let assA = data.getAssociation(playerA.宗门.宗门名称)
     let assB = data.getAssociation(playerB.宗门.宗门名称)

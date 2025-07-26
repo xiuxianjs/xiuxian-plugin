@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'fs'
+
 import { redis } from '@src/api/api'
 import { __PATH, writeDuanlu } from '@src/model'
 
@@ -10,14 +10,9 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   await writeDuanlu([])
-  let playerList = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
+
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (let player_id of playerList) {
     let action: any = null
     await redis.set(

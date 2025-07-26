@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let najie = await data.getData('najie', usr_qq)
+  let najie = await await data.getData('najie', usr_qq)
   let wupin = [
     '装备',
     '丹药',

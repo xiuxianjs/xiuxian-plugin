@@ -78,7 +78,7 @@ export default onResponse(selects, async e => {
  */
 async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   let usr_qq = user_id
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let now_level_id
   if (!isNotNull(player.level_id)) {
     return false

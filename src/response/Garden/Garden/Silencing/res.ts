@@ -36,8 +36,8 @@ export default onResponse(selects, async e => {
   //     return false
   //   }
 
-  //   let player = data.getData('player', usr_qq) //读取用户修仙信息
-  //   let player1 = data.getData('player', qq) //读取用户修仙信息
+  //   let player = await data.getData('player', usr_qq) //读取用户修仙信息
+  //   let player1 = await data.getData('player', qq) //读取用户修仙信息
   //   let qingdianshu = await existNajieThing(usr_qq, '剑帝一剑', '道具')
   //   if (qingdianshu !== false && qingdianshu !== 0) {
   //     //判断纳戒有没有剑帝信物

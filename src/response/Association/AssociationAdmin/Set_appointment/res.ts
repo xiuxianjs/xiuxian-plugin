@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   }
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
@@ -43,7 +43,7 @@ export default onResponse(selects, async e => {
     Send(Text('只能设置宗门内弟子的职位'))
     return false
   }
-  let member = data.getData('player', member_qq) //获取这个B的存档
+  let member = await data.getData('player', member_qq) //获取这个B的存档
   let now_apmt = member.宗门.职位 //这个B现在的职位
   if (player.宗门.职位 == '副宗主' && now_apmt == '宗主') {
     Send(Text('你想造反吗！？'))

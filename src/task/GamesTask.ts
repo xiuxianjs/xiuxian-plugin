@@ -1,19 +1,13 @@
 import { scheduleJob } from 'node-schedule'
-import fs from 'fs'
 import { redis } from '@src/api/api'
 import { __PATH } from '@src/model'
 import { setDataByUserId } from '@src/model/Redis'
 
 scheduleJob('0 */5 * * * ?', async () => {
   //获取缓存中人物列表
-  let playerList = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
+
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (let player_id of playerList) {
     //获取游戏状态
     let game_action = await redis.get(

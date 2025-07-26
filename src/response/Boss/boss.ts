@@ -2,7 +2,7 @@ import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { data, pushInfo, redis } from '@src/api/api'
 import fs from 'fs'
-import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
+import { zd_battle, sleep, Harm, Add_HP, Add_灵石, __PATH } from '@src/model'
 
 global.WorldBOSSBattleCD = {}
 global.WorldBOSSBattleLock = 0 //BOSS战斗锁，防止打架频率过高造成奖励多发
@@ -44,19 +44,19 @@ export async function InitWorldBoss() {
 }
 //获取玩家平均实力和化神以上人数
 export async function GetAverageDamage() {
-  let File = fs.readdirSync(data.player).filter(file => file.endsWith('.json'))
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   let temp = []
   let TotalPlayer = 0
-  for (let i = 0; i < File.length; i++) {
-    let this_qq: any = File[i].replace('.json', '')
-    this_qq = parseInt(this_qq)
-    let player = await data.getData('player', this_qq)
+  for (const player_id of playerList) {
+    const player = await await data.getData('player', player_id)
     if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
       temp[TotalPlayer] = parseInt(player.攻击)
-      logger.info(`[金角大王] ${this_qq}玩家攻击:${temp[TotalPlayer]}`)
+      logger.info(`[金角大王] ${player_id}玩家攻击:${temp[TotalPlayer]}`)
       TotalPlayer++
     }
   }
+
   //排序
   temp.sort(function (a, b) {
     return b - a
@@ -149,7 +149,7 @@ export async function WorldBossBattle(e) {
     return false
   }
   if (data.existData('player', usr_qq)) {
-    let player = await data.getData('player', usr_qq)
+    let player = await await data.getData('player', usr_qq)
     if (player.level_id < 42 && player.lunhui == 0) {
       send(Text('你在仙界吗'))
       return false
@@ -331,7 +331,7 @@ export async function WorldBossBattle(e) {
         )
       )
       for (let i = 0; i < PlayerList.length; i++)
-        await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
+        await await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
       let Show_MAX
       let Rewardmsg = ['****妖王周本贡献排行榜****']
       if (PlayerList.length > 20) Show_MAX = 20
@@ -344,7 +344,7 @@ export async function WorldBossBattle(e) {
       )
         TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]]
       for (let i = 0; i < PlayerList.length; i++) {
-        let CurrentPlayer = await data.getData(
+        let CurrentPlayer = await await data.getData(
           'player',
           PlayerRecordJSON.QQ[PlayerList[i]]
         )

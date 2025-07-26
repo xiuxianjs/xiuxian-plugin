@@ -19,9 +19,9 @@ import { getDataByUserId } from './Redis.js'
 export { __PATH }
 
 // 辅助函数：安全获取玩家数据
-export function getPlayerDataSafe(usr_qq: string): Player | null {
-  const playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+export async function getPlayerDataSafe(usr_qq: string): Player | null {
+  const playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return null
   }
   return playerData as Player
@@ -33,8 +33,8 @@ export function setPlayerDataSafe(usr_qq: string, player: Player): void {
 }
 
 // 辅助函数：安全获取装备数据
-export function getEquipmentDataSafe(usr_qq: string): Equipment | null {
-  const equipmentData = data.getData('equipment', usr_qq)
+export async function getEquipmentDataSafe(usr_qq: string): Equipment | null {
+  const equipmentData = await data.getData('equipment', usr_qq)
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return null
   }
@@ -50,11 +50,8 @@ const 圣体概率 = 0.01
 
 //检查存档是否存在，存在返回true;
 export async function existplayer(usr_qq: string): Promise<boolean> {
-  const exist_player = fs.existsSync(`${__PATH.player_path}/${usr_qq}.json`)
-  if (exist_player) {
-    return true
-  }
-  return false
+  const res = await redis.exists(`${__PATH.player_path}:${usr_qq}`)
+  return res === 1
 }
 
 /**
@@ -76,11 +73,7 @@ export async function convert2integer(
 
 //读取存档信息，返回成一个JavaScript对象
 export async function readPlayer(usr_qq: string): Promise<Player | null> {
-  let dir = path.join(`${__PATH.player_path}/${usr_qq}.json`)
-  if (!fs.existsSync(dir)) {
-    return null
-  }
-  let player = fs.readFileSync(dir, 'utf8')
+  const player = await redis.get(`${__PATH.player_path}:${usr_qq}`)
   //将字符串数据转变成数组格式
   const playerData = JSON.parse(decodeURIComponent(player))
   return playerData as Player
@@ -179,11 +172,7 @@ export async function LevelTask(
 
 //读取装备信息，返回成一个JavaScript对象
 export async function readEquipment(usr_qq: string): Promise<Equipment | null> {
-  let dir = path.join(`${__PATH.equipment_path}/${usr_qq}.json`)
-  if (!fs.existsSync(dir)) {
-    return null
-  }
-  let equipment = fs.readFileSync(dir, 'utf8')
+  let equipment = await redis.get(`${__PATH.equipment_path}:${usr_qq}`)
   //将字符串数据转变成数组格式
   const data = JSON.parse(equipment)
   return data as Equipment
@@ -234,20 +223,14 @@ export async function writeEquipment(
   if (player.仙宠.type == '暴伤') player.暴击伤害 += player.仙宠.加成
   await writePlayer(usr_qq, player)
   await Add_HP(usr_qq, 0)
-  let dir = path.join(__PATH.equipment_path, `${usr_qq}.json`)
-  let new_ARR = JSON.stringify(equipment)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  redis.set(`${__PATH.equipment_path}:${usr_qq}`, JSON.stringify(equipment))
   return
 }
 
 //读取纳戒信息，返回成一个JavaScript对象
 export async function readNajie(usr_qq: string): Promise<Najie | null> {
-  let dir = path.join(`${__PATH.najie_path}/${usr_qq}.json`)
-  if (!fs.existsSync(dir)) {
-    return null
-  }
-  let najie: any = fs.readFileSync(dir, 'utf8')
   let najieData
+  let najie = await redis.get(`${__PATH.najie_path}:${usr_qq}`)
   //将字符串数据转变成数组格式
   try {
     // najie = JSON.parse(najie)
@@ -261,10 +244,7 @@ export async function readNajie(usr_qq: string): Promise<Najie | null> {
 }
 
 export async function fixed(usr_qq) {
-  fs.copyFileSync(
-    `${__PATH.auto_backup}/najie/${usr_qq}.json`,
-    `${__PATH.najie_path}/${usr_qq}.json`
-  )
+  // await redis.set(`${__PATH.najie_path}:${usr_qq}`, najie)
   return
 }
 /**
@@ -466,9 +446,7 @@ export async function datachange(data: number): Promise<string> {
 }
 //写入纳戒信息,第二个参数是一个JavaScript对象
 export async function Write_najie(usr_qq: string, najie: Najie): Promise<void> {
-  let dir = path.join(__PATH.najie_path, `${usr_qq}.json`)
-  let new_ARR = JSON.stringify(najie)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.najie_path}:${usr_qq}`, JSON.stringify(najie))
   return
 }
 
@@ -588,7 +566,7 @@ export async function Reduse_player_学习功法(usr_qq, gongfa_name) {
 //修炼效率综合
 export async function playerEfficiency(usr_qq: string) {
   //这里有问题
-  const player = getPlayerDataSafe(usr_qq) //修仙个人信息
+  const player = await getPlayerDataSafe(usr_qq) //修仙个人信息
   if (!player) {
     return
   }
@@ -1151,17 +1129,14 @@ export function isNotBlank(value: any): boolean {
 }
 
 export async function readQinmidu() {
-  let dir = path.join(`${__PATH.qinmidu}/qinmidu.json`)
-  let qinmidu = fs.readFileSync(dir, 'utf8')
+  const qinmidu = await redis.get(`${__PATH.qinmidu}:qinmidu`)
   //将字符串数据转变成数组格式
   const data = JSON.parse(qinmidu)
   return data
 }
 
 export async function writeQinmidu(qinmidu) {
-  let dir = path.join(__PATH.qinmidu, `qinmidu.json`)
-  let new_ARR = JSON.stringify(qinmidu)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.qinmidu}:qinmidu`, JSON.stringify(qinmidu))
   return
 }
 export async function fstadd_qinmidu(A, B) {
@@ -1281,17 +1256,12 @@ export async function exist_hunyin(A) {
 }
 
 export async function Write_shitu(shitu) {
-  let dir = path.join(__PATH.shitu, `shitu.json`)
-  let new_ARR = JSON.stringify(shitu)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.shitu}:shitu`, JSON.stringify(shitu))
   return
 }
 export async function Read_shitu() {
-  let dir = path.join(`${__PATH.shitu}/shitu.json`)
-  let shitu = fs.readFileSync(dir, 'utf8')
-  //将字符串数据转变成数组格式
-  shitu = JSON.parse(shitu)
-  return shitu
+  const shitu = await redis.get(`${__PATH.shitu}:shitu`)
+  return JSON.parse(shitu)
 }
 
 export async function fstadd_shitu(A) {
@@ -1387,39 +1357,26 @@ export async function find_tudi(A) {
   }
 }
 export async function Read_danyao(usr_qq) {
-  let dir = path.join(`${__PATH.danyao_path}/${usr_qq}.json`)
-  if (!fs.existsSync(dir)) {
-    //如果没有存档则返回空对象
-    return {}
-  }
-  let danyao = fs.readFileSync(dir, 'utf8')
+  let danyao = await redis.get(`${__PATH.danyao_path}:${usr_qq}`)
   //将字符串数据转变成数组格式
   const data = JSON.parse(danyao)
   return data
 }
 
 export async function Write_danyao(usr_qq, danyao) {
-  let dir = path.join(__PATH.danyao_path, `${usr_qq}.json`)
-  let new_ARR = JSON.stringify(danyao)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.danyao_path}:${usr_qq}`, JSON.stringify(danyao))
   return
 }
 
 export async function Read_temp() {
-  let dir = path.join(`${__PATH.temp_path}/temp.json`)
-  if (!fs.existsSync(dir)) {
-    return {}
-  }
-  let temp = fs.readFileSync(dir, 'utf8')
+  let temp = await redis.get(`${__PATH.temp_path}:temp`)
   //将字符串数据转变成数组格式
   const data = JSON.parse(temp)
   return data
 }
 
 export async function Write_temp(temp) {
-  let dir = path.join(__PATH.temp_path, `temp.json`)
-  let new_ARR = JSON.stringify(temp)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.temp_path}:temp`, JSON.stringify(temp))
   return
 }
 /**
@@ -1461,23 +1418,13 @@ export async function Go(e) {
 }
 
 export async function writeShop(shop) {
-  let dir = path.join(__PATH.shop, `shop.json`)
-  //如果没有存档则创建一个空的
-  if (!fs.existsSync(dir)) {
-    return
-  }
-  let new_ARR = JSON.stringify(shop)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.shop}:shop`, JSON.stringify(shop))
+  return
   return
 }
 
 export async function readShop() {
-  let dir = path.join(`${__PATH.shop}/shop.json`)
-  if (!fs.existsSync(dir)) {
-    //如果没有存档则返回空对象
-    return []
-  }
-  let shop = fs.readFileSync(dir, 'utf8')
+  let shop = await redis.get(`${__PATH.shop}:shop`)
   //将字符串数据转变成数组格式
   const data = JSON.parse(shop)
   return data
@@ -1804,33 +1751,19 @@ export function ifbaoji(baoji) {
 }
 //写入交易表
 export async function writeExchange(wupin) {
-  let dir = path.join(__PATH.Exchange, `Exchange.json`)
-  if (!fs.existsSync(dir)) {
-    fs.writeFileSync(dir, '[]', 'utf8')
-  }
-  let new_ARR = JSON.stringify(wupin)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.Exchange}:Exchange`, JSON.stringify(wupin))
   return
 }
 
 //写入交易表
 export async function writeForum(wupin) {
-  let dir = path.join(__PATH.Exchange, `Forum.json`)
-  if (!fs.existsSync(dir)) {
-    fs.writeFileSync(dir, '[]', 'utf8')
-  }
-  let new_ARR = JSON.stringify(wupin)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  await redis.set(`${__PATH.Exchange}:Forum`, JSON.stringify(wupin))
   return
 }
 
 //读交易表
 export async function readExchange() {
-  let dir = path.join(`${__PATH.Exchange}/Exchange.json`)
-  if (!fs.existsSync(dir)) {
-    return []
-  }
-  let Exchange = fs.readFileSync(dir, 'utf8')
+  let Exchange = await redis.get(`${__PATH.Exchange}:Exchange`)
   //将字符串数据转变成数组格式
   Exchange = JSON.parse(Exchange)
   return Exchange
@@ -1838,11 +1771,7 @@ export async function readExchange() {
 
 //读交易表
 export async function readForum() {
-  let dir = path.join(`${__PATH.Exchange}/Forum.json`)
-  if (!fs.existsSync(dir)) {
-    return []
-  }
-  let Forum = fs.readFileSync(dir, 'utf8')
+  let Forum = await redis.get(`${__PATH.Exchange}:Forum`)
   //将字符串数据转变成数组格式
   Forum = JSON.parse(Forum)
   return Forum
@@ -1910,7 +1839,7 @@ export async function setFileValue(
   num: number,
   type: string
 ): Promise<void> {
-  let user_data = data.getData('player', user_qq)
+  let user_data = await data.getData('player', user_qq)
   if (user_data === 'error' || Array.isArray(user_data)) {
     return
   }
@@ -1933,22 +1862,16 @@ export async function Synchronization_ASS(
   }
   const Send = useSend(e as any)
   Send(Text('宗门开始同步'))
-  let assList: string[] = []
-  let files = fs
-    .readdirSync(__PATH.association)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    assList.push(file)
-  }
+  const keys = await redis.keys(`${__PATH.association}:*`)
+  const assList = keys.map(key => key.replace(`${__PATH.association}:`, ''))
   for (let ass_name of assList) {
     let ass = await data.getAssociation(ass_name)
     if (ass === 'error' || Array.isArray(ass)) {
       continue
     }
     const association = ass as any // 使用 any 来处理复杂的宗门数据结构
-    let playerData = data.getData('player', association.宗主)
-    if (playerData === 'error' || Array.isArray(playerData)) {
+    let playerData = await data.getData('player', association.宗主)
+    if (!playerData || Array.isArray(playerData)) {
       continue
     }
     let player = playerData as Player
@@ -1998,210 +1921,210 @@ export async function Synchronization_ASS(
 export async function synchronization(
   e: PublicEventMessageCreate
 ): Promise<void> {
-  if (!e.IsMaster) {
-    return
-  }
-  const Send = useSend(e as any)
-  Send(Text('存档开始同步'))
-  let playerList: string[] = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
-  for (let player_id of playerList) {
-    let usr_qq = player_id
-    let playerData = data.getData('player', usr_qq)
-    if (playerData === 'error' || Array.isArray(playerData)) {
-      continue
-    }
-    let player = playerData as any // 使用 any 处理复杂的玩家数据结构
-    let najie: Najie | null = await readNajie(usr_qq)
-    let equipment: Equipment | null = await readEquipment(usr_qq)
-    if (!najie || !equipment) {
-      continue
-    }
+  // if (!e.IsMaster) {
+  //   return
+  // }
+  // const Send = useSend(e as any)
+  // Send(Text('存档开始同步'))
+  // let playerList: string[] = []
+  // let files = fs
+  //   .readdirSync(__PATH.player_path)
+  //   .filter(file => file.endsWith('.json'))
+  // for (let file of files) {
+  //   file = file.replace('.json', '')
+  //   playerList.push(file)
+  // }
+  // for (let player_id of playerList) {
+  //   let usr_qq = player_id
+  //   let playerData = await data.getData('player', usr_qq)
+  //   if (!playerData || Array.isArray(playerData)) {
+  //     continue
+  //   }
+  //   let player = playerData as any // 使用 any 处理复杂的玩家数据结构
+  //   let najie: Najie | null = await readNajie(usr_qq)
+  //   let equipment: Equipment | null = await readEquipment(usr_qq)
+  //   if (!najie || !equipment) {
+  //     continue
+  //   }
 
-    const ziduan: string[] = [
-      '镇妖塔层数',
-      '神魄段数',
-      '魔道值',
-      '师徒任务阶段',
-      '师徒积分',
-      'favorability',
-      '血气',
-      'lunhuiBH',
-      'lunhui',
-      '攻击加成',
-      '防御加成',
-      '生命加成',
-      '幸运',
-      '练气皮肤',
-      '装备皮肤',
-      'islucky',
-      'sex',
-      'addluckyNo',
-      '神石'
-    ]
-    const ziduan2: string[] = [
-      'Physique_id',
-      'linggenshow',
-      'power_place',
-      'occupation_level',
-      '血量上限',
-      '当前血量',
-      '攻击',
-      '防御'
-    ]
-    const ziduan3: string[] = ['linggen', 'occupation', '仙宠']
-    const ziduan4: string[] = ['材料', '草药', '仙宠', '仙宠口粮']
+  //   const ziduan: string[] = [
+  //     '镇妖塔层数',
+  //     '神魄段数',
+  //     '魔道值',
+  //     '师徒任务阶段',
+  //     '师徒积分',
+  //     'favorability',
+  //     '血气',
+  //     'lunhuiBH',
+  //     'lunhui',
+  //     '攻击加成',
+  //     '防御加成',
+  //     '生命加成',
+  //     '幸运',
+  //     '练气皮肤',
+  //     '装备皮肤',
+  //     'islucky',
+  //     'sex',
+  //     'addluckyNo',
+  //     '神石'
+  //   ]
+  //   const ziduan2: string[] = [
+  //     'Physique_id',
+  //     'linggenshow',
+  //     'power_place',
+  //     'occupation_level',
+  //     '血量上限',
+  //     '当前血量',
+  //     '攻击',
+  //     '防御'
+  //   ]
+  //   const ziduan3: string[] = ['linggen', 'occupation', '仙宠']
+  //   const ziduan4: string[] = ['材料', '草药', '仙宠', '仙宠口粮']
 
-    for (let k of ziduan) {
-      if (!isNotNull(player[k])) {
-        player[k] = 0
-      }
-    }
-    for (let k of ziduan2) {
-      if (!isNotNull(player[k])) {
-        player[k] = 1
-      }
-    }
-    for (let k of ziduan3) {
-      if (!isNotNull(player[k])) {
-        player[k] = []
-      }
-    }
-    for (let k of ziduan4) {
-      if (!isNotNull((najie as any)[k])) {
-        ;(najie as any)[k] = []
-      }
-    }
-    if (!isNotNull(player.breakthrough)) {
-      player.breakthrough = false
-    }
-    if (!isNotNull(player.id)) {
-      player.id = usr_qq
-    }
-    if (!isNotNull(player.轮回点) || player.轮回点 > 10) {
-      player.轮回点 = 10 - (player.lunhui || 0)
-    }
-    try {
-      await Read_danyao(usr_qq)
-    } catch {
-      const arr: DanyaoStatus = {
-        biguan: 0, //闭关状态
-        biguanxl: 0, //增加效率
-        xingyun: 0,
-        lianti: 0,
-        ped: 0,
-        modao: 0,
-        beiyong1: 0, //ped
-        beiyong2: 0,
-        beiyong3: 0,
-        beiyong4: 0,
-        beiyong5: 0
-      }
-      await Write_danyao(usr_qq, arr)
-    }
+  //   for (let k of ziduan) {
+  //     if (!isNotNull(player[k])) {
+  //       player[k] = 0
+  //     }
+  //   }
+  //   for (let k of ziduan2) {
+  //     if (!isNotNull(player[k])) {
+  //       player[k] = 1
+  //     }
+  //   }
+  //   for (let k of ziduan3) {
+  //     if (!isNotNull(player[k])) {
+  //       player[k] = []
+  //     }
+  //   }
+  //   for (let k of ziduan4) {
+  //     if (!isNotNull((najie as any)[k])) {
+  //       ;(najie as any)[k] = []
+  //     }
+  //   }
+  //   if (!isNotNull(player.breakthrough)) {
+  //     player.breakthrough = false
+  //   }
+  //   if (!isNotNull(player.id)) {
+  //     player.id = usr_qq
+  //   }
+  //   if (!isNotNull(player.轮回点) || player.轮回点 > 10) {
+  //     player.轮回点 = 10 - (player.lunhui || 0)
+  //   }
+  //   try {
+  //     await Read_danyao(usr_qq)
+  //   } catch {
+  //     const arr: DanyaoStatus = {
+  //       biguan: 0, //闭关状态
+  //       biguanxl: 0, //增加效率
+  //       xingyun: 0,
+  //       lianti: 0,
+  //       ped: 0,
+  //       modao: 0,
+  //       beiyong1: 0, //ped
+  //       beiyong2: 0,
+  //       beiyong3: 0,
+  //       beiyong4: 0,
+  //       beiyong5: 0
+  //     }
+  //     await Write_danyao(usr_qq, arr)
+  //   }
 
-    const suoding: string[] = [
-      '装备',
-      '丹药',
-      '道具',
-      '功法',
-      '草药',
-      '材料',
-      '仙宠',
-      '仙宠口粮'
-    ]
-    for (let j of suoding) {
-      const items = (najie as any)[j] as any[]
-      if (Array.isArray(items)) {
-        items.forEach(item => {
-          if (!isNotNull(item.islockd)) {
-            item.islockd = 0
-          }
-        })
-      }
-    }
-    //仙宠调整
-    if (player.仙宠?.id > 2930 && player.仙宠?.id < 2936) {
-      player.仙宠.初始加成 = 0.002
-      player.仙宠.每级增加 = 0.002
-      player.仙宠.加成 = player.仙宠.每级增加 * (player.仙宠.等级 || 1)
-      player.幸运 = (player.addluckyNo || 0) + player.仙宠.加成
-    } else {
-      player.幸运 = player.addluckyNo || 0
-    }
+  //   const suoding: string[] = [
+  //     '装备',
+  //     '丹药',
+  //     '道具',
+  //     '功法',
+  //     '草药',
+  //     '材料',
+  //     '仙宠',
+  //     '仙宠口粮'
+  //   ]
+  //   for (let j of suoding) {
+  //     const items = (najie as any)[j] as any[]
+  //     if (Array.isArray(items)) {
+  //       items.forEach(item => {
+  //         if (!isNotNull(item.islockd)) {
+  //           item.islockd = 0
+  //         }
+  //       })
+  //     }
+  //   }
+  //   //仙宠调整
+  //   if (player.仙宠?.id > 2930 && player.仙宠?.id < 2936) {
+  //     player.仙宠.初始加成 = 0.002
+  //     player.仙宠.每级增加 = 0.002
+  //     player.仙宠.加成 = player.仙宠.每级增加 * (player.仙宠.等级 || 1)
+  //     player.幸运 = (player.addluckyNo || 0) + player.仙宠.加成
+  //   } else {
+  //     player.幸运 = player.addluckyNo || 0
+  //   }
 
-    const najieXianchong = (najie as any).仙宠 as any[]
-    if (Array.isArray(najieXianchong)) {
-      for (let j of najieXianchong) {
-        if (j.id > 2930 && j.id < 2936) {
-          j.初始加成 = 0.002
-          j.每级增加 = 0.002
-        }
-      }
-    }
+  //   const najieXianchong = (najie as any).仙宠 as any[]
+  //   if (Array.isArray(najieXianchong)) {
+  //     for (let j of najieXianchong) {
+  //       if (j.id > 2930 && j.id < 2936) {
+  //         j.初始加成 = 0.002
+  //         j.每级增加 = 0.002
+  //       }
+  //     }
+  //   }
 
-    //装备调整
-    const wuqi: string[] = [
-      '雾切之回光',
-      '护摩之杖',
-      '磐岩结绿',
-      '三圣器·朗基努斯之枪'
-    ]
-    const wuqi2: string[] = ['紫云剑', '炼血竹枪', '少阴玉剑', '纯阴金枪']
+  //   //装备调整
+  //   const wuqi: string[] = [
+  //     '雾切之回光',
+  //     '护摩之杖',
+  //     '磐岩结绿',
+  //     '三圣器·朗基努斯之枪'
+  //   ]
+  //   const wuqi2: string[] = ['紫云剑', '炼血竹枪', '少阴玉剑', '纯阴金枪']
 
-    const najieEquipment = (najie as any).装备 as any[]
-    if (Array.isArray(najieEquipment)) {
-      for (let j of najieEquipment) {
-        for (let k in wuqi) {
-          if (j.name == wuqi[k]) {
-            j.name = wuqi2[k]
-          }
-          if (equipment.武器.name == wuqi[k]) equipment.武器.name = wuqi2[k]
-          if (equipment.法宝.name == wuqi[k]) equipment.法宝.name = wuqi2[k]
-        }
-      }
-    }
+  //   const najieEquipment = (najie as any).装备 as any[]
+  //   if (Array.isArray(najieEquipment)) {
+  //     for (let j of najieEquipment) {
+  //       for (let k in wuqi) {
+  //         if (j.name == wuqi[k]) {
+  //           j.name = wuqi2[k]
+  //         }
+  //         if (equipment.武器.name == wuqi[k]) equipment.武器.name = wuqi2[k]
+  //         if (equipment.法宝.name == wuqi[k]) equipment.法宝.name = wuqi2[k]
+  //       }
+  //     }
+  //   }
 
-    //口粮调整
-    const najieKouliang = (najie as any).仙宠口粮 as any[]
-    if (Array.isArray(najieKouliang)) {
-      for (let j of najieKouliang) {
-        j.class = '仙宠口粮'
-      }
-    }
+  //   //口粮调整
+  //   const najieKouliang = (najie as any).仙宠口粮 as any[]
+  //   if (Array.isArray(najieKouliang)) {
+  //     for (let j of najieKouliang) {
+  //       j.class = '仙宠口粮'
+  //     }
+  //   }
 
-    const linggeng = data.talent_list.find(
-      item => item.name == player.灵根?.name
-    )
-    if (linggeng) player.灵根 = linggeng
+  //   const linggeng = data.talent_list.find(
+  //     item => item.name == player.灵根?.name
+  //   )
+  //   if (linggeng) player.灵根 = linggeng
 
-    //隐藏灵根
-    if (player.隐藏灵根) {
-      const yincang = data.yincang.find(
-        item => item.name == player.隐藏灵根?.name
-      )
-      if (yincang) player.隐藏灵根 = yincang
-    }
+  //   //隐藏灵根
+  //   if (player.隐藏灵根) {
+  //     const yincang = data.yincang.find(
+  //       item => item.name == player.隐藏灵根?.name
+  //     )
+  //     if (yincang) player.隐藏灵根 = yincang
+  //   }
 
-    //重新根据id去重置仙门
-    const levelInfo = data.Level_list.find(
-      item => item.level_id == player.level_id
-    )
-    const now_level_id = levelInfo?.level_id || 1
-    if (now_level_id < 42) {
-      player.power_place = 1
-    }
-    await Write_najie(usr_qq, najie)
-    await writePlayer(usr_qq, player)
-    await writeEquipment(usr_qq, equipment)
-  }
-  Send(Text('存档同步结束'))
+  //   //重新根据id去重置仙门
+  //   const levelInfo = data.Level_list.find(
+  //     item => item.level_id == player.level_id
+  //   )
+  //   const now_level_id = levelInfo?.level_id || 1
+  //   if (now_level_id < 42) {
+  //     player.power_place = 1
+  //   }
+  //   await Write_najie(usr_qq, najie)
+  //   await writePlayer(usr_qq, player)
+  //   await writeEquipment(usr_qq, equipment)
+  // }
+  // Send(Text('存档同步结束'))
 
   // NOTE: 魔术师同步，开发者专用，要使用请删除注释
   /*

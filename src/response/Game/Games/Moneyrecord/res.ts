@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let qq = e.UserId
   let shenglv
   //获取人物信息
-  let player_data = data.getData('player', qq)
+  let player_data = await data.getData('player', qq)
   let victory = isNotNull(player_data.金银坊胜场) ? player_data.金银坊胜场 : 0
   let victory_num = isNotNull(player_data.金银坊收入)
     ? player_data.金银坊收入

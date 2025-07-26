@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   let cengshu = 0
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   while (player.当前血量 > 0) {
     let 神魄段数 = player.神魄段数
     //人数的万倍

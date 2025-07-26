@@ -1,20 +1,17 @@
 import { redis, data, puppeteer } from '@src/api/api'
 import { __PATH, shijianc, readPlayer } from '@src/model'
-import path from 'path'
 import fs from 'fs'
+
 export async function Write_tiandibang(wupin) {
-  let dir = path.join(__PATH.tiandibang, `tiandibang.json`)
-  let new_ARR = JSON.stringify(wupin, null, '\t')
-  fs.writeFileSync(dir, new_ARR)
+  redis.set(
+    `${__PATH.tiandibang}:tiandibang`,
+    JSON.stringify(wupin, null, '\t')
+  )
   return false
 }
 
 export async function Read_tiandibang() {
-  let dir = path.join(`${__PATH.tiandibang}/tiandibang.json`)
-  if (!fs.existsSync(dir)) {
-    return []
-  }
-  let tiandibang = fs.readFileSync(dir, 'utf8')
+  let tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
   //将字符串数据转变成数组格式
   tiandibang = JSON.parse(tiandibang)
   return tiandibang
@@ -46,14 +43,12 @@ export async function get_tianditang_img(e, jifen) {
 }
 
 export async function re_bangdang() {
-  let File = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  let File_length = File.length
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   let temp = []
   let t
-  for (let k = 0; k < File_length; k++) {
-    let this_qq: any = File[k].replace('.json', '')
+  for (let k = 0; k < playerList.length; k++) {
+    let this_qq: any = playerList[k]
     this_qq = parseInt(this_qq)
     let player = await readPlayer(this_qq)
     let level_id = data.Level_list.find(
@@ -76,9 +71,9 @@ export async function re_bangdang() {
       积分: 0
     }
   }
-  for (let i = 0; i < File_length - 1; i++) {
+  for (let i = 0; i < playerList.length - 1; i++) {
     let count = 0
-    for (let j = 0; j < File_length - i - 1; j++) {
+    for (let j = 0; j < playerList.length - i - 1; j++) {
       if (temp[j].积分 < temp[j + 1].积分) {
         t = temp[j]
         temp[j] = temp[j + 1]

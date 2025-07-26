@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
     return false
   }

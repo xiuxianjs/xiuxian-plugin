@@ -4,6 +4,7 @@ import { __PATH } from './paths.js'
 import data from './XiuxianData.js'
 import { writePlayer } from './pub.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
+import { redis } from '@src/api/api.js'
 
 export async function settripod(qq: string): Promise<string> {
   let tripod1: Tripod[]
@@ -30,8 +31,8 @@ export async function settripod(qq: string): Promise<string> {
     await writeDuanlu(tripod1)
   }
   //增加锻造天赋
-  const playerData = data.getData('player', qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  const playerData = await data.getData('player', qq)
+  if (!playerData || Array.isArray(playerData)) {
     return '玩家数据获取失败'
   }
   const player = playerData as Player
@@ -78,19 +79,15 @@ export async function Read_mytripod(qq: string): Promise<Tripod | undefined> {
   }
 }
 export async function readTripod(): Promise<Tripod[]> {
-  const dir = path.join(`${__PATH.duanlu}/duanlu.json`)
-  if (!existsSync(dir)) {
+  const data = await redis.get(`${__PATH.duanlu}:duanlu`)
+  if (!data) {
     return []
   }
-  let duanlu = fs.readFileSync(dir, 'utf8')
-  const data = JSON.parse(duanlu)
-  return data as Tripod[]
+  return JSON.parse(data) as Tripod[]
 }
 
 export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
-  const dir = path.join(__PATH.duanlu, `duanlu.json`)
-  const new_ARR = JSON.stringify(duanlu, null, '\t')
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  redis.set(`${__PATH.duanlu}:duanlu`, JSON.stringify(duanlu, null, '\t'))
   return
 }
 //数量矫正, 违规数量改成1
@@ -111,12 +108,10 @@ export async function readThat(
   thing_name: string,
   weizhi: string
 ): Promise<any> {
-  const dir = path.join(`${__PATH.lib_path}/${weizhi}.json`)
-  if (!existsSync(dir)) {
+  const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
+  if (!weizhi1) {
     return
   }
-  const weizhi1 = fs.readFileSync(dir, 'utf8')
-
   const weizh = JSON.parse(weizhi1)
   for (const item of weizh) {
     if (item.name == thing_name) {
@@ -128,16 +123,11 @@ export async function readThat(
 
 //读取item某个文件的全部物品
 export async function readAll(weizhi: string): Promise<any[]> {
-  const dir = path.join(`${__PATH.lib_path}/${weizhi}.json`)
-  if (!existsSync(dir)) {
-    return []
-  }
-  let weizhi1 = fs.readFileSync(dir, 'utf8')
-
+  const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
   const data = JSON.parse(weizhi1)
-
   return data
 }
+
 //对值相同的五行进行挑选
 export async function getxuanze(
   shuju: string[],
@@ -225,21 +215,16 @@ export async function restraint(
 }
 
 export async function readIt(): Promise<any> {
-  const dir = path.join(`${__PATH.custom}/custom.json`)
-  if (!existsSync(dir)) {
-    return {}
-  }
-  let custom = fs.readFileSync(dir, 'utf8')
+  const custom = await redis.get(`${__PATH.custom}:custom`)
   const customData = JSON.parse(custom)
   return customData
 }
 
 export async function alluser(): Promise<string[]> {
-  const B: string[] = []
-  const A = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (const item of A) B.push(item.substring(0, item.lastIndexOf('.')))
-
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const B = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  if (B.length == 0) {
+    return []
+  }
   return B
 }

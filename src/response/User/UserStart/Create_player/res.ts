@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs'
 import fs from 'fs'
-import { data } from '@src/api/api'
+import { data, redis } from '@src/api/api'
 import {
   existplayer,
   __PATH,
@@ -26,9 +26,8 @@ export default onResponse(selects, async e => {
     if (img) Send(Image(img))
     return false
   }
-  //初始化玩家信息
-  let File_msg = fs.readdirSync(__PATH.player_path)
-  let n = File_msg.length + 1
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  let n = keys.length + 1
   let talent = await getRandomTalent()
   let new_player = {
     id: e.UserId,

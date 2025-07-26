@@ -1,6 +1,5 @@
-import fs from 'fs'
-import path from 'path'
 import { __PATH } from './paths'
+import { redis } from '@src/api/api'
 // 类型定义
 type JSONData = Record<string, any> | Array<any>
 
@@ -10,15 +9,9 @@ class Association {
    * @param file_name  宗门名称
    * @deprecated
    */
-  getAssociation(file_name: string): JSONData | 'error' {
-    const dir: string = path.join(
-      __PATH.association + '/' + file_name + '.json'
-    )
-    if (!fs.existsSync(dir)) {
-      return 'error' // 如果文件不存在，返回错误
-    }
+  async getAssociation(file_name: string): Promise<JSONData | 'error'> {
+    const data = await redis.get(`${__PATH.association}:${file_name}`)
     try {
-      const data = fs.readFileSync(dir, 'utf8')
       return JSON.parse(data)
     } catch (error) {
       logger.error('读取文件错误：' + error)
@@ -32,12 +25,8 @@ class Association {
    * @param data
    * @deprecated
    */
-  setAssociation(file_name: string, data: JSONData): void {
-    const dir: string = path.join(
-      __PATH.association + '/' + file_name + '.json'
-    )
-    const new_ARR = JSON.stringify(data) //json转string
-    fs.writeFileSync(dir, new_ARR, 'utf-8')
+  async setAssociation(file_name: string, data: JSONData): Promise<void> {
+    await redis.set(`${__PATH.association}:${file_name}`, JSON.stringify(data))
     return
   }
 }

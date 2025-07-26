@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   let flag = await Go(e)
   if (!flag) return false
   //用户信息查询
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let now_time = new Date().getTime()
   let money = 10000
   //判断灵石

@@ -1,18 +1,11 @@
 import { scheduleJob } from 'node-schedule'
-import fs from 'fs'
 import { redis, data, pushInfo } from '@src/api/api'
 import { isNotNull, Add_职业经验, addNajieThing, __PATH } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/1 * * * ?', async () => {
-  let playerList = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (let player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
@@ -42,7 +35,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
-          let player = data.getData('player', player_id)
+          let player = await data.getData('player', player_id)
           let time = parseInt(action.time) / 1000 / 60
           let exp = time * 10
           await Add_职业经验(player_id, exp)
@@ -117,7 +110,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
-          let player = data.getData('player', player_id)
+          let player = await data.getData('player', player_id)
           if (!isNotNull(player.level_id)) {
             return false
           }

@@ -1,14 +1,6 @@
 import { Image, useSend } from 'alemonjs'
-import fs from 'fs'
-import { data } from '@src/api/api'
-import {
-  existplayer,
-  __PATH,
-  readPlayer,
-  readNajie,
-  sortBy,
-  sleep
-} from '@src/model'
+import { data, redis } from '@src/api/api'
+import { existplayer, __PATH, sortBy, sleep } from '@src/model'
 import { selects } from '@src/response/index'
 import { getRankingMoneyImage } from '@src/model/image'
 
@@ -19,25 +11,23 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let usr_paiming
-  let File = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  let File_length = File.length
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   let temp = []
-  for (let i = 0; i < File_length; i++) {
-    let this_qq = File[i].replace('.json', '')
-    let player = await readPlayer(this_qq)
-    let najie = await readNajie(this_qq)
-    let lingshi: any = player.灵石 + najie.灵石
-    temp[i] = {
-      ls1: najie.灵石,
-      ls2: player.灵石,
-      灵石: lingshi,
-      名号: player.名号,
-      qq: this_qq
+  let TotalPlayer = 0
+  for (const player_id of playerList) {
+    const player = await await data.getData('player', player_id)
+    if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
+      temp[TotalPlayer] = parseInt(player.攻击)
+      logger.info(`[灵榜] ${player_id}玩家攻击:${temp[TotalPlayer]}`)
+      TotalPlayer++
     }
   }
   //排序
+  temp.sort(function (a, b) {
+    return b - a
+  })
+  let File_length = temp.length
   temp.sort(sortBy('灵石'))
   let Data = []
   usr_paiming = temp.findIndex(temp => temp.qq === usr_qq) + 1
@@ -49,8 +39,8 @@ export default onResponse(selects, async e => {
     Data[i] = temp[i]
   }
   await sleep(500)
-  let thisplayer = await data.getData('player', usr_qq)
-  let thisnajie = await data.getData('najie', usr_qq)
+  let thisplayer = await await data.getData('player', usr_qq)
+  let thisnajie = await await data.getData('najie', usr_qq)
   let img = await getRankingMoneyImage(
     e,
     Data,

@@ -37,7 +37,7 @@ export default onResponse(selects, async e => {
   if (acount == undefined || acount == null || isNaN(acount) || acount <= 0) {
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':reCreate_acount', 1)
   }
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   //重生之前先看状态
   if (player.灵石 <= 0) {
     Send(Text(`负债无法再入仙途`))
@@ -107,7 +107,7 @@ export default onResponse(selects, async e => {
         acount = Number(acount)
         acount++
         //重生牵扯到宗门模块
-        let player: any = data.getData('player', usr_qq)
+        let player: any = await data.getData('player', usr_qq)
         if (isNotNull(player.宗门)) {
           if (player.宗门.职位 != '宗主') {
             //不是宗主
@@ -135,7 +135,7 @@ export default onResponse(selects, async e => {
               } else {
                 randmember_qq = await get_random_fromARR(ass.所有成员)
               }
-              let randmember = data.getData('player', randmember_qq) //获取幸运儿的存档
+              let randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
               ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
                 item => item != randmember_qq
               ) //原来的职位表删掉这个幸运儿
@@ -146,9 +146,9 @@ export default onResponse(selects, async e => {
             }
           }
         }
-        fs.rmSync(`${__PATH.player_path}/${usr_qq}.json`)
-        fs.rmSync(`${__PATH.equipment_path}/${usr_qq}.json`)
-        fs.rmSync(`${__PATH.najie_path}/${usr_qq}.json`)
+        await redis.del(__PATH.player_path)
+        await redis.del(__PATH.equipment_path)
+        await redis.del(__PATH.najie_path)
         message.send(format(Text('当前存档已清空!开始重生')))
         message.send(
           format(

@@ -1,5 +1,4 @@
 import { Image, Text, useSend } from 'alemonjs'
-import fs from 'fs'
 import { redis, puppeteer } from '@src/api/api'
 import { existplayer, readPlayer, __PATH } from '@src/model'
 
@@ -31,12 +30,9 @@ export default onResponse(selects, async e => {
   }
   let mubiao = []
   let i = 0
-  let File = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  let File_length = File.length
-  for (let k = 0; k < File_length; k++) {
-    let this_qq = File[k].replace('.json', '')
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  for (let this_qq of playerList) {
     let players = await readPlayer(this_qq)
     if (players.魔道值 > 999 && this_qq != usr_qq) {
       mubiao[i] = {
@@ -55,6 +51,7 @@ export default onResponse(selects, async e => {
       i++
     }
   }
+
   while (i < 4) {
     mubiao[i] = {
       名号: 'DD大妖王',

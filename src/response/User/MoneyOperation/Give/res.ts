@@ -38,8 +38,8 @@ export default onResponse(selects, async e => {
     Send(Text(`此人尚未踏入仙途`))
     return false
   }
-  let A_player = await data.getData('player', A_qq)
-  let B_player = await data.getData('player', B_qq)
+  let A_player = await await data.getData('player', A_qq)
+  let B_player = await await data.getData('player', B_qq)
   //获取发送灵石数量
   let msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '')
   const cf = config.getConfig('xiuxian', 'xiuxian')

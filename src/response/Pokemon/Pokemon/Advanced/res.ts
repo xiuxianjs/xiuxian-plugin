@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let list = ['仙胎', '仙仔', '仙兽', '仙道', '仙灵']
   let list_level = [20, 40, 60, 80, 100]
   let x = 114514

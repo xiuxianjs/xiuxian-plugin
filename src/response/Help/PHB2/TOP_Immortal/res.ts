@@ -1,8 +1,9 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'fs'
+
 import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { redis } from '@src/api/api'
 export const regular = /^(#|＃|\/)?镇妖塔榜$/
 
 export default onResponse(selects, async e => {
@@ -11,16 +12,12 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let msg = ['___[镇妖塔榜]___']
-  let playerList = []
+
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   //数组
   let temp = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
+
   let i = 0
   for (let player_id of playerList) {
     //(攻击+防御*0.8+生命*0.5)*暴击率=理论战力

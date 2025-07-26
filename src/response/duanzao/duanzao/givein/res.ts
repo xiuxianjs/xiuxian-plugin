@@ -37,7 +37,7 @@ export default onResponse(selects, async e => {
     Send(Text(`请先去#炼器师能力评测,再来煅炉吧`))
     return false
   }
-  const player = await data.getData('player', user_qq)
+  const player = await await data.getData('player', user_qq)
   if (player.occupation != '炼器师') {
     Send(Text(`切换到炼器师后再来吧,宝贝`))
     return false

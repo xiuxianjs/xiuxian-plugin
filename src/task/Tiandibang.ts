@@ -1,18 +1,15 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-import { data } from '@src/api/api'
+import { data, redis } from '@src/api/api'
 import { __PATH, readPlayer } from '@src/model'
 import { scheduleJob } from 'node-schedule'
-import fs from 'fs'
 
 scheduleJob('0 0 0 ? * 1', async () => {
-  let File = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  let File_length = File.length
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   let temp = []
   let t
-  for (let k = 0; k < File_length; k++) {
-    let this_qq: any = File[k].replace('.json', '')
+  for (let k = 0; k < playerList.length; k++) {
+    let this_qq: any = playerList[k]
     let player = await readPlayer(this_qq)
     let level_id = data.Level_list.find(
       item => item.level_id == player.level_id
@@ -34,9 +31,9 @@ scheduleJob('0 0 0 ? * 1', async () => {
       积分: 0
     }
   }
-  for (let i = 0; i < File_length - 1; i++) {
+  for (let i = 0; i < playerList.length - 1; i++) {
     let count = 0
-    for (let j = 0; j < File_length - i - 1; j++) {
+    for (let j = 0; j < playerList.length - i - 1; j++) {
       if (temp[j].积分 < temp[j + 1].积分) {
         t = temp[j]
         temp[j] = temp[j + 1]

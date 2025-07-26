@@ -11,8 +11,8 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
-  const equipment = data.getData('equipment', usr_qq)
+  let player = await await data.getData('player', usr_qq)
+  const equipment = await data.getData('equipment', usr_qq)
   const type = ['武器', '护具', '法宝']
   for (let j of type) {
     if (

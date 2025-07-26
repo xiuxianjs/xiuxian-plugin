@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'fs'
 import { __PATH, find_qinmidu, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { redis } from '@src/api/api'
 export const regular = /^(#|＃|\/)?查询亲密度$/
 
 export default onResponse(selects, async e => {
@@ -19,11 +19,12 @@ export default onResponse(selects, async e => {
   let msg = [] //回复的消息
   msg.push(`\n-----qq----- -亲密度-`)
   //遍历所有人的qq
-  let File = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let i = 0; i < File.length; i++) {
-    let B = File[i].replace('.json', '')
+
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+
+  for (let i = 0; i < playerList.length; i++) {
+    let B = playerList[i]
     //如果是本人不执行查询
     if (A == B) {
       continue

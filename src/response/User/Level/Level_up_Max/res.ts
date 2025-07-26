@@ -99,7 +99,7 @@ export default onResponse(selects, async e => {
     await Add_HP(usr_qq, 99999999)
     //突破成仙人
     if (now_level_id >= 42) {
-      let player = data.getData('player', usr_qq)
+      let player = await data.getData('player', usr_qq)
       if (!isNotNull(player.宗门)) {
         return false
       }
@@ -118,7 +118,7 @@ export default onResponse(selects, async e => {
       } else {
         let ass = data.getAssociation(player.宗门.宗门名称)
         if (ass.所有成员.length < 2) {
-          fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
+          await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
           data.setData('player', usr_qq, player)
           await playerEfficiency(usr_qq)
@@ -141,7 +141,7 @@ export default onResponse(selects, async e => {
           } else {
             randmember_qq = await get_random_fromARR(ass.所有成员)
           }
-          let randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
+          let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
           ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
             item => item != randmember_qq
           ) //原来的职位表删掉这个幸运儿

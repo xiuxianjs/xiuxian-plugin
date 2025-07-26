@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let newtripod
-  const player = await data.getData('player', user_qq)
+  const player = await await data.getData('player', user_qq)
   if (player.occupation != '炼器师') {
     Send(Text(`切换到炼器师后再来吧,宝贝`))
     return false

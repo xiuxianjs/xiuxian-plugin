@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   if (player.神魄段数 > 6000) {
     Send(Text('已达到上限'))
     return false

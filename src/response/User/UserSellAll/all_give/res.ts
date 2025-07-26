@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
     Send(Text(`此人尚未踏入仙途`))
     return false
   }
-  let A_najie = await data.getData('najie', A_qq)
+  let A_najie = await await data.getData('najie', A_qq)
   let wupin = [
     '装备',
     '丹药',

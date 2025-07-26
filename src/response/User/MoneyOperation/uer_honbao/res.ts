@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   //自己没存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   //抢红包要有一分钟的CD
   let now_time = new Date().getTime()
   let lastgetbung_time: any = await redis.get(

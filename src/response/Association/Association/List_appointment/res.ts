@@ -1,6 +1,5 @@
 import { Image, Text, useSend } from 'alemonjs'
-import fs from 'fs'
-import { data, puppeteer } from '@src/api/api'
+import { data, puppeteer, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?宗门列表$/
@@ -11,15 +10,15 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return
-  let dir = __PATH.association
-  let File = fs.readdirSync(dir).filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
+  const keys = await redis.keys(`${__PATH.association}:*`)
+  const assList = keys.map(key => key.replace(`${__PATH.association}:`, ''))
   let temp = []
-  if (File.length == 0) {
+  if (assList.length == 0) {
     Send(Text('暂时没有宗门数据'))
     return
   }
-  for (let i = 0; i < File.length; i++) {
-    let this_name = File[i].replace('.json', '')
+  for (let i = 0; i < assList.length; i++) {
+    let this_name = assList[i]
     let this_ass = await data.getAssociation(this_name)
     //处理一下宗门效率问题
     let this_ass_xiuxian = 0

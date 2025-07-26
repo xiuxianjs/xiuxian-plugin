@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
     Sign_Yesterday = false
   }
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':lastsign_time', nowTime) //redis设置签到时间
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   if (player.连续签到天数 == 7 || !Sign_Yesterday) {
     //签到连续7天或者昨天没有签到,连续签到天数清零
     player.连续签到天数 = 0

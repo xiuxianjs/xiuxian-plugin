@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
 
   if (!ifexistplay) return false
 
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
 
   if (!isNotNull(player.宗门)) return false
 

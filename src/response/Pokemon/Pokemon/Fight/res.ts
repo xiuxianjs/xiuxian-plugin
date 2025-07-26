@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let name = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '')
   let num = parseInt(name)
   let najie = await readNajie(usr_qq)

@@ -11,20 +11,14 @@ import {
   __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
-import fs from 'fs'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表
-  let playerList = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
+
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   const cf = config.getConfig('xiuxian', 'xiuxian')
   for (let player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
@@ -55,7 +49,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
-          let player = data.getData('player', player_id)
+          let player = await data.getData('player', player_id)
           let now_level_id
           if (!isNotNull(player.level_id)) {
             return false
@@ -188,7 +182,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         if (now_time > end_time) {
           //现在大于结算时间，即为结算
           log_mag = log_mag + '当前人物未结算，结算状态'
-          let player = data.getData('player', player_id)
+          let player = await data.getData('player', player_id)
           let now_level_id
           if (!isNotNull(player.level_id)) {
             return false

@@ -4,7 +4,7 @@ import { DataMention, Mention } from 'alemonjs'
 
 export async function plant_jiesuan(user_id, time, group_id, platform) {
   let usr_qq = user_id
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let msg: Array<DataMention | string> = [Mention(usr_qq)]
   let exp = 0
   exp = time * 10
@@ -62,7 +62,7 @@ export async function plant_jiesuan(user_id, time, group_id, platform) {
 
 export async function mine_jiesuan(user_id, time, platform, group_id?) {
   let usr_qq = user_id
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let msg = []
   let mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * time)
   let rate =

@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   //用户不存在
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   if (player.仙宠 == '') {
     //有无仙宠
     Send(Text('你没有仙宠'))

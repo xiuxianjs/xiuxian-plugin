@@ -1,12 +1,10 @@
-import fs from 'fs'
-import path from 'path'
 import { __PATH } from './paths.js'
 import type { Player } from '../types/player.js'
+import { redis } from '@src/api/api.js'
 
 export async function writeIt(custom: any): Promise<void> {
-  const dir = path.join(__PATH.custom, `custom.json`)
   const new_ARR = JSON.stringify(custom, null, '\t')
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  redis.set(`${__PATH.custom}:custom`, new_ARR)
   return
 }
 
@@ -15,8 +13,6 @@ export async function writePlayer(
   usr_qq: string,
   player: Player
 ): Promise<void> {
-  let dir = path.join(__PATH.player_path, `${usr_qq}.json`)
-  let new_ARR = JSON.stringify(player)
-  fs.writeFileSync(dir, new_ARR, 'utf8')
+  redis.set(`${__PATH.player_path}:${usr_qq}`, JSON.stringify(player))
   return
 }

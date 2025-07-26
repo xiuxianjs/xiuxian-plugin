@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
   //用户不存在
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   //无宗门
   if (!isNotNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))

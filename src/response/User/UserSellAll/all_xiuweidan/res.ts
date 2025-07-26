@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //检索方法
-  let najie = await data.getData('najie', usr_qq)
+  let najie = await await data.getData('najie', usr_qq)
   let xiuwei = 0
   for (let l of najie.丹药) {
     if (l.type == '修为') {

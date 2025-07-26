@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'fs'
-import { data } from '@src/api/api'
+import { data, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
 import { __PATH } from '@src/model'
@@ -8,18 +7,14 @@ export const regular = /^(#|＃|\/)?修仙世界$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let playerList = []
-  let files = fs
-    .readdirSync(__PATH.player_path)
-    .filter(file => file.endsWith('.json'))
-  for (let file of files) {
-    file = file.replace('.json', '')
-    playerList.push(file)
-  }
+
+  const keys = await redis.keys(`${__PATH.player_path}:*`)
+  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+
   let num = [0, 0, 0, 0]
   for (let player_id of playerList) {
     let usr_qq = player_id
-    let player = await data.getData('player', usr_qq)
+    let player = await await data.getData('player', usr_qq)
     if (player.魔道值 > 999) num[3]++
     else if ((player.lunhui > 0 || player.level_id > 41) && player.魔道值 < 1)
       num[0]++

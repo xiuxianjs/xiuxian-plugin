@@ -233,8 +233,8 @@ export async function getXianChongImage(
   if (!ifexistplay) {
     return
   }
-  let playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  let playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
@@ -276,8 +276,8 @@ export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
   if (!ifexistplay) {
     return
   }
-  let playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  let playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
@@ -312,7 +312,7 @@ export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
   if (!ifexistplay) {
     return
   }
-  let player = getPlayerDataSafe(usr_qq)
+  let player = await getPlayerDataSafe(usr_qq)
   if (!player) return
   let najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
@@ -415,7 +415,7 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
   if (!ifexistplay) {
     return
   }
-  const player = await getPlayerDataSafe(usr_qq)
+  const player = await await getPlayerDataSafe(usr_qq)
   if (!player) {
     return
   }
@@ -452,7 +452,7 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
 export async function getPowerImage(e: PublicEventMessageCreate) {
   let usr_qq = e.UserId
   const Send = useSend(e) as any
-  const player = await getPlayerDataSafe(usr_qq)
+  const player = await await getPlayerDataSafe(usr_qq)
   if (!player) {
     Send(Text('玩家数据获取失败'))
     return
@@ -520,7 +520,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     Send(Text('玩家数据获取失败'))
     return
   }
-  const equipment = getEquipmentDataSafe(usr_qq)
+  const equipment = await getEquipmentDataSafe(usr_qq)
   if (!equipment) {
     Send(Text('装备数据获取失败'))
     return
@@ -631,15 +631,24 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     this_association = player.宗门
   }
   let pinji = ['劣', '普', '优', '精', '极', '绝', '顶']
+  if (!equipment.武器) {
+    equipment.武器 = {}
+  }
   if (!isNotNull(equipment.武器.pinji)) {
     武器评级 = '无'
   } else {
     武器评级 = pinji[equipment.武器.pinji]
   }
+  if (!equipment.护具) {
+    equipment.护具 = {}
+  }
   if (!isNotNull(equipment.护具.pinji)) {
     护具评级 = '无'
   } else {
     护具评级 = pinji[equipment.护具.pinji]
+  }
+  if (!equipment.法宝) {
+    equipment.法宝 = {}
   }
   if (!isNotNull(equipment.法宝.pinji)) {
     法宝评级 = '无'
@@ -791,7 +800,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
     return
   }
   //门派
-  const player = getPlayerDataSafe(usr_qq)
+  const player = await getPlayerDataSafe(usr_qq)
   if (!player || !isNotNull(player.宗门)) {
     return
   }
@@ -810,7 +819,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
     return
   }
   //寻找
-  const mainqqData = data.getData('player', ass.宗主)
+  const mainqqData = await data.getData('player', ass.宗主)
   if (mainqqData === 'error' || Array.isArray(mainqqData)) {
     Send(Text('宗主数据获取失败'))
     return
@@ -833,7 +842,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   for (item in ass.副宗主) {
     fuzong[item] =
       '道号：' +
-      data.getData('player', ass.副宗主[item]).名号 +
+      (await data.getData('player', ass.副宗主[item]).名号) +
       'QQ：' +
       ass.副宗主[item]
   }
@@ -842,7 +851,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   for (item in ass.长老) {
     zhanglao[item] =
       '道号：' +
-      data.getData('player', ass.长老[item]).名号 +
+      (await data.getData('player', ass.长老[item]).名号) +
       'QQ：' +
       ass.长老[item]
   }
@@ -851,7 +860,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   for (item in ass.内门弟子) {
     neimen[item] =
       '道号：' +
-      data.getData('player', ass.内门弟子[item]).名号 +
+      (await data.getData('player', ass.内门弟子[item]).名号) +
       'QQ：' +
       ass.内门弟子[item]
   }
@@ -860,7 +869,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   for (item in ass.外门弟子) {
     waimen[item] =
       '道号：' +
-      data.getData('player', ass.外门弟子[item]).名号 +
+      (await data.getData('player', ass.外门弟子[item]).名号) +
       'QQ：' +
       ass.外门弟子[item]
   }
@@ -913,14 +922,14 @@ export async function getQquipmentImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
   let usr_qq = e.UserId
-  let playerData = data.getData('player', usr_qq)
+  let playerData = await data.getData('player', usr_qq)
   let ifexistplay = data.existData('player', usr_qq)
-  if (!ifexistplay || playerData === 'error' || Array.isArray(playerData)) {
+  if (!ifexistplay || !playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
   const bao = Math.trunc(Math.floor(player.暴击率 * 100))
-  let equipmentData = data.getData('equipment', usr_qq)
+  let equipmentData = await data.getData('equipment', usr_qq)
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return
   }
@@ -956,8 +965,8 @@ export async function getNajieImage(e: PublicEventMessageCreate): Promise<any> {
   if (!ifexistplay) {
     return
   }
-  let playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  let playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
@@ -1004,8 +1013,8 @@ export async function getStateImage(
   if (!ifexistplay) {
     return
   }
-  let playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  let playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
@@ -1036,8 +1045,8 @@ export async function getStatezhiyeImage(
   if (!ifexistplay) {
     return
   }
-  let playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  let playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
@@ -1072,8 +1081,8 @@ export async function getStatemaxImage(
   if (!ifexistplay) {
     return
   }
-  let playerData = data.getData('player', usr_qq)
-  if (playerData === 'error' || Array.isArray(playerData)) {
+  let playerData = await data.getData('player', usr_qq)
+  if (!playerData || Array.isArray(playerData)) {
     return
   }
   let player = playerData as Player
@@ -1103,7 +1112,7 @@ export async function getTalentImage(
   if (!ifexistplay) {
     return
   }
-  // let player = await data.getData('player', usr_qq)
+  // let player = await await data.getData('player', usr_qq)
   // let Level_id = player.Physique_id
   let talent_list = data.talent_list
   let talent_data = {

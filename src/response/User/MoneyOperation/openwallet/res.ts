@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   let thing_name = '水脚脚的钱包'
   //x是纳戒内有的数量
   let acount = await existNajieThing(usr_qq, thing_name, '装备')

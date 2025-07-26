@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.lunhui)) {
     player.lunhui = 0
     await writePlayer(usr_qq, player)
@@ -109,7 +109,7 @@ export default onResponse(selects, async e => {
       } else {
         let ass = data.getAssociation(player.宗门.宗门名称)
         if (ass.所有成员.length < 2) {
-          fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
+          await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
           data.setData('player', usr_qq, player)
           await playerEfficiency(usr_qq)
@@ -132,7 +132,7 @@ export default onResponse(selects, async e => {
           } else {
             randmember_qq = await get_random_fromARR(ass.所有成员)
           }
-          let randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
+          let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
           ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
             item => item != randmember_qq
           ) //原来的职位表删掉这个幸运儿

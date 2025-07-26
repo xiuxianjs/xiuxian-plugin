@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let commodities_price = 0
-  let najie = await data.getData('najie', usr_qq)
+  let najie = await await data.getData('najie', usr_qq)
   let wupin = [
     '装备',
     '丹药',
@@ -95,7 +95,7 @@ export default onResponse(selects, async e => {
 
       let usr_qq = event.UserId
       //有无存档
-      let najie = data.getData('najie', usr_qq)
+      let najie = await data.getData('najie', usr_qq)
       let commodities_price = 0
       let wupin = [
         '装备',

@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
 
   //检索方法
-  let najie = await data.getData('najie', usr_qq)
+  let najie = await await data.getData('najie', usr_qq)
   let xueqi = 0
   for (let l of najie.丹药) {
     if (l.type == '血气') {

@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
     return false
   }
@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
     Send(Text('此人未踏入仙途！'))
     return false
   }
-  let playerB = await data.getData('player', member_qq)
+  let playerB = await await data.getData('player', member_qq)
   if (!isNotNull(playerB.宗门)) {
     Send(Text('对方尚未加入宗门'))
     return false

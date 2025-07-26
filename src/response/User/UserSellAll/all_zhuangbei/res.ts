@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //检索方法
-  let najie = await data.getData('najie', usr_qq)
+  let najie = await await data.getData('najie', usr_qq)
   let player = await readPlayer(usr_qq)
   let sanwei = []
   sanwei[0] =
@@ -36,7 +36,7 @@ export default onResponse(selects, async e => {
     player.生命加成 +
     data.LevelMax_list.find(item => item.level_id == player.Physique_id)
       .基础血量
-  let equipment = await data.getData('equipment', usr_qq)
+  let equipment = await await data.getData('equipment', usr_qq)
   //智能选择装备
   let type = ['武器', '护具', '法宝']
   for (let j of type) {

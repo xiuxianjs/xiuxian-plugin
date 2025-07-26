@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   let acount = code[1]
   lingshi = await convert2integer(lingshi)
   acount = await convert2integer(acount)
-  let player = await data.getData('player', usr_qq)
+  let player = await await data.getData('player', usr_qq)
   //对比自己的灵石，看看够不够！
   if (player.灵石 <= Math.floor(lingshi * acount)) {
     Send(Text(`红包数要比自身灵石数小噢`))

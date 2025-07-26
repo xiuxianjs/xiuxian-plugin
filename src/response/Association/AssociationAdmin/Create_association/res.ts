@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   const [message] = useMessage(e)
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let now_level_id
   now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
       let now = new Date()
       let nowTime = now.getTime() //获取当前时间戳
       let date = timestampToTime(nowTime)
-      let player = data.getData('player', usr_qq)
+      let player = await data.getData('player', usr_qq)
       player.宗门 = {
         宗门名称: association_name,
         职位: '宗主',
@@ -87,7 +87,7 @@ export default onResponse(selects, async e => {
 })
 async function new_Association(name, holder_qq, e) {
   let usr_qq = e.UserId
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   let now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id

@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
     return false
   }
   if (data.existData('player', usr_qq)) {
-    let player = await data.getData('player', usr_qq)
+    let player = await await data.getData('player', usr_qq)
     if (player.level_id > 41 || player.lunhui > 0) {
       Send(Text('仙人不得下凡'))
       return false
@@ -222,7 +222,7 @@ export default onResponse(selects, async e => {
         )
       )
       for (let i = 0; i < PlayerList.length; i++)
-        await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
+        await await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
       let Show_MAX
       let Rewardmsg = ['****金角大王周本贡献排行榜****']
       if (PlayerList.length > 20) Show_MAX = 20
@@ -235,7 +235,7 @@ export default onResponse(selects, async e => {
       )
         TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]]
       for (let i = 0; i < PlayerList.length; i++) {
-        let CurrentPlayer = await data.getData(
+        let CurrentPlayer = await await data.getData(
           'player',
           PlayerRecordJSON.QQ[PlayerList[i]]
         )

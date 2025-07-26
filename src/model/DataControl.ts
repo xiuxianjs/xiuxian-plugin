@@ -1,6 +1,5 @@
-import fs, { mkdirSync } from 'fs'
-import path, { join } from 'path'
 import { __PATH } from './paths.js'
+import { redis } from '@src/api/api.js'
 // 类型定义
 type JSONData = Record<string, any> | Array<any>
 
@@ -35,9 +34,9 @@ export const existDataByPath = (
   key: keyof typeof __PATH,
   from: string,
   name: string
-): boolean => {
-  const dir = join(__PATH[key], from, `${name}.json`)
-  return fs.existsSync(dir)
+) => {
+  const dir = `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
+  return redis.exists(dir)
 }
 
 /**
@@ -46,14 +45,15 @@ export const existDataByPath = (
  * @param name
  * @returns
  */
-export const readDataByPath = (
+export const readDataByPath = async (
   key: keyof typeof __PATH,
   from: string,
   name: string
 ) => {
   try {
-    const dir = join(__PATH[key], from, `${name}.json`)
-    const data = fs.readFileSync(dir, 'utf8')
+    const data = await redis.get(
+      `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
+    )
     return JSON.parse(data)
   } catch (error) {
     logger.error('读取文件错误：' + error)
@@ -74,14 +74,10 @@ export const writeDataByPath = (
   name: string,
   data: any
 ): void => {
-  const dir = join(__PATH[key], from, `${name}.json`)
-  const newData = JSON.stringify(data, null, '\t')
-  if (fs.existsSync(dir)) {
-    fs.writeFileSync(dir, newData, 'utf8')
-  } else {
-    mkdirSync(path.dirname(dir), { recursive: true })
-    fs.writeFileSync(dir, newData, 'utf8')
-  }
+  redis.set(
+    `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`,
+    JSON.stringify(data)
+  )
 }
 
 /**
@@ -94,14 +90,8 @@ class DataControl {
    * @param file_name
    * @deprecated
    */
-  existData(file_path_type: FilePathType, file_name: string): boolean {
-    const dir = path.join(
-      filePathMap[file_path_type] + '/' + file_name + '.json'
-    )
-    if (fs.existsSync(dir)) {
-      return true
-    }
-    return false
+  existData(file_path_type: FilePathType, file_name: string) {
+    return redis.exists(`${filePathMap[file_path_type]}:${file_name}`)
   }
 
   /**
@@ -110,27 +100,13 @@ class DataControl {
    * @param user_qq
    * @deprecated
    */
-  getData(
-    file_name: FilePathType | string,
-    user_qq?: string
-  ): JSONData | 'error' {
-    let dir: string
+  async getData(file_name: FilePathType | string, user_qq?: string) {
     if (user_qq) {
-      //带user_qq的查询数据文件
-      dir = path.join(
-        filePathMap[file_name as FilePathType] + '/' + user_qq + '.json'
-      )
+      const data = await redis.get(`${filePathMap[file_name]}:${user_qq}`)
+      return data ? JSON.parse(data) : null
     } else {
-      //不带参数的查询item下文件
-      dir = path.join(__PATH.lib_path + '/' + file_name + '.json')
-    }
-    try {
-      const data = fs.readFileSync(dir, 'utf8')
-      //将字符串数据转变成json格式
-      return JSON.parse(data)
-    } catch (error) {
-      logger.error('读取文件错误：' + error)
-      return 'error'
+      const data = await redis.get(`${filePathMap[file_name]}`)
+      return data ? JSON.parse(data) : null
     }
   }
 
@@ -146,18 +122,10 @@ class DataControl {
     user_qq: string | null,
     data: JSONData
   ): void {
-    let dir: string
-    if (user_qq) {
-      dir = path.join(
-        filePathMap[file_name as FilePathType] + '/' + user_qq + '.json'
-      )
-    } else {
-      dir = path.join(filePathMap.lib + '/' + file_name + '.json')
-    }
-    const new_ARR = JSON.stringify(data) //json转string
-    if (fs.existsSync(dir)) {
-      fs.writeFileSync(dir, new_ARR, 'utf-8')
-    }
+    redis.set(
+      `${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`,
+      JSON.stringify(data)
+    )
     return
   }
 }

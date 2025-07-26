@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  let player = data.getData('player', usr_qq)
+  let player = await data.getData('player', usr_qq)
   if (player.轮回点 >= 10 && player.lunhui == 0) {
     Send(Text('你梳洗完毕，将小石头摆在案上,点上香烛，拜上三拜！'))
     await sleep(3000)

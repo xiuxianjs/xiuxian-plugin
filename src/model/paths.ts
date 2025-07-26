@@ -1,5 +1,3 @@
-import path, { join } from 'path'
-import { existsSync, mkdirSync } from 'fs'
 import Association from '@src/config/Association.yaml'
 import help from '@src/config/help.yaml'
 import help2 from '@src/config/help2.yaml'
@@ -10,37 +8,30 @@ import task from '@src/config/task.yaml'
 import version from '@src/config/version.yaml'
 import xiuxian from '@src/config/xiuxian.yaml'
 
-const dataPath = join(process.cwd(), 'data')
-
-// 文件存放路径
+// 存档存放路径
 const __PATH = {
-  player_path: path.join(dataPath, '/alemonjs-xiuxian/player'),
-  equipment_path: path.join(dataPath, '/alemonjs-xiuxian/equipment'),
-  najie_path: path.join(dataPath, '/alemonjs-xiuxian/xiuxian_najie'),
-  danyao_path: path.join(dataPath, '/alemonjs-xiuxian/xiuxian_danyao'),
-  lib_path: path.join(dataPath, '/alemonjs-xiuxian/item'),
-  Timelimit: path.join(dataPath, '/alemonjs-xiuxian/Timelimit'),
-  Exchange: path.join(dataPath, '/alemonjs-xiuxian/Exchange'),
-  Level: path.join(dataPath, '/alemonjs-xiuxian/Level'),
-  shop: path.join(dataPath, '/alemonjs-xiuxian/shop'),
-  log_path: path.join(dataPath, '/alemonjs-xiuxian/suduku'),
-  association: path.join(dataPath, '/alemonjs-xiuxian/association'),
-  tiandibang: path.join(dataPath, '/alemonjs-xiuxian/tiandibang'),
-  qinmidu: path.join(dataPath, '/alemonjs-xiuxian/qinmidu'),
-  backup: path.join(dataPath, '/alemonjs-xiuxian/backup'),
-  shitu: path.join(dataPath, '/alemonjs-xiuxian/shitu'),
-  duanlu: path.join(dataPath, '/alemonjs-xiuxian/duanlu'),
-  temp_path: path.join(dataPath, '/alemonjs-xiuxian/temp'),
-  custom: path.join(dataPath, '/alemonjs-xiuxian/custom'),
-  auto_backup: path.join(dataPath, '/alemonjs-xiuxian/auto_backup'),
-  occupation: path.join(dataPath, '/alemonjs-xiuxian/occupation')
+  player_path: 'data:alemonjs-xiuxian:player',
+  equipment_path: 'data:alemonjs-xiuxian:equipment',
+  najie_path: 'data:alemonjs-xiuxian:xiuxian_najie',
+  danyao_path: 'data:alemonjs-xiuxian:xiuxian_danyao',
+  lib_path: 'data:alemonjs-xiuxian:item',
+  Timelimit: 'data:alemonjs-xiuxian:Timelimit',
+  Exchange: 'data:alemonjs-xiuxian:Exchange',
+  Level: 'data:alemonjs-xiuxian:Level',
+  shop: 'data:alemonjs-xiuxian:shop',
+  log_path: 'data:alemonjs-xiuxian:suduku',
+  association: 'data:alemonjs-xiuxian:association',
+  tiandibang: 'data:alemonjs-xiuxian:tiandibang',
+  qinmidu: 'data:alemonjs-xiuxian:qinmidu',
+  backup: 'data:alemonjs-xiuxian:backup',
+  shitu: 'data:alemonjs-xiuxian:shitu',
+  duanlu: 'data:alemonjs-xiuxian:duanlu',
+  temp_path: 'data:alemonjs-xiuxian:temp',
+  custom: 'data:alemonjs-xiuxian:custom',
+  auto_backup: 'data:alemonjs-xiuxian:auto_backup',
+  occupation: 'data:alemonjs-xiuxian:occupation'
 }
 
-for (const key in __PATH) {
-  if (!existsSync(__PATH[key])) {
-    mkdirSync(__PATH[key], { recursive: true })
-  }
-}
 export { __PATH }
 
 export const __PATH_CONFIG = {
