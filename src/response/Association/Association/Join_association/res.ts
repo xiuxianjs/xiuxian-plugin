@@ -27,6 +27,10 @@ export default onResponse(selects, async e => {
     return false
   }
   let ass = await data.getAssociation(association_name)
+  if (ass === 'error') {
+    Send(Text('没有这个宗门'))
+    return
+  }
   now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id

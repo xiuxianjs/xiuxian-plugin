@@ -13,7 +13,7 @@ class Association {
     const data = await redis.get(`${__PATH.association}:${file_name}`)
     if (!data) {
       // 如果没有数据，返回空对象
-      return {}
+      return 'error'
     }
     try {
       return JSON.parse(data)
