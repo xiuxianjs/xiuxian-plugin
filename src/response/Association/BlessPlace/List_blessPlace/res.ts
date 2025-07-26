@@ -1,4 +1,4 @@
-import { Text } from 'alemonjs'
+import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
@@ -6,18 +6,11 @@ import { __PATH } from '@src/model'
 export const regular = /^(#|＃|\/)?洞天福地列表$/
 
 export default onResponse(selects, async e => {
-  let addres = '洞天福地'
   let weizhi = data.bless_list
-  GoBlessPlace(e, weizhi, addres)
-})
-/**
- * 地点查询
- */
-async function GoBlessPlace(e, weizhi, addres) {
+  const Send = useSend(e)
   const keys = await redis.keys(`${__PATH.association}:*`)
   const File = keys.map(key => key.replace(`${__PATH.association}:`, ''))
-
-  let adr = addres
+  let adr = '洞天福地'
   let msg = ['***' + adr + '***']
   for (let i = 0; i < weizhi.length; i++) {
     let ass = '无'
@@ -43,4 +36,4 @@ async function GoBlessPlace(e, weizhi, addres) {
     )
   }
   Send(Text(msg.join('')))
-}
+})

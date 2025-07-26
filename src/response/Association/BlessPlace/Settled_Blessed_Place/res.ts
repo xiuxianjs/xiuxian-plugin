@@ -1,5 +1,4 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'node:fs'
 import { data, redis } from '@src/api/api'
 import { __PATH, isNotNull, readPlayer } from '@src/model'
 
