@@ -39,26 +39,27 @@ export default onResponse(selects, async e => {
   )
   /** 设置上下文 */
   const [subscribe] = useSubscribe(e, selects)
+
   const sub = subscribe.mount(
     async (event, next) => {
       let association_name = event.MessageText
+      //res为true表示存在汉字以外的字符
+      if (!/^[\u4e00-\u9fa5]+$/.test(association_name)) {
+        message.send(format(Text('宗门名字只能使用中文,请重新输入:')))
+        next()
+        return
+      }
       if (association_name.length > 6) {
         message.send(format(Text('宗门名字最多只能设置6个字符,请重新输入:')))
         next()
-      }
-      let reg = /[^\u4e00-\u9fa5]/g //汉字检验正则
-      let res = reg.test(association_name)
-      //res为true表示存在汉字以外的字符
-      if (res) {
-        message.send(format(Text('宗门名字只能使用中文,请重新输入:')))
-        next()
+        return
       }
       let ifexistass = data.existData('association', association_name)
       if (ifexistass) {
         message.send(format(Text('该宗门已经存在,请重新输入:')))
         next()
+        return
       }
-
       let now = new Date()
       let nowTime = now.getTime() //获取当前时间戳
       let date = timestampToTime(nowTime)
@@ -72,16 +73,19 @@ export default onResponse(selects, async e => {
       await new_Association(association_name, usr_qq, e)
       await setFileValue(usr_qq, -10000, '灵石')
       message.send(format(Text('宗门创建成功')))
-      /** 结束上下文 */
+      subscribe.cancel(sub)
       clearTimeout(timeout)
     },
     ['UserId']
   )
-  const timeout = setTimeout(() => {
-    /** 停止上下文 */
-    subscribe.cancel(sub)
-    message.send(format(Text('超时自动取消操作')))
-  }, 30000)
+  const timeout = setTimeout(
+    () => {
+      /** 停止上下文 */
+      subscribe.cancel(sub)
+      message.send(format(Text('超时自动取消操作')))
+    },
+    1000 * 60 * 5
+  ) //5分钟超时
 })
 async function new_Association(name, holder_qq, e) {
   let usr_qq = e.UserId
