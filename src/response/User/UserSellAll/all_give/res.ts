@@ -4,7 +4,7 @@ import { data } from '@src/api/api'
 import { existplayer, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?一键赠送(.*)$/
+export const regular = /^(#|＃|\/)?一键赠送[\u4e00-\u9fa5]$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

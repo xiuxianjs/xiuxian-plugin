@@ -12,7 +12,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?赠送.*$/
+export const regular = /^(#|＃|\/)?赠送[\u4e00-\u9fa5]+\*\d+$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
   let msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '')
   const cf = config.getConfig('xiuxian', 'xiuxian')
   if (msg.startsWith('灵石')) {
-    let lingshi: any = msg.replace('灵石*', '')
+    let lingshi: any = msg.replace(/[\u4e00-\u9fa5]/, '').replace(/\*/g, '')
     //校验输入灵石数
     lingshi = await convert2integer(lingshi)
     //没有输入正确数字或＜1000;
