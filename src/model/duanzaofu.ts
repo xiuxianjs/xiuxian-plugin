@@ -216,7 +216,7 @@ export async function readIt(): Promise<any> {
   const custom = await redis.get(`${__PATH.custom}:custom`)
   if (!custom) {
     //如果没有自定义数据，返回空对象
-    return {}
+    return []
   }
   const customData = JSON.parse(custom)
   return customData

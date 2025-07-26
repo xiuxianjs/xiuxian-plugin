@@ -37,6 +37,12 @@ export default onResponse(selects, async e => {
   let es = e.MessageText
   //随机数并取整【1，7）
   let randtime = Math.trunc(Math.random() * 6) + 1
+
+  // 假的随机，而且肯定会赔钱。需要出一个。系统方必须赚钱的机制。
+
+  // 统计每次 陪了多少钱 和 转了多少钱。让系统逐渐赚钱。
+  // 而不是靠代码的随机。
+
   //点子
   let touzi
   let n
