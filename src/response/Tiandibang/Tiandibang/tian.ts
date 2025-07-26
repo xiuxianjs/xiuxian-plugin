@@ -11,6 +11,10 @@ export async function Write_tiandibang(wupin) {
 
 export async function Read_tiandibang() {
   let tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
+  if (!tiandibang) {
+    //如果没有天鼎数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(tiandibang)
   return data

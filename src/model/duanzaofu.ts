@@ -1,5 +1,3 @@
-import fs, { existsSync } from 'fs'
-import path from 'path'
 import { __PATH } from './paths.js'
 import data from './XiuxianData.js'
 import { writePlayer } from './pub.js'
@@ -107,7 +105,7 @@ export async function readThat(
 ): Promise<any> {
   const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
   if (!weizhi1) {
-    return
+    return []
   }
   const weizh = JSON.parse(weizhi1)
   for (const item of weizh) {
@@ -121,6 +119,9 @@ export async function readThat(
 //读取item某个文件的全部物品
 export async function readAll(weizhi: string): Promise<any[]> {
   const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
+  if (!weizhi1) {
+    return []
+  }
   const data = JSON.parse(weizhi1)
   return data
 }
@@ -213,6 +214,10 @@ export async function restraint(
 
 export async function readIt(): Promise<any> {
   const custom = await redis.get(`${__PATH.custom}:custom`)
+  if (!custom) {
+    //如果没有自定义数据，返回空对象
+    return {}
+  }
   const customData = JSON.parse(custom)
   return customData
 }

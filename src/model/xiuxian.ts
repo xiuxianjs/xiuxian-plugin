@@ -74,6 +74,10 @@ export async function convert2integer(
 //读取存档信息，返回成一个JavaScript对象
 export async function readPlayer(usr_qq: string): Promise<Player | null> {
   const player = await redis.get(`${__PATH.player_path}:${usr_qq}`)
+  if (!player) {
+    //如果没有玩家数据，返回null
+    return null
+  }
   //将字符串数据转变成数组格式
   const playerData = JSON.parse(decodeURIComponent(player))
   return playerData as Player
@@ -173,6 +177,10 @@ export async function LevelTask(
 //读取装备信息，返回成一个JavaScript对象
 export async function readEquipment(usr_qq: string): Promise<Equipment | null> {
   let equipment = await redis.get(`${__PATH.equipment_path}:${usr_qq}`)
+  if (!equipment) {
+    //如果没有装备数据，返回null
+    return null
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(equipment)
   return data as Equipment
@@ -228,18 +236,13 @@ export async function writeEquipment(
 }
 
 //读取纳戒信息，返回成一个JavaScript对象
-export async function readNajie(usr_qq: string): Promise<Najie | null> {
+export async function readNajie(usr_qq: string): Promise<Najie> {
   let najieData
   let najie = await redis.get(`${__PATH.najie_path}:${usr_qq}`)
-  //将字符串数据转变成数组格式
-  try {
-    // najie = JSON.parse(najie)
-    najieData = JSON.parse(najie)
-  } catch {
-    //转换不了，纳戒错误
-    await fixed(usr_qq)
-    najieData = await readNajie(usr_qq)
+  if (!najie) {
+    return null
   }
+  najieData = JSON.parse(najie)
   return najieData as Najie
 }
 
@@ -1130,9 +1133,12 @@ export function isNotBlank(value: any): boolean {
 
 export async function readQinmidu() {
   const qinmidu = await redis.get(`${__PATH.qinmidu}:qinmidu`)
+  if (!qinmidu) {
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(qinmidu)
-  return data || []
+  return data
 }
 
 export async function writeQinmidu(qinmidu) {
@@ -1351,6 +1357,10 @@ export async function find_tudi(A) {
 }
 export async function Read_danyao(usr_qq) {
   let danyao = await redis.get(`${__PATH.danyao_path}:${usr_qq}`)
+  if (!danyao) {
+    //如果没有丹药数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(danyao)
   return data
@@ -1363,6 +1373,10 @@ export async function Write_danyao(usr_qq, danyao) {
 
 export async function readTemp() {
   let temp = await redis.get(`${__PATH.temp_path}:temp`)
+  if (!temp) {
+    //如果没有临时数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(temp)
   return data
@@ -1418,6 +1432,10 @@ export async function writeShop(shop) {
 
 export async function readShop() {
   let shop = await redis.get(`${__PATH.shop}:shop`)
+  if (!shop) {
+    //如果没有商店数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(shop)
   return data
@@ -1757,6 +1775,10 @@ export async function writeForum(wupin) {
 //读交易表
 export async function readExchange() {
   let Exchange = await redis.get(`${__PATH.Exchange}:Exchange`)
+  if (!Exchange) {
+    //如果没有交易数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(Exchange)
   return data
@@ -1765,6 +1787,10 @@ export async function readExchange() {
 //读交易表
 export async function readForum() {
   let Forum = await redis.get(`${__PATH.Exchange}:Forum`)
+  if (!Forum) {
+    //如果没有交易数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(Forum)
   return data
