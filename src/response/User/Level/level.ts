@@ -24,7 +24,7 @@ export async function Level_up(e, luck = false) {
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
@@ -245,7 +245,7 @@ export async function LevelMax_up(e, luck) {
   let game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }

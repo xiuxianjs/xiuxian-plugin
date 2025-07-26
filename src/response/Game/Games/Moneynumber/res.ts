@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
     //重新记录本次时间
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':last_game_time', now_time) //存入缓存
     //清除游戏状态
-    await redis.set('xiuxian@1.3.0:' + usr_qq + ':game_action', 1)
+    await redis.del('xiuxian@1.3.0:' + usr_qq + ':game_action')
     //清除未投入判断
     //清除金额
     global.yazhu[usr_qq] = 0
@@ -69,7 +69,7 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //为0，就是在进行了
-  if (game_action == 0) {
+  if (game_action == 1) {
     //在进行
     Send(Text(`媚娘：猜大小正在进行哦!`))
     return false
@@ -77,6 +77,6 @@ export default onResponse(selects, async e => {
   //不为0   没有参与投入和梭哈
   Send(Text(`媚娘：发送[#投入+数字]或[#梭哈]`))
   //写入游戏状态为真-在进行了
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':game_action', 0)
+  await redis.set('xiuxian@1.3.0:' + usr_qq + ':game_action', 1)
   return false
 })

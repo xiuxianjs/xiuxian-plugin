@@ -1402,7 +1402,7 @@ export async function Go(e) {
   //获取游戏状态
   let game_action: any = await getDataByUserId(usr_qq, 'game_action')
   //防止继续其他娱乐行为
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return 0
   }
