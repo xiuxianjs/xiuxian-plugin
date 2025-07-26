@@ -89,6 +89,8 @@ redis:
 
 > 唤醒 `/修仙帮助`
 
+> 机器人全部使用redis存储，请务必启动redis持久化存储
+
 ## 其他版本
 
 | Project          | Status | Description            |
