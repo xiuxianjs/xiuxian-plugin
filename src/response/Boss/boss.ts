@@ -49,7 +49,7 @@ export async function GetAverageDamage() {
   let temp = []
   let TotalPlayer = 0
   for (const player_id of playerList) {
-    const player = await await data.getData('player', player_id)
+    const player = await data.getData('player', player_id)
     if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
       temp[TotalPlayer] = parseInt(player.攻击)
       logger.info(`[金角大王] ${player_id}玩家攻击:${temp[TotalPlayer]}`)
@@ -96,8 +96,9 @@ export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
         send(Text(`金角大王正在刷新,20点开启`))
         return false
       } else if (WorldBossStatusStr.KilledTime != -1) {
-        if ((await InitWorldBoss()) == false)
-          await this.LookUpWorldBossStatus(e)
+        // if ((await InitWorldBoss()) == false)
+        //   await this.LookUpWorldBossStatus(e)
+        // tudo
         return false
       }
       let ReplyMsg = [
@@ -149,7 +150,7 @@ export async function WorldBossBattle(e) {
     return false
   }
   if (data.existData('player', usr_qq)) {
-    let player = await await data.getData('player', usr_qq)
+    let player = await data.getData('player', usr_qq)
     if (player.level_id < 42 && player.lunhui == 0) {
       send(Text('你在仙界吗'))
       return false
@@ -331,7 +332,7 @@ export async function WorldBossBattle(e) {
         )
       )
       for (let i = 0; i < PlayerList.length; i++)
-        await await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
+        await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
       let Show_MAX
       let Rewardmsg = ['****妖王周本贡献排行榜****']
       if (PlayerList.length > 20) Show_MAX = 20
@@ -344,7 +345,7 @@ export async function WorldBossBattle(e) {
       )
         TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]]
       for (let i = 0; i < PlayerList.length; i++) {
-        let CurrentPlayer = await await data.getData(
+        let CurrentPlayer = await data.getData(
           'player',
           PlayerRecordJSON.QQ[PlayerList[i]]
         )

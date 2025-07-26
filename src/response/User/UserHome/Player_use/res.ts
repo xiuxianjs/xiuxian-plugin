@@ -397,7 +397,6 @@ export default onResponse(selects, async e => {
           )
         )
         /** 设置上下文 */
-        // this.setContext('DUIHUAN')
         const [subscribe] = useSubscribe(e, selects)
         const sub = subscribe.mount(
           async (event, next) => {
@@ -418,12 +417,10 @@ export default onResponse(selects, async e => {
               if (ifexist2) {
                 await addNajieThing(usr_qq, '残卷', '道具', -10)
                 await addNajieThing(usr_qq, gonfa, '功法', 1)
-                // await this.reply('兑换' + gonfa + '成功')
                 message.send(format(Text(`兑换${gonfa}成功`)))
                 clearTimeout(timeout)
                 return
               } else {
-                // await this.reply('残卷无法兑换该功法')
                 message.send(format(Text('残卷无法兑换该功法')))
                 clearTimeout(timeout)
                 return

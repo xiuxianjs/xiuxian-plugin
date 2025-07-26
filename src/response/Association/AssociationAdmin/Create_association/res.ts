@@ -59,7 +59,6 @@ export default onResponse(selects, async e => {
         next()
       }
 
-      //await this.reply('功能还在开发中,敬请期待');
       let now = new Date()
       let nowTime = now.getTime() //获取当前时间戳
       let date = timestampToTime(nowTime)
@@ -72,7 +71,6 @@ export default onResponse(selects, async e => {
       data.setData('player', usr_qq, player)
       await new_Association(association_name, usr_qq, e)
       await setFileValue(usr_qq, -10000, '灵石')
-      // await this.reply('宗门创建成功')
       message.send(format(Text('宗门创建成功')))
       /** 结束上下文 */
       clearTimeout(timeout)

@@ -184,7 +184,7 @@ async function Create_player(e) {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
-    this.Show_player(e)
+    Show_player(e)
     return false
   }
   //初始化玩家信息
