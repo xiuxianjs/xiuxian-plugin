@@ -584,7 +584,7 @@ export async function playerEfficiency(usr_qq: string) {
   } else {
     const zongmenName =
       typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
-    ass = await data.getAssociation(zongmenName) //修仙对应宗门信息
+    ass = await await data.getAssociation(zongmenName) //修仙对应宗门信息
     if (ass === 'error' || Array.isArray(ass)) {
       Assoc_efficiency = 0
     } else {

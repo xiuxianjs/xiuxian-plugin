@@ -105,7 +105,7 @@ export default onResponse(selects, async e => {
       }
       //有宗门
       if (player.宗门.职位 != '宗主') {
-        let ass = data.getAssociation(player.宗门.宗门名称)
+        let ass = await data.getAssociation(player.宗门.宗门名称)
         ass[player.宗门.职位] = ass[player.宗门.职位].filter(
           item => item != usr_qq
         )
@@ -116,7 +116,7 @@ export default onResponse(selects, async e => {
         await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
-        let ass = data.getAssociation(player.宗门.宗门名称)
+        let ass = await data.getAssociation(player.宗门.宗门名称)
         if (ass.所有成员.length < 2) {
           await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息

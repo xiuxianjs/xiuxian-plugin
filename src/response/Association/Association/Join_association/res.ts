@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
     Send(Text('这方天地不存在' + association_name))
     return false
   }
-  let ass = data.getAssociation(association_name)
+  let ass = await data.getAssociation(association_name)
   now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id

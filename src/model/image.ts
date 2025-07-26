@@ -810,7 +810,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   //有加入宗门
   const zongmenName =
     typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
-  const ass = data.getAssociation(zongmenName)
+  const ass = await data.getAssociation(zongmenName)
   if (ass === 'error' || Array.isArray(ass)) {
     Send(Text('宗门数据获取失败'))
     return

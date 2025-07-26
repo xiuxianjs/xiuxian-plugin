@@ -17,14 +17,14 @@ export default onResponse(selects, async e => {
 
   if (!isNotNull(player.宗门)) return false
 
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (!isNotNull(player.宗门)) {
     return false
   } else if (ass.药园.药园等级 == 1 || ass.药园.药园等级 !== ass.宗门等级) {
     //加入宗门，没有药园或药园等级不等于宗门等级，则新建药园。
     await new_Garden(player.宗门.宗门名称, usr_qq) //新建药园
     Send(Text('新建药园，种下了一棵草'))
-    ass = data.getAssociation(player.宗门.宗门名称)
+    ass = await data.getAssociation(player.宗门.宗门名称)
   }
   let zuowu
   let shuliang = ass.宗门等级
@@ -84,7 +84,7 @@ async function new_Garden(association_name, user_qq) {
   let now = new Date()
   let nowTime = now.getTime() //获取当前时间戳
   // let date = timestampToTime(nowTime)
-  let ass = data.getAssociation(association_name)
+  let ass = await data.getAssociation(association_name)
   let AssociationGarden
   //怎么直接写这里而不是调用文件
   if (ass.宗门等级 == 9) {
@@ -418,6 +418,6 @@ async function new_Garden(association_name, user_qq) {
 
   ass.药园 = AssociationGarden
   data.setAssociation(association_name, ass)
-  //let ass = data.getAssociation(holder_qq);
+  //let ass = await data.getAssociation(holder_qq);
   return false
 }

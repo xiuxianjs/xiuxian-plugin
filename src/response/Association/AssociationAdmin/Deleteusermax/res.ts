@@ -35,8 +35,8 @@ export default onResponse(selects, async e => {
     Send(Text('对方尚未加入宗门'))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
-  let bss = data.getAssociation(playerB.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
+  let bss = await data.getAssociation(playerB.宗门.宗门名称)
   if (ass.宗门名称 != bss.宗门名称) return false
   if (player.宗门.职位 == '宗主') {
     if (usr_qq == member_qq) {

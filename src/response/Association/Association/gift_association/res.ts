@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) return false
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   let ismt = isNotMaintenance(ass)
   if (ismt) {
     Send(Text(`宗门尚未维护，快找宗主维护宗门`))

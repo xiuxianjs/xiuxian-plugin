@@ -111,7 +111,7 @@ export default onResponse(selects, async e => {
         if (isNotNull(player.宗门)) {
           if (player.宗门.职位 != '宗主') {
             //不是宗主
-            let ass: any = data.getAssociation(player.宗门.宗门名称)
+            let ass: any = await data.getAssociation(player.宗门.宗门名称)
             ass[player.宗门.职位] = ass[player.宗门.职位].filter(
               item => item != usr_qq
             )
@@ -121,7 +121,7 @@ export default onResponse(selects, async e => {
             await data.setData('player', usr_qq, player)
           } else {
             //是宗主
-            let ass: any = data.getAssociation(player.宗门.宗门名称)
+            let ass: any = await data.getAssociation(player.宗门.宗门名称)
             if (ass.所有成员.length < 2) {
               fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
             } else {

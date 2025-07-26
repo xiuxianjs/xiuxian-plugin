@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
     Send(Text(`你身上只有${player.灵石}灵石,数量不足`))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   let xf = 1
   if (ass.power == 1) {
     xf = 10

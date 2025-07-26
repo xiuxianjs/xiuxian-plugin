@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  let ass = await await data.getAssociation(player.宗门.宗门名称)
   let now = new Date()
   let nowTime = now.getTime() //获取当前日期的时间戳
   let time: any = config.getConfig('xiuxian', 'xiuxian').CD.association

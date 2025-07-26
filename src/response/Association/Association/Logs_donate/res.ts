@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) return false
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   let donate_list = []
   for (let i in ass.所有成员) {
     //遍历所有成员

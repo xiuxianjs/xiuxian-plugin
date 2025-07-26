@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   jiar = jiar.trim()
   if (!data.Level_list.some(item => item.level == jiar)) return false
   let jr_level_id = data.Level_list.find(item => item.level == jiar).level_id
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.power == 0 && jr_level_id > 41) {
     jr_level_id = 41
     Send(Text('不知哪位大能立下誓言：凡界无仙！'))

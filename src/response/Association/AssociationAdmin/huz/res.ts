@@ -16,6 +16,6 @@ export default onResponse(selects, async e => {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   Send(Text(`护宗大阵血量:${ass.大阵血量}`))
 })

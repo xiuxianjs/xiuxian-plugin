@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   }
   for (let i = 0; i < assList.length; i++) {
     let this_name = assList[i]
-    let this_ass = await data.getAssociation(this_name)
+    let this_ass = await await data.getAssociation(this_name)
     //处理一下宗门效率问题
     let this_ass_xiuxian = 0
     if (this_ass.宗门驻地 == 0) {
