@@ -18,7 +18,9 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let A_action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  A_action = JSON.parse(A_action)
+  if (!A_action) {
+    A_action = JSON.parse(A_action)
+  }
   if (A_action != null) {
     let now_time = new Date().getTime()
     //人物任务的动作是否结束
@@ -38,8 +40,10 @@ export default onResponse(selects, async e => {
     return false
   }
   let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
-  action = JSON.parse(action)
-  if (action == null) {
+  if (action) {
+    action = JSON.parse(action)
+  }
+  if (!action) {
     Send(Text('还没有接取到悬赏,请查看后再来吧')) //没接取悬赏
     return false
   }
