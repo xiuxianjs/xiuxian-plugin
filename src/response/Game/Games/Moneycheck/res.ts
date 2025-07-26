@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
 
-  if (!ifexistplay || game_action == 1) {
+  if (!ifexistplay || !game_action) {
     //不是就返回
     return false
   }

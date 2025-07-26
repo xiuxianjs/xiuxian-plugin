@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   let game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
-  if (!ifexistplay || +game_action == 1) {
+  if (!ifexistplay || !game_action) {
     //不是就返回
     return false
   }
@@ -102,7 +102,7 @@ export default onResponse(selects, async e => {
     //重新记录本次时间
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':last_game_time', now_time) //存入缓存
     //清除游戏状态
-    await redis.set('xiuxian@1.3.0:' + usr_qq + ':game_action', 1)
+    await redis.del('xiuxian@1.3.0:' + usr_qq + ':game_action')
     //清除未投入判断
     //清除金额
     global.yazhu[usr_qq] = 0
