@@ -23,17 +23,16 @@ scheduleJob('0 0/1 * * * ?', async () => {
 
       // 在开启时间且未开启拍卖则开启拍卖
       const auction = await openAU()
+
       let msg = `___[星阁]___\n目前正在拍卖【${auction.thing.name}】\n`
       if (auction.last_offer_player === 0) {
         msg += '暂无人出价'
       } else {
-        const player = await readPlayer(auction.last_offer_player)
+        const player = await readPlayer(String(auction.last_offer_player))
         msg += `最高出价是${player.名号}叫出的${auction.last_price}`
       }
-      // auction.groupList.forEach(group_id => pushInfo(group_id, true, msg))
       auction.groupList.forEach(group => {
-        const [platform, group_id] = group.split(':')
-        pushInfo(platform, group_id, true, msg)
+        pushInfo('', group, true, msg)
       })
       return false
     }
@@ -78,8 +77,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
 
       for (const group of group_ids) {
-        const [platform, group_id] = group.split(':')
-        pushInfo(platform, group_id, true, msg)
+        pushInfo('', group, true, msg)
       }
       await redis.del('xiuxian:AuctionofficialTask')
     }
