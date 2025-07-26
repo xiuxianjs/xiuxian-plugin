@@ -23,12 +23,11 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let newtripod
+  let newtripod = []
   try {
     newtripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    newtripod = await readTripod()
   }
   for (let item of newtripod) {
     if (user_qq == item.qq) {

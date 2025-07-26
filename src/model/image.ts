@@ -34,12 +34,11 @@ export async function getSupermarketImage(e, thing_class) {
   if (!ifexistplay) {
     return
   }
-  let Exchange_list
+  let Exchange_list = []
   try {
     Exchange_list = await readExchange()
   } catch {
     await writeExchange([])
-    Exchange_list = await readExchange()
   }
   for (let i = 0; i < Exchange_list.length; i++) {
     Exchange_list[i].num = i + 1
@@ -69,12 +68,11 @@ export async function getForumImage(e, thing_class) {
   if (!ifexistplay) {
     return
   }
-  let Forum
+  let Forum = []
   try {
     Forum = await readForum()
   } catch {
     await writeForum([])
-    Forum = await readForum()
   }
   for (let i = 0; i < Forum.length; i++) {
     Forum[i].num = i + 1

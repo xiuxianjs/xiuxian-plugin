@@ -10,11 +10,11 @@ export default onResponse(selects, async e => {
     if (!e.IsMaster) return false
 
     Send(Text('开始清除！'))
-    let Exchange
+    let Exchange = []
     try {
       Exchange = await readExchange()
     } catch {
-      Exchange = []
+      //
     }
 
     for (let i of Exchange) {

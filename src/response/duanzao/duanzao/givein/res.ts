@@ -92,12 +92,11 @@ export default onResponse(selects, async e => {
     Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`))
     return false
   }
-  let newtripod
+  let newtripod = []
   try {
     newtripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    newtripod = await readTripod()
   }
   for (let item of newtripod) {
     if (user_qq == item.qq) {

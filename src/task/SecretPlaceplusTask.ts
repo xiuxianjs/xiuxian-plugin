@@ -11,8 +11,8 @@ import {
   Add_血气,
   Add_修为,
   Add_HP,
-  Read_temp,
-  Write_temp,
+  readTemp,
+  writeTemp,
   __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
@@ -277,23 +277,22 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await Add_HP(player_id, Data_battle.A_xue)
             //发送消息
             try {
-              let temp = await Read_temp()
+              let temp = await readTemp()
               let p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               }
               temp.push(p)
-              await Write_temp(temp)
+              await writeTemp(temp)
             } catch {
-              await Write_temp([])
-              let temp = await Read_temp()
+              let temp = []
               let p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq: player_id,
                 qq_group: push_address
               }
               temp.push(p)
-              await Write_temp(temp)
+              await writeTemp(temp)
             }
           }
         }

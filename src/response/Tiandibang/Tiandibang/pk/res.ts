@@ -42,13 +42,12 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let tiandibang
+  let tiandibang = []
   try {
     tiandibang = await Read_tiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])
-    tiandibang = await Read_tiandibang()
   }
   let x = tiandibang.length
   for (let m = 0; m < tiandibang.length; m++) {

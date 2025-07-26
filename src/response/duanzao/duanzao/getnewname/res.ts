@@ -35,12 +35,11 @@ export default onResponse(selects, async e => {
     Send(Text('字符超出最大限制,请重新赋名'))
     return false
   }
-  let A
+  let A = []
   try {
     A = await readIt()
   } catch {
     await writeIt([])
-    A = await readIt()
   }
   for (let item of A) {
     if (item.name == thing_name) {

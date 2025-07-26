@@ -13,13 +13,12 @@ export default onResponse(selects, async e => {
   //查看存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let tiandibang
+  let tiandibang = []
   try {
     tiandibang = await Read_tiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])
-    tiandibang = await Read_tiandibang()
   }
   let x = tiandibang.length
   for (let i = 0; i < tiandibang.length; i++) {

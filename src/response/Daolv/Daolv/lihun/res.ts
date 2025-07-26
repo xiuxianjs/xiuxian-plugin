@@ -88,13 +88,12 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let qinmidu
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i = await found(A, B)
   let pd = await find_qinmidu(A, B)

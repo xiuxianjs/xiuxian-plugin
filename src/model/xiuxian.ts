@@ -1140,13 +1140,12 @@ export async function writeQinmidu(qinmidu) {
   return
 }
 export async function fstadd_qinmidu(A, B) {
-  let qinmidu
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有表要先建立一个！
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let player = {
     QQ_A: A,
@@ -1160,13 +1159,12 @@ export async function fstadd_qinmidu(A, B) {
 }
 
 export async function add_qinmidu(A, B, qinmi) {
-  let qinmidu
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有表要先建立一个！
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i
   for (i = 0; i < qinmidu.length; i++) {
@@ -1187,13 +1185,12 @@ export async function add_qinmidu(A, B, qinmi) {
 }
 
 export async function find_qinmidu(A, B) {
-  let qinmidu
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i
   let QQ = []
@@ -1228,13 +1225,12 @@ export async function find_qinmidu(A, B) {
 }
 //查询A的婚姻，如果有婚姻则返回对方qq，若无则返回false
 export async function exist_hunyin(A) {
-  let qinmidu
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i = 0
   let flag = ''
@@ -1265,13 +1261,12 @@ export async function Read_shitu() {
 }
 
 export async function fstadd_shitu(A) {
-  let shitu
+  let shitu = []
   try {
     shitu = await Read_shitu()
   } catch {
     //没有表要先建立一个！
     await Write_shitu([])
-    shitu = await Read_shitu()
   }
   let player = {
     师傅: A,
@@ -1290,13 +1285,12 @@ export async function fstadd_shitu(A) {
 }
 
 export async function add_shitu(A, num) {
-  let shitu
+  let shitu = []
   try {
     shitu = await Read_shitu()
   } catch {
     //没有表要先建立一个！
     await Write_shitu([])
-    shitu = await Read_shitu()
   }
   let i
   for (i = 0; i < shitu.length; i++) {
@@ -1314,13 +1308,12 @@ export async function add_shitu(A, num) {
 }
 
 export async function find_shitu(A) {
-  let shitu
+  let shitu = []
   try {
     shitu = await Read_shitu()
   } catch {
     //没有建立一个
     await Write_shitu([])
-    shitu = await Read_shitu()
   }
   let i
   let QQ = []
@@ -1368,14 +1361,14 @@ export async function Write_danyao(usr_qq, danyao) {
   return
 }
 
-export async function Read_temp() {
+export async function readTemp() {
   let temp = await redis.get(`${__PATH.temp_path}:temp`)
   //将字符串数据转变成数组格式
   const data = JSON.parse(temp)
   return data
 }
 
-export async function Write_temp(temp) {
+export async function writeTemp(temp) {
   await redis.set(`${__PATH.temp_path}:temp`, JSON.stringify(temp))
   return
 }
@@ -1765,16 +1758,16 @@ export async function writeForum(wupin) {
 export async function readExchange() {
   let Exchange = await redis.get(`${__PATH.Exchange}:Exchange`)
   //将字符串数据转变成数组格式
-  Exchange = JSON.parse(Exchange)
-  return Exchange
+  const data = JSON.parse(Exchange)
+  return data
 }
 
 //读交易表
 export async function readForum() {
   let Forum = await redis.get(`${__PATH.Exchange}:Forum`)
   //将字符串数据转变成数组格式
-  Forum = JSON.parse(Forum)
-  return Forum
+  const data = JSON.parse(Forum)
+  return data
 }
 
 export async function openAU() {
@@ -1880,12 +1873,11 @@ export async function foundthing(thing_name) {
       if (j.name == thing_name) return j
     }
   }
-  let A
+  let A = []
   try {
     A = await readIt()
   } catch {
     await writeIt([])
-    A = await readIt()
   }
   for (let j of A) {
     if (j.name == thing_name) return j

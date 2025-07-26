@@ -47,13 +47,12 @@ export default onResponse(selects, async e => {
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ForumCD', now_time)
   let player = await readPlayer(usr_qq)
-  let Forum
+  let Forum = []
   try {
     Forum = await readForum()
   } catch {
     //没有表要先建立一个！
     await writeForum([])
-    Forum = await readForum()
   }
   let t = e.MessageText.replace(/^(#|＃|\/)?/, '').split('*')
   let x = (await convert2integer(t[0])) - 1

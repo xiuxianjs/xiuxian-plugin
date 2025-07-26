@@ -7,12 +7,11 @@ import type { Player, Tripod, TalentInfo } from '../types/player.js'
 import { redis } from '@src/api/api.js'
 
 export async function settripod(qq: string): Promise<string> {
-  let tripod1: Tripod[]
+  let tripod1: Tripod[] = []
   try {
     tripod1 = await readTripod()
   } catch {
     await writeDuanlu([])
-    tripod1 = await readTripod()
   }
   const A = await looktripod(qq)
   if (A != 1) {
@@ -48,12 +47,11 @@ export async function settripod(qq: string): Promise<string> {
 }
 
 export async function looktripod(qq: string): Promise<number> {
-  let tripod: Tripod[]
+  let tripod: Tripod[] = []
   try {
     tripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    tripod = await readTripod()
   }
   for (const item of tripod) {
     if (qq == item.qq) {
@@ -64,12 +62,11 @@ export async function looktripod(qq: string): Promise<number> {
 }
 
 export async function Read_mytripod(qq: string): Promise<Tripod | undefined> {
-  let tripod: Tripod[]
+  let tripod: Tripod[] = []
   try {
     tripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    tripod = await readTripod()
   }
 
   for (const item of tripod) {
