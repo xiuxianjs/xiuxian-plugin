@@ -2,7 +2,8 @@ import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
 import cssURL from './player.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import backgroundURL from '@src/resources/img/player.jpg'
+import playerURL from '@src/resources/img/player.jpg'
+import playerFooterURL from '@src/resources/img/player_footer.png'
 import user_stateURL from '@src/resources/img/user_state.png'
 
 const Player = ({
@@ -54,12 +55,14 @@ const Player = ({
             font-weight: normal;
             font-style: normal;
           }
-
           body {
             width: 100%;
+            padding: 0;
+            margin: 0;
             text-align: center;
-            background-image: url('${backgroundURL}');
-            background-size: 100% 100%;
+            background-image: url('${playerURL}'), url('${playerFooterURL}');
+            background-repeat: no-repeat, repeat;
+            background-size: 100%, auto;
           }
 
           .user_top_img_bottom {

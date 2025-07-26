@@ -3,6 +3,7 @@ import React from 'react'
 import cssURL from '@src/resources/html/association/association.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import playerURL from '@src/resources/img/player.jpg'
+import playerFooterURL from '@src/resources/img/player_footer.png'
 import user_stateURL from '@src/resources/img/user_state.png'
 
 const Association = ({
@@ -35,11 +36,13 @@ const Association = ({
           }
 
           body {
-            transform: scale(1);
             width: 100%;
+            padding: 0;
+            margin: 0;
             text-align: center;
-            background-image: url('${playerURL}');
-            background-size: 100% auto;
+            background-image: url('${playerURL}'), url('${playerFooterURL}');
+            background-repeat: no-repeat, repeat;
+            background-size: 100%, auto;
           }
 
           .user_top_img_bottom {

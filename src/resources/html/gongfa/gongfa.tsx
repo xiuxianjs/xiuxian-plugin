@@ -3,6 +3,7 @@ import React from 'react'
 import cssURL from './gongfa.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import playerURL from '@src/resources/img/player.jpg'
+import playerFooterURL from '@src/resources/img/player_footer.png'
 import user_stateURL from '@src/resources/img/user_state.png'
 
 const Gongfa = ({ nickname, gongfa_need = [], gongfa_have = [] }) => {
@@ -23,9 +24,12 @@ const Gongfa = ({ nickname, gongfa_need = [], gongfa_have = [] }) => {
 
           body {
             width: 100%;
+            padding: 0;
+            margin: 0;
             text-align: center;
-            background-image: url('${playerURL}');
-            background-size: 100% auto;
+            background-image: url('${playerURL}'), url('${playerFooterURL}');
+            background-repeat: no-repeat, repeat;
+            background-size: 100%, auto;
           }
 
           .user_top_img_bottom {
