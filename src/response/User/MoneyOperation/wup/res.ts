@@ -10,7 +10,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?发.*$/
+export const regular = /^(#|＃|\/)?发(灵石|修为|血气)\*\d+$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -33,9 +33,8 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取发送灵石数量
-  let thing_name = e.MessageText.replace(/^(#|＃|\/)?发/, '')
-  let code = thing_name.split('*')
-  thing_name = code[0]
+  let code = e.MessageText.replace(/^(#|＃|\/)?发/, '').split('*')
+  let thing_name = code[0]
   let thing_amount: any = code[1] //数量
   let thing_piji
   thing_amount = Number(thing_amount)

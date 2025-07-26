@@ -9,7 +9,7 @@ import {
 } from '@src/model'
 import { selects } from '@src/response/index'
 import { redis } from '@src/api/api'
-export const regular = /^(#|＃|\/)?全体发.*$/
+export const regular = /^(#|＃|\/)?全体发(灵石|修为|血气)\*\d+$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -18,15 +18,9 @@ export default onResponse(selects, async e => {
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   let File_length = playerList.length
   // //获取发送灵石数量
-  let thing_name = e.MessageText.replace(/^(#|＃|\/)?全体发/, '')
-  let code = thing_name.split('*')
-  thing_name = code[0]
-  let thing_amount: any = code[1] //数量
-  let thing_piji
-  thing_amount = Number(thing_amount)
-  if (isNaN(thing_amount)) {
-    thing_amount = 1
-  }
+  let code = e.MessageText.replace(/^(#|＃|\/)?全体发/, '').split('*')
+  let thing_name = code[0]
+  let thing_amount: any = Number(code[1])
   if (thing_name == '灵石') {
     for (let i = 0; i < File_length; i++) {
       let this_qq = playerList[i]
