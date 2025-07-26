@@ -689,13 +689,12 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   lingshi = bigNumberTransform(lingshi)
   let hunyin = '未知'
   let A = usr_qq
-  let qinmidu
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   for (let i = 0; i < qinmidu.length; i++) {
     if (qinmidu[i].QQ_A == A || qinmidu[i].QQ_B == A) {

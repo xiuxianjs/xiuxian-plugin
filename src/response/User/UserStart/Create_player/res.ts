@@ -1,5 +1,4 @@
 import { Image, useSend } from 'alemonjs'
-import fs from 'fs'
 import { data, redis } from '@src/api/api'
 import {
   existplayer,
@@ -20,11 +19,11 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
     let img = await getPlayerImage(e)
     if (img) Send(Image(img))
-    return false
+    return
   }
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   let n = keys.length + 1
