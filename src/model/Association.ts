@@ -8,11 +8,15 @@ class Association {
   /**
    * 获取宗门数据
    * @param file_name  宗门名称
+   * @deprecated
    */
   getAssociation(file_name: string): JSONData | 'error' {
     const dir: string = path.join(
       __PATH.association + '/' + file_name + '.json'
     )
+    if (!fs.existsSync(dir)) {
+      return 'error' // 如果文件不存在，返回错误
+    }
     try {
       const data = fs.readFileSync(dir, 'utf8')
       return JSON.parse(data)
@@ -26,6 +30,7 @@ class Association {
    * 写入宗门数据
    * @param file_name  宗门名称
    * @param data
+   * @deprecated
    */
   setAssociation(file_name: string, data: JSONData): void {
     const dir: string = path.join(

@@ -19,8 +19,9 @@ export default onResponse(selects, async e => {
   let msg = [] //回复的消息
   msg.push(`\n-----qq----- -亲密度-`)
   //遍历所有人的qq
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   for (let i = 0; i < File.length; i++) {
     let B = File[i].replace('.json', '')
     //如果是本人不执行查询

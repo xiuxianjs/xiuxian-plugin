@@ -5,10 +5,10 @@ import {
   existplayer,
   convert2integer,
   Add_灵石,
-  Read_najie,
+  readNajie,
   foundthing,
-  exist_najie_thing,
-  Add_najie_thing
+  existNajieThing,
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
     code[0] = parseInt(code[0])
     let quantity = code[1]
     let thing_piji
-    let najie = await Read_najie(A_qq)
+    let najie = await readNajie(A_qq)
     if (code[0]) {
       if (code[0] > 1000) {
         try {
@@ -137,7 +137,7 @@ export default onResponse(selects, async e => {
       equ = najie.仙宠.find(item => item.name == thing_name)
     }
     quantity = await convert2integer(quantity)
-    let x = await exist_najie_thing(
+    let x = await existNajieThing(
       A_qq,
       thing_name,
       thing_exist.class,
@@ -147,7 +147,7 @@ export default onResponse(selects, async e => {
       Send(Text(`你还没有这么多[${thing_name}]`))
       return false
     }
-    await Add_najie_thing(
+    await addNajieThing(
       A_qq,
       thing_name,
       thing_exist.class,
@@ -155,9 +155,9 @@ export default onResponse(selects, async e => {
       thing_piji
     )
     if (thing_exist.class == '装备' || thing_exist.class == '仙宠') {
-      await Add_najie_thing(B_qq, equ, thing_exist.class, quantity, thing_piji)
+      await addNajieThing(B_qq, equ, thing_exist.class, quantity, thing_piji)
     } else {
-      await Add_najie_thing(
+      await addNajieThing(
         B_qq,
         thing_name,
         thing_exist.class,

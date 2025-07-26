@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, Read_player, Write_player } from '@src/model'
+import { existplayer, readPlayer, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?堕入魔界$/
@@ -34,7 +34,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.魔道值 < 1000) {
     Send(Text('你不是魔头'))
     return false
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
   }
   player.魔道值 -= 100
   player.修为 -= 4000000
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   let time: any = 60 //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒
   let arr = {

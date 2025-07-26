@@ -12,8 +12,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = data.existData('player', usr_qq)
   if (!ifexistplay) return
   let dir = __PATH.association
-  let File = fs.readdirSync(dir)
-  File = File.filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
+  let File = fs.readdirSync(dir).filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
   let temp = []
   if (File.length == 0) {
     Send(Text('暂时没有宗门数据'))

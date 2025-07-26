@@ -1,12 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import {
-  existplayer,
-  exist_najie_thing,
-  sleep,
-  Add_najie_thing
-} from '@src/model'
+import { existplayer, existNajieThing, sleep, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?供奉奇怪的石头$/
@@ -19,7 +14,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let x = await exist_najie_thing(usr_qq, '长相奇怪的小石头', '道具')
+  let x = await existNajieThing(usr_qq, '长相奇怪的小石头', '道具')
   if (!x) {
     Send(
       Text(
@@ -44,7 +39,7 @@ export default onResponse(selects, async e => {
     data.setData('player', usr_qq, player)
     return false
   }
-  await Add_najie_thing(usr_qq, '长相奇怪的小石头', '道具', -1)
+  await addNajieThing(usr_qq, '长相奇怪的小石头', '道具', -1)
   Send(Text('你梳洗完毕，将小石头摆在案上,点上香烛，拜上三拜！'))
   await sleep(3000)
   player.当前血量 = Math.floor(player.当前血量 / 3)

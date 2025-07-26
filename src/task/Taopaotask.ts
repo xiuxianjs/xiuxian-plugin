@@ -2,9 +2,9 @@ import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   Harm,
-  Read_shop,
-  Add_najie_thing,
-  Write_shop,
+  readShop,
+  addNajieThing,
+  writeShop,
   __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
@@ -145,7 +145,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             A_player.当前血量 = 0
           }
           let arr = action
-          let shop = await Read_shop()
+          let shop = await readShop()
           for (i = 0; i < shop.length; i++) {
             if (shop[i].name == weizhi.name) {
               shop[i].state = 0
@@ -161,10 +161,10 @@ scheduleJob('0 0/5 * * * ?', async () => {
             last_msg +=
               '\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x' +
               num
-            await Add_najie_thing(player_id, '秘境之匙', '道具', num)
+            await addNajieThing(player_id, '秘境之匙', '道具', num)
             delete arr.group_id
             shop[i].state = 0
-            await Write_shop(shop)
+            await writeShop(shop)
             let time = 60 //时间（分钟）
             let action_time = 60000 * time //持续时间，单位毫秒
             arr.action = '天牢'
@@ -189,7 +189,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.end_time = new Date().getTime()
             delete arr.group_id
             for (let j = 0; j < arr.thing.length; j++) {
-              await Add_najie_thing(
+              await addNajieThing(
                 player_id,
                 arr.thing[j].name,
                 arr.thing[j].class,
@@ -202,7 +202,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               shop[i].Grade = 3
             }
             shop[i].state = 0
-            await Write_shop(shop)
+            await writeShop(shop)
           }
           //写入redis
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))

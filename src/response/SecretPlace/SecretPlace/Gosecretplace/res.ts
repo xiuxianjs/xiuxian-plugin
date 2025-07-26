@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis, config } from '@src/api/api'
 import {
   Go,
-  Read_player,
+  readPlayer,
   isNotNull,
   exist_hunyin,
   find_qinmidu,
@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let didian = e.MessageText.replace(/^(#|＃|\/)?降临秘境/, '')
   didian = didian.trim()
   let weizhi = await data.didian_list.find(item => item.name == didian)

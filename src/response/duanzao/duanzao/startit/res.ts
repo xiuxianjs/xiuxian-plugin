@@ -4,8 +4,8 @@ import { redis } from '@src/api/api'
 import {
   existplayer,
   looktripod,
-  Read_tripod,
-  Write_duanlu,
+  readTripod,
+  writeDuanlu,
   Read_danyao,
   Write_danyao
 } from '@src/model'
@@ -25,10 +25,10 @@ export default onResponse(selects, async e => {
 
   let newtripod
   try {
-    newtripod = await Read_tripod()
+    newtripod = await readTripod()
   } catch {
-    await Write_duanlu([])
-    newtripod = await Read_tripod()
+    await writeDuanlu([])
+    newtripod = await readTripod()
   }
   for (let item of newtripod) {
     if (user_qq == item.qq) {
@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
       }
       item.状态 = 1
       item.TIME = Date.now()
-      await Write_duanlu(newtripod)
+      await writeDuanlu(newtripod)
       let action_time = 180 * 60 * 1000 //持续时间，单位毫秒
       let arr = {
         action: '锻造', //动作

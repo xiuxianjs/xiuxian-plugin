@@ -1,6 +1,6 @@
 import { Image, useSend, Text } from 'alemonjs'
 import fs from 'fs'
-import { __PATH, existplayer, Read_player, sortBy } from '@src/model'
+import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
 import puppeteer from '@src/image/index.js'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?至尊榜$/
@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   for (let file of files) {
     file = file.replace('.json', '')
     //(攻击+防御+生命*0.5)*暴击率=理论战力
-    const player = await Read_player(file)
+    const player = await readPlayer(file)
     if (player.level_id >= 42) {
       //跳过仙人的记录
       continue

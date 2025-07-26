@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, Read_player, shijianc, Write_player } from '@src/model'
+import { existplayer, readPlayer, shijianc, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?踏入神界$/
@@ -34,7 +34,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let now = new Date()
   let nowTime = now.getTime() //获取当前日期的时间戳
   let Today = await shijianc(nowTime)
@@ -66,9 +66,9 @@ export default onResponse(selects, async e => {
       n = 5
     }
     player.神界次数 = n
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
   }
-  player = await Read_player(usr_qq)
+  player = await readPlayer(usr_qq)
   if (
     player.魔道值 > 0 ||
     (player.灵根.type != '转生' && player.level_id < 42)
@@ -92,7 +92,7 @@ export default onResponse(selects, async e => {
   } else {
     player.神界次数--
   }
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   let time: any = 30 //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒
   let arr: any = {

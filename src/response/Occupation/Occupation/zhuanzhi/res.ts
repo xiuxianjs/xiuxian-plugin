@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, Read_player, isNotNull, Write_player } from '@src/model'
+import { existplayer, readPlayer, isNotNull, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?猎户转.*$/
@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.occupation != '猎户') {
     Send(Text('你不是猎户,无法自选职业'))
     return false
@@ -23,6 +23,6 @@ export default onResponse(selects, async e => {
     return false
   }
   player.occupation = occupation
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   Send(Text(`恭喜${player.名号}转职为[${occupation}]`))
 })

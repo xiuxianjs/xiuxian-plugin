@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, Read_najie, foundthing, re_najie_thing } from '@src/model'
+import { existplayer, readNajie, foundthing, re_najie_thing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(锁定|解锁).*$/
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   let un_lock = msg.substring(0, 2)
   let thing: any = msg.substring(2).split('*')
   let thing_name = thing[0]
-  let najie = await Read_najie(usr_qq)
+  let najie = await readNajie(usr_qq)
   thing[0] = parseInt(thing[0])
   let thing_pinji
   //装备优化

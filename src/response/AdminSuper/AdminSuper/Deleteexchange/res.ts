@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { Read_Exchange, Write_Exchange, Add_najie_thing } from '@src/model'
+import { readExchange, writeExchange, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?清除冲水堂$/
@@ -12,19 +12,19 @@ export default onResponse(selects, async e => {
     Send(Text('开始清除！'))
     let Exchange
     try {
-      Exchange = await Read_Exchange()
+      Exchange = await readExchange()
     } catch {
       Exchange = []
     }
-    
+
     for (let i of Exchange) {
       let usr_qq = i.qq
       let thing = i.name.name
       let quanity = i.aconut
       if (i.name.class == '装备' || i.name.class == '仙宠') thing = i.name
-      await Add_najie_thing(usr_qq, thing, i.name.class, quanity, i.name.pinji)
+      await addNajieThing(usr_qq, thing, i.name.class, quanity, i.name.pinji)
     }
-    await Write_Exchange([])
+    await writeExchange([])
     Send(Text('清除完成！'))
     return false
   }

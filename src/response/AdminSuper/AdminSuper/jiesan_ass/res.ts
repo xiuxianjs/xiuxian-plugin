@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { __PATH } from '@src/model'
-import { Write_player } from '@src/model'
+import { writePlayer } from '@src/model'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   {
     if (!e.IsMaster) return false
 
-    let didian = (e.MessageText.replace(/^(#|＃|\/)?解散宗门/, '')).trim()
+    let didian = e.MessageText.replace(/^(#|＃|\/)?解散宗门/, '').trim()
 
     let ass = data.getAssociation(didian)
     if (ass == 'error') {
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
       if (player.宗门) {
         if (player.宗门.宗门名称 == didian) {
           delete player.宗门
-          await Write_player(qq, player)
+          await writePlayer(qq, player)
         }
       }
     }

@@ -1,6 +1,6 @@
 import { Text, useSend, useMention } from 'alemonjs'
 
-import { existplayer, Read_player, Write_player } from '@src/model'
+import { existplayer, readPlayer, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|\/)打落凡间.*$/
@@ -27,10 +27,10 @@ export default onResponse(selects, async e => {
       Send(Text('没存档你打个锤子！'))
       return false
     }
-    let player = await Read_player(qq)
+    let player = await readPlayer(qq)
     player.power_place = 1
     Send(Text('已打落凡间！'))
-    await Write_player(qq, player)
+    await writePlayer(qq, player)
     return false
   }
 })

@@ -3,9 +3,9 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
-  exist_najie_thing,
-  Add_najie_thing,
+  readPlayer,
+  existNajieThing,
+  addNajieThing,
   sleep,
   Add_职业经验
 } from '@src/model'
@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.occupation != '炼器师') {
     Send(Text('铜都不炼你还炼器？'))
     return false
@@ -61,7 +61,7 @@ export default onResponse(selects, async e => {
   tmp_msg1 += '消耗'
   for (let i in materials) {
     let material = materials[i]
-    let x = await exist_najie_thing(usr_qq, material.name, '材料')
+    let x = await existNajieThing(usr_qq, material.name, '材料')
     if (x < material.amount || !x) {
       Send(
         Text(`纳戒中拥有${material.name}×${x}，打造需要${material.amount}份`)
@@ -72,7 +72,7 @@ export default onResponse(selects, async e => {
   for (let i in materials) {
     let material = materials[i]
     tmp_msg1 += `${material.name}×${material.amount}，`
-    await Add_najie_thing(usr_qq, material.name, '材料', -material.amount)
+    await addNajieThing(usr_qq, material.name, '材料', -material.amount)
   }
   let rand1 = Math.random()
   if (rand1 > suc_rate) {
@@ -89,7 +89,7 @@ export default onResponse(selects, async e => {
     Send(Text('在你细致的把控下，一把绝世极品即将问世！！！！'))
     await sleep(10000)
   }
-  await Add_najie_thing(usr_qq, equipment_name, '装备', 1, pinji)
+  await addNajieThing(usr_qq, equipment_name, '装备', 1, pinji)
   await Add_职业经验(usr_qq, res_exp)
   Send(
     Text(

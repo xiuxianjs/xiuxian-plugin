@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, Read_player } from '@src/model'
+import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
     time = 30
   }
 
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.当前血量 < 200) {
     Send(Text('你都伤成这样了,先去疗伤吧'))
     return false

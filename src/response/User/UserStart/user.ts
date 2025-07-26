@@ -4,7 +4,8 @@ import {
   PublicEventMessageCreate,
   useSend
 } from 'alemonjs'
-import { existplayer, get_player_img } from '@src/model'
+import { existplayer } from '@src/model'
+import { getPlayerImage } from '@src/model/image'
 
 export async function Show_player(
   e: PublicEventMessageCreate | PrivateEventMessageCreate
@@ -14,7 +15,7 @@ export async function Show_player(
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let img = await get_player_img(e)
+  let img = await getPlayerImage(e)
   if (img) Send(Image(img))
   // e.reply(img)
   return false

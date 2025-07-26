@@ -3,10 +3,10 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
-  Read_Exchange,
-  Write_Exchange,
-  Add_najie_thing
+  readPlayer,
+  readExchange,
+  writeExchange,
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -47,14 +47,14 @@ export default onResponse(selects, async e => {
   let Exchange
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let x = parseInt(e.MessageText.replace(/^(#|＃|\/)?下架/, '')) - 1
   try {
-    Exchange = await Read_Exchange()
+    Exchange = await readExchange()
   } catch {
     //没有表要先建立一个！
-    await Write_Exchange([])
-    Exchange = await Read_Exchange()
+    await writeExchange([])
+    Exchange = await readExchange()
   }
   if (x >= Exchange.length) {
     Send(Text(`没有编号为${x + 1}的物品`))
@@ -70,7 +70,7 @@ export default onResponse(selects, async e => {
   let thing_class = Exchange[x].name.class
   let thing_amount = Exchange[x].aconut
   if (thing_class == '装备' || thing_class == '仙宠') {
-    await Add_najie_thing(
+    await addNajieThing(
       usr_qq,
       Exchange[x].name,
       thing_class,
@@ -78,10 +78,10 @@ export default onResponse(selects, async e => {
       Exchange[x].pinji2
     )
   } else {
-    await Add_najie_thing(usr_qq, thing_name, thing_class, thing_amount)
+    await addNajieThing(usr_qq, thing_name, thing_class, thing_amount)
   }
   Exchange.splice(x, 1)
-  await Write_Exchange(Exchange)
+  await writeExchange(Exchange)
   await redis.set('xiuxian@1.3.0:' + thingqq + ':Exchange', 0)
   Send(Text(player.名号 + '下架' + thing_name + '成功！'))
   return false

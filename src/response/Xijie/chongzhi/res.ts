@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { Read_shop, Write_shop } from '@src/model'
+import { readShop, writeShop } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?重置.*$/
@@ -13,10 +13,10 @@ export default onResponse(selects, async e => {
   didian = didian.trim()
   let shop
   try {
-    shop = await Read_shop()
+    shop = await readShop()
   } catch {
-    await Write_shop(data.shop_list)
-    shop = await Read_shop()
+    await writeShop(data.shop_list)
+    shop = await readShop()
   }
   let i
   for (i = 0; i < shop.length; i++) {
@@ -28,6 +28,6 @@ export default onResponse(selects, async e => {
     return false
   }
   shop[i].state = 0
-  await Write_shop(shop)
+  await writeShop(shop)
   Send(Text('重置成功!'))
 })

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, Read_player } from '@src/model'
+import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?设置性别.*$/
@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player: any = await Read_player(usr_qq)
+  let player: any = await readPlayer(usr_qq)
   if (player.sex != 0) {
     Send(Text('每个存档仅可设置一次性别！'))
     return

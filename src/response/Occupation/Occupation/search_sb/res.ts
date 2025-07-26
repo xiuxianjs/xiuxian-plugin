@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { redis, puppeteer } from '@src/api/api'
-import { existplayer, Read_player, __PATH } from '@src/model'
+import { existplayer, readPlayer, __PATH } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?悬赏目标$/
@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.occupation != '侠客') {
     Send(Text('只有专业的侠客才能获取悬赏'))
     return false
@@ -31,12 +31,13 @@ export default onResponse(selects, async e => {
   }
   let mubiao = []
   let i = 0
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   let File_length = File.length
   for (let k = 0; k < File_length; k++) {
     let this_qq = File[k].replace('.json', '')
-    let players = await Read_player(this_qq)
+    let players = await readPlayer(this_qq)
     if (players.魔道值 > 999 && this_qq != usr_qq) {
       mubiao[i] = {
         名号: players.名号,

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { Go, Read_player, isNotNull, Add_灵石 } from '@src/model'
+import { Go, readPlayer, isNotNull, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (!player.宗门) {
     Send(Text('请先加入宗门'))
     return false

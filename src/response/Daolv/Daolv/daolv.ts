@@ -1,4 +1,4 @@
-import { Read_qinmidu } from '@src/model'
+import { readQinmidu } from '@src/model'
 import { useMessage, Text } from 'alemonjs'
 
 global.x = 0
@@ -18,7 +18,7 @@ export async function chaoshi(e) {
   }, 30000)
 }
 export async function found(A, B) {
-  let qinmidu = await Read_qinmidu()
+  let qinmidu = await readQinmidu()
   let i
   for (i = 0; i < qinmidu.length; i++) {
     if (

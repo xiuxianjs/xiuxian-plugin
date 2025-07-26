@@ -1,18 +1,19 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
 import { data } from '@src/api/api'
-import { __PATH, Read_player } from '@src/model'
+import { __PATH, readPlayer } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 
 scheduleJob('0 0 0 ? * 1', async () => {
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   let File_length = File.length
   let temp = []
   let t
   for (let k = 0; k < File_length; k++) {
     let this_qq: any = File[k].replace('.json', '')
-    let player = await Read_player(this_qq)
+    let player = await readPlayer(this_qq)
     let level_id = data.Level_list.find(
       item => item.level_id == player.level_id
     ).level_id

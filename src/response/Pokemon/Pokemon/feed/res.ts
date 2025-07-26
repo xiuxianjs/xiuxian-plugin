@@ -4,8 +4,8 @@ import { data } from '@src/api/api'
 import {
   convert2integer,
   isNotNull,
-  exist_najie_thing,
-  Add_najie_thing
+  existNajieThing,
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -41,14 +41,14 @@ export default onResponse(selects, async e => {
     return false
   }
   //纳戒中的数量
-  let thing_quantity = await exist_najie_thing(usr_qq, thing_name, '仙宠口粮')
+  let thing_quantity = await existNajieThing(usr_qq, thing_name, '仙宠口粮')
   if (thing_quantity < thing_value || !thing_quantity) {
     //没有
     Send(Text(`【${thing_name}】数量不足`))
     return false
   }
   //纳戒数量减少
-  await Add_najie_thing(usr_qq, thing_name, '仙宠口粮', -thing_value)
+  await addNajieThing(usr_qq, thing_name, '仙宠口粮', -thing_value)
   //待完善加成
   let jiachen = ifexist.level * thing_value //加的等级
   if (jiachen > player.仙宠.等级上限 - player.仙宠.等级) {

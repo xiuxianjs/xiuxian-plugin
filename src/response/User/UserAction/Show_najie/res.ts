@@ -1,8 +1,9 @@
 import { Image, useSend } from 'alemonjs'
 
-import { existplayer, get_najie_img } from '@src/model'
+import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getNajieImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?我的纳戒$/
 
 export default onResponse(selects, async e => {
@@ -11,6 +12,6 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let img = await get_najie_img(e)
+  let img = await getNajieImage(e)
   if (img) Send(Image(img))
 })

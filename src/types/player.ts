@@ -98,3 +98,22 @@ export interface Tripod {
   状态: number
   预计时长: number
 }
+
+export interface StrandResult {
+  style: { width: string }
+  num: string
+}
+
+export interface DanyaoStatus {
+  biguan: number
+  biguanxl: number
+  xingyun: number
+  lianti: number
+  ped: number
+  modao: number
+  beiyong1: number
+  beiyong2: number
+  beiyong3: number
+  beiyong4: number
+  beiyong5: number
+}

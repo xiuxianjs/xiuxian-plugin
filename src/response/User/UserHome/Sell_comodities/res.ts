@@ -3,11 +3,11 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   existplayer,
-  Read_najie,
+  readNajie,
   foundthing,
   convert2integer,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_灵石
 } from '@src/model'
 
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
   let thing_amount = code[1] //数量
   let thing_piji
   //判断列表中是否存在，不存在不能卖,并定位是什么物品
-  let najie = await Read_najie(usr_qq)
+  let najie = await readNajie(usr_qq)
   if (code[0]) {
     if (code[0] > 1000) {
       try {
@@ -73,7 +73,7 @@ export default onResponse(selects, async e => {
     }
   }
   thing_amount = await convert2integer(thing_amount)
-  let x = await exist_najie_thing(
+  let x = await existNajieThing(
     usr_qq,
     thing_name,
     thing_exist.class,
@@ -92,7 +92,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //数量够,数量减少,灵石增加
-  await Add_najie_thing(
+  await addNajieThing(
     usr_qq,
     thing_name,
     thing_exist.class,

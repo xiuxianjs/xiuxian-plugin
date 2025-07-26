@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, player_efficiency } from '@src/model'
+import { isNotNull, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
   ass.宗门等级 += 1
   data.setData('player', usr_qq, player)
   data.setAssociation(ass.宗门名称, ass)
-  await player_efficiency(usr_qq)
+  await playerEfficiency(usr_qq)
   Send(
     Text(
       '宗门升级成功' +

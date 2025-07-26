@@ -4,11 +4,11 @@ import { data, redis } from '@src/api/api'
 import {
   Go,
   existplayer,
-  Read_player,
+  readPlayer,
   isNotNull,
-  exist_najie_thing,
-  Add_najie_thing,
-  Write_player
+  existNajieThing,
+  addNajieThing,
+  writePlayer
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
 
   let occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '')
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let player_occupation = player.occupation
   let x = data.occupation_list.find(item => item.name == occupation)
   if (!isNotNull(x)) {
@@ -43,7 +43,7 @@ export default onResponse(selects, async e => {
   let thing_name = occupation + '转职凭证'
   let thing_class = '道具'
   let n = -1
-  let thing_quantity = await exist_najie_thing(usr_qq, thing_name, thing_class)
+  let thing_quantity = await existNajieThing(usr_qq, thing_name, thing_class)
   if (!thing_quantity) {
     //没有
     Send(Text(`你没有【${thing_name}】`))
@@ -53,12 +53,12 @@ export default onResponse(selects, async e => {
     Send(Text(`你已经是[${player_occupation}]了，可使用[职业转化凭证]重新转职`))
     return false
   }
-  await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+  await addNajieThing(usr_qq, thing_name, thing_class, n)
   if (player.occupation.length == 0) {
     player.occupation = occupation
     player.occupation_level = 1
     player.occupation_exp = 0
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     Send(Text(`恭喜${player.名号}转职为[${occupation}]`))
     return false
   }
@@ -77,6 +77,6 @@ export default onResponse(selects, async e => {
   player.occupation = occupation
   player.occupation_level = 1
   player.occupation_exp = 0
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   Send(Text(`恭喜${player.名号}转职为[${occupation}],您的副职为${arr.职业名}`))
 })

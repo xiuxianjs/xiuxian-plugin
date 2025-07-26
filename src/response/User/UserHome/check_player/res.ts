@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { __PATH, Read_player, Read_najie, Read_equipment } from '@src/model'
+import { __PATH, readPlayer, readNajie, readEquipment } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?检查存档.*$/
@@ -11,8 +11,9 @@ export default onResponse(selects, async e => {
     Send(Text('只有主人可以执行操作'))
     return false
   }
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   let File_length = File.length
   let cundang = ['存档']
   let najie = ['纳戒']
@@ -20,19 +21,19 @@ export default onResponse(selects, async e => {
   for (let k = 0; k < File_length; k++) {
     let usr_qq = File[k].replace('.json', '')
     try {
-      await Read_player(usr_qq)
+      await readPlayer(usr_qq)
     } catch {
       cundang.push('\n')
       cundang.push(usr_qq)
     }
     try {
-      await Read_najie(usr_qq)
+      await readNajie(usr_qq)
     } catch {
       najie.push('\n')
       najie.push(usr_qq)
     }
     try {
-      await Read_equipment(usr_qq)
+      await readEquipment(usr_qq)
     } catch {
       equipment.push('\n')
       equipment.push(usr_qq)

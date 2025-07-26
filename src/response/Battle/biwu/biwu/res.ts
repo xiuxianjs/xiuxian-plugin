@@ -5,7 +5,7 @@ import {
   existplayer,
   Harm,
   ifbaoji,
-  Read_player,
+  readPlayer,
   sleep
 } from '@src/model'
 import { data, pushInfo, redis } from '@src/api/api'
@@ -92,8 +92,8 @@ async function battle(e, num) {
   const B_QQ = global.B_QQ
   const Send = useSend(e)
   const [message] = useMessage(e)
-  let A_player = await Read_player(A_QQ[num].QQ)
-  let B_player = await Read_player(B_QQ[num].QQ)
+  let A_player = await readPlayer(A_QQ[num].QQ)
+  let B_player = await readPlayer(B_QQ[num].QQ)
   //策划专用
   A_player.攻击 = B_player.攻击
   A_player.防御 = B_player.防御

@@ -1,12 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
 import {
-  Add_najie_thing,
+  addNajieThing,
   Add_灵石,
   convert2integer,
   existplayer,
   Go,
-  Read_player
+  readPlayer
 } from '@src/model'
 import { data } from '@src/api/api'
 
@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let quantity = await convert2integer(code[1])
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let lingshi: any = player.灵石
   //如果没钱，或者为负数
   if (lingshi <= 0) {
@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //符合就往戒指加
-  await Add_najie_thing(usr_qq, thing_name, ifexist.class, quantity)
+  await addNajieThing(usr_qq, thing_name, ifexist.class, quantity)
   await Add_灵石(usr_qq, -commodities_price)
   //发送消息
   Send(

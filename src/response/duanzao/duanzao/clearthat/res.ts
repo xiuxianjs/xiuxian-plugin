@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, looktripod, Read_tripod, Write_duanlu } from '@src/model'
+import { existplayer, looktripod, readTripod, writeDuanlu } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?清空锻炉/
@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(user_qq))) return false
   const A = await looktripod(user_qq)
   if (A == 1) {
-    let newtripod = await Read_tripod()
+    let newtripod = await readTripod()
     for (let item of newtripod) {
       if (user_qq == item.qq) {
         item.材料 = []
@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
         item.时长 = 30000
         item.状态 = 0
         item.预计时长 = 0
-        await Write_duanlu(newtripod)
+        await writeDuanlu(newtripod)
         let action: any = null
         await redis.set(
           'xiuxian@1.3.0:' + user_qq + ':action10',

@@ -1,10 +1,10 @@
 import { config, data, pushInfo, redis } from '@src/api/api'
 import {
-  player_efficiency,
+  playerEfficiency,
   isNotNull,
   Read_danyao,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_修为,
   Add_血气,
   setFileValue,
@@ -95,7 +95,7 @@ async function getPlayerAction(usr_qq) {
  */
 async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   let usr_qq = user_id
-  await player_efficiency(usr_qq)
+  await playerEfficiency(usr_qq)
   let player = data.getData('player', usr_qq)
   let now_level_id
   if (!isNotNull(player.level_id)) {
@@ -163,21 +163,21 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   let other_x = 0
   let qixue = 0
   if (
-    (await exist_najie_thing(usr_qq, '魔界秘宝', '道具')) &&
+    (await existNajieThing(usr_qq, '魔界秘宝', '道具')) &&
     player.魔道值 > 999
   ) {
     other_x = Math.trunc(xiuwei * 0.15 * time)
-    await Add_najie_thing(usr_qq, '魔界秘宝', '道具', -1)
+    await addNajieThing(usr_qq, '魔界秘宝', '道具', -1)
     msg.push('\n消耗了道具[魔界秘宝],额外增加' + other_x + '修为')
     await Add_修为(usr_qq, other_x)
   }
   if (
-    (await exist_najie_thing(usr_qq, '神界秘宝', '道具')) &&
+    (await existNajieThing(usr_qq, '神界秘宝', '道具')) &&
     player.魔道值 < 1 &&
     (player.灵根.type == '转生' || player.level_id > 41)
   ) {
     qixue = Math.trunc(xiuwei * 0.1 * time)
-    await Add_najie_thing(usr_qq, '神界秘宝', '道具', -1)
+    await addNajieThing(usr_qq, '神界秘宝', '道具', -1)
     msg.push('\n消耗了道具[神界秘宝],额外增加' + qixue + '血气')
     await Add_血气(usr_qq, qixue)
   }

@@ -1,14 +1,14 @@
-import { Read_Forum, Write_Forum, Add_灵石 } from '@src/model'
+import { readForum, writeForum, Add_灵石 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 4 * * ?', async () => {
   let Forum
   try {
-    Forum = await Read_Forum()
+    Forum = await readForum()
   } catch {
     //没有表要先建立一个！
-    await Write_Forum([])
-    Forum = await Read_Forum()
+    await writeForum([])
+    Forum = await readForum()
   }
   const now_time = new Date().getTime()
   for (let i = 0; i < Forum.length; i++) {
@@ -20,6 +20,6 @@ scheduleJob('0 0 4 * * ?', async () => {
     Forum.splice(i, 1)
     i--
   }
-  await Write_Forum(Forum)
+  await writeForum(Forum)
   return false
 })

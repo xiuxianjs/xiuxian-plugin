@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { existplayer, Read_player, zd_battle } from '@src/model'
+import { existplayer, readPlayer, zd_battle } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(以武会友)$/
@@ -35,8 +35,8 @@ export default onResponse(selects, async e => {
   }
   //这里前戏做完,确定要开打了
   let final_msg = []
-  let A_player = await Read_player(A)
-  let B_player = await Read_player(B)
+  let A_player = await readPlayer(A)
+  let B_player = await readPlayer(B)
   final_msg.push(`${A_player.名号}向${B_player.名号}发起了切磋。`)
   A_player.法球倍率 = A_player.灵根.法球倍率
   B_player.法球倍率 = B_player.灵根.法球倍率

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, Add_najie_thing } from '@src/model'
+import { existplayer, addNajieThing } from '@src/model'
 import { Read_tiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
     return false
   }
   tiandibang[m].积分 -= data.tianditang[i].积分
-  await Add_najie_thing(usr_qq, thing_name, data.tianditang[i].class, 1)
+  await addNajieThing(usr_qq, thing_name, data.tianditang[i].class, 1)
   await Write_tiandibang(tiandibang)
   Send(
     Text(

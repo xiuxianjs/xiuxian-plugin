@@ -2,13 +2,13 @@ import { useSend, Text } from 'alemonjs'
 import { redis, data, config } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   isNotNull,
-  Add_najie_thing,
-  Write_player,
+  addNajieThing,
+  writePlayer,
   Add_修为,
-  Read_equipment,
-  Write_equipment,
+  readEquipment,
+  writeEquipment,
   Add_HP,
   Add_血气
 } from '@src/model'
@@ -29,7 +29,7 @@ export async function Level_up(e, luck = false) {
     return false
   }
   //读取信息
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   //境界
   let now_level = data.Level_list.find(
     item => item.level_id == player.level_id
@@ -104,13 +104,13 @@ export async function Level_up(e, luck = false) {
   if (luck) {
     Send(Text('你使用了幸运草，减少50%失败概率。'))
     prob = prob + (1 - prob) * 0.5
-    await Add_najie_thing(usr_qq, '幸运草', '道具', -1)
+    await addNajieThing(usr_qq, '幸运草', '道具', -1)
   }
   //突破失败了！
   if (player.breakthrough) {
     prob += 0.2
     player.breakthrough = false
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
   }
   if (rand > prob) {
     let bad_time = Math.random() //增加多种突破失败情况，顺滑突破丢失修为曲线
@@ -192,7 +192,7 @@ export async function Level_up(e, luck = false) {
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
-      await Add_najie_thing(
+      await addNajieThing(
         usr_qq,
         data.changzhuxianchon[random2].name,
         '仙宠',
@@ -211,7 +211,7 @@ export async function Level_up(e, luck = false) {
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
-      await Add_najie_thing(
+      await addNajieThing(
         usr_qq,
         data.changzhuxianchon[random2].name,
         '仙宠',
@@ -222,10 +222,10 @@ export async function Level_up(e, luck = false) {
   //境界提升,修为扣除,攻防血重新加载,当前血量拉满
   player.level_id = now_level_id + 1
   player.修为 -= need_exp
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   //刷新装备
-  let equipment = await Read_equipment(usr_qq)
-  await Write_equipment(usr_qq, equipment)
+  let equipment = await readEquipment(usr_qq)
+  await writeEquipment(usr_qq, equipment)
   //补血
   await Add_HP(usr_qq, 999999999999)
   //查境界名
@@ -249,7 +249,7 @@ export async function LevelMax_up(e, luck) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let now_level_id
   if (!isNotNull(player.Physique_id)) {
     Send(Text('请先#刷新信息'))
@@ -293,7 +293,7 @@ export async function LevelMax_up(e, luck) {
   if (luck) {
     Send(Text('你使用了幸运草，减少50%失败概率。'))
     prob = prob + (1 - prob) * 0.5
-    await Add_najie_thing(usr_qq, '幸运草', '道具', -1)
+    await addNajieThing(usr_qq, '幸运草', '道具', -1)
   }
   //失败了
   if (rand > prob) {
@@ -376,7 +376,7 @@ export async function LevelMax_up(e, luck) {
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
-      await Add_najie_thing(
+      await addNajieThing(
         usr_qq,
         data.changzhuxianchon[random2].name,
         '仙宠',
@@ -395,7 +395,7 @@ export async function LevelMax_up(e, luck) {
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
-      await Add_najie_thing(
+      await addNajieThing(
         usr_qq,
         data.changzhuxianchon[random2].name,
         '仙宠',
@@ -405,9 +405,9 @@ export async function LevelMax_up(e, luck) {
   }
   player.Physique_id = now_level_id + 1
   player.血气 -= need_exp
-  await Write_player(usr_qq, player)
-  let equipment = await Read_equipment(usr_qq)
-  await Write_equipment(usr_qq, equipment)
+  await writePlayer(usr_qq, player)
+  let equipment = await readEquipment(usr_qq)
+  await writeEquipment(usr_qq, equipment)
   await Add_HP(usr_qq, 999999999999)
   let level = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id

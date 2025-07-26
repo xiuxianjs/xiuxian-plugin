@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { __PATH, existplayer, Read_player, sortBy } from '@src/model'
+import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?封神榜$/
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   let i = 0
   for (let player_id of playerList) {
     //(攻击+防御*0.8+生命*0.5)*暴击率=理论战力
-    let player = await Read_player(player_id)
+    let player = await readPlayer(player_id)
     //计算并保存到数组
     let power =
       player.攻击 * 0.9 +

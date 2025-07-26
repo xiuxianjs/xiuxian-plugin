@@ -1,7 +1,7 @@
 import { Text, useMessage, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, Read_player } from '@src/model'
+import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(梭哈)|(投入.*)$/
@@ -31,7 +31,7 @@ export default onResponse(selects, async e => {
   //去掉投入，发现得到的是梭哈
   //梭哈，全部灵石
   if (e.MessageText.includes('梭哈')) {
-    let player = await Read_player(usr_qq)
+    let player = await readPlayer(usr_qq)
     //得到投入金额
     global.yazhu[usr_qq] = player.灵石 - 1
     global.gane_key_user[usr_qq] = true
@@ -43,7 +43,7 @@ export default onResponse(selects, async e => {
   //判断是不是输了个数字，看看投入多少
 
   if (parseInt(num) == parseInt(num)) {
-    let player = await Read_player(usr_qq)
+    let player = await readPlayer(usr_qq)
     //判断灵石
     if (player.灵石 >= parseInt(num)) {
       //得到投入数

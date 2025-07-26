@@ -4,10 +4,10 @@ import { redis, data } from '@src/api/api'
 import {
   existplayer,
   shijianc,
-  Read_shop,
-  Write_shop,
-  Read_player,
-  Write_player
+  readShop,
+  writeShop,
+  readPlayer,
+  writePlayer
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -72,10 +72,10 @@ export default onResponse(selects, async e => {
   didian = didian.trim()
   let shop
   try {
-    shop = await Read_shop()
+    shop = await readShop()
   } catch {
-    await Write_shop(data.shop_list)
-    shop = await Read_shop()
+    await writeShop(data.shop_list)
+    shop = await readShop()
   }
   let i
   for (i = 0; i < shop.length; i++) {
@@ -91,7 +91,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let msg = ''
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let Price = shop[i].price * shop[i].Grade
   let buff = shop[i].Grade + 1
   if (player.灵石 < Price) {
@@ -108,10 +108,10 @@ export default onResponse(selects, async e => {
   }
   //开始准备洗劫
   player.魔道值 += 25 * shop[i].Grade
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
 
   shop[i].state = 1
-  await Write_shop(shop)
+  await writeShop(shop)
   if (player.灵根 == null || player.灵根 == undefined) {
     player.修炼效率提升 += 0
   }

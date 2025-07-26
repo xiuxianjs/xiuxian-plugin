@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis, config } from '@src/api/api'
-import { existplayer, isNotNull, Read_player } from '@src/model'
+import { existplayer, isNotNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?星阁出价.*$/
@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   const auctionData = JSON.parse(auction)
   // let start_price = auction.start_price;
   let last_price = auctionData.last_price

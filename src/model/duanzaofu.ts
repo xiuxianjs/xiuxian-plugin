@@ -1,17 +1,17 @@
-import fs from 'fs'
+import fs, { existsSync } from 'fs'
 import path from 'path'
 import { __PATH } from './paths.js'
 import data from './XiuxianData.js'
-import { Write_player } from './pub.js'
+import { writePlayer } from './pub.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
 
 export async function settripod(qq: string): Promise<string> {
   let tripod1: Tripod[]
   try {
-    tripod1 = await Read_tripod()
+    tripod1 = await readTripod()
   } catch {
-    await Write_duanlu([])
-    tripod1 = await Read_tripod()
+    await writeDuanlu([])
+    tripod1 = await readTripod()
   }
   const A = await looktripod(qq)
   if (A != 1) {
@@ -27,7 +27,7 @@ export async function settripod(qq: string): Promise<string> {
       预计时长: 0
     }
     tripod1.push(newtripod)
-    await Write_duanlu(tripod1)
+    await writeDuanlu(tripod1)
   }
   //增加锻造天赋
   const playerData = data.getData('player', qq)
@@ -38,10 +38,10 @@ export async function settripod(qq: string): Promise<string> {
   const tianfu = Math.floor(40 * Math.random() + 80)
   player.锻造天赋 = tianfu
   //增加隐藏灵根
-  const a = await read_all('隐藏灵根')
+  const a = await readAll('隐藏灵根')
   const newa = Math.floor(Math.random() * a.length)
   player.隐藏灵根 = a[newa] as TalentInfo
-  await Write_player(qq, player)
+  await writePlayer(qq, player)
   const B = `获得煅炉，天赋[${player.锻造天赋}],隐藏灵根为[${player.隐藏灵根?.name || '未知'}]`
   return B
 }
@@ -49,10 +49,10 @@ export async function settripod(qq: string): Promise<string> {
 export async function looktripod(qq: string): Promise<number> {
   let tripod: Tripod[]
   try {
-    tripod = await Read_tripod()
+    tripod = await readTripod()
   } catch {
-    await Write_duanlu([])
-    tripod = await Read_tripod()
+    await writeDuanlu([])
+    tripod = await readTripod()
   }
   for (const item of tripod) {
     if (qq == item.qq) {
@@ -65,10 +65,10 @@ export async function looktripod(qq: string): Promise<number> {
 export async function Read_mytripod(qq: string): Promise<Tripod | undefined> {
   let tripod: Tripod[]
   try {
-    tripod = await Read_tripod()
+    tripod = await readTripod()
   } catch {
-    await Write_duanlu([])
-    tripod = await Read_tripod()
+    await writeDuanlu([])
+    tripod = await readTripod()
   }
 
   for (const item of tripod) {
@@ -77,14 +77,17 @@ export async function Read_mytripod(qq: string): Promise<Tripod | undefined> {
     }
   }
 }
-export async function Read_tripod(): Promise<Tripod[]> {
+export async function readTripod(): Promise<Tripod[]> {
   const dir = path.join(`${__PATH.duanlu}/duanlu.json`)
+  if (!existsSync(dir)) {
+    return []
+  }
   let duanlu = fs.readFileSync(dir, 'utf8')
   const data = JSON.parse(duanlu)
   return data as Tripod[]
 }
 
-export async function Write_duanlu(duanlu: Tripod[]): Promise<void> {
+export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
   const dir = path.join(__PATH.duanlu, `duanlu.json`)
   const new_ARR = JSON.stringify(duanlu, null, '\t')
   fs.writeFileSync(dir, new_ARR, 'utf8')
@@ -104,11 +107,14 @@ export async function jiaozheng(value: any): Promise<number> {
 }
 
 //读取item 中某个json文件中的属性
-export async function read_that(
+export async function readThat(
   thing_name: string,
   weizhi: string
 ): Promise<any> {
   const dir = path.join(`${__PATH.lib_path}/${weizhi}.json`)
+  if (!existsSync(dir)) {
+    return
+  }
   const weizhi1 = fs.readFileSync(dir, 'utf8')
 
   const weizh = JSON.parse(weizhi1)
@@ -121,8 +127,11 @@ export async function read_that(
 }
 
 //读取item某个文件的全部物品
-export async function read_all(weizhi: string): Promise<any[]> {
+export async function readAll(weizhi: string): Promise<any[]> {
   const dir = path.join(`${__PATH.lib_path}/${weizhi}.json`)
+  if (!existsSync(dir)) {
+    return []
+  }
   let weizhi1 = fs.readFileSync(dir, 'utf8')
 
   const data = JSON.parse(weizhi1)
@@ -169,7 +178,7 @@ export async function mainyuansu(shuju: number[]): Promise<string | undefined> {
   }
 }
 //判断相生相克只有两个值不为0
-export async function Restraint(
+export async function restraint(
   shuju: number[],
   main: string
 ): Promise<[string, number]> {
@@ -215,8 +224,11 @@ export async function Restraint(
   return [houzui, jiaceng]
 }
 
-export async function Read_it(): Promise<any> {
+export async function readIt(): Promise<any> {
   const dir = path.join(`${__PATH.custom}/custom.json`)
+  if (!existsSync(dir)) {
+    return {}
+  }
   let custom = fs.readFileSync(dir, 'utf8')
   const customData = JSON.parse(custom)
   return customData

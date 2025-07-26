@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs'
 import {
   Go,
   existplayer,
-  Read_najie,
-  Read_player,
+  readNajie,
+  readPlayer,
   Add_灵石,
   Write_najie
 } from '@src/model'
@@ -21,8 +21,8 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let najie = await Read_najie(usr_qq)
-  let player = await Read_player(usr_qq)
+  let najie = await readNajie(usr_qq)
+  let player = await readPlayer(usr_qq)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   let najie_num = cf.najie_num
   let najie_price = cf.najie_price

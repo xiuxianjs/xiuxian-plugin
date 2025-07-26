@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { foundthing, exist_najie_thing, Add_najie_thing } from '@src/model'
+import { foundthing, existNajieThing, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?哪里有(.*)$/
@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
     Send(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`))
     return false
   }
-  let number = await exist_najie_thing(usr_qq, '寻物纸', '道具')
+  let number = await existNajieThing(usr_qq, '寻物纸', '道具')
   if (!number) {
     Send(Text('查找物品需要【寻物纸】'))
     return false
@@ -52,5 +52,5 @@ export default onResponse(selects, async e => {
   } else {
     await Send(Text(found.join('')))
   }
-  await Add_najie_thing(usr_qq, '寻物纸', '道具', -1)
+  await addNajieThing(usr_qq, '寻物纸', '道具', -1)
 })

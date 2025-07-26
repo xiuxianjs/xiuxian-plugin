@@ -2,15 +2,15 @@ import { Text, useSend } from 'alemonjs'
 
 import {
   existplayer,
-  Read_najie,
+  readNajie,
   foundthing,
   convert2integer,
-  exist_najie_thing,
-  Read_Exchange,
-  Write_Exchange,
-  Read_player,
+  existNajieThing,
+  readExchange,
+  writeExchange,
+  readPlayer,
   Add_灵石,
-  Add_najie_thing
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let najie = await Read_najie(usr_qq)
+  let najie = await readNajie(usr_qq)
   let thing = e.MessageText.replace(/^(#|＃|\/)?上架/, '')
   let code: any = thing.split('*')
   let thing_name = code[0] //物品
@@ -67,7 +67,7 @@ export default onResponse(selects, async e => {
         item => item.name == thing_name && item.pinji == thing_piji
       )
     } else {
-      let najie = await Read_najie(usr_qq)
+      let najie = await readNajie(usr_qq)
       equ = najie.装备.find(item => item.name == thing_name)
       for (let i of najie.装备) {
         //遍历列表有没有比那把强的
@@ -82,7 +82,7 @@ export default onResponse(selects, async e => {
   }
   thing_value = await convert2integer(thing_value)
   thing_amount = await convert2integer(thing_amount)
-  let x = await exist_najie_thing(
+  let x = await existNajieThing(
     usr_qq,
     thing_name,
     thing_exist.class,
@@ -95,16 +95,16 @@ export default onResponse(selects, async e => {
   }
   let Exchange
   try {
-    Exchange = await Read_Exchange()
+    Exchange = await readExchange()
   } catch {
-    await Write_Exchange([])
-    Exchange = await Read_Exchange()
+    await writeExchange([])
+    Exchange = await readExchange()
   }
   let now_time = new Date().getTime()
   let whole = Math.trunc(thing_value * thing_amount)
   let off = Math.trunc(whole * 0.03)
   if (off < 100000) off = 100000
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.灵石 < off) {
     Send(Text('就这点灵石还想上架'))
     return false
@@ -124,7 +124,7 @@ export default onResponse(selects, async e => {
       whole: whole,
       now_time: now_time
     }
-    await Add_najie_thing(
+    await addNajieThing(
       usr_qq,
       equ.name,
       thing_exist.class,
@@ -140,11 +140,11 @@ export default onResponse(selects, async e => {
       whole: whole,
       now_time: now_time
     }
-    await Add_najie_thing(usr_qq, thing_name, thing_exist.class, -thing_amount)
+    await addNajieThing(usr_qq, thing_name, thing_exist.class, -thing_amount)
   }
   //
   Exchange.push(wupin)
   //写入
-  await Write_Exchange(Exchange)
+  await writeExchange(Exchange)
   Send(Text('上架成功！'))
 })

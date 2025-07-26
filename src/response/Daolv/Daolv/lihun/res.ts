@@ -3,10 +3,10 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import {
   existplayer,
-  Read_qinmidu,
-  Write_qinmidu,
+  readQinmidu,
+  writeQinmidu,
   find_qinmidu,
-  Read_player
+  readPlayer
 } from '@src/model'
 import { found, chaoshi } from '../daolv'
 
@@ -90,11 +90,11 @@ export default onResponse(selects, async e => {
 
   let qinmidu
   try {
-    qinmidu = await Read_qinmidu()
+    qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
-    await Write_qinmidu([])
-    qinmidu = await Read_qinmidu()
+    await writeQinmidu([])
+    qinmidu = await readQinmidu()
   }
   let i = await found(A, B)
   let pd = await find_qinmidu(A, B)
@@ -112,7 +112,7 @@ export default onResponse(selects, async e => {
   global.x = 2
   global.user_A = A
   global.user_B = B
-  let player_A = await Read_player(A)
+  let player_A = await readPlayer(A)
   let msg = ['\n']
   msg.push(`${player_A.名号}要和你断绝姻缘\n回复【我同意】or【我拒绝】`)
   Send(Text(msg.join('')))

@@ -1,7 +1,7 @@
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 import { redis, data, pushInfo } from '@src/api/api'
-import { isNotNull, Add_职业经验, Add_najie_thing, __PATH } from '@src/model'
+import { isNotNull, Add_职业经验, addNajieThing, __PATH } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/1 * * * ?', async () => {
@@ -86,7 +86,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
               continue
             }
             msg.push(`\n${names[item]}${Math.floor(newsum[item])}个`)
-            await Add_najie_thing(
+            await addNajieThing(
               player_id,
               names[item],
               '草药',
@@ -163,10 +163,10 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let xuanze = Math.trunc(Math.random() * A.length)
           end_amount *= player.level_id / 40
           end_amount = Math.floor(end_amount)
-          await Add_najie_thing(player_id, '庚金', '材料', end_amount)
-          await Add_najie_thing(player_id, '玄土', '材料', end_amount)
-          await Add_najie_thing(player_id, A[xuanze], '材料', num)
-          await Add_najie_thing(
+          await addNajieThing(player_id, '庚金', '材料', end_amount)
+          await addNajieThing(player_id, '玄土', '材料', end_amount)
+          await addNajieThing(player_id, A[xuanze], '材料', num)
+          await addNajieThing(
             player_id,
             B[xuanze],
             '材料',

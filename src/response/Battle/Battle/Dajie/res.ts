@@ -3,13 +3,13 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { config, data, redis } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   isNotNull,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   zd_battle,
   Add_HP,
-  Write_player
+  writePlayer
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -68,7 +68,7 @@ export default onResponse(selects, async e => {
 
   //出手的
   //读取信息
-  let playerAA = await Read_player(A)
+  let playerAA = await readPlayer(A)
   //境界
   let now_level_idAA
   if (!isNotNull(playerAA.level_id)) {
@@ -81,7 +81,7 @@ export default onResponse(selects, async e => {
 
   //对方
   //读取信息
-  let playerBB = await Read_player(B)
+  let playerBB = await readPlayer(B)
   //境界
   //根据名字取找境界id
 
@@ -157,7 +157,7 @@ export default onResponse(selects, async e => {
     let B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
       isBbusy = true
-      let ishaveyss = await exist_najie_thing(A, '隐身水', '道具')
+      let ishaveyss = await existNajieThing(A, '隐身水', '道具')
       if (!ishaveyss) {
         //如果A没有隐身水，直接返回不执行
         let m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
@@ -192,8 +192,8 @@ export default onResponse(selects, async e => {
     Send(Text('打劫正在CD中，' + `剩余cd:  ${waittime_m}分 ${waittime_s}秒`))
     return false
   }
-  let A_player = await Read_player(A)
-  let B_player = await Read_player(B)
+  let A_player = await readPlayer(A)
+  let B_player = await readPlayer(B)
   if (A_player.修为 < 0) {
     Send(Text(`还是闭会关再打劫吧`))
     return false
@@ -215,7 +215,7 @@ export default onResponse(selects, async e => {
     final_msg.push(
       `${B_player.名号}正在${B_action.action}，${A_player.名号}利用隐身水悄然接近，但被发现。`
     )
-    await Add_najie_thing(A, '隐身水', '道具', -1)
+    await addNajieThing(A, '隐身水', '道具', -1)
   } else {
     final_msg.push(`${A_player.名号}向${B_player.名号}发起了打劫。`)
   }
@@ -239,12 +239,12 @@ export default onResponse(selects, async e => {
   let B_win = `${B_player.名号}击败了${A_player.名号}`
   if (msg.find(item => item == A_win)) {
     if (
-      (await exist_najie_thing(B, '替身人偶', '道具')) &&
+      (await existNajieThing(B, '替身人偶', '道具')) &&
       B_player.魔道值 < 1 &&
       (B_player.灵根.type == '转生' || B_player.level_id > 41)
     ) {
       Send(Text(B_player.名号 + '使用了道具替身人偶,躲过了此次打劫'))
-      await Add_najie_thing(B, '替身人偶', '道具', -1)
+      await addNajieThing(B, '替身人偶', '道具', -1)
       return false
     }
     let mdzJL = A_player.魔道值
@@ -259,8 +259,8 @@ export default onResponse(selects, async e => {
     A_player.血气 += qixue
     A_player.魔道值 += mdz
     A_player.灵石 += mdzJL
-    await Write_player(A, A_player)
-    await Write_player(B, B_player)
+    await writePlayer(A, A_player)
+    await writePlayer(B, B_player)
     final_msg.push(
       ` 经过一番大战,${A_win},成功抢走${lingshi}灵石,${A_player.名号}获得${qixue}血气，`
     )
@@ -268,7 +268,7 @@ export default onResponse(selects, async e => {
     if (A_player.灵石 < 30002) {
       let qixue = Math.trunc(100 * now_level_idBB)
       B_player.血气 += qixue
-      await Write_player(B, B_player)
+      await writePlayer(B, B_player)
       let time2 = 60 //时间（分钟）
       let action_time2 = 60000 * time2 //持续时间，单位毫秒
       let action2: any = await redis.get('xiuxian@1.3.0:' + A + ':action')
@@ -288,8 +288,8 @@ export default onResponse(selects, async e => {
       A_player.灵石 -= lingshi
       B_player.灵石 += lingshi
       B_player.血气 += qixue
-      await Write_player(A, A_player)
-      await Write_player(B, B_player)
+      await writePlayer(A, A_player)
+      await writePlayer(B, B_player)
       final_msg.push(
         `经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号} 真是偷鸡不成蚀把米,被劫走${lingshi}灵石`
       )

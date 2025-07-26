@@ -3,11 +3,11 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   convert2integer,
   isNotNull,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_职业经验
 } from '@src/model'
 
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.occupation != '炼丹师') {
     Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'))
     return false
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
   tmp_msg += '消耗'
   for (let i in materials) {
     let material = materials[i]
-    let x = await exist_najie_thing(usr_qq, material.name, '草药')
+    let x = await existNajieThing(usr_qq, material.name, '草药')
     if (x == false) {
       x = 0
     }
@@ -61,7 +61,7 @@ export default onResponse(selects, async e => {
   for (let i in materials) {
     let material = materials[i]
     tmp_msg += `${material.name}×${material.amount * n}，`
-    await Add_najie_thing(usr_qq, material.name, '草药', -material.amount * n)
+    await addNajieThing(usr_qq, material.name, '草药', -material.amount * n)
   }
   let total_exp = exp[1] * n
   if (player.仙宠.type == '炼丹') {
@@ -83,25 +83,25 @@ export default onResponse(selects, async e => {
     danyao == '九阶玄元丹' ||
     danyao == '起死回生丹'
   ) {
-    await Add_najie_thing(usr_qq, danyao, '丹药', n)
+    await addNajieThing(usr_qq, danyao, '丹药', n)
     Send(Text(`${tmp_msg}得到${danyao}${n}颗，获得炼丹经验${total_exp}`))
   } else {
     let dengjixiuzheng = player.occupation_level
     let newrandom = Math.random()
     let newrandom2 = Math.random()
     if (newrandom >= 0.1 + (dengjixiuzheng * 3) / 100) {
-      await Add_najie_thing(usr_qq, '凡品' + danyao, '丹药', n)
+      await addNajieThing(usr_qq, '凡品' + danyao, '丹药', n)
       Send(
         Text(`${tmp_msg}得到"凡品"${danyao}${n}颗，获得炼丹经验${total_exp}`)
       )
     } else {
       if (newrandom2 >= 0.4) {
-        await Add_najie_thing(usr_qq, '极品' + danyao, '丹药', n)
+        await addNajieThing(usr_qq, '极品' + danyao, '丹药', n)
         Send(
           Text(`${tmp_msg}得到"极品"${danyao}${n}颗，获得炼丹经验${total_exp}`)
         )
       } else {
-        await Add_najie_thing(usr_qq, '仙品' + danyao, '丹药', n)
+        await addNajieThing(usr_qq, '仙品' + danyao, '丹药', n)
         Send(
           Text(`${tmp_msg}得到"仙品"${danyao}${n}颗，获得炼丹经验${total_exp}`)
         )

@@ -1,8 +1,9 @@
 import { Image, useSend } from 'alemonjs'
 
-import { existplayer, get_player_img } from '@src/model'
+import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getPlayerImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?我(的练气)?$/
 
 export default onResponse(selects, async e => {
@@ -11,7 +12,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let img = await get_player_img(e)
+  let img = await getPlayerImage(e)
   if (img) Send(Image(img))
   return false
 })

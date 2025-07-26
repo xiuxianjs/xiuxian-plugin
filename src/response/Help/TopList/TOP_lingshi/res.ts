@@ -4,30 +4,30 @@ import { data } from '@src/api/api'
 import {
   existplayer,
   __PATH,
-  Read_player,
-  Read_najie,
+  readPlayer,
+  readNajie,
   sortBy,
-  sleep,
-  get_ranking_money_img
+  sleep
 } from '@src/model'
-
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?灵榜$/
+import { getRankingMoneyImage } from '@src/model/image'
 
+export const regular = /^(#|＃|\/)?灵榜$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let usr_paiming
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   let File_length = File.length
   let temp = []
   for (let i = 0; i < File_length; i++) {
     let this_qq = File[i].replace('.json', '')
-    let player = await Read_player(this_qq)
-    let najie = await Read_najie(this_qq)
+    let player = await readPlayer(this_qq)
+    let najie = await readNajie(this_qq)
     let lingshi: any = player.灵石 + najie.灵石
     temp[i] = {
       ls1: najie.灵石,
@@ -51,7 +51,7 @@ export default onResponse(selects, async e => {
   await sleep(500)
   let thisplayer = await data.getData('player', usr_qq)
   let thisnajie = await data.getData('najie', usr_qq)
-  let img = await get_ranking_money_img(
+  let img = await getRankingMoneyImage(
     e,
     Data,
     usr_paiming,

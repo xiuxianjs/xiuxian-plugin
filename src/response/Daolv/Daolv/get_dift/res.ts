@@ -2,11 +2,11 @@ import { Text, useMention, useSend } from 'alemonjs'
 
 import {
   existplayer,
-  exist_najie_thing,
+  existNajieThing,
   find_qinmidu,
   fstadd_qinmidu,
   add_qinmidu,
-  Add_najie_thing
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -36,7 +36,7 @@ export default onResponse(selects, async e => {
     Send(Text('修仙者不可对凡人出手!'))
     return false
   }
-  let ishavejz = await exist_najie_thing(A, '百合花篮', '道具')
+  let ishavejz = await existNajieThing(A, '百合花篮', '道具')
   if (!ishavejz) {
     Send(Text('你没有[百合花篮]'))
     return false
@@ -50,6 +50,6 @@ export default onResponse(selects, async e => {
   }
 
   await add_qinmidu(A, B, 60)
-  await Add_najie_thing(A, '百合花篮', '道具', -1)
+  await addNajieThing(A, '百合花篮', '道具', -1)
   Send(Text(`你们的亲密度增加了60`))
 })

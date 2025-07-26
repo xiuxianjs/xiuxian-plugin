@@ -4,16 +4,15 @@ import { data } from '@src/api/api'
 import {
   existplayer,
   __PATH,
-  Read_player,
+  readPlayer,
   Get_xiuwei,
   isNotNull,
-  sortBy,
-  get_ranking_power_img
+  sortBy
 } from '@src/model'
-
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?天榜$/
+import { getRankingPowerImage } from '@src/model/image'
 
+export const regular = /^(#|＃|\/)?天榜$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
@@ -21,13 +20,14 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
 
   let usr_paiming
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   let File_length = File.length
   let temp = []
   for (let i = 0; i < File_length; i++) {
     let this_qq = parseInt(File[i].replace('.json', ''))
-    let player = await Read_player(this_qq)
+    let player = await readPlayer(this_qq)
     let sum_exp = await Get_xiuwei(this_qq)
     if (!isNotNull(player.level_id)) {
       Send(Text('请先#同步信息'))
@@ -51,6 +51,6 @@ export default onResponse(selects, async e => {
     Data[i] = temp[i]
   }
   let thisplayer = await data.getData('player', usr_qq)
-  let img = await get_ranking_power_img(e, Data, usr_paiming, thisplayer)
+  let img = await getRankingPowerImage(e, Data, usr_paiming, thisplayer)
   if (img) Send(Image(img))
 })

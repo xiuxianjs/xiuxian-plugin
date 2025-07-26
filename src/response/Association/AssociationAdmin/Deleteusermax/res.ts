@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, player_efficiency } from '@src/model'
+import { isNotNull, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?逐出.*$/
@@ -50,7 +50,7 @@ export default onResponse(selects, async e => {
     data.setAssociation(bss.宗门名称, bss)
     delete playerB.宗门
     data.setData('player', member_qq, playerB)
-    player_efficiency(member_qq)
+    playerEfficiency(member_qq)
     Send(Text('已踢出！'))
     return false
   }
@@ -70,7 +70,7 @@ export default onResponse(selects, async e => {
     data.setAssociation(bss.宗门名称, bss)
     delete playerB.宗门
     data.setData('player', member_qq, playerB)
-    player_efficiency(member_qq)
+    playerEfficiency(member_qq)
     Send(Text('已踢出！'))
     return false
   }
@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
     await data.setAssociation(bss.宗门名称, bss)
     await delete playerB.宗门
     await data.setData('player', member_qq, playerB)
-    await player_efficiency(member_qq)
+    await playerEfficiency(member_qq)
     Send(Text('已踢出！'))
     return false
   }

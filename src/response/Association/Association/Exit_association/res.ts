@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { get_random_fromARR, isNotNull, player_efficiency } from '@src/model'
+import { get_random_fromARR, isNotNull, playerEfficiency } from '@src/model'
 import { config, data } from '@src/api/api'
 import fs from 'fs'
 
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
     data.setAssociation(ass.宗门名称, ass)
     delete player.宗门
     data.setData('player', usr_qq, player)
-    await player_efficiency(usr_qq)
+    await playerEfficiency(usr_qq)
     Send(Text('退出宗门成功'))
   } else {
     let ass = data.getAssociation(player.宗门.宗门名称)
@@ -43,7 +43,7 @@ export default onResponse(selects, async e => {
       fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
       delete player.宗门 //删除存档里的宗门信息
       data.setData('player', usr_qq, player)
-      await player_efficiency(usr_qq)
+      await playerEfficiency(usr_qq)
       Send(
         Text(
           '退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'
@@ -53,7 +53,7 @@ export default onResponse(selects, async e => {
       ass['所有成员'] = ass['所有成员'].filter(item => item != usr_qq) //原来的成员表删掉这个B
       delete player.宗门 //删除这个B存档里的宗门信息
       data.setData('player', usr_qq, player)
-      await player_efficiency(usr_qq)
+      await playerEfficiency(usr_qq)
       //随机一个幸运儿的QQ,优先挑选等级高的
       let randmember_qq
       if (ass.副宗主.length > 0) {

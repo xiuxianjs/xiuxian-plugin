@@ -4,16 +4,16 @@ import { data } from '@src/api/api'
 import {
   existplayer,
   __PATH,
-  get_random_talent,
-  Write_player,
-  Write_equipment,
+  getRandomTalent,
+  writePlayer,
+  writeEquipment,
   Write_najie,
   Add_HP,
-  Write_danyao,
-  get_player_img
+  Write_danyao
 } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getPlayerImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?踏入仙途$/
 
 export default onResponse(selects, async e => {
@@ -22,14 +22,14 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
-    let img = await get_player_img(e)
+    let img = await getPlayerImage(e)
     if (img) Send(Image(img))
     return false
   }
   //初始化玩家信息
   let File_msg = fs.readdirSync(__PATH.player_path)
   let n = File_msg.length + 1
-  let talent = await get_random_talent()
+  let talent = await getRandomTalent()
   let new_player = {
     id: e.UserId,
     sex: 0, //性别
@@ -72,14 +72,14 @@ export default onResponse(selects, async e => {
     师徒任务阶段: 0,
     师徒积分: 0
   }
-  await Write_player(usr_qq, new_player)
+  await writePlayer(usr_qq, new_player)
   //初始化装备
   let new_equipment = {
     武器: data.equipment_list.find(item => item.name == '烂铁匕首'),
     护具: data.equipment_list.find(item => item.name == '破铜护具'),
     法宝: data.equipment_list.find(item => item.name == '廉价炮仗')
   }
-  await Write_equipment(usr_qq, new_equipment)
+  await writeEquipment(usr_qq, new_equipment)
   //初始化纳戒
   let new_najie = {
     等级: 1,
@@ -110,7 +110,7 @@ export default onResponse(selects, async e => {
     beiyong5: 0
   }
   await Write_danyao(usr_qq, arr)
-  let img = await get_player_img(e)
+  let img = await getPlayerImage(e)
   if (img) Send(Image(img))
   return false
 })

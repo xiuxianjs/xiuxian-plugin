@@ -1,4 +1,4 @@
-import { Read_najie, __PATH } from '@src/model'
+import { readNajie, __PATH } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 import fs from 'fs'
 scheduleJob('20 0/5 * * * ?', async () => {
@@ -31,7 +31,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
     for (let player_id of playerList) {
       let usr_qq = player_id
       try {
-        await Read_najie(usr_qq)
+        await readNajie(usr_qq)
         fs.copyFileSync(
           `${__PATH.najie_path}/${usr_qq}.json`,
           `${__PATH.auto_backup}/najie/${usr_qq}.json`

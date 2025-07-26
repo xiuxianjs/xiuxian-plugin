@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { config, redis } from '@src/api/api'
-import { openAU, Read_player } from '@src/model'
+import { openAU, readPlayer } from '@src/model'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启星阁体系$/
@@ -43,7 +43,7 @@ export default onResponse(selects, async e => {
     if (auction.last_offer_player === 0) {
       msg += '暂无人出价'
     } else {
-      const player = await Read_player(auction.last_offer_player)
+      const player = await readPlayer(auction.last_offer_player)
       msg += `最高出价是${player.名号}叫出的${auction.last_price}`
     }
     await Send(Text(msg))

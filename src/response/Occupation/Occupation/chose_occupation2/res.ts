@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { Go, existplayer, Read_player, Write_player } from '@src/model'
+import { Go, existplayer, readPlayer, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?转换副职$/
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let action: any = await redis.get('xiuxian:player:' + usr_qq + ':fuzhi') //副职
   action = await JSON.parse(action)
   if (action == null) {
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   player.occupation_exp = b
   player.occupation_level = c
   await redis.set('xiuxian:player:' + usr_qq + ':fuzhi', JSON.stringify(action))
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   Send(
     Text(
       `恭喜${player.名号}转职为[${player.occupation}],您的副职为${action.职业名}`

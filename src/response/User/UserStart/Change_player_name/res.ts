@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
-import { existplayer, shijianc, Read_player, Write_player } from '@src/model'
+import { existplayer, shijianc, readPlayer, writePlayer } from '@src/model'
 import { Show_player } from '../user'
 import { selects } from '@src/response/index'
 
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
       Send(Text('每日只能改名一次'))
       return
     }
-    player = await Read_player(usr_qq)
+    player = await readPlayer(usr_qq)
     if (player.灵石 < 1000) {
       Send(Text('改名需要1000灵石'))
       return
@@ -52,7 +52,7 @@ export default onResponse(selects, async e => {
     player.名号 = new_name
     redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setname_time', nowTime) //redis设置本次改名时间戳
     player.灵石 -= 1000
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     //Add_灵石(usr_qq, -100);
     Show_player(e)
     return
@@ -89,10 +89,10 @@ export default onResponse(selects, async e => {
       return
     }
     //这里有问题，写不进去
-    player = await Read_player(usr_qq)
+    player = await readPlayer(usr_qq)
     player.宣言 = new_msg //
     redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setxuanyan_time', nowTime) //redis设置本次设道置宣时间戳
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     Show_player(e)
     return
   }

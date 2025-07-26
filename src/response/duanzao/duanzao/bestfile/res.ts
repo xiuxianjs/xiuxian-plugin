@@ -1,13 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis, data, puppeteer } from '@src/api/api'
-import {
-  Read_it,
-  Writeit,
-  alluser,
-  Read_najie,
-  Read_equipment
-} from '@src/model'
+import { readIt, writeIt, alluser, readNajie, readEquipment } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?神兵榜/
@@ -16,10 +10,10 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let wupin
   try {
-    wupin = await Read_it()
+    wupin = await readIt()
   } catch {
-    await Writeit([])
-    wupin = await Read_it()
+    await writeIt([])
+    wupin = await readIt()
   }
   let newwupin = []
   const type = ['武器', '护具', '法宝']
@@ -34,8 +28,8 @@ export default onResponse(selects, async e => {
     let all = await alluser()
     for (let [wpId, j] of wupin.entries()) {
       for (let i of all) {
-        let najie = await Read_najie(i)
-        const equ = await Read_equipment(i)
+        let najie = await readNajie(i)
+        const equ = await readEquipment(i)
         let exist = najie.装备.find(item => item.name == j.name)
         for (let m of type) {
           if (equ[m].name == j.name) {
@@ -64,7 +58,7 @@ export default onResponse(selects, async e => {
         }
       }
     }
-    await Writeit(wupin) // 重写custom.json
+    await writeIt(wupin) // 重写custom.json
   }
   // 否则，直接按照custom.json记录的数据生成newwupin
   else {

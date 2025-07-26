@@ -4,12 +4,12 @@ import { data, redis } from '@src/api/api'
 import {
   existplayer,
   isNotNull,
-  Write_player,
-  Read_equipment,
-  player_efficiency,
+  writePlayer,
+  readEquipment,
+  playerEfficiency,
   get_random_fromARR,
-  Add_najie_thing,
-  Write_equipment,
+  addNajieThing,
+  writeEquipment,
   Add_HP
 } from '@src/model'
 
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   let player = await data.getData('player', usr_qq)
   if (!isNotNull(player.lunhui)) {
     player.lunhui = 0
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
   }
   let lhxq = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lunhui')
   if (+lhxq != 1) {
@@ -51,7 +51,7 @@ export default onResponse(selects, async e => {
     Send(Text(`法境未到仙无法轮回！`))
     return false
   }
-  let equipment = await Read_equipment(usr_qq)
+  let equipment = await readEquipment(usr_qq)
   if (equipment.武器.HP < 0) {
     Send(
       Text(
@@ -104,7 +104,7 @@ export default onResponse(selects, async e => {
         data.setAssociation(ass.宗门名称, ass)
         delete player.宗门
         data.setData('player', usr_qq, player)
-        await player_efficiency(usr_qq)
+        await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
         let ass = data.getAssociation(player.宗门.宗门名称)
@@ -112,7 +112,7 @@ export default onResponse(selects, async e => {
           fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
           delete player.宗门 //删除存档里的宗门信息
           data.setData('player', usr_qq, player)
-          await player_efficiency(usr_qq)
+          await playerEfficiency(usr_qq)
           Send(
             Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,仙界中再无半分痕迹')
           )
@@ -120,7 +120,7 @@ export default onResponse(selects, async e => {
           ass['所有成员'] = ass['所有成员'].filter(item => item != usr_qq) //原来的成员表删掉这个B
           delete player.宗门 //删除这个B存档里的宗门信息
           data.setData('player', usr_qq, player)
-          await player_efficiency(usr_qq)
+          await playerEfficiency(usr_qq)
           //随机一个幸运儿的QQ,优先挑选等级高的
           let randmember_qq
           if (ass.副宗主.length > 0) {
@@ -161,12 +161,12 @@ export default onResponse(selects, async e => {
     let thing_name = '九转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -194,12 +194,12 @@ export default onResponse(selects, async e => {
     let thing_name = '八转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -227,12 +227,12 @@ export default onResponse(selects, async e => {
     let thing_name = '七转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -260,12 +260,12 @@ export default onResponse(selects, async e => {
     let thing_name = '六转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -293,12 +293,12 @@ export default onResponse(selects, async e => {
     let thing_name = '五转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -326,12 +326,12 @@ export default onResponse(selects, async e => {
     let thing_name = '四转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -359,12 +359,12 @@ export default onResponse(selects, async e => {
     let thing_name = '三转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -392,12 +392,12 @@ export default onResponse(selects, async e => {
     let thing_name = '二转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
@@ -425,12 +425,12 @@ export default onResponse(selects, async e => {
     let thing_name = '一转轮回'
     let thing_class = '功法'
     let n = 1
-    await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+    await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
-    await Write_player(usr_qq, player)
-    let equipment = await Read_equipment(usr_qq)
-    await Write_equipment(usr_qq, equipment)
+    await writePlayer(usr_qq, player)
+    let equipment = await readEquipment(usr_qq)
+    await writeEquipment(usr_qq, equipment)
     //补血
     await Add_HP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {

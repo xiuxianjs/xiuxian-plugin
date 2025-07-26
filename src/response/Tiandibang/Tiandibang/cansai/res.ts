@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, Read_player } from '@src/model'
+import { existplayer, readPlayer } from '@src/model'
 import { Read_tiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
     }
   }
   if (x == tiandibang.length) {
-    let player = await Read_player(usr_qq)
+    let player = await readPlayer(usr_qq)
     let level_id = data.Level_list.find(
       item => item.level_id == player.level_id
     ).level_id

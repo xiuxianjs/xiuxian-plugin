@@ -3,11 +3,11 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import {
   Go,
-  Read_player,
-  Read_Exchange,
-  Write_Exchange,
+  readPlayer,
+  readExchange,
+  writeExchange,
   convert2integer,
-  Add_najie_thing,
+  addNajieThing,
   Add_灵石
 } from '@src/model'
 
@@ -45,14 +45,14 @@ export default onResponse(selects, async e => {
   }
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let Exchange
   try {
-    Exchange = await Read_Exchange()
+    Exchange = await readExchange()
   } catch {
     //没有表要先建立一个！
-    await Write_Exchange([])
-    Exchange = await Read_Exchange()
+    await writeExchange([])
+    Exchange = await readExchange()
   }
   let t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*')
   let x = (await convert2integer(t[0])) - 1
@@ -82,7 +82,7 @@ export default onResponse(selects, async e => {
   if (player.灵石 > money) {
     //加物品
     if (thing_class == '装备' || thing_class == '仙宠') {
-      await Add_najie_thing(
+      await addNajieThing(
         usr_qq,
         Exchange[x].name,
         thing_class,
@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
         Exchange[x].pinji2
       )
     } else {
-      await Add_najie_thing(usr_qq, thing_name, thing_class, n)
+      await addNajieThing(usr_qq, thing_name, thing_class, n)
     }
     //扣钱
     await Add_灵石(usr_qq, -money)
@@ -100,7 +100,7 @@ export default onResponse(selects, async e => {
     Exchange[x].whole = Exchange[x].whole - money
     //删除该位置信息
     Exchange = Exchange.filter(item => item.aconut > 0)
-    await Write_Exchange(Exchange)
+    await writeExchange(Exchange)
     Send(Text(`${player.名号}在冲水堂购买了${n}个【${thing_name}】！`))
   } else {
     Send(Text('醒醒，你没有那么多钱！'))

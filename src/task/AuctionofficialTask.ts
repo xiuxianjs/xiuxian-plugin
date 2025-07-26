@@ -1,5 +1,5 @@
 import { redis, config, pushInfo } from '@src/api/api'
-import { openAU, Read_player, Add_灵石, Add_najie_thing } from '@src/model'
+import { openAU, readPlayer, Add_灵石, addNajieThing } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0/1 * * * ?', async () => {
@@ -27,7 +27,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       if (auction.last_offer_player === 0) {
         msg += '暂无人出价'
       } else {
-        const player = await Read_player(auction.last_offer_player)
+        const player = await readPlayer(auction.last_offer_player)
         msg += `最高出价是${player.名号}叫出的${auction.last_price}`
       }
       // auction.groupList.forEach(group_id => pushInfo(group_id, true, msg))
@@ -66,14 +66,14 @@ scheduleJob('0 0/1 * * * ?', async () => {
         msg = `流拍，${wupin.thing.name}已退回神秘人的纳戒`
       } else {
         await Add_灵石(last_offer_player, -wupin.last_price)
-        await Add_najie_thing(
+        await addNajieThing(
           last_offer_player,
           wupin.thing.name,
           wupin.thing.class,
           wupin.amount,
           wupin.thing.pinji
         )
-        const player = await Read_player(last_offer_player)
+        const player = await readPlayer(last_offer_player)
         msg = `拍卖结束，${player.名号}最终拍得该物品！`
       }
 

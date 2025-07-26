@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-// import { Add_najie_thing } from '@src/model/xiuxian'
+// import { addNajieThing } from '@src/model/xiuxian'
 
 import { selects } from '@src/response/index'
 export const regular =
@@ -31,7 +31,7 @@ export default onResponse(selects, async e => {
   //   // const objArr = await clearNajieThing(thingType, thingName)
   //   objArr.map((uid_tnum) => {
   //     const usrId = Object.entries(uid_tnum)[0][0]
-  //     Add_najie_thing(usrId, newThingName, newThingType, uid_tnum.usrId * N)
+  //     addNajieThing(usrId, newThingName, newThingType, uid_tnum.usrId * N)
   //   })
   //   return Send(Text('全部替换完成'))
   // }

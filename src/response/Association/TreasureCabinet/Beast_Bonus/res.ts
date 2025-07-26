@@ -6,7 +6,7 @@ import {
   shijianc,
   Read_danyao,
   Write_danyao,
-  Add_najie_thing
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -72,7 +72,7 @@ export default onResponse(selects, async e => {
         item_name = data.danyao_list[location].name
         item_class = data.danyao_list[location].class
       }
-      await Add_najie_thing(usr_qq, item_name, item_class, 1)
+      await addNajieThing(usr_qq, item_name, item_class, 1)
     } else if (ass.宗门神兽 == '青龙') {
       //给功法，赐福加修为
       if (randomB > 0.9) {
@@ -84,7 +84,7 @@ export default onResponse(selects, async e => {
         item_name = data.gongfa_list[location].name
         item_class = data.gongfa_list[location].class
       }
-      await Add_najie_thing(usr_qq, item_name, item_class, 1)
+      await addNajieThing(usr_qq, item_name, item_class, 1)
     } else if (ass.宗门神兽 == '玄武') {
       //给护具，赐福加气血
       if (randomB > 0.9) {
@@ -96,7 +96,7 @@ export default onResponse(selects, async e => {
         item_name = data.equipment_list[location].name
         item_class = data.equipment_list[location].class
       }
-      await Add_najie_thing(usr_qq, item_name, item_class, 1)
+      await addNajieThing(usr_qq, item_name, item_class, 1)
     } else if (ass.宗门神兽 == '朱雀') {
       //给法宝，赐福加修
       if (randomB > 0.9) {
@@ -108,7 +108,7 @@ export default onResponse(selects, async e => {
         item_name = data.equipment_list[location].name
         item_class = data.equipment_list[location].class
       }
-      await Add_najie_thing(usr_qq, item_name, item_class, 1)
+      await addNajieThing(usr_qq, item_name, item_class, 1)
     } else {
       //白虎给武器 赐福加气血
       if (randomB > 0.9) {
@@ -120,7 +120,7 @@ export default onResponse(selects, async e => {
         item_name = data.equipment_list[location].name
         item_class = data.equipment_list[location].class
       }
-      await Add_najie_thing(usr_qq, item_name, item_class, 1)
+      await addNajieThing(usr_qq, item_name, item_class, 1)
     }
     if (randomB > 0.9) {
       Send(Text(`看见你来了,${ass.宗门神兽}很高兴，仔细挑选了${item_name}给你`))

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
 import { redis } from '@src/api/api'
-import { __PATH, Write_duanlu } from '@src/model'
+import { __PATH, writeDuanlu } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?全体清空锻炉/
@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?全体清空锻炉/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
-  await Write_duanlu([])
+  await writeDuanlu([])
   let playerList = []
   let files = fs
     .readdirSync(__PATH.player_path)

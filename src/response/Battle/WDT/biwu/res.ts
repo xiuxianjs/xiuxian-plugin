@@ -3,9 +3,9 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { redis, data, config } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   isNotNull,
-  exist_najie_thing,
+  existNajieThing,
   zd_battle,
   Add_HP,
   Add_血气,
@@ -59,7 +59,7 @@ export default onResponse(selects, async e => {
 
   //出手的
   //读取信息
-  let playerAA = await Read_player(A)
+  let playerAA = await readPlayer(A)
   //境界
   let now_level_idAA
   if (!isNotNull(playerAA.level_id)) {
@@ -72,7 +72,7 @@ export default onResponse(selects, async e => {
 
   //对方
   //读取信息
-  let playerBB = await Read_player(B)
+  let playerBB = await readPlayer(B)
   //境界
   //根据名字取找境界id
 
@@ -125,7 +125,7 @@ export default onResponse(selects, async e => {
     let B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
       isBbusy = true
-      let ishaveyss = await exist_najie_thing(A, '剑xx', '道具')
+      let ishaveyss = await existNajieThing(A, '剑xx', '道具')
       if (!ishaveyss) {
         //如果A没有隐身水，直接返回不执行
         let m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
@@ -161,8 +161,8 @@ export default onResponse(selects, async e => {
     return
   }
 
-  let B_player = await Read_player(B)
-  let A_player = await Read_player(A)
+  let B_player = await readPlayer(B)
+  let A_player = await readPlayer(A)
   let Time = cf.CD.couple //6个小时
   let shuangxiuTimeout = Math.floor(60000 * Time)
   let now_Time = new Date().getTime() //获取当前时间戳
@@ -238,7 +238,7 @@ export default onResponse(selects, async e => {
     A
     await Add_灵石(B, JL)
     A
-    let A_player = await Read_player(A)
+    let A_player = await readPlayer(A)
     A_player.魔道值 += 1
     data.setData('player', A, A_player)
     final_msg.push(
@@ -252,7 +252,7 @@ export default onResponse(selects, async e => {
     await Add_血气(B, qixue2)
     await Add_灵石(A, JL)
     await Add_灵石(B, JL)
-    let B_player = await Read_player(B)
+    let B_player = await readPlayer(B)
     B_player.魔道值 += 1
     data.setData('player', playerBB, B_player)
     final_msg.push(

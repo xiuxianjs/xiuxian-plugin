@@ -4,9 +4,9 @@ import {
   existplayer,
   foundthing,
   convert2integer,
-  Read_Forum,
-  Write_Forum,
-  Read_player,
+  readForum,
+  writeForum,
+  readPlayer,
   Add_灵石
 } from '@src/model'
 
@@ -40,16 +40,16 @@ export default onResponse(selects, async e => {
   const thing_amount = await convert2integer(amount)
   let Forum
   try {
-    Forum = await Read_Forum()
+    Forum = await readForum()
   } catch {
-    await Write_Forum([])
-    Forum = await Read_Forum()
+    await writeForum([])
+    Forum = await readForum()
   }
   let now_time = new Date().getTime()
   let whole = Math.trunc(thing_value * thing_amount)
   let off = Math.trunc(whole * 0.03)
   if (off < 100000) off = 100000
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.灵石 < off + whole) {
     Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`))
     return false
@@ -66,6 +66,6 @@ export default onResponse(selects, async e => {
   }
   Forum.push(wupin)
   //写入
-  await Write_Forum(Forum)
+  await writeForum(Forum)
   Send(Text('发布成功！'))
 })

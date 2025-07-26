@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { isNotNull, Add_najie_thing } from '@src/model'
+import { isNotNull, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?拔苗助长.*$/
@@ -85,7 +85,7 @@ export default onResponse(selects, async e => {
             `作物${vagetable_name}已成熟，被${usr_qq}${player.名号}摘取,放入纳戒了`
           )
         )
-        await Add_najie_thing(usr_qq, vagetable_name, '草药', 1)
+        await addNajieThing(usr_qq, vagetable_name, '草药', 1)
         let vegetable_OutTime = nowTime + 1000 * 60 * 60 * 24 * ts //设置新一轮成熟时间戳
         ass.药园.作物[i].start_time = nowTime //将当前时间写入药园作物中
         await data.setAssociation(ass.宗门名称, ass) //刷新写入作物时间戳

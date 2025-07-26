@@ -3,10 +3,10 @@ import { Text, useSend } from 'alemonjs'
 import { pushInfo, redis } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
-  exist_najie_thing,
+  readPlayer,
+  existNajieThing,
   zd_battle,
-  Write_player
+  writePlayer
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -47,13 +47,13 @@ export default onResponse(selects, async e => {
     Send(Text('咋的，自己干自己？'))
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let buff = 1
   if (player.occupation == '侠客') {
     buff = 1 + player.occupation_level * 0.055
   }
   let last_msg = ''
-  let player_B = await Read_player(qq)
+  let player_B = await readPlayer(qq)
   if (player_B.当前血量 == 0) {
     Send(Text(`对方已经没有血了,请等一段时间再刺杀他吧`))
     return false
@@ -65,7 +65,7 @@ export default onResponse(selects, async e => {
     //人物任务的动作是否结束
     let B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
-      let ishaveyss = await exist_najie_thing(usr_qq, '隐身水', '道具')
+      let ishaveyss = await existNajieThing(usr_qq, '隐身水', '道具')
       if (!ishaveyss) {
         //如果A没有隐身水，直接返回不执行
         let m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
@@ -104,9 +104,9 @@ export default onResponse(selects, async e => {
   if (msg.find(item => item == A_win)) {
     player_B.当前血量 = 0
     player_B.修为 -= action[num].赏金
-    await Write_player(qq, player_B)
+    await writePlayer(qq, player_B)
     player.灵石 += Math.trunc(action[num].赏金 * 0.3)
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     last_msg +=
       '【全服公告】' + player_B.名号 + '被' + player.名号 + '悄无声息的刺杀了'
     //优化下文案，比如xxx在刺杀xxx中
@@ -114,7 +114,7 @@ export default onResponse(selects, async e => {
     await redis.set('xiuxian@1.3.0:' + 1 + ':shangjing', JSON.stringify(action))
   } else if (msg.find(item => item == B_win)) {
     player.当前血量 = 0
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     last_msg +=
       '【全服公告】' +
       player.名号 +

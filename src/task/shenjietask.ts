@@ -1,8 +1,8 @@
 import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
-  Read_player,
-  Add_najie_thing,
+  readPlayer,
+  addNajieThing,
   Add_血气,
   Add_修为,
   Read_temp,
@@ -50,7 +50,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
       //现在的时间
       let now_time = new Date().getTime()
       //用户信息
-      let player = await Read_player(player_id)
+      let player = await readPlayer(player_id)
 
       //有洗劫状态:这个直接结算即可
       if (action.mojie == '-1') {
@@ -143,7 +143,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1
           )
           if (thing_name != '' || thing_class != '') {
-            await Add_najie_thing(player_id, thing_name, thing_class, n)
+            await addNajieThing(player_id, thing_name, thing_class, n)
           }
           last_msg +=
             m +

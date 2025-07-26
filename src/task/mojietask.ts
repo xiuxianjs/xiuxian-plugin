@@ -3,9 +3,9 @@ import fs from 'fs'
 import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
-  Read_player,
-  exist_najie_thing,
-  Add_najie_thing,
+  readPlayer,
+  existNajieThing,
+  addNajieThing,
   Add_血气,
   Add_修为,
   Read_temp,
@@ -49,7 +49,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
       //现在的时间
       let now_time = new Date().getTime()
       //用户信息
-      let player = await Read_player(player_id)
+      let player = await readPlayer(player_id)
 
       //有洗劫状态:这个直接结算即可
       if (action.mojie == '0') {
@@ -139,18 +139,18 @@ scheduleJob('0 0/5 * * * ?', async () => {
           qixue = Math.trunc(
             2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1
           )
-          if (await exist_najie_thing(player_id, '修魔丹', '道具')) {
+          if (await existNajieThing(player_id, '修魔丹', '道具')) {
             xiuwei *= 100
             xiuwei = Math.trunc(xiuwei)
-            await Add_najie_thing(player_id, '修魔丹', '道具', -1)
+            await addNajieThing(player_id, '修魔丹', '道具', -1)
           }
-          if (await exist_najie_thing(player_id, '血魔丹', '道具')) {
+          if (await existNajieThing(player_id, '血魔丹', '道具')) {
             qixue *= 18
             qixue = Math.trunc(qixue)
-            await Add_najie_thing(player_id, '血魔丹', '道具', -1)
+            await addNajieThing(player_id, '血魔丹', '道具', -1)
           }
           if (thing_name != '' || thing_class != '') {
-            await Add_najie_thing(player_id, thing_name, thing_class, n)
+            await addNajieThing(player_id, thing_name, thing_class, n)
           }
           last_msg +=
             m +

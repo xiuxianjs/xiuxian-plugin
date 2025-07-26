@@ -2,11 +2,11 @@ import { Text, useSend } from 'alemonjs'
 
 import {
   existplayer,
-  exist_najie_thing,
+  existNajieThing,
   foundthing,
-  Read_it,
-  Writeit,
-  Read_najie,
+  readIt,
+  writeIt,
+  readNajie,
   Write_najie
 } from '@src/model'
 
@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   const code = thing.split('*')
   const thing_name = code[0] //原物品
   let new_name = code[1] //新名字
-  const thingnum = await exist_najie_thing(user_qq, thing_name, '装备')
+  const thingnum = await existNajieThing(user_qq, thing_name, '装备')
   if (!thingnum) {
     Send(Text(`你没有这件装备`))
     return false
@@ -37,10 +37,10 @@ export default onResponse(selects, async e => {
   }
   let A
   try {
-    A = await Read_it()
+    A = await readIt()
   } catch {
-    await Writeit([])
-    A = await Read_it()
+    await writeIt([])
+    A = await readIt()
   }
   for (let item of A) {
     if (item.name == thing_name) {
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  const thingall = await Read_najie(user_qq)
+  const thingall = await readNajie(user_qq)
 
   for (let item of thingall.装备) {
     if (item.name == thing_name) {
@@ -62,7 +62,7 @@ export default onResponse(selects, async e => {
           item.name = new_name
           A.push(item)
           await Write_najie(user_qq, thingall)
-          await Writeit(A)
+          await writeIt(A)
           Send(Text(`附名成功,您的${thing_name}更名为${new_name}`))
           return false
         }

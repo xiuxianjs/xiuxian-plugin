@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs'
 import {
   existplayer,
   foundthing,
-  Read_najie,
-  Add_najie_thing,
+  readNajie,
+  addNajieThing,
   Add_灵石
 } from '@src/model'
 
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let lingshi: any = 0
-  let najie = await Read_najie(usr_qq)
+  let najie = await readNajie(usr_qq)
   let type = [
     '装备',
     '丹药',
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
       } else {
         lingshi += thing.出售价 * 2 * thing.数量
       }
-      await Add_najie_thing(
+      await addNajieThing(
         usr_qq,
         thing.name,
         thing.class,

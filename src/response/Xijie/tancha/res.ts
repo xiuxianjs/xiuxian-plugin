@@ -3,9 +3,9 @@ import { Text, Image, useSend } from 'alemonjs'
 import { redis, data, puppeteer } from '@src/api/api'
 import {
   existplayer,
-  Read_shop,
-  Write_shop,
-  Read_player,
+  readShop,
+  writeShop,
+  readPlayer,
   Add_灵石,
   existshop
 } from '@src/model'
@@ -45,10 +45,10 @@ export default onResponse(selects, async e => {
   didian = didian.trim()
   let shop
   try {
-    shop = await Read_shop()
+    shop = await readShop()
   } catch {
-    await Write_shop(data.shop_list)
-    shop = await Read_shop()
+    await writeShop(data.shop_list)
+    shop = await readShop()
   }
   let i
   for (i = 0; i < shop.length; i++) {
@@ -59,7 +59,7 @@ export default onResponse(selects, async e => {
   if (i == shop.length) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let Price = shop[i].price * 0.3
   if (player.灵石 < Price) {
     Send(Text('你需要更多的灵石去打探消息'))

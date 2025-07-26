@@ -2,8 +2,8 @@ import { redis, data, config, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   Read_danyao,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_修为,
   Add_血气,
   setFileValue,
@@ -114,21 +114,21 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let other_x = 0
           let qixue = 0
           if (
-            (await exist_najie_thing(player_id, '魔界秘宝', '道具')) &&
+            (await existNajieThing(player_id, '魔界秘宝', '道具')) &&
             player.魔道值 > 999
           ) {
             other_x += Math.trunc(xiuwei * 0.15 * time)
-            await Add_najie_thing(player_id, '魔界秘宝', '道具', -1)
+            await addNajieThing(player_id, '魔界秘宝', '道具', -1)
             msg.push('\n消耗了道具[魔界秘宝],额外增加' + other_x + '修为')
             await Add_修为(player_id, other_x)
           }
           if (
-            (await exist_najie_thing(player_id, '神界秘宝', '道具')) &&
+            (await existNajieThing(player_id, '神界秘宝', '道具')) &&
             player.魔道值 < 1 &&
             (player.灵根.type == '转生' || player.level_id > 41)
           ) {
             qixue = Math.trunc(xiuwei * 0.1 * time)
-            await Add_najie_thing(player_id, '神界秘宝', '道具', -1)
+            await addNajieThing(player_id, '神界秘宝', '道具', -1)
             msg.push('\n消耗了道具[神界秘宝],额外增加' + qixue + '血气')
             await Add_血气(player_id, qixue)
           }

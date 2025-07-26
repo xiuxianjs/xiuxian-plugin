@@ -4,8 +4,8 @@ import { redis } from '@src/api/api'
 import {
   existplayer,
   find_qinmidu,
-  exist_najie_thing,
-  Read_player
+  existNajieThing,
+  readPlayer
 } from '@src/model'
 import { chaoshi } from '../daolv'
 
@@ -86,7 +86,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let pd = await find_qinmidu(A, B)
-  let ishavejz = await exist_najie_thing(A, '定情信物', '道具')
+  let ishavejz = await existNajieThing(A, '定情信物', '道具')
   if (!ishavejz) {
     Send(Text('你没有[定情信物],无法发起求婚'))
     return false
@@ -105,7 +105,7 @@ export default onResponse(selects, async e => {
   global.x = 1
   global.user_A = A
   global.user_B = B
-  let player_A = await Read_player(A)
+  let player_A = await readPlayer(A)
   let msg = ['\n']
   msg.push(
     `${player_A.名号}想和你缔结道侣,你愿意吗？\n回复【我愿意】or【我拒绝】`

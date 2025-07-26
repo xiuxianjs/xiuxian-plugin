@@ -6,7 +6,7 @@ import {
   Add_修为,
   Add_血气,
   foundthing,
-  Add_najie_thing
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -67,7 +67,7 @@ export default onResponse(selects, async e => {
     if (isNaN(thing_amount)) {
       thing_amount = 1
     }
-    await Add_najie_thing(
+    await addNajieThing(
       B_qq,
       thing_name,
       thing_exist.class,

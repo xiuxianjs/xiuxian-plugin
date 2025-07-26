@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 // import { data } from '@src/api/api'
-// import { exist_najie_thing, Add_najie_thing } from '@src/model'
+// import { existNajieThing, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(禁言术|残云封天剑).*$/
@@ -38,14 +38,14 @@ export default onResponse(selects, async e => {
 
   //   let player = data.getData('player', usr_qq) //读取用户修仙信息
   //   let player1 = data.getData('player', qq) //读取用户修仙信息
-  //   let qingdianshu = await exist_najie_thing(usr_qq, '剑帝一剑', '道具')
+  //   let qingdianshu = await existNajieThing(usr_qq, '剑帝一剑', '道具')
   //   if (qingdianshu !== false && qingdianshu !== 0) {
   //     //判断纳戒有没有剑帝信物
   //     let num1 = Math.round(Math.random() * 100 * 1.1) //能跑就行，暂时不用在意取名细节
   //     let num2 = Math.round((Math.random() * 100) / 1.1)
   //     let num3 = Math.random()
   //     let num4 = Math.random()
-  //     await Add_najie_thing(usr_qq, '剑帝一剑', '道具', -1)
+  //     await addNajieThing(usr_qq, '剑帝一剑', '道具', -1)
 
   //     if (num1 < num2) {
   //       if (num3 > num4) {

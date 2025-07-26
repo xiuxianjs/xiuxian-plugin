@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, foundthing, Add_najie_thing, Add_灵石 } from '@src/model'
+import { existplayer, foundthing, addNajieThing, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键回收(.*)$/
@@ -46,7 +46,7 @@ export default onResponse(selects, async e => {
       if (thing_exist) {
         continue
       }
-      await Add_najie_thing(usr_qq, l.name, l.class, -l.数量, l.pinji)
+      await addNajieThing(usr_qq, l.name, l.class, -l.数量, l.pinji)
       if (l.class == '材料' || l.class == '草药') {
         lingshi += l.出售价 * l.数量
       } else {

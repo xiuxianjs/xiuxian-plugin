@@ -3,9 +3,9 @@ import { Text, useSend } from 'alemonjs'
 import { pushInfo, redis } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   zd_battle,
-  Write_player,
+  writePlayer,
   Add_职业经验
 } from '@src/model'
 
@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.occupation != '侠客') {
     Send(Text('侠客资质不足,需要进行训练'))
     return false
@@ -58,7 +58,7 @@ export default onResponse(selects, async e => {
   }
   let last_msg = ''
   if (qq != 1) {
-    let player_B: any = await Read_player(qq)
+    let player_B: any = await readPlayer(qq)
     player_B.当前血量 = player_B.血量上限
 
     player_B.法球倍率 = player_B.灵根.法球倍率
@@ -85,10 +85,10 @@ export default onResponse(selects, async e => {
       player_B.魔道值 -= 50
       player_B.灵石 -= 1000000
       player_B.当前血量 = 0
-      await Write_player(qq, player_B)
+      await writePlayer(qq, player_B)
       player.灵石 += action.arm[num].赏金
       player.魔道值 -= 5
-      await Write_player(usr_qq, player)
+      await writePlayer(usr_qq, player)
       await Add_职业经验(usr_qq, 2255)
       last_msg +=
         '【全服公告】' +
@@ -99,7 +99,7 @@ export default onResponse(selects, async e => {
       player.当前血量 = 0
       player.灵石 += shangjing
       player.魔道值 -= 5
-      await Write_player(usr_qq, player)
+      await writePlayer(usr_qq, player)
       await Add_职业经验(usr_qq, 1100)
       last_msg += player_B.名号 + '反杀了你,只获得了部分辛苦钱'
     }
@@ -112,7 +112,7 @@ export default onResponse(selects, async e => {
   } else {
     player.灵石 += action.arm[num].赏金
     player.魔道值 -= 5
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     await Add_职业经验(usr_qq, 2255)
     last_msg += '你惩戒了仙路窃贼,获得了部分灵石' //直接获胜
   }
@@ -121,7 +121,7 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':shangjing',
     JSON.stringify(action)
   )
-  const player_B = await Read_player(qq)
+  const player_B = await readPlayer(qq)
   if (
     last_msg == '你惩戒了仙路窃贼,获得了部分灵石' ||
     last_msg == player_B.名号 + '反杀了你,只获得了部分辛苦钱'

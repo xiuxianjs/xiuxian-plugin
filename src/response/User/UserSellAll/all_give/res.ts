@@ -1,7 +1,7 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, Add_najie_thing } from '@src/model'
+import { existplayer, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键赠送(.*)$/
@@ -61,12 +61,12 @@ export default onResponse(selects, async e => {
         let quantity = l.数量
         //纳戒中的数量
         if (i == '装备' || i == '仙宠') {
-          await Add_najie_thing(B_qq, l, l.class, quantity, l.pinji)
-          await Add_najie_thing(A_qq, l, l.class, -quantity, l.pinji)
+          await addNajieThing(B_qq, l, l.class, quantity, l.pinji)
+          await addNajieThing(A_qq, l, l.class, -quantity, l.pinji)
           continue
         }
-        await Add_najie_thing(A_qq, l.name, l.class, -quantity)
-        await Add_najie_thing(B_qq, l.name, l.class, quantity)
+        await addNajieThing(A_qq, l.name, l.class, -quantity)
+        await addNajieThing(B_qq, l.name, l.class, quantity)
       }
     }
   }

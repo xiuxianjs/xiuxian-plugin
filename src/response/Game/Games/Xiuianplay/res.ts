@@ -1,14 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { config, data } from '@src/api/api'
-import {
-  Read_player,
-  isNotNull,
-  Go,
-  Add_修为,
-  Add_灵石,
-  setu
-} from '@src/model'
+import { readPlayer, isNotNull, Go, Add_修为, Add_灵石, setu } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?怡红院$/
@@ -24,7 +17,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   //全局状态判断
   //得到用户信息
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let now_level_id
   if (!isNotNull(player.level_id)) {
     Send(Text('请先#同步信息'))

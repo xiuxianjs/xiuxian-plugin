@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, Add_najie_thing, Add_灵石, sleep } from '@src/model'
+import { existplayer, addNajieThing, Add_灵石, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
@@ -43,7 +43,7 @@ export default onResponse(selects, async e => {
         if (l && l.islockd == 0) {
           //纳戒中的数量
           let quantity = l.数量
-          await Add_najie_thing(usr_qq, l.name, l.class, -quantity, l.pinji)
+          await addNajieThing(usr_qq, l.name, l.class, -quantity, l.pinji)
           commodities_price = commodities_price + l.出售价 * quantity
         }
       }
@@ -112,7 +112,7 @@ export default onResponse(selects, async e => {
           if (l && l.islockd == 0) {
             //纳戒中的数量
             let quantity = l.数量
-            await Add_najie_thing(usr_qq, l.name, l.class, -quantity, l.pinji)
+            await addNajieThing(usr_qq, l.name, l.class, -quantity, l.pinji)
             commodities_price = commodities_price + l.出售价 * quantity
           }
         }

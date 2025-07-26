@@ -4,8 +4,8 @@ import {
   dujie,
   existplayer,
   LevelTask,
-  Read_player,
-  Write_player
+  readPlayer,
+  writePlayer
 } from '@src/model'
 import { data } from '@src/api/api'
 
@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   //不开放私聊
 
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   //境界
   let now_level = data.Level_list.find(
     item => item.level_id == player.level_id
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
   let list_HP = data.Level_list.find(item => item.level == now_level).基础血量
   if (now_HP < list_HP * 0.9) {
     player.当前血量 = 1
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     Send(Text(player.名号 + '血量亏损，强行渡劫后晕倒在地！'))
     return false
   }
@@ -89,7 +89,7 @@ export default onResponse(selects, async e => {
     //没有达到最低要求
     player.当前血量 = 0
     player.修为 -= Math.floor(need_exp / 4)
-    await Write_player(usr_qq, player)
+    await writePlayer(usr_qq, player)
     Send(Text('天空一声巨响，未降下雷劫，就被天道的气势震死了。'))
     return false
   }

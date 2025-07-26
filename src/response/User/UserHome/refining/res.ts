@@ -1,11 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import {
-  existplayer,
-  foundthing,
-  Read_najie,
-  Add_najie_thing
-} from '@src/model'
+import { existplayer, foundthing, readNajie, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?打磨.*$/
@@ -34,7 +29,7 @@ export default onResponse(selects, async e => {
     Send(Text(`${thing_name}(${code[1]})不支持打磨`))
     return false
   }
-  let najie = await Read_najie(usr_qq)
+  let najie = await readNajie(usr_qq)
   let x = 0
   for (let i of najie['装备']) {
     if (i.name == thing_name && i.pinji == pj) x++
@@ -45,7 +40,7 @@ export default onResponse(selects, async e => {
   }
   //都通过了
   for (let i = 0; i < 3; i++)
-    await Add_najie_thing(usr_qq, thing_name, '装备', -1, pj)
-  await Add_najie_thing(usr_qq, thing_name, '装备', 1, pj + 1)
+    await addNajieThing(usr_qq, thing_name, '装备', -1, pj)
+  await addNajieThing(usr_qq, thing_name, '装备', 1, pj + 1)
   Send(Text('打磨成功获得' + thing_name))
 })

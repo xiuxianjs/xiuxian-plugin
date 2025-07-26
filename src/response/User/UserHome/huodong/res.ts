@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/api/api'
-import { existplayer, Add_najie_thing } from '@src/model'
+import { existplayer, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?活动兑换.*$/
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
   )
   let msg = []
   for (let k = 0; k < data.duihuan[i].thing.length; k++) {
-    await Add_najie_thing(
+    await addNajieThing(
       usr_qq,
       data.duihuan[i].thing[k].name,
       data.duihuan[i].thing[k].class,

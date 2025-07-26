@@ -6,7 +6,7 @@ import {
   Add_修为,
   Add_血气,
   foundthing,
-  Add_najie_thing
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -16,8 +16,9 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   //所有玩家
-  let File = fs.readdirSync(__PATH.player_path)
-  File = File.filter(file => file.endsWith('.json'))
+  let File = fs
+    .readdirSync(__PATH.player_path)
+    .filter(file => file.endsWith('.json'))
   let File_length = File.length
   //获取发送灵石数量
   let thing_name = e.MessageText.replace(/^(#|＃|\/)?全体发/, '')
@@ -65,7 +66,7 @@ export default onResponse(selects, async e => {
     }
     for (let i = 0; i < File_length; i++) {
       let this_qq = File[i].replace('.json', '')
-      await Add_najie_thing(
+      await addNajieThing(
         this_qq,
         thing_name,
         thing_exist.class,

@@ -3,13 +3,13 @@ import { Image, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   foundthing,
-  instead_equipment,
-  get_equipment_img
+  instead_equipment
 } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { getQquipmentImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?一键装备$/
 
 export default onResponse(selects, async e => {
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   //检索方法
   let najie = await data.getData('najie', usr_qq)
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let sanwei = []
   sanwei[0] =
     data.Level_list.find(item => item.level_id == player.level_id).基础攻击 +
@@ -76,6 +76,6 @@ export default onResponse(selects, async e => {
     }
     if (max_equ) await instead_equipment(usr_qq, max_equ)
   }
-  let img = await get_equipment_img(e)
+  let img = await getQquipmentImage(e)
   if (img) Send(Image(img))
 })

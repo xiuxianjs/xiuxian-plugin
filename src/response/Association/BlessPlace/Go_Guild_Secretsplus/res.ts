@@ -3,11 +3,11 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/api/api'
 import {
   Go,
-  Read_player,
+  readPlayer,
   convert2integer,
   isNotNull,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_灵石
 } from '@src/model'
 
@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (!player.宗门) {
     Send(Text('请先加入宗门'))
     return false
@@ -44,9 +44,9 @@ export default onResponse(selects, async e => {
     Send(Text('没有灵石寸步难行,攒到' + weizhi.Price * i * 10 + '灵石才够哦~'))
     return false
   }
-  let number = await exist_najie_thing(usr_qq, '秘境之匙', '道具')
+  let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
   if (isNotNull(number) && number >= i) {
-    await Add_najie_thing(usr_qq, '秘境之匙', '道具', -i)
+    await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))
     return false

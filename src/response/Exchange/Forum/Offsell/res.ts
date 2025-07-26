@@ -2,9 +2,9 @@ import { Text, useSend } from 'alemonjs'
 
 import {
   existplayer,
-  Read_player,
-  Read_Forum,
-  Write_Forum,
+  readPlayer,
+  readForum,
+  writeForum,
   Add_灵石
 } from '@src/model'
 
@@ -19,14 +19,14 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let Forum
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1
   try {
-    Forum = await Read_Forum()
+    Forum = await readForum()
   } catch {
     //没有表要先建立一个！
-    await Write_Forum([])
-    Forum = await Read_Forum()
+    await writeForum([])
+    Forum = await readForum()
   }
   if (x >= Forum.length) {
     Send(Text(`没有编号为${x + 1}的宝贝需求`))
@@ -49,5 +49,5 @@ export default onResponse(selects, async e => {
     )
   )
   Forum.splice(x, 1)
-  await Write_Forum(Forum)
+  await writeForum(Forum)
 })

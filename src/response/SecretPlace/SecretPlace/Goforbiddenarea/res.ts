@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { Go, Read_player, isNotNull, Add_灵石, Add_修为 } from '@src/model'
+import { Go, readPlayer, isNotNull, Add_灵石, Add_修为 } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?前往禁地.*$/
@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let now_level_id
   if (!isNotNull(player.level_id)) {
     Send(Text('请先#同步信息'))

@@ -3,9 +3,9 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
-  exist_najie_thing,
-  Add_najie_thing
+  readPlayer,
+  existNajieThing,
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -17,12 +17,12 @@ export default onResponse(selects, async e => {
   //查看存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.魔道值 < 1000) {
     Send(Text('你不是魔头'))
     return false
   }
-  let x = await exist_najie_thing(usr_qq, '魔石', '道具')
+  let x = await existNajieThing(usr_qq, '魔石', '道具')
   if (!x) {
     Send(Text('你没有魔石'))
     return false
@@ -31,7 +31,7 @@ export default onResponse(selects, async e => {
     Send(Text('魔石不足8个,当前魔石数量' + x + '个'))
     return false
   }
-  await Add_najie_thing(usr_qq, '魔石', '道具', -8)
+  await addNajieThing(usr_qq, '魔石', '道具', -8)
   let wuping_length
   let wuping_index
   let wuping
@@ -39,5 +39,5 @@ export default onResponse(selects, async e => {
   wuping_index = Math.trunc(Math.random() * wuping_length)
   wuping = data.xingge[0].one[wuping_index]
   Send(Text('获得了' + wuping.name))
-  await Add_najie_thing(usr_qq, wuping.name, wuping.class, 1)
+  await addNajieThing(usr_qq, wuping.name, wuping.class, 1)
 })

@@ -4,6 +4,7 @@ import { redis } from '@src/api/api'
 import { __PATH, getTimeStr } from '@src/model'
 
 import { selects } from '@src/response/index'
+import { join } from 'path'
 export const regular = /^(#|＃|\/)?读取存档(.*)/
 
 export default onResponse(selects, async (e: any) => {
@@ -68,7 +69,12 @@ export default onResponse(selects, async (e: any) => {
     let redisObj = {}
     let includeBackup = true
     try {
-      redisObj = JSON.parse(fs.readFileSync(`${backUpPath}/redis.json`, 'utf8'))
+      const dir = join(backUpPath, 'redis.json')
+      if (!fs.existsSync(dir)) {
+        includeBackup = false // 这个备份不包含redis
+      } else {
+        redisObj = JSON.parse(fs.readFileSync(dir, 'utf8'))
+      }
     } catch (_) {
       includeBackup = false // 这个备份不包含redis
     }

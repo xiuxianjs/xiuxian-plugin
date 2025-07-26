@@ -6,13 +6,13 @@ import {
   Add_HP,
   existplayer,
   get_random_fromARR,
-  get_random_talent,
+  getRandomTalent,
   Go,
   isNotNull,
   Write_danyao,
-  Write_equipment,
+  writeEquipment,
   Write_najie,
-  Write_player
+  writePlayer
 } from '@src/model'
 import fs from 'fs'
 import { selects } from '@src/response/index'
@@ -190,7 +190,7 @@ async function Create_player(e) {
   //初始化玩家信息
   let File_msg = fs.readdirSync(__PATH.player_path)
   let n = File_msg.length + 1
-  let talent = await get_random_talent()
+  let talent = await getRandomTalent()
   let new_player = {
     id: e.UserId,
     sex: 0, //性别
@@ -233,14 +233,14 @@ async function Create_player(e) {
     师徒任务阶段: 0,
     师徒积分: 0
   }
-  await Write_player(usr_qq, new_player)
+  await writePlayer(usr_qq, new_player)
   //初始化装备
   let new_equipment = {
     武器: data.equipment_list.find(item => item.name == '烂铁匕首'),
     护具: data.equipment_list.find(item => item.name == '破铜护具'),
     法宝: data.equipment_list.find(item => item.name == '廉价炮仗')
   }
-  await Write_equipment(usr_qq, new_equipment)
+  await writeEquipment(usr_qq, new_equipment)
   //初始化纳戒
   let new_najie = {
     等级: 1,

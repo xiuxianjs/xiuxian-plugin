@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis, data, config } from '@src/api/api'
-import { existplayer, Read_player, isNotNull, Add_灵石 } from '@src/model'
+import { existplayer, readPlayer, isNotNull, Add_灵石 } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(大|小)$/
@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
     Send(Text('媚娘：公子，你还没投入呢'))
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let es = e.MessageText
   //随机数并取整【1，7）
   let randtime = Math.trunc(Math.random() * 6) + 1

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, timestampToTime, player_efficiency } from '@src/model'
+import { isNotNull, timestampToTime, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?加入宗门.*$/
@@ -67,7 +67,7 @@ export default onResponse(selects, async e => {
   data.setData('player', usr_qq, player)
   ass.所有成员.push(usr_qq)
   ass.外门弟子.push(usr_qq)
-  await player_efficiency(usr_qq)
+  await playerEfficiency(usr_qq)
   data.setAssociation(association_name, ass)
   Send(Text(`恭喜你成功加入${association_name}`))
 })

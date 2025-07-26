@@ -1,9 +1,9 @@
 import { redis, data, config, pushInfo } from '@src/api/api'
 import {
   isNotNull,
-  Read_player,
+  readPlayer,
   zd_battle,
-  Add_najie_thing,
+  addNajieThing,
   Read_danyao,
   Write_danyao,
   Add_血气,
@@ -49,7 +49,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       //现在的时间
       let now_time = new Date().getTime()
       //用户信息
-      let player = await Read_player(player_id)
+      let player = await readPlayer(player_id)
       //有秘境状态:这个直接结算即可
       if (action.Place_action == '0') {
         //这里改一改,要在结束时间的前两分钟提前结算
@@ -140,7 +140,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             }
           } else {
             m = '走在路上看见了一只蚂蚁！蚂蚁大仙送了你[起死回生丹'
-            await Add_najie_thing(player_id, '起死回生丹', '丹药', 1)
+            await addNajieThing(player_id, '起死回生丹', '丹药', 1)
             t1 = 0.5 + Math.random() * 0.5
             t2 = 0.5 + Math.random() * 0.5
           }
@@ -185,7 +185,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
               2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1
             )
             if (thing_name) {
-              await Add_najie_thing(player_id, thing_name, thing_class, n)
+              await addNajieThing(player_id, thing_name, thing_class, n)
             }
             last_msg += `${m}不巧撞见[${
               B_player.名号
@@ -211,14 +211,14 @@ scheduleJob('0 0/1 * * * ?', async () => {
                 '\n七彩流光的神奇仙谷[' +
                 kouliang.name +
                 ']深埋在土壤中，是仙兽们的最爱。'
-              await Add_najie_thing(player_id, kouliang.name, '仙宠口粮', 1)
+              await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1)
             }
             if (random > 0.1 && random < 0.1002) {
               last_msg +=
                 '\n' +
                 B_player.名号 +
                 '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。'
-              await Add_najie_thing(player_id, '长相奇怪的小石头', '道具', 1)
+              await addNajieThing(player_id, '长相奇怪的小石头', '道具', 1)
             }
           } else if (msgg.find(item => item == B_win)) {
             xiuwei = 800

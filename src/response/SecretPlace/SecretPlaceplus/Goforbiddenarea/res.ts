@@ -3,11 +3,11 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/api/api'
 import {
   Go,
-  Read_player,
+  readPlayer,
   isNotNull,
   convert2integer,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_灵石,
   Add_修为
 } from '@src/model'
@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let now_level_id
   if (!isNotNull(player.level_id)) {
     Send(Text('请先#同步信息'))
@@ -62,9 +62,9 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  let number = await exist_najie_thing(usr_qq, '秘境之匙', '道具')
+  let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
   if (isNotNull(number) && number >= i) {
-    await Add_najie_thing(usr_qq, '秘境之匙', '道具', -i)
+    await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))
     return false

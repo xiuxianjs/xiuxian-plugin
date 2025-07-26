@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { exist_najie_thing, Add_najie_thing, Write_player } from '@src/model'
+import { existNajieThing, addNajieThing, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?进阶仙宠$/
@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
   let number_n = x + 1
   number_n.toString //等级转换字符串
   let name = number_n + '级仙石'
-  let quantity = await exist_najie_thing(usr_qq, name, '道具') //查找纳戒
+  let quantity = await existNajieThing(usr_qq, name, '道具') //查找纳戒
   if (!quantity) {
     //没有
     Send(Text(`你没有[${name}]`))
@@ -47,8 +47,8 @@ export default onResponse(selects, async e => {
     player.仙宠 = thing
     player.仙宠.等级 = player_level //赋值之前的等级
     player.仙宠.加成 = last_jiachen //赋值之前的加成
-    await Add_najie_thing(usr_qq, name, '道具', -1)
-    await Write_player(usr_qq, player)
+    await addNajieThing(usr_qq, name, '道具', -1)
+    await writePlayer(usr_qq, player)
     Send(Text('恭喜进阶【' + player.仙宠.name + '】成功'))
   } else {
     let need = Number(list_level[x]) - Number(player_level)

@@ -3,9 +3,9 @@ import { Text, useSend } from 'alemonjs'
 import { pushInfo, redis } from '@src/api/api'
 import {
   existplayer,
-  Read_player,
+  readPlayer,
   convert2integer,
-  Write_player
+  writePlayer
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let qq = e.MessageText.replace(/^(#|＃|\/)?悬赏/, '')
   let code = qq.split('*')
   qq = code[0]
@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
   }
   let player_B
   try {
-    player_B = await Read_player(qq)
+    player_B = await readPlayer(qq)
   } catch {
     Send(Text('世间没有这人')) //查无此人
     return false
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
     action.push(arr)
   }
   player.灵石 -= money
-  await Write_player(usr_qq, player)
+  await writePlayer(usr_qq, player)
   Send(Text('悬赏成功!'))
   // todo 全服公告
   let msg = ''

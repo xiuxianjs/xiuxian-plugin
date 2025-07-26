@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'node:fs'
 import { data } from '@src/api/api'
-import { isNotNull, Read_player } from '@src/model'
+import { isNotNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?入驻洞天.*$/
@@ -43,8 +43,7 @@ export default onResponse(selects, async e => {
   //洞天是否已绑定宗门
 
   let dir = data.association
-  let File = fs.readdirSync(dir)
-  File = File.filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
+  let File = fs.readdirSync(dir).filter(file => file.endsWith('.json')) //这个数组内容是所有的宗门名称
 
   //遍历所有的宗门
   for (let i = 0; i < File.length; i++) {
@@ -62,7 +61,7 @@ export default onResponse(selects, async e => {
         //遍历所有成员
         let member_qq = ass.所有成员[i]
         //(攻击+防御+生命*0.5)*暴击率=理论战力
-        let member_data = await Read_player(member_qq)
+        let member_data = await readPlayer(member_qq)
         let power = member_data.攻击 + member_data.血量上限 * 0.5
 
         power = Math.trunc(power)
@@ -73,7 +72,7 @@ export default onResponse(selects, async e => {
         //遍历所有成员
         let member_qq = this_ass.所有成员[i]
         //(攻击+防御+生命*0.5)*暴击率=理论战力
-        let member_data = await Read_player(member_qq)
+        let member_data = await readPlayer(member_qq)
         let power = member_data.防御 + member_data.血量上限 * 0.5
 
         power = Math.trunc(power)

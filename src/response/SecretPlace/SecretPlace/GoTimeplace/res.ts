@@ -3,12 +3,12 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis, config } from '@src/api/api'
 import {
   Go,
-  Read_player,
+  readPlayer,
   sleep,
   isNotNull,
   Add_灵石,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_修为
 } from '@src/model'
 
@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   let didianlist = ['无欲天仙', '仙遗之地']
   let suiji = Math.round(Math.random()) //随机一个地方
   let yunqi = Math.random() //运气随机数
@@ -75,13 +75,13 @@ export default onResponse(selects, async e => {
   }
   let dazhe = 1
   if (
-    (await exist_najie_thing(usr_qq, '仙府通行证', '道具')) &&
+    (await existNajieThing(usr_qq, '仙府通行证', '道具')) &&
     player.魔道值 < 1 &&
     (player.灵根.type == '转生' || player.level_id > 41)
   ) {
     dazhe = 0
     Send(Text(player.名号 + '使用了道具仙府通行证,本次仙府免费'))
-    await Add_najie_thing(usr_qq, '仙府通行证', '道具', -1)
+    await addNajieThing(usr_qq, '仙府通行证', '道具', -1)
   }
   let Price = weizhi.Price * dazhe
   await Add_灵石(usr_qq, -Price)

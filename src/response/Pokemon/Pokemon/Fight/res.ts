@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { Read_najie, isNotNull, Add_仙宠, Write_player } from '@src/model'
+import { readNajie, isNotNull, Add_仙宠, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?出战仙宠.*$/
@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
   let player = data.getData('player', usr_qq)
   let name = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '')
   let num = parseInt(name)
-  let najie = await Read_najie(usr_qq)
+  let najie = await readNajie(usr_qq)
   if (num && num > 1000) {
     try {
       name = najie.仙宠[num - 1001].name
@@ -63,6 +63,6 @@ export default onResponse(selects, async e => {
   }
   //增减仙宠方法
   await Add_仙宠(usr_qq, last.name, -1, last.等级)
-  await Write_player(usr_qq, player) //写入
+  await writePlayer(usr_qq, player) //写入
   Send(Text('成功出战' + name))
 })

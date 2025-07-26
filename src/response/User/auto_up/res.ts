@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, Read_player } from '@src/model'
+import { existplayer, readPlayer } from '@src/model'
 import { Level_up } from '../Level/level'
 
 import { selects } from '@src/response/index'
@@ -11,7 +11,7 @@ export default onResponse(selects, async (e: any) => {
   let usr_qq = e.UserId
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await Read_player(usr_qq)
+  let player = await readPlayer(usr_qq)
   if (player.level_id > 31 || player.lunhui == 0) return false
   Send(Text('已为你开启10次自动突破'))
   let num = 1

@@ -4,14 +4,14 @@ import { data, redis } from '@src/api/api'
 import {
   existplayer,
   looktripod,
-  Read_tripod,
-  Write_duanlu,
-  read_that,
-  read_all,
+  readTripod,
+  writeDuanlu,
+  readThat,
+  readAll,
   getxuanze,
-  Restraint,
+  restraint,
   mainyuansu,
-  Add_najie_thing,
+  addNajieThing,
   Add_职业经验
 } from '@src/model'
 
@@ -35,10 +35,10 @@ export default onResponse(selects, async e => {
     return false
   }
   try {
-    newtripod = await Read_tripod()
+    newtripod = await readTripod()
   } catch {
-    await Write_duanlu([])
-    newtripod = await Read_tripod()
+    await writeDuanlu([])
+    newtripod = await readTripod()
   }
   for (let item of newtripod) {
     if (user_qq == item.qq) {
@@ -65,7 +65,7 @@ export default onResponse(selects, async e => {
       let cailiao
       let jiuwei = [0, 0, 0, 0, 0, 0, 0, 0, 0]
       for (let newitem in item.材料) {
-        cailiao = await read_that(item.材料[newitem], '锻造材料')
+        cailiao = await readThat(item.材料[newitem], '锻造材料')
         jiuwei[0] += cailiao.攻 * item.数量[newitem]
         jiuwei[1] += cailiao.防 * item.数量[newitem]
         jiuwei[2] += cailiao.血 * item.数量[newitem]
@@ -99,7 +99,7 @@ export default onResponse(selects, async e => {
       }
 
       //寻找符合标准的装备
-      const newwupin = await read_all(weizhi)
+      const newwupin = await readAll(weizhi)
       let bizhi = []
 
       for (let item2 in newwupin) {
@@ -165,7 +165,7 @@ export default onResponse(selects, async e => {
         houzhui = '三灵共堂'
         xishu += 0.05
       } else if (qianzhui == 2) {
-        const shuzufu = await Restraint(wuwei, max[0])
+        const shuzufu = await restraint(wuwei, max[0])
         houzhui = shuzufu[0]
         xishu += shuzufu[1]
         if (shuzufu[1] == 0.5) {
@@ -190,7 +190,7 @@ export default onResponse(selects, async e => {
         author_name: player.id,
         出售价: Math.floor(1000000 * sum)
       }
-      await Add_najie_thing(user_qq, zhuangbei, '装备', 1)
+      await addNajieThing(user_qq, zhuangbei, '装备', 1)
       //计算经验收益
 
       //灵根影响值
@@ -214,7 +214,7 @@ export default onResponse(selects, async e => {
       item.TIME = 0
       item.材料 = []
       item.数量 = []
-      await Write_duanlu(newtripod)
+      await writeDuanlu(newtripod)
       //清除时间
       const time = new Date().getTime()
       await redis.set(

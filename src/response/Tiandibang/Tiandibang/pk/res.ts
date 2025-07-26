@@ -4,8 +4,8 @@ import { redis } from '@src/api/api'
 import {
   existplayer,
   shijianc,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   zd_battle,
   Add_灵石
 } from '@src/model'
@@ -83,10 +83,10 @@ export default onResponse(selects, async e => {
     Today.D == lastbisai_time.D &&
     tiandibang[x].次数 < 1
   ) {
-    let zbl = await exist_najie_thing(usr_qq, '摘榜令', '道具')
+    let zbl = await existNajieThing(usr_qq, '摘榜令', '道具')
     if (zbl) {
       tiandibang[x].次数 = 1
-      await Add_najie_thing(usr_qq, '摘榜令', '道具', -1)
+      await addNajieThing(usr_qq, '摘榜令', '道具', -1)
       last_msg.push(`${tiandibang[x].名号}使用了摘榜令\n`)
     } else {
       Send(Text('今日挑战次数用光了,请明日再来吧'))

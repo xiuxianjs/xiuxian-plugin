@@ -1,5 +1,6 @@
-import { Goweizhi } from '@src/model'
+// import { Goweizhi } from '@src/model'
 import { data } from '@src/api/api'
+import { Goweizhi } from '@src/model/image'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?宗门秘境$/

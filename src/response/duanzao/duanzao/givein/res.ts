@@ -6,12 +6,12 @@ import {
   looktripod,
   convert2integer,
   foundthing,
-  exist_najie_thing,
+  existNajieThing,
   Read_mytripod,
   Read_danyao,
-  Read_tripod,
-  Write_duanlu,
-  Add_najie_thing
+  readTripod,
+  writeDuanlu,
+  addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -52,7 +52,7 @@ export default onResponse(selects, async e => {
     Send(Text(`凡界物品无法放入煅炉`))
     return false
   }
-  let mynum = await exist_najie_thing(user_qq, thing_name, '材料')
+  let mynum = await existNajieThing(user_qq, thing_name, '材料')
   if (mynum < thing_acount) {
     Send(Text(`材料不足,无法放入`))
     return false
@@ -94,17 +94,17 @@ export default onResponse(selects, async e => {
   }
   let newtripod
   try {
-    newtripod = await Read_tripod()
+    newtripod = await readTripod()
   } catch {
-    await Write_duanlu([])
-    newtripod = await Read_tripod()
+    await writeDuanlu([])
+    newtripod = await readTripod()
   }
   for (let item of newtripod) {
     if (user_qq == item.qq) {
       item.材料.push(thing_name)
       item.数量.push(thing_acount)
-      await Write_duanlu(newtripod)
-      await Add_najie_thing(user_qq, thing_name, '材料', -thing_acount)
+      await writeDuanlu(newtripod)
+      await addNajieThing(user_qq, thing_name, '材料', -thing_acount)
       const yongyou = num + Number(thing_acount)
       Send(
         Text(

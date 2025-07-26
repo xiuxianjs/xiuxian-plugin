@@ -1,13 +1,13 @@
-import { Read_Exchange, Write_Exchange, Add_najie_thing } from '@src/model'
+import { readExchange, writeExchange, addNajieThing } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 4 * * ?', async () => {
   let Exchange
   try {
-    Exchange = await Read_Exchange()
+    Exchange = await readExchange()
   } catch {
-    await Write_Exchange([])
-    Exchange = await Read_Exchange()
+    await writeExchange([])
+    Exchange = await readExchange()
   }
   const now_time = new Date().getTime()
   for (let i = 0; i < Exchange.length; i++) {
@@ -18,7 +18,7 @@ scheduleJob('0 0 4 * * ?', async () => {
     const quanity = Exchange[i].aconut
     if (Exchange[i].name.class == '装备' || Exchange[i].name.class == '仙宠')
       thing = Exchange[i].name
-    await Add_najie_thing(
+    await addNajieThing(
       usr_qq,
       thing,
       Exchange[i].name.class,
@@ -28,6 +28,6 @@ scheduleJob('0 0 4 * * ?', async () => {
     Exchange.splice(i, 1)
     i--
   }
-  await Write_Exchange(Exchange)
+  await writeExchange(Exchange)
   return false
 })

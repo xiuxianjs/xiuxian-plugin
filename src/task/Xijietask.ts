@@ -2,9 +2,9 @@ import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
   zd_battle,
-  Add_najie_thing,
-  Read_shop,
-  Write_shop,
+  addNajieThing,
+  readShop,
+  writeShop,
   existshop,
   __PATH
 } from '@src/model'
@@ -128,17 +128,17 @@ scheduleJob('0 0/1 * * * ?', async () => {
             last_msg +=
               ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' +
               num
-            await Add_najie_thing(player_id, '秘境之匙', '道具', num)
+            await addNajieThing(player_id, '秘境之匙', '道具', num)
             //结算完去除
             delete arr.group_id
-            let shop = await Read_shop()
+            let shop = await readShop()
             for (i = 0; i < shop.length; i++) {
               if (shop[i].name == weizhi.name) {
                 shop[i].state = 0
                 break
               }
             }
-            await Write_shop(shop)
+            await writeShop(shop)
             time = 60 //时间（分钟）
             action_time = 60000 * time //持续时间，单位毫秒
             arr.action = '禁闭'
@@ -177,7 +177,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let action_time
           let last_msg = ''
           let thing_name = []
-          let shop = await Read_shop()
+          let shop = await readShop()
           let i
           for (i = 0; i < shop.length; i++) {
             if (shop[i].name == weizhi.name) {
@@ -194,11 +194,11 @@ scheduleJob('0 0/1 * * * ?', async () => {
               let thing_index = Math.trunc(Math.random() * thing.length)
               t = thing[thing_index]
               thing_name.push(t)
-              shop = await Read_shop()
+              shop = await readShop()
               for (let j = 0; j < shop[i].one.length; j++) {
                 if (shop[i].one[j].name == t.name && shop[i].one[j].数量 > 0) {
                   shop[i].one[j].数量 = 0
-                  await Write_shop(shop)
+                  await writeShop(shop)
                   break
                 }
               }

@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   existplayer,
-  exist_najie_thing,
-  Add_najie_thing,
+  existNajieThing,
+  addNajieThing,
   Add_灵石
 } from '@src/model'
 
@@ -20,14 +20,14 @@ export default onResponse(selects, async e => {
   let player = await data.getData('player', usr_qq)
   let thing_name = '水脚脚的钱包'
   //x是纳戒内有的数量
-  let acount = await exist_najie_thing(usr_qq, thing_name, '装备')
+  let acount = await existNajieThing(usr_qq, thing_name, '装备')
   //没有
   if (!acount) {
     Send(Text(`你没有[${thing_name}]这样的装备`))
     return false
   }
   //扣掉装备
-  await Add_najie_thing(usr_qq, thing_name, '装备', -1)
+  await addNajieThing(usr_qq, thing_name, '装备', -1)
   //获得随机
   const x = 0.4
   let random1 = Math.random()
