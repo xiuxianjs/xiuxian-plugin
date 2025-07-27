@@ -3,7 +3,7 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { redis } from '@src/api/api'
 import {
   existplayer,
-  find_qinmidu,
+  findQinmidu,
   existNajieThing,
   readPlayer
 } from '@src/model'
@@ -85,7 +85,7 @@ export default onResponse(selects, async e => {
     Send(Text(`对方猜大小正在进行哦，等他结束再求婚吧!`))
     return false
   }
-  let pd = await find_qinmidu(A, B)
+  let pd = await findQinmidu(A, B)
   let ishavejz = await existNajieThing(A, '定情信物', '道具')
   if (!ishavejz) {
     Send(Text('你没有[定情信物],无法发起求婚'))

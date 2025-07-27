@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs'
 import { data, redis } from '@src/api/api'
-import { existplayer, __PATH, sortBy, sleep } from '@src/model'
+import { existplayer, __PATH, sortBy, sleep, readPlayer } from '@src/model'
 import { selects } from '@src/response/index'
 import { getRankingMoneyImage } from '@src/model/image'
 
@@ -13,20 +13,13 @@ export default onResponse(selects, async e => {
   let usr_paiming
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  let temp = []
-  let TotalPlayer = 0
-  for (const player_id of playerList) {
-    const player = await await data.getData('player', player_id)
-    if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
-      temp[TotalPlayer] = parseInt(player.攻击)
-      logger.info(`[灵榜] ${player_id}玩家攻击:${temp[TotalPlayer]}`)
-      TotalPlayer++
-    }
+
+  const temp = []
+  for (let i = 0; i < playerList.length; i++) {
+    const player = await readPlayer(playerList[i])
+    if (!player) continue
+    temp.push(player)
   }
-  //排序
-  temp.sort(function (a, b) {
-    return b - a
-  })
   let File_length = temp.length
   temp.sort(sortBy('灵石'))
   let Data = []

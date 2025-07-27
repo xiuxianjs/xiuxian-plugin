@@ -3,11 +3,11 @@ import { Text, useMention, useSend } from 'alemonjs'
 import { config, redis } from '@src/api/api'
 import {
   existplayer,
-  find_qinmidu,
-  exist_hunyin,
-  fstadd_qinmidu,
-  Add_修为,
-  add_qinmidu
+  findQinmidu,
+  existHunyin,
+  fstaddQinmidu,
+  addExp,
+  addQinmidu
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -83,9 +83,9 @@ export default onResponse(selects, async e => {
     Send(Text('哎哟，你干嘛...'))
     return false
   }
-  let pd = await find_qinmidu(A, B)
-  let hunyin_B = await exist_hunyin(A)
-  let hunyin_A = await exist_hunyin(B)
+  let pd = await findQinmidu(A, B)
+  let hunyin_B = await existHunyin(A)
+  let hunyin_A = await existHunyin(B)
   //logger.info(`pd = `+pd+` hunyin = `+hunyin);
   //双方有一人已婚
   if (hunyin_B != '' || hunyin_A != '') {
@@ -96,7 +96,7 @@ export default onResponse(selects, async e => {
     }
   } else if (pd == false) {
     //没有存档
-    await fstadd_qinmidu(A, B)
+    await fstaddQinmidu(A, B)
   }
   //前戏做完了!
   await redis.set('xiuxian@1.3.0:' + A + ':last_shuangxiu_time', now_Time)
@@ -109,9 +109,9 @@ export default onResponse(selects, async e => {
     if (option > 0 && option <= 0.5) {
       x = 28000
       y = Math.trunc(xiuwei * x)
-      await Add_修为(A, Math.floor(y))
-      await Add_修为(B, Math.floor(y))
-      await add_qinmidu(A, B, 30)
+      await addExp(A, Math.floor(y))
+      await addExp(B, Math.floor(y))
+      await addQinmidu(A, B, 30)
       Send(
         Text(
           '你们双方情意相通，缠绵一晚，都增加了' +
@@ -123,9 +123,9 @@ export default onResponse(selects, async e => {
     } else if (option > 0.5 && option <= 0.6) {
       x = 21000
       y = Math.trunc(xiuwei * x)
-      await Add_修为(A, Math.floor(y))
-      await Add_修为(B, Math.floor(y))
-      await add_qinmidu(A, B, 20)
+      await addExp(A, Math.floor(y))
+      await addExp(B, Math.floor(y))
+      await addQinmidu(A, B, 20)
       Send(
         Text(
           '你们双方交心交神，努力修炼，都增加了' +
@@ -136,9 +136,9 @@ export default onResponse(selects, async e => {
     } else if (option > 0.6 && option <= 0.7) {
       x = 14000
       y = Math.trunc(xiuwei * x)
-      await Add_修为(A, Math.floor(y))
-      await Add_修为(B, Math.floor(y))
-      await add_qinmidu(A, B, 15)
+      await addExp(A, Math.floor(y))
+      await addExp(B, Math.floor(y))
+      await addQinmidu(A, B, 15)
       Send(
         Text(
           '你们双方共同修炼，过程平稳，都增加了' +
@@ -149,9 +149,9 @@ export default onResponse(selects, async e => {
     } else if (option > 0.7 && option <= 0.9) {
       x = 520
       y = Math.trunc(1 * x)
-      await Add_修为(A, Math.floor(y))
-      await Add_修为(B, Math.floor(y))
-      await add_qinmidu(A, B, 10)
+      await addExp(A, Math.floor(y))
+      await addExp(B, Math.floor(y))
+      await addQinmidu(A, B, 10)
       Send(
         Text(
           '你们双方努力修炼，但是并进不了状态，都增加了' +

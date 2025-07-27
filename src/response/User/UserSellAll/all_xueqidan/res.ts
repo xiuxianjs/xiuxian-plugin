@@ -5,7 +5,7 @@ import {
   existplayer,
   existNajieThing,
   addNajieThing,
-  Add_血气
+  addExp2
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -29,6 +29,6 @@ export default onResponse(selects, async e => {
       xueqi = xueqi + l.xueqi * quantity
     }
   }
-  await Add_血气(usr_qq, xueqi)
+  await addExp2(usr_qq, xueqi)
   Send(Text(`服用成功,血气增加${xueqi}`))
 })

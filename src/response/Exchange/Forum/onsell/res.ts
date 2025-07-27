@@ -7,7 +7,7 @@ import {
   readForum,
   writeForum,
   readPlayer,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -38,12 +38,11 @@ export default onResponse(selects, async e => {
   }
   const thing_value = await convert2integer(value)
   const thing_amount = await convert2integer(amount)
-  let Forum
+  let Forum = []
   try {
     Forum = await readForum()
   } catch {
     await writeForum([])
-    Forum = await readForum()
   }
   let now_time = new Date().getTime()
   let whole = Math.trunc(thing_value * thing_amount)
@@ -54,7 +53,7 @@ export default onResponse(selects, async e => {
     Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`))
     return false
   }
-  await Add_灵石(usr_qq, -(off + whole))
+  await addCoin(usr_qq, -(off + whole))
   const wupin = {
     qq: usr_qq,
     name: thing_name,

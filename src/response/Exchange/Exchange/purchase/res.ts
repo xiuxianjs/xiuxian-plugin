@@ -8,7 +8,7 @@ import {
   writeExchange,
   convert2integer,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -46,13 +46,12 @@ export default onResponse(selects, async e => {
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
   let player = await readPlayer(usr_qq)
-  let Exchange
+  let Exchange = []
   try {
     Exchange = await readExchange()
   } catch {
     //没有表要先建立一个！
     await writeExchange([])
-    Exchange = await readExchange()
   }
   let t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*')
   let x = (await convert2integer(t[0])) - 1
@@ -93,9 +92,9 @@ export default onResponse(selects, async e => {
       await addNajieThing(usr_qq, thing_name, thing_class, n)
     }
     //扣钱
-    await Add_灵石(usr_qq, -money)
+    await addCoin(usr_qq, -money)
     //加钱
-    await Add_灵石(thingqq, money)
+    await addCoin(thingqq, money)
     Exchange[x].aconut = Exchange[x].aconut - n
     Exchange[x].whole = Exchange[x].whole - money
     //删除该位置信息

@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?维护护宗大阵.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   if (
@@ -31,7 +31,7 @@ export default onResponse(selects, async e => {
   let msg = e.MessageText.replace(reg, '')
   //校验输入灵石数
   const lingshi = await convert2integer(msg)
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.灵石池 < lingshi) {
     Send(Text(`宗门灵石池只有${ass.灵石池}灵石,数量不足`))
     return false

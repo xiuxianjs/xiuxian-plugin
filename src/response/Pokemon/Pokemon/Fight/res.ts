@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?出战仙宠.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   let name = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '')

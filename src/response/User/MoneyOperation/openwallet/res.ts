@@ -5,7 +5,7 @@ import {
   existplayer,
   existNajieThing,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -92,7 +92,7 @@ export default onResponse(selects, async e => {
       lingshi +
       '颗灵石！'
   }
-  await Add_灵石(usr_qq, lingshi)
+  await addCoin(usr_qq, lingshi)
   Send(Text(m))
   return false
 })

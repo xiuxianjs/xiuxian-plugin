@@ -2,15 +2,15 @@ import { Text, useMention, useSend } from 'alemonjs'
 
 import {
   existplayer,
-  Add_灵石,
-  Add_修为,
-  Add_血气,
+  addCoin,
+  addExp,
+  addExp2,
   foundthing,
   addNajieThing
 } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?发.*$/
+export const regular = /^(#|＃|\/)?发(灵石|修为|血气)\*\d+$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -33,9 +33,8 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取发送灵石数量
-  let thing_name = e.MessageText.replace(/^(#|＃|\/)?发/, '')
-  let code = thing_name.split('*')
-  thing_name = code[0]
+  let code = e.MessageText.replace(/^(#|＃|\/)?发/, '').split('*')
+  let thing_name = code[0]
   let thing_amount: any = code[1] //数量
   let thing_piji
   thing_amount = Number(thing_amount)
@@ -43,11 +42,11 @@ export default onResponse(selects, async e => {
     thing_amount = 1
   }
   if (thing_name == '灵石') {
-    await Add_灵石(B_qq, thing_amount)
+    await addCoin(B_qq, thing_amount)
   } else if (thing_name == '修为') {
-    await Add_修为(B_qq, thing_amount)
+    await addExp(B_qq, thing_amount)
   } else if (thing_name == '血气') {
-    await Add_血气(B_qq, thing_amount)
+    await addExp2(B_qq, thing_amount)
   } else {
     let thing_exist = await foundthing(thing_name)
     if (!thing_exist) {

@@ -1,4 +1,4 @@
-import { readForum, writeForum, Add_灵石 } from '@src/model'
+import { readForum, writeForum, addCoin } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 4 * * ?', async () => {
@@ -16,7 +16,7 @@ scheduleJob('0 0 4 * * ?', async () => {
     if (time < 3) break
     const usr_qq = Forum[i].qq
     const lingshi = Forum[i].whole
-    await Add_灵石(usr_qq, lingshi)
+    await addCoin(usr_qq, lingshi)
     Forum.splice(i, 1)
     i--
   }

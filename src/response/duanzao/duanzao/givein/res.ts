@@ -7,8 +7,8 @@ import {
   convert2integer,
   foundthing,
   existNajieThing,
-  Read_mytripod,
-  Read_danyao,
+  readMytripod,
+  readDanyao,
   readTripod,
   writeDuanlu,
   addNajieThing
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + user_qq + ':game_action'
   )
   //防止继续其他娱乐行为
-  if (+game_action == 0) {
+  if (+game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
 
   //开始放入
 
-  const tripod = await Read_mytripod(user_qq)
+  const tripod = await readMytripod(user_qq)
   if (tripod.状态 == 1) {
     Send(Text(`正在炼制中,无法熔炼更多材料`))
     return false
@@ -74,7 +74,7 @@ export default onResponse(selects, async e => {
     num += Number(tripod.数量[item])
   }
   let dyew = 0
-  let dy = await Read_danyao(user_qq)
+  let dy = await readDanyao(user_qq)
   if (dy.beiyong5 > 0) {
     dyew = dy.beiyong5
   }
@@ -92,12 +92,11 @@ export default onResponse(selects, async e => {
     Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`))
     return false
   }
-  let newtripod
+  let newtripod = []
   try {
     newtripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    newtripod = await readTripod()
   }
   for (let item of newtripod) {
     if (user_qq == item.qq) {

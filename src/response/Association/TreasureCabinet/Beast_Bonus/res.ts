@@ -4,8 +4,8 @@ import { data, redis } from '@src/api/api'
 import {
   isNotNull,
   shijianc,
-  Read_danyao,
-  Write_danyao,
+  readDanyao,
+  writeDanyao,
   addNajieThing
 } from '@src/model'
 
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   //无宗门
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门神兽 == 0) {
     Send(Text('你的宗门还没有神兽的护佑，快去召唤神兽吧'))
     return false
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
 
   let random = Math.random()
   //根据好感度获取概率
-  let dy = await Read_danyao(usr_qq)
+  let dy = await readDanyao(usr_qq)
   if (dy.beiyong2 > 0) {
     dy.beiyong2--
   }
@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
   if (dy.beiyong2 == 0) {
     dy.beiyong3 = 0
   }
-  await Write_danyao(usr_qq, dy)
+  await writeDanyao(usr_qq, dy)
   if (random > 0.7) {
     let location
     let item_name

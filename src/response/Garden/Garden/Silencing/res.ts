@@ -24,8 +24,8 @@ export default onResponse(selects, async e => {
   //   let qq = User.UserId
 
   //   //判断双方是否有档
-  //   let ifexistplay = data.existData('player', usr_qq)
-  //   let ifexistplay1 = data.existData('player', qq)
+  //   let ifexistplay = await data.existData('player', usr_qq)
+  //   let ifexistplay1 = await data.existData('player', qq)
   //   if (!ifexistplay) return false
   //   if (!ifexistplay1) return false
   //   let GayCD = {}

@@ -8,7 +8,7 @@ import {
   convert2integer,
   existNajieThing,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -107,7 +107,7 @@ export default onResponse(selects, async e => {
     )
     commodities_price = sell.出售价 * thing_amount
   }
-  await Add_灵石(usr_qq, commodities_price)
+  await addCoin(usr_qq, commodities_price)
   Send(
     Text(
       `出售成功!  获得${commodities_price}灵石,还剩余${thing_name}*${

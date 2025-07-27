@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
 import { existplayer, addNajieThing } from '@src/model'
-import { Read_tiandibang, Write_tiandibang } from '../tian'
+import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?积分兑换(.*)$/
@@ -27,7 +27,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let tiandibang
-  tiandibang = await Read_tiandibang()
+  tiandibang = await readTiandibang()
   let m = tiandibang.length
   let i
   for (m = 0; m < tiandibang.length; m++) {

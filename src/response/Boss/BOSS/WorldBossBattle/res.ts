@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 
 import { redis, data, pushInfo } from '@src/api/api'
-import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
+import { zdBattle, sleep, Harm, addHP, addCoin } from '@src/model'
 import {
   BossIsAlive,
   InitWorldBoss,
@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
     Send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
-  if (data.existData('player', usr_qq)) {
+  if (await data.existData('player', usr_qq)) {
     let player = await await data.getData('player', usr_qq)
     if (player.level_id < 42 && player.lunhui == 0) {
       Send(Text('你在仙界吗'))
@@ -124,7 +124,7 @@ export default onResponse(selects, async e => {
       return false
     }
     global.WorldBOSSBattleLock = 1
-    let Data_battle = await zd_battle(player, Boss)
+    let Data_battle = await zdBattle(player, Boss)
     let msg = Data_battle.msg
     let A_win = `${player.名号}击败了${Boss.名号}`
     let B_win = `${Boss.名号}击败了${player.名号}`
@@ -165,7 +165,7 @@ export default onResponse(selects, async e => {
         )
       )
     }
-    await Add_HP(usr_qq, Data_battle.A_xue)
+    await addHP(usr_qq, Data_battle.A_xue)
     await sleep(1000)
     let random = Math.random()
     if (random < 0.05 && msg.find(item => item == A_win)) {
@@ -181,7 +181,7 @@ export default onResponse(selects, async e => {
           )}伤害,并治愈了你的伤势`
         )
       )
-      await Add_HP(usr_qq, player.血量上限)
+      await addHP(usr_qq, player.血量上限)
     }
     await sleep(1000)
     PlayerRecordJSON.TotalDamage[Userid] += TotalDamage
@@ -200,7 +200,7 @@ export default onResponse(selects, async e => {
         const [platform, group_id] = group.split(':')
         await pushInfo(platform, group_id, true, msg2)
       }
-      await Add_灵石(usr_qq, 1000000)
+      await addCoin(usr_qq, 1000000)
       logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
       WorldBossStatus.KilledTime = new Date().getTime()

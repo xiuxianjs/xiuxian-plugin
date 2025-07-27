@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import {
   addNajieThing,
-  Add_灵石,
+  addCoin,
   convert2integer,
   existplayer,
   Go,
@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
   }
   //符合就往戒指加
   await addNajieThing(usr_qq, thing_name, ifexist.class, quantity)
-  await Add_灵石(usr_qq, -commodities_price)
+  await addCoin(usr_qq, -commodities_price)
   //发送消息
   Send(
     Text(

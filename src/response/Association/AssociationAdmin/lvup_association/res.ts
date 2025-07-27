@@ -9,7 +9,7 @@ const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门等级 == 宗门人数上限.length) {
     Send(Text('已经是最高等级宗门'))
     return false

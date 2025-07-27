@@ -5,7 +5,7 @@ import {
   existplayer,
   readPlayer,
   foundthing,
-  instead_equipment
+  insteadEquipment
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -74,7 +74,7 @@ export default onResponse(selects, async e => {
         }
       }
     }
-    if (max_equ) await instead_equipment(usr_qq, max_equ)
+    if (max_equ) await insteadEquipment(usr_qq, max_equ)
   }
   let img = await getQquipmentImage(e)
   if (img) Send(Image(img))

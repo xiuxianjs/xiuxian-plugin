@@ -5,10 +5,10 @@ import {
   Go,
   readPlayer,
   isNotNull,
-  exist_hunyin,
-  find_qinmidu,
-  add_qinmidu,
-  Add_灵石
+  existHunyin,
+  findQinmidu,
+  addQinmidu,
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -33,20 +33,20 @@ export default onResponse(selects, async e => {
     return false
   }
   if (didian == '桃花岛') {
-    let exist_B = await exist_hunyin(usr_qq)
+    let exist_B = await existHunyin(usr_qq)
     if (!exist_B) {
       Send(Text(`还请少侠找到道侣之后再来探索吧`))
       return false
     }
-    let qinmidu = await find_qinmidu(usr_qq, exist_B)
+    let qinmidu = await findQinmidu(usr_qq, exist_B)
     if (qinmidu < 550) {
       Send(Text('少侠还是先和道侣再联络联络感情吧'))
       return false
     }
-    await add_qinmidu(usr_qq, exist_B, -50)
+    await addQinmidu(usr_qq, exist_B, -50)
   }
   let Price = weizhi.Price
-  await Add_灵石(usr_qq, -Price)
+  await addCoin(usr_qq, -Price)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.secretplace //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒

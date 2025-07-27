@@ -6,11 +6,11 @@ import {
   isNotNull,
   addNajieThing,
   writePlayer,
-  Add_修为,
+  addExp,
   readEquipment,
   writeEquipment,
-  Add_HP,
-  Add_血气
+  addHP,
+  addExp2
 } from '@src/model'
 
 export async function Level_up(e, luck = false) {
@@ -24,7 +24,7 @@ export async function Level_up(e, luck = false) {
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
@@ -115,7 +115,7 @@ export async function Level_up(e, luck = false) {
   if (rand > prob) {
     let bad_time = Math.random() //增加多种突破失败情况，顺滑突破丢失修为曲线
     if (bad_time > 0.9) {
-      await Add_修为(usr_qq, -1 * need_exp * 0.4)
+      await addExp(usr_qq, -1 * need_exp * 0.4)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_Levelup_time',
         now_Time
@@ -129,7 +129,7 @@ export async function Level_up(e, luck = false) {
       )
       return false
     } else if (bad_time > 0.8) {
-      await Add_修为(usr_qq, -1 * need_exp * 0.2)
+      await addExp(usr_qq, -1 * need_exp * 0.2)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_Levelup_time',
         now_Time
@@ -143,7 +143,7 @@ export async function Level_up(e, luck = false) {
       )
       return false
     } else if (bad_time > 0.7) {
-      await Add_修为(usr_qq, -1 * need_exp * 0.1)
+      await addExp(usr_qq, -1 * need_exp * 0.1)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_Levelup_time',
         now_Time
@@ -164,7 +164,7 @@ export async function Level_up(e, luck = false) {
       Send(Text(`突破失败，不要气馁,等到${Time}分钟后再尝试吧`))
       return false
     } else {
-      await Add_修为(usr_qq, -1 * need_exp * 0.2)
+      await addExp(usr_qq, -1 * need_exp * 0.2)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_Levelup_time',
         now_Time
@@ -227,7 +227,7 @@ export async function Level_up(e, luck = false) {
   let equipment = await readEquipment(usr_qq)
   await writeEquipment(usr_qq, equipment)
   //补血
-  await Add_HP(usr_qq, 999999999999)
+  await addHP(usr_qq, 999999999999)
   //查境界名
   let level = data.Level_list.find(
     item => item.level_id == player.level_id
@@ -245,7 +245,7 @@ export async function LevelMax_up(e, luck) {
   let game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
@@ -299,7 +299,7 @@ export async function LevelMax_up(e, luck) {
   if (rand > prob) {
     let bad_time = Math.random() //增加多种突破失败情况，顺滑突破丢失修为曲线
     if (bad_time > 0.9) {
-      await Add_血气(usr_qq, -1 * need_exp * 0.4)
+      await addExp2(usr_qq, -1 * need_exp * 0.4)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_LevelMaxup_time',
         now_Time
@@ -313,7 +313,7 @@ export async function LevelMax_up(e, luck) {
       )
       return false
     } else if (bad_time > 0.8) {
-      await Add_血气(usr_qq, -1 * need_exp * 0.2)
+      await addExp2(usr_qq, -1 * need_exp * 0.2)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_LevelMaxup_time',
         now_Time
@@ -327,7 +327,7 @@ export async function LevelMax_up(e, luck) {
       )
       return false
     } else if (bad_time > 0.7) {
-      await Add_血气(usr_qq, -1 * need_exp * 0.1)
+      await addExp2(usr_qq, -1 * need_exp * 0.1)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_LevelMaxup_time',
         now_Time
@@ -348,7 +348,7 @@ export async function LevelMax_up(e, luck) {
       Send(Text(`破体失败，不要气馁,等到${Time}分钟后再尝试吧`))
       return false
     } else {
-      await Add_血气(usr_qq, -1 * need_exp * 0.2)
+      await addExp2(usr_qq, -1 * need_exp * 0.2)
       await redis.set(
         'xiuxian@1.3.0:' + usr_qq + ':last_LevelMaxup_time',
         now_Time
@@ -408,7 +408,7 @@ export async function LevelMax_up(e, luck) {
   await writePlayer(usr_qq, player)
   let equipment = await readEquipment(usr_qq)
   await writeEquipment(usr_qq, equipment)
-  await Add_HP(usr_qq, 999999999999)
+  await addHP(usr_qq, 999999999999)
   let level = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).level

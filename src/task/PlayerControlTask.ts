@@ -1,13 +1,13 @@
 import { redis, data, config, pushInfo } from '@src/api/api'
 import {
   isNotNull,
-  Read_danyao,
+  readDanyao,
   existNajieThing,
   addNajieThing,
-  Add_修为,
-  Add_血气,
+  addExp,
+  addExp2,
   setFileValue,
-  Write_danyao,
+  writeDanyao,
   __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
@@ -68,7 +68,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let other_xiuwei = 0
           //炼丹师丹药修正
           let transformation = '修为'
-          let dy = await Read_danyao(player_id)
+          let dy = await readDanyao(player_id)
           if (dy.biguan > 0) {
             dy.biguan--
             if (dy.biguan == 0) {
@@ -114,7 +114,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             other_x += Math.trunc(xiuwei * 0.15 * time)
             await addNajieThing(player_id, '魔界秘宝', '道具', -1)
             msg.push('\n消耗了道具[魔界秘宝],额外增加' + other_x + '修为')
-            await Add_修为(player_id, other_x)
+            await addExp(player_id, other_x)
           }
           if (
             (await existNajieThing(player_id, '神界秘宝', '道具')) &&
@@ -124,7 +124,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             qixue = Math.trunc(xiuwei * 0.1 * time)
             await addNajieThing(player_id, '神界秘宝', '道具', -1)
             msg.push('\n消耗了道具[神界秘宝],额外增加' + qixue + '血气')
-            await Add_血气(player_id, qixue)
+            await addExp2(player_id, qixue)
           }
 
           await setFileValue(player_id, blood * time, '当前血量')
@@ -171,7 +171,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             dy.lianti = 0
             dy.beiyong4 = 0
           }
-          await Write_danyao(player_id, dy)
+          await writeDanyao(player_id, dy)
         }
       } //炼丹师修正结束
       //降妖

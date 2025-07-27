@@ -1,5 +1,4 @@
 import { Image, useSend } from 'alemonjs'
-import fs from 'fs'
 import { data, redis } from '@src/api/api'
 import {
   existplayer,
@@ -8,8 +7,8 @@ import {
   writePlayer,
   writeEquipment,
   Write_najie,
-  Add_HP,
-  Write_danyao
+  addHP,
+  writeDanyao
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -20,11 +19,11 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
     let img = await getPlayerImage(e)
     if (img) Send(Image(img))
-    return false
+    return
   }
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   let n = keys.length + 1
@@ -94,7 +93,7 @@ export default onResponse(selects, async e => {
     仙宠口粮: []
   }
   await Write_najie(usr_qq, new_najie)
-  await Add_HP(usr_qq, 999999)
+  await addHP(usr_qq, 999999)
   const arr = {
     biguan: 0, //闭关状态
     biguanxl: 0, //增加效率
@@ -108,7 +107,7 @@ export default onResponse(selects, async e => {
     beiyong4: 0,
     beiyong5: 0
   }
-  await Write_danyao(usr_qq, arr)
+  await writeDanyao(usr_qq, arr)
   let img = await getPlayerImage(e)
   if (img) Send(Image(img))
   return false

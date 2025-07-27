@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, find_qinmidu, sleep } from '@src/model'
+import { __PATH, findQinmidu, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
 import { redis } from '@src/api/api'
@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
       continue
     }
     //A与B的亲密度
-    let pd = await find_qinmidu(A, B)
+    let pd = await findQinmidu(A, B)
     if (pd == false) {
       continue
     }

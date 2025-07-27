@@ -10,7 +10,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   //无宗门
@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门驻地 == 0) {
     Send(Text(`你的宗门还没有驻地，无法建设宗门`))
     return false

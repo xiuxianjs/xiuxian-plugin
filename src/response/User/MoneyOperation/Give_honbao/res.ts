@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/api/api'
-import { existplayer, Go, convert2integer, Add_灵石 } from '@src/model'
+import { existplayer, Go, convert2integer, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?发红包.*$/
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':honbao', lingshi)
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':honbaoacount', acount)
   //然后扣灵石
-  await Add_灵石(usr_qq, -lingshi * acount)
+  await addCoin(usr_qq, -lingshi * acount)
   Send(
     Text(
       '【全服公告】' +

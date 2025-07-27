@@ -2,13 +2,13 @@ import { config, data, pushInfo, redis } from '@src/api/api'
 import {
   playerEfficiency,
   isNotNull,
-  Read_danyao,
+  readDanyao,
   existNajieThing,
   addNajieThing,
-  Add_修为,
-  Add_血气,
+  addExp,
+  addExp2,
   setFileValue,
-  Write_danyao
+  writeDanyao
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -118,7 +118,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   //炼丹师丹药修正
   let transformation = '修为'
   let xueqi = 0
-  let dy = await Read_danyao(usr_qq)
+  let dy = await readDanyao(usr_qq)
   if (dy.biguan > 0) {
     dy.biguan--
     if (dy.biguan == 0) {
@@ -169,7 +169,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     other_x = Math.trunc(xiuwei * 0.15 * time)
     await addNajieThing(usr_qq, '魔界秘宝', '道具', -1)
     msg.push('\n消耗了道具[魔界秘宝],额外增加' + other_x + '修为')
-    await Add_修为(usr_qq, other_x)
+    await addExp(usr_qq, other_x)
   }
   if (
     (await existNajieThing(usr_qq, '神界秘宝', '道具')) &&
@@ -179,7 +179,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     qixue = Math.trunc(xiuwei * 0.1 * time)
     await addNajieThing(usr_qq, '神界秘宝', '道具', -1)
     msg.push('\n消耗了道具[神界秘宝],额外增加' + qixue + '血气')
-    await Add_血气(usr_qq, qixue)
+    await addExp2(usr_qq, qixue)
   }
   //设置修为，设置血量
 
@@ -221,6 +221,6 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     dy.beiyong4 = 0
   }
   //炼丹师修正结束
-  await Write_danyao(usr_qq, dy)
+  await writeDanyao(usr_qq, dy)
   return false
 }

@@ -9,7 +9,7 @@ import {
   readExchange,
   writeExchange,
   readPlayer,
-  Add_灵石,
+  addCoin,
   addNajieThing
 } from '@src/model'
 
@@ -93,12 +93,11 @@ export default onResponse(selects, async e => {
     Send(Text(`你没有那么多[${thing_name}]`))
     return false
   }
-  let Exchange
+  let Exchange = []
   try {
     Exchange = await readExchange()
   } catch {
     await writeExchange([])
-    Exchange = await readExchange()
   }
   let now_time = new Date().getTime()
   let whole = Math.trunc(thing_value * thing_amount)
@@ -109,7 +108,7 @@ export default onResponse(selects, async e => {
     Send(Text('就这点灵石还想上架'))
     return false
   }
-  await Add_灵石(usr_qq, -off)
+  await addCoin(usr_qq, -off)
   let wupin
   if (thing_exist.class == '装备' || thing_exist.class == '仙宠') {
     let pinji2 = ['劣', '普', '优', '精', '极', '绝', '顶']

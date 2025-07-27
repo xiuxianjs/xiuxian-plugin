@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { Read_tiandibang, Write_tiandibang, re_bangdang } from '../tian'
+import { readTiandibang, Write_tiandibang, re_bangdang } from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?清空积分/
@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
     return false
   }
   try {
-    await Read_tiandibang()
+    await readTiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])

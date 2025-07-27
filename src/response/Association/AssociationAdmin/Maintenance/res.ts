@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  let ass = await await data.getAssociation(player.宗门.宗门名称)
   let now = new Date()
   let nowTime = now.getTime() //获取当前日期的时间戳
   let time: any = config.getConfig('xiuxian', 'xiuxian').CD.association

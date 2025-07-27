@@ -6,10 +6,10 @@ import {
   readPlayer,
   existNajieThing,
   addNajieThing,
-  Add_血气,
-  Add_修为,
-  Read_temp,
-  Write_temp,
+  addExp2,
+  addExp,
+  readTemp,
+  writeTemp,
   __PATH
 } from '@src/model'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
@@ -172,8 +172,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             //写入redis
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
-            await Add_血气(player_id, qixue)
-            await Add_修为(player_id, xiuwei)
+            await addExp2(player_id, qixue)
+            await addExp(player_id, xiuwei)
             //发送消息
             const [platform, address] = push_address.split(':')
             await pushInfo(platform, address, is_group, msg.join(''))
@@ -182,26 +182,25 @@ scheduleJob('0 0/5 * * * ?', async () => {
 
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
-            await Add_血气(player_id, qixue)
-            await Add_修为(player_id, xiuwei)
+            await addExp2(player_id, qixue)
+            await addExp(player_id, xiuwei)
             try {
-              let temp = await Read_temp()
+              let temp = await readTemp()
               let p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               }
               temp.push(p)
-              await Write_temp(temp)
+              await writeTemp(temp)
             } catch {
-              await Write_temp([])
-              let temp = await Read_temp()
+              let temp = []
               let p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq: player_id,
                 qq_group: push_address
               }
               temp.push(p)
-              await Write_temp(temp)
+              await writeTemp(temp)
             }
           }
         }

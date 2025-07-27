@@ -5,7 +5,7 @@ import {
   readPlayer,
   readForum,
   writeForum,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let Forum
+  let Forum = []
   let player = await readPlayer(usr_qq)
   let x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1
   try {
@@ -26,7 +26,6 @@ export default onResponse(selects, async e => {
   } catch {
     //没有表要先建立一个！
     await writeForum([])
-    Forum = await readForum()
   }
   if (x >= Forum.length) {
     Send(Text(`没有编号为${x + 1}的宝贝需求`))
@@ -37,7 +36,7 @@ export default onResponse(selects, async e => {
     Send(Text('不能取消别人的宝贝需求'))
     return false
   }
-  await Add_灵石(usr_qq, Forum[x].whole)
+  await addCoin(usr_qq, Forum[x].whole)
   Send(
     Text(
       player.名号 +

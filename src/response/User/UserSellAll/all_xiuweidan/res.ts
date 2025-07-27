@@ -1,12 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import {
-  existplayer,
-  existNajieThing,
-  addNajieThing,
-  Add_修为
-} from '@src/model'
+import { existplayer, existNajieThing, addNajieThing, addExp } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键服用修为丹$/
@@ -28,6 +23,6 @@ export default onResponse(selects, async e => {
       xiuwei = xiuwei + l.exp * quantity
     }
   }
-  await Add_修为(usr_qq, xiuwei)
+  await addExp(usr_qq, xiuwei)
   Send(Text(`服用成功,修为增加${xiuwei}`))
 })

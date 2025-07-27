@@ -1,25 +1,17 @@
-import fs from 'fs'
-import path from 'path'
 import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { readIt } from './duanzaofu.js'
 import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
 import { __PATH } from './paths.js'
 import { writePlayer, writeIt } from './pub.js'
-import type {
-  Player,
-  Equipment,
-  Najie,
-  TalentInfo,
-  DanyaoStatus
-} from '../types/player.js'
+import type { Player, Equipment, Najie, TalentInfo } from '../types/player.js'
 import * as _ from 'lodash-es'
 import { getDataByUserId } from './Redis.js'
 
 export { __PATH }
 
 // 辅助函数：安全获取玩家数据
-export async function getPlayerDataSafe(usr_qq: string): Player | null {
+export async function getPlayerDataSafe(usr_qq: string): Promise<Player> {
   const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return null
@@ -33,7 +25,7 @@ export function setPlayerDataSafe(usr_qq: string, player: Player): void {
 }
 
 // 辅助函数：安全获取装备数据
-export async function getEquipmentDataSafe(usr_qq: string): Equipment | null {
+export async function getEquipmentDataSafe(usr_qq: string): Promise<Equipment> {
   const equipmentData = await data.getData('equipment', usr_qq)
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return null
@@ -74,6 +66,10 @@ export async function convert2integer(
 //读取存档信息，返回成一个JavaScript对象
 export async function readPlayer(usr_qq: string): Promise<Player | null> {
   const player = await redis.get(`${__PATH.player_path}:${usr_qq}`)
+  if (!player) {
+    //如果没有玩家数据，返回null
+    return null
+  }
   //将字符串数据转变成数组格式
   const playerData = JSON.parse(decodeURIComponent(player))
   return playerData as Player
@@ -173,6 +169,10 @@ export async function LevelTask(
 //读取装备信息，返回成一个JavaScript对象
 export async function readEquipment(usr_qq: string): Promise<Equipment | null> {
   let equipment = await redis.get(`${__PATH.equipment_path}:${usr_qq}`)
+  if (!equipment) {
+    //如果没有装备数据，返回null
+    return null
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(equipment)
   return data as Equipment
@@ -222,24 +222,19 @@ export async function writeEquipment(
   if (player.暴击伤害 > 2.5) player.暴击伤害 = 2.5
   if (player.仙宠.type == '暴伤') player.暴击伤害 += player.仙宠.加成
   await writePlayer(usr_qq, player)
-  await Add_HP(usr_qq, 0)
+  await addHP(usr_qq, 0)
   redis.set(`${__PATH.equipment_path}:${usr_qq}`, JSON.stringify(equipment))
   return
 }
 
 //读取纳戒信息，返回成一个JavaScript对象
-export async function readNajie(usr_qq: string): Promise<Najie | null> {
+export async function readNajie(usr_qq: string): Promise<Najie> {
   let najieData
   let najie = await redis.get(`${__PATH.najie_path}:${usr_qq}`)
-  //将字符串数据转变成数组格式
-  try {
-    // najie = JSON.parse(najie)
-    najieData = JSON.parse(najie)
-  } catch {
-    //转换不了，纳戒错误
-    await fixed(usr_qq)
-    najieData = await readNajie(usr_qq)
+  if (!najie) {
+    return null
   }
+  najieData = JSON.parse(najie)
   return najieData as Najie
 }
 
@@ -452,7 +447,7 @@ export async function Write_najie(usr_qq: string, najie: Najie): Promise<void> {
 
 //修为数量和灵石数量正增加,负减少
 //使用时记得加await
-export async function Add_灵石(
+export async function addCoin(
   usr_qq: string,
   灵石数量: number = 0
 ): Promise<void> {
@@ -463,7 +458,7 @@ export async function Add_灵石(
   return
 }
 
-export async function Add_修为(
+export async function addExp(
   usr_qq: string,
   修为数量: number = 0
 ): Promise<void> {
@@ -474,7 +469,7 @@ export async function Add_修为(
   return
 }
 
-export async function Add_魔道值(
+export async function addExp3(
   usr_qq: string,
   魔道值: number = 0
 ): Promise<void> {
@@ -485,10 +480,7 @@ export async function Add_魔道值(
   return
 }
 
-export async function Add_血气(
-  usr_qq: string,
-  血气: number = 0
-): Promise<void> {
+export async function addExp2(usr_qq: string, 血气: number = 0): Promise<void> {
   let player: Player | null = await readPlayer(usr_qq)
   if (!player) return
   player.血气 += Math.trunc(血气)
@@ -496,7 +488,7 @@ export async function Add_血气(
   return
 }
 
-export async function Add_HP(usr_qq: string, blood: number = 0): Promise<void> {
+export async function addHP(usr_qq: string, blood: number = 0): Promise<void> {
   let player: Player | null = await readPlayer(usr_qq)
   if (!player) return
   player.当前血量 += Math.trunc(blood)
@@ -515,7 +507,7 @@ export async function Add_HP(usr_qq: string, blood: number = 0): Promise<void> {
  * @param {*} exp 经验值
  * @returns
  */
-export async function Add_职业经验(usr_qq, exp = 0) {
+export async function addExp4(usr_qq, exp = 0) {
   let player: any = await readPlayer(usr_qq)
   if (exp == 0) {
     return
@@ -539,14 +531,14 @@ export async function Add_职业经验(usr_qq, exp = 0) {
   return
 }
 
-export async function Add_najie_灵石(usr_qq, lingshi) {
+export async function addBagCoin(usr_qq, lingshi) {
   let najie: any = await readNajie(usr_qq)
   najie.灵石 += Math.trunc(lingshi)
   await Write_najie(usr_qq, najie)
   return
 }
 
-export async function Add_player_学习功法(usr_qq, gongfa_name) {
+export async function addConFaByUser(usr_qq, gongfa_name) {
   let player: any = await readPlayer(usr_qq)
   player.学习的功法.push(gongfa_name)
   data.setData('player', usr_qq, player)
@@ -554,7 +546,7 @@ export async function Add_player_学习功法(usr_qq, gongfa_name) {
   return
 }
 
-export async function Reduse_player_学习功法(usr_qq, gongfa_name) {
+export async function reduseGonfaByUser(usr_qq, gongfa_name) {
   let player: any = await readPlayer(usr_qq)
   player.学习的功法 = player.学习的功法.filter(item => item != gongfa_name)
   data.setData('player', usr_qq, player)
@@ -581,7 +573,7 @@ export async function playerEfficiency(usr_qq: string) {
   } else {
     const zongmenName =
       typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
-    ass = await data.getAssociation(zongmenName) //修仙对应宗门信息
+    ass = await await data.getAssociation(zongmenName) //修仙对应宗门信息
     if (ass === 'error' || Array.isArray(ass)) {
       Assoc_efficiency = 0
     } else {
@@ -617,7 +609,7 @@ export async function playerEfficiency(usr_qq: string) {
     // 是否存在修炼仙宠
     xianchong_efficiency = player.仙宠.加成 // 存在修炼仙宠，仙宠效率为仙宠效率加成
   }
-  let dy: any = await Read_danyao(usr_qq)
+  let dy: any = await readDanyao(usr_qq)
   let bgdan = dy.biguanxl
   const currentXiulianEfficiency = Number(player.修炼效率提升 || 0)
   if (
@@ -645,7 +637,7 @@ export async function playerEfficiency(usr_qq: string) {
  */
 
 //修改纳戒物品锁定状态
-export async function re_najie_thing(
+export async function updateBagThing(
   usr_qq,
   thing_name,
   thing_class,
@@ -865,7 +857,7 @@ export async function addNajieThing(usr_qq, name, thing_class, x, pinji?) {
 }
 
 //替换装备
-export async function instead_equipment(usr_qq, equipment_data) {
+export async function insteadEquipment(usr_qq, equipment_data) {
   //装备name
   await addNajieThing(usr_qq, equipment_data, '装备', -1, equipment_data.pinji)
   let equipment: any = await readEquipment(usr_qq)
@@ -953,7 +945,7 @@ export function sortBy(field) {
 }
 
 //获取总修为
-export async function Get_xiuwei(usr_qq) {
+export async function getAllExp(usr_qq) {
   let player: any = await readPlayer(usr_qq)
   let sum_exp = 0
   let now_level_id
@@ -977,18 +969,18 @@ export async function Get_xiuwei(usr_qq) {
 //获取随机灵根
 export async function getRandomTalent(): Promise<TalentInfo> {
   let talent
-  if (get_random_res(体质概率)) {
+  if (getRandomRes(体质概率)) {
     talent = data.talent_list.filter(item => item.type == '体质')
-  } else if (get_random_res(伪灵根概率 / (1 - 体质概率))) {
+  } else if (getRandomRes(伪灵根概率 / (1 - 体质概率))) {
     talent = data.talent_list.filter(item => item.type == '伪灵根')
-  } else if (get_random_res(真灵根概率 / (1 - 伪灵根概率 - 体质概率))) {
+  } else if (getRandomRes(真灵根概率 / (1 - 伪灵根概率 - 体质概率))) {
     talent = data.talent_list.filter(item => item.type == '真灵根')
   } else if (
-    get_random_res(天灵根概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率))
+    getRandomRes(天灵根概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率))
   ) {
     talent = data.talent_list.filter(item => item.type == '天灵根')
   } else if (
-    get_random_res(
+    getRandomRes(
       圣体概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率 - 天灵根概率)
     )
   ) {
@@ -996,7 +988,7 @@ export async function getRandomTalent(): Promise<TalentInfo> {
   } else {
     talent = data.talent_list.filter(item => item.type == '变异灵根')
   }
-  let newtalent = get_random_fromARR(talent)
+  let newtalent = getRandomFromARR(talent)
   return newtalent
 }
 
@@ -1005,7 +997,7 @@ export async function getRandomTalent(): Promise<TalentInfo> {
  * @param P 概率
  * @returns 随机返回 false or true
  */
-export function get_random_res(P) {
+export function getRandomRes(P) {
   if (P > 1) {
     P = 1
   }
@@ -1024,7 +1016,7 @@ export function get_random_res(P) {
  * @param ARR 输入的数组
  * @returns 随机返回一个元素
  */
-export function get_random_fromARR(ARR) {
+export function getRandomFromARR(ARR) {
   //let L = ARR.length;
   let randindex = Math.trunc(Math.random() * ARR.length)
   return ARR[randindex]
@@ -1130,6 +1122,9 @@ export function isNotBlank(value: any): boolean {
 
 export async function readQinmidu() {
   const qinmidu = await redis.get(`${__PATH.qinmidu}:qinmidu`)
+  if (!qinmidu) {
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(qinmidu)
   return data
@@ -1139,14 +1134,13 @@ export async function writeQinmidu(qinmidu) {
   await redis.set(`${__PATH.qinmidu}:qinmidu`, JSON.stringify(qinmidu))
   return
 }
-export async function fstadd_qinmidu(A, B) {
-  let qinmidu
+export async function fstaddQinmidu(A, B) {
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有表要先建立一个！
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let player = {
     QQ_A: A,
@@ -1159,14 +1153,13 @@ export async function fstadd_qinmidu(A, B) {
   return
 }
 
-export async function add_qinmidu(A, B, qinmi) {
-  let qinmidu
+export async function addQinmidu(A, B, qinmi) {
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有表要先建立一个！
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i
   for (i = 0; i < qinmidu.length; i++) {
@@ -1178,7 +1171,7 @@ export async function add_qinmidu(A, B, qinmi) {
     }
   }
   if (i == qinmidu.length) {
-    await fstadd_qinmidu(A, B)
+    await fstaddQinmidu(A, B)
     qinmidu = await readQinmidu()
   }
   qinmidu[i].亲密度 += qinmi
@@ -1186,14 +1179,13 @@ export async function add_qinmidu(A, B, qinmi) {
   return
 }
 
-export async function find_qinmidu(A, B) {
-  let qinmidu
+export async function findQinmidu(A, B) {
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i
   let QQ = []
@@ -1227,14 +1219,13 @@ export async function find_qinmidu(A, B) {
   }
 }
 //查询A的婚姻，如果有婚姻则返回对方qq，若无则返回false
-export async function exist_hunyin(A) {
-  let qinmidu
+export async function existHunyin(A) {
+  let qinmidu = []
   try {
     qinmidu = await readQinmidu()
   } catch {
     //没有建立一个
     await writeQinmidu([])
-    qinmidu = await readQinmidu()
   }
   let i = 0
   let flag = ''
@@ -1255,23 +1246,22 @@ export async function exist_hunyin(A) {
   return flag
 }
 
-export async function Write_shitu(shitu) {
+export async function writeShitu(shitu) {
   await redis.set(`${__PATH.shitu}:shitu`, JSON.stringify(shitu))
   return
 }
-export async function Read_shitu() {
+export async function readShitu() {
   const shitu = await redis.get(`${__PATH.shitu}:shitu`)
   return JSON.parse(shitu)
 }
 
-export async function fstadd_shitu(A) {
-  let shitu
+export async function fstaddShitu(A) {
+  let shitu = []
   try {
-    shitu = await Read_shitu()
+    shitu = await readShitu()
   } catch {
     //没有表要先建立一个！
-    await Write_shitu([])
-    shitu = await Read_shitu()
+    await writeShitu([])
   }
   let player = {
     师傅: A,
@@ -1285,18 +1275,17 @@ export async function fstadd_shitu(A) {
     已出师徒弟: []
   }
   shitu.push(player)
-  await Write_shitu(shitu)
+  await writeShitu(shitu)
   return
 }
 
-export async function add_shitu(A, num) {
-  let shitu
+export async function addShitu(A, num) {
+  let shitu = []
   try {
-    shitu = await Read_shitu()
+    shitu = await readShitu()
   } catch {
     //没有表要先建立一个！
-    await Write_shitu([])
-    shitu = await Read_shitu()
+    await writeShitu([])
   }
   let i
   for (i = 0; i < shitu.length; i++) {
@@ -1305,22 +1294,21 @@ export async function add_shitu(A, num) {
     }
   }
   if (i == shitu.length) {
-    await fstadd_shitu(A)
-    shitu = await Read_shitu()
+    await fstaddShitu(A)
+    shitu = await readShitu()
   }
   shitu[i].收徒 += num
-  await Write_shitu(shitu)
+  await writeShitu(shitu)
   return
 }
 
-export async function find_shitu(A) {
-  let shitu
+export async function findShitu(A) {
+  let shitu = []
   try {
-    shitu = await Read_shitu()
+    shitu = await readShitu()
   } catch {
     //没有建立一个
-    await Write_shitu([])
-    shitu = await Read_shitu()
+    await writeShitu([])
   }
   let i
   let QQ = []
@@ -1338,9 +1326,9 @@ export async function find_shitu(A) {
   }
 }
 
-export async function find_tudi(A) {
+export async function findTudi(A) {
   let shitu
-  shitu = await Read_shitu()
+  shitu = await readShitu()
   let i
   let QQ = []
   for (i = 0; i < shitu.length; i++) {
@@ -1356,26 +1344,34 @@ export async function find_tudi(A) {
     return shitu[i].师徒
   }
 }
-export async function Read_danyao(usr_qq) {
+export async function readDanyao(usr_qq) {
   let danyao = await redis.get(`${__PATH.danyao_path}:${usr_qq}`)
+  if (!danyao) {
+    //如果没有丹药数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(danyao)
   return data
 }
 
-export async function Write_danyao(usr_qq, danyao) {
+export async function writeDanyao(usr_qq, danyao) {
   await redis.set(`${__PATH.danyao_path}:${usr_qq}`, JSON.stringify(danyao))
   return
 }
 
-export async function Read_temp() {
+export async function readTemp() {
   let temp = await redis.get(`${__PATH.temp_path}:temp`)
+  if (!temp) {
+    //如果没有临时数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(temp)
   return data
 }
 
-export async function Write_temp(temp) {
+export async function writeTemp(temp) {
   await redis.set(`${__PATH.temp_path}:temp`, JSON.stringify(temp))
   return
 }
@@ -1395,7 +1391,7 @@ export async function Go(e) {
   //获取游戏状态
   let game_action: any = await getDataByUserId(usr_qq, 'game_action')
   //防止继续其他娱乐行为
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return 0
   }
@@ -1425,6 +1421,10 @@ export async function writeShop(shop) {
 
 export async function readShop() {
   let shop = await redis.get(`${__PATH.shop}:shop`)
+  if (!shop) {
+    //如果没有商店数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
   const data = JSON.parse(shop)
   return data
@@ -1450,7 +1450,7 @@ export async function existshop(didian) {
     return false
   }
 }
-export async function zd_battle(AA_player, BB_player) {
+export async function zdBattle(AA_player, BB_player) {
   // let A_player = JSON.parse(JSON.stringify(BB_player))
   //深拷贝
   let A_player = _.cloneDeep(BB_player)
@@ -1764,17 +1764,25 @@ export async function writeForum(wupin) {
 //读交易表
 export async function readExchange() {
   let Exchange = await redis.get(`${__PATH.Exchange}:Exchange`)
+  if (!Exchange) {
+    //如果没有交易数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
-  Exchange = JSON.parse(Exchange)
-  return Exchange
+  const data = JSON.parse(Exchange)
+  return data
 }
 
 //读交易表
 export async function readForum() {
   let Forum = await redis.get(`${__PATH.Exchange}:Forum`)
+  if (!Forum) {
+    //如果没有交易数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
-  Forum = JSON.parse(Forum)
-  return Forum
+  const data = JSON.parse(Forum)
+  return data
 }
 
 export async function openAU() {
@@ -1854,299 +1862,6 @@ export async function setFileValue(
   return
 }
 
-export async function Synchronization_ASS(
-  e: PublicEventMessageCreate
-): Promise<void> {
-  if (!e.IsMaster) {
-    return
-  }
-  const Send = useSend(e as any)
-  Send(Text('宗门开始同步'))
-  const keys = await redis.keys(`${__PATH.association}:*`)
-  const assList = keys.map(key => key.replace(`${__PATH.association}:`, ''))
-  for (let ass_name of assList) {
-    let ass = await data.getAssociation(ass_name)
-    if (ass === 'error' || Array.isArray(ass)) {
-      continue
-    }
-    const association = ass as any // 使用 any 来处理复杂的宗门数据结构
-    let playerData = await data.getData('player', association.宗主)
-    if (!playerData || Array.isArray(playerData)) {
-      continue
-    }
-    let player = playerData as Player
-    let now_level_id =
-      data.Level_list.find(item => item.level_id == player.level_id)
-        ?.level_id || 1
-    //补
-    if (!isNotNull(association.power)) {
-      association.power = 0
-    }
-    if (now_level_id < 42) {
-      association.power = 0 // 凡界
-    } else {
-      association.power = 1 //  仙界
-    }
-    if (association.power == 1) {
-      if (association.大阵血量 == 114514) {
-        association.大阵血量 = 1145140
-      }
-      let level = association.最低加入境界
-      if (level < 42) {
-        association.最低加入境界 = 42
-      }
-    }
-    if (association.power == 0 && association.最低加入境界 > 41) {
-      association.最低加入境界 = 41
-    }
-    if (!isNotNull(association.宗门驻地)) {
-      association.宗门驻地 = 0
-    }
-    if (!isNotNull(association.宗门建设等级)) {
-      association.宗门建设等级 = 0
-    }
-    if (!isNotNull(association.宗门神兽)) {
-      association.宗门神兽 = 0
-    }
-    if (!isNotNull(association.副宗主)) {
-      association.副宗主 = []
-    }
-    await data.setAssociation(ass_name, association)
-  }
-
-  Send(Text('宗门同步结束'))
-  return
-}
-
-export async function synchronization(
-  e: PublicEventMessageCreate
-): Promise<void> {
-  // if (!e.IsMaster) {
-  //   return
-  // }
-  // const Send = useSend(e as any)
-  // Send(Text('存档开始同步'))
-  // let playerList: string[] = []
-  // let files = fs
-  //   .readdirSync(__PATH.player_path)
-  //   .filter(file => file.endsWith('.json'))
-  // for (let file of files) {
-  //   file = file.replace('.json', '')
-  //   playerList.push(file)
-  // }
-  // for (let player_id of playerList) {
-  //   let usr_qq = player_id
-  //   let playerData = await data.getData('player', usr_qq)
-  //   if (!playerData || Array.isArray(playerData)) {
-  //     continue
-  //   }
-  //   let player = playerData as any // 使用 any 处理复杂的玩家数据结构
-  //   let najie: Najie | null = await readNajie(usr_qq)
-  //   let equipment: Equipment | null = await readEquipment(usr_qq)
-  //   if (!najie || !equipment) {
-  //     continue
-  //   }
-
-  //   const ziduan: string[] = [
-  //     '镇妖塔层数',
-  //     '神魄段数',
-  //     '魔道值',
-  //     '师徒任务阶段',
-  //     '师徒积分',
-  //     'favorability',
-  //     '血气',
-  //     'lunhuiBH',
-  //     'lunhui',
-  //     '攻击加成',
-  //     '防御加成',
-  //     '生命加成',
-  //     '幸运',
-  //     '练气皮肤',
-  //     '装备皮肤',
-  //     'islucky',
-  //     'sex',
-  //     'addluckyNo',
-  //     '神石'
-  //   ]
-  //   const ziduan2: string[] = [
-  //     'Physique_id',
-  //     'linggenshow',
-  //     'power_place',
-  //     'occupation_level',
-  //     '血量上限',
-  //     '当前血量',
-  //     '攻击',
-  //     '防御'
-  //   ]
-  //   const ziduan3: string[] = ['linggen', 'occupation', '仙宠']
-  //   const ziduan4: string[] = ['材料', '草药', '仙宠', '仙宠口粮']
-
-  //   for (let k of ziduan) {
-  //     if (!isNotNull(player[k])) {
-  //       player[k] = 0
-  //     }
-  //   }
-  //   for (let k of ziduan2) {
-  //     if (!isNotNull(player[k])) {
-  //       player[k] = 1
-  //     }
-  //   }
-  //   for (let k of ziduan3) {
-  //     if (!isNotNull(player[k])) {
-  //       player[k] = []
-  //     }
-  //   }
-  //   for (let k of ziduan4) {
-  //     if (!isNotNull((najie as any)[k])) {
-  //       ;(najie as any)[k] = []
-  //     }
-  //   }
-  //   if (!isNotNull(player.breakthrough)) {
-  //     player.breakthrough = false
-  //   }
-  //   if (!isNotNull(player.id)) {
-  //     player.id = usr_qq
-  //   }
-  //   if (!isNotNull(player.轮回点) || player.轮回点 > 10) {
-  //     player.轮回点 = 10 - (player.lunhui || 0)
-  //   }
-  //   try {
-  //     await Read_danyao(usr_qq)
-  //   } catch {
-  //     const arr: DanyaoStatus = {
-  //       biguan: 0, //闭关状态
-  //       biguanxl: 0, //增加效率
-  //       xingyun: 0,
-  //       lianti: 0,
-  //       ped: 0,
-  //       modao: 0,
-  //       beiyong1: 0, //ped
-  //       beiyong2: 0,
-  //       beiyong3: 0,
-  //       beiyong4: 0,
-  //       beiyong5: 0
-  //     }
-  //     await Write_danyao(usr_qq, arr)
-  //   }
-
-  //   const suoding: string[] = [
-  //     '装备',
-  //     '丹药',
-  //     '道具',
-  //     '功法',
-  //     '草药',
-  //     '材料',
-  //     '仙宠',
-  //     '仙宠口粮'
-  //   ]
-  //   for (let j of suoding) {
-  //     const items = (najie as any)[j] as any[]
-  //     if (Array.isArray(items)) {
-  //       items.forEach(item => {
-  //         if (!isNotNull(item.islockd)) {
-  //           item.islockd = 0
-  //         }
-  //       })
-  //     }
-  //   }
-  //   //仙宠调整
-  //   if (player.仙宠?.id > 2930 && player.仙宠?.id < 2936) {
-  //     player.仙宠.初始加成 = 0.002
-  //     player.仙宠.每级增加 = 0.002
-  //     player.仙宠.加成 = player.仙宠.每级增加 * (player.仙宠.等级 || 1)
-  //     player.幸运 = (player.addluckyNo || 0) + player.仙宠.加成
-  //   } else {
-  //     player.幸运 = player.addluckyNo || 0
-  //   }
-
-  //   const najieXianchong = (najie as any).仙宠 as any[]
-  //   if (Array.isArray(najieXianchong)) {
-  //     for (let j of najieXianchong) {
-  //       if (j.id > 2930 && j.id < 2936) {
-  //         j.初始加成 = 0.002
-  //         j.每级增加 = 0.002
-  //       }
-  //     }
-  //   }
-
-  //   //装备调整
-  //   const wuqi: string[] = [
-  //     '雾切之回光',
-  //     '护摩之杖',
-  //     '磐岩结绿',
-  //     '三圣器·朗基努斯之枪'
-  //   ]
-  //   const wuqi2: string[] = ['紫云剑', '炼血竹枪', '少阴玉剑', '纯阴金枪']
-
-  //   const najieEquipment = (najie as any).装备 as any[]
-  //   if (Array.isArray(najieEquipment)) {
-  //     for (let j of najieEquipment) {
-  //       for (let k in wuqi) {
-  //         if (j.name == wuqi[k]) {
-  //           j.name = wuqi2[k]
-  //         }
-  //         if (equipment.武器.name == wuqi[k]) equipment.武器.name = wuqi2[k]
-  //         if (equipment.法宝.name == wuqi[k]) equipment.法宝.name = wuqi2[k]
-  //       }
-  //     }
-  //   }
-
-  //   //口粮调整
-  //   const najieKouliang = (najie as any).仙宠口粮 as any[]
-  //   if (Array.isArray(najieKouliang)) {
-  //     for (let j of najieKouliang) {
-  //       j.class = '仙宠口粮'
-  //     }
-  //   }
-
-  //   const linggeng = data.talent_list.find(
-  //     item => item.name == player.灵根?.name
-  //   )
-  //   if (linggeng) player.灵根 = linggeng
-
-  //   //隐藏灵根
-  //   if (player.隐藏灵根) {
-  //     const yincang = data.yincang.find(
-  //       item => item.name == player.隐藏灵根?.name
-  //     )
-  //     if (yincang) player.隐藏灵根 = yincang
-  //   }
-
-  //   //重新根据id去重置仙门
-  //   const levelInfo = data.Level_list.find(
-  //     item => item.level_id == player.level_id
-  //   )
-  //   const now_level_id = levelInfo?.level_id || 1
-  //   if (now_level_id < 42) {
-  //     player.power_place = 1
-  //   }
-  //   await Write_najie(usr_qq, najie)
-  //   await writePlayer(usr_qq, player)
-  //   await writeEquipment(usr_qq, equipment)
-  // }
-  // Send(Text('存档同步结束'))
-
-  // NOTE: 魔术师同步，开发者专用，要使用请删除注释
-  /*
-    const thingType = ''; // 填写欲抹除物品类型
-    const thingName = ''; // 填写欲抹除物品名称
-  
-    const objArr = await clearNajieThing(thingType, thingName);
-    Send(Text('物品自动抹除结束'));
-  
-    const newThingType = '';
-    const newThingName = ''; // 填写新物品
-    const N = 1; // 填写
-  
-    objArr.map(uid_tnum => {
-      const usrId = Object.entries(uid_tnum)[0][0];
-      addNajieThing(usrId, newThingName, newThingType, uid_tnum.usrId * N);
-    });
-    Send(Text('物品自动替换结束'));
-  */
-  return
-}
-
 /**
  *
  * @param {*} thing_name 物品名
@@ -2173,12 +1888,11 @@ export async function foundthing(thing_name) {
       if (j.name == thing_name) return j
     }
   }
-  let A
+  let A = []
   try {
     A = await readIt()
   } catch {
     await writeIt([])
-    A = await readIt()
   }
   for (let j of A) {
     if (j.name == thing_name) return j

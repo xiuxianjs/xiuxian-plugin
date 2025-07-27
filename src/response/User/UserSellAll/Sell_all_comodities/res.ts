@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, addNajieThing, Add_灵石, sleep } from '@src/model'
+import { existplayer, addNajieThing, addCoin, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
         }
       }
     }
-    await Add_灵石(usr_qq, commodities_price)
+    await addCoin(usr_qq, commodities_price)
     message.send(format(Text(`出售成功!  获得${commodities_price}灵石 `)))
     return false
   }
@@ -78,6 +78,7 @@ export default onResponse(selects, async e => {
   const [subscribe] = useSubscribe(e, selects)
   const sub = subscribe.mount(
     async event => {
+      clearTimeout(timeout)
       // 创建
       const [message] = useMessage(event)
       // 获取文本
@@ -85,12 +86,8 @@ export default onResponse(selects, async e => {
       let difficulty = new_msg === '1'
       if (!difficulty) {
         message.send(format(Text('已取消出售')))
-
-        clearTimeout(timeout)
-
         return
       }
-      clearTimeout(timeout)
       /**出售*/
 
       let usr_qq = event.UserId
@@ -117,15 +114,22 @@ export default onResponse(selects, async e => {
           }
         }
       }
-      await Add_灵石(usr_qq, commodities_price)
+      await addCoin(usr_qq, commodities_price)
       message.send(format(Text(`出售成功!  获得${commodities_price}灵石 `)))
     },
     ['UserId']
   )
-  const timeout = setTimeout(() => {
-    // 取消订阅
-    subscribe.cancel(sub)
-    // 发送消息
-    message.send(format(Text('超时自动取消出售')))
-  }, 30000)
+  const timeout = setTimeout(
+    () => {
+      try {
+        // 不能在回调中执行
+        subscribe.cancel(sub)
+        // 发送消息
+        message.send(format(Text('超时自动取消出售')))
+      } catch (e) {
+        logger.error('取消订阅失败', e)
+      }
+    },
+    1000 * 60 * 1
+  )
 })

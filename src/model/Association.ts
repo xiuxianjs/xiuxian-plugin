@@ -11,6 +11,10 @@ class Association {
    */
   async getAssociation(file_name: string): Promise<JSONData | 'error'> {
     const data = await redis.get(`${__PATH.association}:${file_name}`)
+    if (!data) {
+      // 如果没有数据，返回空对象
+      return 'error'
+    }
     try {
       return JSON.parse(data)
     } catch (error) {

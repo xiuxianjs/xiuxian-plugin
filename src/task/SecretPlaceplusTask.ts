@@ -5,14 +5,14 @@ import {
   existNajieThing,
   addNajieThing,
   writePlayer,
-  zd_battle,
-  Read_danyao,
-  Write_danyao,
-  Add_血气,
-  Add_修为,
-  Add_HP,
-  Read_temp,
-  Write_temp,
+  zdBattle,
+  readDanyao,
+  writeDanyao,
+  addExp2,
+  addExp,
+  addHP,
+  readTemp,
+  writeTemp,
   __PATH
 } from '@src/model'
 import { scheduleJob } from 'node-schedule'
@@ -81,7 +81,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             暴击率: monster.暴击率,
             法球倍率: 0.1
           }
-          let Data_battle = await zd_battle(A_player, B_player)
+          let Data_battle = await zdBattle(A_player, B_player)
           let msgg = Data_battle.msg
           let A_win = `${A_player.名号}击败了${B_player.名号}`
           let B_win = `${B_player.名号}击败了${A_player.名号}`
@@ -207,7 +207,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             },剩余次数${action.cishu - 1}`
             let random = Math.random() //万分之一出神迹
             let newrandom = 0.995
-            let dy = await Read_danyao(player_id)
+            let dy = await readDanyao(player_id)
             newrandom -= dy.beiyong1
             if (dy.ped > 0) {
               dy.ped--
@@ -215,7 +215,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               dy.beiyong1 = 0
               dy.ped = 0
             }
-            await Write_danyao(player_id, dy)
+            await writeDanyao(player_id, dy)
             if (random > newrandom) {
               let length = data.xianchonkouliang.length
               let index = Math.trunc(Math.random() * length)
@@ -259,9 +259,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             //写入redis
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
-            await Add_血气(player_id, qixue)
-            await Add_修为(player_id, xiuwei)
-            await Add_HP(player_id, Data_battle.A_xue)
+            await addExp2(player_id, qixue)
+            await addExp(player_id, xiuwei)
+            await addHP(player_id, Data_battle.A_xue)
             //发送消息
             if (is_group) {
               await pushInfo('', push_address, is_group, msg)
@@ -272,28 +272,27 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.cishu--
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
-            await Add_血气(player_id, qixue)
-            await Add_修为(player_id, xiuwei)
-            await Add_HP(player_id, Data_battle.A_xue)
+            await addExp2(player_id, qixue)
+            await addExp(player_id, xiuwei)
+            await addHP(player_id, Data_battle.A_xue)
             //发送消息
             try {
-              let temp = await Read_temp()
+              let temp = await readTemp()
               let p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               }
               temp.push(p)
-              await Write_temp(temp)
+              await writeTemp(temp)
             } catch {
-              await Write_temp([])
-              let temp = await Read_temp()
+              let temp = []
               let p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq: player_id,
                 qq_group: push_address
               }
               temp.push(p)
-              await Write_temp(temp)
+              await writeTemp(temp)
             }
           }
         }

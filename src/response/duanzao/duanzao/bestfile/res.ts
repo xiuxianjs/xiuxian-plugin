@@ -8,12 +8,11 @@ export const regular = /^(#|＃|\/)?神兵榜/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let wupin
+  let wupin = []
   try {
     wupin = await readIt()
   } catch {
     await writeIt([])
-    wupin = await readIt()
   }
   let newwupin = []
   const type = ['武器', '护具', '法宝']

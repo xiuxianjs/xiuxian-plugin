@@ -1,5 +1,4 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'node:fs'
 import { data, redis } from '@src/api/api'
 import { __PATH, isNotNull, readPlayer } from '@src/model'
 
@@ -10,7 +9,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   //无宗门
@@ -26,7 +25,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
 
   //输入的洞天是否存在
   let blessed_name = e.MessageText.replace(/^(#|＃|\/)?入驻洞天/, '')
@@ -48,7 +47,7 @@ export default onResponse(selects, async e => {
   //遍历所有的宗门
   for (let i = 0; i < assList.length; i++) {
     let this_name = assList[i]
-    let this_ass = await data.getAssociation(this_name)
+    let this_ass = await await data.getAssociation(this_name)
 
     if (this_ass.宗门驻地 == dongTan.name) {
       //找到了驻地为当前洞天的宗门，说明该洞天被人占据

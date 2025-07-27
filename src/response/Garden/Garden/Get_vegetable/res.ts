@@ -9,11 +9,11 @@ export const regular = /^(#|＃|\/)?拔苗助长.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) return false
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (!isNotNull(player.宗门)) {
     return false
   } else if (ass.药园.药园等级 == 1) {

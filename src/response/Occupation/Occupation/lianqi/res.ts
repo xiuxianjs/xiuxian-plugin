@@ -7,7 +7,7 @@ import {
   existNajieThing,
   addNajieThing,
   sleep,
-  Add_职业经验
+  addExp4
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
     await sleep(10000)
   }
   await addNajieThing(usr_qq, equipment_name, '装备', 1, pinji)
-  await Add_职业经验(usr_qq, res_exp)
+  await addExp4(usr_qq, res_exp)
   Send(
     Text(
       `${tmp_msg1}打造成功，获得${equipment_name}(${

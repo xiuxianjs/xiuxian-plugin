@@ -1,6 +1,5 @@
 import { redis, data, puppeteer } from '@src/api/api'
 import { __PATH, shijianc, readPlayer } from '@src/model'
-import fs from 'fs'
 
 export async function Write_tiandibang(wupin) {
   redis.set(
@@ -10,11 +9,15 @@ export async function Write_tiandibang(wupin) {
   return false
 }
 
-export async function Read_tiandibang() {
+export async function readTiandibang() {
   let tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
+  if (!tiandibang) {
+    //如果没有天鼎数据，返回空数组
+    return []
+  }
   //将字符串数据转变成数组格式
-  tiandibang = JSON.parse(tiandibang)
-  return tiandibang
+  const data = JSON.parse(tiandibang)
+  return data
 }
 
 export async function getLastbisai(usr_qq) {

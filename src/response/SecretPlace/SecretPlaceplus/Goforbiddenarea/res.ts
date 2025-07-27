@@ -8,8 +8,8 @@ import {
   convert2integer,
   existNajieThing,
   addNajieThing,
-  Add_灵石,
-  Add_修为
+  addCoin,
+  addExp
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -71,8 +71,8 @@ export default onResponse(selects, async e => {
   }
   let Price = weizhi.Price * 10 * i
   let Exp = weizhi.experience * 10 * i
-  await Add_灵石(usr_qq, -Price)
-  await Add_修为(usr_qq, -Exp)
+  await addCoin(usr_qq, -Price)
+  await addExp(usr_qq, -Exp)
   const time = i * 10 * 5 + 10 //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒
   let arr: any = {

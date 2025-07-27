@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { Read_danyao, readPlayer } from '@src/model'
+import { readDanyao, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?我的药效$/
@@ -8,7 +8,7 @@ export const regular = /^(#|＃|\/)?我的药效$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
-  let dy = await Read_danyao(usr_qq)
+  let dy = await readDanyao(usr_qq)
   let player = await readPlayer(usr_qq)
   let m = '丹药效果:'
   if (dy.ped > 0) {

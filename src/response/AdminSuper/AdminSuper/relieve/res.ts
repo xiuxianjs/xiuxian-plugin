@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     let ifexistplay = await existplayer(qq)
     if (!ifexistplay) return false
     //清除游戏状态
-    await redis.set('xiuxian@1.3.0:' + qq + ':game_action', 1)
+    await redis.del('xiuxian@1.3.0:' + qq + ':game_action')
     //查询redis中的人物动作
     let action: any = await getDataByUserId(qq, 'action')
     //不为空，有状态

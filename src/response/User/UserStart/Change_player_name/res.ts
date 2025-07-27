@@ -53,7 +53,7 @@ export default onResponse(selects, async e => {
     redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setname_time', nowTime) //redis设置本次改名时间戳
     player.灵石 -= 1000
     await writePlayer(usr_qq, player)
-    //Add_灵石(usr_qq, -100);
+    //addCoin(usr_qq, -100);
     Show_player(e)
     return
   }

@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
 
   let usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   //无宗门
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门等级 < 8) {
     Send(Text(`宗门等级不足，尚不具备召唤神兽的资格`))
     return false

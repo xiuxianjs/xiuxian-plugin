@@ -6,7 +6,6 @@ import { __PATH } from '@src/model'
 export const regular = /^(#|＃|\/)?洞天福地列表$/
 
 export default onResponse(selects, async e => {
-  let addres = '洞天福地'
   let weizhi = data.bless_list
   GoBlessPlace(e, weizhi, addres)
 })
@@ -22,7 +21,7 @@ async function GoBlessPlace(e, weizhi, addres) {
     let ass = '无'
     for (let j of File) {
       let this_name = j
-      let this_ass = await data.getAssociation(this_name)
+      let this_ass = await await data.getAssociation(this_name)
       if (this_ass.宗门驻地 == weizhi[i].name) {
         ass = this_ass.宗门名称
         break

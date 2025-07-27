@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, readNajie, foundthing, re_najie_thing } from '@src/model'
+import { existplayer, readNajie, foundthing, updateBagThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(锁定|解锁).*$/
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
   thing_pinji = pj[thing[1]]
   let ifexist
   if (un_lock == '锁定') {
-    ifexist = await re_najie_thing(
+    ifexist = await updateBagThing(
       usr_qq,
       thing_name,
       thing_exist.class,
@@ -59,7 +59,7 @@ export default onResponse(selects, async e => {
       return false
     }
   } else if (un_lock == '解锁') {
-    ifexist = await re_najie_thing(
+    ifexist = await updateBagThing(
       usr_qq,
       thing_name,
       thing_exist.class,

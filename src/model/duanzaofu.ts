@@ -1,5 +1,3 @@
-import fs, { existsSync } from 'fs'
-import path from 'path'
 import { __PATH } from './paths.js'
 import data from './XiuxianData.js'
 import { writePlayer } from './pub.js'
@@ -7,12 +5,11 @@ import type { Player, Tripod, TalentInfo } from '../types/player.js'
 import { redis } from '@src/api/api.js'
 
 export async function settripod(qq: string): Promise<string> {
-  let tripod1: Tripod[]
+  let tripod1: Tripod[] = []
   try {
     tripod1 = await readTripod()
   } catch {
     await writeDuanlu([])
-    tripod1 = await readTripod()
   }
   const A = await looktripod(qq)
   if (A != 1) {
@@ -48,12 +45,11 @@ export async function settripod(qq: string): Promise<string> {
 }
 
 export async function looktripod(qq: string): Promise<number> {
-  let tripod: Tripod[]
+  let tripod: Tripod[] = []
   try {
     tripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    tripod = await readTripod()
   }
   for (const item of tripod) {
     if (qq == item.qq) {
@@ -63,13 +59,12 @@ export async function looktripod(qq: string): Promise<number> {
   return 0
 }
 
-export async function Read_mytripod(qq: string): Promise<Tripod | undefined> {
-  let tripod: Tripod[]
+export async function readMytripod(qq: string): Promise<Tripod | undefined> {
+  let tripod: Tripod[] = []
   try {
     tripod = await readTripod()
   } catch {
     await writeDuanlu([])
-    tripod = await readTripod()
   }
 
   for (const item of tripod) {
@@ -110,7 +105,7 @@ export async function readThat(
 ): Promise<any> {
   const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
   if (!weizhi1) {
-    return
+    return []
   }
   const weizh = JSON.parse(weizhi1)
   for (const item of weizh) {
@@ -124,6 +119,9 @@ export async function readThat(
 //读取item某个文件的全部物品
 export async function readAll(weizhi: string): Promise<any[]> {
   const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
+  if (!weizhi1) {
+    return []
+  }
   const data = JSON.parse(weizhi1)
   return data
 }
@@ -216,6 +214,10 @@ export async function restraint(
 
 export async function readIt(): Promise<any> {
   const custom = await redis.get(`${__PATH.custom}:custom`)
+  if (!custom) {
+    //如果没有自定义数据，返回空对象
+    return []
+  }
   const customData = JSON.parse(custom)
   return customData
 }

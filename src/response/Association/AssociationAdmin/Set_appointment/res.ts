@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }
-  let ifexistplay = data.existData('player', usr_qq)
+  let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
   if (!isNotNull(player.宗门)) {
@@ -37,7 +37,7 @@ export default onResponse(selects, async e => {
     return false
   } //at宗主自己,这不扯犊子呢
 
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  let ass = await await data.getAssociation(player.宗门.宗门名称)
   let isinass = ass.所有成员.some(item => item == member_qq) //这个命名可太糟糕了
   if (!isinass) {
     Send(Text('只能设置宗门内弟子的职位'))

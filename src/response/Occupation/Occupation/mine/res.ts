@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, readPlayer, Add_灵石 } from '@src/model'
+import { existplayer, readPlayer, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/
@@ -15,14 +15,14 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
-  if (game_action == 0) {
+  if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   let player = await readPlayer(usr_qq)
   if (player.occupation != '采矿师') {
     Send(Text('你挖矿许可证呢？非法挖矿，罚款200灵石'))
-    await Add_灵石(usr_qq, -200)
+    await addCoin(usr_qq, -200)
     return false
   }
   //获取时间

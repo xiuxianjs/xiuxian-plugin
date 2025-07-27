@@ -3,13 +3,13 @@ import { Text, useMessage, useSend, useSubscribe } from 'alemonjs'
 import { redis, data, config } from '@src/api/api'
 import {
   __PATH,
-  Add_HP,
+  addHP,
   existplayer,
-  get_random_fromARR,
+  getRandomFromARR,
   getRandomTalent,
   Go,
   isNotNull,
-  Write_danyao,
+  writeDanyao,
   writeEquipment,
   Write_najie,
   writePlayer
@@ -111,7 +111,7 @@ export default onResponse(selects, async e => {
         if (isNotNull(player.宗门)) {
           if (player.宗门.职位 != '宗主') {
             //不是宗主
-            let ass: any = data.getAssociation(player.宗门.宗门名称)
+            let ass: any = await data.getAssociation(player.宗门.宗门名称)
             ass[player.宗门.职位] = ass[player.宗门.职位].filter(
               item => item != usr_qq
             )
@@ -121,7 +121,7 @@ export default onResponse(selects, async e => {
             await data.setData('player', usr_qq, player)
           } else {
             //是宗主
-            let ass: any = data.getAssociation(player.宗门.宗门名称)
+            let ass: any = await data.getAssociation(player.宗门.宗门名称)
             if (ass.所有成员.length < 2) {
               fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
             } else {
@@ -129,11 +129,11 @@ export default onResponse(selects, async e => {
               //随机一个幸运儿的QQ,优先挑选等级高的
               let randmember_qq
               if (ass.长老.length > 0) {
-                randmember_qq = await get_random_fromARR(ass.长老)
+                randmember_qq = await getRandomFromARR(ass.长老)
               } else if (ass.内门弟子.length > 0) {
-                randmember_qq = await get_random_fromARR(ass.内门弟子)
+                randmember_qq = await getRandomFromARR(ass.内门弟子)
               } else {
-                randmember_qq = await get_random_fromARR(ass.所有成员)
+                randmember_qq = await getRandomFromARR(ass.所有成员)
               }
               let randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
               ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
@@ -172,11 +172,19 @@ export default onResponse(selects, async e => {
     },
     ['UserId']
   )
-  const timeout = setTimeout(() => {
-    /** 停止上下文 */
-    subscribe.cancel(sub)
-    Send(Text('超时自动取消'))
-  }, 30 * 1000)
+  const timeout = setTimeout(
+    () => {
+      try {
+        // 不能在回调中执行
+        subscribe.cancel(sub)
+        // message.send(format(Text('超时自动取消')))
+        Send(Text('超时自动取消操作'))
+      } catch (e) {
+        logger.error('取消订阅失败', e)
+      }
+    },
+    1000 * 60 * 1
+  ) //2分钟超时
 })
 
 async function Create_player(e) {
@@ -184,7 +192,7 @@ async function Create_player(e) {
   //有无存档
   let ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
-    this.Show_player(e)
+    Show_player(e)
     return false
   }
   //初始化玩家信息
@@ -256,7 +264,7 @@ async function Create_player(e) {
     仙宠口粮: []
   }
   await Write_najie(usr_qq, new_najie)
-  await Add_HP(usr_qq, 999999)
+  await addHP(usr_qq, 999999)
   const arr = {
     biguan: 0, //闭关状态
     biguanxl: 0, //增加效率
@@ -270,6 +278,6 @@ async function Create_player(e) {
     beiyong4: 0,
     beiyong5: 0
   }
-  await Write_danyao(usr_qq, arr)
+  await writeDanyao(usr_qq, arr)
   await Show_player(e)
 }

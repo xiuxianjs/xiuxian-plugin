@@ -3,9 +3,9 @@ import { Text, useMention, useSend } from 'alemonjs'
 import {
   existplayer,
   existNajieThing,
-  find_qinmidu,
-  fstadd_qinmidu,
-  add_qinmidu,
+  findQinmidu,
+  fstaddQinmidu,
+  addQinmidu,
   addNajieThing
 } from '@src/model'
 
@@ -41,15 +41,15 @@ export default onResponse(selects, async e => {
     Send(Text('你没有[百合花篮]'))
     return false
   }
-  let pd = await find_qinmidu(A, B)
+  let pd = await findQinmidu(A, B)
   if (pd == false) {
-    await fstadd_qinmidu(A, B)
+    await fstaddQinmidu(A, B)
   } else if (pd == 0) {
     Send(Text(`对方已有道侣`))
     return false
   }
 
-  await add_qinmidu(A, B, 60)
+  await addQinmidu(A, B, 60)
   await addNajieThing(A, '百合花篮', '道具', -1)
   Send(Text(`你们的亲密度增加了60`))
 })

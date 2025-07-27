@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
     //清除游戏状态
-    await redis.set(`xiuxian@1.3.0:${player_id}:game_action`, 1)
+    await redis.del(`xiuxian@1.3.0:${player_id}:game_action`)
     const record = `xiuxian@1.3.0:${player_id}:action`
     const action: any = await redis.get(record)
     //不为空，存在动作

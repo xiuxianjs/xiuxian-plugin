@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { existplayer } from '@src/model'
-import { Read_tiandibang, Write_tiandibang } from '../tian'
+import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?天地榜$/
@@ -12,13 +12,12 @@ export default onResponse(selects, async e => {
   //查看存档
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let tiandibang
+  let tiandibang = []
   try {
-    tiandibang = await Read_tiandibang()
+    tiandibang = await readTiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])
-    tiandibang = await Read_tiandibang()
   }
   let x = tiandibang.length
   let l = 10

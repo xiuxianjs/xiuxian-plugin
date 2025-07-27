@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
     //存在CD。直接返回
     return false
   }
-  let Exchange
+  let Exchange = []
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
   let player = await readPlayer(usr_qq)
@@ -54,7 +54,6 @@ export default onResponse(selects, async e => {
   } catch {
     //没有表要先建立一个！
     await writeExchange([])
-    Exchange = await readExchange()
   }
   if (x >= Exchange.length) {
     Send(Text(`没有编号为${x + 1}的物品`))

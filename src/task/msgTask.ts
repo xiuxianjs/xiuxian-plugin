@@ -1,13 +1,13 @@
 import { puppeteer, pushInfo } from '@src/api/api'
-import { Read_temp, Write_temp } from '@src/model'
+import { readTemp, writeTemp } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('20 0/5 * * * ?', async () => {
-  let temp
+  let temp = []
   try {
-    temp = await Read_temp()
+    temp = await readTemp()
   } catch {
-    temp = []
+    await writeTemp([])
   }
   if (temp.length > 0) {
     let group = []
@@ -33,6 +33,6 @@ scheduleJob('20 0/5 * * * ?', async () => {
       const [platform, group_id] = i.split(':')
       if (img) await pushInfo(platform, group_id, true, img)
     }
-    await Write_temp([])
+    await writeTemp([])
   }
 })

@@ -7,10 +7,10 @@ import {
   writePlayer,
   readEquipment,
   playerEfficiency,
-  get_random_fromARR,
+  getRandomFromARR,
   addNajieThing,
   writeEquipment,
-  Add_HP
+  addHP
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -91,12 +91,12 @@ export default onResponse(selects, async e => {
   player.lunhui += 1
   //如果是仙宗人员，退出宗门
   if (isNotNull(player.宗门)) {
-    let ass = data.getAssociation(player.宗门.宗门名称)
+    let ass = await data.getAssociation(player.宗门.宗门名称)
     if (ass.power != 0) {
       //有宗门
       Send(Text('轮回后降临凡界，仙宗命牌失效！'))
       if (player.宗门.职位 != '宗主') {
-        let ass = data.getAssociation(player.宗门.宗门名称)
+        let ass = await data.getAssociation(player.宗门.宗门名称)
         ass[player.宗门.职位] = ass[player.宗门.职位].filter(
           item => item != usr_qq
         )
@@ -107,7 +107,7 @@ export default onResponse(selects, async e => {
         await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
-        let ass = data.getAssociation(player.宗门.宗门名称)
+        let ass = await data.getAssociation(player.宗门.宗门名称)
         if (ass.所有成员.length < 2) {
           await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
@@ -124,13 +124,13 @@ export default onResponse(selects, async e => {
           //随机一个幸运儿的QQ,优先挑选等级高的
           let randmember_qq
           if (ass.副宗主.length > 0) {
-            randmember_qq = await get_random_fromARR(ass.副宗主)
+            randmember_qq = await getRandomFromARR(ass.副宗主)
           } else if (ass.长老.length > 0) {
-            randmember_qq = await get_random_fromARR(ass.长老)
+            randmember_qq = await getRandomFromARR(ass.长老)
           } else if (ass.内门弟子.length > 0) {
-            randmember_qq = await get_random_fromARR(ass.内门弟子)
+            randmember_qq = await getRandomFromARR(ass.内门弟子)
           } else {
-            randmember_qq = await get_random_fromARR(ass.所有成员)
+            randmember_qq = await getRandomFromARR(ass.所有成员)
           }
           let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
           ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
@@ -168,7 +168,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -201,7 +201,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -234,7 +234,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -267,7 +267,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -300,7 +300,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -333,7 +333,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -366,7 +366,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -399,7 +399,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -432,7 +432,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0

@@ -8,7 +8,7 @@ import {
   isNotNull,
   existNajieThing,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
     Send(Text('请先加入宗门'))
     return false
   }
-  let ass = data.getAssociation(player.宗门.宗门名称)
+  let ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门驻地 == 0) {
     Send(Text(`你的宗门还没有驻地，不能探索秘境哦`))
     return false
@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
   ass.灵石池 += Price * 0.05
   data.setAssociation(ass.宗门名称, ass)
 
-  await Add_灵石(usr_qq, -Price)
+  await addCoin(usr_qq, -Price)
   let time: any = i * 10 * 5 + 10 //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒
   let arr = {
