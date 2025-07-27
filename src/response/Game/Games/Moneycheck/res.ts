@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
     //得到投入金额
     global.yazhu[usr_qq] = player.灵石 - 1
     global.gane_key_user[usr_qq] = true
-    message.send(format(Text('媚娘：梭哈完成,发送[大]或[小]')))
+    message.send(format(Text('媚娘：梭哈完成,发送[大|小|1-6]')))
     return false
   }
 
@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
       //如果押的钱不够
       //值未真。并记录此人信息
       global.gane_key_user[usr_qq] = true
-      message.send(format(Text('媚娘：投入完成,发送[大]或[小]')))
+      message.send(format(Text('媚娘：投入完成,发送[大|小|1-6]')))
       return
     } else {
       //直接清除，并记录
