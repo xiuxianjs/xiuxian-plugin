@@ -3,7 +3,7 @@ CD: #各种操作cd 必须为整数 单位：分
   joinassociation: 450 #退宗
   associationbattle: 1440 #宗门大战
   rob: 120 # 打劫CD
-  gambling: 3 # 金银坊
+  gambling: 10 # 金银坊（10秒CD）
   couple: 360 #双修
   garden: 3 # 药园
   level_up: 3 # 突破

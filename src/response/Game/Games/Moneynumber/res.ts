@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':last_game_time'
   )
   last_game_time = parseInt(last_game_time)
-  const transferTimeout = 30 * 1000 // 30秒CD
+  const transferTimeout = cf.CD.gambling * 1000 // 10秒CD
 
   if (now_time < last_game_time + transferTimeout) {
     const left = last_game_time + transferTimeout - now_time
