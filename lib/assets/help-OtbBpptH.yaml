@@ -167,14 +167,15 @@
     - icon: help-icon_53
       title: '#回收+物品名'
       desc: '双倍价格回收无用的物品'
+
 - group: 礼尚往来
   list:
     - icon: help-icon_10
       title: '@群友#赠送+灵石/物品名/装备代号*数量(可不加)'
-      desc: '@DD斩首 #赠送烂铁匕首*品质(可不加)*22'
+      desc: '@道友 #赠送烂铁匕首*品质(可不加)*22'
     - icon: help-icon_10
       title: '@群友#一键赠送/一键赠送+物品类型'
-      desc: '@DD斩首 #一键赠送装备'
+      desc: '@道友 #一键赠送装备'
     - icon: help-icon_10
       title: '#发红包10000*5'
       desc: '灵石需要万的倍数'
