@@ -45,6 +45,8 @@ import wuqi from '../resources/html/wuqi/wuqi'
 import xianchong from '../resources/html/xianchong/xianchong'
 import zongmeng from '../resources/html/zongmeng/zongmeng'
 import updateRecord from '../resources/html/updateRecord/updateRecord'
+import BlessPlace from '../resources/html/BlessPlace/BlessPlace'
+
 const map = {
   adminset,
   association,
@@ -91,7 +93,8 @@ const map = {
   wuqi,
   xianchong,
   zongmeng,
-  updateRecord
+  updateRecord,
+  BlessPlace
 }
 class Pic {
   async screenshot(name: keyof typeof map, uid: number | string, data) {

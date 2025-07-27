@@ -129,5 +129,4 @@ class DataControl {
     return
   }
 }
-
 export default new DataControl()

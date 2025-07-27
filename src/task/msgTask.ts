@@ -7,8 +7,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
   try {
     temp = await Read_temp()
   } catch {
-    await Write_temp([])
-    temp = await Read_temp()
+    temp = []
   }
   if (temp.length > 0) {
     let group = []

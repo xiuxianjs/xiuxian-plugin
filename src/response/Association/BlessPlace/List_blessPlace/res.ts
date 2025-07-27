@@ -1,5 +1,5 @@
-import { Text } from 'alemonjs'
-import { data, redis } from '@src/api/api'
+import { Text, useMessage, Image, useSend } from 'alemonjs'
+import { data, puppeteer, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
 import { __PATH } from '@src/model'
@@ -14,11 +14,10 @@ export default onResponse(selects, async e => {
  * 地点查询
  */
 async function GoBlessPlace(e, weizhi, addres) {
+  const [message] = useMessage(e)
   const keys = await redis.keys(`${__PATH.association}:*`)
   const File = keys.map(key => key.replace(`${__PATH.association}:`, ''))
-
-  let adr = addres
-  let msg = ['***' + adr + '***']
+  const msg = []
   for (let i = 0; i < weizhi.length; i++) {
     let ass = '无'
     for (let j of File) {
@@ -27,20 +26,36 @@ async function GoBlessPlace(e, weizhi, addres) {
       if (this_ass.宗门驻地 == weizhi[i].name) {
         ass = this_ass.宗门名称
         break
+      } else {
+        ass = '无'
+        continue
       }
     }
-    msg.push(
-      weizhi[i].name +
-        '\n' +
-        '等级：' +
-        weizhi[i].level +
-        '\n' +
-        '修炼效率：' +
-        weizhi[i].efficiency * 100 +
-        '%\n' +
-        '入驻宗门：' +
-        ass
-    )
+    msg.push({
+      name: weizhi[i].name,
+      level: weizhi[i].level,
+      efficiency: weizhi[i].efficiency * 100,
+      ass: ass
+    })
+    // msg.push(
+    //   weizhi[i].name +
+    //     '\n' +
+    //     '等级：' +
+    //     weizhi[i].level +
+    //     '\n' +
+    //     '修炼效率：' +
+    //     weizhi[i].efficiency * 100 +
+    //     '%\n' +
+    //     '入驻宗门：' +
+    //     ass
+    // )
   }
-  Send(Text(msg.join('')))
+  const image = await puppeteer.screenshot('BlessPlace', e.UserId, {
+    didian_list: msg
+  })
+  if (!image) {
+    message.send(format(Text('图片生成失败')))
+    return
+  }
+  message.send(format(Image(image)))
 }
