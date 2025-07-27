@@ -66,19 +66,20 @@ export const openMoneySystem = async (
     return [isWin, randomNumber]
   }
 
+  // 系统: 收益太多限制
+  const maxMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000
+
+  // 风控：玩家限制大过最小值
+  const minMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000
+
   // 风控：金额过大时必须必赢
-  // 500~1000 万
-  const isMustWin =
-    inputMoney > (Math.floor(Math.random() * 51) + 50) * 1000 * 100
+  const isMustWin = inputMoney > minMoney
 
   // 没有资金记录时
   if (totalMoney === null || totalMoney === undefined) {
     if (isMustWin) return await mustCoseResult()
     return await randomResult()
   }
-
-  // 随机限制 500 - 1000 万
-  const maxMoney = (Math.floor(Math.random() * 501) + 500) * 10000
 
   // 有资金记录时，判断系统能否赔付
   const currentMoney = Number(totalMoney)

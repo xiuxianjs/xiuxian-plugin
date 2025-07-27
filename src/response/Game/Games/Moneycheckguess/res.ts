@@ -108,7 +108,7 @@ export default onResponse(selects, async e => {
     isWin = inputNumber === touzi
 
     if (isWin) {
-      const winAmount = inputMoney * 3
+      const winAmount = inputMoney * 5
       if (isNotNull(player.金银坊胜场)) {
         player.金银坊胜场 = parseInt(player.金银坊胜场) + 1
         player.金银坊收入 = parseInt(player.金银坊收入) + winAmount
