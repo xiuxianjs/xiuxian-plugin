@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
 import { existplayer, readPlayer } from '@src/model'
-import { Read_tiandibang, Write_tiandibang } from '../tian'
+import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?更新属性$/
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let tiandibang = []
   try {
-    tiandibang = await Read_tiandibang()
+    tiandibang = await readTiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
   ;((tiandibang[m].灵根 = player.灵根),
     (tiandibang[m].法球倍率 = player.灵根.法球倍率),
     Write_tiandibang(tiandibang))
-  tiandibang = await Read_tiandibang()
+  tiandibang = await readTiandibang()
   tiandibang[m].暴击率 = Math.trunc(tiandibang[m].暴击率 * 100)
   let msg = []
   msg.push(

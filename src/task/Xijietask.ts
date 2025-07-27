@@ -1,7 +1,7 @@
 import { redis, data, pushInfo } from '@src/api/api'
 import {
   isNotNull,
-  zd_battle,
+  zdBattle,
   addNajieThing,
   readShop,
   writeShop,
@@ -88,11 +88,11 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let last_msg = ''
           if (A_player.魔值 == 0) {
             //根据魔道值决定先后手顺序
-            Data_battle = await zd_battle(A_player, B_player)
+            Data_battle = await zdBattle(A_player, B_player)
             last_msg += A_player.名号 + '悄悄靠近' + B_player.名号
             A_player.当前血量 += Data_battle.A_xue
           } else {
-            Data_battle = await zd_battle(B_player, A_player)
+            Data_battle = await zdBattle(B_player, A_player)
             last_msg += A_player.名号 + '杀气过重,被' + B_player.名号 + '发现了'
             A_player.当前血量 += Data_battle.B_xue
           }

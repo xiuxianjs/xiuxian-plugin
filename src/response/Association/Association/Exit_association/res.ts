@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import {
   __PATH,
-  get_random_fromARR,
+  getRandomFromARR,
   isNotNull,
   playerEfficiency
 } from '@src/model'
@@ -62,13 +62,13 @@ export default onResponse(selects, async e => {
       //随机一个幸运儿的QQ,优先挑选等级高的
       let randmember_qq
       if (ass.副宗主.length > 0) {
-        randmember_qq = await get_random_fromARR(ass.副宗主)
+        randmember_qq = await getRandomFromARR(ass.副宗主)
       } else if (ass.长老.length > 0) {
-        randmember_qq = await get_random_fromARR(ass.长老)
+        randmember_qq = await getRandomFromARR(ass.长老)
       } else if (ass.内门弟子.length > 0) {
-        randmember_qq = await get_random_fromARR(ass.内门弟子)
+        randmember_qq = await getRandomFromARR(ass.内门弟子)
       } else {
-        randmember_qq = await get_random_fromARR(ass.所有成员)
+        randmember_qq = await getRandomFromARR(ass.所有成员)
       }
       let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
       ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(

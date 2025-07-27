@@ -2,9 +2,9 @@ import { Text, useMention, useSend } from 'alemonjs'
 
 import {
   existplayer,
-  Add_灵石,
-  Add_修为,
-  Add_血气,
+  addCoin,
+  addExp,
+  addExp2,
   foundthing,
   addNajieThing
 } from '@src/model'
@@ -42,11 +42,11 @@ export default onResponse(selects, async e => {
     thing_amount = 1
   }
   if (thing_name == '灵石') {
-    await Add_灵石(B_qq, thing_amount)
+    await addCoin(B_qq, thing_amount)
   } else if (thing_name == '修为') {
-    await Add_修为(B_qq, thing_amount)
+    await addExp(B_qq, thing_amount)
   } else if (thing_name == '血气') {
-    await Add_血气(B_qq, thing_amount)
+    await addExp2(B_qq, thing_amount)
   } else {
     let thing_exist = await foundthing(thing_name)
     if (!thing_exist) {

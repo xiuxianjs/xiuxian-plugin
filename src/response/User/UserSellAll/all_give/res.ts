@@ -4,71 +4,80 @@ import { data } from '@src/api/api'
 import { existplayer, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?一键赠送[\u4e00-\u9fa5]$/
+export const regular = /^(#|＃|\/)?一键赠送([\u4e00-\u9fa5]+)?$/
+
+const ALL_TYPES = [
+  '装备',
+  '丹药',
+  '道具',
+  '功法',
+  '草药',
+  '材料',
+  '仙宠',
+  '仙宠口粮'
+]
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  //这是自己的
-  let A_qq = e.UserId
-  //自己没存档
-  let ifexistplay = await existplayer(A_qq)
-  if (!ifexistplay) return false
-  //对方
-  const [mention] = useMention(e)
+  const A_qq = e.UserId
+  if (!(await existplayer(A_qq))) return false
 
-  // 查找用户类型的 @ 提及，且不是 bot
-  const User = await mention.findOne()
-  if (!User) {
-    return // 未找到用户Id
-  }
-  // todo: 获取艾特用户的QQ号
-  let B_qq = User.code //对方qq
-  //对方没存档
-  ifexistplay = await existplayer(B_qq)
-  if (!ifexistplay) {
+  const [mention] = useMention(e)
+  const User = (await mention.findOne()).data
+  if (!User) return
+
+  const B_qq = User.UserId
+  if (!(await existplayer(B_qq))) {
     Send(Text(`此人尚未踏入仙途`))
     return false
   }
-  let A_najie = await await data.getData('najie', A_qq)
-  let wupin = [
-    '装备',
-    '丹药',
-    '道具',
-    '功法',
-    '草药',
-    '材料',
-    '仙宠',
-    '仙宠口粮'
-  ]
-  let wupin1 = []
-  if (e.MessageText != '#一键赠送') {
-    let thing = e.MessageText.replace(/^(#|＃|\/)?一键赠送/, '')
-    for (let i of wupin) {
-      if (thing == i) {
-        wupin1.push(i)
-        thing = thing.replace(i, '')
-      }
-    }
-    if (thing.length == 0) {
-      wupin = wupin1
-    } else {
+
+  // 解析类型参数（支持多个类型，或不填则为全部）
+  let typeArg = (e.MessageText.match(/一键赠送([\u4e00-\u9fa5]+)?$/) || [])[1]
+  let targetTypes: string[]
+  if (!typeArg) {
+    targetTypes = ALL_TYPES
+  } else {
+    // 分词：每一位汉字视为一个类型
+    targetTypes = typeArg
+      .split('')
+      .filter(t => ALL_TYPES.includes(t) || ALL_TYPES.includes(t + '宠口粮')) // 兼容“仙宠口粮”
+    // 检查是否有非法类型
+    if (targetTypes.length === 0) {
+      Send(Text('物品类型错误，仅支持：' + ALL_TYPES.join('、')))
       return false
     }
   }
-  for (let i of wupin) {
-    for (let l of A_najie[i]) {
-      if (l && l.islockd == 0) {
-        let quantity = l.数量
-        //纳戒中的数量
-        if (i == '装备' || i == '仙宠') {
+
+  const A_najie = await data.getData('najie', A_qq)
+  let sendTypes: string[] = []
+  let nothingToSend: string[] = []
+  for (let type of targetTypes) {
+    let items = A_najie[type]
+    if (!Array.isArray(items) || !items.length) {
+      nothingToSend.push(type)
+      continue
+    }
+    let sent = false
+    for (let l of items) {
+      if (l && l.islockd == 0 && Number(l.数量) > 0) {
+        let quantity = Number(l.数量)
+        if (type === '装备' || type === '仙宠') {
           await addNajieThing(B_qq, l, l.class, quantity, l.pinji)
           await addNajieThing(A_qq, l, l.class, -quantity, l.pinji)
-          continue
+        } else {
+          await addNajieThing(A_qq, l.name, l.class, -quantity)
+          await addNajieThing(B_qq, l.name, l.class, quantity)
         }
-        await addNajieThing(A_qq, l.name, l.class, -quantity)
-        await addNajieThing(B_qq, l.name, l.class, quantity)
+        sent = true
       }
     }
+    if (sent) sendTypes.push(type)
+    else nothingToSend.push(type)
   }
-  Send(Text(`一键赠送完成`))
+
+  let msg = ''
+  if (sendTypes.length) msg += `已赠送：${sendTypes.join('、')}\n`
+  if (nothingToSend.length) msg += `无可赠送：${nothingToSend.join('、')}`
+  Send(Text(msg.trim() || '一键赠送完成'))
 })

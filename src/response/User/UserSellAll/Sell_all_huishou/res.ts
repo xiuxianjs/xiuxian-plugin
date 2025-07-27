@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, foundthing, addNajieThing, Add_灵石 } from '@src/model'
+import { existplayer, foundthing, addNajieThing, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键回收(.*)$/
@@ -54,6 +54,6 @@ export default onResponse(selects, async e => {
       }
     }
   }
-  await Add_灵石(usr_qq, lingshi)
+  await addCoin(usr_qq, lingshi)
   Send(Text(`回收成功!  获得${lingshi}灵石 `))
 })

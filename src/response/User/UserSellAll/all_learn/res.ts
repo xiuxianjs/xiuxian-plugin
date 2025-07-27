@@ -5,7 +5,7 @@ import {
   existplayer,
   readPlayer,
   addNajieThing,
-  Add_player_学习功法
+  addConFaByUser
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
     let islearned = player.学习的功法.find(item => item == l.name)
     if (!islearned) {
       await addNajieThing(usr_qq, l.name, '功法', -1)
-      await Add_player_学习功法(usr_qq, l.name)
+      await addConFaByUser(usr_qq, l.name)
       name = name + ' ' + l.name
     }
   }

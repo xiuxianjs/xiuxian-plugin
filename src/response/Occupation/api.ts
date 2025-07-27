@@ -1,5 +1,5 @@
 import { data, pushInfo } from '@src/api/api'
-import { addNajieThing, Add_职业经验 } from '@src/model'
+import { addNajieThing, addExp4 } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 
 export async function plant_jiesuan(user_id, time, group_id, platform) {
@@ -49,7 +49,7 @@ export async function plant_jiesuan(user_id, time, group_id, platform) {
     msg.push(`\n${names[item]}${Math.floor(newsum[item])}个`)
     await addNajieThing(usr_qq, names[item], '草药', Math.floor(newsum[item]))
   }
-  await Add_职业经验(usr_qq, exp)
+  await addExp4(usr_qq, exp)
   if (group_id) {
     await pushInfo(platform, group_id, true, msg)
   } else {
@@ -107,7 +107,7 @@ export async function mine_jiesuan(user_id, time, platform, group_id?) {
   await addNajieThing(usr_qq, '玄土', '材料', end_amount)
   await addNajieThing(usr_qq, A[xuanze], '材料', num)
   await addNajieThing(usr_qq, B[xuanze], '材料', Math.trunc(num / 48))
-  await Add_职业经验(usr_qq, exp)
+  await addExp4(usr_qq, exp)
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`)
   msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
   if (group_id) {

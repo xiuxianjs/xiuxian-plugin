@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis, data, config } from '@src/api/api'
-import { existplayer, readPlayer, isNotNull, Add_灵石 } from '@src/model'
+import { existplayer, readPlayer, isNotNull, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(大|小)$/
@@ -85,7 +85,7 @@ export default onResponse(selects, async e => {
     //把记录写入
     data.setData('player', usr_qq, player)
     //得到的
-    Add_灵石(usr_qq, global.yazhu[usr_qq])
+    addCoin(usr_qq, global.yazhu[usr_qq])
     if (y == 1) {
       Send(
         Text(
@@ -131,7 +131,7 @@ export default onResponse(selects, async e => {
     //把记录写入
     data.setData('player', usr_qq, player)
     //只要花灵石的地方就要查看是否存在游戏状态
-    Add_灵石(usr_qq, -global.yazhu[usr_qq])
+    addCoin(usr_qq, -global.yazhu[usr_qq])
     let msg = [
       `骰子最终为 ${touzi} 你猜错了！`,
       '\n',

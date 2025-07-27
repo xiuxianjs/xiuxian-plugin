@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, convert2integer, readPlayer, Add_灵石 } from '@src/model'
+import { existplayer, convert2integer, readPlayer, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?交税[1-9]d*/
@@ -20,6 +20,6 @@ export default onResponse(selects, async e => {
     Send(Text('醒醒，你没有那么多'))
     return false
   }
-  await Add_灵石(usr_qq, -lingshi)
+  await addCoin(usr_qq, -lingshi)
   Send(Text('成功交税' + lingshi))
 })

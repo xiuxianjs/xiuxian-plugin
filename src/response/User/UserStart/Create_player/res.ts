@@ -7,8 +7,8 @@ import {
   writePlayer,
   writeEquipment,
   Write_najie,
-  Add_HP,
-  Write_danyao
+  addHP,
+  writeDanyao
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -93,7 +93,7 @@ export default onResponse(selects, async e => {
     仙宠口粮: []
   }
   await Write_najie(usr_qq, new_najie)
-  await Add_HP(usr_qq, 999999)
+  await addHP(usr_qq, 999999)
   const arr = {
     biguan: 0, //闭关状态
     biguanxl: 0, //增加效率
@@ -107,7 +107,7 @@ export default onResponse(selects, async e => {
     beiyong4: 0,
     beiyong5: 0
   }
-  await Write_danyao(usr_qq, arr)
+  await writeDanyao(usr_qq, arr)
   let img = await getPlayerImage(e)
   if (img) Send(Image(img))
   return false

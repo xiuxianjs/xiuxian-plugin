@@ -2,7 +2,7 @@ import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { data, pushInfo, redis } from '@src/api/api'
 import fs from 'fs'
-import { zd_battle, sleep, Harm, Add_HP, Add_灵石, __PATH } from '@src/model'
+import { zdBattle, sleep, Harm, addHP, addCoin, __PATH } from '@src/model'
 
 global.WorldBOSSBattleCD = {}
 global.WorldBOSSBattleLock = 0 //BOSS战斗锁，防止打架频率过高造成奖励多发
@@ -243,7 +243,7 @@ export async function WorldBossBattle(e) {
       return false
     }
     global.WorldBOSSBattleLock = 1
-    let Data_battle = await zd_battle(player, Boss)
+    let Data_battle = await zdBattle(player, Boss)
     let msg = Data_battle.msg
     let A_win = `${player.名号}击败了${Boss.名号}`
     let B_win = `${Boss.名号}击败了${player.名号}`
@@ -283,7 +283,7 @@ export async function WorldBossBattle(e) {
         )
       )
     }
-    await Add_HP(usr_qq, Data_battle.A_xue)
+    await addHP(usr_qq, Data_battle.A_xue)
     await sleep(1000)
     let random = Math.random()
     if (random < 0.05 && msg.find(item => item == A_win)) {
@@ -299,7 +299,7 @@ export async function WorldBossBattle(e) {
           )}伤害,并治愈了你的伤势`
         )
       )
-      await Add_HP(usr_qq, player.血量上限)
+      await addHP(usr_qq, player.血量上限)
     }
     await sleep(1000)
     PlayerRecordJSON.TotalDamage[Userid] += TotalDamage
@@ -320,7 +320,7 @@ export async function WorldBossBattle(e) {
         // todo 主动推送
         await pushInfo(platform, group_id, true, msg2)
       }
-      await Add_灵石(usr_qq, 1000000)
+      await addCoin(usr_qq, 1000000)
       logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
       WorldBossStatus.KilledTime = new Date().getTime()

@@ -6,10 +6,10 @@ import {
   shijianc,
   existNajieThing,
   addNajieThing,
-  zd_battle,
-  Add_灵石
+  zdBattle,
+  addCoin
 } from '@src/model'
-import { Read_tiandibang, Write_tiandibang, getLastbisai } from '../tian'
+import { readTiandibang, Write_tiandibang, getLastbisai } from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?比试$/
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
   }
   let tiandibang = []
   try {
-    tiandibang = await Read_tiandibang()
+    tiandibang = await readTiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])
@@ -94,7 +94,7 @@ export default onResponse(selects, async e => {
   }
   Write_tiandibang(tiandibang)
   let lingshi
-  tiandibang = await Read_tiandibang()
+  tiandibang = await readTiandibang()
   if (x != 0) {
     let k
     for (k = x - 1; k >= 0; k--) {
@@ -156,7 +156,7 @@ export default onResponse(selects, async e => {
         法球倍率: tiandibang[x].法球倍率
       }
     }
-    let Data_battle = await zd_battle(A_player, B_player)
+    let Data_battle = await zdBattle(A_player, B_player)
     let msg = Data_battle.msg
     let A_win = `${A_player.名号}击败了${B_player.名号}`
     let B_win = `${B_player.名号}击败了${A_player.名号}`
@@ -190,7 +190,7 @@ export default onResponse(selects, async e => {
       Send(Text(`战斗过程出错`))
       return false
     }
-    await Add_灵石(usr_qq, lingshi)
+    await addCoin(usr_qq, lingshi)
     if (msg.length > 50) {
       logger.info('通过')
     } else {
@@ -222,7 +222,7 @@ export default onResponse(selects, async e => {
       灵根: tiandibang[x].灵根,
       法球倍率: tiandibang[x].法球倍率
     }
-    let Data_battle = await zd_battle(A_player, B_player)
+    let Data_battle = await zdBattle(A_player, B_player)
     let msg = Data_battle.msg
     let A_win = `${A_player.名号}击败了${B_player.名号}`
     let B_win = `${B_player.名号}击败了${A_player.名号}`
@@ -246,7 +246,7 @@ export default onResponse(selects, async e => {
       Send(Text(`战斗过程出错`))
       return false
     }
-    await Add_灵石(usr_qq, lingshi)
+    await addCoin(usr_qq, lingshi)
     if (msg.length > 50) {
       logger.info('通过')
     } else {
@@ -255,7 +255,7 @@ export default onResponse(selects, async e => {
     }
     Send(Text(last_msg.join('\n')))
   }
-  tiandibang = await Read_tiandibang()
+  tiandibang = await readTiandibang()
   let t
   for (let i = 0; i < tiandibang.length - 1; i++) {
     let count = 0

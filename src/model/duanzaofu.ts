@@ -59,7 +59,7 @@ export async function looktripod(qq: string): Promise<number> {
   return 0
 }
 
-export async function Read_mytripod(qq: string): Promise<Tripod | undefined> {
+export async function readMytripod(qq: string): Promise<Tripod | undefined> {
   let tripod: Tripod[] = []
   try {
     tripod = await readTripod()

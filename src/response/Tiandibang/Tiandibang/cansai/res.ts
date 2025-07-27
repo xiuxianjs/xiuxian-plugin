@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
 import { existplayer, readPlayer } from '@src/model'
-import { Read_tiandibang, Write_tiandibang } from '../tian'
+import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?报名比赛/
@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let tiandibang = []
   try {
-    tiandibang = await Read_tiandibang()
+    tiandibang = await readTiandibang()
   } catch {
     //没有表要先建立一个！
     await Write_tiandibang([])

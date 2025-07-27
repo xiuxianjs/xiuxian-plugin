@@ -4,8 +4,8 @@ import { data, redis } from '@src/api/api'
 import {
   isNotNull,
   shijianc,
-  Read_danyao,
-  Write_danyao,
+  readDanyao,
+  writeDanyao,
   addNajieThing
 } from '@src/model'
 
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
 
   let random = Math.random()
   //根据好感度获取概率
-  let dy = await Read_danyao(usr_qq)
+  let dy = await readDanyao(usr_qq)
   if (dy.beiyong2 > 0) {
     dy.beiyong2--
   }
@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
   if (dy.beiyong2 == 0) {
     dy.beiyong3 = 0
   }
-  await Write_danyao(usr_qq, dy)
+  await writeDanyao(usr_qq, dy)
   if (random > 0.7) {
     let location
     let item_name

@@ -1,9 +1,9 @@
 import { Text, useSend } from 'alemonjs'
 import {
   __PATH,
-  Add_灵石,
-  Add_修为,
-  Add_血气,
+  addCoin,
+  addExp,
+  addExp2,
   foundthing,
   addNajieThing
 } from '@src/model'
@@ -24,17 +24,17 @@ export default onResponse(selects, async e => {
   if (thing_name == '灵石') {
     for (let i = 0; i < File_length; i++) {
       let this_qq = playerList[i]
-      await Add_灵石(this_qq, thing_amount)
+      await addCoin(this_qq, thing_amount)
     }
   } else if (thing_name == '修为') {
     for (let i = 0; i < File_length; i++) {
       let this_qq = playerList[i]
-      await Add_修为(this_qq, thing_amount)
+      await addExp(this_qq, thing_amount)
     }
   } else if (thing_name == '血气') {
     for (let i = 0; i < File_length; i++) {
       let this_qq = playerList[i]
-      await Add_血气(this_qq, thing_amount)
+      await addExp2(this_qq, thing_amount)
     }
   } else {
     let thing_exist = await foundthing(thing_name)

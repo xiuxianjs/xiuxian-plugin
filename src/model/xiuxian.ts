@@ -1,25 +1,17 @@
-import fs from 'fs'
-import path from 'path'
 import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { readIt } from './duanzaofu.js'
 import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
 import { __PATH } from './paths.js'
 import { writePlayer, writeIt } from './pub.js'
-import type {
-  Player,
-  Equipment,
-  Najie,
-  TalentInfo,
-  DanyaoStatus
-} from '../types/player.js'
+import type { Player, Equipment, Najie, TalentInfo } from '../types/player.js'
 import * as _ from 'lodash-es'
 import { getDataByUserId } from './Redis.js'
 
 export { __PATH }
 
 // 辅助函数：安全获取玩家数据
-export async function getPlayerDataSafe(usr_qq: string): Player | null {
+export async function getPlayerDataSafe(usr_qq: string): Promise<Player> {
   const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return null
@@ -33,7 +25,7 @@ export function setPlayerDataSafe(usr_qq: string, player: Player): void {
 }
 
 // 辅助函数：安全获取装备数据
-export async function getEquipmentDataSafe(usr_qq: string): Equipment | null {
+export async function getEquipmentDataSafe(usr_qq: string): Promise<Equipment> {
   const equipmentData = await data.getData('equipment', usr_qq)
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return null
@@ -230,7 +222,7 @@ export async function writeEquipment(
   if (player.暴击伤害 > 2.5) player.暴击伤害 = 2.5
   if (player.仙宠.type == '暴伤') player.暴击伤害 += player.仙宠.加成
   await writePlayer(usr_qq, player)
-  await Add_HP(usr_qq, 0)
+  await addHP(usr_qq, 0)
   redis.set(`${__PATH.equipment_path}:${usr_qq}`, JSON.stringify(equipment))
   return
 }
@@ -455,7 +447,7 @@ export async function Write_najie(usr_qq: string, najie: Najie): Promise<void> {
 
 //修为数量和灵石数量正增加,负减少
 //使用时记得加await
-export async function Add_灵石(
+export async function addCoin(
   usr_qq: string,
   灵石数量: number = 0
 ): Promise<void> {
@@ -466,7 +458,7 @@ export async function Add_灵石(
   return
 }
 
-export async function Add_修为(
+export async function addExp(
   usr_qq: string,
   修为数量: number = 0
 ): Promise<void> {
@@ -477,7 +469,7 @@ export async function Add_修为(
   return
 }
 
-export async function Add_魔道值(
+export async function addExp3(
   usr_qq: string,
   魔道值: number = 0
 ): Promise<void> {
@@ -488,10 +480,7 @@ export async function Add_魔道值(
   return
 }
 
-export async function Add_血气(
-  usr_qq: string,
-  血气: number = 0
-): Promise<void> {
+export async function addExp2(usr_qq: string, 血气: number = 0): Promise<void> {
   let player: Player | null = await readPlayer(usr_qq)
   if (!player) return
   player.血气 += Math.trunc(血气)
@@ -499,7 +488,7 @@ export async function Add_血气(
   return
 }
 
-export async function Add_HP(usr_qq: string, blood: number = 0): Promise<void> {
+export async function addHP(usr_qq: string, blood: number = 0): Promise<void> {
   let player: Player | null = await readPlayer(usr_qq)
   if (!player) return
   player.当前血量 += Math.trunc(blood)
@@ -518,7 +507,7 @@ export async function Add_HP(usr_qq: string, blood: number = 0): Promise<void> {
  * @param {*} exp 经验值
  * @returns
  */
-export async function Add_职业经验(usr_qq, exp = 0) {
+export async function addExp4(usr_qq, exp = 0) {
   let player: any = await readPlayer(usr_qq)
   if (exp == 0) {
     return
@@ -542,14 +531,14 @@ export async function Add_职业经验(usr_qq, exp = 0) {
   return
 }
 
-export async function Add_najie_灵石(usr_qq, lingshi) {
+export async function addBagCoin(usr_qq, lingshi) {
   let najie: any = await readNajie(usr_qq)
   najie.灵石 += Math.trunc(lingshi)
   await Write_najie(usr_qq, najie)
   return
 }
 
-export async function Add_player_学习功法(usr_qq, gongfa_name) {
+export async function addConFaByUser(usr_qq, gongfa_name) {
   let player: any = await readPlayer(usr_qq)
   player.学习的功法.push(gongfa_name)
   data.setData('player', usr_qq, player)
@@ -557,7 +546,7 @@ export async function Add_player_学习功法(usr_qq, gongfa_name) {
   return
 }
 
-export async function Reduse_player_学习功法(usr_qq, gongfa_name) {
+export async function reduseGonfaByUser(usr_qq, gongfa_name) {
   let player: any = await readPlayer(usr_qq)
   player.学习的功法 = player.学习的功法.filter(item => item != gongfa_name)
   data.setData('player', usr_qq, player)
@@ -620,7 +609,7 @@ export async function playerEfficiency(usr_qq: string) {
     // 是否存在修炼仙宠
     xianchong_efficiency = player.仙宠.加成 // 存在修炼仙宠，仙宠效率为仙宠效率加成
   }
-  let dy: any = await Read_danyao(usr_qq)
+  let dy: any = await readDanyao(usr_qq)
   let bgdan = dy.biguanxl
   const currentXiulianEfficiency = Number(player.修炼效率提升 || 0)
   if (
@@ -648,7 +637,7 @@ export async function playerEfficiency(usr_qq: string) {
  */
 
 //修改纳戒物品锁定状态
-export async function re_najie_thing(
+export async function updateBagThing(
   usr_qq,
   thing_name,
   thing_class,
@@ -868,7 +857,7 @@ export async function addNajieThing(usr_qq, name, thing_class, x, pinji?) {
 }
 
 //替换装备
-export async function instead_equipment(usr_qq, equipment_data) {
+export async function insteadEquipment(usr_qq, equipment_data) {
   //装备name
   await addNajieThing(usr_qq, equipment_data, '装备', -1, equipment_data.pinji)
   let equipment: any = await readEquipment(usr_qq)
@@ -956,7 +945,7 @@ export function sortBy(field) {
 }
 
 //获取总修为
-export async function Get_xiuwei(usr_qq) {
+export async function getAllExp(usr_qq) {
   let player: any = await readPlayer(usr_qq)
   let sum_exp = 0
   let now_level_id
@@ -980,18 +969,18 @@ export async function Get_xiuwei(usr_qq) {
 //获取随机灵根
 export async function getRandomTalent(): Promise<TalentInfo> {
   let talent
-  if (get_random_res(体质概率)) {
+  if (getRandomRes(体质概率)) {
     talent = data.talent_list.filter(item => item.type == '体质')
-  } else if (get_random_res(伪灵根概率 / (1 - 体质概率))) {
+  } else if (getRandomRes(伪灵根概率 / (1 - 体质概率))) {
     talent = data.talent_list.filter(item => item.type == '伪灵根')
-  } else if (get_random_res(真灵根概率 / (1 - 伪灵根概率 - 体质概率))) {
+  } else if (getRandomRes(真灵根概率 / (1 - 伪灵根概率 - 体质概率))) {
     talent = data.talent_list.filter(item => item.type == '真灵根')
   } else if (
-    get_random_res(天灵根概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率))
+    getRandomRes(天灵根概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率))
   ) {
     talent = data.talent_list.filter(item => item.type == '天灵根')
   } else if (
-    get_random_res(
+    getRandomRes(
       圣体概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率 - 天灵根概率)
     )
   ) {
@@ -999,7 +988,7 @@ export async function getRandomTalent(): Promise<TalentInfo> {
   } else {
     talent = data.talent_list.filter(item => item.type == '变异灵根')
   }
-  let newtalent = get_random_fromARR(talent)
+  let newtalent = getRandomFromARR(talent)
   return newtalent
 }
 
@@ -1008,7 +997,7 @@ export async function getRandomTalent(): Promise<TalentInfo> {
  * @param P 概率
  * @returns 随机返回 false or true
  */
-export function get_random_res(P) {
+export function getRandomRes(P) {
   if (P > 1) {
     P = 1
   }
@@ -1027,7 +1016,7 @@ export function get_random_res(P) {
  * @param ARR 输入的数组
  * @returns 随机返回一个元素
  */
-export function get_random_fromARR(ARR) {
+export function getRandomFromARR(ARR) {
   //let L = ARR.length;
   let randindex = Math.trunc(Math.random() * ARR.length)
   return ARR[randindex]
@@ -1145,7 +1134,7 @@ export async function writeQinmidu(qinmidu) {
   await redis.set(`${__PATH.qinmidu}:qinmidu`, JSON.stringify(qinmidu))
   return
 }
-export async function fstadd_qinmidu(A, B) {
+export async function fstaddQinmidu(A, B) {
   let qinmidu = []
   try {
     qinmidu = await readQinmidu()
@@ -1164,7 +1153,7 @@ export async function fstadd_qinmidu(A, B) {
   return
 }
 
-export async function add_qinmidu(A, B, qinmi) {
+export async function addQinmidu(A, B, qinmi) {
   let qinmidu = []
   try {
     qinmidu = await readQinmidu()
@@ -1182,7 +1171,7 @@ export async function add_qinmidu(A, B, qinmi) {
     }
   }
   if (i == qinmidu.length) {
-    await fstadd_qinmidu(A, B)
+    await fstaddQinmidu(A, B)
     qinmidu = await readQinmidu()
   }
   qinmidu[i].亲密度 += qinmi
@@ -1190,7 +1179,7 @@ export async function add_qinmidu(A, B, qinmi) {
   return
 }
 
-export async function find_qinmidu(A, B) {
+export async function findQinmidu(A, B) {
   let qinmidu = []
   try {
     qinmidu = await readQinmidu()
@@ -1230,7 +1219,7 @@ export async function find_qinmidu(A, B) {
   }
 }
 //查询A的婚姻，如果有婚姻则返回对方qq，若无则返回false
-export async function exist_hunyin(A) {
+export async function existHunyin(A) {
   let qinmidu = []
   try {
     qinmidu = await readQinmidu()
@@ -1257,22 +1246,22 @@ export async function exist_hunyin(A) {
   return flag
 }
 
-export async function Write_shitu(shitu) {
+export async function writeShitu(shitu) {
   await redis.set(`${__PATH.shitu}:shitu`, JSON.stringify(shitu))
   return
 }
-export async function Read_shitu() {
+export async function readShitu() {
   const shitu = await redis.get(`${__PATH.shitu}:shitu`)
   return JSON.parse(shitu)
 }
 
-export async function fstadd_shitu(A) {
+export async function fstaddShitu(A) {
   let shitu = []
   try {
-    shitu = await Read_shitu()
+    shitu = await readShitu()
   } catch {
     //没有表要先建立一个！
-    await Write_shitu([])
+    await writeShitu([])
   }
   let player = {
     师傅: A,
@@ -1286,17 +1275,17 @@ export async function fstadd_shitu(A) {
     已出师徒弟: []
   }
   shitu.push(player)
-  await Write_shitu(shitu)
+  await writeShitu(shitu)
   return
 }
 
-export async function add_shitu(A, num) {
+export async function addShitu(A, num) {
   let shitu = []
   try {
-    shitu = await Read_shitu()
+    shitu = await readShitu()
   } catch {
     //没有表要先建立一个！
-    await Write_shitu([])
+    await writeShitu([])
   }
   let i
   for (i = 0; i < shitu.length; i++) {
@@ -1305,21 +1294,21 @@ export async function add_shitu(A, num) {
     }
   }
   if (i == shitu.length) {
-    await fstadd_shitu(A)
-    shitu = await Read_shitu()
+    await fstaddShitu(A)
+    shitu = await readShitu()
   }
   shitu[i].收徒 += num
-  await Write_shitu(shitu)
+  await writeShitu(shitu)
   return
 }
 
-export async function find_shitu(A) {
+export async function findShitu(A) {
   let shitu = []
   try {
-    shitu = await Read_shitu()
+    shitu = await readShitu()
   } catch {
     //没有建立一个
-    await Write_shitu([])
+    await writeShitu([])
   }
   let i
   let QQ = []
@@ -1337,9 +1326,9 @@ export async function find_shitu(A) {
   }
 }
 
-export async function find_tudi(A) {
+export async function findTudi(A) {
   let shitu
-  shitu = await Read_shitu()
+  shitu = await readShitu()
   let i
   let QQ = []
   for (i = 0; i < shitu.length; i++) {
@@ -1355,7 +1344,7 @@ export async function find_tudi(A) {
     return shitu[i].师徒
   }
 }
-export async function Read_danyao(usr_qq) {
+export async function readDanyao(usr_qq) {
   let danyao = await redis.get(`${__PATH.danyao_path}:${usr_qq}`)
   if (!danyao) {
     //如果没有丹药数据，返回空数组
@@ -1366,7 +1355,7 @@ export async function Read_danyao(usr_qq) {
   return data
 }
 
-export async function Write_danyao(usr_qq, danyao) {
+export async function writeDanyao(usr_qq, danyao) {
   await redis.set(`${__PATH.danyao_path}:${usr_qq}`, JSON.stringify(danyao))
   return
 }
@@ -1461,7 +1450,7 @@ export async function existshop(didian) {
     return false
   }
 }
-export async function zd_battle(AA_player, BB_player) {
+export async function zdBattle(AA_player, BB_player) {
   // let A_player = JSON.parse(JSON.stringify(BB_player))
   //深拷贝
   let A_player = _.cloneDeep(BB_player)

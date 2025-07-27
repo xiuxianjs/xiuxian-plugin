@@ -7,10 +7,10 @@ import {
   writePlayer,
   readEquipment,
   playerEfficiency,
-  get_random_fromARR,
+  getRandomFromARR,
   addNajieThing,
   writeEquipment,
-  Add_HP
+  addHP
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -124,13 +124,13 @@ export default onResponse(selects, async e => {
           //随机一个幸运儿的QQ,优先挑选等级高的
           let randmember_qq
           if (ass.副宗主.length > 0) {
-            randmember_qq = await get_random_fromARR(ass.副宗主)
+            randmember_qq = await getRandomFromARR(ass.副宗主)
           } else if (ass.长老.length > 0) {
-            randmember_qq = await get_random_fromARR(ass.长老)
+            randmember_qq = await getRandomFromARR(ass.长老)
           } else if (ass.内门弟子.length > 0) {
-            randmember_qq = await get_random_fromARR(ass.内门弟子)
+            randmember_qq = await getRandomFromARR(ass.内门弟子)
           } else {
-            randmember_qq = await get_random_fromARR(ass.所有成员)
+            randmember_qq = await getRandomFromARR(ass.所有成员)
           }
           let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
           ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
@@ -168,7 +168,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -201,7 +201,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -234,7 +234,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -267,7 +267,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -300,7 +300,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -333,7 +333,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -366,7 +366,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -399,7 +399,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0
@@ -432,7 +432,7 @@ export default onResponse(selects, async e => {
     let equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
-    await Add_HP(usr_qq, 99999999)
+    await addHP(usr_qq, 99999999)
     if (player.lunhuiBH == 0) {
       player.Physique_id = Math.ceil(player.Physique_id / 2)
       player.修为 = 0

@@ -7,8 +7,8 @@ import {
   isNotNull,
   existNajieThing,
   addNajieThing,
-  zd_battle,
-  Add_HP,
+  zdBattle,
+  addHP,
   writePlayer
 } from '@src/model'
 
@@ -225,7 +225,7 @@ export default onResponse(selects, async e => {
   A_player.法球倍率 = A_player.灵根.法球倍率
   B_player.法球倍率 = B_player.灵根.法球倍率
 
-  let Data_battle = await zd_battle(A_player, B_player)
+  let Data_battle = await zdBattle(A_player, B_player)
   let msg = Data_battle.msg
   //战斗回合过长会导致转发失败报错，所以超过30回合的就不转发了
   if (msg.length > 35) {
@@ -234,8 +234,8 @@ export default onResponse(selects, async e => {
     Send(Text(msg))
   }
   //下面的战斗超过100回合会报错
-  await Add_HP(A, Data_battle.A_xue)
-  await Add_HP(B, Data_battle.B_xue)
+  await addHP(A, Data_battle.A_xue)
+  await addHP(B, Data_battle.B_xue)
   let A_win = `${A_player.名号}击败了${B_player.名号}`
   let B_win = `${B_player.名号}击败了${A_player.名号}`
   if (msg.find(item => item == A_win)) {

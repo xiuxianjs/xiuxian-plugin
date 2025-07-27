@@ -5,7 +5,7 @@ import {
   existplayer,
   readPlayer,
   existNajieThing,
-  zd_battle,
+  zdBattle,
   writePlayer
 } from '@src/model'
 
@@ -97,7 +97,7 @@ export default onResponse(selects, async e => {
     法球倍率: player.灵根.法球倍率,
     仙宠: player.仙宠
   }
-  let Data_battle = await zd_battle(player_A, player_B)
+  let Data_battle = await zdBattle(player_A, player_B)
   let msg = Data_battle.msg
   let A_win = `${player_A.名号}击败了${player_B.名号}`
   let B_win = `${player_B.名号}击败了${player_A.名号}`

@@ -6,7 +6,7 @@ import {
   shijianc,
   getLastsign,
   addNajieThing,
-  Add_修为
+  addExp
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -53,7 +53,7 @@ export default onResponse(selects, async e => {
   let gift_xiuwei = player.连续签到天数 * 3000
   const cf = config.getConfig('xiuxian', 'xiuxian')
   await addNajieThing(usr_qq, '秘境之匙', '道具', cf.Sign.ticket)
-  await Add_修为(usr_qq, gift_xiuwei)
+  await addExp(usr_qq, gift_xiuwei)
   let msg = `已经连续签到${player.连续签到天数}天了，获得了${gift_xiuwei}修为,秘境之匙x${cf.Sign.ticket}`
 
   Send(Text(msg))

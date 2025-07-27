@@ -9,7 +9,7 @@ export async function Write_tiandibang(wupin) {
   return false
 }
 
-export async function Read_tiandibang() {
+export async function readTiandibang() {
   let tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
   if (!tiandibang) {
     //如果没有天鼎数据，返回空数组

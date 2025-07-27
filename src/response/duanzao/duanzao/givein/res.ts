@@ -7,8 +7,8 @@ import {
   convert2integer,
   foundthing,
   existNajieThing,
-  Read_mytripod,
-  Read_danyao,
+  readMytripod,
+  readDanyao,
   readTripod,
   writeDuanlu,
   addNajieThing
@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
 
   //开始放入
 
-  const tripod = await Read_mytripod(user_qq)
+  const tripod = await readMytripod(user_qq)
   if (tripod.状态 == 1) {
     Send(Text(`正在炼制中,无法熔炼更多材料`))
     return false
@@ -74,7 +74,7 @@ export default onResponse(selects, async e => {
     num += Number(tripod.数量[item])
   }
   let dyew = 0
-  let dy = await Read_danyao(user_qq)
+  let dy = await readDanyao(user_qq)
   if (dy.beiyong5 > 0) {
     dyew = dy.beiyong5
   }

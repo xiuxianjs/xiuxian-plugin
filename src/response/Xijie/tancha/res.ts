@@ -6,7 +6,7 @@ import {
   readShop,
   writeShop,
   readPlayer,
-  Add_灵石,
+  addCoin,
   existshop
 } from '@src/model'
 
@@ -65,7 +65,7 @@ export default onResponse(selects, async e => {
     Send(Text('你需要更多的灵石去打探消息'))
     return false
   }
-  await Add_灵石(usr_qq, -Price)
+  await addCoin(usr_qq, -Price)
   let thing = await existshop(didian)
   let level = shop[i].Grade
   let state = shop[i].state

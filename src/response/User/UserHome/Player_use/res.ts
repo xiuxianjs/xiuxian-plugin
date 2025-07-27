@@ -8,22 +8,22 @@ import {
   convert2integer,
   foundthing,
   existNajieThing,
-  instead_equipment,
-  Read_danyao,
+  insteadEquipment,
+  readDanyao,
   isNotNull,
-  Add_HP,
+  addHP,
   addNajieThing,
-  Add_修为,
-  Add_血气,
-  Write_danyao,
+  addExp,
+  addExp2,
+  writeDanyao,
   readAll,
   writePlayer,
-  Add_魔道值,
+  addExp3,
   readEquipment,
   writeEquipment,
   getRandomTalent,
   playerEfficiency,
-  Add_player_学习功法
+  addConFaByUser
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -100,13 +100,13 @@ export default onResponse(selects, async e => {
     } else {
       equ = najie.装备.find(item => item.name == thing_name && item.pinji == pj)
     }
-    await instead_equipment(usr_qq, equ)
+    await insteadEquipment(usr_qq, equ)
     let img = await getQquipmentImage(e)
     message.send(format(Image(img)))
     return
   }
   if (func[0] == '服用') {
-    let dy = await Read_danyao(usr_qq)
+    let dy = await readDanyao(usr_qq)
     if (thing_exist.class != '丹药') return
     if (thing_exist.type == '血量') {
       let player = await readPlayer(usr_qq)
@@ -114,14 +114,14 @@ export default onResponse(selects, async e => {
         thing_exist.HPp = 1
       }
       let blood = parseInt(player.血量上限 * thing_exist.HPp + thing_exist.HP)
-      await Add_HP(usr_qq, quantity * blood)
+      await addHP(usr_qq, quantity * blood)
       let now_HP = await readPlayer(usr_qq)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       message.send(format(Text(`服用成功,当前血量为:${now_HP.当前血量} `)))
       return
     }
     if (thing_exist.type == '修为') {
-      await Add_修为(usr_qq, +quantity * thing_exist.exp)
+      await addExp(usr_qq, +quantity * thing_exist.exp)
       message.send(
         format(Text(`服用成功,修为增加${+quantity * thing_exist.exp}`))
       )
@@ -129,7 +129,7 @@ export default onResponse(selects, async e => {
       return
     }
     if (thing_exist.type == '血气') {
-      await Add_血气(usr_qq, quantity * thing_exist.xueqi)
+      await addExp2(usr_qq, quantity * thing_exist.xueqi)
       message.send(
         format(Text(`服用成功,血气增加${+quantity * thing_exist.xueqi}`))
       )
@@ -172,7 +172,7 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await Write_danyao(usr_qq, dy)
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (thing_exist.type == '仙缘') {
@@ -186,7 +186,7 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await Write_danyao(usr_qq, dy)
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (thing_exist.type == '凝仙') {
@@ -210,7 +210,7 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await Write_danyao(usr_qq, dy)
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (thing_exist.type == '炼神') {
@@ -225,7 +225,7 @@ export default onResponse(selects, async e => {
           )
         )
       )
-      await Write_danyao(usr_qq, dy)
+      await writeDanyao(usr_qq, dy)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
@@ -239,7 +239,7 @@ export default onResponse(selects, async e => {
           )
         )
       )
-      await Write_danyao(usr_qq, dy)
+      await writeDanyao(usr_qq, dy)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
@@ -292,11 +292,11 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await Write_danyao(usr_qq, dy)
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (thing_exist.type == '魔道值') {
-      await Add_魔道值(usr_qq, -quantity * thing_exist.modao)
+      await addExp3(usr_qq, -quantity * thing_exist.modao)
       message.send(
         format(
           Text(`获得了转生之力,降低了${quantity * thing_exist.modao}魔道值`)
@@ -306,7 +306,7 @@ export default onResponse(selects, async e => {
       return
     }
     if (thing_exist.type == '入魔') {
-      await Add_魔道值(usr_qq, quantity * thing_exist.modao)
+      await addExp3(usr_qq, quantity * thing_exist.modao)
       message.send(
         format(
           Text(
@@ -543,7 +543,7 @@ export default onResponse(selects, async e => {
     }
     await addNajieThing(usr_qq, thing_name, '功法', -1)
     //
-    await Add_player_学习功法(usr_qq, thing_name)
+    await addConFaByUser(usr_qq, thing_name)
     message.send(
       format(Text(`你学会了${thing_name},可以在【#我的炼体】中查看`))
     )

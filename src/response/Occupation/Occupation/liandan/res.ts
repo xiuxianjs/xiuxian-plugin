@@ -8,7 +8,7 @@ import {
   isNotNull,
   existNajieThing,
   addNajieThing,
-  Add_职业经验
+  addExp4
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -108,5 +108,5 @@ export default onResponse(selects, async e => {
       }
     }
   }
-  await Add_职业经验(usr_qq, total_exp)
+  await addExp4(usr_qq, total_exp)
 })

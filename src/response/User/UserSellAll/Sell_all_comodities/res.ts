@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, addNajieThing, Add_灵石, sleep } from '@src/model'
+import { existplayer, addNajieThing, addCoin, sleep } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
         }
       }
     }
-    await Add_灵石(usr_qq, commodities_price)
+    await addCoin(usr_qq, commodities_price)
     message.send(format(Text(`出售成功!  获得${commodities_price}灵石 `)))
     return false
   }
@@ -114,7 +114,7 @@ export default onResponse(selects, async e => {
           }
         }
       }
-      await Add_灵石(usr_qq, commodities_price)
+      await addCoin(usr_qq, commodities_price)
       message.send(format(Text(`出售成功!  获得${commodities_price}灵石 `)))
     },
     ['UserId']

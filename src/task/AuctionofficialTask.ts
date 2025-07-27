@@ -1,5 +1,5 @@
 import { redis, config, pushInfo } from '@src/api/api'
-import { openAU, readPlayer, Add_灵石, addNajieThing } from '@src/model'
+import { openAU, readPlayer, addCoin, addNajieThing } from '@src/model'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0/1 * * * ?', async () => {
@@ -64,7 +64,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       if (last_offer_player === 0) {
         msg = `流拍，${wupin.thing.name}已退回神秘人的纳戒`
       } else {
-        await Add_灵石(last_offer_player, -wupin.last_price)
+        await addCoin(last_offer_player, -wupin.last_price)
         await addNajieThing(
           last_offer_player,
           wupin.thing.name,

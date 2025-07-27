@@ -8,7 +8,7 @@ import {
   writeExchange,
   convert2integer,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -92,9 +92,9 @@ export default onResponse(selects, async e => {
       await addNajieThing(usr_qq, thing_name, thing_class, n)
     }
     //扣钱
-    await Add_灵石(usr_qq, -money)
+    await addCoin(usr_qq, -money)
     //加钱
-    await Add_灵石(thingqq, money)
+    await addCoin(thingqq, money)
     Exchange[x].aconut = Exchange[x].aconut - n
     Exchange[x].whole = Exchange[x].whole - money
     //删除该位置信息

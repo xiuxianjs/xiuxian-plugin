@@ -8,7 +8,7 @@ import {
   readPlayer,
   existNajieThing,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -57,7 +57,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let Price = weizhi.Price * 10 * i
-  await Add_灵石(usr_qq, -Price)
+  await addCoin(usr_qq, -Price)
   const time = i * 10 * 5 + 10 //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒
   let arr: any = {

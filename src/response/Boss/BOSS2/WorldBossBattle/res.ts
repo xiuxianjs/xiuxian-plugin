@@ -8,7 +8,7 @@ import {
   WorldBossBattle
 } from '../../boss'
 import { redis, data, pushInfo } from '@src/api/api'
-import { zd_battle, sleep, Harm, Add_HP, Add_灵石 } from '@src/model'
+import { zdBattle, sleep, Harm, addHP, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?讨伐金角大王$/
@@ -132,7 +132,7 @@ export default onResponse(selects, async e => {
       return false
     }
     global.WorldBOSSBattleLock = 1
-    let Data_battle = await zd_battle(player, Boss)
+    let Data_battle = await zdBattle(player, Boss)
     let msg = Data_battle.msg
     let A_win = `${player.名号}击败了${Boss.名号}`
     let B_win = `${Boss.名号}击败了${player.名号}`
@@ -172,7 +172,7 @@ export default onResponse(selects, async e => {
         )
       )
     }
-    await Add_HP(usr_qq, Data_battle.A_xue)
+    await addHP(usr_qq, Data_battle.A_xue)
     await sleep(1000)
     let random = Math.random()
     if (random < 0.05 && msg.find(item => item == A_win)) {
@@ -190,7 +190,7 @@ export default onResponse(selects, async e => {
           )}伤害,并治愈了你的伤势`
         )
       )
-      await Add_HP(usr_qq, player.血量上限)
+      await addHP(usr_qq, player.血量上限)
     }
     await sleep(1000)
     PlayerRecordJSON.TotalDamage[Userid] += TotalDamage
@@ -210,7 +210,7 @@ export default onResponse(selects, async e => {
         await pushInfo(platform, group_id, true, msg2)
         //  todo 通知群聊
       }
-      await Add_灵石(usr_qq, 500000)
+      await addCoin(usr_qq, 500000)
       logger.info(`[金角大王] 结算:${usr_qq}增加奖励500000`)
 
       WorldBossStatus.KilledTime = new Date().getTime()

@@ -3,13 +3,13 @@ import { Text, useMessage, useSend, useSubscribe } from 'alemonjs'
 import { redis, data, config } from '@src/api/api'
 import {
   __PATH,
-  Add_HP,
+  addHP,
   existplayer,
-  get_random_fromARR,
+  getRandomFromARR,
   getRandomTalent,
   Go,
   isNotNull,
-  Write_danyao,
+  writeDanyao,
   writeEquipment,
   Write_najie,
   writePlayer
@@ -129,11 +129,11 @@ export default onResponse(selects, async e => {
               //随机一个幸运儿的QQ,优先挑选等级高的
               let randmember_qq
               if (ass.长老.length > 0) {
-                randmember_qq = await get_random_fromARR(ass.长老)
+                randmember_qq = await getRandomFromARR(ass.长老)
               } else if (ass.内门弟子.length > 0) {
-                randmember_qq = await get_random_fromARR(ass.内门弟子)
+                randmember_qq = await getRandomFromARR(ass.内门弟子)
               } else {
-                randmember_qq = await get_random_fromARR(ass.所有成员)
+                randmember_qq = await getRandomFromARR(ass.所有成员)
               }
               let randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
               ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
@@ -264,7 +264,7 @@ async function Create_player(e) {
     仙宠口粮: []
   }
   await Write_najie(usr_qq, new_najie)
-  await Add_HP(usr_qq, 999999)
+  await addHP(usr_qq, 999999)
   const arr = {
     biguan: 0, //闭关状态
     biguanxl: 0, //增加效率
@@ -278,6 +278,6 @@ async function Create_player(e) {
     beiyong4: 0,
     beiyong5: 0
   }
-  await Write_danyao(usr_qq, arr)
+  await writeDanyao(usr_qq, arr)
   await Show_player(e)
 }

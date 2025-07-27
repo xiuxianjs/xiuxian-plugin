@@ -5,7 +5,7 @@ import {
   existplayer,
   readNajie,
   readPlayer,
-  Add_灵石,
+  addCoin,
   Write_najie
 } from '@src/model'
 import { config } from '@src/api/api'
@@ -36,7 +36,7 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  await Add_灵石(usr_qq, -najie_price[najie.等级])
+  await addCoin(usr_qq, -najie_price[najie.等级])
   najie.灵石上限 = najie_num[najie.等级]
   najie.等级 += 1
   await Write_najie(usr_qq, najie)

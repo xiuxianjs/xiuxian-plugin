@@ -7,7 +7,7 @@ import {
   isNotNull,
   existNajieThing,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -58,7 +58,7 @@ export default onResponse(selects, async e => {
     await addNajieThing(usr_qq, '仙境优惠券', '道具', -1)
   }
   let Price = weizhi.Price * dazhe
-  await Add_灵石(usr_qq, -Price)
+  await addCoin(usr_qq, -Price)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.secretplace //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒

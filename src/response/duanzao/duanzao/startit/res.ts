@@ -6,8 +6,8 @@ import {
   looktripod,
   readTripod,
   writeDuanlu,
-  Read_danyao,
-  Write_danyao
+  readDanyao,
+  writeDanyao
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -61,14 +61,14 @@ export default onResponse(selects, async e => {
         end_time: new Date().getTime() + action_time, //结束时间
         time: action_time //持续时间
       }
-      let dy = await Read_danyao(user_qq)
+      let dy = await readDanyao(user_qq)
       if (dy.xingyun >= 1) {
         dy.xingyun--
         if (dy.xingyun == 0) {
           dy.beiyong5 = 0
         }
       }
-      await Write_danyao(user_qq, dy)
+      await writeDanyao(user_qq, dy)
       await redis.set(
         'xiuxian@1.3.0:' + user_qq + ':action10',
         JSON.stringify(arr)

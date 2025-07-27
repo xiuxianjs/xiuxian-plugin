@@ -5,7 +5,7 @@ import {
   existplayer,
   readQinmidu,
   writeQinmidu,
-  find_qinmidu,
+  findQinmidu,
   readPlayer
 } from '@src/model'
 import { found, chaoshi } from '../daolv'
@@ -96,7 +96,7 @@ export default onResponse(selects, async e => {
     await writeQinmidu([])
   }
   let i = await found(A, B)
-  let pd = await find_qinmidu(A, B)
+  let pd = await findQinmidu(A, B)
   if (pd == false) {
     Send(Text('你们还没建立关系，断个锤子'))
     return false

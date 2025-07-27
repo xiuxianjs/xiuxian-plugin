@@ -1,6 +1,6 @@
 import { scheduleJob } from 'node-schedule'
 import { redis, data, pushInfo } from '@src/api/api'
-import { isNotNull, Add_职业经验, addNajieThing, __PATH } from '@src/model'
+import { isNotNull, addExp4, addNajieThing, __PATH } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/1 * * * ?', async () => {
@@ -38,7 +38,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let player = await data.getData('player', player_id)
           let time = parseInt(action.time) / 1000 / 60
           let exp = time * 10
-          await Add_职业经验(player_id, exp)
+          await addExp4(player_id, exp)
           let k = 1
           if (player.level_id < 22) {
             k = 0.5
@@ -86,7 +86,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
               Math.floor(newsum[item])
             )
           }
-          await Add_职业经验(player_id, exp)
+          await addExp4(player_id, exp)
           let arr = action
           //把状态都关了
           arr.plant = 1 //闭关状态
@@ -165,7 +165,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             '材料',
             Math.trunc(num / 48)
           )
-          await Add_职业经验(player_id, exp)
+          await addExp4(player_id, exp)
           msg.push(
             `\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`
           )

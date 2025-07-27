@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, looktripod, Read_mytripod } from '@src/model'
+import { existplayer, looktripod, readMytripod } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?我的锻炉/
@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let a = await Read_mytripod(user_qq)
+  let a = await readMytripod(user_qq)
 
   if (a.材料.length == 0) {
     Send(Text(`锻炉里空空如也,没什么好看的`))

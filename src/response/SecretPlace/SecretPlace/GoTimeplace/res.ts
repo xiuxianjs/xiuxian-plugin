@@ -6,10 +6,10 @@ import {
   readPlayer,
   sleep,
   isNotNull,
-  Add_灵石,
+  addCoin,
   existNajieThing,
   addNajieThing,
-  Add_修为
+  addExp
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -46,7 +46,7 @@ export default onResponse(selects, async e => {
         '价格为5w,你觉得特别特别便宜,赶紧全款拿下了,历经九九八十天,到了后发现居然是仙湖游乐场！'
       )
     )
-    await Add_灵石(usr_qq, -50000)
+    await addCoin(usr_qq, -50000)
     return false
   }
   now_level_id = data.Level_list.find(
@@ -84,7 +84,7 @@ export default onResponse(selects, async e => {
     await addNajieThing(usr_qq, '仙府通行证', '道具', -1)
   }
   let Price = weizhi.Price * dazhe
-  await Add_灵石(usr_qq, -Price)
+  await addCoin(usr_qq, -Price)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.timeplace //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒
@@ -108,7 +108,7 @@ export default onResponse(selects, async e => {
     arr.group_id = e.ChannelId
   }
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr))
-  await Add_修为(usr_qq, -100000)
+  await addExp(usr_qq, -100000)
   if (suiji == 0) {
     Send(
       Text(

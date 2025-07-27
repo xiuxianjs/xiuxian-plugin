@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { Go, readPlayer, isNotNull, Add_灵石, Add_修为 } from '@src/model'
+import { Go, readPlayer, isNotNull, addCoin, addExp } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?前往禁地.*$/
@@ -49,8 +49,8 @@ export default onResponse(selects, async e => {
     return false
   }
   let Price = weizhi.Price
-  await Add_灵石(usr_qq, -Price)
-  await Add_修为(usr_qq, -weizhi.experience)
+  await addCoin(usr_qq, -Price)
+  await addExp(usr_qq, -weizhi.experience)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.forbiddenarea //时间（分钟）
   let action_time = 60000 * time //持续时间，单位毫秒

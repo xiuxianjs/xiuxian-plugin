@@ -9,7 +9,7 @@ import {
   convert2integer,
   existNajieThing,
   addNajieThing,
-  Add_灵石
+  addCoin
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -87,7 +87,7 @@ export default onResponse(selects, async e => {
 
   await addNajieThing(usr_qq, thing_name, thing_class, -n)
   //扣钱
-  await Add_灵石(usr_qq, money)
+  await addCoin(usr_qq, money)
   //加钱
   await addNajieThing(thingqq, thing_name, thing_class, n)
   Forum[x].aconut = Forum[x].aconut - n

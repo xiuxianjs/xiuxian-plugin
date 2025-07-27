@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { existplayer, readPlayer, zd_battle } from '@src/model'
+import { existplayer, readPlayer, zdBattle } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(以武会友)$/
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
   B_player.法球倍率 = B_player.灵根.法球倍率
   A_player.当前血量 = A_player.血量上限
   B_player.当前血量 = B_player.血量上限
-  let Data_battle = await zd_battle(A_player, B_player)
+  let Data_battle = await zdBattle(A_player, B_player)
   let msg = Data_battle.msg
   // await ForwardMsg(e, msg)
   Send(Text(msg))

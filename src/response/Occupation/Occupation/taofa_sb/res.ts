@@ -4,9 +4,9 @@ import { pushInfo, redis } from '@src/api/api'
 import {
   existplayer,
   readPlayer,
-  zd_battle,
+  zdBattle,
   writePlayer,
-  Add_职业经验
+  addExp4
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -81,7 +81,7 @@ export default onResponse(selects, async e => {
       仙宠: player.仙宠,
       神石: player.神石
     }
-    let Data_battle = await zd_battle(player_A, player_B)
+    let Data_battle = await zdBattle(player_A, player_B)
     let msg = Data_battle.msg
     let A_win = `${player_A.名号}击败了${player_B.名号}`
     let B_win = `${player_B.名号}击败了${player_A.名号}`
@@ -93,7 +93,7 @@ export default onResponse(selects, async e => {
       player.灵石 += action.arm[num].赏金
       player.魔道值 -= 5
       await writePlayer(usr_qq, player)
-      await Add_职业经验(usr_qq, 2255)
+      await addExp4(usr_qq, 2255)
       last_msg +=
         '【全服公告】' +
         player_B.名号 +
@@ -104,7 +104,7 @@ export default onResponse(selects, async e => {
       player.灵石 += shangjing
       player.魔道值 -= 5
       await writePlayer(usr_qq, player)
-      await Add_职业经验(usr_qq, 1100)
+      await addExp4(usr_qq, 1100)
       last_msg += player_B.名号 + '反杀了你,只获得了部分辛苦钱'
     }
     if (msg.length > 100) {
@@ -117,7 +117,7 @@ export default onResponse(selects, async e => {
     player.灵石 += action.arm[num].赏金
     player.魔道值 -= 5
     await writePlayer(usr_qq, player)
-    await Add_职业经验(usr_qq, 2255)
+    await addExp4(usr_qq, 2255)
     last_msg += '你惩戒了仙路窃贼,获得了部分灵石' //直接获胜
   }
   action.arm.splice(num, 1)

@@ -12,7 +12,7 @@ import {
   restraint,
   mainyuansu,
   addNajieThing,
-  Add_职业经验
+  addExp4
 } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -207,7 +207,7 @@ export default onResponse(selects, async e => {
       if (player.仙宠.type == '炼器') {
         z = Math.floor(z * (1 + (player.仙宠.等级 / 25) * 0.1))
       }
-      Add_职业经验(user_qq, z)
+      addExp4(user_qq, z)
       //关闭所有状态
       item.状态 = 0
       item.TIME = 0

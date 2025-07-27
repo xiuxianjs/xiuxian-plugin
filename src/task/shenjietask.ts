@@ -3,8 +3,8 @@ import {
   isNotNull,
   readPlayer,
   addNajieThing,
-  Add_血气,
-  Add_修为,
+  addExp2,
+  addExp,
   readTemp,
   writeTemp,
   __PATH
@@ -163,8 +163,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             //写入redis
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
-            await Add_血气(player_id, qixue)
-            await Add_修为(player_id, xiuwei)
+            await addExp2(player_id, qixue)
+            await addExp(player_id, xiuwei)
             //发送消息
             if (is_group) {
               await pushInfo('', push_address, is_group, msg)
@@ -175,8 +175,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.cishu--
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算
-            await Add_血气(player_id, qixue)
-            await Add_修为(player_id, xiuwei)
+            await addExp2(player_id, qixue)
+            await addExp(player_id, xiuwei)
             try {
               let temp = await readTemp()
               let p = {

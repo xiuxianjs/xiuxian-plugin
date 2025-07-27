@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { config, data } from '@src/api/api'
-import { readPlayer, isNotNull, Go, Add_修为, Add_灵石, setu } from '@src/model'
+import { readPlayer, isNotNull, Go, addExp, addCoin, setu } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?怡红院$/
@@ -68,8 +68,8 @@ export default onResponse(selects, async e => {
           '!'
       )
     )
-    await Add_修为(usr_qq, addlevel)
-    await Add_灵石(usr_qq, -money)
+    await addExp(usr_qq, addlevel)
+    await addCoin(usr_qq, -money)
     let gameswitch = cf.switch.Xiuianplay_key
     if (gameswitch == true) {
       setu(e)
@@ -78,7 +78,7 @@ export default onResponse(selects, async e => {
   }
   //被教训
   else if (rand > 0.7) {
-    await Add_灵石(usr_qq, -money)
+    await addCoin(usr_qq, -money)
     ql1 = '花了'
     ql2 =
       '灵石,本想好好放肆一番,却赶上了扫黄,无奈在衙门被教育了一晚上,最终大彻大悟,下次还来！'
@@ -87,7 +87,7 @@ export default onResponse(selects, async e => {
   }
   //被坑了
   else {
-    await Add_灵石(usr_qq, -money)
+    await addCoin(usr_qq, -money)
     ql1 =
       '这一次，你进了一个奇怪的小巷子，那里衣衫褴褛的漂亮姐姐说要找你玩点有刺激的，你想都没想就进屋了。\n'
     ql2 =
