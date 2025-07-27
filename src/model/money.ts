@@ -67,8 +67,9 @@ export const openMoneySystem = async (
   }
 
   // 风控：金额过大时必须必赢
+  // 500~1000 万
   const isMustWin =
-    inputMoney > (Math.floor(Math.random() * 51) + 50) * 1000 * 10
+    inputMoney > (Math.floor(Math.random() * 51) + 50) * 1000 * 100
 
   // 没有资金记录时
   if (totalMoney === null || totalMoney === undefined) {
