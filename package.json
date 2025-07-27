@@ -25,7 +25,7 @@
     "node-schedule": "^2.1.1"
   },
   "devDependencies": {
-    "@alemonjs/db": "^0.0.10",
+    "@alemonjs/db": "^0.0.11",
     "@alemonjs/gui": "^2.1.0-alpha.5",
     "@alemonjs/qq-bot": "^2.1.0-alpha.17",
     "@eslint/js": "^9.18.0",
@@ -34,7 +34,7 @@
     "@types/md5": "^2.3.5",
     "@types/node": "^22.10.5",
     "@types/node-schedule": "^2.1.7",
-    "alemonjs": "^2.1.0-alpha.21",
+    "alemonjs": "^2.1.0-alpha.25",
     "eslint": "^9.18.0",
     "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",

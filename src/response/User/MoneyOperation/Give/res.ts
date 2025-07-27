@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
 
   // 赠送灵石
   if (msg.startsWith('灵石')) {
-    let value = msg.replace(/([\u4e00-\u9fa5])(\*)/g, '').replace(/灵石/, '')
+    const value = msg.replace(/([\u4e00-\u9fa5])|(\*)/g, '')
     const lingshi: number = parseUnitNumber(value)
     const cost = cf.percentage.cost
     let lastlingshi = lingshi + Math.trunc(lingshi * cost)
