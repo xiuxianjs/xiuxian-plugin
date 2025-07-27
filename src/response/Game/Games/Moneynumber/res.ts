@@ -1,12 +1,10 @@
 import { Text, useSend } from 'alemonjs'
-
 import { config, data, redis } from '@src/api/api'
 import { Go } from '@src/model'
-
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?金银坊$/
 import '../game'
 
+export const regular = /^(#|＃|\/)?金银坊$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = config.getConfig('xiuxian', 'xiuxian')
@@ -35,30 +33,17 @@ export default onResponse(selects, async e => {
     Send(Text('媚娘：钱不够也想玩？'))
     return false
   }
-  //设置
-  let time: any = cf.CD.gambling //
-  //获取当前时间
-  //最后的游戏时间
-  //last_game_time
-  //获得时间戳
+  //
   let last_game_time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':last_game_time'
   )
   last_game_time = parseInt(last_game_time)
-  let transferTimeout = Math.floor(60000 * time)
+  const transferTimeout = 30 * 1000 // 30秒CD
+
   if (now_time < last_game_time + transferTimeout) {
-    let game_m = Math.trunc(
-      (last_game_time + transferTimeout - now_time) / 60 / 1000
-    )
-    let game_s = Math.trunc(
-      ((last_game_time + transferTimeout - now_time) % 60000) / 1000
-    )
-    Send(
-      Text(
-        `每${transferTimeout / 1000 / 60}分钟游玩一次。` +
-          `cd: ${game_m}分${game_s}秒`
-      )
-    )
+    const left = last_game_time + transferTimeout - now_time
+    const game_s = Math.ceil(left / 1000) // 剩余秒数向上取整，体验更好
+    Send(Text(`每30秒游玩一次。\ncd: ${game_s}秒`))
     //存在CD。直接返回
     return false
   }

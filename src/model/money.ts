@@ -16,7 +16,7 @@ export const openMoneySystem = async (
   const totalMoney = await redis.get(GAME_KEY)
 
   // 必须让玩家输
-  const mustWinResult = async (): Promise<[boolean, number]> => {
+  const mustCoseResult = async (): Promise<[boolean, number]> => {
     if (isBig) {
       // 玩家猜大，系统给小点数 [1,3]
       const randomNumber = Math.floor(Math.random() * 3) + 1
@@ -33,6 +33,26 @@ export const openMoneySystem = async (
       (totalMoney ? Number(totalMoney) : 0) + inputMoney
     )
     return [false, randomNumber]
+  }
+
+  // 必须让玩家赢
+  const mustWinResult = async (): Promise<[boolean, number]> => {
+    if (isBig) {
+      // 玩家猜大，系统给大点数 [4,6]
+      const randomNumber = Math.floor(Math.random() * 3) + 4
+      await redis.set(
+        GAME_KEY,
+        (totalMoney ? Number(totalMoney) : 0) - inputMoney
+      )
+      return [true, randomNumber]
+    }
+    // 玩家猜小，系统给小点数 [1,3]
+    const randomNumber = Math.floor(Math.random() * 3) + 1
+    await redis.set(
+      GAME_KEY,
+      (totalMoney ? Number(totalMoney) : 0) - inputMoney
+    )
+    return [true, randomNumber]
   }
 
   // 正常随机结果
@@ -52,19 +72,29 @@ export const openMoneySystem = async (
 
   // 没有资金记录时
   if (totalMoney === null || totalMoney === undefined) {
-    if (isMustWin) return await mustWinResult()
+    if (isMustWin) return await mustCoseResult()
     return await randomResult()
   }
+
+  // 随机限制 500 - 1000 万
+  const maxMoney = (Math.floor(Math.random() * 501) + 500) * 10000
 
   // 有资金记录时，判断系统能否赔付
   const currentMoney = Number(totalMoney)
   if (currentMoney < inputMoney) {
     const isMustWinMin =
       inputMoney > (Math.floor(Math.random() * 20) + 20) * 1000 * 10
-    if (currentMoney < -1000 * 1000 * 10 && isMustWinMin)
-      return await mustWinResult()
-    if (isMustWin) return await mustWinResult()
+    if (currentMoney < -maxMoney && isMustWinMin) return await mustWinResult()
+    if (isMustWin) return await mustCoseResult()
     return await randomResult()
+  }
+
+  // 风控： 如果系统赢超过 一定金额。适当的给玩家赢
+  if (maxMoney < currentMoney) {
+    // 但是如果想赢的金额。超过系统的最大赔付金额。必须得让玩家输。
+    if (isMustWin) return await mustCoseResult()
+    // 否则。就让他一直赢了
+    return await mustWinResult()
   }
 
   // 正常情况
