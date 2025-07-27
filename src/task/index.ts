@@ -1,6 +1,5 @@
 import './AuctionofficialTask'
 import './BackUptask'
-import './BackUp'
 import './BOSS2'
 import './ExchangeTask'
 import './BOSS'
