@@ -1416,7 +1416,6 @@ export async function Go(e) {
 export async function writeShop(shop) {
   await redis.set(`${__PATH.shop}:shop`, JSON.stringify(shop))
   return
-  return
 }
 
 export async function readShop() {
@@ -1806,32 +1805,6 @@ export async function openAU() {
   }
   await redis.set('xiuxian:AuctionofficialTask', JSON.stringify(wupin))
   return wupin
-}
-
-export async function jindi(e, weizhi, addres) {
-  let adr = addres
-  const Send = useSend(e)
-  let msg = ['***' + adr + '***']
-  for (let i = 0; i < weizhi.length; i++) {
-    msg.push(
-      weizhi[i].name +
-        '\n' +
-        '等级：' +
-        weizhi[i].Grade +
-        '\n' +
-        '极品：' +
-        weizhi[i].Best[0] +
-        '\n' +
-        '灵石：' +
-        weizhi[i].Price +
-        '灵石' +
-        '\n' +
-        '修为：' +
-        weizhi[i].experience +
-        '修为'
-    )
-  }
-  Send(Text(msg.join('\n')))
 }
 
 // #秘境
