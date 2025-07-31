@@ -104,11 +104,45 @@ export async function readThat(
   thing_name: string,
   weizhi: string
 ): Promise<any> {
-  const weizhi1 = await redis.get(`${__PATH.lib_path}:${weizhi}`)
-  if (!weizhi1) {
-    return []
+  const lib_map = {
+    npc列表: 'npc_list',
+    shop列表: 'shop_list',
+    丹药列表: 'danyao_list',
+    仙境列表: 'Fairyrealm_list',
+    仙宠列表: 'xianchon',
+    仙宠口粮列表: 'xianchonkouliang',
+    兑换列表: 'duihuan',
+    八品: 'bapin',
+    功法列表: 'gongfa_list',
+    商品列表: 'commodities_list',
+    地点列表: 'didian_list',
+    天地堂: 'tianditang',
+    宗门秘境: 'guildSecrets_list',
+    常驻仙宠: 'changzhuxianchon',
+    强化列表: 'qianghua',
+    怪物列表: 'monster_list',
+    技能列表: 'jineng',
+    技能列表1: 'jineng1',
+    技能列表2: 'jineng2',
+    星阁拍卖行列表: 'xingge',
+    洞天福地: 'bless_list',
+    灵根列表: 'talent_list',
+    炼丹师丹药: 'newdanyao_list',
+    神界列表: 'shenjie',
+    禁地列表: 'forbiddenarea_list',
+    积分商城: 'shitujifen',
+    草药列表: 'caoyao_list',
+    装备列表: 'equipment_list',
+    道具列表: 'daoju_list',
+    锻造宝物: 'duanzhaobaowu',
+    锻造护具: 'duanzhaohuju',
+    锻造杂类: 'zalei',
+    锻造材料: 'duanzhaocailiao',
+    锻造武器: 'duanzhaowuqi',
+    隐藏灵根: 'yincang',
+    魔界列表: 'mojie'
   }
-  const weizh = JSON.parse(weizhi1)
+  const weizh = DataList[lib_map[weizhi]] || []
   for (const item of weizh) {
     if (item.name == thing_name) {
       return item
