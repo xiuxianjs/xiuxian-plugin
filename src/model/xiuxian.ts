@@ -1080,6 +1080,8 @@ export async function getPlayerAction(usr_qq) {
     arr.action = action.action //当期那动作
     arr.time = action.time //剩余时间
     arr.end_time = action.end_time
+    arr.plant = action.plant
+    arr.mine = action.mine
     return arr
   }
   arr.action = '空闲'
