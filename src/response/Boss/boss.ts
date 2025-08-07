@@ -35,10 +35,7 @@ export async function InitWorldBoss() {
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
-    const group_id = group.split(':')[1]
-    const platform = group.split(':')[0]
-    await pushInfo(platform, group_id, true, msg)
-    // todo 主动推送
+    await pushInfo(group, true, msg)
   }
   return false
 }
@@ -315,10 +312,7 @@ export async function WorldBossBattle(e) {
       const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
       const groupList = await redis.smembers(redisGlKey)
       for (const group of groupList) {
-        const group_id = group.split(':')[1]
-        const platform = group.split(':')[0]
-        // todo 主动推送
-        await pushInfo(platform, group_id, true, msg2)
+        await pushInfo(group, true, msg2)
       }
       await addCoin(usr_qq, 1000000)
       logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)

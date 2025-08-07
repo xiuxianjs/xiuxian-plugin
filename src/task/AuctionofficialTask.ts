@@ -32,7 +32,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         msg += `最高出价是${player.名号}叫出的${auction.last_price}`
       }
       auction.groupList.forEach(group => {
-        pushInfo('', group, true, msg)
+        pushInfo(group, true, msg)
       })
       return false
     }
@@ -56,8 +56,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       msg = `星阁限定物品【${wupin.thing.name}】拍卖中\n距离拍卖结束还有${m}分${s}秒\n目前最高价${wupin.last_price}`
 
       for (const group of group_ids) {
-        const [platform, group_id] = group.split(':')
-        pushInfo(platform, group_id, true, msg)
+        pushInfo(group, true, msg)
       }
     } else {
       const last_offer_player = wupin.last_offer_player
@@ -77,7 +76,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
 
       for (const group of group_ids) {
-        pushInfo('', group, true, msg)
+        pushInfo(group, true, msg)
       }
       await redis.del('xiuxian:AuctionofficialTask')
     }

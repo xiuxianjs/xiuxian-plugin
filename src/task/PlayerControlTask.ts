@@ -162,9 +162,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           }
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg)
+            await pushInfo(push_address, is_group, msg)
           } else {
-            await pushInfo('', player_id, is_group, msg)
+            await pushInfo(player_id, is_group, msg)
           }
 
           if (dy.lianti <= 0) {
@@ -246,9 +246,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           msg.push('\n降妖得到' + get_lingshi + '灵石')
           log_mag += '收入' + get_lingshi
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg)
+            await pushInfo(push_address, is_group, msg)
           } else {
-            await pushInfo('', player_id, is_group, msg)
+            await pushInfo(player_id, is_group, msg)
           }
         }
       }

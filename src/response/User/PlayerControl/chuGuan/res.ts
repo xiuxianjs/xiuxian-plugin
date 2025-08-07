@@ -212,9 +212,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo('', group_id, true, msg)
+    await pushInfo(group_id, true, msg)
   } else {
-    await pushInfo('', usr_qq, false, msg)
+    await pushInfo(usr_qq, false, msg)
   }
   if (dy.lianti <= 0) {
     dy.lianti = 0

@@ -2,7 +2,7 @@ import { data, pushInfo } from '@src/api/api'
 import { addNajieThing, addExp4 } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 
-export async function plant_jiesuan(user_id, time, group_id, platform) {
+export async function plant_jiesuan(user_id, time, group_id?) {
   let usr_qq = user_id
   let player = await data.getData('player', usr_qq)
   let msg: Array<DataMention | string> = [Mention(usr_qq)]
@@ -51,16 +51,15 @@ export async function plant_jiesuan(user_id, time, group_id, platform) {
   }
   await addExp4(usr_qq, exp)
   if (group_id) {
-    await pushInfo(platform, group_id, true, msg)
+    await pushInfo(group_id, true, msg)
   } else {
-    await pushInfo(platform, usr_qq, false, msg)
+    await pushInfo(usr_qq, false, msg)
   }
-  // todo 推送消息
 
   return false
 }
 
-export async function mine_jiesuan(user_id, time, platform, group_id?) {
+export async function mine_jiesuan(user_id, time, group_id?) {
   let usr_qq = user_id
   let player = await data.getData('player', usr_qq)
   let msg = []
@@ -111,9 +110,9 @@ export async function mine_jiesuan(user_id, time, platform, group_id?) {
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`)
   msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
   if (group_id) {
-    await pushInfo(platform, group_id, true, msg.join(''))
+    await pushInfo(group_id, true, msg.join(''))
   } else {
-    await pushInfo(platform, usr_qq, false, msg.join(''))
+    await pushInfo(usr_qq, false, msg.join(''))
   }
   return false
 }

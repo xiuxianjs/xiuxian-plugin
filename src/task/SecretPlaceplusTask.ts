@@ -264,9 +264,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await addHP(player_id, Data_battle.A_xue)
             //发送消息
             if (is_group) {
-              await pushInfo('', push_address, is_group, msg)
+              await pushInfo(push_address, is_group, msg)
             } else {
-              await pushInfo('', player_id, is_group, msg)
+              await pushInfo(player_id, is_group, msg)
             }
           } else {
             arr.cishu--

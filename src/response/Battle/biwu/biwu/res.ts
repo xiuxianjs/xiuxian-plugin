@@ -115,8 +115,8 @@ async function battle(e, num) {
     const cd = data.jineng.find(item => item.name == B_QQ[num].技能[i]).cd
     msg_B.push(`\n${+i * 1 + 1}、${B_QQ[num].技能[i]} cd:${cd}`)
   }
-  pushInfo('', A_QQ[num].QQ, false, msg_A)
-  pushInfo('', B_QQ[num].QQ, false, msg_B)
+  pushInfo(A_QQ[num].QQ, false, msg_A)
+  pushInfo(B_QQ[num].QQ, false, msg_B)
   await sleep(40000)
   let cnt = 1
   let action_A = { cnt: cnt, 技能: A_QQ[num].选择技能, use: -1 }
@@ -147,7 +147,7 @@ async function battle(e, num) {
       JSON.stringify(action_A)
     )
     // Bot.pickMember(e.group_id, A_QQ[num].QQ).sendMsg(msg_A)
-    pushInfo('', A_QQ[num].QQ, false, msg_A)
+    pushInfo(A_QQ[num].QQ, false, msg_A)
 
     msg_B = [`指令样式:#释放技能1\n第${cnt}回合,是否释放以下技能:`]
     for (const i in action_B.技能) {
@@ -163,7 +163,7 @@ async function battle(e, num) {
       JSON.stringify(action_B)
     )
     // Bot.pickMember(e.group_id, B_QQ[num].QQ).sendMsg(msg_B)
-    pushInfo('', B_QQ[num].QQ, false, msg_B)
+    pushInfo(B_QQ[num].QQ, false, msg_B)
     await sleep(20000)
     let msg = []
     //A
@@ -427,8 +427,8 @@ async function battle(e, num) {
     //持续回合减少
     cnt++
 
-    pushInfo('', A_QQ[num].QQ, false, msg)
-    pushInfo('', B_QQ[num].QQ, false, msg)
+    pushInfo(A_QQ[num].QQ, false, msg)
+    pushInfo(B_QQ[num].QQ, false, msg)
     msgg.push(msg)
     action_A.use = -1
     action_B.use = -1

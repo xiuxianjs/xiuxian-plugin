@@ -206,9 +206,7 @@ export default onResponse(selects, async e => {
       const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
       const groupList = await redis.smembers(redisGlKey)
       for (const group of groupList) {
-        const [platform, group_id] = group.split(':')
-        await pushInfo(platform, group_id, true, msg2)
-        //  todo 通知群聊
+        await pushInfo(group, true, msg2)
       }
       await addCoin(usr_qq, 500000)
       logger.info(`[金角大王] 结算:${usr_qq}增加奖励500000`)

@@ -29,9 +29,8 @@ scheduleJob('20 0/5 * * * ?', async () => {
         temp: msg
       }
 
-      let img = await puppeteer.screenshot('temp', i.qq, temp_data)
-      const [platform, group_id] = i.split(':')
-      if (img) await pushInfo(platform, group_id, true, img)
+      let img = await puppeteer.screenshot('temp', i, temp_data)
+      if (img) await pushInfo(i, true, img)
     }
     await writeTemp([])
   }
