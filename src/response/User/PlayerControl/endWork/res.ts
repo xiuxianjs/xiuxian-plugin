@@ -66,6 +66,7 @@ export default onResponse(selects, async e => {
   arr.end_time = new Date().getTime()
   delete arr.group_id //结算完去除group_id
   await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
+  await setDataByUserId(e.UserId, 'game_action', 0)
 })
 
 /**

@@ -10,6 +10,7 @@ import {
   setFileValue,
   writeDanyao
 } from '@src/model'
+import { setDataByUserId } from '@src/model/Redis'
 
 import { selects } from '@src/response/index'
 import { DataMention, Mention } from 'alemonjs'
@@ -74,8 +75,8 @@ export default onResponse(selects, async e => {
   arr.Place_action = 1 //秘境
   arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
   delete arr.group_id //结算完去除group_id
-
-  await redis.set('xiuxian@1.3.0:' + e.UserId + ':action', JSON.stringify(arr))
+  await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
+  await setDataByUserId(e.UserId, 'game_action', 0)
 })
 async function getPlayerAction(usr_qq) {
   let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
