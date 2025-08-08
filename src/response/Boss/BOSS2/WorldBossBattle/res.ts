@@ -1,11 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 import {
-  BossIsAlive,
+  Boss2IsAlive,
   InitWorldBoss,
   SetWorldBOSSBattleUnLockTimer,
   SortPlayer,
-  WorldBossBattle
+  WorldBossBattle,
+  WorldBossBattleInfo
 } from '../../boss'
 import { redis, data, pushInfo } from '@src/api/api'
 import { zdBattle, sleep, Harm, addHP, addCoin } from '@src/model'
@@ -16,7 +17,7 @@ export const regular = /^(#|＃|\/)?讨伐金角大王$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
 
-  if (!(await BossIsAlive())) {
+  if (!(await Boss2IsAlive())) {
     Send(Text('金角大王未开启！'))
     return false
   }
@@ -62,9 +63,9 @@ export default onResponse(selects, async e => {
       Send(Text('还是先疗伤吧，别急着参战了'))
       return false
     }
-    if (global.WorldBOSSBattleCD[usr_qq]) {
+    if (WorldBossBattleInfo.CD[usr_qq]) {
       let Seconds = Math.trunc(
-        (300000 - (new Date().getTime() - global.WorldBOSSBattleCD[usr_qq])) /
+        (300000 - (new Date().getTime() - WorldBossBattleInfo.CD[usr_qq])) /
           1000
       )
       if (Seconds <= 300 && Seconds >= 0) {
@@ -122,16 +123,18 @@ export default onResponse(selects, async e => {
       法球倍率: player.灵根.法球倍率
     }
     player.法球倍率 = player.灵根.法球倍率
-    if (global.WorldBOSSBattleUnLockTimer)
-      clearTimeout(global.WorldBOSSBattleUnLockTimer)
+    if (WorldBossBattleInfo.UnLockTimer) {
+      clearTimeout(WorldBossBattleInfo.UnLockTimer)
+      WorldBossBattleInfo.setUnLockTimer(null)
+    }
     SetWorldBOSSBattleUnLockTimer(e)
-    if (global.WorldBOSSBattleLock != 0) {
+    if (WorldBossBattleInfo.Lock != 0) {
       Send(
         Text('好像有人正在和银角大王激战，现在去怕是有未知的凶险，还是等等吧！')
       )
       return false
     }
-    global.WorldBOSSBattleLock = 1
+    WorldBossBattleInfo.setLock(1)
     let Data_battle = await zdBattle(player, Boss)
     let msg = Data_battle.msg
     let A_win = `${player.名号}击败了${Boss.名号}`
@@ -206,9 +209,7 @@ export default onResponse(selects, async e => {
       const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
       const groupList = await redis.smembers(redisGlKey)
       for (const group of groupList) {
-        const [platform, group_id] = group.split(':')
-        await pushInfo(platform, group_id, true, msg2)
-        //  todo 通知群聊
+        await pushInfo(group, true, msg2)
       }
       await addCoin(usr_qq, 500000)
       logger.info(`[金角大王] 结算:${usr_qq}增加奖励500000`)
@@ -283,11 +284,10 @@ export default onResponse(selects, async e => {
         if (i == PlayerList.length - 1)
           Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！')
       }
-      // await ForwardMsg(e, Rewardmsg)
       await Send(Text(Rewardmsg.join('\n')))
     }
-    global.WorldBOSSBattleCD[usr_qq] = new Date().getTime()
-    global.WorldBOSSBattleLock = 0
+    WorldBossBattleInfo.setCD(usr_qq, new Date().getTime())
+    WorldBossBattleInfo.setLock(0)
     return false
   } else {
     Send(Text('区区凡人，也想参与此等战斗中吗？'))

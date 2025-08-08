@@ -33,7 +33,6 @@ export const redis = getIoRedis()
  * @returns
  */
 export async function pushInfo(
-  _platform: string,
   guild_id: string,
   isGroup: boolean,
   msg: Buffer | string | Array<string | DataMention>

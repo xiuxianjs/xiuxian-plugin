@@ -1,19 +1,29 @@
 import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { data, pushInfo, redis } from '@src/api/api'
-import fs from 'fs'
 import { zdBattle, sleep, Harm, addHP, addCoin, __PATH } from '@src/model'
 
-global.WorldBOSSBattleCD = {}
-global.WorldBOSSBattleLock = 0 //BOSS战斗锁，防止打架频率过高造成奖励多发
-global.WorldBOSSBattleUnLockTimer = 0 //防止战斗锁因意外锁死
+export const WorldBossBattleInfo = {
+  CD: {},
+  Lock: 0,
+  UnLockTimer: 0,
+  setCD(usr_qq: string, time: number) {
+    this.CD[usr_qq] = time
+  },
+  setLock(lock: 0 | 1) {
+    this.Lock = lock
+  },
+  setUnLockTimer(timer: NodeJS.Timeout) {
+    this.UnLockTimer = timer
+  }
+}
 //初始化妖王
 export async function InitWorldBoss() {
   let AverageDamageStruct = await GetAverageDamage()
   let player_quantity = Math.floor(AverageDamageStruct.player_quantity)
   let AverageDamage = Math.floor(AverageDamageStruct.AverageDamage)
   let Reward = 12000000
-  global.WorldBOSSBattleLock = 0
+  WorldBossBattleInfo.setLock(0)
   if (player_quantity == 0) {
     return -1
   }
@@ -35,12 +45,41 @@ export async function InitWorldBoss() {
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
-    const group_id = group.split(':')[1]
-    const platform = group.split(':')[0]
-    await pushInfo(platform, group_id, true, msg)
-    // todo 主动推送
+    await pushInfo(group, true, msg)
   }
   return false
+}
+
+export async function InitWorldBoss2() {
+  let AverageDamageStruct = await GetAverageDamage()
+  let player_quantity = Math.floor(AverageDamageStruct.player_quantity)
+  let AverageDamage = Math.floor(AverageDamageStruct.AverageDamage)
+  let Reward = 6000000
+  WorldBossBattleInfo.setLock(0)
+  if (player_quantity == 0) {
+    return -1
+  }
+  if (player_quantity < 5) Reward = 3000000
+  let X = AverageDamage * 0.01
+  logger.mark(`[金角大王] 化神玩家总数：${player_quantity}`)
+  logger.mark(`[金角大王] 生成基数:${X}`)
+  let Health = Math.trunc(X * 150 * player_quantity * 2) //血量要根据人数来
+  let WorldBossStatus = {
+    Health: Health,
+    Healthmax: Health,
+    KilledTime: -1,
+    Reward: Reward
+  }
+  let PlayerRecord = 0
+  await redis.set('Xiuxian:WorldBossStatus2', JSON.stringify(WorldBossStatus))
+  await redis.set('xiuxian@1.3.0Record2', JSON.stringify(PlayerRecord))
+  let msg = '【全服公告】金角大王已经苏醒,击杀者额外获得50w灵石'
+  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+  const groupList = await redis.smembers(redisGlKey)
+  for (const group_id of groupList) {
+    await pushInfo(group_id, true, msg)
+  }
+  return 0
 }
 //获取玩家平均实力和化神以上人数
 export async function GetAverageDamage() {
@@ -85,7 +124,12 @@ export async function BossIsAlive() {
     (await redis.get('xiuxian@1.3.0Record'))
   )
 }
-
+export async function Boss2IsAlive() {
+  return (
+    (await redis.get('Xiuxian:WorldBossStatus2')) &&
+    (await redis.get('xiuxian@1.3.0Record2'))
+  )
+}
 export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
   const send = useSend(e)
   if (await BossIsAlive()) {
@@ -132,7 +176,7 @@ export async function SortPlayer(PlayerRecordJSON) {
 }
 export async function WorldBossBattle(e) {
   const send = useSend(e)
-  const WorldBOSSBattleCD = global.WorldBOSSBattleCD
+  const WorldBOSSBattleCD = WorldBossBattleInfo.CD
   if (!(await BossIsAlive())) {
     send(Text('妖王未开启！'))
     return false
@@ -235,14 +279,16 @@ export async function WorldBossBattle(e) {
       法球倍率: player.灵根.法球倍率
     }
     player.法球倍率 = player.灵根.法球倍率
-    if (global.WorldBOSSBattleUnLockTimer)
-      clearTimeout(global.WorldBOSSBattleUnLockTimer)
+    if (WorldBossBattleInfo.UnLockTimer) {
+      clearTimeout(WorldBossBattleInfo.UnLockTimer)
+      WorldBossBattleInfo.setUnLockTimer(null)
+    }
     SetWorldBOSSBattleUnLockTimer(e)
-    if (global.WorldBOSSBattleLock != 0) {
+    if (WorldBossBattleInfo.Lock != 0) {
       send(Text('好像有人正在和妖王激战，现在去怕是有未知的凶险，还是等等吧！'))
       return false
     }
-    global.WorldBOSSBattleLock = 1
+    WorldBossBattleInfo.Lock = 1
     let Data_battle = await zdBattle(player, Boss)
     let msg = Data_battle.msg
     let A_win = `${player.名号}击败了${Boss.名号}`
@@ -315,10 +361,7 @@ export async function WorldBossBattle(e) {
       const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
       const groupList = await redis.smembers(redisGlKey)
       for (const group of groupList) {
-        const group_id = group.split(':')[1]
-        const platform = group.split(':')[0]
-        // todo 主动推送
-        await pushInfo(platform, group_id, true, msg2)
+        await pushInfo(group, true, msg2)
       }
       await addCoin(usr_qq, 1000000)
       logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
@@ -397,7 +440,7 @@ export async function WorldBossBattle(e) {
       send(Text(Rewardmsg.join('\n')))
     }
     WorldBOSSBattleCD[usr_qq] = new Date().getTime()
-    global.WorldBOSSBattleLock = 0
+    WorldBossBattleInfo.setLock(0)
     return false
   } else {
     send(Text('区区凡人，也想参与此等战斗中吗？'))
@@ -407,11 +450,12 @@ export async function WorldBossBattle(e) {
 //设置防止锁卡死的计时器
 export async function SetWorldBOSSBattleUnLockTimer(e) {
   const send = useSend(e)
-  global.WorldBOSSBattleUnLockTimer = setTimeout(() => {
-    if (global.WorldBOSSBattleLock == 1) {
-      global.WorldBOSSBattleLock = 0
+  const timeout = setTimeout(() => {
+    if (WorldBossBattleInfo.Lock == 1) {
+      WorldBossBattleInfo.setLock(0)
       send(Text('检测到战斗锁卡死，已自动修复'))
       return false
     }
   }, 30000)
+  WorldBossBattleInfo.setUnLockTimer(timeout)
 }

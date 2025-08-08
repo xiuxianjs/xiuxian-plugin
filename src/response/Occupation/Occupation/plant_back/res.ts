@@ -55,9 +55,9 @@ export default onResponse(selects, async e => {
   }
 
   if (e.name === 'message.create') {
-    await plant_jiesuan(e.UserId, time, e.ChannelId, e.Platform) //提前闭关结束不会触发随机事件
+    await plant_jiesuan(e.UserId, time, e.ChannelId)
   } else {
-    await plant_jiesuan(e.UserId, time, false, e.Platform) //提前闭关结束不会触发随机事件
+    await plant_jiesuan(e.UserId, time)
   }
   let arr = action
   arr.is_jiesuan = 1 //结算状态

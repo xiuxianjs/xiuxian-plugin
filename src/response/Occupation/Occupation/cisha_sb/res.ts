@@ -132,8 +132,7 @@ export default onResponse(selects, async e => {
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
-    const [platform, group_id] = group.split(':')
-    pushInfo(platform, group_id, true, last_msg)
+    pushInfo(group, true, last_msg)
   }
   return false
 })

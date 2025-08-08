@@ -66,6 +66,7 @@ export default onResponse(selects, async e => {
   arr.end_time = new Date().getTime()
   delete arr.group_id //结算完去除group_id
   await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
+  await setDataByUserId(e.UserId, 'game_action', 0)
 })
 
 /**
@@ -122,9 +123,9 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo('', group_id, true, msg)
+    await pushInfo(group_id, true, msg)
   } else {
-    await pushInfo('', usr_qq, false, msg)
+    await pushInfo(usr_qq, false, msg)
   }
 
   return false

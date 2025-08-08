@@ -786,8 +786,8 @@ export async function addNajieThing(usr_qq, name, thing_class, x, pinji?) {
         let thing = data.xianchon.find(item => item.name == name)
         if (thing) {
           thing = _.cloneDeep(thing)
-          thing.数量 = x
-          thing.islockd = 0
+          thing['数量'] = x
+          thing['islockd'] = 0
           najie[thing_class].push(thing)
           await Write_najie(usr_qq, najie)
           return
@@ -1080,6 +1080,8 @@ export async function getPlayerAction(usr_qq) {
     arr.action = action.action //当期那动作
     arr.time = action.time //剩余时间
     arr.end_time = action.end_time
+    arr.plant = action.plant
+    arr.mine = action.mine
     return arr
   }
   arr.action = '空闲'
@@ -1415,7 +1417,6 @@ export async function Go(e) {
 
 export async function writeShop(shop) {
   await redis.set(`${__PATH.shop}:shop`, JSON.stringify(shop))
-  return
   return
 }
 
@@ -1806,32 +1807,6 @@ export async function openAU() {
   }
   await redis.set('xiuxian:AuctionofficialTask', JSON.stringify(wupin))
   return wupin
-}
-
-export async function jindi(e, weizhi, addres) {
-  let adr = addres
-  const Send = useSend(e)
-  let msg = ['***' + adr + '***']
-  for (let i = 0; i < weizhi.length; i++) {
-    msg.push(
-      weizhi[i].name +
-        '\n' +
-        '等级：' +
-        weizhi[i].Grade +
-        '\n' +
-        '极品：' +
-        weizhi[i].Best[0] +
-        '\n' +
-        '灵石：' +
-        weizhi[i].Price +
-        '灵石' +
-        '\n' +
-        '修为：' +
-        weizhi[i].experience +
-        '修为'
-    )
-  }
-  Send(Text(msg.join('\n')))
 }
 
 // #秘境

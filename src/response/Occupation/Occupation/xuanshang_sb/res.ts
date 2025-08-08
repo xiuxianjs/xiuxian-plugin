@@ -47,14 +47,12 @@ export default onResponse(selects, async e => {
   player.灵石 -= money
   await writePlayer(usr_qq, player)
   Send(Text('悬赏成功!'))
-  // todo 全服公告
   let msg = ''
   msg += '【全服公告】' + player_B.名号 + '被悬赏了' + money + '灵石'
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
-    const [platform, group_id] = group.split(':')
-    pushInfo(platform, group_id, true, msg)
+    pushInfo(group, true, msg)
   }
   await redis.set('xiuxian@1.3.0:' + 1 + ':shangjing', JSON.stringify(action))
 })

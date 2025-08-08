@@ -145,16 +145,16 @@ scheduleJob('0 0/1 * * * ?', async () => {
               B_player.名号 +
               '抓进了地牢,希望大家遵纪守法,引以为戒'
             for (const group_id of groupList) {
-              pushInfo('', group_id, true, xx)
+              pushInfo(group_id, true, xx)
             }
           }
           //写入redis
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           msg.push('\n' + last_msg)
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg.join('\n'))
+            await pushInfo(push_address, is_group, msg.join('\n'))
           } else {
-            await pushInfo('', player_id, is_group, msg.join('\n'))
+            await pushInfo(player_id, is_group, msg.join('\n'))
           }
         }
       } else if (action.xijie == '-1') {
@@ -217,9 +217,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
 
           msg.push('\n' + last_msg)
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg.join('\n'))
+            await pushInfo(push_address, is_group, msg.join('\n'))
           } else {
-            await pushInfo('', player_id, is_group, msg.join('\n'))
+            await pushInfo(player_id, is_group, msg.join('\n'))
           }
         }
       }

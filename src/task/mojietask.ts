@@ -27,7 +27,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
     action = await JSON.parse(action)
     //不为空，存在动作
     if (action != null) {
-      let push_address //消息推送地址
+      let push_address = player_id //消息推送地址
       let is_group = false //是否推送到群
 
       if (await action.hasOwnProperty('group_id')) {
@@ -175,8 +175,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await addExp2(player_id, qixue)
             await addExp(player_id, xiuwei)
             //发送消息
-            const [platform, address] = push_address.split(':')
-            await pushInfo(platform, address, is_group, msg.join(''))
+            await pushInfo(push_address, is_group, msg.join(''))
           } else {
             arr.cishu--
 

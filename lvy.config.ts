@@ -13,10 +13,7 @@ export default defineConfig({
     }
   ],
   alias: {
-    entries: [
-      { find: '@src', replacement: join(__dirname, 'src') },
-      { find: '@xiuxian', replacement: join(__dirname, 'src', 'xiuxian') }
-    ]
+    entries: [{ find: '@src', replacement: join(__dirname, 'src') }]
   },
   assets: {
     filter: /\.(png|jpg|jpeg|gif|svg|webp|ico|yaml|txt|ttf)$/

@@ -98,9 +98,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           delete arr.group_id //结算完去除group_id
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg)
+            await pushInfo(push_address, is_group, msg)
           } else {
-            await pushInfo('', player_id, is_group, msg)
+            await pushInfo(player_id, is_group, msg)
           }
         }
       }
@@ -185,9 +185,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           //msg.push("\n增加修为:" + xiuwei * time, "血量增加:" + blood * time);
           if (is_group) {
-            await pushInfo('', push_address, is_group, msg)
+            await pushInfo(push_address, is_group, msg)
           } else {
-            await pushInfo('', player_id, is_group, msg)
+            await pushInfo(player_id, is_group, msg)
           }
         }
       }

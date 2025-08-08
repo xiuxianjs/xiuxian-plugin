@@ -51,9 +51,9 @@ export default onResponse(selects, async e => {
   }
 
   if (e.name === 'message.create') {
-    await mine_jiesuan(e.UserId, time, e.Platform, e.ChannelId) //提前闭关结束不会触发随机事件
+    await mine_jiesuan(e.UserId, time, e.ChannelId) //提前闭关结束不会触发随机事件
   } else {
-    await mine_jiesuan(e.UserId, time, e.Platform) //提前闭关结束不会触发随机事件
+    await mine_jiesuan(e.UserId, time) //提前闭关结束不会触发随机事件
   }
 
   let arr: any = action

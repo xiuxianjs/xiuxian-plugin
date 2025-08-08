@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(user_qq))) {
     return false
   }
-  const player = await await data.getData('player', user_qq)
+  const player = await data.getData('player', user_qq)
   if (player.occupation != '炼器师') {
     Send(Text(`你还不是炼器师哦,宝贝`))
     return false

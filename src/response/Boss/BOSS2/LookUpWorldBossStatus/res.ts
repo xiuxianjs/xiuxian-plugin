@@ -1,14 +1,14 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { BossIsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
+import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?金角大王状态$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  if (await BossIsAlive()) {
+  if (await Boss2IsAlive()) {
     let WorldBossStatusStr: any = await redis.get('Xiuxian:WorldBossStatus2')
     if (WorldBossStatusStr) {
       WorldBossStatusStr = JSON.parse(WorldBossStatusStr)
