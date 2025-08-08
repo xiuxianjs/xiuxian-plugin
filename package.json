@@ -34,7 +34,7 @@
     "@types/md5": "^2.3.5",
     "@types/node": "^22.10.5",
     "@types/node-schedule": "^2.1.7",
-    "alemonjs": "^2.1.0-alpha.25",
+    "alemonjs": "^2.1.0-alpha.31",
     "eslint": "^9.18.0",
     "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",

@@ -45,10 +45,12 @@ yarn install
 ```
 
 ```sh
-yarn dev --login gui
+yarn dev
 ```
 
 > 可在vscode中安装alemonjs扩展以支持沙河环境登录
+
+> [ALemonTestOne](https://marketplace.visualstudio.com/items?itemName=lemonadex.alemonjs-testone)
 
 - 启动图片开发工具
 

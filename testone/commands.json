@@ -1,0 +1,17 @@
+[
+  {
+    "title": "帮助",
+    "description": "获取帮助信息",
+    "text": "/修仙帮助"
+  },
+  {
+    "title": "我",
+    "description": "获取个人信息",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我"
+      }
+    ]
+  }
+]
