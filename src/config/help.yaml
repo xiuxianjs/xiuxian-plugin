@@ -58,8 +58,8 @@
       title: '#哪里有xxx'
       desc: '查询物品获得渠道'
     - icon: help-icon_13
-      title: '#锁定八素'
-      desc: '支持所有物品'
+      title: '#锁定+物品名'
+      desc: '锁定指定物品'
     - icon: help-icon_10
       title: '#一键锁定/一键锁定+物品类型'
       desc: '#一键锁定装备'
@@ -67,8 +67,8 @@
       title: '#一键解锁/一键解锁+物品类型'
       desc: '#一键解锁装备'
     - icon: help-icon_13
-      title: '#解锁轮回钟*优'
-      desc: '支持所有物品'
+      title: '#解锁+物品名'
+      desc: '解锁指定物品'
     - icon: help-icon_13
       title: '#打磨轮回钟*绝'
       desc: '提高装备品质'
@@ -144,11 +144,11 @@
       title: '#万宝楼'
       desc: '收废品(黑店)'
     - icon: help-icon_5
-      title: '#冲水堂+类型'
-      desc: '交易系统'
+      title: '#冲水堂装备'
+      desc: '交易系统(可替换为丹药/功法/道具/草药/仙宠/材料)'
     - icon: help-icon_5
-      title: '#聚宝堂+类型'
-      desc: '交易系统'
+      title: '#聚宝堂装备'
+      desc: '交易系统(可替换为丹药/功法/道具/草药/仙宠/材料/仙宠口粮)'
     - icon: help-icon_52
       title: '#星阁拍卖行'
       desc: '看看现在在拍卖什么'

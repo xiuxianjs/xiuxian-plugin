@@ -34,7 +34,7 @@
       title: '#清空锻炉'
       desc: '清空材料和炼制时间'
     - icon: help-icon_40
-      title: '##赋名+装备名*新命名'
+      title: '#赋名+装备名*新命名'
       desc: '给强力装备换个名字'
     - icon: help-icon_40
       title: '#打造+装备名'
@@ -95,6 +95,8 @@
       title: '#敲开闪闪发光的石头'
       desc: ''
 - grop: -塔-
+  # 修正键名拼写
+  group: 镇妖试炼
   list:
     - icon: help-icon_19
       title: '#挑战镇妖塔'
@@ -111,20 +113,20 @@
 - group: 礼尚往来(?)
   list:
     - icon: help-icon_18
-      title: '@群友 以武会友'
+      title: '@群友 #以武会友'
       desc: '相互切磋武艺,没有限制,没有奖励'
     - icon: help-icon_18
-      title: '@群友 比武'
+      title: '@群友 #比武'
       desc: '比武,满血才可以进行，获得气血和一点点奖励'
     - icon: help-icon_18
-      title: '@群友 打劫'
+      title: '@群友 #打劫'
       desc: '与其搏斗,胜方获得败方部分灵石'
     - icon: help-icon_18
-      title: '@群友 残云封天剑'
+      title: '@群友 #残云封天剑'
       desc: '将其禁言'
     - icon: help-icon_18
-      title: '除你禁言'
-      desc: '解除禁言禁言'
+  title: '#除你禁言'
+  desc: '解除禁言'
 - group: 一键功能
   list:
     - icon: help-icon_37
@@ -224,8 +226,8 @@
       title: '#封神榜'
       desc: '仙人战力榜'
     - icon: help-icon_17
-      title: '#神魄榜，#强化榜，#镇妖塔榜'
-      desc: '查看榜'
+      title: '#神魄榜 #强化榜 #镇妖塔榜'
+      desc: '查看各类榜单'
     - icon: help-icon_17
       title: '#魔道榜'
       desc: '谁是大魔头'
