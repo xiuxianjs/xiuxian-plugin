@@ -1,4 +1,4 @@
-import { Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 
 import { redis, data, puppeteer } from '@src/api/api'
 import { readIt, writeIt, alluser, readNajie, readEquipment } from '@src/model'
@@ -94,5 +94,9 @@ export default onResponse(selects, async e => {
   let bd_date = { newwupin }
 
   const tu = await puppeteer.screenshot('shenbing', e.UserId, bd_date)
-  Send(Text(tu))
+  if (tu) {
+    Send(Image(tu))
+  } else {
+    Send(Text('图片生成失败'))
+  }
 })

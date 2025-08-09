@@ -1,16 +1,1001 @@
 [
   {
-    "title": "帮助",
-    "description": "获取帮助信息",
-    "text": "/修仙帮助"
-  },
-  {
-    "title": "我",
-    "description": "获取个人信息",
+    "title": "修仙帮助",
+    "description": "获取修仙游戏帮助信息",
     "data": [
       {
         "type": "Text",
-        "value": "#我"
+        "value": "#修仙帮助"
+      }
+    ]
+  },
+  {
+    "title": "踏入仙途",
+    "description": "创建修仙存档，开始修仙之路",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#踏入仙途"
+      }
+    ]
+  },
+  {
+    "title": "修仙状态",
+    "description": "查看当前修行状态和时间动作",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#修仙状态"
+      }
+    ]
+  },
+  {
+    "title": "我的练气",
+    "description": "查看练气修为信息",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的练气"
+      }
+    ]
+  },
+  {
+    "title": "我的炼体",
+    "description": "查看炼体修为信息",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的炼体"
+      }
+    ]
+  },
+  {
+    "title": "我的纳戒",
+    "description": "查看储物纳戒中的物品",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的纳戒"
+      }
+    ]
+  },
+  {
+    "title": "我的装备",
+    "description": "查看身上佩戴的装备",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的装备"
+      }
+    ]
+  },
+  {
+    "title": "修仙签到",
+    "description": "每日签到获取奖励",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#修仙签到"
+      }
+    ]
+  },
+  {
+    "title": "闭关修炼",
+    "description": "进行闭关修炼获取修为",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#闭关30分钟"
+      }
+    ]
+  },
+  {
+    "title": "出关",
+    "description": "结束闭关状态",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#出关"
+      }
+    ]
+  },
+  {
+    "title": "降妖除魔",
+    "description": "外出降妖获取灵石",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#降妖30分钟"
+      }
+    ]
+  },
+  {
+    "title": "降妖归来",
+    "description": "结束降妖状态",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#降妖归来"
+      }
+    ]
+  },
+  {
+    "title": "突破境界",
+    "description": "尝试突破当前境界",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#突破"
+      }
+    ]
+  },
+  {
+    "title": "破体境界",
+    "description": "尝试突破炼体境界",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#破体"
+      }
+    ]
+  },
+  {
+    "title": "渡劫",
+    "description": "渡劫期经历天劫",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#渡劫"
+      }
+    ]
+  },
+  {
+    "title": "转职炼丹师",
+    "description": "转职为炼丹师",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#转职炼丹师"
+      }
+    ]
+  },
+  {
+    "title": "转职炼器师",
+    "description": "转职为炼器师",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#转职炼器师"
+      }
+    ]
+  },
+  {
+    "title": "转职采药师",
+    "description": "转职为采药师",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#转职采药师"
+      }
+    ]
+  },
+  {
+    "title": "转职采矿师",
+    "description": "转职为采矿师",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#转职采矿师"
+      }
+    ]
+  },
+  {
+    "title": "转职侠客",
+    "description": "转职为侠客",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#转职侠客"
+      }
+    ]
+  },
+  {
+    "title": "我的药效",
+    "description": "查看剩余药效时间",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的药效"
+      }
+    ]
+  },
+  {
+    "title": "我的锻炉",
+    "description": "查看炼器炉内的材料",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的锻炉"
+      }
+    ]
+  },
+  {
+    "title": "炼器师能力评测",
+    "description": "测试炼器能力",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#炼器师能力评测"
+      }
+    ]
+  },
+  {
+    "title": "开始炼制",
+    "description": "开始炼制装备",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#开始炼制"
+      }
+    ]
+  },
+  {
+    "title": "开炉",
+    "description": "结束装备炼制，获得装备",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#开炉"
+      }
+    ]
+  },
+  {
+    "title": "清空锻炉",
+    "description": "清空材料和炼制时间",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#清空锻炉"
+      }
+    ]
+  },
+  {
+    "title": "采药",
+    "description": "外出采药获取草药",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#采药30分钟"
+      }
+    ]
+  },
+  {
+    "title": "结束采药",
+    "description": "结束采药状态",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#结束采药"
+      }
+    ]
+  },
+  {
+    "title": "采矿",
+    "description": "外出采矿获取矿石",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#采矿30分钟"
+      }
+    ]
+  },
+  {
+    "title": "结束采矿",
+    "description": "结束采矿状态",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#结束采矿"
+      }
+    ]
+  },
+  {
+    "title": "悬赏目标",
+    "description": "查看悬赏目标（侠客专用）",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#悬赏目标"
+      }
+    ]
+  },
+  {
+    "title": "赏金榜",
+    "description": "查看悬赏榜单",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#赏金榜"
+      }
+    ]
+  },
+  {
+    "title": "出战仙宠",
+    "description": "召唤仙宠出战",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#出战仙宠"
+      }
+    ]
+  },
+  {
+    "title": "进阶仙宠",
+    "description": "仙宠进化升级",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#进阶仙宠"
+      }
+    ]
+  },
+  {
+    "title": "堕入魔界",
+    "description": "进入魔界修炼",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#堕入魔界"
+      }
+    ]
+  },
+  {
+    "title": "踏入神界",
+    "description": "进入神界修炼",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#踏入神界"
+      }
+    ]
+  },
+  {
+    "title": "供奉魔石",
+    "description": "供奉魔石获取魔根",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#供奉魔石"
+      }
+    ]
+  },
+  {
+    "title": "供奉神石",
+    "description": "供奉神石提高属性",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#供奉神石"
+      }
+    ]
+  },
+  {
+    "title": "挑战镇妖塔",
+    "description": "挑战镇妖塔提高攻击力",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#挑战镇妖塔"
+      }
+    ]
+  },
+  {
+    "title": "炼神魄",
+    "description": "炼神魄提高防御与血量",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#炼神魄"
+      }
+    ]
+  },
+  {
+    "title": "一键挑战镇妖塔",
+    "description": "自动挑战镇妖塔",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键挑战镇妖塔"
+      }
+    ]
+  },
+  {
+    "title": "一键炼神魄",
+    "description": "自动炼神魄",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键炼神魄"
+      }
+    ]
+  },
+  {
+    "title": "比试",
+    "description": "与其他修仙者比试切磋",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#比试"
+      }
+    ]
+  },
+  {
+    "title": "报名比赛",
+    "description": "参加天地战场纷争",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#报名比赛"
+      }
+    ]
+  },
+  {
+    "title": "天地榜",
+    "description": "查看天地战场排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#天地榜"
+      }
+    ]
+  },
+  {
+    "title": "一键学习",
+    "description": "一键学习全部功法",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键学习"
+      }
+    ]
+  },
+  {
+    "title": "一键服用修为丹",
+    "description": "自动服用修为丹药",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键服用修为丹"
+      }
+    ]
+  },
+  {
+    "title": "一键服用血气丹",
+    "description": "自动服用血气丹药",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键服用血气丹"
+      }
+    ]
+  },
+  {
+    "title": "一键装备",
+    "description": "智能搭配最佳装备",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键装备"
+      }
+    ]
+  },
+  {
+    "title": "一键出售装备",
+    "description": "批量出售装备",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#一键出售装备"
+      }
+    ]
+  },
+  {
+    "title": "消耗残卷",
+    "description": "消耗残卷获取功法",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#消耗残卷"
+      }
+    ]
+  },
+  {
+    "title": "打开钱包",
+    "description": "查看钱包内容",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#打开钱包"
+      }
+    ]
+  },
+  {
+    "title": "金银坊",
+    "description": "进入金银坊赌博",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#金银坊"
+      }
+    ]
+  },
+  {
+    "title": "金银坊记录",
+    "description": "查看赌博记录",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#金银坊记录"
+      }
+    ]
+  },
+  {
+    "title": "怡红院",
+    "description": "进入怡红院",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#怡红院"
+      }
+    ]
+  },
+  {
+    "title": "允许双修",
+    "description": "允许被双修",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#允许双修"
+      }
+    ]
+  },
+  {
+    "title": "拒绝双修",
+    "description": "拒绝双修邀请",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#拒绝双修"
+      }
+    ]
+  },
+  {
+    "title": "查询亲密度",
+    "description": "查看与其他人的亲密度",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#查询亲密度"
+      }
+    ]
+  },
+  {
+    "title": "柠檬堂",
+    "description": "进入商店购买物品",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#柠檬堂"
+      }
+    ]
+  },
+  {
+    "title": "万宝楼",
+    "description": "出售物品获取灵石",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#万宝楼"
+      }
+    ]
+  },
+  {
+    "title": "星阁拍卖行",
+    "description": "查看拍卖行当前拍品",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#星阁拍卖行"
+      }
+    ]
+  },
+  {
+    "title": "秘境",
+    "description": "前往秘境探险寻宝",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#秘境"
+      }
+    ]
+  },
+  {
+    "title": "探索仙府",
+    "description": "探索神秘仙府",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#探索仙府"
+      }
+    ]
+  },
+  {
+    "title": "禁地",
+    "description": "查看仙界禁地",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#禁地"
+      }
+    ]
+  },
+  {
+    "title": "仙境",
+    "description": "查看仙人镇守之地",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#仙境"
+      }
+    ]
+  },
+  {
+    "title": "逃离",
+    "description": "放弃当前状态",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#逃离"
+      }
+    ]
+  },
+  {
+    "title": "灵榜",
+    "description": "查看财富排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#灵榜"
+      }
+    ]
+  },
+  {
+    "title": "天榜",
+    "description": "查看修为排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#天榜"
+      }
+    ]
+  },
+  {
+    "title": "至尊榜",
+    "description": "查看凡人战力榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#至尊榜"
+      }
+    ]
+  },
+  {
+    "title": "封神榜",
+    "description": "查看仙人战力榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#封神榜"
+      }
+    ]
+  },
+  {
+    "title": "神魄榜",
+    "description": "查看神魄排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#神魄榜"
+      }
+    ]
+  },
+  {
+    "title": "强化榜",
+    "description": "查看强化排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#强化榜"
+      }
+    ]
+  },
+  {
+    "title": "镇妖塔榜",
+    "description": "查看镇妖塔排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#镇妖塔榜"
+      }
+    ]
+  },
+  {
+    "title": "魔道榜",
+    "description": "查看魔道排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#魔道榜"
+      }
+    ]
+  },
+  {
+    "title": "神兵榜",
+    "description": "查看装备排行榜",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#神兵榜"
+      }
+    ]
+  },
+  {
+    "title": "修仙世界",
+    "description": "查看修仙世界玩家数量",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#修仙世界"
+      }
+    ]
+  },
+  {
+    "title": "练气境界",
+    "description": "查看所有练气境界信息",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#练气境界"
+      }
+    ]
+  },
+  {
+    "title": "炼体境界",
+    "description": "查看所有炼体境界信息",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#炼体境界"
+      }
+    ]
+  },
+  {
+    "title": "职业等级",
+    "description": "查看所有职业等级",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#职业等级"
+      }
+    ]
+  },
+  {
+    "title": "丹药配方",
+    "description": "查看炼丹配方列表",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#丹药配方"
+      }
+    ]
+  },
+  {
+    "title": "装备图纸",
+    "description": "查看装备制作图纸",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#装备图纸"
+      }
+    ]
+  },
+  {
+    "title": "更新属性",
+    "description": "刷新角色属性数据",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#更新属性"
+      }
+    ]
+  },
+  {
+    "title": "修仙扩展",
+    "description": "查看更多功能指令",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#修仙扩展"
+      }
+    ]
+  },
+  {
+    "title": "宗门管理",
+    "description": "查看宗门管理指令",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#宗门管理"
+      }
+    ]
+  },
+  {
+    "title": "师徒帮助",
+    "description": "查看师徒系统指令",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#师徒帮助"
+      }
+    ]
+  },
+  {
+    "title": "修仙管理",
+    "description": "查看管理员功能",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#修仙管理"
+      }
+    ]
+  },
+  {
+    "title": "更新日志",
+    "description": "查看游戏更新日志",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#更新日志"
+      }
+    ]
+  },
+  {
+    "title": "开启收徒",
+    "description": "允许其他玩家向你拜师",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#开启收徒"
+      }
+    ]
+  },
+  {
+    "title": "关闭收徒",
+    "description": "关闭收徒功能，其他人无法拜你为师",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#关闭收徒"
+      }
+    ]
+  },
+  {
+    "title": "拜师",
+    "description": "向指定玩家拜师学艺",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#拜师@"
+      }
+    ]
+  },
+  {
+    "title": "解除师徒关系",
+    "description": "解除当前的师徒关系",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#解除师徒关系"
+      }
+    ]
+  },
+  {
+    "title": "我的弟子",
+    "description": "查看自己的弟子及其任务进度",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的弟子"
+      }
+    ]
+  },
+  {
+    "title": "我的师门",
+    "description": "查看自己在师门中的任务进度",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#我的师门"
+      }
+    ]
+  },
+  {
+    "title": "提交任务",
+    "description": "提交师门任务，获取奖励",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#提交任务"
+      }
+    ]
+  },
+  {
+    "title": "查看师傅列表",
+    "description": "随机查看5个可拜师的师傅",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#查看师傅列表"
+      }
+    ]
+  },
+  {
+    "title": "师徒商店",
+    "description": "查看师徒积分兑换商店",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#师徒商店"
+      }
+    ]
+  },
+  {
+    "title": "师徒兑换",
+    "description": "使用师徒积分兑换物品",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#师徒兑换"
+      }
+    ]
+  },
+  {
+    "title": "开始师徒试炼",
+    "description": "进行师徒试炼，讨伐师徒BOSS（阶段五专用）",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#开始师徒试炼"
+      }
+    ]
+  },
+  {
+    "title": "师徒同步",
+    "description": "修复师徒关系问题，同步师徒数据",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#师徒同步"
+      }
+    ]
+  },
+  {
+    "title": "师徒帮助",
+    "description": "查看师徒系统的详细帮助信息",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#师徒帮助"
       }
     ]
   }
