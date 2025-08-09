@@ -11,16 +11,15 @@ import {
 import { data, pushInfo, redis } from '@src/api/api'
 
 import { selects } from '@src/response/index'
+import { biwuPlayer } from '../biwu'
 
 export const regular = /^(#|＃|\/)?^切磋$/
-global.A_QQ = []
-global.B_QQ = []
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
-  const A_QQ = global.A_QQ
-  const B_QQ = global.B_QQ
+  const A_QQ = biwuPlayer.A_QQ
+  const B_QQ = biwuPlayer.B_QQ
   let A = e.UserId
   //先判断
   let ifexistplay_A = await existplayer(A)
@@ -88,8 +87,8 @@ export default onResponse(selects, async e => {
   battle(e, A_QQ.length - 1)
 })
 async function battle(e, num) {
-  const A_QQ = global.A_QQ
-  const B_QQ = global.B_QQ
+  const A_QQ = biwuPlayer.A_QQ
+  const B_QQ = biwuPlayer.B_QQ
   const Send = useSend(e)
   const [message] = useMessage(e)
   let A_player = await readPlayer(A_QQ[num].QQ)
@@ -243,7 +242,7 @@ async function battle(e, num) {
     //伤害计算
     let A_baoji = baojishanghai(A_player.暴击率)
     let A_伤害 = Harm(A_player.攻击, B_player.防御)
-    let A_法球伤害 = Math.trunc(A_player.攻击 * A_player.灵根.法球倍率)
+    let A_法球伤害 = Math.trunc(A_player.攻击 * Number(A_player.灵根.法球倍率))
     A_伤害 = Math.trunc(A_baoji * A_伤害 + A_法球伤害 + A_player.防御 * 0.1)
     //技能判断
     if (action_A.use != -1) {
@@ -374,7 +373,7 @@ async function battle(e, num) {
     }
     let B_baoji = baojishanghai(B_player.暴击率)
     let B_伤害 = Harm(B_player.攻击, A_player.防御)
-    let B_法球伤害 = Math.trunc(B_player.攻击 * B_player.灵根.法球倍率)
+    let B_法球伤害 = Math.trunc(B_player.攻击 * Number(B_player.灵根.法球倍率))
     B_伤害 = Math.trunc(B_baoji * B_伤害 + B_法球伤害 + B_player.防御 * 0.1)
     if (action_B.use != -1) {
       if (action_B.技能[action_B.use].name == '四象封印') {

@@ -1,3 +1,5 @@
-global.yazhu = []
-global.gane_key_user = []
-global.gametime = []
+export const game = {
+  game_key_user: {},
+  game_time: {},
+  yazhu: {}
+}

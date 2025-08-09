@@ -8,7 +8,7 @@ import {
   findQinmidu,
   readPlayer
 } from '@src/model'
-import { found, chaoshi } from '../daolv'
+import { found, chaoshi, Daolv } from '../daolv'
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
@@ -104,13 +104,13 @@ export default onResponse(selects, async e => {
     Send(Text('你们还没结婚，断个锤子'))
     return false
   }
-  if (global.x == 1 || global.x == 2) {
+  if (Daolv.x == 1 || Daolv.x == 2) {
     Send(Text(`有人正在缔结道侣，请稍等`))
     return false
   }
-  global.x = 2
-  global.user_A = A
-  global.user_B = B
+  Daolv.set_x(2)
+  Daolv.set_user_A(A)
+  Daolv.set_user_B(B)
   let player_A = await readPlayer(A)
   let msg = ['\n']
   msg.push(`${player_A.名号}要和你断绝姻缘\n回复【我同意】or【我拒绝】`)

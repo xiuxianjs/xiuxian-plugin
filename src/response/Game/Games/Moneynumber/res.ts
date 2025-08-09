@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import { config, data, redis } from '@src/api/api'
 import { Go } from '@src/model'
 import { selects } from '@src/response/index'
-import '../game'
+import { game } from '../game'
 
 export const regular = /^(#|＃|\/)?金银坊$/
 export default onResponse(selects, async e => {
@@ -27,9 +27,9 @@ export default onResponse(selects, async e => {
     await redis.del('xiuxian@1.3.0:' + usr_qq + ':game_action')
     //清除未投入判断
     //清除金额
-    global.yazhu[usr_qq] = 0
+    game.yazhu[usr_qq] = 0
     //清除游戏定时检测CD
-    clearTimeout(global.gametime[usr_qq])
+    clearTimeout(game.game_time[usr_qq])
     Send(Text('媚娘：钱不够也想玩？'))
     return false
   }

@@ -7,7 +7,7 @@ import {
   existNajieThing,
   readPlayer
 } from '@src/model'
-import { chaoshi } from '../daolv'
+import { chaoshi, Daolv } from '../daolv'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(结为道侣)$/
@@ -98,13 +98,13 @@ export default onResponse(selects, async e => {
     Send(Text(`对方已有道侣`))
     return false
   }
-  if (global.x == 1 || global.x == 2) {
+  if (Daolv.x == 1 || Daolv.x == 2) {
     Send(Text(`有人缔结道侣，请稍等`))
     return false
   }
-  global.x = 1
-  global.user_A = A
-  global.user_B = B
+  Daolv.set_x(1)
+  Daolv.set_user_A(A)
+  Daolv.set_user_B(B)
   let player_A = await readPlayer(A)
   let msg = ['\n']
   msg.push(

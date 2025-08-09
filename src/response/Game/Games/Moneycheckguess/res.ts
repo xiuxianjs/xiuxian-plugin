@@ -3,7 +3,7 @@ import { redis, data, config } from '@src/api/api'
 import { existplayer, readPlayer, isNotNull, addCoin } from '@src/model'
 import { selects } from '@src/response/index'
 import { openMoneySystem } from '@src/model/money'
-import '../game'
+import { game } from '../game'
 
 export const regular = /^(#|＃|\/)?((大|小)|([1-6]))$/
 export default onResponse(selects, async e => {
@@ -15,8 +15,8 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   if (!ifexistplay || !game_action) return false
-  if (isNaN(global.yazhu[usr_qq])) return false
-  if (!global.gane_key_user[usr_qq]) {
+  if (isNaN(game.yazhu[usr_qq])) return false
+  if (!game.game_key_user[usr_qq]) {
     Send(Text('媚娘：公子，你还没投入呢'))
     return false
   }
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   let isWin = false
   let touzi = 0
 
-  const inputMoney = global.yazhu[usr_qq]
+  const inputMoney = game.yazhu[usr_qq]
 
   if (/^(#|＃|\/)?(大|小)$/.test(es)) {
     // 统一转换为boolean
@@ -57,27 +57,27 @@ export default onResponse(selects, async e => {
         x = cf.percentage.punishment
         y = 0
       }
-      global.yazhu[usr_qq] = Math.trunc(inputMoney * x)
+      game.yazhu[usr_qq] = Math.trunc(inputMoney * x)
       if (isNotNull(player.金银坊胜场)) {
         player.金银坊胜场 = parseInt(player.金银坊胜场) + 1
         player.金银坊收入 =
-          parseInt(player.金银坊收入) + parseInt(global.yazhu[usr_qq])
+          parseInt(player.金银坊收入) + parseInt(game.yazhu[usr_qq])
       } else {
         player.金银坊胜场 = 1
-        player.金银坊收入 = parseInt(global.yazhu[usr_qq])
+        player.金银坊收入 = parseInt(game.yazhu[usr_qq])
       }
       data.setData('player', usr_qq, player)
-      addCoin(usr_qq, global.yazhu[usr_qq])
+      addCoin(usr_qq, game.yazhu[usr_qq])
       if (y == 1) {
         Send(
           Text(
-            `骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + global.yazhu[usr_qq]}`
+            `骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`
           )
         )
       } else {
         Send(
           Text(
-            `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + global.yazhu[usr_qq]}`
+            `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`
           )
         )
       }
@@ -147,7 +147,7 @@ export default onResponse(selects, async e => {
   // 清理与结束相关逻辑
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':last_game_time', now_time)
   await redis.del('xiuxian@1.3.0:' + usr_qq + ':game_action')
-  global.yazhu[usr_qq] = 0
-  clearTimeout(global.gametime[usr_qq])
+  game.yazhu[usr_qq] = 0
+  clearTimeout(game.game_time[usr_qq])
   return false
 })

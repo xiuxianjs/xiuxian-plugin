@@ -1,21 +1,35 @@
 import { readQinmidu } from '@src/model'
 import { useMessage, Text } from 'alemonjs'
 
-global.x = 0
-// let chaoshi_time
-global.chaoshi_time = null
-global.user_A = null
-global.user_B = null
+export const Daolv = {
+  x: 0,
+  chaoshi_time: null,
+  user_A: null,
+  user_B: null,
+  set_x(value) {
+    this.x = value
+  },
+  set_chaoshi_time(value) {
+    this.chaoshi_time = value
+  },
+  set_user_A(value) {
+    this.user_A = value
+  },
+  set_user_B(value) {
+    this.user_B = value
+  }
+}
 
 export async function chaoshi(e) {
   const [message] = useMessage(e)
-  global.chaoshi_time = setTimeout(() => {
-    if (global.x == 1 || global.x == 2) {
-      global.x = 0
+  const chaoshi_time = setTimeout(() => {
+    if (Daolv.x == 1 || Daolv.x == 2) {
+      Daolv.set_x(0)
       message.send(format(Text('对方没有搭理你')))
       return false
     }
   }, 30000)
+  Daolv.set_chaoshi_time(chaoshi_time)
 }
 export async function found(A, B) {
   let qinmidu = await readQinmidu()

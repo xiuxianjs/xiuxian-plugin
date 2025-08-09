@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 import {
   Boss2IsAlive,
-  InitWorldBoss,
+  InitWorldBoss2,
   SetWorldBOSSBattleUnLockTimer,
   SortPlayer,
   WorldBossBattle,
@@ -83,7 +83,7 @@ export default onResponse(selects, async e => {
       Send(Text(`金角大王正在刷新,20点开启`))
       return false
     } else if (WorldBossStatus.KilledTime != -1) {
-      if ((await InitWorldBoss()) == false) await WorldBossBattle(e)
+      if ((await InitWorldBoss2()) == false) await WorldBossBattle(e)
       return false
     }
     let PlayerRecordJSON, Userid

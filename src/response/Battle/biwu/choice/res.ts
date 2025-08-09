@@ -3,11 +3,12 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
+import { biwuPlayer } from '../biwu'
 export const regular = /^(#|＃|\/)?选择技能.*$/
 
 export default onResponse(selects, async e => {
-  const A_QQ = global.A_QQ
-  const B_QQ = global.B_QQ
+  const A_QQ = biwuPlayer.A_QQ
+  const B_QQ = biwuPlayer.B_QQ
   const Send = useSend(e)
   let jineng_name = e.MessageText.replace(/^(#|＃|\/)?选择技能/, '')
   let code = jineng_name.split(',')

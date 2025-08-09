@@ -79,7 +79,7 @@ export async function InitWorldBoss2() {
   for (const group_id of groupList) {
     await pushInfo(group_id, true, msg)
   }
-  return 0
+  return false
 }
 //获取玩家平均实力和化神以上人数
 export async function GetAverageDamage() {
