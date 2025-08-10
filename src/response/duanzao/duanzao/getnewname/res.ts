@@ -17,10 +17,10 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId //用户qq
   if (!(await existplayer(user_qq))) return false
-  let thing = e.MessageText.replace(/^(#|＃|\/)?赋名/, '')
+  const thing = e.MessageText.replace(/^(#|＃|\/)?赋名/, '')
   const code = thing.split('*')
   const thing_name = code[0] //原物品
-  let new_name = code[1] //新名字
+  const new_name = code[1] //新名字
   const thingnum = await existNajieThing(user_qq, thing_name, '装备')
   if (!thingnum) {
     Send(Text(`你没有这件装备`))
@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
   } catch {
     await writeIt([])
   }
-  for (let item of A) {
+  for (const item of A) {
     if (item.name == thing_name) {
       Send(Text(`一个装备只能赋名一次`))
       return false
@@ -49,7 +49,7 @@ export default onResponse(selects, async e => {
   }
   const thingall = await readNajie(user_qq)
 
-  for (let item of thingall.装备) {
+  for (const item of thingall.装备) {
     if (item.name == thing_name) {
       if (item.atk < 10 && item.def < 10 && item.HP < 10) {
         if (

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, foundthing, addNajieThing, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,11 +8,11 @@ export const regular = /^(#|＃|\/)?一键回收(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let najie = await await data.getData('najie', usr_qq)
+  const najie = await await data.getData('najie', usr_qq)
   let lingshi: any = 0
   let wupin = [
     '装备',
@@ -24,10 +24,10 @@ export default onResponse(selects, async e => {
     '仙宠',
     '仙宠口粮'
   ]
-  let wupin1 = []
+  const wupin1 = []
   if (e.MessageText != '#一键回收') {
     let thing = e.MessageText.replace(/^(#|＃|\/)?一键回收/, '')
-    for (let i of wupin) {
+    for (const i of wupin) {
       if (thing == i) {
         wupin1.push(i)
         thing = thing.replace(i, '')
@@ -39,10 +39,10 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  for (let i of wupin) {
-    for (let l of najie[i]) {
+  for (const i of wupin) {
+    for (const l of najie[i]) {
       //纳戒中的数量
-      let thing_exist = await foundthing(l.name)
+      const thing_exist = await foundthing(l.name)
       if (thing_exist) {
         continue
       }

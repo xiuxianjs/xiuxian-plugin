@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,17 +8,17 @@ export const regular = /^(#|＃|\/)?建设宗门$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   //无宗门
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门驻地 == 0) {
     Send(Text(`你的宗门还没有驻地，无法建设宗门`))
     return false
@@ -33,12 +33,12 @@ export default onResponse(selects, async e => {
   }
 
   //灵石池扣除
-  let lsckc = Math.trunc(denji * 10000)
+  const lsckc = Math.trunc(denji * 10000)
   if (ass.灵石池 < lsckc) {
     Send(Text(`宗门灵石池不足，还需[` + lsckc + ']灵石'))
   } else {
     ass.灵石池 -= lsckc
-    let add = Math.trunc(player.level_id / 7) + 1
+    const add = Math.trunc(player.level_id / 7) + 1
     ass.宗门建设等级 += add
     await data.setAssociation(ass.宗门名称, ass)
     Send(

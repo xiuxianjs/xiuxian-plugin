@@ -1,4 +1,4 @@
-import { puppeteer } from '@src/api/api'
+import { puppeteer } from '@src/model/api'
 import { mkdirSync, writeFileSync } from 'fs'
 // import { writeFileSync } from 'fs'
 import md5 from 'md5'
@@ -8,7 +8,7 @@ const helpData = {
   md5: ''
 }
 export async function cache(data, user_id) {
-  let tmp = md5(JSON.stringify(data))
+  const tmp = md5(JSON.stringify(data))
   if (helpData.md5 == tmp) return helpData.img
   if (process.env.NODE_ENV === 'development') {
     const dir = './views'

@@ -6,6 +6,6 @@ export const regular = /^(#|＃|\/)?功法楼$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let img = await getGongfaImage(e)
+  const img = await getGongfaImage(e)
   if (img) Send(Image(img))
 })

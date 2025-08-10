@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer, notUndAndNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,14 +8,14 @@ export const regular = /^(#|＃|\/)?星阁拍卖行$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
 
   //固定写法
   //判断是否为匿名创建存档
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let res = await redis.get('xiuxian:AuctionofficialTask')
+  const res = await redis.get('xiuxian:AuctionofficialTask')
   if (!notUndAndNull(res)) {
     Send(Text('目前没有拍卖正在进行'))
     return false

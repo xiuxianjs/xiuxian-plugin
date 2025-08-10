@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -13,17 +13,17 @@ export const regular = /^(#|＃|\/)?一键学习$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //检索方法
-  let najie = await await data.getData('najie', usr_qq)
-  let gongfa = []
-  let player = await readPlayer(usr_qq)
+  const najie = await await data.getData('najie', usr_qq)
+  const gongfa = []
+  const player = await readPlayer(usr_qq)
   let name = ''
-  for (let l of najie.功法) {
-    let islearned = player.学习的功法.find(item => item == l.name)
+  for (const l of najie.功法) {
+    const islearned = player.学习的功法.find(item => item == l.name)
     if (!islearned) {
       await addNajieThing(usr_qq, l.name, '功法', -1)
       await addConFaByUser(usr_qq, l.name)

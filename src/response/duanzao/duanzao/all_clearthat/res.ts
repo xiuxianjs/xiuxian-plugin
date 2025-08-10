@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { __PATH, writeDuanlu } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -13,8 +13,8 @@ export default onResponse(selects, async e => {
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
-    let action: any = null
+  for (const player_id of playerList) {
+    const action: any = null
     await redis.set(
       'xiuxian@1.3.0:' + player_id + ':action10',
       JSON.stringify(action)

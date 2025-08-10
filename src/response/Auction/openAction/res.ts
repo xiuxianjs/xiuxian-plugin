@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { config, redis } from '@src/api/api'
+import { config, redis } from '@src/model/api'
 import { openAU, readPlayer } from '@src/model'
 
 export const selects = onSelects(['message.create'])

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   notUndAndNull,
   shijianc,
@@ -14,26 +14,26 @@ export const regular = /^(#|＃|\/)?神兽赐福$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   //无宗门
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门神兽 == 0) {
     Send(Text('你的宗门还没有神兽的护佑，快去召唤神兽吧'))
     return false
   }
 
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前日期的时间戳
-  let Today = await shijianc(nowTime)
-  let lastsign_time = await getLastsign_Bonus(usr_qq) //获得上次宗门签到日期
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前日期的时间戳
+  const Today = await shijianc(nowTime)
+  const lastsign_time = await getLastsign_Bonus(usr_qq) //获得上次宗门签到日期
   if (
     Today.Y == lastsign_time.Y &&
     Today.M == lastsign_time.M &&
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
 
   let random = Math.random()
   //根据好感度获取概率
-  let dy = await readDanyao(usr_qq)
+  const dy = await readDanyao(usr_qq)
   if (dy.beiyong2 > 0) {
     dy.beiyong2--
   }
@@ -61,7 +61,7 @@ export default onResponse(selects, async e => {
     let item_name
     let item_class
     //获得奖励
-    let randomB = Math.random()
+    const randomB = Math.random()
     if (ass.宗门神兽 == '麒麟') {
       if (randomB > 0.9) {
         location = Math.floor(Math.random() * data.qilin.length)
@@ -135,11 +135,11 @@ export default onResponse(selects, async e => {
 })
 async function getLastsign_Bonus(usr_qq) {
   //查询redis中的人物动作
-  let time: any = await redis.get(
+  const time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':getLastsign_Bonus'
   )
   if (time != null) {
-    let data = await shijianc(parseInt(time))
+    const data = await shijianc(parseInt(time))
     return data
   }
   return false

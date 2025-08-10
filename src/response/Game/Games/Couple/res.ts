@@ -1,14 +1,14 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { config, redis } from '@src/api/api'
+import { config, redis } from '@src/model/api'
+import { addExp } from '@src/model/economy'
 import {
-  existplayer,
   findQinmidu,
   existHunyin,
   fstaddQinmidu,
-  addExp,
   addQinmidu
-} from '@src/model'
+} from '@src/model/qinmidu'
+import { existplayer } from '@src/model/xiuxian_impl'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^双修$/
@@ -17,11 +17,11 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   //双修开关
-  let gameswitch = cf.switch.couple
+  const gameswitch = cf.switch.couple
   if (gameswitch != true) {
     return false
   }
-  let A = e.UserId
+  const A = e.UserId
   //全局状态判断
   //B
   const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
@@ -34,24 +34,24 @@ export default onResponse(selects, async e => {
     return // 未找到用户Id
   }
   //对方QQ
-  let B = User.UserId
+  const B = User.UserId
   if (A == B) {
     Send(Text('你咋这么爱撸自己呢?'))
     return false
   }
-  let Time = cf.CD.couple //6个小时
-  let shuangxiuTimeout = Math.floor(60000 * Time)
+  const Time = cf.CD.couple //6个小时
+  const shuangxiuTimeout = Math.floor(60000 * Time)
   //自己的cd
-  let now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = new Date().getTime() //获取当前时间戳
   let last_timeA: any = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_shuangxiu_time'
   ) //获得上次的时间戳,
   last_timeA = Math.floor(last_timeA)
   if (now_Time < last_timeA + shuangxiuTimeout) {
-    let Couple_m = Math.trunc(
+    const Couple_m = Math.trunc(
       (last_timeA + shuangxiuTimeout - now_Time) / 60 / 1000
     )
-    let Couple_s = Math.trunc(
+    const Couple_s = Math.trunc(
       ((last_timeA + shuangxiuTimeout - now_Time) % 60000) / 1000
     )
     Send(Text(`双修冷却:  ${Couple_m}分 ${Couple_s}秒`))
@@ -62,30 +62,30 @@ export default onResponse(selects, async e => {
   ) //获得上次的时间戳,
   last_timeB = Math.floor(last_timeB)
   if (now_Time < last_timeB + shuangxiuTimeout) {
-    let Couple_m = Math.trunc(
+    const Couple_m = Math.trunc(
       (last_timeB + shuangxiuTimeout - now_Time) / 60 / 1000
     )
-    let Couple_s = Math.trunc(
+    const Couple_s = Math.trunc(
       ((last_timeB + shuangxiuTimeout - now_Time) % 60000) / 1000
     )
     Send(Text(`对方双修冷却:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
   //对方存档
-  let ifexistplay_B = await existplayer(B)
+  const ifexistplay_B = await existplayer(B)
   if (!ifexistplay_B) {
     Send(Text('修仙者不可对凡人出手!'))
     return false
   }
   //拒绝
-  let couple = await redis.get('xiuxian@1.3.0:' + B + ':couple')
+  const couple = await redis.get('xiuxian@1.3.0:' + B + ':couple')
   if (+couple != 0) {
     Send(Text('哎哟，你干嘛...'))
     return false
   }
-  let pd = await findQinmidu(A, B)
-  let hunyin_B = await existHunyin(A)
-  let hunyin_A = await existHunyin(B)
+  const pd = await findQinmidu(A, B)
+  const hunyin_B = await existHunyin(A)
+  const hunyin_A = await existHunyin(B)
   //logger.info(`pd = `+pd+` hunyin = `+hunyin);
   //双方有一人已婚
   if (hunyin_B != '' || hunyin_A != '') {
@@ -102,8 +102,8 @@ export default onResponse(selects, async e => {
   await redis.set('xiuxian@1.3.0:' + A + ':last_shuangxiu_time', now_Time)
   await redis.set('xiuxian@1.3.0:' + B + ':last_shuangxiu_time', now_Time)
   if (A != B) {
-    let option = Math.random()
-    let xiuwei = Math.random()
+    const option = Math.random()
+    const xiuwei = Math.random()
     let x = 0
     let y = 0
     if (option > 0 && option <= 0.5) {

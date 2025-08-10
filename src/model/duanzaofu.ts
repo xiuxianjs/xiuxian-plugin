@@ -1,6 +1,7 @@
 import { __PATH } from './paths.js'
 import data from './XiuxianData.js'
 import { writePlayer } from './pub.js'
+import { safeParse } from './utils/safe.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
 import DataList from './DataList.js'
 import { getIoRedis } from '@alemonjs/db'
@@ -80,7 +81,7 @@ export async function readTripod(): Promise<Tripod[]> {
   if (!data) {
     return []
   }
-  return JSON.parse(data) as Tripod[]
+  return safeParse<Tripod[] | []>(data, [])
 }
 
 export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
@@ -89,13 +90,22 @@ export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
   return
 }
 //数量矫正, 违规数量改成1
-export async function jiaozheng(value: any): Promise<number> {
-  let size = value
-  if (isNaN(parseFloat(size)) && !isFinite(size)) {
+export async function jiaozheng(value: unknown): Promise<number> {
+  let size: number
+  if (typeof value === 'string') {
+    const n = Number(value)
+    if (Number.isNaN(n)) return 1
+    size = n
+  } else if (typeof value === 'number') {
+    size = value
+  } else {
+    return 1
+  }
+  if (Number.isNaN(size) || !Number.isFinite(size)) {
     return Number(1)
   }
-  size = Number(Math.trunc(size))
-  if (size == null || size == undefined || size < 1 || isNaN(size)) {
+  size = Math.trunc(size)
+  if (size < 1 || Number.isNaN(size)) {
     return Number(1)
   }
   return Number(size)
@@ -105,7 +115,7 @@ export async function jiaozheng(value: any): Promise<number> {
 export async function readThat(
   thing_name: string,
   weizhi: string
-): Promise<any> {
+): Promise<unknown> {
   const lib_map = {
     npc列表: 'npc_list',
     shop列表: 'shop_list',
@@ -154,7 +164,8 @@ export async function readThat(
 }
 
 //读取item某个文件的全部物品
-export async function readAll(weizhi: string): Promise<any[]> {
+// 返回 unknown[] 保持宽松兼容
+export async function readAll(weizhi: string): Promise<unknown[]> {
   const lib_map = {
     npc列表: 'npc_list',
     shop列表: 'shop_list',
@@ -286,14 +297,14 @@ export async function restraint(
   return [houzui, jiaceng]
 }
 
-export async function readIt(): Promise<any> {
+export async function readIt(): Promise<unknown> {
   const redis = getIoRedis()
   const custom = await redis.get(`${__PATH.custom}:custom`)
   if (!custom) {
     //如果没有自定义数据，返回空对象
     return []
   }
-  const customData = JSON.parse(custom)
+  const customData = safeParse(custom, [])
   return customData
 }
 

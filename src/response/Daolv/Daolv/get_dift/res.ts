@@ -23,25 +23,25 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let B = User.UserId
-  let A = e.UserId
-  let ifexistplay = await existplayer(A)
+  const B = User.UserId
+  const A = e.UserId
+  const ifexistplay = await existplayer(A)
   if (!ifexistplay) return false
   if (A == B) {
     Send(Text('精神分裂?'))
     return false
   }
-  let ifexistplay_B = await existplayer(B)
+  const ifexistplay_B = await existplayer(B)
   if (!ifexistplay_B) {
     Send(Text('修仙者不可对凡人出手!'))
     return false
   }
-  let ishavejz = await existNajieThing(A, '百合花篮', '道具')
+  const ishavejz = await existNajieThing(A, '百合花篮', '道具')
   if (!ishavejz) {
     Send(Text('你没有[百合花篮]'))
     return false
   }
-  let pd = await findQinmidu(A, B)
+  const pd = await findQinmidu(A, B)
   if (pd == false) {
     await fstaddQinmidu(A, B)
   } else if (pd == 0) {

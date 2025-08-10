@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer, readPlayer, shijianc, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,11 +8,11 @@ export const regular = /^(#|＃|\/)?踏入神界$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -25,20 +25,20 @@ export default onResponse(selects, async e => {
   action = JSON.parse(action)
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
+    const action_end_time = action.end_time
+    const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
       return false
     }
   }
   let player = await readPlayer(usr_qq)
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前日期的时间戳
-  let Today = await shijianc(nowTime)
-  let lastdagong_time = await getLastdagong(usr_qq) //获得上次签到日期
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前日期的时间戳
+  const Today = await shijianc(nowTime)
+  const lastdagong_time = await getLastdagong(usr_qq) //获得上次签到日期
   if (
     (Today.Y != lastdagong_time.Y && Today.M != lastdagong_time.M) ||
     Today.D != lastdagong_time.D
@@ -93,9 +93,9 @@ export default onResponse(selects, async e => {
     player.神界次数--
   }
   await writePlayer(usr_qq, player)
-  let time: any = 30 //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const time: any = 30 //时间（分钟）
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '神界', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间
@@ -118,12 +118,12 @@ export default onResponse(selects, async e => {
 })
 async function getLastdagong(usr_qq) {
   //查询redis中的人物动作
-  let time: any = await redis.get(
+  const time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':lastdagong_time'
   )
   logger.info(time)
   if (time != null) {
-    let data = await shijianc(parseInt(time))
+    const data = await shijianc(parseInt(time))
     return data
   }
   return false

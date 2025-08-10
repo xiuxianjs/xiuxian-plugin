@@ -8,32 +8,32 @@ import {
   Go,
   readPlayer
 } from '@src/model'
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?购买((.*)|(.*)*(.*))$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let thing = e.MessageText.replace(/^(#|＃|\/)?购买/, '')
-  let code = thing.split('*')
-  let thing_name = code[0]
-  let ifexist = data.commodities_list.find(item => item.name == thing_name)
+  const thing = e.MessageText.replace(/^(#|＃|\/)?购买/, '')
+  const code = thing.split('*')
+  const thing_name = code[0]
+  const ifexist = data.commodities_list.find(item => item.name == thing_name)
   if (!ifexist) {
     Send(Text(`柠檬堂还没有这样的东西:${thing_name}`))
     return false
   }
-  let quantity = await convert2integer(code[1])
-  let player = await readPlayer(usr_qq)
-  let lingshi: any = player.灵石
+  const quantity = await convert2integer(code[1])
+  const player = await readPlayer(usr_qq)
+  const lingshi: any = player.灵石
   //如果没钱，或者为负数
   if (lingshi <= 0) {
     Send(Text(`掌柜：就你这穷酸样，也想来柠檬堂？走走走！`))

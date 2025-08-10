@@ -14,13 +14,13 @@ export const regular = /^(#|＃|\/)?取消[1-9]d*/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let Forum = []
-  let player = await readPlayer(usr_qq)
-  let x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1
+  const player = await readPlayer(usr_qq)
+  const x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1
   try {
     Forum = await readForum()
   } catch {

@@ -14,19 +14,19 @@ export const regular = /^(#|＃|\/)?回收.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let thing_name = e.MessageText.replace(/^(#|＃|\/)?回收/, '')
   thing_name = thing_name.trim()
-  let thing_exist = await foundthing(thing_name)
+  const thing_exist = await foundthing(thing_name)
   if (thing_exist) {
     Send(Text(`${thing_name}可以使用,不需要回收`))
     return false
   }
   let lingshi: any = 0
-  let najie = await readNajie(usr_qq)
-  let type = [
+  const najie = await readNajie(usr_qq)
+  const type = [
     '装备',
     '丹药',
     '道具',
@@ -36,8 +36,8 @@ export default onResponse(selects, async e => {
     '仙宠',
     '仙宠口粮'
   ]
-  for (let i of type) {
-    let thing = najie[i].find(item => item.name == thing_name)
+  for (const i of type) {
+    const thing = najie[i].find(item => item.name == thing_name)
     if (thing) {
       if (thing.class == '材料' || thing.class == '草药') {
         lingshi += thing.出售价 * thing.数量

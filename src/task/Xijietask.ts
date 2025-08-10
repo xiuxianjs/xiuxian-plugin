@@ -1,20 +1,16 @@
-import { redis, data, pushInfo } from '@src/api/api'
-import {
-  notUndAndNull,
-  zdBattle,
-  addNajieThing,
-  readShop,
-  writeShop,
-  existshop,
-  __PATH
-} from '@src/model'
+import { redis, data, pushInfo } from '@src/model/api'
+import { notUndAndNull } from '@src/model/common'
+import { zdBattle } from '@src/model/battle'
+import { addNajieThing } from '@src/model/najie'
+import { readShop, writeShop, existshop } from '@src/model/shop'
+import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
+  for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
@@ -34,11 +30,11 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
 
       //最后发送的消息
-      let msg = []
+      const msg = []
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      let now_time = new Date().getTime()
+      const now_time = new Date().getTime()
 
       //有洗劫状态:这个直接结算即可
       if (action.xijie == '0') {
@@ -46,14 +42,14 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - action.time + 60000 * 10
         //时间过了
         if (now_time >= end_time) {
-          let weizhi = action.Place_address
+          const weizhi = action.Place_address
           let i //获取对应npc列表的位置
           for (i = 0; i < data.npc_list.length; i++) {
             if (data.npc_list[i].name == weizhi.name) {
               break
             }
           }
-          let A_player = action.A_player
+          const A_player = action.A_player
           let monster_length
           let monster_index
           let monster
@@ -71,7 +67,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             monster = data.npc_list[i].three[monster_index]
           }
           //设定npc数值
-          let B_player = {
+          const B_player = {
             名号: monster.name,
             攻击: Math.floor(monster.atk * A_player.攻击),
             防御: Math.floor(
@@ -96,16 +92,15 @@ scheduleJob('0 0/1 * * * ?', async () => {
             last_msg += A_player.名号 + '杀气过重,被' + B_player.名号 + '发现了'
             A_player.当前血量 += Data_battle.B_xue
           }
-          let msgg = Data_battle.msg
+          const msgg = Data_battle.msg
           logger.info(msgg)
-          let A_win = `${A_player.名号}击败了${B_player.名号}`
-          let B_win = `${B_player.名号}击败了${A_player.名号}`
-          let arr = action
-          let time
-          let action_time
+          const A_win = `${A_player.名号}击败了${B_player.名号}`
+          const B_win = `${B_player.名号}击败了${A_player.名号}`
+          const arr = action
+          // 后续阶段会重新以 const 定义 time / action_time
           if (msgg.find(item => item == A_win)) {
-            time = 10 //时间（分钟）
-            action_time = 60000 * time //持续时间，单位毫秒
+            const time = 10 //时间（分钟）
+            const action_time = 60000 * time //持续时间，单位毫秒
             arr.A_player = A_player
             arr.action = '搜刮'
             arr.end_time = new Date().getTime() + action_time
@@ -116,14 +111,14 @@ scheduleJob('0 0/1 * * * ?', async () => {
               A_player.当前血量 +
               '血量,开始搜刮物品'
           } else if (msgg.find(item => item == B_win)) {
-            let num = weizhi.Grade
+            const num = weizhi.Grade
             last_msg +=
               ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' +
               num
             await addNajieThing(player_id, '秘境之匙', '道具', num)
             //结算完去除
             delete arr.group_id
-            let shop = await readShop()
+            const shop = await readShop()
             for (i = 0; i < shop.length; i++) {
               if (shop[i].name == weizhi.name) {
                 shop[i].state = 0
@@ -131,8 +126,8 @@ scheduleJob('0 0/1 * * * ?', async () => {
               }
             }
             await writeShop(shop)
-            time = 60 //时间（分钟）
-            action_time = 60000 * time //持续时间，单位毫秒
+            const time = 60 //时间（分钟）
+            const action_time = 60000 * time //持续时间，单位毫秒
             arr.action = '禁闭'
             arr.xijie = 1 //关闭洗劫
             arr.end_time = new Date().getTime() + action_time
@@ -162,13 +157,13 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - action.time + 60000 * 5
         //时间过了
         if (now_time >= end_time) {
-          let weizhi = action.Place_address
+          const weizhi = action.Place_address
           let thing = await existshop(weizhi.name)
-          let arr = action
+          const arr = action
           let time
           let action_time
           let last_msg = ''
-          let thing_name = []
+          const thing_name = []
           let shop = await readShop()
           let i
           for (i = 0; i < shop.length; i++) {
@@ -182,9 +177,10 @@ scheduleJob('0 0/1 * * * ?', async () => {
           } else {
             let x = shop[i].Grade * 2
             while (x > 0 && thing != false) {
-              let t //临时存储物品名
-              let thing_index = Math.trunc(Math.random() * thing.length)
-              t = thing[thing_index]
+              const t = (() => {
+                const thing_index = Math.trunc(Math.random() * thing.length)
+                return thing[thing_index]
+              })() //临时存储物品名
               thing_name.push(t)
               shop = await readShop()
               for (let j = 0; j < shop[i].one.length; j++) {
@@ -205,8 +201,8 @@ scheduleJob('0 0/1 * * * ?', async () => {
               '\n刚出门就被万仙盟的人盯上了,他们仗着人多，你一人无法匹敌，于是撒腿就跑'
           }
           arr.action = '逃跑'
-          time = 30 //时间（分钟）
-          action_time = 60000 * time //持续时间，单位毫秒
+          const time = 30 //时间（分钟）
+          const action_time = 60000 * time //持续时间，单位毫秒
           arr.end_time = new Date().getTime() + action_time
           arr.time = action_time
           arr.xijie = -2 //进入三阶段

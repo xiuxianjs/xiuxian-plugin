@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import {
   existplayer,
   shijianc,
@@ -16,11 +16,11 @@ export const regular = /^(#|＃|\/)?比试$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取游戏状态
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -33,11 +33,11 @@ export default onResponse(selects, async e => {
   action = JSON.parse(action)
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
+    const action_end_time = action.end_time
+    const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
       return false
     }
@@ -60,14 +60,14 @@ export default onResponse(selects, async e => {
     Send(Text('请先报名!'))
     return false
   }
-  let last_msg = []
+  const last_msg = []
   let atk = 1
   let def = 1
   let blood = 1
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前日期的时间戳
-  let Today = await shijianc(nowTime)
-  let lastbisai_time = await getLastbisai(usr_qq) //获得上次签到日期
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前日期的时间戳
+  const Today = await shijianc(nowTime)
+  const lastbisai_time = await getLastbisai(usr_qq) //获得上次签到日期
   if (
     Today.Y != lastbisai_time.Y ||
     Today.M != lastbisai_time.M ||
@@ -82,7 +82,7 @@ export default onResponse(selects, async e => {
     Today.D == lastbisai_time.D &&
     tiandibang[x].次数 < 1
   ) {
-    let zbl = await existNajieThing(usr_qq, '摘榜令', '道具')
+    const zbl = await existNajieThing(usr_qq, '摘榜令', '道具')
     if (zbl) {
       tiandibang[x].次数 = 1
       await addNajieThing(usr_qq, '摘榜令', '道具', -1)
@@ -131,7 +131,7 @@ export default onResponse(selects, async e => {
         法球倍率: tiandibang[k].法球倍率
       }
     }
-    let A_player = {
+    const A_player = {
       名号: tiandibang[x].名号,
       攻击: parseInt(tiandibang[x].攻击) * atk,
       防御: Math.floor(tiandibang[x].防御 * def),
@@ -156,10 +156,10 @@ export default onResponse(selects, async e => {
         法球倍率: tiandibang[x].法球倍率
       }
     }
-    let Data_battle = await zdBattle(A_player, B_player)
-    let msg = Data_battle.msg
-    let A_win = `${A_player.名号}击败了${B_player.名号}`
-    let B_win = `${B_player.名号}击败了${A_player.名号}`
+    const Data_battle = await zdBattle(A_player, B_player)
+    const msg = Data_battle.msg
+    const A_win = `${A_player.名号}击败了${B_player.名号}`
+    const B_win = `${B_player.名号}击败了${A_player.名号}`
     if (msg.find(item => item == A_win)) {
       if (k == -1) {
         tiandibang[x].积分 += 1500
@@ -199,7 +199,7 @@ export default onResponse(selects, async e => {
     }
     Send(Text(last_msg.join('\n')))
   } else {
-    let A_player = {
+    const A_player = {
       名号: tiandibang[x].名号,
       攻击: tiandibang[x].攻击,
       防御: tiandibang[x].防御,
@@ -212,7 +212,7 @@ export default onResponse(selects, async e => {
     atk = 0.8 + 0.4 * Math.random()
     def = 0.8 + 0.4 * Math.random()
     blood = 0.8 + 0.4 * Math.random()
-    let B_player = {
+    const B_player = {
       名号: '灵修兽',
       攻击: parseInt(tiandibang[x].攻击) * atk,
       防御: Math.floor(tiandibang[x].防御 * def),
@@ -222,10 +222,10 @@ export default onResponse(selects, async e => {
       灵根: tiandibang[x].灵根,
       法球倍率: tiandibang[x].法球倍率
     }
-    let Data_battle = await zdBattle(A_player, B_player)
-    let msg = Data_battle.msg
-    let A_win = `${A_player.名号}击败了${B_player.名号}`
-    let B_win = `${B_player.名号}击败了${A_player.名号}`
+    const Data_battle = await zdBattle(A_player, B_player)
+    const msg = Data_battle.msg
+    const A_win = `${A_player.名号}击败了${B_player.名号}`
+    const B_win = `${B_player.名号}击败了${A_player.名号}`
     if (msg.find(item => item == A_win)) {
       tiandibang[x].积分 += 1500
       tiandibang[x].次数 -= 1

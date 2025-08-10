@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import { Go, readPlayer, notUndAndNull, addCoin, addExp } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,13 +8,13 @@ export const regular = /^(#|＃|\/)?前往禁地.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let player = await readPlayer(usr_qq)
-  let now_level_id
+  const player = await readPlayer(usr_qq)
+  // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     Send(Text('请#同步信息'))
     return false
   }
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 22) {
@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
   }
   let didian = await e.MessageText.replace(/^(#|＃|\/)?前往禁地/, '')
   didian = didian.trim()
-  let weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
+  const weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
   // if (player.power_place == 0 && weizhi.id != 666) {
   //     Send(Text("仙人不得下凡")
   //     return  false;
@@ -48,13 +48,13 @@ export default onResponse(selects, async e => {
     Send(Text('你需要积累' + weizhi.experience + '修为，才能抵抗禁地魔气！'))
     return false
   }
-  let Price = weizhi.Price
+  const Price = weizhi.Price
   await addCoin(usr_qq, -Price)
   await addExp(usr_qq, -weizhi.experience)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.forbiddenarea //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '禁地', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

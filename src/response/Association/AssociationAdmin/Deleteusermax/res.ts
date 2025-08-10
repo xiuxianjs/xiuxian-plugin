@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,35 +8,35 @@ export const regular = /^(#|＃|\/)?逐出.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) {
     return false
   }
 
-  let menpai = e.MessageText.replace(/^(#|＃|\/)?逐出/, '')
+  const menpai = e.MessageText.replace(/^(#|＃|\/)?逐出/, '')
 
-  let member_qq = menpai
+  const member_qq = menpai
 
   if (usr_qq == member_qq) {
     Send(Text('???'))
     return false
   }
 
-  let ifexistplayB = await data.existData('player', member_qq)
+  const ifexistplayB = await data.existData('player', member_qq)
   if (!ifexistplayB) {
     Send(Text('此人未踏入仙途！'))
     return false
   }
-  let playerB = await await data.getData('player', member_qq)
+  const playerB = await await data.getData('player', member_qq)
   if (!notUndAndNull(playerB.宗门)) {
     Send(Text('对方尚未加入宗门'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
-  let bss = await data.getAssociation(playerB.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
+  const bss = await data.getAssociation(playerB.宗门.宗门名称)
   if (ass.宗门名称 != bss.宗门名称) return false
   if (player.宗门.职位 == '宗主') {
     if (usr_qq == member_qq) {

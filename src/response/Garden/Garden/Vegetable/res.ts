@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,12 +8,12 @@ export const regular = /^(#|＃|\/)?药园*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
 
   if (!ifexistplay) return false
 
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
 
   if (!notUndAndNull(player.宗门)) return false
 
@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
       '\n' +
       `药园药草如下:`
   ]
-  let nowTime = new Date().getTime() //获取当前时间
+  const nowTime = new Date().getTime() //获取当前时间
 
   for (let i = 0; i < ass.药园.作物.length; i++) {
     zuowu = ass.药园.作物
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
       zuowu[i].name == '创世花'
     )
       continue
-    let vegetable_Oldtime: any = await redis.get(
+    const vegetable_Oldtime: any = await redis.get(
       'xiuxian:' + ass.宗门名称 + zuowu[i].name
     ) //获得上次的成熟时间戳,
     let chengshu_t = Math.trunc((vegetable_Oldtime - nowTime) / 86400000) //成熟天数
@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
       chengshu_m = 0
       chengshu_s = 0
     }
-    let msg1 = [
+    const msg1 = [
       `作物: ${zuowu[i].name} ` +
         '\n' +
         `描述: ${zuowu[i].desc}` +
@@ -81,10 +81,10 @@ export default onResponse(selects, async e => {
  * @param user_qq qq号
  */
 async function new_Garden(association_name, user_qq) {
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前时间戳
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前时间戳
   // let date = timestampToTime(nowTime)
-  let ass = await data.getAssociation(association_name)
+  const ass = await data.getAssociation(association_name)
   let AssociationGarden
   //怎么直接写这里而不是调用文件
   if (ass.宗门等级 == 9) {

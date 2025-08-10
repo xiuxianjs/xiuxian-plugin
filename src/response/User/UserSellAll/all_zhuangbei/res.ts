@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -14,13 +14,13 @@ export const regular = /^(#|＃|\/)?一键装备$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //检索方法
-  let najie = await await data.getData('najie', usr_qq)
-  let player = await readPlayer(usr_qq)
-  let sanwei = []
+  const najie = await await data.getData('najie', usr_qq)
+  const player = await readPlayer(usr_qq)
+  const sanwei = []
   sanwei[0] =
     data.Level_list.find(item => item.level_id == player.level_id).基础攻击 +
     player.攻击加成 +
@@ -36,10 +36,10 @@ export default onResponse(selects, async e => {
     player.生命加成 +
     data.LevelMax_list.find(item => item.level_id == player.Physique_id)
       .基础血量
-  let equipment = await await data.getData('equipment', usr_qq)
+  const equipment = await await data.getData('equipment', usr_qq)
   //智能选择装备
-  let type = ['武器', '护具', '法宝']
-  for (let j of type) {
+  const type = ['武器', '护具', '法宝']
+  for (const j of type) {
     let max
     let max_equ
     if (equipment[j].atk < 10 && equipment[j].def < 10 && equipment[j].HP < 10)
@@ -52,9 +52,9 @@ export default onResponse(selects, async e => {
         equipment[j].atk * 0.43 +
         equipment[j].def * 0.16 +
         equipment[j].HP * 0.41
-    for (let i of najie['装备']) {
+    for (const i of najie['装备']) {
       //先判断装备存不存在
-      let thing_exist = await foundthing(i.name)
+      const thing_exist = await foundthing(i.name)
       if (!thing_exist) {
         continue
       }
@@ -76,6 +76,6 @@ export default onResponse(selects, async e => {
     }
     if (max_equ) await insteadEquipment(usr_qq, max_equ)
   }
-  let img = await getQquipmentImage(e)
+  const img = await getQquipmentImage(e)
   if (img) Send(Image(img))
 })

@@ -8,6 +8,6 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
 
-  let img = await getAdminsetImage(e)
+  const img = await getAdminsetImage(e)
   if (img) Send(Image(img))
 })

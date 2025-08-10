@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 import { __PATH } from '@src/model'
@@ -11,10 +11,10 @@ export default onResponse(selects, async e => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
 
-  let num = [0, 0, 0, 0]
-  for (let player_id of playerList) {
-    let usr_qq = player_id
-    let player = await await data.getData('player', usr_qq)
+  const num = [0, 0, 0, 0]
+  for (const player_id of playerList) {
+    const usr_qq = player_id
+    const player = await await data.getData('player', usr_qq)
     if (player.魔道值 > 999) num[3]++
     else if ((player.lunhui > 0 || player.level_id > 41) && player.魔道值 < 1)
       num[0]++
@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
     else num[2]++
   }
   const n = num[0] + num[1] + num[2]
-  let msg =
+  const msg =
     '___[修仙世界]___' +
     '\n人数：' +
     n +

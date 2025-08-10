@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?解除所有$/
@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
     //不为空，存在动作
     if (action) {
       await redis.del(record)
-      let arr = JSON.parse(action)
+      const arr = JSON.parse(action)
       arr.is_jiesuan = 1 //结算状态
       arr.shutup = 1 //闭关状态
       arr.working = 1 //降妖状态

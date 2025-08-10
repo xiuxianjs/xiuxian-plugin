@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import { existplayer, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,24 +8,24 @@ export const regular = /^(#|＃|\/)?抢红包$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //自己没存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   //抢红包要有一分钟的CD
-  let now_time = new Date().getTime()
+  const now_time = new Date().getTime()
   let lastgetbung_time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':last_getbung_time'
   )
   lastgetbung_time = parseInt(lastgetbung_time)
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let transferTimeout = Math.floor(cf.CD.honbao * 60000)
+  const transferTimeout = Math.floor(cf.CD.honbao * 60000)
   if (now_time < lastgetbung_time + transferTimeout) {
-    let waittime_m = Math.trunc(
+    const waittime_m = Math.trunc(
       (lastgetbung_time + transferTimeout - now_time) / 60 / 1000
     )
-    let waittime_s = Math.trunc(
+    const waittime_s = Math.trunc(
       ((lastgetbung_time + transferTimeout - now_time) % 60000) / 1000
     )
     Send(
@@ -46,9 +46,9 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let honbao_qq = User.UserId
+  const honbao_qq = User.UserId
   //有无存档
-  let ifexistplay_honbao = await existplayer(honbao_qq)
+  const ifexistplay_honbao = await existplayer(honbao_qq)
   if (!ifexistplay_honbao) {
     return false
   }

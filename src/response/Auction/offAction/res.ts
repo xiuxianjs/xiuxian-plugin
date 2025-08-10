@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?关闭星阁体系$/

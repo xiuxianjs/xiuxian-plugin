@@ -1,5 +1,7 @@
 import { Text, useSend } from 'alemonjs'
-import { readExchange, writeExchange, addNajieThing } from '@src/model'
+// 直接引用底层模块，避免通过聚合 xiuxian.ts 引起的 chunk 循环
+import { readExchange, writeExchange } from '@src/model/trade'
+import { addNajieThing } from '@src/model/najie'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?清除冲水堂$/
@@ -17,10 +19,10 @@ export default onResponse(selects, async e => {
       //
     }
 
-    for (let i of Exchange) {
-      let usr_qq = i.qq
+    for (const i of Exchange) {
+      const usr_qq = i.qq
       let thing = i.name.name
-      let quanity = i.aconut
+      const quanity = i.aconut
       if (i.name.class == '装备' || i.name.class == '仙宠') thing = i.name
       await addNajieThing(usr_qq, thing, i.name.class, quanity, i.name.pinji)
     }

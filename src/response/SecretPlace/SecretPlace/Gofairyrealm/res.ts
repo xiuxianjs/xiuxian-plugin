@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import {
   Go,
   readPlayer,
@@ -15,15 +15,15 @@ export const regular = /^(#|＃|\/)?镇守仙境.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   let didian = e.MessageText.replace(/^(#|＃|\/)?镇守仙境/, '')
   didian = didian.trim()
-  let weizhi = await data.Fairyrealm_list.find(item => item.name == didian)
+  const weizhi = await data.Fairyrealm_list.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     return false
   }
@@ -31,8 +31,7 @@ export default onResponse(selects, async e => {
     Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'))
     return false
   }
-  let now_level_id
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 42 && player.lunhui == 0) {
@@ -57,12 +56,12 @@ export default onResponse(selects, async e => {
     Send(Text(player.名号 + '使用了道具仙境优惠券,本次消耗减少50%'))
     await addNajieThing(usr_qq, '仙境优惠券', '道具', -1)
   }
-  let Price = weizhi.Price * dazhe
+  const Price = weizhi.Price * dazhe
   await addCoin(usr_qq, -Price)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.secretplace //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '历练', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

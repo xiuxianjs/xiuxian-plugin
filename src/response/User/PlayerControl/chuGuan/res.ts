@@ -1,4 +1,6 @@
-import { config, data, pushInfo, redis } from '@src/api/api'
+import { config, data, pushInfo } from '@src/model/api'
+import { getJSON, userKey } from '@src/model/utils/redisHelper'
+import type { ActionState } from '@src/types/action'
 import {
   playerEfficiency,
   notUndAndNull,
@@ -17,20 +19,20 @@ import { DataMention, Mention } from 'alemonjs'
 export const regular = /^(#|＃|\/)?出关$/
 
 export default onResponse(selects, async e => {
-  let action: any = await getPlayerAction(e.UserId)
+  const action = await getPlayerAction(e.UserId)
   if (!action) return
   if (action.shutup == 1) return
 
   //结算
-  let end_time = action.end_time
-  let start_time = action.end_time - action.time
-  let now_time = new Date().getTime()
+  const end_time = action.end_time
+  const start_time = action.end_time - Number(action.time)
+  const now_time = new Date().getTime()
   let time
 
   const cf = config.getConfig('xiuxian', 'xiuxian')
 
-  let y = cf.biguan.time //固定时间
-  let x = cf.biguan.cycle //循环次数
+  const y = cf.biguan.time //固定时间
+  const x = cf.biguan.cycle //循环次数
 
   if (end_time > now_time) {
     //属于提前结束
@@ -48,7 +50,7 @@ export default onResponse(selects, async e => {
     }
   } else {
     //属于结束了未结算
-    time = Math.floor(action.time / 1000 / 60)
+    time = Math.floor(Number(action.time) / 1000 / 60)
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
@@ -67,7 +69,7 @@ export default onResponse(selects, async e => {
   } else {
     await biguan_jiesuan(e.UserId, time, false) //提前闭关结束不会触发随机事件
   }
-  let arr = action
+  const arr = action
   //把状态都关了
   arr.shutup = 1 //闭关状态
   arr.working = 1 //降妖状态
@@ -78,13 +80,10 @@ export default onResponse(selects, async e => {
   await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
   await setDataByUserId(e.UserId, 'game_action', 0)
 })
-async function getPlayerAction(usr_qq) {
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  if (!action) {
-    return false
-  }
-  action = JSON.parse(action) //转为json格式数据
-  return action
+async function getPlayerAction(usr_qq: string): Promise<ActionState | false> {
+  const raw = await getJSON<ActionState>(userKey(usr_qq, 'action'))
+  if (!raw) return false
+  return raw
 }
 /**
  * 闭关结算
@@ -95,31 +94,30 @@ async function getPlayerAction(usr_qq) {
  * @return  falses {Promise<void>}
  */
 async function biguan_jiesuan(user_id, time, is_random, group_id?) {
-  let usr_qq = user_id
+  const usr_qq = user_id
   await playerEfficiency(usr_qq)
-  let player = await data.getData('player', usr_qq)
-  let now_level_id
+  const player = await data.getData('player', usr_qq)
   if (!notUndAndNull(player.level_id)) {
     return false
   }
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   //闭关收益倍率计算 倍率*境界id*天赋*时间
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let size = cf.biguan.size
+  const size = cf.biguan.size
   //增加的修为
-  let xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1))
+  const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1))
   //恢复的血量
-  let blood = Math.floor(player.血量上限 * 0.02)
+  const blood = Math.floor(player.血量上限 * 0.02)
   //额外修为
   let other_xiuwei = 0
 
-  let msg: Array<DataMention | string> = [Mention(usr_qq)]
+  const msg: Array<DataMention | string> = [Mention(usr_qq)]
   //炼丹师丹药修正
   let transformation = '修为'
   let xueqi = 0
-  let dy = await readDanyao(usr_qq)
+  const dy = await readDanyao(usr_qq)
   if (dy.biguan > 0) {
     dy.biguan--
     if (dy.biguan == 0) {

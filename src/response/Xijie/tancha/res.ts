@@ -1,6 +1,7 @@
 import { Text, Image, useSend } from 'alemonjs'
 
-import { redis, data, puppeteer } from '@src/api/api'
+import { data, puppeteer } from '@src/model/api'
+import { getString, getJSON, userKey } from '@src/model/utils/redisHelper'
 import {
   existplayer,
   readShop,
@@ -15,28 +16,29 @@ export const regular = /^(#|＃|\/)?探查.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let game_action: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await getString(userKey(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
-  if (game_action == 1) {
+  if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  action = JSON.parse(action)
+  interface ActionInfo {
+    end_time: number
+    action: string
+  }
+  const action = await getJSON<ActionInfo>(userKey(usr_qq, 'action'))
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
+    const action_end_time = action.end_time
+    const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
       return false
     }
@@ -59,14 +61,14 @@ export default onResponse(selects, async e => {
   if (i == shop.length) {
     return false
   }
-  let player = await readPlayer(usr_qq)
-  let Price = shop[i].price * 0.3
+  const player = await readPlayer(usr_qq)
+  const Price = shop[i].price * 0.3
   if (player.灵石 < Price) {
     Send(Text('你需要更多的灵石去打探消息'))
     return false
   }
   await addCoin(usr_qq, -Price)
-  let thing = await existshop(didian)
+  const thing = await existshop(didian)
   let level = shop[i].Grade
   let state = shop[i].state
   switch (level) {
@@ -88,9 +90,9 @@ export default onResponse(selects, async e => {
       state = '打烊'
       break
   }
-  let didian_data = { name: shop[i].name, level, state, thing }
+  const didian_data = { name: shop[i].name, level, state, thing }
 
-  let img = await puppeteer.screenshot('shop', e.UserId, didian_data)
+  const img = await puppeteer.screenshot('shop', e.UserId, didian_data)
   if (img) Send(Image(img))
   return false
 })

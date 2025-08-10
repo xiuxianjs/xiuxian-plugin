@@ -1,8 +1,28 @@
-import { redis, data, puppeteer } from '@src/api/api'
+import { redis, data, puppeteer } from '@src/model/api'
 import { __PATH, shijianc, readPlayer } from '@src/model'
+import type { Player, TalentInfo } from '@src/types/player'
 
-export async function Write_tiandibang(wupin) {
-  redis.set(
+// 榜单条目类型（简化，只列出必需字段，允许附加动态属性）
+export interface TiandibangRow {
+  名号: string
+  境界: number
+  攻击: number
+  防御: number
+  当前血量: number
+  暴击率: number
+  灵根: TalentInfo | Record<string, unknown>
+  法球倍率?: number | string
+  学习的功法: unknown
+  魔道值: number
+  神石: number
+  qq: number
+  次数: number
+  积分: number
+  [k: string]: unknown
+}
+
+export async function Write_tiandibang(wupin: TiandibangRow[]) {
+  await redis.set(
     `${__PATH.tiandibang}:tiandibang`,
     JSON.stringify(wupin, null, '\t')
   )
@@ -10,7 +30,7 @@ export async function Write_tiandibang(wupin) {
 }
 
 export async function readTiandibang() {
-  let tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
+  const tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
   if (!tiandibang) {
     //如果没有天鼎数据，返回空数组
     return []
@@ -20,44 +40,46 @@ export async function readTiandibang() {
   return data
 }
 
-export async function getLastbisai(usr_qq) {
-  //查询redis中的人物动作
-  let time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastbisai_time')
-  logger.info(time)
-  if (time != null) {
-    let data = await shijianc(parseInt(time))
-    return data
+export async function getLastbisai(usr_qq: string | number) {
+  const timeStr = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastbisai_time')
+  if (timeStr != null) {
+    const details = await shijianc(parseInt(timeStr, 10))
+    return details
   }
   return false
 }
 
 export async function get_tianditang_img(e, jifen) {
-  let usr_qq = e.UserId
-  let player = await readPlayer(usr_qq)
-  let commodities_list = data.tianditang
-  let tianditang_data = {
+  const usr_qq = e.UserId
+  const player = await readPlayer(usr_qq)
+  const commodities_list = data.tianditang
+  const tianditang_data = {
     name: player.名号,
     jifen,
     commodities_list: commodities_list
   }
 
-  let img = await puppeteer.screenshot('tianditang', e.UserId, tianditang_data)
+  const img = await puppeteer.screenshot(
+    'tianditang',
+    e.UserId,
+    tianditang_data
+  )
   return img
 }
 
 export async function re_bangdang() {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  let temp = []
-  let t
+  const temp: TiandibangRow[] = []
   for (let k = 0; k < playerList.length; k++) {
-    let this_qq: any = playerList[k]
-    this_qq = parseInt(this_qq)
-    let player = await readPlayer(this_qq)
-    let level_id = data.Level_list.find(
+    const thisQqStr = playerList[k]!
+    const thisQq = parseInt(thisQqStr, 10)
+    const player = await readPlayer(thisQqStr)
+    const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
-    ).level_id
-    temp[k] = {
+    )?.level_id
+    if (level_id == null) continue
+    temp.push({
       名号: player.名号,
       境界: level_id,
       攻击: player.攻击,
@@ -67,25 +89,15 @@ export async function re_bangdang() {
       灵根: player.灵根,
       法球倍率: player.灵根.法球倍率,
       学习的功法: player.学习的功法,
-      魔道值: player.魔道值,
-      神石: player.神石,
-      qq: this_qq,
+      魔道值: (player as Player & { 魔道值?: number }).魔道值 ?? 0,
+      神石: (player as Player & { 神石?: number }).神石 ?? 0,
+      qq: thisQq,
       次数: 3,
       积分: 0
-    }
+    })
   }
-  for (let i = 0; i < playerList.length - 1; i++) {
-    let count = 0
-    for (let j = 0; j < playerList.length - i - 1; j++) {
-      if (temp[j].积分 < temp[j + 1].积分) {
-        t = temp[j]
-        temp[j] = temp[j + 1]
-        temp[j + 1] = t
-        count = 1
-      }
-    }
-    if (count == 0) break
-  }
+  // 按积分排序（冒泡替换为内置排序）
+  temp.sort((a, b) => b.积分 - a.积分)
   await Write_tiandibang(temp)
   return false
 }

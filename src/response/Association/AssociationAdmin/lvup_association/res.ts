@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,10 +8,10 @@ export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门等级 == 宗门人数上限.length) {
     Send(Text('已经是最高等级宗门'))
     return false

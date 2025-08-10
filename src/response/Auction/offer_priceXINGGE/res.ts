@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, config } from '@src/api/api'
+import { redis, config } from '@src/model/api'
 import { existplayer, notUndAndNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,18 +8,18 @@ export const regular = /^(#|＃|\/)?星阁出价.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
 
   //固定写法
   //判断是否为匿名创建存档
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   // 此群是否开启星阁体系
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) return false
   // 是否到拍卖时间
-  let auction = await redis.get('xiuxian:AuctionofficialTask')
+  const auction = await redis.get('xiuxian:AuctionofficialTask')
   if (!notUndAndNull(auction)) {
     const { openHour, closeHour } = config.getConfig(
       'xiuxian',
@@ -29,11 +29,11 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   const auctionData = JSON.parse(auction)
   // let start_price = auction.start_price;
-  let last_price = auctionData.last_price
-  let reg = e.MessageText.replace(/^(#|＃|\/)?星阁出价/, '')
+  const last_price = auctionData.last_price
+  const reg = e.MessageText.replace(/^(#|＃|\/)?星阁出价/, '')
   if (auctionData.last_offer_player == usr_qq) {
     Send(Text('不能自己给自己抬价哦!'))
     return false

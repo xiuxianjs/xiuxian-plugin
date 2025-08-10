@@ -25,16 +25,16 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let B_qq = User.UserId //对方qq
+  const B_qq = User.UserId //对方qq
   //检查存档
-  let ifexistplay = await existplayer(B_qq)
+  const ifexistplay = await existplayer(B_qq)
   if (!ifexistplay) {
     Send(Text('对方无存档'))
     return false
   }
   //获取发送灵石数量
-  let code = e.MessageText.replace(/^(#|＃|\/)?发/, '').split('*')
-  let thing_name = code[0]
+  const code = e.MessageText.replace(/^(#|＃|\/)?发/, '').split('*')
+  const thing_name = code[0]
   let thing_amount: any = code[1] //数量
   let thing_piji
   thing_amount = Number(thing_amount)
@@ -48,12 +48,12 @@ export default onResponse(selects, async e => {
   } else if (thing_name == '血气') {
     await addExp2(B_qq, thing_amount)
   } else {
-    let thing_exist = await foundthing(thing_name)
+    const thing_exist = await foundthing(thing_name)
     if (!thing_exist) {
       Send(Text(`这方世界没有[${thing_name}]`))
       return false
     }
-    let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
+    const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
     thing_piji = pj[code[1]]
     if (thing_exist.class == '装备') {
       if (thing_piji) {

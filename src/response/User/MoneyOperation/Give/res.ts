@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import {
   existplayer,
   addCoin,
@@ -34,29 +34,29 @@ export default onResponse(selects, async e => {
   const A_player = await data.getData('player', A_qq)
   const B_player = await data.getData('player', B_qq)
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '').trim()
+  const msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '').trim()
 
   // 赠送灵石
   if (msg.startsWith('灵石')) {
     const value = msg.replace(/([\u4e00-\u9fa5])|(\*)/g, '')
     const lingshi: number = parseUnitNumber(value)
     const cost = cf.percentage.cost
-    let lastlingshi = lingshi + Math.trunc(lingshi * cost)
+    const lastlingshi = lingshi + Math.trunc(lingshi * cost)
     if (A_player.灵石 < lastlingshi) {
       Send(Text(`你身上似乎没有${lastlingshi}灵石`))
       return false
     }
-    let nowTime = Date.now()
+    const nowTime = Date.now()
     let lastgetbung_time: any = await redis.get(
       'xiuxian@1.3.0:' + A_qq + ':last_getbung_time'
     )
     lastgetbung_time = parseInt(lastgetbung_time)
-    let transferTimeout = Math.floor(cf.CD.transfer * 60000)
+    const transferTimeout = Math.floor(cf.CD.transfer * 60000)
     if (nowTime < lastgetbung_time + transferTimeout) {
-      let waittime_m = Math.trunc(
+      const waittime_m = Math.trunc(
         (lastgetbung_time + transferTimeout - nowTime) / 60 / 1000
       )
-      let waittime_s = Math.trunc(
+      const waittime_s = Math.trunc(
         ((lastgetbung_time + transferTimeout - nowTime) % 60000) / 1000
       )
       Send(
@@ -102,14 +102,14 @@ export default onResponse(selects, async e => {
   // 数量
   const quantity = quantityStr ? parseUnitNumber(quantityStr) : 1
 
-  let najie = await readNajie(A_qq)
-  let thing_exist = await foundthing(thing_name)
+  const najie = await readNajie(A_qq)
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     Send(Text(`这方世界没有[${thing_name}]`))
     return false
   }
 
-  let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
+  const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
 
   // 处理品级
   let thing_piji = pinjiStr ? pj[pinjiStr] : undefined
@@ -131,7 +131,7 @@ export default onResponse(selects, async e => {
     equ = najie.仙宠.find(item => item.name == thing_name)
   }
 
-  let x = await existNajieThing(A_qq, thing_name, thing_exist.class, thing_piji)
+  const x = await existNajieThing(A_qq, thing_name, thing_exist.class, thing_piji)
   if (x < quantity || !x) {
     Send(Text(`你还没有这么多[${thing_name}]`))
     return false

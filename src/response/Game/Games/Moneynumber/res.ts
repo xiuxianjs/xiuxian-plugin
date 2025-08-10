@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { config, data, redis } from '@src/api/api'
+import { config, data, redis } from '@src/model/api'
 import { Go } from '@src/model'
 import { selects } from '@src/response/index'
 import { game } from '../game'
@@ -9,15 +9,15 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   //金银坊开关
-  let gameswitch = cf.switch.Moneynumber
+  const gameswitch = cf.switch.Moneynumber
   if (gameswitch != true) return false
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) return false
   //用户信息查询
-  let player = await data.getData('player', usr_qq)
-  let now_time = new Date().getTime()
-  let money = 10000
+  const player = await data.getData('player', usr_qq)
+  const now_time = new Date().getTime()
+  const money = 10000
   //判断灵石
   if (player.灵石 < money) {
     //直接清除，并记录
@@ -50,7 +50,7 @@ export default onResponse(selects, async e => {
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':last_game_time', now_time)
   //判断是否已经在进行
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //为0，就是在进行了

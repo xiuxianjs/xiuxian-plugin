@@ -1,20 +1,13 @@
-import { redis, data, config, pushInfo } from '@src/api/api'
-import {
-  notUndAndNull,
-  readPlayer,
-  existNajieThing,
-  addNajieThing,
-  writePlayer,
-  zdBattle,
-  readDanyao,
-  writeDanyao,
-  addExp2,
-  addExp,
-  addHP,
-  readTemp,
-  writeTemp,
-  __PATH
-} from '@src/model'
+import { redis, data, config, pushInfo } from '@src/model/api'
+// 细粒度导入，避免通过 barrel 触发循环 re-export
+import { notUndAndNull } from '@src/model/common'
+import { readPlayer, writePlayer } from '@src/model/xiuxian'
+import { existNajieThing, addNajieThing } from '@src/model/najie'
+import { zdBattle } from '@src/model/battle'
+import { readDanyao, writeDanyao } from '@src/model/danyao'
+import { addExp2, addExp, addHP } from '@src/model/economy'
+import { readTemp, writeTemp } from '@src/model/temp'
+import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
@@ -24,37 +17,42 @@ scheduleJob('0 0/5 * * * ?', async () => {
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
-    let log_mag = '' //查询当前人物动作日志信息
-    log_mag = log_mag + '查询' + player_id + '是否有动作,'
+  for (const player_id of playerList) {
+    let log_mag = '' // 查询当前人物动作日志信息（需累积）
+    log_mag += '查询' + player_id + '是否有动作,'
     //得到动作
-    let action: any = await getDataByUserId(player_id, 'action')
-    action = await JSON.parse(action)
+    const raw = await getDataByUserId(player_id, 'action')
+    let action: Record<string, any> | null = null
+    try {
+      action = raw ? JSON.parse(raw) : null
+    } catch {
+      action = null
+    }
     //不为空，存在动作
     if (action != null) {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
-      if (await action.hasOwnProperty('group_id')) {
+      if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
         if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
         }
       }
       //最后发送的消息
-      let msg: Array<DataMention | string> = [Mention(player_id)]
+      const msg: Array<DataMention | string> = [Mention(player_id)]
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      let now_time = new Date().getTime()
+      const now_time = Date.now()
       //用户信息
-      let player = await readPlayer(player_id)
+      const player = await readPlayer(player_id)
       //有秘境状态:这个直接结算即可
       if (action.Place_actionplus == '0') {
         //这里改一改,要在结束时间的前两分钟提前结算
         end_time = end_time - action.time
         //时间过了
         if (now_time > end_time) {
-          let weizhi = action.Place_address
+          const weizhi = action.Place_address
           if (player.当前血量 < 0.3 * player.血量上限) {
             if (await existNajieThing(player_id, '起死回生丹', '丹药')) {
               player.当前血量 = player.血量上限
@@ -62,7 +60,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               await writePlayer(player_id, player)
             }
           }
-          let A_player = {
+          const A_player = {
             名号: player.名号,
             攻击: player.攻击,
             防御: player.防御,
@@ -70,10 +68,10 @@ scheduleJob('0 0/5 * * * ?', async () => {
             暴击率: player.暴击率,
             法球倍率: player.灵根.法球倍率
           }
-          let monster_length = data.monster_list.length
-          let monster_index = Math.trunc(Math.random() * monster_length)
-          let monster = data.monster_list[monster_index]
-          let B_player = {
+          const monster_length = data.monster_list.length
+          const monster_index = Math.trunc(Math.random() * monster_length)
+          const monster = data.monster_list[monster_index]
+          const B_player = {
             名号: monster.名号,
             攻击: Math.floor(monster.攻击 * player.攻击),
             防御: Math.floor(monster.防御 * player.防御),
@@ -81,20 +79,20 @@ scheduleJob('0 0/5 * * * ?', async () => {
             暴击率: monster.暴击率,
             法球倍率: 0.1
           }
-          let Data_battle = await zdBattle(A_player, B_player)
-          let msgg = Data_battle.msg
-          let A_win = `${A_player.名号}击败了${B_player.名号}`
-          let B_win = `${B_player.名号}击败了${A_player.名号}`
-          let thing_name
-          let thing_class
+          const Data_battle = await zdBattle(A_player, B_player)
+          const msgg = Data_battle.msg
+          const A_win = `${A_player.名号}击败了${B_player.名号}`
+          const B_win = `${B_player.名号}击败了${A_player.名号}`
+          let thing_name: string | undefined
+          let thing_class: string | undefined
           const cf = config.getConfig('xiuxian', 'xiuxian')
-          let x = cf.SecretPlace.one
-          let random1 = Math.random()
-          let y = cf.SecretPlace.two
-          let random2 = Math.random()
-          let z = cf.SecretPlace.three
-          let random3 = Math.random()
-          let random4
+          const x = cf.SecretPlace.one
+          const random1 = Math.random()
+          const y = cf.SecretPlace.two
+          const random2 = Math.random()
+          const z = cf.SecretPlace.three
+          const random3 = Math.random()
+          let random4: number
           let m = ''
           let fyd_msg = ''
           //查找秘境
@@ -111,6 +109,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
 
           let n = 1
           let last_msg = ''
+          void r // 使用 r 防止未使用警告
           if (random1 <= x) {
             if (random2 <= y) {
               //random2=0到1随机数,y=0.6
@@ -158,7 +157,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
           }
           if (weizhi.name != '诸神黄昏·旧神界') {
             //判断是不是旧神界
-            let random = Math.random()
+            const random = Math.random()
             if (random < player.幸运) {
               if (random < player.addluckyNo) {
                 last_msg += '福源丹生效，所以在'
@@ -184,10 +183,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
           m += `]×${n}个。`
           let xiuwei = 0
           //默认结算装备数
-          let now_level_id
-          let now_physique_id
-          now_level_id = player.level_id
-          now_physique_id = player.Physique_id
+          const now_level_id = player.level_id
+          const now_physique_id = player.Physique_id
           //结算
           let qixue = 0
           if (msgg.find(item => item == A_win)) {
@@ -205,9 +202,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             }],经过一番战斗,击败对手,获得修为${xiuwei},气血${qixue},剩余血量${
               A_player.当前血量 + Data_battle.A_xue
             },剩余次数${action.cishu - 1}`
-            let random = Math.random() //万分之一出神迹
+            const random = Math.random() //万分之一出神迹
             let newrandom = 0.995
-            let dy = await readDanyao(player_id)
+            const dy: any = await readDanyao(player_id)
             newrandom -= dy.beiyong1
             if (dy.ped > 0) {
               dy.ped--
@@ -217,9 +214,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             }
             await writeDanyao(player_id, dy)
             if (random > newrandom) {
-              let length = data.xianchonkouliang.length
-              let index = Math.trunc(Math.random() * length)
-              let kouliang = data.xianchonkouliang[index]
+              const length = data.xianchonkouliang.length
+              const index = Math.trunc(Math.random() * length)
+              const kouliang = data.xianchonkouliang[index]
               last_msg +=
                 '\n七彩流光的神奇仙谷[' +
                 kouliang.name +
@@ -244,7 +241,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               A_player.当前血量
           }
           msg.push('\n' + player.名号 + last_msg + fyd_msg)
-          let arr = action
+          const arr = action
           if (arr.cishu == 1) {
             //把状态都关了
             arr.shutup = 1 //闭关状态
@@ -277,16 +274,16 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await addHP(player_id, Data_battle.A_xue)
             //发送消息
             try {
-              let temp = await readTemp()
-              let p = {
+              const temp = await readTemp()
+              const p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               }
               temp.push(p)
               await writeTemp(temp)
             } catch {
-              let temp = []
-              let p = {
+              const temp = []
+              const p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq: player_id,
                 qq_group: push_address

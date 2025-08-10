@@ -5,6 +5,6 @@ import { getValuablesImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?万宝楼$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let img = await getValuablesImage(e)
+  const img = await getValuablesImage(e)
   if (img) Send(Image(img))
 })

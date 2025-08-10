@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs'
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   existplayer,
   __PATH,
@@ -17,18 +17,18 @@ export const regular = /^(#|＃|\/)?踏入仙途$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
   const ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
-    let img = await getPlayerImage(e)
+    const img = await getPlayerImage(e)
     if (img) Send(Image(img))
     return
   }
   const keys = await redis.keys(`${__PATH.player_path}:*`)
-  let n = keys.length + 1
-  let talent = await getRandomTalent()
-  let new_player = {
+  const n = keys.length + 1
+  const talent = await getRandomTalent()
+  const new_player = {
     id: e.UserId,
     sex: 0, //性别
     名号: `路人甲${n}号`,
@@ -72,14 +72,14 @@ export default onResponse(selects, async e => {
   }
   await writePlayer(usr_qq, new_player)
   //初始化装备
-  let new_equipment = {
+  const new_equipment = {
     武器: data.equipment_list.find(item => item.name == '烂铁匕首'),
     护具: data.equipment_list.find(item => item.name == '破铜护具'),
     法宝: data.equipment_list.find(item => item.name == '廉价炮仗')
   }
   await writeEquipment(usr_qq, new_equipment)
   //初始化纳戒
-  let new_najie = {
+  const new_najie = {
     等级: 1,
     灵石上限: 5000,
     灵石: 0,
@@ -108,7 +108,7 @@ export default onResponse(selects, async e => {
     beiyong5: 0
   }
   await writeDanyao(usr_qq, arr)
-  let img = await getPlayerImage(e)
+  const img = await getPlayerImage(e)
   if (img) Send(Image(img))
   return false
 })

@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer, shijianc, readPlayer, writePlayer } from '@src/model'
 import { Show_player } from '../user'
 import { selects } from '@src/response/index'
@@ -11,9 +11,9 @@ const regularCut = /^(#|＃|\/)?(改名|设置道宣)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return
   if (/改名/.test(e.MessageText)) {
     let new_name = e.MessageText.replace(regularCut, '')
@@ -27,10 +27,10 @@ export default onResponse(selects, async e => {
       return
     }
     let player: any = {}
-    let now = new Date()
-    let nowTime = now.getTime() //获取当前日期的时间戳
+    const now = new Date()
+    const nowTime = now.getTime() //获取当前日期的时间戳
     //let Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000);//获得昨天日期
-    let Today = await shijianc(nowTime)
+    const Today = await shijianc(nowTime)
     let lastsetname_time: any = await redis.get(
       'xiuxian@1.3.0:' + usr_qq + ':last_setname_time'
     ) //获得上次改名日期,
@@ -69,11 +69,11 @@ export default onResponse(selects, async e => {
       return
     }
     let player: any = {}
-    let now = new Date()
-    let nowTime = now.getTime() //获取当前日期的时间戳
+    const now = new Date()
+    const nowTime = now.getTime() //获取当前日期的时间戳
     //let Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000);//获得昨天日期
     //
-    let Today = await shijianc(nowTime)
+    const Today = await shijianc(nowTime)
     let lastsetxuanyan_time: any = await redis.get(
       'xiuxian@1.3.0:' + usr_qq + ':last_setxuanyan_time'
     )

@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -11,14 +11,14 @@ const 内门弟子上限 = [2, 3, 4, 5, 6, 8, 10, 12]
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
   if (!Mentions || Mentions.length === 0) {
     return // @ 提及为空
   }
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
@@ -31,20 +31,20 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let member_qq = User.UserId
+  const member_qq = User.UserId
   if (usr_qq == member_qq) {
     Send(Text('???'))
     return false
   } //at宗主自己,这不扯犊子呢
 
-  let ass = await await data.getAssociation(player.宗门.宗门名称)
-  let isinass = ass.所有成员.some(item => item == member_qq) //这个命名可太糟糕了
+  const ass = await await data.getAssociation(player.宗门.宗门名称)
+  const isinass = ass.所有成员.some(item => item == member_qq) //这个命名可太糟糕了
   if (!isinass) {
     Send(Text('只能设置宗门内弟子的职位'))
     return false
   }
-  let member = await data.getData('player', member_qq) //获取这个B的存档
-  let now_apmt = member.宗门.职位 //这个B现在的职位
+  const member = await data.getData('player', member_qq) //获取这个B的存档
+  const now_apmt = member.宗门.职位 //这个B现在的职位
   if (player.宗门.职位 == '副宗主' && now_apmt == '宗主') {
     Send(Text('你想造反吗！？'))
     return false
@@ -58,13 +58,13 @@ export default onResponse(selects, async e => {
   }
   let full_apmt = ass.所有成员.length
   //检索输入的第一个职位
-  let reg = new RegExp(/副宗主|长老|外门弟子|内门弟子/)
-  let msg = reg.exec(e.MessageText) //获取输入的职位
+  const reg = new RegExp(/副宗主|长老|外门弟子|内门弟子/)
+  const msg = reg.exec(e.MessageText) //获取输入的职位
   if (!msg) {
     Send(Text('请输入正确的职位'))
     return false
   }
-  let appointment = msg[0]
+  const appointment = msg[0]
   if (appointment == now_apmt) {
     Send(Text(`此人已经是本宗门的${appointment}`))
     return false

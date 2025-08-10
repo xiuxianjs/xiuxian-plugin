@@ -1,14 +1,9 @@
 import { Text, useMention, useMessage, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
-import {
-  baojishanghai,
-  existplayer,
-  Harm,
-  ifbaoji,
-  readPlayer,
-  sleep
-} from '@src/model'
-import { data, pushInfo, redis } from '@src/api/api'
+import { baojishanghai, Harm, ifbaoji } from '@src/model/battle'
+import { sleep } from '@src/model/common'
+import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
+import { data, pushInfo, redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 import { biwuPlayer } from '../biwu'
@@ -20,9 +15,9 @@ export default onResponse(selects, async e => {
   if (!e.IsMaster) return false
   const A_QQ = biwuPlayer.A_QQ
   const B_QQ = biwuPlayer.B_QQ
-  let A = e.UserId
+  const A = e.UserId
   //先判断
-  let ifexistplay_A = await existplayer(A)
+  const ifexistplay_A = await existplayer(A)
   if (!ifexistplay_A) {
     return false
   }
@@ -35,12 +30,12 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let B = User.UserId //后手
+  const B = User.UserId //后手
 
   if (A == B) {
     return false
   }
-  let ifexistplay_B = await existplayer(B)
+  const ifexistplay_B = await existplayer(B)
   if (!ifexistplay_B) {
     Send(Text('修仙者不可对凡人出手!'))
     return false
@@ -91,8 +86,8 @@ async function battle(e, num) {
   const B_QQ = biwuPlayer.B_QQ
   const Send = useSend(e)
   const [message] = useMessage(e)
-  let A_player = await readPlayer(A_QQ[num].QQ)
-  let B_player = await readPlayer(B_QQ[num].QQ)
+  const A_player = await readPlayer(A_QQ[num].QQ)
+  const B_player = await readPlayer(B_QQ[num].QQ)
   //策划专用
   A_player.攻击 = B_player.攻击
   A_player.防御 = B_player.防御
@@ -128,9 +123,9 @@ async function battle(e, num) {
     'xiuxian@1.3.0:' + B_QQ[num].QQ + ':bisai',
     JSON.stringify(action_B)
   )
-  let buff_A: any = {}
-  let buff_B: any = {}
-  let msgg = []
+  const buff_A: any = {}
+  const buff_B: any = {}
+  const msgg = []
   while (A_player.当前血量 > 0 && B_player.当前血量 > 0) {
     msg_A = [`指令样式:#释放技能1\n第${cnt}回合,是否释放以下技能:`]
     for (const i in action_A.技能) {
@@ -164,7 +159,7 @@ async function battle(e, num) {
     // Bot.pickMember(e.group_id, B_QQ[num].QQ).sendMsg(msg_B)
     pushInfo(B_QQ[num].QQ, false, msg_B)
     await sleep(20000)
-    let msg = []
+    const msg = []
     //A
     action_A = await JSON.parse(
       await redis.get('xiuxian@1.3.0:' + A_QQ[num].QQ + ':bisai')
@@ -240,9 +235,9 @@ async function battle(e, num) {
       )
     }
     //伤害计算
-    let A_baoji = baojishanghai(A_player.暴击率)
+    const A_baoji = baojishanghai(A_player.暴击率)
     let A_伤害 = Harm(A_player.攻击, B_player.防御)
-    let A_法球伤害 = Math.trunc(A_player.攻击 * Number(A_player.灵根.法球倍率))
+    const A_法球伤害 = Math.trunc(A_player.攻击 * Number(A_player.灵根.法球倍率))
     A_伤害 = Math.trunc(A_baoji * A_伤害 + A_法球伤害 + A_player.防御 * 0.1)
     //技能判断
     if (action_A.use != -1) {
@@ -371,9 +366,9 @@ async function battle(e, num) {
         }\n`
       )
     }
-    let B_baoji = baojishanghai(B_player.暴击率)
+    const B_baoji = baojishanghai(B_player.暴击率)
     let B_伤害 = Harm(B_player.攻击, A_player.防御)
-    let B_法球伤害 = Math.trunc(B_player.攻击 * Number(B_player.灵根.法球倍率))
+    const B_法球伤害 = Math.trunc(B_player.攻击 * Number(B_player.灵根.法球倍率))
     B_伤害 = Math.trunc(B_baoji * B_伤害 + B_法球伤害 + B_player.防御 * 0.1)
     if (action_B.use != -1) {
       if (action_B.技能[action_B.use].name == '四象封印') {

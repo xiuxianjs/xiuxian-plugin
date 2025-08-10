@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?取消星阁体系$/

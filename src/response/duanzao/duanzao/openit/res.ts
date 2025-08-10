@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   existplayer,
   looktripod,
@@ -20,7 +20,7 @@ export const regular = /^(#|＃|\/)?开炉/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let user_qq = e.UserId
+  const user_qq = e.UserId
   //有无存档
   if (!(await existplayer(user_qq))) return false
   const A = await looktripod(user_qq)
@@ -39,7 +39,7 @@ export default onResponse(selects, async e => {
   } catch {
     await writeDuanlu([])
   }
-  for (let item of newtripod) {
+  for (const item of newtripod) {
     if (user_qq == item.qq) {
       if (item.TIME == 0) {
         Send(Text(`煅炉里面空空如也,也许自己还没有启动它`))
@@ -62,8 +62,8 @@ export default onResponse(selects, async e => {
 
       //判断属性九维值
       let cailiao
-      let jiuwei = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-      for (let newitem in item.材料) {
+      const jiuwei = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      for (const newitem in item.材料) {
         cailiao = await readThat(item.材料[newitem], '锻造材料')
         jiuwei[0] += cailiao.攻 * item.数量[newitem]
         jiuwei[1] += cailiao.防 * item.数量[newitem]
@@ -76,8 +76,8 @@ export default onResponse(selects, async e => {
         jiuwei[8] += cailiao.火 * item.数量[newitem]
       }
 
-      let newrandom = Math.random()
-      let xuanze = ['锻造武器', '锻造护具', '锻造宝物']
+      const newrandom = Math.random()
+      const xuanze = ['锻造武器', '锻造护具', '锻造宝物']
       let weizhi
       let wehizhi1
       if (jiuwei[0] > jiuwei[1] * 2) {
@@ -99,9 +99,9 @@ export default onResponse(selects, async e => {
 
       //寻找符合标准的装备
       const newwupin = await readAll(weizhi)
-      let bizhi = []
+      const bizhi = []
 
-      for (let item2 in newwupin) {
+      for (const item2 in newwupin) {
         bizhi[item2] = Math.abs(
           newwupin[item2].atk -
             jiuwei[0] +
@@ -113,7 +113,7 @@ export default onResponse(selects, async e => {
       }
       let min = bizhi[0]
       let new1
-      for (let item3 in bizhi) {
+      for (const item3 in bizhi) {
         if (min >= bizhi[item3]) {
           min = bizhi[item3]
           new1 = item3
@@ -193,10 +193,10 @@ export default onResponse(selects, async e => {
       //计算经验收益
 
       //灵根影响值
-      let v =
+      const v =
         player.隐藏灵根.控器 / (Math.abs(max[1] - player.隐藏灵根.type) + 5)
       //天赋影响值
-      let k = ((player.锻造天赋 + 100) * v) / 200 + 1
+      const k = ((player.锻造天赋 + 100) * v) / 200 + 1
       //基础值
       let z = Math.floor(sum * 1000 * 0.7 * k + 200)
       if (sum >= 0.9) {

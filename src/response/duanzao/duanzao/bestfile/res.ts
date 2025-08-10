@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { redis, data, puppeteer } from '@src/api/api'
+import { redis, data, puppeteer } from '@src/model/api'
 import { readIt, writeIt, alluser, readNajie, readEquipment } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -24,13 +24,13 @@ export default onResponse(selects, async e => {
   ) {
     await redis.set('xiuxian:bestfileCD', nowTime)
 
-    let all = await alluser()
-    for (let [wpId, j] of wupin.entries()) {
-      for (let i of all) {
-        let najie = await readNajie(i)
+    const all = await alluser()
+    for (const [wpId, j] of wupin.entries()) {
+      for (const i of all) {
+        const najie = await readNajie(i)
         const equ = await readEquipment(i)
         let exist = najie.装备.find(item => item.name == j.name)
-        for (let m of type) {
+        for (const m of type) {
           if (equ[m].name == j.name) {
             exist = 1
             break
@@ -86,12 +86,12 @@ export default onResponse(selects, async e => {
     return b.评分 - a.评分
   })
   if (newwupin[20] && newwupin[0].评分 == newwupin[20].评分) {
-    let num = Math.floor((newwupin.length - 20) * Math.random())
+    const num = Math.floor((newwupin.length - 20) * Math.random())
     newwupin = newwupin.slice(num, num + 20)
   } else {
     newwupin = newwupin.slice(0, 20)
   }
-  let bd_date = { newwupin }
+  const bd_date = { newwupin }
 
   const tu = await puppeteer.screenshot('shenbing', e.UserId, bd_date)
   if (tu) {

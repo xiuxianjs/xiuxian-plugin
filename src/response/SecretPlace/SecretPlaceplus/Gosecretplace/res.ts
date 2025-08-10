@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   Go,
   convert2integer,
@@ -16,23 +16,23 @@ export const regular = /^(#|＃|\/)?沉迷秘境.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
   let didian = e.MessageText.replace(/^(#|＃|\/)?沉迷秘境/, '')
-  let code = didian.split('*')
+  const code = didian.split('*')
   didian = code[0]
-  let i = await convert2integer(code[1])
+  const i = await convert2integer(code[1])
   if (i > 12) {
     return false
   }
-  let weizhi = await data.didian_list.find(item => item.name == didian)
+  const weizhi = await data.didian_list.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     return false
   }
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.灵石 < weizhi.Price * 10 * i) {
     Send(Text('没有灵石寸步难行,攒到' + weizhi.Price * 10 * i + '灵石才够哦~'))
     return false
@@ -41,18 +41,18 @@ export default onResponse(selects, async e => {
     Send(Text('该秘境不支持沉迷哦'))
     return false
   }
-  let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
+  const number = await existNajieThing(usr_qq, '秘境之匙', '道具')
   if (notUndAndNull(number) && number >= i) {
     await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))
     return false
   }
-  let Price = weizhi.Price * 10 * i
+  const Price = weizhi.Price * 10 * i
   await addCoin(usr_qq, -Price)
   const time = i * 10 * 5 + 10 //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '历练', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

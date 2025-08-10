@@ -5,6 +5,6 @@ export const regular = /^(#|＃|\/)?我的装备$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let img = await getQquipmentImage(e)
+  const img = await getQquipmentImage(e)
   if (img) Send(Image(img))
 })

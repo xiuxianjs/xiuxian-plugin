@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { Go, existplayer, readPlayer, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,29 +8,36 @@ export const regular = /^(#|＃|\/)?转换副职$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e as any)
   if (!flag) {
     return false
   }
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  let player = await readPlayer(usr_qq)
-  let action: any = await redis.get('xiuxian:player:' + usr_qq + ':fuzhi') //副职
-  action = await JSON.parse(action)
-  if (action == null) {
-    action = []
+  const player = await readPlayer(usr_qq)
+  const actionStr = await redis.get('xiuxian:player:' + usr_qq + ':fuzhi') //副职
+  if (!actionStr) {
     Send(Text(`您还没有副职哦`))
     return false
   }
-  let a, b, c
-  a = action.职业名
-  b = action.职业经验
-  c = action.职业等级
-  action.职业名 = player.occupation
-  action.职业经验 = player.occupation_exp
-  action.职业等级 = player.occupation_level
+  interface Fuzhi {
+    职业名: string
+    职业经验: number
+    职业等级: number
+  }
+  const action = JSON.parse(actionStr) as Partial<Fuzhi>
+  if (!action || !action.职业名) {
+    Send(Text(`您还没有副职哦`))
+    return false
+  }
+  const a = action.职业名 as string
+  const b = action.职业经验 as number
+  const c = action.职业等级 as number
+  ;(action as Fuzhi).职业名 = player.occupation as unknown as string
+  ;(action as Fuzhi).职业经验 = player.occupation_exp as unknown as number
+  ;(action as Fuzhi).职业等级 = player.occupation_level as unknown as number
   player.occupation = a
   player.occupation_exp = b
   player.occupation_level = c

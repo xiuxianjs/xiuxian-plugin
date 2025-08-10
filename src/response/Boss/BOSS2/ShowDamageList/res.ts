@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { sleep } from '@src/model'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
     let WorldBossStatusStr: any = await redis.get('Xiuxian:WorldBossStatus2')
     WorldBossStatusStr = JSON.parse(WorldBossStatusStr)
     PlayerRecord = JSON.parse(PlayerRecord)
-    let PlayerList = await SortPlayer(PlayerRecord)
+    const PlayerList = await SortPlayer(PlayerRecord)
     if (!PlayerRecord?.Name) {
       Send(Text('还没人挑战过金角大王'))
       return false
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     let TotalDamage = 0
     for (let i = 0; i < (PlayerList.length <= 20 ? PlayerList.length : 20); i++)
       TotalDamage += PlayerRecord.TotalDamage[PlayerList[i]]
-    let msg = ['****金角大王周本贡献排行榜****']
+    const msg = ['****金角大王周本贡献排行榜****']
     for (let i = 0; i < PlayerList.length; i++) {
       if (i < 20) {
         let Reward = Math.trunc(

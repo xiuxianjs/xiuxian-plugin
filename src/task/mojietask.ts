@@ -1,70 +1,83 @@
 import { scheduleJob } from 'node-schedule'
 
-import { redis, data, pushInfo } from '@src/api/api'
-import {
-  notUndAndNull,
-  readPlayer,
-  existNajieThing,
-  addNajieThing,
-  addExp2,
-  addExp,
-  readTemp,
-  writeTemp,
-  __PATH
-} from '@src/model'
+import { redis, data, pushInfo } from '@src/model/api'
+import { notUndAndNull } from '@src/model/common'
+import { readPlayer } from '@src/model/xiuxian'
+import { existNajieThing, addNajieThing } from '@src/model/najie'
+import { addExp2, addExp } from '@src/model/economy'
+import { readTemp, writeTemp } from '@src/model/temp'
+import { __PATH } from '@src/model/paths'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
-scheduleJob('0 0/5 * * * ?', async () => {
-  //获取缓存中人物列表
 
+interface ActionState {
+  end_time: number
+  time: number
+  mojie?: string | number
+  cishu?: number
+  group_id?: string
+  action?: string
+  shutup?: number
+  working?: number
+  power_up?: number
+  Place_action?: number
+  Place_actionplus?: number
+}
+
+function isActionState(a: unknown): a is ActionState {
+  return !!a && typeof a === 'object' && 'end_time' in a && 'time' in a
+}
+scheduleJob('0 0/5 * * * ?', async () => {
+  // 获取缓存中人物列表
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
-    let log_mag = '' //查询当前人物动作日志信息
-    log_mag = log_mag + '查询' + player_id + '是否有动作,'
-    //得到动作
-
-    let action: any = await getDataByUserId(player_id, 'action')
-    action = await JSON.parse(action)
+  for (const player_id of playerList) {
+    // 查询当前人物动作（日志变量已移除以减 lint 噪声）
+    // 得到动作
+    const rawAction = await getDataByUserId(player_id, 'action')
+    let action: unknown
+    try {
+      action = JSON.parse(rawAction)
+    } catch {
+      action = null
+    }
     //不为空，存在动作
     if (action != null) {
-      let push_address = player_id //消息推送地址
-      let is_group = false //是否推送到群
-
-      if (await action.hasOwnProperty('group_id')) {
-        if (notUndAndNull(action.group_id)) {
-          is_group = true
-          push_address = action.group_id
-        }
+      let push_address = player_id // 消息推送地址
+      let is_group = false // 是否推送到群
+      if (isActionState(action) && notUndAndNull(action.group_id)) {
+        is_group = true
+        push_address = action.group_id!
       }
 
       //最后发送的消息
-      let msg = []
+      const msg: string[] = []
       //动作结束时间
+      if (!isActionState(action)) continue
       let end_time = action.end_time
-      //现在的时间
-      let now_time = new Date().getTime()
-      //用户信息
-      let player = await readPlayer(player_id)
+      // 现在的时间
+      const now_time = Date.now()
+      // 用户信息
+      const player = await readPlayer(player_id)
 
       //有洗劫状态:这个直接结算即可
-      if (action.mojie == '0') {
+      if (String(action.mojie) == '0') {
         //5分钟后开始结算阶段一
         end_time = end_time - action.time
         //时间过了
         if (now_time > end_time) {
           let thing_name
           let thing_class
-          let x = 0.98
-          let random1 = Math.random()
-          let y = 0.4
-          let random2 = Math.random()
-          let z = 0.15
-          let random3 = Math.random()
+          const x = 0.98
+          const random1 = Math.random()
+          const y = 0.4
+          const random2 = Math.random()
+          const z = 0.15
+          const random3 = Math.random()
           let random4
           let m = ''
           let n = 1
-          let t1
-          let t2
+          let t1: number
+          let t2: number
           let last_msg = ''
           let fyd_msg = ''
           if (random1 <= x) {
@@ -99,7 +112,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             t1 = 2 + Math.random()
             t2 = 2 + Math.random()
           }
-          let random = Math.random()
+          const random = Math.random()
           if (random < player.幸运) {
             if (random < player.addluckyNo) {
               last_msg += '福源丹生效，所以在'
@@ -121,10 +134,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await data.setData('player', player_id, player)
           }
           //默认结算装备数
-          let now_level_id
-          let now_physique_id
-          now_level_id = player.level_id
-          now_physique_id = player.Physique_id
+          const now_level_id = player.level_id
+          const now_physique_id = player.Physique_id
           //结算
           let qixue = 0
           let xiuwei = 0
@@ -156,7 +167,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             ',剩余次数' +
             (action.cishu - 1)
           msg.push('\n' + player.名号 + last_msg + fyd_msg)
-          let arr = action
+          const arr: ActionState = action
           if (arr.cishu == 1) {
             //把状态都关了
             arr.shutup = 1 //闭关状态
@@ -164,9 +175,9 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.power_up = 1 //渡劫状态
             arr.Place_action = 1 //秘境
             arr.Place_actionplus = 1 //沉迷状态
-            ;((arr.mojie = 1), //魔界状态---关闭
-              //结束的时间也修改为当前时间
-              (arr.end_time = new Date().getTime()))
+            // 魔界状态关闭并更新时间
+            arr.mojie = 1
+            arr.end_time = Date.now()
             //结算完去除group_id
             delete arr.group_id
             //写入redis
@@ -184,16 +195,16 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await addExp2(player_id, qixue)
             await addExp(player_id, xiuwei)
             try {
-              let temp = await readTemp()
-              let p = {
+              const temp = await readTemp()
+              const p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               }
               temp.push(p)
               await writeTemp(temp)
             } catch {
-              let temp = []
-              let p = {
+              const temp: { msg: string; qq?: string; qq_group: string }[] = []
+              const p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq: player_id,
                 qq_group: push_address

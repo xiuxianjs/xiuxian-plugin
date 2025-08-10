@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import {
   existplayer,
   looktripod,
@@ -15,7 +15,7 @@ export const regular = /^(#|＃|\/)?开始炼制/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let user_qq = e.UserId
+  const user_qq = e.UserId
   if (!(await existplayer(user_qq))) return false
   const A = await looktripod(user_qq)
   if (A != 1) {
@@ -29,21 +29,21 @@ export default onResponse(selects, async e => {
   } catch {
     await writeDuanlu([])
   }
-  for (let item of newtripod) {
+  for (const item of newtripod) {
     if (user_qq == item.qq) {
       if (item.材料.length == 0) {
         Send(Text(`炉子为空,无法炼制`))
         return false
       }
-      let action_res = await redis.get('xiuxian@1.3.0:' + user_qq + ':action10')
+      const action_res = await redis.get('xiuxian@1.3.0:' + user_qq + ':action10')
       const action = JSON.parse(action_res)
       if (action != null) {
         //人物有动作查询动作结束时间
-        let action_end_time = action.end_time
-        let now_time = new Date().getTime()
+        const action_end_time = action.end_time
+        const now_time = new Date().getTime()
         if (now_time <= action_end_time) {
-          let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-          let s = Math.floor(
+          const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+          const s = Math.floor(
             (action_end_time - now_time - m * 60 * 1000) / 1000
           )
           Send(
@@ -55,13 +55,13 @@ export default onResponse(selects, async e => {
       item.状态 = 1
       item.TIME = Date.now()
       await writeDuanlu(newtripod)
-      let action_time = 180 * 60 * 1000 //持续时间，单位毫秒
-      let arr = {
+      const action_time = 180 * 60 * 1000 //持续时间，单位毫秒
+      const arr = {
         action: '锻造', //动作
         end_time: new Date().getTime() + action_time, //结束时间
         time: action_time //持续时间
       }
-      let dy = await readDanyao(user_qq)
+      const dy = await readDanyao(user_qq)
       if (dy.xingyun >= 1) {
         dy.xingyun--
         if (dy.xingyun == 0) {

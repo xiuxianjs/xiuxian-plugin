@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { redis, data } from '@src/api/api'
+import { redis, data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -19,14 +19,14 @@ export const regular = /^(#|＃|\/)?登仙$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无账号
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //不开放私聊
 
   //获取游戏状态
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -35,9 +35,9 @@ export default onResponse(selects, async e => {
     return false
   }
   //读取信息
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   //境界
-  let now_level = data.Level_list.find(
+  const now_level = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level
   if (now_level != '渡劫期') {
@@ -50,11 +50,11 @@ export default onResponse(selects, async e => {
   action = JSON.parse(action)
   //不为空
   if (action != null) {
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
+    const action_end_time = action.end_time
+    const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
       return false
     }
@@ -72,9 +72,9 @@ export default onResponse(selects, async e => {
   now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
-  let now_exp = player.修为
+  const now_exp = player.修为
   //修为
-  let need_exp = data.Level_list.find(
+  const need_exp = data.Level_list.find(
     item => item.level_id == player.level_id
   ).exp
   if (now_exp < need_exp) {
@@ -94,18 +94,18 @@ export default onResponse(selects, async e => {
     player.level_id = now_level_id
     player.修为 -= need_exp
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     await addHP(usr_qq, 99999999)
     //突破成仙人
     if (now_level_id >= 42) {
-      let player = await data.getData('player', usr_qq)
+      const player = await data.getData('player', usr_qq)
       if (!notUndAndNull(player.宗门)) {
         return false
       }
       //有宗门
       if (player.宗门.职位 != '宗主') {
-        let ass = await data.getAssociation(player.宗门.宗门名称)
+        const ass = await data.getAssociation(player.宗门.宗门名称)
         ass[player.宗门.职位] = ass[player.宗门.职位].filter(
           item => item != usr_qq
         )
@@ -116,7 +116,7 @@ export default onResponse(selects, async e => {
         await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
-        let ass = await data.getAssociation(player.宗门.宗门名称)
+        const ass = await data.getAssociation(player.宗门.宗门名称)
         if (ass.所有成员.length < 2) {
           await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
@@ -141,7 +141,7 @@ export default onResponse(selects, async e => {
           } else {
             randmember_qq = await getRandomFromARR(ass.所有成员)
           }
-          let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
+          const randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
           ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
             item => item != randmember_qq
           ) //原来的职位表删掉这个幸运儿

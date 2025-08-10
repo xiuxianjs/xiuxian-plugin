@@ -8,7 +8,7 @@ import {
   addNajieThing
 } from '@src/model'
 import { selects } from '@src/response/index'
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 export const regular = /^(#|＃|\/)?全体发(灵石|修为|血气)\*\d+$/
 
 export default onResponse(selects, async e => {
@@ -16,33 +16,33 @@ export default onResponse(selects, async e => {
   if (!e.IsMaster) return false
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  let File_length = playerList.length
+  const File_length = playerList.length
   // //获取发送灵石数量
-  let code = e.MessageText.replace(/^(#|＃|\/)?全体发/, '').split('*')
-  let thing_name = code[0]
+  const code = e.MessageText.replace(/^(#|＃|\/)?全体发/, '').split('*')
+  const thing_name = code[0]
   let thing_amount: any = Number(code[1])
   if (thing_name == '灵石') {
     for (let i = 0; i < File_length; i++) {
-      let this_qq = playerList[i]
+      const this_qq = playerList[i]
       await addCoin(this_qq, thing_amount)
     }
   } else if (thing_name == '修为') {
     for (let i = 0; i < File_length; i++) {
-      let this_qq = playerList[i]
+      const this_qq = playerList[i]
       await addExp(this_qq, thing_amount)
     }
   } else if (thing_name == '血气') {
     for (let i = 0; i < File_length; i++) {
-      let this_qq = playerList[i]
+      const this_qq = playerList[i]
       await addExp2(this_qq, thing_amount)
     }
   } else {
-    let thing_exist = await foundthing(thing_name)
+    const thing_exist = await foundthing(thing_name)
     if (!thing_exist) {
       Send(Text(`这方世界没有[${thing_name}]`))
       return false
     }
-    let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
+    const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
     thing_piji = pj[code[1]]
     if (thing_exist.class == '装备') {
       if (thing_piji) {
@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
       thing_amount = 1
     }
     for (let i = 0; i < File_length; i++) {
-      let this_qq = playerList[i]
+      const this_qq = playerList[i]
       await addNajieThing(
         this_qq,
         thing_name,

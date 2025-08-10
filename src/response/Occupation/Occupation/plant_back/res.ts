@@ -1,4 +1,4 @@
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { getPlayerAction } from '@src/model'
 import { plant_jiesuan } from '../../api'
 
@@ -6,19 +6,19 @@ import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?结束采药$/
 
 export default onResponse(selects, async e => {
-  let action: any = await getPlayerAction(e.UserId)
+  const action: any = await getPlayerAction(e.UserId)
   if (action.action == '空闲') return
 
   if (action.plant == 1) {
     return false
   }
   //结算
-  let end_time = action.end_time
-  let start_time = action.end_time - action.time
-  let now_time = new Date().getTime()
+  const end_time = action.end_time
+  const start_time = action.end_time - action.time
+  const now_time = new Date().getTime()
   let time
-  let y = 15 //固定时间
-  let x = 48 //循环次数
+  const y = 15 //固定时间
+  const x = 48 //循环次数
 
   if (end_time > now_time) {
     //属于提前结束
@@ -59,7 +59,7 @@ export default onResponse(selects, async e => {
   } else {
     await plant_jiesuan(e.UserId, time)
   }
-  let arr = action
+  const arr = action
   arr.is_jiesuan = 1 //结算状态
   arr.plant = 1 //采药状态
   arr.shutup = 1 //闭关状态

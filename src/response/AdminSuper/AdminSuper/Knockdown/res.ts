@@ -20,14 +20,14 @@ export default onResponse(selects, async e => {
     }
 
     //对方qq
-    let qq = User.UserId
+    const qq = User.UserId
     //检查存档
-    let ifexistplay = await existplayer(qq)
+    const ifexistplay = await existplayer(qq)
     if (!ifexistplay) {
       Send(Text('没存档你打个锤子！'))
       return false
     }
-    let player = await readPlayer(qq)
+    const player = await readPlayer(qq)
     player.power_place = 1
     Send(Text('已打落凡间！'))
     await writePlayer(qq, player)

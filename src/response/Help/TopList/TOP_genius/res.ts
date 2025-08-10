@@ -2,7 +2,7 @@ import { Image, useSend, Text } from 'alemonjs'
 import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
 import puppeteer from '@src/image/index.js'
 import { selects } from '@src/response/index'
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 export const regular = /^(#|＃|\/)?至尊榜$/
 
 export default onResponse(selects, async e => {
@@ -10,12 +10,12 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
   //数组
-  let temp = []
+  const temp = []
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
 
-  for (let file of playerList) {
+  for (const file of playerList) {
     //(攻击+防御+生命*0.5)*暴击率=理论战力
     const player = await readPlayer(file)
     if (player.level_id >= 42) {

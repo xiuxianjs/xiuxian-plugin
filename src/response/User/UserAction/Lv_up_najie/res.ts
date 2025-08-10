@@ -8,24 +8,24 @@ import {
   addCoin,
   Write_najie
 } from '@src/model'
-import { config } from '@src/api/api'
+import { config } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?升级纳戒$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) return false
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let najie = await readNajie(usr_qq)
-  let player = await readPlayer(usr_qq)
+  const najie = await readNajie(usr_qq)
+  const player = await readPlayer(usr_qq)
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let najie_num = cf.najie_num
-  let najie_price = cf.najie_price
+  const najie_num = cf.najie_num
+  const najie_price = cf.najie_price
   if (najie.等级 == najie_num.length) {
     Send(Text('你的纳戒已经是最高级的了'))
     return false

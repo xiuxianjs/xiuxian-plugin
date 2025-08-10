@@ -1,20 +1,20 @@
 import { Text, useMessage, Image } from 'alemonjs'
-import { data, puppeteer, redis } from '@src/api/api'
+import { data, puppeteer, redis } from '@src/model/api'
 import { selects } from '@src/response/index'
 import { __PATH } from '@src/model'
 
 export const regular = /^(#|＃|\/)?洞天福地列表$/
 export default onResponse(selects, async e => {
-  let weizhi = data.bless_list
+  const weizhi = data.bless_list
   const [message] = useMessage(e)
   const keys = await redis.keys(`${__PATH.association}:*`)
   const File = keys.map(key => key.replace(`${__PATH.association}:`, ''))
   const msg = []
   for (let i = 0; i < weizhi.length; i++) {
     let ass = '无'
-    for (let j of File) {
-      let this_name = j
-      let this_ass = await await data.getAssociation(this_name)
+    for (const j of File) {
+      const this_name = j
+      const this_ass = await await data.getAssociation(this_name)
       if (this_ass.宗门驻地 == weizhi[i].name) {
         ass = this_ass.宗门名称
         break

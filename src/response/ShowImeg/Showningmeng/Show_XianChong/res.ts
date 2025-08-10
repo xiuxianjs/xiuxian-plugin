@@ -6,6 +6,6 @@ export const regular = /^(#|＃|\/)?仙宠楼$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let img = await getXianChongImage(e)
+  const img = await getXianChongImage(e)
   if (img) Send(Image(img))
 })

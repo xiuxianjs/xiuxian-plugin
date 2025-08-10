@@ -1,13 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import {
-  dujie,
-  existplayer,
-  LevelTask,
-  readPlayer,
-  writePlayer
-} from '@src/model'
-import { data } from '@src/api/api'
+import { dujie, LevelTask } from '@src/model/cultivation'
+import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl'
+import { data } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?渡劫$/
@@ -15,15 +10,15 @@ let dj = 0
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无账号
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //不开放私聊
 
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   //境界
-  let now_level = data.Level_list.find(
+  const now_level = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level
   if (now_level != '渡劫期') {
@@ -40,8 +35,8 @@ export default onResponse(selects, async e => {
     return false
   }
   //看看当前血量
-  let now_HP = player.当前血量
-  let list_HP = data.Level_list.find(item => item.level == now_level).基础血量
+  const now_HP = player.当前血量
+  const list_HP = data.Level_list.find(item => item.level == now_level).基础血量
   if (now_HP < list_HP * 0.9) {
     player.当前血量 = 1
     await writePlayer(usr_qq, player)
@@ -49,20 +44,22 @@ export default onResponse(selects, async e => {
     return false
   }
   //境界id
-  let now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level == now_level
   ).level_id
   //修为
-  let now_exp = player.修为
+  const now_exp = player.修为
   //修为
-  let need_exp = data.Level_list.find(item => item.level_id == now_level_id).exp
+  const need_exp = data.Level_list.find(
+    item => item.level_id == now_level_id
+  ).exp
   if (now_exp < need_exp) {
     Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可突破`))
     return false
   }
 
   //当前系数计算
-  let x = await dujie(usr_qq)
+  const x = await dujie(usr_qq)
   //默认为3
   let y = 3
   if (player.灵根.type == '伪灵根') {
@@ -81,9 +78,9 @@ export default onResponse(selects, async e => {
     y = 12
   }
   //渡劫系数区间
-  let n = 1380 //最低
-  let p = 280 //变动
-  let m = n + p
+  const n = 1380 //最低
+  const p = 280 //变动
+  const m = n + p
 
   if (x <= n) {
     //没有达到最低要求
@@ -120,7 +117,7 @@ export default onResponse(selects, async e => {
     )
   )
   let aconut = 1
-  let time: any = setInterval(async function () {
+  const time: any = setInterval(async function () {
     const flag = await LevelTask(e, n, m, y, aconut)
     aconut++
     if (!flag) {

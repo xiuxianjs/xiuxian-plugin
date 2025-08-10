@@ -3,25 +3,25 @@ import { Text, useSend } from 'alemonjs'
 import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 export const regular = /^(#|＃|\/)?镇妖塔榜$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let msg = ['___[镇妖塔榜]___']
+  const msg = ['___[镇妖塔榜]___']
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   //数组
-  let temp = []
+  const temp = []
 
   let i = 0
-  for (let player_id of playerList) {
+  for (const player_id of playerList) {
     //(攻击+防御*0.8+生命*0.5)*暴击率=理论战力
-    let player = await readPlayer(player_id)
+    const player = await readPlayer(player_id)
     //计算并保存到数组
     let power = player.镇妖塔层数
     power = Math.trunc(power)

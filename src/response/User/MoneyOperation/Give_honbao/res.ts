@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import { existplayer, Go, convert2integer, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -9,22 +9,22 @@ export const regular = /^(#|＃|\/)?发红包.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //这是自己的
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //自己没存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取发送灵石数量
   let lingshi: any = e.MessageText.replace(/^(#|＃|\/)?发红包/, '')
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let code = lingshi.split('*')
+  const code = lingshi.split('*')
   lingshi = code[0]
   let acount = code[1]
   lingshi = await convert2integer(lingshi)
   acount = await convert2integer(acount)
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   //对比自己的灵石，看看够不够！
   if (player.灵石 <= Math.floor(lingshi * acount)) {
     Send(Text(`红包数要比自身灵石数小噢`))

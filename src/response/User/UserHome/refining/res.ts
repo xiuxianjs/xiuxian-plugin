@@ -8,14 +8,14 @@ export const regular = /^(#|＃|\/)?打磨.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let thing_name = e.MessageText.replace(/^(#|＃|\/)?打磨/, '')
-  let code = thing_name.split('*')
+  const code = thing_name.split('*')
   thing_name = code[0]
-  let thing_exist = await foundthing(thing_name)
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     Send(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`))
     return false
@@ -29,9 +29,9 @@ export default onResponse(selects, async e => {
     Send(Text(`${thing_name}(${code[1]})不支持打磨`))
     return false
   }
-  let najie = await readNajie(usr_qq)
+  const najie = await readNajie(usr_qq)
   let x = 0
-  for (let i of najie['装备']) {
+  for (const i of najie['装备']) {
     if (i.name == thing_name && i.pinji == pj) x++
   }
   if (x < 3) {

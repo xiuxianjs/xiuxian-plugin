@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, settripod } from '@src/model'
 
 import { selects } from '@src/response/index'

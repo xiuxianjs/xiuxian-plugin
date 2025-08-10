@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import {
   Go,
   readPlayer,
@@ -16,15 +16,15 @@ export const regular = /^(#|＃|\/)?降临秘境.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   let didian = e.MessageText.replace(/^(#|＃|\/)?降临秘境/, '')
   didian = didian.trim()
-  let weizhi = await data.didian_list.find(item => item.name == didian)
+  const weizhi = await data.didian_list.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     return false
   }
@@ -33,24 +33,24 @@ export default onResponse(selects, async e => {
     return false
   }
   if (didian == '桃花岛') {
-    let exist_B = await existHunyin(usr_qq)
+    const exist_B = await existHunyin(usr_qq)
     if (!exist_B) {
       Send(Text(`还请少侠找到道侣之后再来探索吧`))
       return false
     }
-    let qinmidu = await findQinmidu(usr_qq, exist_B)
+    const qinmidu = await findQinmidu(usr_qq, exist_B)
     if (qinmidu < 550) {
       Send(Text('少侠还是先和道侣再联络联络感情吧'))
       return false
     }
     await addQinmidu(usr_qq, exist_B, -50)
   }
-  let Price = weizhi.Price
+  const Price = weizhi.Price
   await addCoin(usr_qq, -Price)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.secretplace //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '历练', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

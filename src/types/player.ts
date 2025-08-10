@@ -36,15 +36,15 @@ export interface Player {
   灵根: TalentInfo
   隐藏灵根?: TalentInfo
   仙宠: XianchongInfo
-  学习的功法: any[]
+  学习的功法: unknown[]
   修炼效率提升: string | number
   宗门?: string | { 宗门名称: string; 职位: string }
   sex?: string
   linggenshow?: number
   power_place?: number
   锻造天赋?: number
-  occupation?: any
-  [key: string]: any // 添加索引签名以兼容动态属性
+  occupation?: unknown
+  [key: string]: unknown // 添加索引签名以兼容动态属性
 }
 
 export interface Equipment {

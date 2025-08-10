@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import {
   existplayer,
   readQinmidu,
@@ -16,27 +16,27 @@ export const regular = /^(#|＃|\/)?^(断绝姻缘)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let A = e.UserId
-  let ifexistplay_A = await existplayer(A)
+  const A = e.UserId
+  const ifexistplay_A = await existplayer(A)
   if (!ifexistplay_A) {
     return false
   }
   let A_action: any = await getDataByUserId(A, 'action')
   A_action = JSON.parse(A_action)
   if (A_action != null) {
-    let now_time = new Date().getTime()
+    const now_time = new Date().getTime()
     //人物任务的动作是否结束
-    let A_action_end_time = A_action.end_time
+    const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
-      let m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(
         Text('正在' + A_action.action + '中,剩余时间:' + m + '分' + s + '秒')
       )
       return false
     }
   }
-  let last_game_timeA = await redis.get(
+  const last_game_timeA = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_game_time'
   )
   if (+last_game_timeA == 0) {
@@ -53,12 +53,12 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let B = User.UserId
+  const B = User.UserId
   if (A == B) {
     Send(Text('精神分裂?'))
     return false
   }
-  let ifexistplay_B = await existplayer(B)
+  const ifexistplay_B = await existplayer(B)
   if (!ifexistplay_B) {
     Send(Text('修仙者不可对凡人出手!'))
     return false
@@ -66,12 +66,12 @@ export default onResponse(selects, async e => {
   let B_action: any = await redis.get('xiuxian@1.3.0:' + B + ':action')
   B_action = JSON.parse(B_action)
   if (B_action != null) {
-    let now_time = new Date().getTime()
+    const now_time = new Date().getTime()
     //人物任务的动作是否结束
-    let B_action_end_time = B_action.end_time
+    const B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
-      let m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((B_action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((B_action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(
         Text(
           '对方正在' + B_action.action + '中,剩余时间:' + m + '分' + s + '秒'
@@ -80,7 +80,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let last_game_timeB = await redis.get(
+  const last_game_timeB = await redis.get(
     'xiuxian@1.3.0:' + B + ':last_game_time'
   )
   if (+last_game_timeB == 0) {
@@ -95,8 +95,8 @@ export default onResponse(selects, async e => {
     //没有建立一个
     await writeQinmidu([])
   }
-  let i = await found(A, B)
-  let pd = await findQinmidu(A, B)
+  const i = await found(A, B)
+  const pd = await findQinmidu(A, B)
   if (pd == false) {
     Send(Text('你们还没建立关系，断个锤子'))
     return false
@@ -111,8 +111,8 @@ export default onResponse(selects, async e => {
   Daolv.set_x(2)
   Daolv.set_user_A(A)
   Daolv.set_user_B(B)
-  let player_A = await readPlayer(A)
-  let msg = ['\n']
+  const player_A = await readPlayer(A)
+  const msg = ['\n']
   msg.push(`${player_A.名号}要和你断绝姻缘\n回复【我同意】or【我拒绝】`)
   Send(Text(msg.join('')))
   chaoshi(e)

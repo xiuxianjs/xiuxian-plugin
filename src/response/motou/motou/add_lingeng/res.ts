@@ -14,16 +14,16 @@ export const regular = /^(#|＃|\/)?供奉魔石$/
 const Res = onResponse(selects, async (e, next) => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
-  let player = await readPlayer(usr_qq)
+  const usr_qq = e.UserId
+  const player = await readPlayer(usr_qq)
   /** 内容 */
-  let choice = e.MessageText
+  const choice = e.MessageText
   if (choice == '放弃魔根') {
     await Send(Text('重拾道心,继续修行'))
 
     return
   } else if (choice == '转世魔根') {
-    let x = await existNajieThing(usr_qq, '魔石', '道具')
+    const x = await existNajieThing(usr_qq, '魔石', '道具')
     if (!x) {
       Send(Text('你没有魔石'))
       return
@@ -51,16 +51,16 @@ const Res = onResponse(selects, async (e, next) => {
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return
-  let player: any = await readPlayer(usr_qq)
+  const player: any = await readPlayer(usr_qq)
   if (player.魔道值 < 1000) {
     Send(Text('你不是魔头'))
     return
   }
-  let x = await existNajieThing(usr_qq, '魔石', '道具')
+  const x = await existNajieThing(usr_qq, '魔石', '道具')
   if (!x) {
     Send(Text('你没有魔石'))
     return
@@ -76,7 +76,7 @@ export default onResponse(selects, async e => {
     Observer(Res.current, ['UserId'])
     return
   }
-  let random = Math.random()
+  const random = Math.random()
   if (player.灵根.name == '一重魔功') {
     if (x < 20) {
       Send(Text('魔石不足20个,当前魔石数量' + x + '个'))

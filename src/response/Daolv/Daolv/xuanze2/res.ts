@@ -10,10 +10,10 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (e.UserId != Daolv.user_B) return false
   if (Daolv.x == 2) {
-    let player_A = await readPlayer(Daolv.user_A)
-    let player_B = await readPlayer(Daolv.user_B)
-    let qinmidu = await readQinmidu()
-    let i = await found(Daolv.user_A, Daolv.user_B)
+    const player_A = await readPlayer(Daolv.user_A)
+    const player_B = await readPlayer(Daolv.user_B)
+    const qinmidu = await readQinmidu()
+    const i = await found(Daolv.user_A, Daolv.user_B)
     if (i != qinmidu.length) {
       if (e.MessageText == '我同意') {
         qinmidu[i].婚姻 = 0

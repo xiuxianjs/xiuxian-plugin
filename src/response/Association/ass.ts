@@ -1,4 +1,4 @@
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { shijianc } from '@src/model'
 
 /**
@@ -7,8 +7,8 @@ import { shijianc } from '@src/model'
  * @returns true or false
  */
 export function isNotMaintenance(ass) {
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前日期的时间戳
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前日期的时间戳
   if (ass.维护时间 > nowTime - 1000 * 60 * 60 * 24 * 7) {
     return false
   }
@@ -36,11 +36,11 @@ export function sortBy(field) {
 //获取上次签到时间
 export async function getLastsign_Asso(usr_qq) {
   //查询redis中的人物动作
-  let time: any = await redis.get(
+  const time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':lastsign_Asso_time'
   )
   if (time != null) {
-    let data = await shijianc(parseInt(time))
+    const data = await shijianc(parseInt(time))
     return data
   }
   return false

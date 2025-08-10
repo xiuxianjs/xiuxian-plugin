@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -15,24 +15,24 @@ export const regular = /^(#|＃|\/)?下架[1-9]d*/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //防并发cd
-  let time0 = 0.5 //分钟cd
+  const time0 = 0.5 //分钟cd
   //获取当前时间
-  let now_time = new Date().getTime()
+  const now_time = new Date().getTime()
   let ExchangeCD: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':ExchangeCD'
   )
   ExchangeCD = parseInt(ExchangeCD)
-  let transferTimeout = Math.floor(60000 * time0)
+  const transferTimeout = Math.floor(60000 * time0)
   if (now_time < ExchangeCD + transferTimeout) {
-    let ExchangeCDm = Math.trunc(
+    const ExchangeCDm = Math.trunc(
       (ExchangeCD + transferTimeout - now_time) / 60 / 1000
     )
-    let ExchangeCDs = Math.trunc(
+    const ExchangeCDs = Math.trunc(
       ((ExchangeCD + transferTimeout - now_time) % 60000) / 1000
     )
     Send(
@@ -47,8 +47,8 @@ export default onResponse(selects, async e => {
   let Exchange = []
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
-  let player = await readPlayer(usr_qq)
-  let x = parseInt(e.MessageText.replace(/^(#|＃|\/)?下架/, '')) - 1
+  const player = await readPlayer(usr_qq)
+  const x = parseInt(e.MessageText.replace(/^(#|＃|\/)?下架/, '')) - 1
   try {
     Exchange = await readExchange()
   } catch {
@@ -59,15 +59,15 @@ export default onResponse(selects, async e => {
     Send(Text(`没有编号为${x + 1}的物品`))
     return false
   }
-  let thingqq = Exchange[x].qq
+  const thingqq = Exchange[x].qq
   //对比qq是否相等
   if (thingqq != usr_qq) {
     Send(Text('不能下架别人上架的物品'))
     return false
   }
-  let thing_name = Exchange[x].name.name
-  let thing_class = Exchange[x].name.class
-  let thing_amount = Exchange[x].aconut
+  const thing_name = Exchange[x].name.name
+  const thing_class = Exchange[x].name.class
+  const thing_amount = Exchange[x].aconut
   if (thing_class == '装备' || thing_class == '仙宠') {
     await addNajieThing(
       usr_qq,

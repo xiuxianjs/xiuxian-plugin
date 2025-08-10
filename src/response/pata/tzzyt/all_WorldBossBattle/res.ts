@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, Harm, ifbaoji } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,13 +8,13 @@ export const regular = /^(#|＃|\/)?一键挑战镇妖塔$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   const equipment = await await data.getData('equipment', usr_qq)
   const type = ['武器', '护具', '法宝']
-  for (let j of type) {
+  for (const j of type) {
     if (
       equipment[j].atk < 10 &&
       equipment[j].def < 10 &&
@@ -27,7 +27,7 @@ export default onResponse(selects, async e => {
   let lingshi: any = 0
   let cengshu = 0
   while (player.当前血量 > 0) {
-    let ZYTcs = player.镇妖塔层数
+    const ZYTcs = player.镇妖塔层数
     let Health = 0
     let Attack = 0
     let Defence = 0
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
     }
     if (Reward > 400000) Reward = 400000
     if (player.镇妖塔层数 > 6000) Reward = 0
-    let bosszt = {
+    const bosszt = {
       Health: Health,
       OriginHealth: Health,
       isAngry: 0,
@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
       Reward: Reward
     }
     let BattleFrame = 0
-    let msg = []
+    const msg = []
     let TotalDamage = 0
     let BOSSCurrentAttack = bosszt.isAngry
       ? Math.trunc(bosszt.Attack * 1.8)
@@ -66,12 +66,12 @@ export default onResponse(selects, async e => {
       ? Math.trunc(bosszt.Defence * 0.7)
       : bosszt.Defence
     while (player.当前血量 > 0 && bosszt.Health > 0) {
-      let Random = Math.random()
+      const Random = Math.random()
       if (!(BattleFrame & 1)) {
         let Player_To_BOSS_Damage =
           Harm(player.攻击, BOSSCurrentDefence) +
           Math.trunc(player.攻击 * player.灵根.法球倍率)
-        let SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1
+        const SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`)
         if (Random > 0.5 && BattleFrame == 0) {
           msg.push('你的进攻被反手了！')

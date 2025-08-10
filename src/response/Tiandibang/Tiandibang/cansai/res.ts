@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
@@ -9,9 +9,9 @@ export const regular = /^(#|＃|\/)?报名比赛/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let tiandibang = []
   try {
@@ -28,11 +28,11 @@ export default onResponse(selects, async e => {
     }
   }
   if (x == tiandibang.length) {
-    let player = await readPlayer(usr_qq)
-    let level_id = data.Level_list.find(
+    const player = await readPlayer(usr_qq)
+    const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
     ).level_id
-    let A_player = {
+    const A_player = {
       名号: player.名号,
       境界: level_id,
       攻击: player.攻击,

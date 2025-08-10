@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { pushInfo, redis } from '@src/api/api'
+import { pushInfo, redis } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -14,18 +14,18 @@ export const regular = /^(#|＃|\/)?刺杀目标.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let A_action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
   A_action = JSON.parse(A_action)
   if (A_action != null) {
-    let now_time = new Date().getTime()
+    const now_time = new Date().getTime()
     //人物任务的动作是否结束
-    let A_action_end_time = A_action.end_time
+    const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
-      let m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(
         Text('正在' + A_action.action + '中,剩余时间:' + m + '分' + s + '秒')
       )
@@ -47,13 +47,13 @@ export default onResponse(selects, async e => {
     Send(Text('咋的，自己干自己？'))
     return false
   }
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   let buff = 1
   if (player.occupation == '侠客') {
     buff = 1 + player.occupation_level * 0.055
   }
   let last_msg = ''
-  let player_B = await readPlayer(qq)
+  const player_B = await readPlayer(qq)
   if (player_B.当前血量 == 0) {
     Send(Text(`对方已经没有血了,请等一段时间再刺杀他吧`))
     return false
@@ -61,15 +61,15 @@ export default onResponse(selects, async e => {
   let B_action: any = await redis.get('xiuxian@1.3.0:' + qq + ':action')
   B_action = JSON.parse(B_action)
   if (B_action != null) {
-    let now_time = new Date().getTime()
+    const now_time = new Date().getTime()
     //人物任务的动作是否结束
-    let B_action_end_time = B_action.end_time
+    const B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
-      let ishaveyss = await existNajieThing(usr_qq, '隐身水', '道具')
+      const ishaveyss = await existNajieThing(usr_qq, '隐身水', '道具')
       if (!ishaveyss) {
         //如果A没有隐身水，直接返回不执行
-        let m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
-        let s = Math.floor(
+        const m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
+        const s = Math.floor(
           (B_action_end_time - now_time - m * 60 * 1000) / 1000
         )
         Send(
@@ -83,7 +83,7 @@ export default onResponse(selects, async e => {
   }
   player_B.法球倍率 = player_B.灵根.法球倍率
   player_B.当前血量 = player_B.血量上限
-  let player_A = {
+  const player_A = {
     id: player.id,
     名号: player.名号,
     攻击: Math.floor(player.攻击 * buff),
@@ -97,10 +97,10 @@ export default onResponse(selects, async e => {
     法球倍率: player.灵根.法球倍率,
     仙宠: player.仙宠
   }
-  let Data_battle = await zdBattle(player_A, player_B)
-  let msg = Data_battle.msg
-  let A_win = `${player_A.名号}击败了${player_B.名号}`
-  let B_win = `${player_B.名号}击败了${player_A.名号}`
+  const Data_battle = await zdBattle(player_A, player_B)
+  const msg = Data_battle.msg
+  const A_win = `${player_A.名号}击败了${player_B.名号}`
+  const B_win = `${player_B.名号}击败了${player_A.名号}`
   if (msg.find(item => item == A_win)) {
     player_B.当前血量 = 0
     player_B.修为 -= action[num].赏金

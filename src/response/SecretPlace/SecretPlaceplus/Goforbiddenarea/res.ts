@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   Go,
   readPlayer,
@@ -17,13 +17,13 @@ export const regular = /^(#|＃|\/)?沉迷禁地.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let player = await readPlayer(usr_qq)
-  let now_level_id
+  const player = await readPlayer(usr_qq)
+  // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
     Send(Text('请#同步信息'))
     return false
   }
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 22) {
@@ -40,13 +40,13 @@ export default onResponse(selects, async e => {
     return false
   }
   let didian = await e.MessageText.replace(/^(#|＃|\/)?沉迷禁地/, '')
-  let code = didian.split('*')
+  const code = didian.split('*')
   didian = code[0]
-  let i = await convert2integer(code[1])
+  const i = await convert2integer(code[1])
   if (i > 12) {
     return false
   }
-  let weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
+  const weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     return false
   }
@@ -62,20 +62,20 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
+  const number = await existNajieThing(usr_qq, '秘境之匙', '道具')
   if (notUndAndNull(number) && number >= i) {
     await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))
     return false
   }
-  let Price = weizhi.Price * 10 * i
-  let Exp = weizhi.experience * 10 * i
+  const Price = weizhi.Price * 10 * i
+  const Exp = weizhi.experience * 10 * i
   await addCoin(usr_qq, -Price)
   await addExp(usr_qq, -Exp)
   const time = i * 10 * 5 + 10 //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '禁地', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

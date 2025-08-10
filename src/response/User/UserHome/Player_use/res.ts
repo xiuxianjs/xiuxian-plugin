@@ -1,50 +1,43 @@
 import { Image, Mention, Text, useMessage, useSubscribe } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
+import { convert2integer, notUndAndNull } from '@src/model/common'
+import { foundthing, getRandomTalent } from '@src/model/cultivation'
+import {
+  existNajieThing,
+  addNajieThing,
+  insteadEquipment
+} from '@src/model/najie'
+import { addExp, addExp2, addExp3, addHP } from '@src/model/economy'
+import { readEquipment, writeEquipment } from '@src/model/equipment'
+import { playerEfficiency, addConFaByUser } from '@src/model/efficiency'
 import {
   existplayer,
   readPlayer,
   readNajie,
-  convert2integer,
-  foundthing,
-  existNajieThing,
-  insteadEquipment,
-  readDanyao,
-  notUndAndNull,
-  addHP,
-  addNajieThing,
-  addExp,
-  addExp2,
-  writeDanyao,
-  readAll,
-  writePlayer,
-  addExp3,
-  readEquipment,
-  writeEquipment,
-  getRandomTalent,
-  playerEfficiency,
-  addConFaByUser
-} from '@src/model'
+  writePlayer
+} from '@src/model/xiuxian_impl'
+import { readDanyao, writeDanyao, readAll } from '@src/model/danyao'
 
 import { selects } from '@src/response/index'
 import { getQquipmentImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?(装备|消耗|服用|学习)((.*)|(.*)*(.*))$/
 
 export default onResponse(selects, async e => {
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   const [message] = useMessage(e)
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return
-  let player = await readPlayer(usr_qq)
-  let najie = await readNajie(usr_qq)
+  const player = await readPlayer(usr_qq)
+  const najie = await readNajie(usr_qq)
   //检索方法
-  let reg = new RegExp(/装备|服用|消耗|学习/)
-  let func = reg.exec(e.MessageText)
+  const reg = new RegExp(/装备|服用|消耗|学习/)
+  const func = reg.exec(e.MessageText)
 
   let msg = e.MessageText.replace(reg, '')
   msg = msg.replace('#', '')
-  let code = msg.split('*')
+  const code = msg.split('*')
   let thing_name = code[0]
   code[0] = parseInt(code[0])
   let quantity = code[1]
@@ -61,7 +54,7 @@ export default onResponse(selects, async e => {
     }
   }
   //看看物品名称有没有设定,是不是瞎说的
-  let thing_exist = await foundthing(thing_name)
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     message.send(format(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`)))
     return
@@ -76,7 +69,7 @@ export default onResponse(selects, async e => {
     顶: 6
   }
   pj = pj[code[1]]
-  let x = await existNajieThing(usr_qq, thing_name, thing_exist.class, pj)
+  const x = await existNajieThing(usr_qq, thing_name, thing_exist.class, pj)
   if (!x) {
     message.send(
       format(Text(`你没有【${thing_name}】这样的【${thing_exist.class}】`))
@@ -91,7 +84,7 @@ export default onResponse(selects, async e => {
     let equ
     if (!pj) {
       equ = najie.装备.find(item => item.name == thing_name)
-      for (let i of najie.装备) {
+      for (const i of najie.装备) {
         //遍历列表有没有比那把强的
         if (i.name == thing_name && i.pinji > equ.pinji) {
           equ = i
@@ -101,21 +94,21 @@ export default onResponse(selects, async e => {
       equ = najie.装备.find(item => item.name == thing_name && item.pinji == pj)
     }
     await insteadEquipment(usr_qq, equ)
-    let img = await getQquipmentImage(e)
+    const img = await getQquipmentImage(e)
     message.send(format(Image(img)))
     return
   }
   if (func[0] == '服用') {
-    let dy = await readDanyao(usr_qq)
+    const dy = await readDanyao(usr_qq)
     if (thing_exist.class != '丹药') return
     if (thing_exist.type == '血量') {
-      let player = await readPlayer(usr_qq)
+      const player = await readPlayer(usr_qq)
       if (!notUndAndNull(thing_exist.HPp)) {
         thing_exist.HPp = 1
       }
-      let blood = parseInt(player.血量上限 * thing_exist.HPp + thing_exist.HP)
+      const blood = parseInt(player.血量上限 * thing_exist.HPp + thing_exist.HP)
       await addHP(usr_qq, quantity * blood)
-      let now_HP = await readPlayer(usr_qq)
+      const now_HP = await readPlayer(usr_qq)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       message.send(format(Text(`服用成功,当前血量为:${now_HP.当前血量} `)))
       return
@@ -386,7 +379,7 @@ export default onResponse(selects, async e => {
       return
     }
     if (thing_name == '残卷') {
-      let number = await existNajieThing(usr_qq, '残卷', '道具')
+      const number = await existNajieThing(usr_qq, '残卷', '道具')
       if (notUndAndNull(number) && number > 9) {
         /** 回复 */
         await message.send(
@@ -400,13 +393,13 @@ export default onResponse(selects, async e => {
         const [subscribe] = useSubscribe(e, selects)
         const sub = subscribe.mount(
           async event => {
-            let usr_qq = event.UserId
+            const usr_qq = event.UserId
             const [message] = useMessage(event)
             /** 内容 */
-            let choice = event.MessageText
-            let code = choice.split('*')
-            let les = code[0] //条件
-            let gonfa = code[1] //功法
+            const choice = event.MessageText
+            const code = choice.split('*')
+            const les = code[0] //条件
+            const gonfa = code[1] //功法
 
             clearTimeout(timeout)
 
@@ -414,7 +407,7 @@ export default onResponse(selects, async e => {
               message.send(format(Text('取消兑换')))
               return
             } else if (les == '兑换') {
-              let ifexist2 = data.bapin.find(item => item.name == gonfa)
+              const ifexist2 = data.bapin.find(item => item.name == gonfa)
               if (ifexist2) {
                 await addNajieThing(usr_qq, '残卷', '道具', -10)
                 await addNajieThing(usr_qq, gonfa, '功法', 1)
@@ -447,11 +440,11 @@ export default onResponse(selects, async e => {
       }
     }
     if (thing_name == '重铸石') {
-      let equipment = await readEquipment(usr_qq)
-      let type = ['武器', '护具', '法宝']
-      let z = [0.8, 1, 1.1, 1.2, 1.3, 1.5]
-      for (let j in type) {
-        let random = Math.trunc(Math.random() * 6)
+      const equipment = await readEquipment(usr_qq)
+      const type = ['武器', '护具', '法宝']
+      const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5]
+      for (const j in type) {
+        const random = Math.trunc(Math.random() * 6)
         if (!z[equipment[type[j]].pinji]) continue
         equipment[type[j]].atk =
           (equipment[type[j]].atk / z[equipment[type[j]].pinji]) * z[random]
@@ -508,7 +501,7 @@ export default onResponse(selects, async e => {
       )
       return
     }
-    let qh = data.qianghua.find(item => item.name == thing_exist.name)
+    const qh = data.qianghua.find(item => item.name == thing_exist.name)
     if (qh) {
       if (qh.class == '魔头' && player.魔道值 < 1000) {
         message.send(format(Text(`你还是提升点魔道值再用吧!`)))
@@ -525,7 +518,7 @@ export default onResponse(selects, async e => {
       player.防御加成 += qh.防御 * quantity
       player.生命加成 += qh.血量 * quantity
       await writePlayer(usr_qq, player)
-      let equipment = await readEquipment(usr_qq)
+      const equipment = await readEquipment(usr_qq)
       await writeEquipment(usr_qq, equipment)
       await addNajieThing(usr_qq, thing_name, '道具', -quantity)
       message.send(format(Text(`${qh.msg}`)))
@@ -535,8 +528,8 @@ export default onResponse(selects, async e => {
     return
   }
   if (func[0] == '学习') {
-    let player = await readPlayer(usr_qq)
-    let islearned = player.学习的功法.find(item => item == thing_name)
+    const player = await readPlayer(usr_qq)
+    const islearned = player.学习的功法.find(item => item == thing_name)
     if (islearned) {
       message.send(format(Text(`你已经学过该功法了`)))
       return

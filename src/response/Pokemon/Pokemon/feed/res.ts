@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   convert2integer,
   notUndAndNull,
@@ -13,21 +13,21 @@ export const regular = /^(#|＃|\/)?喂给仙宠.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (player.仙宠 == '') {
     //有无仙宠
     Send(Text('你没有仙宠'))
     return false
   }
-  let thing = e.MessageText.replace(/^(#|＃|\/)?喂给仙宠/, '')
-  let code = thing.split('*')
-  let thing_name = code[0] //物品
-  let thing_value = await convert2integer(code[1]) //数量
-  let ifexist = data.xianchonkouliang.find(item => item.name == thing_name) //查找
+  const thing = e.MessageText.replace(/^(#|＃|\/)?喂给仙宠/, '')
+  const code = thing.split('*')
+  const thing_name = code[0] //物品
+  const thing_value = await convert2integer(code[1]) //数量
+  const ifexist = data.xianchonkouliang.find(item => item.name == thing_name) //查找
   if (!notUndAndNull(ifexist)) {
     Send(Text('此乃凡物,仙宠不吃' + thing_name))
     return false
@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //纳戒中的数量
-  let thing_quantity = await existNajieThing(usr_qq, thing_name, '仙宠口粮')
+  const thing_quantity = await existNajieThing(usr_qq, thing_name, '仙宠口粮')
   if (thing_quantity < thing_value || !thing_quantity) {
     //没有
     Send(Text(`【${thing_name}】数量不足`))

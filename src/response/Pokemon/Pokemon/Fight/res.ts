@@ -1,20 +1,22 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
-import { readNajie, notUndAndNull, Add_仙宠, writePlayer } from '@src/model'
+import { data } from '@src/model/api'
+import { notUndAndNull } from '@src/model/common'
+import { Add_仙宠 } from '@src/model/pets'
+import { readNajie, writePlayer } from '@src/model/xiuxian_impl'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?出战仙宠.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   let name = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '')
-  let num = parseInt(name)
-  let najie = await readNajie(usr_qq)
+  const num = parseInt(name)
+  const najie = await readNajie(usr_qq)
   if (num && num > 1000) {
     try {
       name = najie.仙宠[num - 1001].name
@@ -27,7 +29,7 @@ export default onResponse(selects, async e => {
     Send(Text('你已经与' + player.仙宠.name + '绑定了灵魂,无法更换别的仙宠！'))
     return false
   }
-  let thing = data.xianchon.find(item => item.name == name) //查找仙宠
+  const thing = data.xianchon.find(item => item.name == name) //查找仙宠
   if (!notUndAndNull(thing)) {
     Send(Text('这方世界不存在' + name))
     return false

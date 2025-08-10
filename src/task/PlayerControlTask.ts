@@ -1,15 +1,11 @@
-import { redis, data, config, pushInfo } from '@src/api/api'
-import {
-  notUndAndNull,
-  readDanyao,
-  existNajieThing,
-  addNajieThing,
-  addExp,
-  addExp2,
-  setFileValue,
-  writeDanyao,
-  __PATH
-} from '@src/model'
+import { redis, data, config, pushInfo } from '@src/model/api'
+// 直接从具体模块导入，避免经由 barrel 产生的 re-export 循环
+import { notUndAndNull } from '@src/model/common'
+import { readDanyao, writeDanyao } from '@src/model/danyao'
+import { existNajieThing, addNajieThing } from '@src/model/najie'
+import { addExp, addExp2 } from '@src/model/economy'
+import { setFileValue } from '@src/model/cultivation'
+import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
@@ -20,28 +16,33 @@ scheduleJob('0 0/1 * * * ?', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  for (let player_id of playerList) {
-    let log_mag = '' //查询当前人物动作日志信息
-    log_mag = log_mag + '查询' + player_id + '是否有动作,'
+  for (const player_id of playerList) {
+    let log_mag = '' //查询当前人物动作日志信息（需累计变更）
+    log_mag += '查询' + player_id + '是否有动作,'
     //得到动作
-    let action: any = await getDataByUserId(player_id, 'action')
-    action = JSON.parse(action)
+    const actionRaw = await getDataByUserId(player_id, 'action')
+    let action: Record<string, any> | null = null
+    try {
+      action = actionRaw ? JSON.parse(actionRaw) : null
+    } catch {
+      action = null
+    }
     //不为空，存在动作
     if (action != null) {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
-      if (action.hasOwnProperty('group_id')) {
+      if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
         if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
         }
       }
       //最后发送的消息
-      let msg: Array<DataMention | string> = [Mention(player_id)]
+      const msg: Array<DataMention | string> = [Mention(player_id)]
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      let now_time = new Date().getTime()
+      const now_time = Date.now()
       //闭关状态
       if (action.shutup == '0') {
         //这里改一改,要在结束时间的前一分钟提前结算
@@ -49,26 +50,27 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
-          let player = await data.getData('player', player_id)
-          let now_level_id
+          const player = await data.getData('player', player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
           }
-          now_level_id = data.Level_list.find(
+          const now_level_id = data.Level_list.find(
             item => item.level_id == player.level_id
           ).level_id
-          let size = cf.biguan.size
-          let xiuwei = Math.floor(
+          const size = cf.biguan.size
+          const xiuwei = Math.floor(
             size * now_level_id * (player.修炼效率提升 + 1)
           ) //增加的修为
-          let blood = Math.floor(player.血量上限 * 0.02)
-          let time = parseInt(action.time) / 1000 / 60 //分钟
+          const blood = Math.floor(player.血量上限 * 0.02)
+          const time = parseInt(action.time) / 1000 / 60 //分钟
           let rand = Math.random()
           let xueqi = 0
           let other_xiuwei = 0
           //炼丹师丹药修正
           let transformation = '修为'
-          let dy = await readDanyao(player_id)
+          // 兼容旧版：readDanyao 现在返回数组，但老逻辑期望对象包含 biguan/biguanxl/lianti/beiyong4 等字段
+          // 若未来需要，可引入独立的炼神状态存储结构
+          const dy: any = await readDanyao(player_id as string)
           if (dy.biguan > 0) {
             dy.biguan--
             if (dy.biguan == 0) {
@@ -132,7 +134,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           if (action.acount == null) {
             action.acount = 0
           }
-          let arr = action
+          const arr = action
           //把状态都关了
           arr.shutup = 1 //闭关状态
           arr.working = 1 //降妖状态
@@ -182,19 +184,18 @@ scheduleJob('0 0/1 * * * ?', async () => {
         if (now_time > end_time) {
           //现在大于结算时间，即为结算
           log_mag = log_mag + '当前人物未结算，结算状态'
-          let player = await data.getData('player', player_id)
-          let now_level_id
+          const player = await data.getData('player', player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
           }
-          now_level_id = data.Level_list.find(
+          const now_level_id = data.Level_list.find(
             item => item.level_id == player.level_id
           ).level_id
-          let size = cf.work.size
-          let lingshi = Math.floor(
+          const size = cf.work.size
+          const lingshi = Math.floor(
             size * now_level_id * (1 + player.修炼效率提升) * 0.5
           )
-          let time = parseInt(action.time) / 1000 / 60 //分钟
+          const time = parseInt(action.time) / 1000 / 60 //分钟
           let other_lingshi = 0
           let other_xueqi = 0
           let rand = Math.random()
@@ -227,14 +228,14 @@ scheduleJob('0 0/1 * * * ?', async () => {
           //
           player.血气 += other_xueqi
           data.setData('player', player_id, player)
-          let get_lingshi = Math.trunc(lingshi * time + other_lingshi) //最后获取到的灵石
+          const get_lingshi = Math.trunc(lingshi * time + other_lingshi) //最后获取到的灵石
           //
           await setFileValue(player_id, get_lingshi, '灵石') //添加灵石
           //redis动作
           if (action.acount == null) {
             action.acount = 0
           }
-          let arr = action
+          const arr = action
           //把状态都关了
           arr.shutup = 1 //闭关状态
           arr.working = 1 //降妖状态

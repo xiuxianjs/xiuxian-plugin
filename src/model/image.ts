@@ -4,33 +4,26 @@ import data from './XiuxianData.js'
 import config from './Config.js'
 import { useSend, Text, PublicEventMessageCreate, Image } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
-import { __PATH } from './paths.js'
 import type { Player, Equipment, Najie, StrandResult } from '../types/player.js'
-import * as _ from 'lodash-es'
+// 由聚合文件切换为精确子模块导入，避免与 xiuxian.ts 形成跨 chunk 循环
+import { getRandomTalent } from './cultivation.js'
 import {
-  getRandomTalent,
   getEquipmentDataSafe,
-  getPlayerAction,
   getPlayerDataSafe,
-  notUndAndNull,
-  playerEfficiency,
-  readEquipment,
-  readExchange,
-  readForum,
-  readNajie,
   setPlayerDataSafe,
-  writeExchange,
-  writeForum,
-  GetPower,
-  bigNumberTransform,
-  readQinmidu,
-  writeQinmidu,
-  readPlayer
-} from './xiuxian.js'
+  readPlayer,
+  readNajie
+} from './xiuxian_impl.js'
+import { getPlayerAction, notUndAndNull } from './common.js'
+import { playerEfficiency } from './efficiency.js'
+import { readEquipment } from './equipment.js'
+import { readExchange, writeExchange, readForum, writeForum } from './trade.js'
+import { GetPower, bigNumberTransform } from './utils/number.js'
+import { readQinmidu, writeQinmidu } from './qinmidu.js'
 
 export async function getSupermarketImage(e, thing_class) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -50,11 +43,11 @@ export async function getSupermarketImage(e, thing_class) {
   Exchange_list.sort(function (a, b) {
     return b.now_time - a.now_time
   })
-  let supermarket_data = {
+  const supermarket_data = {
     user_id: usr_qq,
     Exchange_list: Exchange_list
   }
-  let img = await puppeteer.screenshot(
+  const img = await puppeteer.screenshot(
     'supermarket',
     e.UserId,
     supermarket_data
@@ -63,8 +56,8 @@ export async function getSupermarketImage(e, thing_class) {
 }
 
 export async function getForumImage(e, thing_class) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -84,42 +77,42 @@ export async function getForumImage(e, thing_class) {
   Forum.sort(function (a, b) {
     return b.now_time - a.now_time
   })
-  let forum_data = {
+  const forum_data = {
     user_id: usr_qq,
     Forum: Forum
   }
 
-  let img = await puppeteer.screenshot('forum', e.UserId, forum_data)
+  const img = await puppeteer.screenshot('forum', e.UserId, forum_data)
   return img
 }
 
 export async function getdanfangImage(e) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
 
-  let danfang_list = data.danfang_list
+  const danfang_list = data.danfang_list
 
-  let danfang_data = {
+  const danfang_data = {
     user_id: usr_qq,
     danfang_list: danfang_list
   }
-  let img = await puppeteer.screenshot('danfang', e.UserId, danfang_data)
+  const img = await puppeteer.screenshot('danfang', e.UserId, danfang_data)
   return img
 }
 
 export async function getTuzhiImage(e) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
 
-  let tuzhi_list = data.tuzhi_list
+  const tuzhi_list = data.tuzhi_list
 
-  let tuzhi_data = {
+  const tuzhi_data = {
     user_id: usr_qq,
     tuzhi_list: tuzhi_list
   }
@@ -128,7 +121,7 @@ export async function getTuzhiImage(e) {
     mkdirSync(dir, { recursive: true })
     writeFileSync(`${dir}/tuzhi.json`, JSON.stringify(tuzhi_data, null, 2))
   }
-  let img = await puppeteer.screenshot('tuzhi', e.UserId, tuzhi_data)
+  const img = await puppeteer.screenshot('tuzhi', e.UserId, tuzhi_data)
   return img
 }
 
@@ -137,8 +130,8 @@ export async function getTuzhiImage(e) {
  * @return image
  */
 export async function getNingmenghomeImage(e, thing_type) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -168,11 +161,11 @@ export async function getNingmenghomeImage(e, thing_type) {
       )
     }
   }
-  let ningmenghome_data = {
+  const ningmenghome_data = {
     user_id: usr_qq,
     commodities_list: commodities_list
   }
-  let img = await puppeteer.screenshot(
+  const img = await puppeteer.screenshot(
     'ningmenghome',
     e.UserId,
     ningmenghome_data
@@ -184,15 +177,15 @@ export async function getNingmenghomeImage(e, thing_type) {
  * @return image
  */
 export async function getValuablesImage(e) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let valuables_data = {
+  const valuables_data = {
     user_id: usr_qq
   }
-  let img = await puppeteer.screenshot('valuables', e.UserId, valuables_data)
+  const img = await puppeteer.screenshot('valuables', e.UserId, valuables_data)
   return img
 }
 /**
@@ -207,10 +200,10 @@ function Strand(
   style: { width: string }
   num: string
 } {
-  let num = ((now / max) * 100).toFixed(0)
-  let mini = Number(num) > 100 ? 100 : num
+  const num = ((now / max) * 100).toFixed(0)
+  const mini = Number(num) > 100 ? 100 : num
 
-  let strand = {
+  const strand = {
     style: { width: `${mini}%` },
     num: num
   }
@@ -226,23 +219,23 @@ export async function getXianChongImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
   let i: number
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let playerData = await data.getData('player', usr_qq)
+  const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
-  let najie: Najie | null = await readNajie(usr_qq)
+  const player = playerData as Player
+  const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  let XianChong_have: any[] = []
-  let XianChong_need: any[] = []
-  let Kouliang: any[] = []
-  let XianChong_list = data.xianchon
-  let Kouliang_list = data.xianchonkouliang
+  const XianChong_have: any[] = []
+  const XianChong_need: any[] = []
+  const Kouliang: any[] = []
+  const XianChong_list = data.xianchon
+  const Kouliang_list = data.xianchonkouliang
   for (i = 0; i < XianChong_list.length; i++) {
     if (najie.仙宠.find(item => item.name == XianChong_list[i].name)) {
       XianChong_have.push(XianChong_list[i])
@@ -255,7 +248,7 @@ export async function getXianChongImage(
   for (i = 0; i < Kouliang_list.length; i++) {
     Kouliang.push(Kouliang_list[i])
   }
-  let player_data = {
+  const player_data = {
     nickname: player.名号,
     XianChong_have,
     XianChong_need,
@@ -269,20 +262,20 @@ export async function getXianChongImage(
  * @return image
  */
 export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let playerData = await data.getData('player', usr_qq)
+  const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
-  let najie: Najie | null = await readNajie(usr_qq)
+  const player = playerData as Player
+  const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  let daoju_have: any[] = []
-  let daoju_need: any[] = []
+  const daoju_have: any[] = []
+  const daoju_need: any[] = []
   for (const i of data.daoju_list) {
     if (najie.道具.find(item => item.name == i.name)) {
       daoju_have.push(i)
@@ -290,7 +283,7 @@ export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
       daoju_need.push(i)
     }
   }
-  let player_data = {
+  const player_data = {
     user_id: usr_qq,
     nickname: player.名号,
     daoju_have,
@@ -305,19 +298,19 @@ export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
  * @return image
  */
 export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let player = await getPlayerDataSafe(usr_qq)
+  const player = await getPlayerDataSafe(usr_qq)
   if (!player) return
-  let najie: Najie | null = await readNajie(usr_qq)
+  const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  let equipment = await readEquipment(usr_qq)
+  const equipment = await readEquipment(usr_qq)
   if (!equipment) return
-  let wuqi_have: any[] = []
-  let wuqi_need: any[] = []
+  const wuqi_have: any[] = []
+  const wuqi_need: any[] = []
   const wuqi_list = [
     'equipment_list',
     'timeequipmen_list',
@@ -345,7 +338,7 @@ export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
     }
   }
 
-  let player_data = {
+  const player_data = {
     user_id: usr_qq,
     nickname: player.名号,
     wuqi_have,
@@ -362,8 +355,8 @@ export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
 export async function getDanyaoImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -371,8 +364,8 @@ export async function getDanyaoImage(
   if (!player) return
   const najie = await readNajie(usr_qq)
   if (!najie) return
-  let danyao_have: any[] = []
-  let danyao_need: any[] = []
+  const danyao_have: any[] = []
+  const danyao_need: any[] = []
   const danyao = ['danyao_list', 'timedanyao_list', 'newdanyao_list']
   for (const i of danyao) {
     for (const j of data[i]) {
@@ -386,7 +379,7 @@ export async function getDanyaoImage(
       }
     }
   }
-  let player_data = {
+  const player_data = {
     user_id: usr_qq,
     nickname: player.名号,
     danyao_have,
@@ -408,8 +401,8 @@ export async function getDanyaoImage(
  * @return image
  */
 export async function getGongfaImage(e: PublicEventMessageCreate) {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -417,9 +410,9 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
   if (!player) {
     return
   }
-  let xuexi_gongfa = player.学习的功法
-  let gongfa_have: any = []
-  let gongfa_need: any = []
+  const xuexi_gongfa = player.学习的功法
+  const gongfa_have: any = []
+  const gongfa_need: any = []
   const gongfa = ['gongfa_list', 'timegongfa_list']
   for (const i of gongfa) {
     for (const j of data[i]) {
@@ -433,7 +426,7 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
       }
     }
   }
-  let player_data = {
+  const player_data = {
     user_id: usr_qq,
     nickname: player.名号,
     gongfa_have,
@@ -448,7 +441,7 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
  * @return image
  */
 export async function getPowerImage(e: PublicEventMessageCreate) {
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   const Send = useSend(e) as any
   const player = await await getPlayerDataSafe(usr_qq)
   if (!player) {
@@ -475,13 +468,13 @@ export async function getPowerImage(e: PublicEventMessageCreate) {
     this_association = player.宗门
   }
   //境界名字需要查找境界名
-  let levelMax = data.LevelMax_list.find(
+  const levelMax = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).level
-  let need_xueqi = data.LevelMax_list.find(
+  const need_xueqi = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).exp
-  let playercopy = {
+  const playercopy = {
     user_id: usr_qq,
     nickname: player.名号,
     need_xueqi: need_xueqi,
@@ -508,8 +501,8 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   let 法宝评级
   let 护具评级
   let 武器评级
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -523,7 +516,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     Send(Text('装备数据获取失败'))
     return
   }
-  let player_status: any = await getPlayerAction(usr_qq)
+  const player_status: any = await getPlayerAction(usr_qq)
   let status = '空闲'
   if (player_status.time != null) {
     status = player_status.action + '(剩余时间:' + player_status.time + ')'
@@ -556,12 +549,12 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   }
   let nd = '无'
   if (player.隐藏灵根) nd = player.隐藏灵根.name
-  let zd = ['攻击', '防御', '生命加成', '防御加成', '攻击加成']
-  let num: any = []
-  let p: any = []
-  let kxjs: any = []
+  const zd = ['攻击', '防御', '生命加成', '防御加成', '攻击加成']
+  const num: any = []
+  const p: any = []
+  const kxjs: any = []
   let count = 0
-  for (let j of zd) {
+  for (const j of zd) {
     if (player[j] == 0) {
       p[count] = ''
       kxjs[count] = 0
@@ -574,7 +567,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     count++
   }
   //境界名字需要查找境界名
-  let level = data.Level_list.find(
+  const level = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level
   let power: any =
@@ -590,13 +583,13 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     (player.攻击 + player.防御 * 1.1 + player.血量上限 * 0.5) / 10000
   power2 = Number(power2)
   power2 = power2.toFixed(2)
-  let level2 = data.LevelMax_list.find(
+  const level2 = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).level
-  let need_exp = data.Level_list.find(
+  const need_exp = data.Level_list.find(
     item => item.level_id == player.level_id
   ).exp
-  let need_exp2 = data.LevelMax_list.find(
+  const need_exp2 = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).exp
   let occupation = player.occupation
@@ -628,7 +621,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   } else {
     this_association = player.宗门
   }
-  let pinji = ['劣', '普', '优', '精', '极', '绝', '顶']
+  const pinji = ['劣', '普', '优', '精', '极', '绝', '顶']
   if (!equipment.武器) {
     equipment.武器 = {}
   }
@@ -653,25 +646,30 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   } else {
     法宝评级 = pinji[equipment.法宝.pinji]
   }
-  let rank_lianqi = data.Level_list.find(
+  const rank_lianqi = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level
-  let expmax_lianqi = data.Level_list.find(
+  const expmax_lianqi = data.Level_list.find(
     item => item.level_id == player.level_id
   ).exp
-  let rank_llianti = data.LevelMax_list.find(
+  const rank_llianti = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).level
-  let expmax_llianti = need_exp2
-  let rank_liandan = occupation_level_name
-  let expmax_liandan = occupation_need_exp
-  let strand_hp = Strand(player.当前血量, player.血量上限)
-  let strand_lianqi = Strand(player.修为, expmax_lianqi)
-  let strand_llianti = Strand(player.血气, expmax_llianti)
-  let strand_liandan = Strand(occupation_exp, expmax_liandan)
-  let Power = GetPower(player.攻击, player.防御, player.血量上限, player.暴击率)
-  let PowerMini = bigNumberTransform(Power)
-  let bao: any = Math.floor(player.暴击率 * 100) + '%'
+  const expmax_llianti = need_exp2
+  const rank_liandan = occupation_level_name
+  const expmax_liandan = occupation_need_exp
+  const strand_hp = Strand(player.当前血量, player.血量上限)
+  const strand_lianqi = Strand(player.修为, expmax_lianqi)
+  const strand_llianti = Strand(player.血气, expmax_llianti)
+  const strand_liandan = Strand(occupation_exp, expmax_liandan)
+  const Power = GetPower(
+    player.攻击,
+    player.防御,
+    player.血量上限,
+    player.暴击率
+  )
+  const PowerMini = bigNumberTransform(Power)
+  const bao: any = Math.floor(player.暴击率 * 100) + '%'
   // 创建装备数据的副本以进行修改
   const equipmentCopy = {
     武器: {
@@ -686,7 +684,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   }
   lingshi = bigNumberTransform(lingshi)
   let hunyin = '未知'
-  let A = usr_qq
+  const A = usr_qq
   let qinmidu = []
   try {
     qinmidu = await readQinmidu()
@@ -698,18 +696,18 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     if (qinmidu[i].QQ_A == A || qinmidu[i].QQ_B == A) {
       if (qinmidu[i].婚姻 > 0) {
         if (qinmidu[i].QQ_A == A) {
-          let B: any = await readPlayer(qinmidu[i].QQ_B)
+          const B: any = await readPlayer(qinmidu[i].QQ_B)
           hunyin = B.名号
         } else {
-          let A: any = await readPlayer(qinmidu[i].QQ_A)
+          const A: any = await readPlayer(qinmidu[i].QQ_A)
           hunyin = A.名号
         }
         break
       }
     }
   }
-  let action: any = player.练气皮肤
-  let player_data = {
+  const action: any = player.练气皮肤
+  const player_data = {
     neidan: nd,
     pifu: action,
     user_id: usr_qq,
@@ -789,10 +787,10 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
  */
 export async function getAssociationImage(e: PublicEventMessageCreate) {
   let item
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   const Send = useSend(e) as any
   //无存档
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
@@ -823,7 +821,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   }
   const mainqq = mainqqData as Player
   //仙宗
-  let xian = ass.power
+  const xian = ass.power
   let weizhi
   if (xian == 0) {
     weizhi = '凡界'
@@ -831,11 +829,11 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
     weizhi = '仙界'
   }
   //门槛
-  let level = data.Level_list.find(
+  const level = data.Level_list.find(
     item => item.level_id === ass.最低加入境界
   ).level
   // 副宗主
-  let fuzong = []
+  const fuzong = []
   for (item in ass.副宗主) {
     fuzong[item] =
       '道号：' +
@@ -871,14 +869,14 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
       ass.外门弟子[item]
   }
   let state = '需要维护'
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前日期的时间戳
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前日期的时间戳
   if (ass.维护时间 > nowTime - 1000 * 60 * 60 * 24 * 7) {
     state = '不需要维护'
   }
   //计算修炼效率
   let xiulian
-  let dongTan = await data.bless_list.find(item => item.name == ass.宗门驻地)
+  const dongTan = await data.bless_list.find(item => item.name == ass.宗门驻地)
   if (ass.宗门驻地 == 0) {
     xiulian = ass.宗门等级 * 0.05 * 100
   } else {
@@ -892,7 +890,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   if (ass.宗门神兽 == 0) {
     ass.宗门神兽 = '无'
   }
-  let association_data = {
+  const association_data = {
     user_id: usr_qq,
     ass: ass,
     mainname: mainqq.名号,
@@ -918,20 +916,20 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
 export async function getQquipmentImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let playerData = await data.getData('player', usr_qq)
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const playerData = await data.getData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay || !playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
+  const player = playerData as Player
   const bao = Math.trunc(Math.floor(player.暴击率 * 100))
-  let equipmentData = await data.getData('equipment', usr_qq)
+  const equipmentData = await data.getData('equipment', usr_qq)
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return
   }
-  let equipment = equipmentData as Equipment
-  let player_data = {
+  const equipment = equipmentData as Equipment
+  const player_data = {
     user_id: usr_qq,
     mdz: player.魔道值,
     nickname: player.名号,
@@ -957,23 +955,23 @@ export async function getQquipmentImage(
  * @return image
  */
 export async function getNajieImage(e: PublicEventMessageCreate): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let playerData = await data.getData('player', usr_qq)
+  const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
-  let najie: Najie | null = await readNajie(usr_qq)
+  const player = playerData as Player
+  const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
   const lingshi = Math.trunc(najie.灵石)
   const lingshi2 = Math.trunc(najie.灵石上限 || 0)
-  let strand_hp: StrandResult = Strand(player.当前血量, player.血量上限)
-  let strand_lingshi: StrandResult = Strand(najie.灵石, najie.灵石上限 || 0)
-  let player_data = {
+  const strand_hp: StrandResult = Strand(player.当前血量, player.血量上限)
+  const strand_lingshi: StrandResult = Strand(najie.灵石, najie.灵石上限 || 0)
+  const player_data = {
     user_id: usr_qq,
     player: player,
     najie: najie,
@@ -1005,17 +1003,17 @@ export async function getStateImage(
   e: PublicEventMessageCreate,
   all_level: boolean
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let playerData = await data.getData('player', usr_qq)
+  const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
-  let Level_id = player.level_id
+  const player = playerData as Player
+  const Level_id = player.level_id
   let Level_list = data.Level_list
   //循环删除表信息
   if (!all_level) {
@@ -1026,7 +1024,7 @@ export async function getStateImage(
       Level_list = await Level_list.filter(item => item.level_id != i)
     }
   }
-  let state_data = {
+  const state_data = {
     user_id: usr_qq,
     Level_list: Level_list
   }
@@ -1037,17 +1035,17 @@ export async function getStatezhiyeImage(
   e: PublicEventMessageCreate,
   all_level: boolean
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let playerData = await data.getData('player', usr_qq)
+  const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
-  let Level_id = player.occupation_level || 0
+  const player = playerData as Player
+  const Level_id = player.occupation_level || 0
   let Level_list = data.occupation_exp_list
   //循环删除表信息
   if (!all_level) {
@@ -1058,7 +1056,7 @@ export async function getStatezhiyeImage(
       Level_list = await Level_list.filter(item => item.id != i)
     }
   }
-  let state_data = {
+  const state_data = {
     user_id: usr_qq,
     Level_list: Level_list
   }
@@ -1073,17 +1071,17 @@ export async function getStatemaxImage(
   e: PublicEventMessageCreate,
   all_level: boolean
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let playerData = await data.getData('player', usr_qq)
+  const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
-  let player = playerData as Player
-  let Level_id = player.Physique_id
+  const player = playerData as Player
+  const Level_id = player.Physique_id
   let LevelMax_list = data.LevelMax_list
   //循环删除表信息
   if (!all_level) {
@@ -1094,7 +1092,7 @@ export async function getStatemaxImage(
       LevelMax_list = await LevelMax_list.filter(item => item.level_id != i)
     }
   }
-  let statemax_data = {
+  const statemax_data = {
     user_id: usr_qq,
     LevelMax_list: LevelMax_list
   }
@@ -1104,15 +1102,15 @@ export async function getStatemaxImage(
 export async function getTalentImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
   // let player = await await data.getData('player', usr_qq)
   // let Level_id = player.Physique_id
-  let talent_list = data.talent_list
-  let talent_data = {
+  const talent_list = data.talent_list
+  const talent_data = {
     user_id: usr_qq,
     talent_list: talent_list
   }
@@ -1127,7 +1125,7 @@ export async function getAdminsetImage(
   e: PublicEventMessageCreate
 ): Promise<any> {
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let adminset = {
+  const adminset = {
     //CD：分
     CDassociation: cf.CD.association,
     CDjoinassociation: cf.CD.joinassociation,
@@ -1178,11 +1176,11 @@ export async function getRankingPowerImage(
   usr_paiming: number,
   thisplayer: Player
 ): Promise<any> {
-  let usr_qq = e.UserId
-  let level = data.Level_list.find(
+  const usr_qq = e.UserId
+  const level = data.Level_list.find(
     item => item.level_id == thisplayer.level_id
   ).level
-  let ranking_power_data = {
+  const ranking_power_data = {
     user_id: usr_qq,
     mdz: thisplayer.魔道值,
     nickname: thisplayer.名号,
@@ -1213,10 +1211,10 @@ export async function getRankingMoneyImage(
   thisplayer,
   thisnajie
 ) {
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   const najie_lingshi = Math.trunc(thisnajie.灵石)
   const lingshi = Math.trunc(thisplayer.灵石 + thisnajie.灵石)
-  let ranking_money_data = {
+  const ranking_money_data = {
     user_id: usr_qq,
     nickname: thisplayer.名号,
     lingshi: lingshi,

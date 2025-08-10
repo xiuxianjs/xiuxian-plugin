@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data } from '@src/api/api'
+import { redis, data } from '@src/model/api'
 import {
   existplayer,
   shijianc,
@@ -16,12 +16,12 @@ export const regular = /^(#|＃|\/)?洗劫.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -32,13 +32,13 @@ export default onResponse(selects, async e => {
   //查询redis中的人物动作
   let action: any = await getDataByUserId(usr_qq, 'action')
   action = JSON.parse(action)
-  let now_time = new Date().getTime()
+  const now_time = new Date().getTime()
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
+    const action_end_time = action.end_time
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
       return false
     }
@@ -48,10 +48,10 @@ export default onResponse(selects, async e => {
   )
   lastxijie_time = parseInt(lastxijie_time)
   if (now_time < lastxijie_time + 7200000) {
-    let lastxijie_m = Math.trunc(
+    const lastxijie_m = Math.trunc(
       (lastxijie_time + 7200000 - now_time) / 60 / 1000
     )
-    let lastxijie_s = Math.trunc(
+    const lastxijie_s = Math.trunc(
       ((lastxijie_time + 7200000 - now_time) % 60000) / 1000
     )
     Send(
@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //判断是否在开启时段
-  let Today = await shijianc(now_time)
+  const Today = await shijianc(now_time)
   if (Today.h > 19 && Today.h < 21) {
     Send(Text(`每日20-21点商店修整中,请过会再来`))
     return false
@@ -91,9 +91,9 @@ export default onResponse(selects, async e => {
     return false
   }
   let msg = ''
-  let player = await readPlayer(usr_qq)
-  let Price = shop[i].price * shop[i].Grade
-  let buff = shop[i].Grade + 1
+  const player = await readPlayer(usr_qq)
+  const Price = shop[i].price * shop[i].Grade
+  const buff = shop[i].Grade + 1
   if (player.灵石 < Price) {
     Send(Text('灵石不足,无法进行强化'))
     return false
@@ -116,7 +116,7 @@ export default onResponse(selects, async e => {
     player.修炼效率提升 += 0
   }
   //锁定属性
-  let A_player = {
+  const A_player = {
     名号: player.名号,
     攻击: parseInt(player.攻击),
     防御: Math.floor(player.防御 * buff),
@@ -129,9 +129,9 @@ export default onResponse(selects, async e => {
   if (player.魔道值 > 999) {
     A_player.魔值 = 1
   }
-  let time: any = 15 //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr = {
+  const time: any = 15 //时间（分钟）
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr = {
     action: '洗劫', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

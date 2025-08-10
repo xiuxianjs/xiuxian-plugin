@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { foundthing, existNajieThing, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,12 +8,12 @@ export const regular = /^(#|＃|\/)?哪里有(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let reg = new RegExp(/哪里有/)
+  const usr_qq = e.UserId
+  const reg = new RegExp(/哪里有/)
   let msg = e.MessageText.replace(reg, '')
   msg = msg.replace(/^(#|＃|\/)?/, '')
-  let thing_name = msg.replace('哪里有', '')
-  let didian = [
+  const thing_name = msg.replace('哪里有', '')
+  const didian = [
     'guildSecrets_list',
     'forbiddenarea_list',
     'Fairyrealm_list',
@@ -24,21 +24,21 @@ export default onResponse(selects, async e => {
     'xingge',
     'shop_list'
   ]
-  let found = []
-  let thing_exist = await foundthing(thing_name)
+  const found = []
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     Send(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`))
     return false
   }
-  let number = await existNajieThing(usr_qq, '寻物纸', '道具')
+  const number = await existNajieThing(usr_qq, '寻物纸', '道具')
   if (!number) {
     Send(Text('查找物品需要【寻物纸】'))
     return false
   }
-  for (let i of didian) {
-    for (let j of data[i]) {
-      let n = ['one', 'two', 'three']
-      for (let k of n) {
+  for (const i of didian) {
+    for (const j of data[i]) {
+      const n = ['one', 'two', 'three']
+      for (const k of n) {
         if (j[k] && j[k].find(item => item.name == thing_name)) {
           found.push(j.name + '\n')
           break

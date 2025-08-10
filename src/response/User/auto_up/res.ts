@@ -8,14 +8,14 @@ export const regular = /^(#|＃|\/)?自动突破$/
 
 export default onResponse(selects, async (e: any) => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.level_id > 31 || player.lunhui == 0) return false
   Send(Text('已为你开启10次自动突破'))
   let num = 1
-  let time: any = setInterval(() => {
+  const time: any = setInterval(() => {
     Level_up(e)
     num++
     if (num > 10) clearInterval(time)

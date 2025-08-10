@@ -1,11 +1,11 @@
-import { data, pushInfo } from '@src/api/api'
+import { data, pushInfo } from '@src/model/api'
 import { addNajieThing, addExp4 } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 
 export async function plant_jiesuan(user_id, time, group_id?) {
-  let usr_qq = user_id
-  let player = await data.getData('player', usr_qq)
-  let msg: Array<DataMention | string> = [Mention(usr_qq)]
+  const usr_qq = user_id
+  const player = await data.getData('player', usr_qq)
+  const msg: Array<DataMention | string> = [Mention(usr_qq)]
   let exp = 0
   exp = time * 10
   let k = 1
@@ -16,7 +16,7 @@ export async function plant_jiesuan(user_id, time, group_id?) {
   if (player.level_id >= 36) {
     sum = (time / 480) * (player.occupation_level * 3 + 11)
   }
-  let names = [
+  const names = [
     '万年凝血草',
     '万年何首乌',
     '万年血精草',
@@ -42,7 +42,7 @@ export async function plant_jiesuan(user_id, time, group_id?) {
   if (player.level_id < 36) {
     newsum = sum2.map(item => item * sum)
   }
-  for (let item in sum3) {
+  for (const item in sum3) {
     if (newsum[item] < 1) {
       continue
     }
@@ -60,11 +60,11 @@ export async function plant_jiesuan(user_id, time, group_id?) {
 }
 
 export async function mine_jiesuan(user_id, time, group_id?) {
-  let usr_qq = user_id
-  let player = await data.getData('player', usr_qq)
-  let msg = []
-  let mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * time)
-  let rate =
+  const usr_qq = user_id
+  const player = await data.getData('player', usr_qq)
+  const msg = []
+  const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * time)
+  const rate =
     data.occupation_exp_list.find(item => item.id == player.occupation_level)
       .rate * 10
   let exp = 0
@@ -74,7 +74,7 @@ export async function mine_jiesuan(user_id, time, group_id?) {
     rate * 100
   )}%,`
   let end_amount = Math.floor(4 * (rate + 1) * mine_amount1) //普通矿石
-  let num = Math.floor(((rate / 12) * time) / 30) //锻造
+  const num = Math.floor(((rate / 12) * time) / 30) //锻造
   const A = [
     '金色石胚',
     '棕色石胚',
@@ -99,7 +99,7 @@ export async function mine_jiesuan(user_id, time, group_id?) {
     '红色妖丹',
     '蓝色妖丹'
   ]
-  let xuanze = Math.trunc(Math.random() * A.length)
+  const xuanze = Math.trunc(Math.random() * A.length)
   end_amount *= player.level_id / 40
   end_amount = Math.floor(end_amount)
   await addNajieThing(usr_qq, '庚金', '材料', end_amount)

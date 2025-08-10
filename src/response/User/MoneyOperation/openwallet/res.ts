@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   existNajieThing,
@@ -13,14 +13,14 @@ export const regular = /^(#|＃|\/)?打开钱包$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
-  let thing_name = '水脚脚的钱包'
+  const player = await await data.getData('player', usr_qq)
+  const thing_name = '水脚脚的钱包'
   //x是纳戒内有的数量
-  let acount = await existNajieThing(usr_qq, thing_name, '装备')
+  const acount = await existNajieThing(usr_qq, thing_name, '装备')
   //没有
   if (!acount) {
     Send(Text(`你没有[${thing_name}]这样的装备`))
@@ -30,13 +30,13 @@ export default onResponse(selects, async e => {
   await addNajieThing(usr_qq, thing_name, '装备', -1)
   //获得随机
   const x = 0.4
-  let random1 = Math.random()
+  const random1 = Math.random()
   const y = 0.3
-  let random2 = Math.random()
+  const random2 = Math.random()
   const z = 0.2
-  let random3 = Math.random()
+  const random3 = Math.random()
   const p = 0.1
-  let random4 = Math.random()
+  const random4 = Math.random()
   let m = ''
   let lingshi: any = 0
   //查找秘境

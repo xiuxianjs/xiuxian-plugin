@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { BossIsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
 
 export const selects = onSelects(['message.create'])
@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?妖王状态$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (await BossIsAlive()) {
-    let WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
+    const WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
     if (WorldBossStatusStr) {
       const WorldBossStatus = JSON.parse(WorldBossStatusStr)
       if (new Date().getTime() - WorldBossStatus.KilledTime < 86400000) {
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
         if ((await InitWorldBoss()) == false) await LookUpWorldBossStatus(e)
         return false
       }
-      let ReplyMsg = [
+      const ReplyMsg = [
         `----妖王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatus.Health}\n奖励:${WorldBossStatus.Reward}`
       ]
       Send(Text(ReplyMsg.join('\n')))

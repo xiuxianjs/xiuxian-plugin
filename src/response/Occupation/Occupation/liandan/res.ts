@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -16,10 +16,10 @@ export const regular = /^(#|＃|\/)?炼制.*(\*[0-9]*)?$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.occupation != '炼丹师') {
     Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'))
     return false
@@ -28,10 +28,10 @@ export default onResponse(selects, async e => {
   if (+t <= 0) {
     t = 1
   }
-  let danyao = t[0]
+  const danyao = t[0]
   let n = await convert2integer(t[1])
   let tmp_msg = ''
-  let danfang = data.danfang_list.find(item => item.name == danyao)
+  const danfang = data.danfang_list.find(item => item.name == danyao)
   if (!notUndAndNull(danfang)) {
     Send(Text(`世界上没有丹药[${danyao}]的配方`))
     return false
@@ -40,11 +40,11 @@ export default onResponse(selects, async e => {
     Send(Text(`${danfang.level_limit}级炼丹师才能炼制${danyao}`))
     return false
   }
-  let materials = danfang.materials
-  let exp = danfang.exp
+  const materials = danfang.materials
+  const exp = danfang.exp
   tmp_msg += '消耗'
-  for (let i in materials) {
-    let material = materials[i]
+  for (const i in materials) {
+    const material = materials[i]
     let x = await existNajieThing(usr_qq, material.name, '草药')
     if (x == false) {
       x = 0
@@ -58,14 +58,14 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  for (let i in materials) {
-    let material = materials[i]
+  for (const i in materials) {
+    const material = materials[i]
     tmp_msg += `${material.name}×${material.amount * n}，`
     await addNajieThing(usr_qq, material.name, '草药', -material.amount * n)
   }
-  let total_exp = exp[1] * n
+  const total_exp = exp[1] * n
   if (player.仙宠.type == '炼丹') {
-    let random = Math.random()
+    const random = Math.random()
     if (random < player.仙宠.加成) {
       n *= 2
       Send(
@@ -86,9 +86,9 @@ export default onResponse(selects, async e => {
     await addNajieThing(usr_qq, danyao, '丹药', n)
     Send(Text(`${tmp_msg}得到${danyao}${n}颗，获得炼丹经验${total_exp}`))
   } else {
-    let dengjixiuzheng = player.occupation_level
-    let newrandom = Math.random()
-    let newrandom2 = Math.random()
+    const dengjixiuzheng = player.occupation_level
+    const newrandom = Math.random()
+    const newrandom2 = Math.random()
     if (newrandom >= 0.1 + (dengjixiuzheng * 3) / 100) {
       await addNajieThing(usr_qq, '凡品' + danyao, '丹药', n)
       Send(

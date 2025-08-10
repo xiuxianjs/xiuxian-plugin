@@ -1,4 +1,4 @@
-import { config, data, pushInfo, redis } from '@src/api/api'
+import { config, data, pushInfo, redis } from '@src/model/api'
 import { getPlayerAction, notUndAndNull, setFileValue } from '@src/model'
 import { setDataByUserId } from '@src/model/Redis'
 
@@ -7,17 +7,17 @@ import { Mention } from 'alemonjs'
 export const regular = /^(#|＃|\/)?降妖归来$/
 
 export default onResponse(selects, async e => {
-  let action: any = await getPlayerAction(e.UserId)
+  const action: any = await getPlayerAction(e.UserId)
   if (action.action == '空闲') return
   if (action.working == 1) return false
   //结算
-  let end_time = action.end_time
-  let start_time = action.end_time - action.time
-  let now_time = new Date().getTime()
+  const end_time = action.end_time
+  const start_time = action.end_time - action.time
+  const now_time = new Date().getTime()
   let time
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let y = cf.work.time //固定时间
-  let x = cf.work.cycle //循环次数
+  const y = cf.work.time //固定时间
+  const x = cf.work.cycle //循环次数
 
   if (end_time > now_time) {
     //属于提前结束
@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
     await dagong_jiesuan(e.UserId, time, false) //提前闭关结束不会触发随机事件
   }
 
-  let arr = action
+  const arr = action
   arr.is_jiesuan = 1 //结算状态
   arr.shutup = 1 //闭关状态
   arr.working = 1 //降妖状态
@@ -78,23 +78,23 @@ export default onResponse(selects, async e => {
  * @return  falses {Promise<void>}
  */
 async function dagong_jiesuan(user_id, time, is_random, group_id?) {
-  let usr_qq = user_id
-  let player = await data.getData('player', usr_qq)
-  let now_level_id
+  const usr_qq = user_id
+  const player = await data.getData('player', usr_qq)
+  // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
     return false
   }
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let size = cf.work.size
-  let lingshi = Math.floor(
+  const size = cf.work.size
+  const lingshi = Math.floor(
     size * now_level_id * (1 + player.修炼效率提升) * 0.5
   )
   let other_lingshi = 0 //额外的灵石
-  let Time = time
-  let msg: any[] = [Mention(usr_qq)]
+  const Time = time
+  const msg: any[] = [Mention(usr_qq)]
   if (is_random) {
     //随机事件预留空间
     let rand = Math.random()
@@ -110,7 +110,7 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
       )
     }
   }
-  let get_lingshi = Math.trunc(lingshi * time + other_lingshi * 1.5) //最后获取到的灵石
+  const get_lingshi = Math.trunc(lingshi * time + other_lingshi * 1.5) //最后获取到的灵石
 
   //设置灵石
   await setFileValue(usr_qq, get_lingshi, '灵石')

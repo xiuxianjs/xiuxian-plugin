@@ -16,18 +16,18 @@ export const regular = /^(#|＃|\/)?发布.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
 
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let thing = e.MessageText.replace(/^(#|＃|\/)?发布/, '')
-  let code = thing.split('*')
-  let thing_name = code[0] //物品
-  let value = code[1] //价格
-  let amount = code[2] //数量
+  const thing = e.MessageText.replace(/^(#|＃|\/)?发布/, '')
+  const code = thing.split('*')
+  const thing_name = code[0] //物品
+  const value = code[1] //价格
+  const amount = code[2] //数量
   //判断列表中是否存在，不存在不能卖,并定位是什么物品
-  let thing_exist = await foundthing(thing_name)
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     Send(Text(`这方世界没有[${thing_name}]`))
     return false
@@ -44,11 +44,11 @@ export default onResponse(selects, async e => {
   } catch {
     await writeForum([])
   }
-  let now_time = new Date().getTime()
-  let whole = Math.trunc(thing_value * thing_amount)
+  const now_time = new Date().getTime()
+  const whole = Math.trunc(thing_value * thing_amount)
   let off = Math.trunc(whole * 0.03)
   if (off < 100000) off = 100000
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.灵石 < off + whole) {
     Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`))
     return false

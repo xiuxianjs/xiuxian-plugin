@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -10,11 +10,11 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   //8级宗门，有驻地，灵石200w
 
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   //无宗门
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门等级 < 8) {
     Send(Text(`宗门等级不足，尚不具备召唤神兽的资格`))
     return false
@@ -50,7 +50,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //校验都通过了，可以召唤神兽了
-  let random = Math.random()
+  const random = Math.random()
   if (random > 0.8) {
     //给丹药,隐藏神兽,赐福时气血和修为都加,宗门驻地等级提高一级
     ass.宗门神兽 = '麒麟'

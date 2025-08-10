@@ -1,17 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 
-import {
-  existplayer,
-  readNajie,
-  foundthing,
-  convert2integer,
-  existNajieThing,
-  readExchange,
-  writeExchange,
-  readPlayer,
-  addCoin,
-  addNajieThing
-} from '@src/model'
+import { convert2integer } from '@src/model/utils/number'
+import { foundthing } from '@src/model/cultivation'
+import { existNajieThing, addNajieThing } from '@src/model/najie'
+import { addCoin } from '@src/model/economy'
+import { readExchange, writeExchange } from '@src/model/trade'
+import { existplayer, readNajie, readPlayer } from '@src/model/xiuxian_impl'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?上架.*$/
@@ -19,14 +13,14 @@ export const regular = /^(#|＃|\/)?上架.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //判断是否为匿名创建存档
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let najie = await readNajie(usr_qq)
-  let thing = e.MessageText.replace(/^(#|＃|\/)?上架/, '')
-  let code: any = thing.split('*')
+  const najie = await readNajie(usr_qq)
+  const thing = e.MessageText.replace(/^(#|＃|\/)?上架/, '')
+  const code: any = thing.split('*')
   let thing_name = code[0] //物品
   code[0] = parseInt(code[0])
   let thing_value = code[1] //价格
@@ -50,13 +44,13 @@ export default onResponse(selects, async e => {
     }
   }
   //判断列表中是否存在，不存在不能卖,并定位是什么物品
-  let thing_exist = await foundthing(thing_name)
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     Send(Text(`这方世界没有[${thing_name}]`))
     return false
   }
   //确定数量和品级
-  let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
+  const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
   let equ
   thing_piji = pj[code[1]]
   if (thing_exist.class == '装备') {
@@ -67,9 +61,9 @@ export default onResponse(selects, async e => {
         item => item.name == thing_name && item.pinji == thing_piji
       )
     } else {
-      let najie = await readNajie(usr_qq)
+      const najie = await readNajie(usr_qq)
       equ = najie.装备.find(item => item.name == thing_name)
-      for (let i of najie.装备) {
+      for (const i of najie.装备) {
         //遍历列表有没有比那把强的
         if (i.name == thing_name && i.pinji < equ.pinji) {
           equ = i
@@ -82,7 +76,7 @@ export default onResponse(selects, async e => {
   }
   thing_value = await convert2integer(thing_value)
   thing_amount = await convert2integer(thing_amount)
-  let x = await existNajieThing(
+  const x = await existNajieThing(
     usr_qq,
     thing_name,
     thing_exist.class,
@@ -99,11 +93,11 @@ export default onResponse(selects, async e => {
   } catch {
     await writeExchange([])
   }
-  let now_time = new Date().getTime()
-  let whole = Math.trunc(thing_value * thing_amount)
+  const now_time = new Date().getTime()
+  const whole = Math.trunc(thing_value * thing_amount)
   let off = Math.trunc(whole * 0.03)
   if (off < 100000) off = 100000
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.灵石 < off) {
     Send(Text('就这点灵石还想上架'))
     return false
@@ -111,8 +105,8 @@ export default onResponse(selects, async e => {
   await addCoin(usr_qq, -off)
   let wupin
   if (thing_exist.class == '装备' || thing_exist.class == '仙宠') {
-    let pinji2 = ['劣', '普', '优', '精', '极', '绝', '顶']
-    let pj = pinji2[thing_piji]
+    const pinji2 = ['劣', '普', '优', '精', '极', '绝', '顶']
+    const pj = pinji2[thing_piji]
     wupin = {
       qq: usr_qq,
       name: equ,

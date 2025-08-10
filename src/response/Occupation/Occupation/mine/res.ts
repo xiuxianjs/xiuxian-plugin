@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer, readPlayer, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,10 +8,10 @@ export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId //用户qq
+  const usr_qq = e.UserId //用户qq
   if (!(await existplayer(usr_qq))) return false
   //获取游戏状态
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.occupation != '采矿师') {
     Send(Text('你挖矿许可证呢？非法挖矿，罚款200灵石'))
     await addCoin(usr_qq, -200)
@@ -30,8 +30,8 @@ export default onResponse(selects, async e => {
   time = time.replace('分钟', '')
   if (parseInt(time) == parseInt(time)) {
     time = parseInt(time)
-    let y = 30 //时间
-    let x = 24 //循环次数
+    const y = 30 //时间
+    const x = 24 //循环次数
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
       if (time >= y * i) {
@@ -52,18 +52,18 @@ export default onResponse(selects, async e => {
   action = JSON.parse(action)
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
+    const action_end_time = action.end_time
+    const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中，剩余时间:' + m + '分' + s + '秒'))
       return false
     }
   }
 
-  let action_time = time * 60 * 1000 //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = time * 60 * 1000 //持续时间，单位毫秒
+  const arr: any = {
     action: '采矿', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

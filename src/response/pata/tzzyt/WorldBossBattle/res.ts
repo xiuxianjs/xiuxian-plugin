@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import { existplayer, Harm, ifbaoji } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,13 +8,13 @@ export const regular = /^(#|＃|\/)?挑战镇妖塔$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   const equipment = await data.getData('equipment', usr_qq)
   const type = ['武器', '护具', '法宝']
-  for (let j of type) {
+  for (const j of type) {
     if (
       equipment[j].atk < 10 &&
       equipment[j].def < 10 &&
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     Send(Text('已达到上限'))
     return false
   }
-  let ZYTcs = player.镇妖塔层数
+  const ZYTcs = player.镇妖塔层数
   let Health = 0
   let Attack = 0
   let Defence = 0
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
     Reward = 700 * ZYTcs + 1000
   }
   if (Reward > 400000) Reward = 400000
-  let bosszt = {
+  const bosszt = {
     Health: Health,
     OriginHealth: Health,
     isAngry: 0,
@@ -54,16 +54,16 @@ export default onResponse(selects, async e => {
     KilledTime: -1,
     Reward: Reward
   }
-  let Time = 2
-  let now_Time = new Date().getTime() //获取当前时间戳
-  let shuangxiuTimeout = Math.floor(60000 * Time)
+  const Time = 2
+  const now_Time = new Date().getTime() //获取当前时间戳
+  const shuangxiuTimeout = Math.floor(60000 * Time)
   let last_time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + 'CD') //获得上次的时间戳,
   last_time = parseInt(last_time)
   if (now_Time < last_time + shuangxiuTimeout) {
-    let Couple_m = Math.trunc(
+    const Couple_m = Math.trunc(
       (last_time + shuangxiuTimeout - now_Time) / 60 / 1000
     )
-    let Couple_s = Math.trunc(
+    const Couple_s = Math.trunc(
       ((last_time + shuangxiuTimeout - now_Time) % 60000) / 1000
     )
     Send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
@@ -71,7 +71,7 @@ export default onResponse(selects, async e => {
   }
   let BattleFrame = 0
   let TotalDamage = 0
-  let msg = []
+  const msg = []
   let BOSSCurrentAttack = bosszt.isAngry
     ? Math.trunc(bosszt.Attack * 1.8)
     : bosszt.isWeak
@@ -81,12 +81,12 @@ export default onResponse(selects, async e => {
     ? Math.trunc(bosszt.Defence * 0.7)
     : bosszt.Defence
   while (player.当前血量 > 0 && bosszt.Health > 0) {
-    let Random = Math.random()
+    const Random = Math.random()
     if (!(BattleFrame & 1)) {
       let Player_To_BOSS_Damage =
         Harm(player.攻击, BOSSCurrentDefence) +
         Math.trunc(player.攻击 * player.灵根.法球倍率)
-      let SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1
+      const SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1
       msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`)
       if (Random > 0.5 && BattleFrame == 0) {
         msg.push('你的进攻被反手了！')

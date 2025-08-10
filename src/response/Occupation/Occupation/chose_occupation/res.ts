@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   Go,
   existplayer,
@@ -16,34 +16,33 @@ export const regular = /^(#|＃|\/)?转职.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  let occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '')
-  let player = await readPlayer(usr_qq)
-  let player_occupation = player.occupation
-  let x = data.occupation_list.find(item => item.name == occupation)
+  const occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '')
+  const player = await readPlayer(usr_qq)
+  const player_occupation = player.occupation
+  const x = data.occupation_list.find(item => item.name == occupation)
   if (!notUndAndNull(x)) {
     Send(Text(`没有[${occupation}]这项职业`))
     return false
   }
-  let now_level_id
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 17 && occupation == '采矿师') {
     Send(Text('包工头:就你这小身板还来挖矿？再去修炼几年吧'))
     return false
   }
-  let thing_name = occupation + '转职凭证'
-  let thing_class = '道具'
-  let n = -1
-  let thing_quantity = await existNajieThing(usr_qq, thing_name, thing_class)
+  const thing_name = occupation + '转职凭证'
+  const thing_class = '道具'
+  const n = -1
+  const thing_quantity = await existNajieThing(usr_qq, thing_name, thing_class)
   if (!thing_quantity) {
     //没有
     Send(Text(`你没有【${thing_name}】`))
@@ -67,7 +66,7 @@ export default onResponse(selects, async e => {
   if (action == null) {
     action = []
   }
-  let arr = {
+  const arr = {
     职业名: player.occupation,
     职业经验: player.occupation_exp,
     职业等级: player.occupation_level

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import { existplayer, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -9,8 +9,8 @@ export const regular = /^(#|＃|\/)?活动兑换.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let name = e.MessageText.replace(/^(#|＃|\/)?活动兑换/, '')
   name = name.trim()
@@ -40,7 +40,7 @@ export default onResponse(selects, async e => {
     'xiuxian@1.3.0:' + usr_qq + ':duihuan',
     JSON.stringify(action)
   )
-  let msg = []
+  const msg = []
   for (let k = 0; k < data.duihuan[i].thing.length; k++) {
     await addNajieThing(
       usr_qq,

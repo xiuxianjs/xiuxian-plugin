@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   existNajieThing,
@@ -14,29 +14,29 @@ export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let tianluoRandom
   let thing = e.MessageText.replace(/^(#|＃|\/)?/, '')
   thing = thing.replace('抽', '')
   if (thing == '天地卡池') {
-    let x = await existNajieThing(usr_qq, '天罗地网', '道具')
+    const x = await existNajieThing(usr_qq, '天罗地网', '道具')
     if (!x) {
       Send(Text('你没有【天罗地网】'))
       return false
     }
     await addNajieThing(usr_qq, '天罗地网', '道具', -1)
   } else if (thing == '灵界卡池') {
-    let x = await existNajieThing(usr_qq, '金丝仙网', '道具')
+    const x = await existNajieThing(usr_qq, '金丝仙网', '道具')
     if (!x) {
       Send(Text('你没有【金丝仙网】'))
       return false
     }
     await addNajieThing(usr_qq, '金丝仙网', '道具', -1)
   } else if (thing == '凡界卡池') {
-    let x = await existNajieThing(usr_qq, '银丝仙网', '道具')
+    const x = await existNajieThing(usr_qq, '银丝仙网', '道具')
     if (!x) {
       Send(Text('你没有【银丝仙网】'))
       return false

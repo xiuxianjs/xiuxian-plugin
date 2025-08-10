@@ -8,9 +8,9 @@ export const regular = /^(#|＃|\/)?天地榜$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let tiandibang = []
   try {
@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   }
   let x = tiandibang.length
   let l = 10
-  let msg = ['***天地榜(每日免费三次)***\n       周一0点清空积分']
+  const msg = ['***天地榜(每日免费三次)***\n       周一0点清空积分']
   for (let i = 0; i < tiandibang.length; i++) {
     if (tiandibang[i].qq == usr_qq) {
       x = i

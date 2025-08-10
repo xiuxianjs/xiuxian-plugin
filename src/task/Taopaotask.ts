@@ -1,33 +1,32 @@
-import { redis, data, pushInfo } from '@src/api/api'
-import {
-  notUndAndNull,
-  Harm,
-  readShop,
-  addNajieThing,
-  writeShop,
-  __PATH
-} from '@src/model'
+import { redis, data, pushInfo } from '@src/model/api'
+import { notUndAndNull } from '@src/model/common'
+import { Harm } from '@src/model/battle'
+import { readShop, writeShop } from '@src/model/shop'
+import { addNajieThing } from '@src/model/najie'
+import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import { safeParse } from '@src/model/utils/safe'
+import type { ActionState } from '@src/types/action'
 
 scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
+  for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
 
-    let action: any = await getDataByUserId(player_id, 'action')
-    action = await JSON.parse(action)
+    const actionRaw = await getDataByUserId(player_id, 'action')
+    const action = safeParse<ActionState | null>(actionRaw, null)
     //不为空，存在动作
-    if (action != null) {
+    if (action) {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
 
-      if (await action.hasOwnProperty('group_id')) {
+      if ('group_id' in action) {
         if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
@@ -35,25 +34,29 @@ scheduleJob('0 0/5 * * * ?', async () => {
       }
 
       //最后发送的消息
-      let msg = []
+      const msg = []
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      let now_time = new Date().getTime()
+      const now_time = new Date().getTime()
       //有洗劫状态:这个直接结算即可
       if (action.xijie == '-2') {
         //5分钟后开始结算阶段一
-        end_time = end_time - action.time + 60000 * 5
+        const actTime =
+          typeof action.time === 'string'
+            ? parseInt(action.time)
+            : Number(action.time)
+        end_time = end_time - (isNaN(actTime) ? 0 : actTime) + 60000 * 5
         //时间过了
         if (now_time >= end_time) {
-          let weizhi = action.Place_address
+          const weizhi = action.Place_address
           let i //获取对应npc列表的位置
           for (i = 0; i < data.npc_list.length; i++) {
             if (data.npc_list[i].name == '万仙盟') {
               break
             }
           }
-          let A_player = action.A_player
+          const A_player = action.A_player
           let monster_length
           let monster_index
           let monster
@@ -71,7 +74,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             monster = data.npc_list[i].three[monster_index]
           }
           //设定npc数值
-          let B_player = {
+          const B_player = {
             名号: monster.name,
             攻击: Math.floor(monster.atk * A_player.攻击),
             防御: Math.floor(
@@ -84,8 +87,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             灵根: monster.灵根,
             法球倍率: monster.灵根.法球倍率
           }
-          let Random = Math.random()
-          let npc_damage = Math.trunc(
+          const Random = Math.random()
+          const npc_damage = Math.trunc(
             Harm(B_player.攻击 * 0.85, A_player.防御) +
               Math.trunc(B_player.攻击 * B_player.法球倍率) +
               B_player.防御 * 0.1
@@ -138,8 +141,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
           if (A_player.当前血量 < 0) {
             A_player.当前血量 = 0
           }
-          let arr = action
-          let shop = await readShop()
+          const arr = action
+          const shop = await readShop()
           for (i = 0; i < shop.length; i++) {
             if (shop[i].name == weizhi.name) {
               shop[i].state = 0
@@ -151,7 +154,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.cishu--
             arr.A_player = A_player
           } else {
-            let num = weizhi.Grade + 1
+            const num = weizhi.Grade + 1
             last_msg +=
               '\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x' +
               num
@@ -159,8 +162,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             delete arr.group_id
             shop[i].state = 0
             await writeShop(shop)
-            let time = 60 //时间（分钟）
-            let action_time = 60000 * time //持续时间，单位毫秒
+            const time = 60 //时间（分钟）
+            const action_time = 60000 * time //持续时间，单位毫秒
             arr.action = '天牢'
             arr.xijie = 1 //关闭洗劫
             arr.end_time = new Date().getTime() + action_time

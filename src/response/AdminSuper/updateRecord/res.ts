@@ -1,6 +1,6 @@
 import { Text, useSend, Image } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { selects } from '@src/response/index'
 
 export const regular = /^(#|＃|\/)?更新日志$/

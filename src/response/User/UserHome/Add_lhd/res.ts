@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, existNajieThing, sleep, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -9,12 +9,12 @@ export const regular = /^(#|＃|\/)?供奉奇怪的石头$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //判断是否为匿名创建存档
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let x = await existNajieThing(usr_qq, '长相奇怪的小石头', '道具')
+  const x = await existNajieThing(usr_qq, '长相奇怪的小石头', '道具')
   if (!x) {
     Send(
       Text(
@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (player.轮回点 >= 10 && player.lunhui == 0) {
     Send(Text('你梳洗完毕，将小石头摆在案上,点上香烛，拜上三拜！'))
     await sleep(3000)

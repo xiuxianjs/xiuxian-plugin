@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -23,18 +23,18 @@ export default onResponse(selects, async e => {
       return // 未找到用户Id
     }
     //对方qq
-    let qq = User.UserId
+    const qq = User.UserId
     //检查存档
-    let ifexistplay = await existplayer(qq)
+    const ifexistplay = await existplayer(qq)
     if (!ifexistplay) return false
     //清除游戏状态
     await redis.del('xiuxian@1.3.0:' + qq + ':game_action')
     //查询redis中的人物动作
-    let action: any = await getDataByUserId(qq, 'action')
+    const action: any = await getDataByUserId(qq, 'action')
     //不为空，有状态
     if (action) {
       //把状态都关了
-      let arr = JSON.parse(action)
+      const arr = JSON.parse(action)
       arr.is_jiesuan = 1 //结算状态
       arr.shutup = 1 //闭关状态
       arr.working = 1 //降妖状态

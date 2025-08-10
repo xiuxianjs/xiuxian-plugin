@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import fs from 'fs'
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import {
   existplayer,
   notUndAndNull,
@@ -18,15 +18,15 @@ export const regular = /^(#|＃|\/)?轮回$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   if (!notUndAndNull(player.lunhui)) {
     player.lunhui = 0
     await writePlayer(usr_qq, player)
   }
-  let lhxq = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lunhui')
+  const lhxq = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lunhui')
   if (+lhxq != 1) {
     Send(
       Text(
@@ -51,7 +51,7 @@ export default onResponse(selects, async e => {
     Send(Text(`法境未到仙无法轮回！`))
     return false
   }
-  let equipment = await readEquipment(usr_qq)
+  const equipment = await readEquipment(usr_qq)
   if (equipment.武器.HP < 0) {
     Send(
       Text(
@@ -73,7 +73,7 @@ export default onResponse(selects, async e => {
     return false
   }
   player.轮回点--
-  let a = Math.random()
+  const a = Math.random()
   if (a <= 1 / 9) {
     Send(
       Text(
@@ -91,12 +91,12 @@ export default onResponse(selects, async e => {
   player.lunhui += 1
   //如果是仙宗人员，退出宗门
   if (notUndAndNull(player.宗门)) {
-    let ass = await data.getAssociation(player.宗门.宗门名称)
+    const ass = await data.getAssociation(player.宗门.宗门名称)
     if (ass.power != 0) {
       //有宗门
       Send(Text('轮回后降临凡界，仙宗命牌失效！'))
       if (player.宗门.职位 != '宗主') {
-        let ass = await data.getAssociation(player.宗门.宗门名称)
+        const ass = await data.getAssociation(player.宗门.宗门名称)
         ass[player.宗门.职位] = ass[player.宗门.职位].filter(
           item => item != usr_qq
         )
@@ -107,7 +107,7 @@ export default onResponse(selects, async e => {
         await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
-        let ass = await data.getAssociation(player.宗门.宗门名称)
+        const ass = await data.getAssociation(player.宗门.宗门名称)
         if (ass.所有成员.length < 2) {
           await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
@@ -132,7 +132,7 @@ export default onResponse(selects, async e => {
           } else {
             randmember_qq = await getRandomFromARR(ass.所有成员)
           }
-          let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
+          const randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
           ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
             item => item != randmember_qq
           ) //原来的职位表删掉这个幸运儿
@@ -158,14 +158,14 @@ export default onResponse(selects, async e => {
       eff: 1,
       法球倍率: 1
     }
-    let thing_name = '九转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '九转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -191,14 +191,14 @@ export default onResponse(selects, async e => {
       eff: 0.65,
       法球倍率: 0.42
     }
-    let thing_name = '八转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '八转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -224,14 +224,14 @@ export default onResponse(selects, async e => {
       eff: 0.6,
       法球倍率: 0.39
     }
-    let thing_name = '七转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '七转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -257,14 +257,14 @@ export default onResponse(selects, async e => {
       eff: 0.55,
       法球倍率: 0.36
     }
-    let thing_name = '六转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '六转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -290,14 +290,14 @@ export default onResponse(selects, async e => {
       eff: 0.5,
       法球倍率: 0.33
     }
-    let thing_name = '五转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '五转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -323,14 +323,14 @@ export default onResponse(selects, async e => {
       eff: 0.45,
       法球倍率: 0.3
     }
-    let thing_name = '四转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '四转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -356,14 +356,14 @@ export default onResponse(selects, async e => {
       eff: 0.4,
       法球倍率: 0.26
     }
-    let thing_name = '三转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '三转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -389,14 +389,14 @@ export default onResponse(selects, async e => {
       eff: 0.35,
       法球倍率: 0.23
     }
-    let thing_name = '二转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '二转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)
@@ -422,14 +422,14 @@ export default onResponse(selects, async e => {
       eff: 0.3,
       法球倍率: 0.2
     }
-    let thing_name = '一转轮回'
-    let thing_class = '功法'
-    let n = 1
+    const thing_name = '一转轮回'
+    const thing_class = '功法'
+    const n = 1
     await addNajieThing(usr_qq, thing_name, thing_class, n)
     player.level_id = 9
     player.power_place = 1
     await writePlayer(usr_qq, player)
-    let equipment = await readEquipment(usr_qq)
+    const equipment = await readEquipment(usr_qq)
     await writeEquipment(usr_qq, equipment)
     //补血
     await addHP(usr_qq, 99999999)

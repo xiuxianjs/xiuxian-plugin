@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, addNajieThing } from '@src/model'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
@@ -9,25 +9,24 @@ export const regular = /^(#|＃|\/)?积分兑换(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let date = new Date()
-  let n = date.getDay()
+  const date = new Date()
+  const n = date.getDay()
   if (n != 0) {
     Send(Text(`物品筹备中，等到周日再来兑换吧`))
     return false
   }
 
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let thing_name = e.MessageText.replace(/^(#|＃|\/)?积分兑换/, '')
-  let ifexist = data.tianditang.find(item => item.name == thing_name)
+  const thing_name = e.MessageText.replace(/^(#|＃|\/)?积分兑换/, '')
+  const ifexist = data.tianditang.find(item => item.name == thing_name)
   if (!ifexist) {
     Send(Text(`天地堂还没有这样的东西:${thing_name}`))
     return false
   }
-  let tiandibang
-  tiandibang = await readTiandibang()
+  const tiandibang = await readTiandibang()
   let m = tiandibang.length
   let i
   for (m = 0; m < tiandibang.length; m++) {

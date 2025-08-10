@@ -1,7 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { notUndAndNull, setFileValue } from '@src/model'
-import { data } from '@src/api/api'
+import { notUndAndNull } from '@src/model/common'
+import { setFileValue } from '@src/model/cultivation'
+import { data } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?宗门(上交|上缴|捐赠)灵石\d+$/
@@ -11,23 +12,23 @@ const 宗门灵石池上限 = [
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) {
     return false
   }
 
   //获取灵石数量
-  let reg = new RegExp(/(#|＃|\/)?宗门(上交|上缴|捐赠)灵石/)
-  let msg = e.MessageText.replace(reg, '').trim()
+  const reg = new RegExp(/(#|＃|\/)?宗门(上交|上缴|捐赠)灵石/)
+  const msg = e.MessageText.replace(reg, '').trim()
   if (msg == '' || msg == undefined) {
     Send(Text('请输入灵石数量'))
     return false
   }
 
-  let lingshi = parseInt(msg)
+  const lingshi = parseInt(msg)
 
   if (isNaN(lingshi) || !isFinite(lingshi)) {
     Send(Text('请输入正确的灵石数量'))
@@ -41,7 +42,7 @@ export default onResponse(selects, async e => {
     Send(Text(`你身上只有${player.灵石}灵石,数量不足`))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   let xf = 1
   if (ass.power == 1) {
     xf = 10

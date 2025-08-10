@@ -32,7 +32,7 @@ export async function chaoshi(e) {
   Daolv.set_chaoshi_time(chaoshi_time)
 }
 export async function found(A, B) {
-  let qinmidu = await readQinmidu()
+  const qinmidu = await readQinmidu()
   let i
   for (i = 0; i < qinmidu.length; i++) {
     if (

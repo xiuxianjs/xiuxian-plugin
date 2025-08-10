@@ -1,6 +1,6 @@
 import { Text, useMessage, useSend, useSubscribe } from 'alemonjs'
 
-import { redis, data, config } from '@src/api/api'
+import { redis, data, config } from '@src/model/api'
 import {
   __PATH,
   addHP,
@@ -21,9 +21,9 @@ export const regular = /^(#|＃|\/)?再入仙途$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) {
     Send(Text('没存档你转世个锤子!'))
     return false
@@ -31,36 +31,36 @@ export default onResponse(selects, async e => {
     //没有存档，初始化次数
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':reCreate_acount', 1)
   }
-  let acount: any = await redis.get(
+  const acount: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':reCreate_acount'
   )
   if (acount == undefined || acount == null || isNaN(acount) || acount <= 0) {
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':reCreate_acount', 1)
   }
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   //重生之前先看状态
   if (player.灵石 <= 0) {
     Send(Text(`负债无法再入仙途`))
     return false
   }
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前时间戳
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前时间戳
   let lastrestart_time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':last_reCreate_time'
   ) //获得上次重生时间戳,
   lastrestart_time = parseInt(lastrestart_time)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.reborn
-  let rebornTime = Math.floor(60000 * time)
+  const rebornTime = Math.floor(60000 * time)
   if (nowTime < lastrestart_time + rebornTime) {
-    let waittime_m = Math.trunc(
+    const waittime_m = Math.trunc(
       (lastrestart_time + rebornTime - nowTime) / 60 / 1000
     )
-    let waittime_s = Math.trunc(
+    const waittime_s = Math.trunc(
       ((lastrestart_time + rebornTime - nowTime) % 60000) / 1000
     )
     Send(
@@ -83,11 +83,11 @@ export default onResponse(selects, async e => {
   const sub = subscribe.mount(
     async (event, next) => {
       const [message] = useMessage(event)
-      let usr_qq = event.UserId
+      const usr_qq = event.UserId
       /** 内容 */
-      let choice = event.MessageText
-      let now = new Date()
-      let nowTime = now.getTime() //获取当前时间戳
+      const choice = event.MessageText
+      const now = new Date()
+      const nowTime = now.getTime() //获取当前时间戳
       if (choice == '再继仙缘') {
         message.send(format(Text('重拾道心,继续修行')))
         clearTimeout(timeout)
@@ -107,11 +107,11 @@ export default onResponse(selects, async e => {
         acount = Number(acount)
         acount++
         //重生牵扯到宗门模块
-        let player: any = await data.getData('player', usr_qq)
+        const player: any = await data.getData('player', usr_qq)
         if (notUndAndNull(player.宗门)) {
           if (player.宗门.职位 != '宗主') {
             //不是宗主
-            let ass: any = await data.getAssociation(player.宗门.宗门名称)
+            const ass: any = await data.getAssociation(player.宗门.宗门名称)
             ass[player.宗门.职位] = ass[player.宗门.职位].filter(
               item => item != usr_qq
             )
@@ -121,7 +121,7 @@ export default onResponse(selects, async e => {
             await data.setData('player', usr_qq, player)
           } else {
             //是宗主
-            let ass: any = await data.getAssociation(player.宗门.宗门名称)
+            const ass: any = await data.getAssociation(player.宗门.宗门名称)
             if (ass.所有成员.length < 2) {
               fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
             } else {
@@ -135,7 +135,7 @@ export default onResponse(selects, async e => {
               } else {
                 randmember_qq = await getRandomFromARR(ass.所有成员)
               }
-              let randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
+              const randmember = await data.getData('player', randmember_qq) //获取幸运儿的存档
               ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
                 item => item != randmember_qq
               ) //原来的职位表删掉这个幸运儿
@@ -188,18 +188,18 @@ export default onResponse(selects, async e => {
 })
 
 async function Create_player(e) {
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (ifexistplay) {
     Show_player(e)
     return false
   }
   //初始化玩家信息
-  let File_msg = fs.readdirSync(__PATH.player_path)
-  let n = File_msg.length + 1
-  let talent = await getRandomTalent()
-  let new_player = {
+  const File_msg = fs.readdirSync(__PATH.player_path)
+  const n = File_msg.length + 1
+  const talent = await getRandomTalent()
+  const new_player = {
     id: e.UserId,
     sex: 0, //性别
     名号: `路人甲${n}号`,
@@ -243,14 +243,14 @@ async function Create_player(e) {
   }
   await writePlayer(usr_qq, new_player)
   //初始化装备
-  let new_equipment = {
+  const new_equipment = {
     武器: data.equipment_list.find(item => item.name == '烂铁匕首'),
     护具: data.equipment_list.find(item => item.name == '破铜护具'),
     法宝: data.equipment_list.find(item => item.name == '廉价炮仗')
   }
   await writeEquipment(usr_qq, new_equipment)
   //初始化纳戒
-  let new_najie = {
+  const new_najie = {
     等级: 1,
     灵石上限: 5000,
     灵石: 0,

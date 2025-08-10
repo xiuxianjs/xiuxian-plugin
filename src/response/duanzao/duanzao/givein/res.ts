@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data } from '@src/api/api'
+import { redis, data } from '@src/model/api'
 import {
   existplayer,
   looktripod,
@@ -42,17 +42,17 @@ export default onResponse(selects, async e => {
     Send(Text(`切换到炼器师后再来吧,宝贝`))
     return false
   }
-  let thing = e.MessageText.replace(/^(#|＃|\/)?熔炼/, '')
+  const thing = e.MessageText.replace(/^(#|＃|\/)?熔炼/, '')
   const code = thing.split('*')
   const thing_name = code[0] //物品
-  let account = code[1] //数量
+  const account = code[1] //数量
   const thing_acount = await convert2integer(account)
   const wupintype = await foundthing(thing_name)
   if (!wupintype || wupintype.type != '锻造') {
     Send(Text(`凡界物品无法放入煅炉`))
     return false
   }
-  let mynum = await existNajieThing(user_qq, thing_name, '材料')
+  const mynum = await existNajieThing(user_qq, thing_name, '材料')
   if (mynum < thing_acount) {
     Send(Text(`材料不足,无法放入`))
     return false
@@ -70,11 +70,11 @@ export default onResponse(selects, async e => {
     num1 = Math.trunc(player.仙宠.等级 / 33)
   }
   let num = 0
-  for (let item in tripod.数量) {
+  for (const item in tripod.数量) {
     num += Number(tripod.数量[item])
   }
   let dyew = 0
-  let dy = await readDanyao(user_qq)
+  const dy = await readDanyao(user_qq)
   if (dy.beiyong5 > 0) {
     dyew = dy.beiyong5
   }
@@ -98,7 +98,7 @@ export default onResponse(selects, async e => {
   } catch {
     await writeDuanlu([])
   }
-  for (let item of newtripod) {
+  for (const item of newtripod) {
     if (user_qq == item.qq) {
       item.材料.push(thing_name)
       item.数量.push(thing_acount)

@@ -1,6 +1,6 @@
 import { Text, useMessage } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -10,14 +10,14 @@ import { game } from '../game'
 export default onResponse(selects, async e => {
   const [message] = useMessage(e)
 
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //获取当前时间戳
-  let now_time = new Date().getTime()
+  const now_time = new Date().getTime()
   //文档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   //得到此人的状态
   //判断是否是投入用户
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
 
@@ -31,7 +31,7 @@ export default onResponse(selects, async e => {
   //去掉投入，发现得到的是梭哈
   //梭哈，全部灵石
   if (e.MessageText.includes('梭哈')) {
-    let player = await readPlayer(usr_qq)
+    const player = await readPlayer(usr_qq)
     //得到投入金额
     game.yazhu[usr_qq] = player.灵石 - 1
     game.game_key_user[usr_qq] = true
@@ -44,13 +44,13 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   //判断灵石
   if (player.灵石 >= parseInt(num)) {
     //得到投入数
     game.yazhu[usr_qq] = parseInt(num)
     //这里限制一下，至少押1w
-    let money = 10000
+    const money = 10000
     //如果投入的数大于0
     if (game.yazhu[usr_qq] >= money) {
       //如果押的钱不够

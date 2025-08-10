@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
 
 export const selects = onSelects(['message.create'])
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
         if ((await InitWorldBoss()) == false) await LookUpWorldBossStatus(e)
         return false
       }
-      let ReplyMsg = [
+      const ReplyMsg = [
         `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatusStr.Health}\n奖励:${WorldBossStatusStr.Reward}`
       ]
       Send(Text(ReplyMsg.join('\n')))

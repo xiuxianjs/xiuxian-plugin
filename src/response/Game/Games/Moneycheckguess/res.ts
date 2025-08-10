@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { redis, data, config } from '@src/api/api'
+import { redis, data, config } from '@src/model/api'
 import { existplayer, readPlayer, notUndAndNull, addCoin } from '@src/model'
 import { selects } from '@src/response/index'
 import { openMoneySystem } from '@src/model/money'
@@ -8,10 +8,10 @@ import { game } from '../game'
 export const regular = /^(#|＃|\/)?((大|小)|([1-6]))$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let now_time = new Date().getTime()
-  let ifexistplay = await existplayer(usr_qq)
-  let game_action: any = await redis.get(
+  const usr_qq = e.UserId
+  const now_time = new Date().getTime()
+  const ifexistplay = await existplayer(usr_qq)
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   if (!ifexistplay || !game_action) return false
@@ -20,8 +20,8 @@ export default onResponse(selects, async e => {
     Send(Text('媚娘：公子，你还没投入呢'))
     return false
   }
-  let player = await readPlayer(usr_qq)
-  let es = e.MessageText.replace(/^(#|＃|\/)?/, '')
+  const player = await readPlayer(usr_qq)
+  const es = e.MessageText.replace(/^(#|＃|\/)?/, '')
 
   // 判断输入是否合法，只接受“大”或“小”或1-6
   if (
@@ -49,7 +49,7 @@ export default onResponse(selects, async e => {
     const cf = config.getConfig('xiuxian', 'xiuxian')
     let x = cf.percentage.Moneynumber
     let y = 1
-    let z = cf.size.Money * 10000
+    const z = cf.size.Money * 10000
 
     if (isWin) {
       // 赢了
@@ -92,8 +92,8 @@ export default onResponse(selects, async e => {
       }
       data.setData('player', usr_qq, player)
       addCoin(usr_qq, -inputMoney)
-      let now_money = player.灵石 - inputMoney
-      let msg = [`骰子最终为 ${touzi} 你猜错了！\n现在拥有灵石:${now_money}`]
+      const now_money = player.灵石 - inputMoney
+      const msg = [`骰子最终为 ${touzi} 你猜错了！\n现在拥有灵石:${now_money}`]
       if (now_money <= 0) {
         msg.push(
           '\n媚娘：没钱了也想跟老娘耍？\n你已经裤衩都输光了...快去降妖赚钱吧！'
@@ -133,8 +133,8 @@ export default onResponse(selects, async e => {
       }
       data.setData('player', usr_qq, player)
       addCoin(usr_qq, -inputMoney)
-      let now_money = player.灵石 - inputMoney
-      let msg = [`骰子最终为 ${touzi}，你猜错了！\n现在拥有灵石:${now_money}`]
+      const now_money = player.灵石 - inputMoney
+      const msg = [`骰子最终为 ${touzi}，你猜错了！\n现在拥有灵石:${now_money}`]
       if (now_money <= 0) {
         msg.push(
           '\n媚娘：没钱了也想跟老娘耍？\n你已经裤衩都输光了...快去降妖赚钱吧！'

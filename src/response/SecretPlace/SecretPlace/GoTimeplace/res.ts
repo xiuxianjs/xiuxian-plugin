@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import {
   Go,
   readPlayer,
@@ -17,19 +17,19 @@ export const regular = /^(#|＃|\/)?探索仙府$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let player = await readPlayer(usr_qq)
-  let didianlist = ['无欲天仙', '仙遗之地']
-  let suiji = Math.round(Math.random()) //随机一个地方
-  let yunqi = Math.random() //运气随机数
+  const player = await readPlayer(usr_qq)
+  const didianlist = ['无欲天仙', '仙遗之地']
+  const suiji = Math.round(Math.random()) //随机一个地方
+  const yunqi = Math.random() //运气随机数
   await sleep(1000)
   Send(Text('你在冲水堂发现有人上架了一份仙府地图'))
-  let didian = didianlist[suiji] //赋值
-  let now_level_id
+  const didian = didianlist[suiji] //赋值
+  // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
@@ -49,14 +49,14 @@ export default onResponse(selects, async e => {
     await addCoin(usr_qq, -50000)
     return false
   }
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 21) {
     Send(Text('到了地图上的地点，结果你发现,你尚未达到化神,无法抵御灵气压制'))
     return false
   }
-  let weizhi = await data.timeplace_list.find(item => item.name == didian)
+  const weizhi = await data.timeplace_list.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     Send(Text('报错！地点错误，请找群主反馈'))
     return false
@@ -83,12 +83,12 @@ export default onResponse(selects, async e => {
     Send(Text(player.名号 + '使用了道具仙府通行证,本次仙府免费'))
     await addNajieThing(usr_qq, '仙府通行证', '道具', -1)
   }
-  let Price = weizhi.Price * dazhe
+  const Price = weizhi.Price * dazhe
   await addCoin(usr_qq, -Price)
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.timeplace //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr: any = {
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr: any = {
     action: '探索', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

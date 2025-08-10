@@ -8,9 +8,9 @@ export const regular = /^(#|＃|\/)?天地堂/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //查看存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let tiandibang = []
   try {
@@ -29,6 +29,6 @@ export default onResponse(selects, async e => {
     Send(Text('请先报名!'))
     return false
   }
-  let img = await get_tianditang_img(e, tiandibang[m].积分)
+  const img = await get_tianditang_img(e, tiandibang[m].积分)
   if (img) Send(Image(img))
 })

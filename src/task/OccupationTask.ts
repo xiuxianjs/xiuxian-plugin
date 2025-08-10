@@ -1,33 +1,38 @@
 import { scheduleJob } from 'node-schedule'
-import { redis, data, pushInfo } from '@src/api/api'
-import { notUndAndNull, addExp4, addNajieThing, __PATH } from '@src/model'
+import { redis, data, pushInfo } from '@src/model/api'
+import { notUndAndNull } from '@src/model/common'
+import { addExp4 } from '@src/model/xiuxian'
+import { addNajieThing } from '@src/model/najie'
+import { __PATH } from '@src/model/paths'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import { safeParse } from '@src/model/utils/safe'
+import type { ActionState } from '@src/types/action'
 scheduleJob('0 0/1 * * * ?', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
+  for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
-    let action: any = await getDataByUserId(player_id, 'action')
-    action = JSON.parse(action)
+    const actionRaw = await getDataByUserId(player_id, 'action')
+    const action = safeParse<ActionState | null>(actionRaw, null)
     //不为空，存在动作
-    if (action != null) {
+    if (action) {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
-      if (action.hasOwnProperty('group_id')) {
+      if ('group_id' in action) {
         if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
         }
       }
       //最后发送的消息
-      let msg: Array<DataMention | string> = [Mention(player_id)]
+      const msg: Array<DataMention | string> = [Mention(player_id)]
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      let now_time = new Date().getTime()
+      const now_time = new Date().getTime()
       //闭关状态
       if (action.plant == '0') {
         //这里改一改,要在结束时间的前一分钟提前结算
@@ -35,9 +40,13 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
-          let player = await data.getData('player', player_id)
-          let time = parseInt(action.time) / 1000 / 60
-          let exp = time * 10
+          const player = await data.getData('player', player_id)
+          const rawTime =
+            typeof action.time === 'string'
+              ? parseInt(action.time)
+              : Number(action.time)
+          const time = (isNaN(rawTime) ? 0 : rawTime) / 1000 / 60
+          const exp = time * 10
           await addExp4(player_id, exp)
           let k = 1
           if (player.level_id < 22) {
@@ -47,7 +56,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           if (player.level_id >= 36) {
             sum = (time / 480) * (player.occupation_level * 3 + 11)
           }
-          let names = [
+          const names = [
             '万年凝血草',
             '万年何首乌',
             '万年血精草',
@@ -68,13 +77,13 @@ scheduleJob('0 0/1 * * * ?', async () => {
             0.17, 0.22, 0.17, 0.17, 0.17, 0.024, 0.024, 0.024, 0.024, 0.024,
             0.024, 0.024, 0.012, 0.011
           ]
-          let msg: Array<DataMention | string> = [Mention(player_id)]
+          const msg: Array<DataMention | string> = [Mention(player_id)]
           msg.push(`\n恭喜你获得了经验${exp},草药:`)
           let newsum = sum3.map(item => item * sum)
           if (player.level_id < 36) {
             newsum = sum2.map(item => item * sum)
           }
-          for (let item in sum3) {
+          for (const item in sum3) {
             if (newsum[item] < 1) {
               continue
             }
@@ -87,7 +96,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             )
           }
           await addExp4(player_id, exp)
-          let arr = action
+          const arr = action
           //把状态都关了
           arr.plant = 1 //闭关状态
           arr.shutup = 1 //闭关状态
@@ -110,14 +119,18 @@ scheduleJob('0 0/1 * * * ?', async () => {
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
-          let player = await data.getData('player', player_id)
+          const player = await data.getData('player', player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
           }
-          let time = parseInt(action.time) / 1000 / 60 //最高480分钟
+          const rawTime2 =
+            typeof action.time === 'string'
+              ? parseInt(action.time)
+              : Number(action.time)
+          const time = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60 //最高480分钟
           //以下1到5为每种的数量
-          let mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * time) //(1.8+随机0到0.4)x时间(分钟)
-          let rate =
+          const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * time) //(1.8+随机0到0.4)x时间(分钟)
+          const rate =
             data.occupation_exp_list.find(
               item => item.id == player.occupation_level
             ).rate * 10
@@ -128,7 +141,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             rate * 100
           )}%，`
           let end_amount = Math.floor(4 * (rate + 1) * mine_amount1) //普通矿石
-          let num = Math.floor(((rate / 12) * time) / 30) //锻造
+          const num = Math.floor(((rate / 12) * time) / 30) //锻造
           const A = [
             '金色石胚',
             '棕色石胚',
@@ -153,7 +166,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             '红色妖丹',
             '蓝色妖丹'
           ]
-          let xuanze = Math.trunc(Math.random() * A.length)
+          const xuanze = Math.trunc(Math.random() * A.length)
           end_amount *= player.level_id / 40
           end_amount = Math.floor(end_amount)
           await addNajieThing(player_id, '庚金', '材料', end_amount)
@@ -172,7 +185,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           msg.push(
             `\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`
           )
-          let arr = action
+          const arr = action
           //把状态都关了
           arr.mine = 1 //采矿状态
           arr.mine = 1 //闭状态

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import { notUndAndNull, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,12 +8,12 @@ export const regular = /^(#|＃|\/)?拔苗助长.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) return false
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   if (!notUndAndNull(player.宗门)) {
     return false
   } else if (ass.药园.药园等级 == 1) {
@@ -23,22 +23,22 @@ export default onResponse(selects, async e => {
   }
 
   //增加cd
-  let now = new Date()
+  const now = new Date()
   //获取当前时间戳
-  let nowTime = now.getTime()
+  const nowTime = now.getTime()
   //获得时间戳
   let last_garden_time: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':last_garden_time'
   )
   //
   last_garden_time = parseInt(last_garden_time)
-  let time: any = config.getConfig('xiuxian', 'xiuxian').CD.garden //时间（分钟）
-  let transferTimeout = Math.floor(60000 * time) //
+  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.garden //时间（分钟）
+  const transferTimeout = Math.floor(60000 * time) //
   if (nowTime < last_garden_time + transferTimeout) {
-    let waittime_m = Math.trunc(
+    const waittime_m = Math.trunc(
       (last_garden_time + transferTimeout - nowTime) / 60 / 1000
     )
-    let waittime_s = Math.trunc(
+    const waittime_s = Math.trunc(
       ((last_garden_time + transferTimeout - nowTime) % 60000) / 1000
     )
     Send(
@@ -50,12 +50,12 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let vegetable = ass.药园.作物
-  let vagetable_name = e.MessageText.replace(/^(#|＃|\/)?拔苗助长/, '')
+  const vegetable = ass.药园.作物
+  const vagetable_name = e.MessageText.replace(/^(#|＃|\/)?拔苗助长/, '')
   for (let i = 0; i < vegetable.length; i++) {
     if (vegetable[i].name == vagetable_name) {
-      let ts = vegetable[i].ts
-      let nowTime = new Date().getTime() //获取当前时间
+      const ts = vegetable[i].ts
+      const nowTime = new Date().getTime() //获取当前时间
       let vegetable_Oldtime: any = await redis.get(
         'xiuxian:' + ass.宗门名称 + vagetable_name
       ) //获得上次的成熟时间戳,
@@ -86,7 +86,7 @@ export default onResponse(selects, async e => {
           )
         )
         await addNajieThing(usr_qq, vagetable_name, '草药', 1)
-        let vegetable_OutTime = nowTime + 1000 * 60 * 60 * 24 * ts //设置新一轮成熟时间戳
+        const vegetable_OutTime = nowTime + 1000 * 60 * 60 * 24 * ts //设置新一轮成熟时间戳
         ass.药园.作物[i].start_time = nowTime //将当前时间写入药园作物中
         await data.setAssociation(ass.宗门名称, ass) //刷新写入作物时间戳
         await redis.set(

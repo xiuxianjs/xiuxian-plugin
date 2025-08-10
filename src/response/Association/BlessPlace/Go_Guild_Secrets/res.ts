@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/api/api'
+import { data, redis, config } from '@src/model/api'
 import { Go, readPlayer, notUndAndNull, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,24 +8,24 @@ export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let flag = await Go(e)
+  const usr_qq = e.UserId
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (!player.宗门) {
     Send(Text('请先加入宗门'))
     return false
   }
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
   if (ass.宗门驻地 == 0) {
     Send(Text(`你的宗门还没有驻地，不能探索秘境哦`))
     return false
   }
   let didian = e.MessageText.replace(/^(#|＃|\/)?探索宗门秘境/, '')
   didian = didian.trim()
-  let weizhi = await data.guildSecrets_list.find(item => item.name == didian)
+  const weizhi = await data.guildSecrets_list.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     return false
   }
@@ -34,14 +34,14 @@ export default onResponse(selects, async e => {
     Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'))
     return false
   }
-  let Price = weizhi.Price
+  const Price = weizhi.Price
   ass.灵石池 += Price * 0.05
   data.setAssociation(ass.宗门名称, ass)
 
   await addCoin(usr_qq, -Price)
-  let time: any = config.getConfig('xiuxian', 'xiuxian').CD.secretplace //时间（分钟）
-  let action_time = 60000 * time //持续时间，单位毫秒
-  let arr = {
+  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.secretplace //时间（分钟）
+  const action_time = 60000 * time //持续时间，单位毫秒
+  const arr = {
     action: '历练', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

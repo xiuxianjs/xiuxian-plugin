@@ -1,7 +1,10 @@
 import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
 import * as _ from 'lodash-es'
-import { data, pushInfo, redis } from '@src/api/api'
-import { zdBattle, sleep, Harm, addHP, addCoin, __PATH } from '@src/model'
+import { data, pushInfo, redis } from '@src/model/api'
+import { zdBattle, Harm } from '@src/model/battle'
+import { sleep } from '@src/model/common'
+import { addHP, addCoin } from '@src/model/economy'
+import { __PATH } from '@src/model/paths'
 
 export const WorldBossBattleInfo = {
   CD: {},
@@ -19,29 +22,29 @@ export const WorldBossBattleInfo = {
 }
 //初始化妖王
 export async function InitWorldBoss() {
-  let AverageDamageStruct = await GetAverageDamage()
-  let player_quantity = Math.floor(AverageDamageStruct.player_quantity)
-  let AverageDamage = Math.floor(AverageDamageStruct.AverageDamage)
+  const AverageDamageStruct = await GetAverageDamage()
+  const player_quantity = Math.floor(AverageDamageStruct.player_quantity)
+  const AverageDamage = Math.floor(AverageDamageStruct.AverageDamage)
   let Reward = 12000000
   WorldBossBattleInfo.setLock(0)
   if (player_quantity == 0) {
     return -1
   }
   if (player_quantity < 5) Reward = 6000000
-  let X = AverageDamage * 0.01
+  const X = AverageDamage * 0.01
   logger.info(`[妖王] 化神玩家总数：${player_quantity}`)
   logger.info(`[妖王] 生成基数:${X}`)
-  let Health = Math.trunc(X * 150 * player_quantity * 2) //血量要根据人数来
-  let WorldBossStatus = {
+  const Health = Math.trunc(X * 150 * player_quantity * 2) //血量要根据人数来
+  const WorldBossStatus = {
     Health: Health,
     Healthmax: Health,
     KilledTime: -1,
     Reward: Reward
   }
-  let PlayerRecord = 0
+  const PlayerRecord = 0
   await redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
   await redis.set('xiuxian@1.3.0Record', JSON.stringify(PlayerRecord))
-  let msg = '【全服公告】妖王已经苏醒,击杀者额外获得100w灵石'
+  const msg = '【全服公告】妖王已经苏醒,击杀者额外获得100w灵石'
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
@@ -51,29 +54,29 @@ export async function InitWorldBoss() {
 }
 
 export async function InitWorldBoss2() {
-  let AverageDamageStruct = await GetAverageDamage()
-  let player_quantity = Math.floor(AverageDamageStruct.player_quantity)
-  let AverageDamage = Math.floor(AverageDamageStruct.AverageDamage)
+  const AverageDamageStruct = await GetAverageDamage()
+  const player_quantity = Math.floor(AverageDamageStruct.player_quantity)
+  const AverageDamage = Math.floor(AverageDamageStruct.AverageDamage)
   let Reward = 6000000
   WorldBossBattleInfo.setLock(0)
   if (player_quantity == 0) {
     return -1
   }
   if (player_quantity < 5) Reward = 3000000
-  let X = AverageDamage * 0.01
+  const X = AverageDamage * 0.01
   logger.mark(`[金角大王] 化神玩家总数：${player_quantity}`)
   logger.mark(`[金角大王] 生成基数:${X}`)
-  let Health = Math.trunc(X * 150 * player_quantity * 2) //血量要根据人数来
-  let WorldBossStatus = {
+  const Health = Math.trunc(X * 150 * player_quantity * 2) //血量要根据人数来
+  const WorldBossStatus = {
     Health: Health,
     Healthmax: Health,
     KilledTime: -1,
     Reward: Reward
   }
-  let PlayerRecord = 0
+  const PlayerRecord = 0
   await redis.set('Xiuxian:WorldBossStatus2', JSON.stringify(WorldBossStatus))
   await redis.set('xiuxian@1.3.0Record2', JSON.stringify(PlayerRecord))
-  let msg = '【全服公告】金角大王已经苏醒,击杀者额外获得50w灵石'
+  const msg = '【全服公告】金角大王已经苏醒,击杀者额外获得50w灵石'
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group_id of groupList) {
@@ -85,7 +88,7 @@ export async function InitWorldBoss2() {
 export async function GetAverageDamage() {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  let temp = []
+  const temp = []
   let TotalPlayer = 0
   for (const player_id of playerList) {
     const player = await data.getData('player', player_id)
@@ -110,7 +113,7 @@ export async function GetAverageDamage() {
       : temp.length == 0
         ? 0
         : AverageDamage / temp.length
-  let res = {
+  const res = {
     AverageDamage: AverageDamage,
     player_quantity: TotalPlayer
   }
@@ -145,7 +148,7 @@ export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
         // tudo
         return false
       }
-      let ReplyMsg = [
+      const ReplyMsg = [
         `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatusStr.Health}\n奖励:${WorldBossStatusStr.Reward}`
       ]
       send(Text(ReplyMsg.join('\n')))
@@ -157,9 +160,9 @@ export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
 export async function SortPlayer(PlayerRecordJSON) {
   if (PlayerRecordJSON) {
     // let Temp0 = JSON.parse(JSON.stringify(PlayerRecordJSON))
-    let Temp0 = _.cloneDeep(PlayerRecordJSON)
-    let Temp = Temp0.TotalDamage
-    let SortResult = []
+    const Temp0 = _.cloneDeep(PlayerRecordJSON)
+    const Temp = Temp0.TotalDamage
+    const SortResult = []
     Temp.sort(function (a, b) {
       return b - a
     })
@@ -181,20 +184,20 @@ export async function WorldBossBattle(e) {
     send(Text('妖王未开启！'))
     return false
   }
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   let Time = 5
-  let now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = new Date().getTime() //获取当前时间戳
   Time = Math.floor(60000 * Time)
   let last_time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + 'BOSSCD') //获得上次的时间戳,
   last_time = parseInt(last_time)
   if (now_Time < last_time + Time) {
-    let Couple_m = Math.trunc((last_time + Time - now_Time) / 60 / 1000)
-    let Couple_s = Math.trunc(((last_time + Time - now_Time) % 60000) / 1000)
+    const Couple_m = Math.trunc((last_time + Time - now_Time) / 60 / 1000)
+    const Couple_s = Math.trunc(((last_time + Time - now_Time) % 60000) / 1000)
     send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
   if (await data.existData('player', usr_qq)) {
-    let player = await data.getData('player', usr_qq)
+    const player = await data.getData('player', usr_qq)
     if (player.level_id < 42 && player.lunhui == 0) {
       send(Text('你在仙界吗'))
       return false
@@ -202,11 +205,11 @@ export async function WorldBossBattle(e) {
     let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
     action = JSON.parse(action)
     if (action != null) {
-      let action_end_time = action.end_time
-      let now_time = new Date().getTime()
+      const action_end_time = action.end_time
+      const now_time = new Date().getTime()
       if (now_time <= action_end_time) {
-        let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-        let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+        const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+        const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
         send(
           Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒')
         )
@@ -218,7 +221,7 @@ export async function WorldBossBattle(e) {
       return false
     }
     if (WorldBOSSBattleCD[usr_qq]) {
-      let Seconds = Math.trunc(
+      const Seconds = Math.trunc(
         (300000 - (new Date().getTime() - WorldBOSSBattleCD[usr_qq])) / 1000
       )
       if (Seconds <= 300 && Seconds >= 0) {
@@ -228,9 +231,9 @@ export async function WorldBossBattle(e) {
         return false
       }
     }
-    let WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
-    let PlayerRecord = await redis.get('xiuxian@1.3.0Record')
-    let WorldBossStatus = JSON.parse(WorldBossStatusStr)
+    const WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
+    const PlayerRecord = await redis.get('xiuxian@1.3.0Record')
+    const WorldBossStatus = JSON.parse(WorldBossStatusStr)
     if (new Date().getTime() - WorldBossStatus.KilledTime < 86400000) {
       send(Text(`妖王正在刷新,21点开启`))
       return false
@@ -240,7 +243,7 @@ export async function WorldBossBattle(e) {
     }
     let PlayerRecordJSON, Userid
     if (+PlayerRecord == 0) {
-      let QQGroup = [],
+      const QQGroup = [],
         DamageGroup = [],
         Name = []
       QQGroup[0] = usr_qq
@@ -269,7 +272,7 @@ export async function WorldBossBattle(e) {
       }
     }
     let TotalDamage = 0
-    let Boss = {
+    const Boss = {
       名号: '妖王幻影',
       攻击: Math.floor(player.攻击 * (0.8 + 0.6 * Math.random())),
       防御: Math.floor(player.防御 * (0.8 + 0.6 * Math.random())),
@@ -289,14 +292,14 @@ export async function WorldBossBattle(e) {
       return false
     }
     WorldBossBattleInfo.Lock = 1
-    let Data_battle = await zdBattle(player, Boss)
-    let msg = Data_battle.msg
-    let A_win = `${player.名号}击败了${Boss.名号}`
-    let B_win = `${Boss.名号}击败了${player.名号}`
+    const Data_battle = await zdBattle(player, Boss)
+    const msg = Data_battle.msg
+    const A_win = `${player.名号}击败了${Boss.名号}`
+    const B_win = `${Boss.名号}击败了${player.名号}`
     if (msg.length <= 60) await send(Text(msg.join('\n')))
     else {
       // let msgg = JSON.parse(JSON.stringify(msg))
-      let msgg = _.cloneDeep(msg)
+      const msgg = _.cloneDeep(msg)
       msgg.length = 60
       await send(Text(msgg.join('\n')))
       send(Text('战斗过长，仅展示部分内容'))
@@ -331,7 +334,7 @@ export async function WorldBossBattle(e) {
     }
     await addHP(usr_qq, Data_battle.A_xue)
     await sleep(1000)
-    let random = Math.random()
+    const random = Math.random()
     if (random < 0.05 && msg.find(item => item == A_win)) {
       send(Text('这场战斗重创了[妖王]，妖王使用了古典秘籍,血量回复了20%'))
       WorldBossStatus.Health += Math.trunc(WorldBossStatus.Healthmax * 0.2)
@@ -354,7 +357,7 @@ export async function WorldBossBattle(e) {
     if (WorldBossStatus.Health <= 0) {
       send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'))
       await sleep(1000)
-      let msg2 =
+      const msg2 =
         '【全服公告】' +
         player.名号 +
         '亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！'
@@ -368,7 +371,7 @@ export async function WorldBossBattle(e) {
 
       WorldBossStatus.KilledTime = new Date().getTime()
       redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
-      let PlayerList = await SortPlayer(PlayerRecordJSON)
+      const PlayerList = await SortPlayer(PlayerRecordJSON)
       send(
         Text(
           '正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'
@@ -377,7 +380,7 @@ export async function WorldBossBattle(e) {
       for (let i = 0; i < PlayerList.length; i++)
         await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
       let Show_MAX
-      let Rewardmsg = ['****妖王周本贡献排行榜****']
+      const Rewardmsg = ['****妖王周本贡献排行榜****']
       if (PlayerList.length > 20) Show_MAX = 20
       else Show_MAX = PlayerList.length
       let TotalDamage = 0
@@ -388,7 +391,7 @@ export async function WorldBossBattle(e) {
       )
         TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]]
       for (let i = 0; i < PlayerList.length; i++) {
-        let CurrentPlayer = await data.getData(
+        const CurrentPlayer = await data.getData(
           'player',
           PlayerRecordJSON.QQ[PlayerList[i]]
         )

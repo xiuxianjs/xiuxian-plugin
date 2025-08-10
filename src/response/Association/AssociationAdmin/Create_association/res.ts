@@ -1,19 +1,18 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull, setFileValue, timestampToTime } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?开宗立派$/
 
 export default onResponse(selects, async e => {
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   const [message] = useMessage(e)
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return
-  let player = await data.getData('player', usr_qq)
-  let now_level_id
-  now_level_id = data.Level_list.find(
+  const player = await data.getData('player', usr_qq)
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 22) {
@@ -41,7 +40,7 @@ export default onResponse(selects, async e => {
 
   const sub = subscribe.mount(
     async (event, next) => {
-      let association_name = event.MessageText
+      const association_name = event.MessageText
       if (/^(#|＃|\/)?取消$/.test(association_name)) {
         message.send(format(Text('已取消创建宗门')))
         clearTimeout(timeout)
@@ -68,7 +67,7 @@ export default onResponse(selects, async e => {
         next()
         return
       }
-      let ifexistass = await data.existData('association', association_name)
+      const ifexistass = await data.existData('association', association_name)
       if (ifexistass) {
         message.send(
           format(Text('该宗门已经存在,请重新输入:\n想改变主意请回复:【取消】'))
@@ -78,10 +77,10 @@ export default onResponse(selects, async e => {
       }
       clearTimeout(timeout)
 
-      let now = new Date()
-      let nowTime = now.getTime() //获取当前时间戳
-      let date = timestampToTime(nowTime)
-      let player = await data.getData('player', usr_qq)
+      const now = new Date()
+      const nowTime = now.getTime() //获取当前时间戳
+      const date = timestampToTime(nowTime)
+      const player = await data.getData('player', usr_qq)
       player.宗门 = {
         宗门名称: association_name,
         职位: '宗主',
@@ -108,27 +107,19 @@ export default onResponse(selects, async e => {
   ) //60秒超时
 })
 async function new_Association(name, holder_qq, e) {
-  let usr_qq = e.UserId
-  let player = await data.getData('player', usr_qq)
-  let now_level_id = data.Level_list.find(
+  const usr_qq = e.UserId
+  const player = await data.getData('player', usr_qq)
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
-  let x
-  let xian
-  let dj
-  if (now_level_id > 41) {
-    x = 1
-    xian = 10
-    dj = 42
-  } else {
-    x = 0
-    xian = 1
-    dj = 1
-  }
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前时间戳
-  let date = timestampToTime(nowTime)
-  let Association = {
+  const isHigh = now_level_id > 41
+  const x = isHigh ? 1 : 0
+  const xian = isHigh ? 10 : 1
+  const dj = isHigh ? 42 : 1
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前时间戳
+  const date = timestampToTime(nowTime)
+  const Association = {
     宗门名称: name,
     宗门等级: 1,
     创立时间: [date, nowTime],

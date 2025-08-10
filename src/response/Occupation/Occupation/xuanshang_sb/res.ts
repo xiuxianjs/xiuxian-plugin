@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { pushInfo, redis } from '@src/api/api'
+import { pushInfo, redis } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -13,12 +13,12 @@ export const regular = /^(#|＃|\/)?悬赏.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   let qq = e.MessageText.replace(/^(#|＃|\/)?悬赏/, '')
-  let code = qq.split('*')
+  const code = qq.split('*')
   qq = code[0]
   let money = await convert2integer(code[1])
   if (money < 300000) {
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
     Send(Text('世间没有这人')) //查无此人
     return false
   }
-  let arr = { 名号: player_B.名号, QQ: qq, 赏金: money }
+  const arr = { 名号: player_B.名号, QQ: qq, 赏金: money }
   let action: any = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
   action = await JSON.parse(action)
   if (action != null) {

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -9,17 +9,17 @@ export const regular = /^(#|＃|\/)?设置性别.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
 
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player: any = await readPlayer(usr_qq)
+  const player: any = await readPlayer(usr_qq)
   if (player.sex != 0) {
     Send(Text('每个存档仅可设置一次性别！'))
     return
   }
   //命令判断
-  let msg = e.MessageText.replace(/^(#|＃|\/)?设置性别/, '')
+  const msg = e.MessageText.replace(/^(#|＃|\/)?设置性别/, '')
   if (msg != '男' && msg != '女') {
     Send(Text('请发送#设置性别男 或 #设置性别女'))
     return

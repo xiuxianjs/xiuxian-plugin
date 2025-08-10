@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
   }
 
   // 解析类型参数（支持多个类型，或不填则为全部）
-  let typeArg = (e.MessageText.match(/一键赠送([\u4e00-\u9fa5]+)?$/) || [])[1]
+  const typeArg = (e.MessageText.match(/一键赠送([\u4e00-\u9fa5]+)?$/) || [])[1]
   let targetTypes: string[]
   if (!typeArg) {
     targetTypes = ALL_TYPES
@@ -50,18 +50,18 @@ export default onResponse(selects, async e => {
   }
 
   const A_najie = await data.getData('najie', A_qq)
-  let sendTypes: string[] = []
-  let nothingToSend: string[] = []
-  for (let type of targetTypes) {
-    let items = A_najie[type]
+  const sendTypes: string[] = []
+  const nothingToSend: string[] = []
+  for (const type of targetTypes) {
+    const items = A_najie[type]
     if (!Array.isArray(items) || !items.length) {
       nothingToSend.push(type)
       continue
     }
     let sent = false
-    for (let l of items) {
+    for (const l of items) {
       if (l && l.islockd == 0 && Number(l.数量) > 0) {
-        let quantity = Number(l.数量)
+        const quantity = Number(l.数量)
         if (type === '装备' || type === '仙宠') {
           await addNajieThing(B_qq, l, l.class, quantity, l.pinji)
           await addNajieThing(A_qq, l, l.class, -quantity, l.pinji)

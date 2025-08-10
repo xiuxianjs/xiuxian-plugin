@@ -5,6 +5,6 @@ export const regular = /^(#|＃|\/)?炼体境界$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let img = await getStatemaxImage(e, null)
+  const img = await getStatemaxImage(e, null)
   if (img) Send(Image(img))
 })

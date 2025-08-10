@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { notUndAndNull, convert2integer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,10 +8,10 @@ export const regular = /^(#|＃|\/)?维护护宗大阵.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false

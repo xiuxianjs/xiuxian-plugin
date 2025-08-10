@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   readNajie,
@@ -16,19 +16,19 @@ export const regular = /^(#|＃|\/)?出售.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //有无存档
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //命令判断
-  let thing = e.MessageText.replace(/^(#|＃|\/)?出售/, '')
-  let code: any = thing.split('*')
+  const thing = e.MessageText.replace(/^(#|＃|\/)?出售/, '')
+  const code: any = thing.split('*')
   let thing_name = code[0] //物品
   code[0] = parseInt(code[0])
   let thing_amount = code[1] //数量
   let thing_piji
   //判断列表中是否存在，不存在不能卖,并定位是什么物品
-  let najie = await readNajie(usr_qq)
+  const najie = await readNajie(usr_qq)
   if (code[0]) {
     if (code[0] > 1000) {
       try {
@@ -47,12 +47,12 @@ export default onResponse(selects, async e => {
       }
     }
   }
-  let thing_exist = await foundthing(thing_name)
+  const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     Send(Text(`这方世界没有[${thing_name}]`))
     return false
   }
-  let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
+  const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
   thing_piji = pj[code[1]]
   if (thing_exist.class == '装备') {
     if (thing_piji) {
@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
         Send(Text(`你没有[${thing_name}]这样的${thing_exist.class}`))
         return false
       }
-      for (let i of najie.装备) {
+      for (const i of najie.装备) {
         //遍历列表有没有比那把强的
         if (i.name == thing_name && i.pinji < equ.pinji) {
           equ = i
@@ -73,7 +73,7 @@ export default onResponse(selects, async e => {
     }
   }
   thing_amount = await convert2integer(thing_amount)
-  let x = await existNajieThing(
+  const x = await existNajieThing(
     usr_qq,
     thing_name,
     thing_exist.class,
@@ -102,7 +102,7 @@ export default onResponse(selects, async e => {
   let commodities_price
   commodities_price = thing_exist.出售价 * thing_amount
   if (data.zalei.find(item => item.name == thing_name.replace(/[0-9]+/g, ''))) {
-    let sell = najie.装备.find(
+    const sell = najie.装备.find(
       item => item.name == thing_name && thing_piji == item.pinji
     )
     commodities_price = sell.出售价 * thing_amount

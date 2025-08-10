@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { config, data } from '@src/api/api'
+import { config, data } from '@src/model/api'
 import { notUndAndNull, shijianc } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,10 +8,10 @@ export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) {
     return false
   }
@@ -19,10 +19,10 @@ export default onResponse(selects, async e => {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  let ass = await await data.getAssociation(player.宗门.宗门名称)
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前日期的时间戳
-  let time: any = config.getConfig('xiuxian', 'xiuxian').CD.association
+  const ass = await await data.getAssociation(player.宗门.宗门名称)
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前日期的时间戳
+  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.association
   let nextmt_time = await shijianc(ass.维护时间 + 60000 * time) //获得下次宗门维护日期,7天后
   if (ass.维护时间 > nowTime - 1000 * 60 * 60 * 24 * 7) {
     Send(

@@ -1,4 +1,5 @@
-import { readForum, writeForum, addCoin } from '@src/model'
+import { readForum, writeForum } from '@src/model/trade'
+import { addCoin } from '@src/model/economy'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 4 * * ?', async () => {

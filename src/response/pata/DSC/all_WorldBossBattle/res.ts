@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import { existplayer, Harm, ifbaoji } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,25 +8,25 @@ export const regular = /^(#|＃|\/)?一键炼神魄$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   let xueqi = 0
   let cengshu = 0
-  let ifexistplay = await existplayer(usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await await data.getData('player', usr_qq)
+  const player = await await data.getData('player', usr_qq)
   while (player.当前血量 > 0) {
-    let 神魄段数 = player.神魄段数
+    const 神魄段数 = player.神魄段数
     //人数的万倍
-    let Health = 100000 * 神魄段数
+    const Health = 100000 * 神魄段数
     //攻击
-    let Attack = 250000 * 神魄段数
+    const Attack = 250000 * 神魄段数
     //防御
-    let Defence = 200000 * 神魄段数
+    const Defence = 200000 * 神魄段数
     //奖励下降
     let Reward = 1200 * 神魄段数
     if (Reward > 400000) Reward = 400000
     if (player.神魄段数 > 6000) Reward = 0
-    let bosszt = {
+    const bosszt = {
       Health: Health,
       OriginHealth: Health,
       isAngry: 0,
@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
     }
     let BattleFrame = 0
     let TotalDamage = 0
-    let msg = []
+    const msg = []
     let BOSSCurrentAttack = bosszt.isAngry
       ? Math.trunc(bosszt.Attack * 1.8)
       : bosszt.isWeak
@@ -52,7 +52,7 @@ export default onResponse(selects, async e => {
         let Player_To_BOSS_Damage =
           Harm(player.攻击, BOSSCurrentDefence) +
           Math.trunc(player.攻击 * player.灵根.法球倍率)
-        let SuperAttack = 2 < player.暴击率 ? 1.5 : 1
+        const SuperAttack = 2 < player.暴击率 ? 1.5 : 1
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`)
         if (BattleFrame == 0) {
           msg.push('你进入锻神池，开始了！')
@@ -70,7 +70,7 @@ export default onResponse(selects, async e => {
           )}消耗了${Player_To_BOSS_Damage}，此段剩余${bosszt.Health}未炼化`
         )
       } else {
-        let BOSS_To_Player_Damage = Harm(
+        const BOSS_To_Player_Damage = Harm(
           BOSSCurrentAttack,
           Math.trunc(player.防御 * 0.1)
         )

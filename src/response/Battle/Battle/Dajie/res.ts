@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { config, data, redis } from '@src/api/api'
+import { config, data, redis } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -31,16 +31,16 @@ export default onResponse(selects, async e => {
   }
 
   //得到主动方qq
-  let A = e.UserId
+  const A = e.UserId
 
   //先判断
-  let ifexistplay_A = await existplayer(A)
+  const ifexistplay_A = await existplayer(A)
   if (!ifexistplay_A) {
     return false
   }
 
   //得到redis游戏状态
-  let last_game_timeA = await redis.get(
+  const last_game_timeA = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_game_time'
   )
   //设置游戏状态
@@ -58,10 +58,10 @@ export default onResponse(selects, async e => {
   if (!User) {
     return // 未找到用户Id
   }
-  let B = User.UserId //被打劫者
+  const B = User.UserId //被打劫者
 
   //先判断存档！
-  let ifexistplay_B = await existplayer(B)
+  const ifexistplay_B = await existplayer(B)
   if (!ifexistplay_B) {
     Send(Text('不可对凡人出手!'))
     return false
@@ -69,31 +69,28 @@ export default onResponse(selects, async e => {
 
   //出手的
   //读取信息
-  let playerAA = await readPlayer(A)
+  const playerAA = await readPlayer(A)
   //境界
-  let now_level_idAA
   if (!notUndAndNull(playerAA.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
-  now_level_idAA = data.Level_list.find(
+  const now_level_idAA = data.Level_list.find(
     item => item.level_id == playerAA.level_id
   ).level_id
 
   //对方
   //读取信息
-  let playerBB = await readPlayer(B)
+  const playerBB = await readPlayer(B)
   //境界
   //根据名字取找境界id
-
-  let now_level_idBB
 
   if (!notUndAndNull(playerBB.level_id)) {
     Send(Text('对方为错误存档！'))
     return false
   }
 
-  now_level_idBB = data.Level_list.find(
+  const now_level_idBB = data.Level_list.find(
     item => item.level_id == playerBB.level_id
   ).level_id
 
@@ -113,26 +110,28 @@ export default onResponse(selects, async e => {
     Send(Text('咋的，自己弄自己啊？'))
     return false
   }
-  let playerA = await data.getData('player', A)
-  let playerB = await data.getData('player', B)
+  const playerA = await data.getData('player', A)
+  const playerB = await data.getData('player', B)
   if (notUndAndNull(playerA.宗门) && notUndAndNull(playerB.宗门)) {
-    let assA = await data.getAssociation(playerA.宗门.宗门名称)
-    let assB = await data.getAssociation(playerB.宗门.宗门名称)
+    const assA = await data.getAssociation(playerA.宗门.宗门名称)
+    const assB = await data.getAssociation(playerB.宗门.宗门名称)
     if (assA.宗门名称 == assB.宗门名称) {
       Send(Text('门派禁止内讧'))
       return false
     }
   }
 
-  let A_action_res = await getDataByUserId(A, 'action')
+  const A_action_res = await getDataByUserId(A, 'action')
   const A_action = JSON.parse(A_action_res)
   if (A_action != null) {
-    let now_time = new Date().getTime()
+    const now_time = new Date().getTime()
     //人物任务的动作是否结束
-    let A_action_end_time = A_action.end_time
+    const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
-      let m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor(
+        (A_action_end_time - now_time - m * 60 * 1000) / 1000
+      )
       Send(
         Text('正在' + A_action.action + '中,剩余时间:' + m + '分' + s + '秒')
       )
@@ -140,7 +139,7 @@ export default onResponse(selects, async e => {
     }
   }
 
-  let last_game_timeB = await redis.get(
+  const last_game_timeB = await redis.get(
     'xiuxian@1.3.0:' + B + ':last_game_time'
   )
   if (+last_game_timeB == 0) {
@@ -150,19 +149,19 @@ export default onResponse(selects, async e => {
 
   let isBbusy = false //给B是否忙碌加个标志位，用来判断要不要扣隐身水
 
-  let B_action_res = await redis.get('xiuxian@1.3.0:' + B + ':action')
+  const B_action_res = await redis.get('xiuxian@1.3.0:' + B + ':action')
   const B_action = JSON.parse(B_action_res)
   if (B_action != null) {
-    let now_time = new Date().getTime()
+    const now_time = new Date().getTime()
     //人物任务的动作是否结束
-    let B_action_end_time = B_action.end_time
+    const B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
       isBbusy = true
-      let ishaveyss = await existNajieThing(A, '隐身水', '道具')
+      const ishaveyss = await existNajieThing(A, '隐身水', '道具')
       if (!ishaveyss) {
         //如果A没有隐身水，直接返回不执行
-        let m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
-        let s = Math.floor(
+        const m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
+        const s = Math.floor(
           (B_action_end_time - now_time - m * 60 * 1000) / 1000
         )
         Send(
@@ -175,26 +174,26 @@ export default onResponse(selects, async e => {
     }
   }
 
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前时间戳
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前时间戳
   let last_dajie_time: any = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_dajie_time'
   ) //获得上次打劫的时间戳,
   last_dajie_time = parseInt(last_dajie_time)
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let robTimeout = Math.floor(60000 * cf.CD.rob)
+  const robTimeout = Math.floor(60000 * cf.CD.rob)
   if (nowTime < last_dajie_time + robTimeout) {
-    let waittime_m = Math.trunc(
+    const waittime_m = Math.trunc(
       (last_dajie_time + robTimeout - nowTime) / 60 / 1000
     )
-    let waittime_s = Math.trunc(
+    const waittime_s = Math.trunc(
       ((last_dajie_time + robTimeout - nowTime) % 60000) / 1000
     )
     Send(Text('打劫正在CD中，' + `剩余cd:  ${waittime_m}分 ${waittime_s}秒`))
     return false
   }
-  let A_player = await readPlayer(A)
-  let B_player = await readPlayer(B)
+  const A_player = await readPlayer(A)
+  const B_player = await readPlayer(B)
   if (A_player.修为 < 0) {
     Send(Text(`还是闭会关再打劫吧`))
     return false
@@ -207,7 +206,7 @@ export default onResponse(selects, async e => {
     Send(Text(`${B_player.名号} 穷得快赶上水脚脚了,就不要再打他了`))
     return false
   }
-  let final_msg = []
+  const final_msg = []
 
   //这里前戏做完,确定要开打了
 
@@ -225,10 +224,11 @@ export default onResponse(selects, async e => {
   A_player.法球倍率 = A_player.灵根.法球倍率
   B_player.法球倍率 = B_player.灵根.法球倍率
 
-  let Data_battle = await zdBattle(A_player, B_player)
-  let msg = Data_battle.msg
+  const Data_battle = await zdBattle(A_player, B_player)
+  const msg = Data_battle.msg
   //战斗回合过长会导致转发失败报错，所以超过30回合的就不转发了
   if (msg.length > 35) {
+    //
   } else {
     // await ForwardMsg(e, msg)
     Send(Text(msg))
@@ -236,8 +236,8 @@ export default onResponse(selects, async e => {
   //下面的战斗超过100回合会报错
   await addHP(A, Data_battle.A_xue)
   await addHP(B, Data_battle.B_xue)
-  let A_win = `${A_player.名号}击败了${B_player.名号}`
-  let B_win = `${B_player.名号}击败了${A_player.名号}`
+  const A_win = `${A_player.名号}击败了${B_player.名号}`
+  const B_win = `${B_player.名号}击败了${A_player.名号}`
   if (msg.find(item => item == A_win)) {
     if (
       (await existNajieThing(B, '替身人偶', '道具')) &&
@@ -248,10 +248,10 @@ export default onResponse(selects, async e => {
       await addNajieThing(B, '替身人偶', '道具', -1)
       return false
     }
-    let mdzJL = A_player.魔道值
+    const mdzJL = A_player.魔道值
     let lingshi: any = Math.trunc(B_player.灵石 / 5)
-    let qixue = Math.trunc(100 * now_level_idAA)
-    let mdz = Math.trunc(lingshi / 10000)
+    const qixue = Math.trunc(100 * now_level_idAA)
+    const mdz = Math.trunc(lingshi / 10000)
     if (lingshi >= B_player.灵石) {
       lingshi = B_player.灵石 / 2
     }
@@ -267,11 +267,11 @@ export default onResponse(selects, async e => {
     )
   } else if (msg.find(item => item == B_win)) {
     if (A_player.灵石 < 30002) {
-      let qixue = Math.trunc(100 * now_level_idBB)
+      const qixue = Math.trunc(100 * now_level_idBB)
       B_player.血气 += qixue
       await writePlayer(B, B_player)
-      let time2 = 60 //时间（分钟）
-      let action_time2 = 60000 * time2 //持续时间，单位毫秒
+      const time2 = 60 //时间（分钟）
+      const action_time2 = 60000 * time2 //持续时间，单位毫秒
       let action2: any = await redis.get('xiuxian@1.3.0:' + A + ':action')
       action2 = await JSON.parse(action2)
       action2.action = '禁闭'
@@ -282,7 +282,7 @@ export default onResponse(selects, async e => {
       )
     } else {
       let lingshi: any = Math.trunc(A_player.灵石 / 4)
-      let qixue = Math.trunc(100 * now_level_idBB)
+      const qixue = Math.trunc(100 * now_level_idBB)
       if (lingshi <= 0) {
         lingshi = 0
       }

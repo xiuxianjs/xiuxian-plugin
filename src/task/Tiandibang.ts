@@ -1,17 +1,19 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-import { data, redis } from '@src/api/api'
-import { __PATH, readPlayer } from '@src/model'
+import { data, redis } from '@src/model/api'
+// 细粒度导入
+import { __PATH } from '@src/model/paths'
+import { readPlayer } from '@src/model/xiuxian'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0 0 ? * 1', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  let temp = []
+  const temp = []
   let t
   for (let k = 0; k < playerList.length; k++) {
-    let this_qq: any = playerList[k]
-    let player = await readPlayer(this_qq)
-    let level_id = data.Level_list.find(
+    const this_qq: any = playerList[k]
+    const player = await readPlayer(this_qq)
+    const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
     ).level_id
     temp[k] = {

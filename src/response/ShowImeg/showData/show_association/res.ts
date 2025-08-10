@@ -5,6 +5,6 @@ export const regular = /^(#|＃|\/)?我的宗门$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let img = await getAssociationImage(e)
+  const img = await getAssociationImage(e)
   if (img) Send(Image(img))
 })

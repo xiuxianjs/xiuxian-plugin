@@ -15,23 +15,23 @@ export const regular = /^(#|＃|\/)?(存|取)灵石(.*)$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) return false
   //检索方法
-  let reg = new RegExp(/取|存/)
-  let func = reg.exec(e.MessageText)[0]
+  const reg = new RegExp(/取|存/)
+  const func = reg.exec(e.MessageText)[0]
   let msg = e.MessageText.replace(reg, '')
   msg = msg.replace(/^(#|＃|\/)?/, '')
   let lingshi: any = msg.replace('灵石', '')
   if (func == '存' && lingshi == '全部') {
-    let P = await readPlayer(usr_qq)
+    const P = await readPlayer(usr_qq)
     lingshi = P.灵石
   }
   if (func == '取' && lingshi == '全部') {
-    let N = await readNajie(usr_qq)
+    const N = await readNajie(usr_qq)
     lingshi = N.灵石
   }
   lingshi = await convert2integer(lingshi)
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
       Send(Text(`灵石不足,你目前只有${player_lingshi}灵石`))
       return false
     }
-    let najie = await readNajie(usr_qq)
+    const najie = await readNajie(usr_qq)
     if (najie.灵石上限 < najie.灵石 + lingshi) {
       await addBagCoin(usr_qq, najie.灵石上限 - najie.灵石)
       await addCoin(usr_qq, -najie.灵石上限 + najie.灵石)
@@ -61,7 +61,7 @@ export default onResponse(selects, async e => {
     return false
   }
   if (func == '取') {
-    let najie = await readNajie(usr_qq)
+    const najie = await readNajie(usr_qq)
     if (najie.灵石 < lingshi) {
       Send(Text(`纳戒灵石不足,你目前最多取出${najie.灵石}灵石`))
       return false

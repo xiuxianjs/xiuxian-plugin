@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { data, redis } from '@src/api/api'
+import { data, redis } from '@src/model/api'
 import { __PATH, notUndAndNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -7,11 +7,11 @@ export const regular = /^(#|＃|\/)?入驻洞天.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //用户不存在
-  let ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   //无宗门
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
@@ -25,13 +25,13 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let ass = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await data.getAssociation(player.宗门.宗门名称)
 
   //输入的洞天是否存在
   let blessed_name = e.MessageText.replace(/^(#|＃|\/)?入驻洞天/, '')
   blessed_name = blessed_name.trim()
   //洞天不存在
-  let dongTan = await data.bless_list.find(item => item.name == blessed_name)
+  const dongTan = await data.bless_list.find(item => item.name == blessed_name)
   if (!dongTan) return false
 
   if (ass.宗门驻地 == blessed_name) {
@@ -46,8 +46,8 @@ export default onResponse(selects, async e => {
 
   //遍历所有的宗门
   for (let i = 0; i < assList.length; i++) {
-    let this_name = assList[i]
-    let this_ass = await await data.getAssociation(this_name)
+    const this_name = assList[i]
+    const this_ass = await await data.getAssociation(this_name)
 
     if (this_ass.宗门驻地 == dongTan.name) {
       //找到了驻地为当前洞天的宗门，说明该洞天被人占据
@@ -56,30 +56,30 @@ export default onResponse(selects, async e => {
       let attackPower = 0
       let defendPower = 0
 
-      for (let i in ass.所有成员) {
+      for (const i in ass.所有成员) {
         //遍历所有成员
-        let member_qq = ass.所有成员[i]
+        const member_qq = ass.所有成员[i]
         //(攻击+防御+生命*0.5)*暴击率=理论战力
-        let member_data = await readPlayer(member_qq)
+        const member_data = await readPlayer(member_qq)
         let power = member_data.攻击 + member_data.血量上限 * 0.5
 
         power = Math.trunc(power)
         attackPower += power
       }
 
-      for (let i in this_ass.所有成员) {
+      for (const i in this_ass.所有成员) {
         //遍历所有成员
-        let member_qq = this_ass.所有成员[i]
+        const member_qq = this_ass.所有成员[i]
         //(攻击+防御+生命*0.5)*暴击率=理论战力
-        let member_data = await readPlayer(member_qq)
+        const member_data = await readPlayer(member_qq)
         let power = member_data.防御 + member_data.血量上限 * 0.5
 
         power = Math.trunc(power)
         defendPower += power
       }
 
-      let randomA = Math.random()
-      let randomB = Math.random()
+      const randomA = Math.random()
+      const randomB = Math.random()
       if (randomA > 0.75) {
         //进攻方状态大好，战力上升10%
         attackPower = Math.trunc(attackPower * 1.1)

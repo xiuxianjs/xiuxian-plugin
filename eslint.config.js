@@ -19,5 +19,10 @@ export default [
     }
   },
   js.configs.recommended,
-  ...typescriptEslint.configs.recommended
+  ...typescriptEslint.configs.recommended,
+  {
+    rules: {
+      'prefer-const': ['error', { destructuring: 'all' }]
+    }
+  }
 ]

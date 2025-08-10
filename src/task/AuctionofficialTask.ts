@@ -1,5 +1,8 @@
-import { redis, config, pushInfo } from '@src/api/api'
-import { openAU, readPlayer, addCoin, addNajieThing } from '@src/model'
+import { redis, config, pushInfo } from '@src/model/api'
+import { openAU } from '@src/model/trade'
+import { readPlayer } from '@src/model/xiuxian'
+import { addCoin } from '@src/model/economy'
+import { addNajieThing } from '@src/model/najie'
 import { scheduleJob } from 'node-schedule'
 
 scheduleJob('0 0/1 * * * ?', async () => {

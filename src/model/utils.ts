@@ -12,8 +12,8 @@ export function parseUnitNumber(input: string): number {
   if (!str) return 0
   const match = str.match(/^(\d+)(k|w|e)?$/i)
   if (!match) return Number(str) || 0
-  let [, num, unit] = match
-  let n = parseInt(num, 10)
+  const [, num, unit] = match
+  const n = parseInt(num, 10)
   if (isNaN(n)) return 0
   switch (unit) {
     case 'k':

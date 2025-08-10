@@ -1,14 +1,10 @@
-import { redis, data, pushInfo } from '@src/api/api'
-import {
-  notUndAndNull,
-  readPlayer,
-  addNajieThing,
-  addExp2,
-  addExp,
-  readTemp,
-  writeTemp,
-  __PATH
-} from '@src/model'
+import { redis, data, pushInfo } from '@src/model/api'
+import { notUndAndNull } from '@src/model/common'
+import { readPlayer } from '@src/model/xiuxian'
+import { addNajieThing } from '@src/model/najie'
+import { addExp2, addExp } from '@src/model/economy'
+import { readTemp, writeTemp } from '@src/model/temp'
+import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
@@ -17,7 +13,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
   //获取缓存中人物列表
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  for (let player_id of playerList) {
+  for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
@@ -37,13 +33,13 @@ scheduleJob('0 0/5 * * * ?', async () => {
       }
 
       //最后发送的消息
-      let msg: Array<DataMention | string> = [Mention(player_id)]
+      const msg: Array<DataMention | string> = [Mention(player_id)]
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      let now_time = new Date().getTime()
+      const now_time = new Date().getTime()
       //用户信息
-      let player = await readPlayer(player_id)
+      const player = await readPlayer(player_id)
 
       //有洗劫状态:这个直接结算即可
       if (action.mojie == '-1') {
@@ -53,12 +49,12 @@ scheduleJob('0 0/5 * * * ?', async () => {
         if (now_time > end_time) {
           let thing_name
           let thing_class
-          let x = 0.98
-          let random1 = Math.random()
-          let y = 0.4
-          let random2 = Math.random()
-          let z = 0.15
-          let random3 = Math.random()
+          const x = 0.98
+          const random1 = Math.random()
+          const y = 0.4
+          const random2 = Math.random()
+          const z = 0.15
+          const random3 = Math.random()
           let random4
           let m = ''
           let n = 1
@@ -100,7 +96,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             t1 = 2 + Math.random()
             t2 = 2 + Math.random()
           }
-          let random = Math.random()
+          const random = Math.random()
           if (random < player.幸运) {
             if (random < player.addluckyNo) {
               last_msg += '福源丹生效，所以在'
@@ -122,10 +118,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await data.setData('player', player_id, player)
           }
           //默认结算装备数
-          let now_level_id
-          let now_physique_id
-          now_level_id = player.level_id
-          now_physique_id = player.Physique_id
+          const now_level_id = player.level_id
+          const now_physique_id = player.Physique_id
           //结算
           let qixue = 0
           let xiuwei = 0
@@ -147,7 +141,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             ',剩余次数' +
             (action.cishu - 1)
           msg.push('\n' + player.名号 + last_msg + fyd_msg)
-          let arr = action
+          const arr = action
           if (arr.cishu == 1) {
             //把状态都关了
             arr.shutup = 1 //闭关状态
@@ -178,16 +172,16 @@ scheduleJob('0 0/5 * * * ?', async () => {
             await addExp2(player_id, qixue)
             await addExp(player_id, xiuwei)
             try {
-              let temp = await readTemp()
-              let p = {
+              const temp = await readTemp()
+              const p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               }
               temp.push(p)
               await writeTemp(temp)
             } catch {
-              let temp = []
-              let p = {
+              const temp = []
+              const p = {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq: player_id,
                 qq_group: push_address

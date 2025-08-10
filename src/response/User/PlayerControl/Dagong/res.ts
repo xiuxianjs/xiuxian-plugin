@@ -1,37 +1,36 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+// 直接 redis.get 改为 helper
 import { existplayer, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import { setDataByUserId } from '@src/model/Redis'
+import { getString, getJSON, userKey } from '@src/model/utils/redisHelper'
+import type { ActionState } from '@src/types/action'
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId //用户qq
+  const usr_qq = e.UserId //用户qq
   //有无存档
   if (!(await existplayer(usr_qq))) {
     return false
   }
   //获取游戏状态
-  let game_action: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await getString(userKey(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
-  if (game_action == 1) {
+  if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   //获取时间
-  let time: any = e.MessageText.replace(/^(#|＃|\/)?/, '')
-  time = time.replace('降妖', '')
-  time = time.replace('分', '')
-  time = time.replace('钟', '')
-  if (parseInt(time) == parseInt(time)) {
-    time = parseInt(time) //你选择的时间
-    let y = 15 //固定时间
-    let x = 48 //循环次数
+  let timeStr = e.MessageText.replace(/^(#|＃|\/)?/, '')
+  timeStr = timeStr.replace('降妖', '').replace('分', '').replace('钟', '')
+  let time: number
+  if (!Number.isNaN(parseInt(timeStr, 10))) {
+    time = parseInt(timeStr, 10) //你选择的时间
+    const y = 15 //固定时间
+    const x = 48 //循环次数
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
       if (time >= y * i) {
@@ -48,28 +47,27 @@ export default onResponse(selects, async e => {
     time = 30
   }
 
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.当前血量 < 200) {
     Send(Text('你都伤成这样了,先去疗伤吧'))
     return false
   }
   //查询redis中的人物动作
 
-  let action: any = await getDataByUserId(usr_qq, 'action')
-  action = JSON.parse(action)
+  const action = await getJSON<ActionState>(userKey(usr_qq, 'action'))
   if (action != null) {
     //人物有动作查询动作结束时间
-    let action_end_time = action.end_time
-    let now_time = new Date().getTime()
+    const action_end_time = action.end_time
+    const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
-      let m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      let s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
+      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
+      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
       Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
       return false
     }
   }
-  let action_time = time * 60 * 1000 //持续时间，单位毫秒
-  let arr = {
+  const action_time = time * 60 * 1000 //持续时间，单位毫秒
+  const arr = {
     action: '降妖', //动作
     end_time: new Date().getTime() + action_time, //结束时间
     time: action_time, //持续时间

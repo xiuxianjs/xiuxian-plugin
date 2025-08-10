@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { existplayer } from '@src/model'
 
 import { selects } from '@src/response/index'
@@ -8,14 +8,14 @@ export const regular = /^(#|＃|\/)?逃离/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) {
     Send(Text('没存档你逃个锤子!'))
     return false
   }
   //获取游戏状态
-  let game_action: any = await redis.get(
+  const game_action: any = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
       action.mojie == '0'
     ) {
       //把状态都关了
-      let arr = action
+      const arr = action
       arr.is_jiesuan = 1 //结算状态
       arr.shutup = 1 //闭关状态
       arr.working = 1 //降妖状态

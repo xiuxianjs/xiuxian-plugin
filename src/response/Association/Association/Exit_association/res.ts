@@ -1,27 +1,23 @@
 import { Text, useSend } from 'alemonjs'
-import {
-  __PATH,
-  getRandomFromARR,
-  notUndAndNull,
-  playerEfficiency
-} from '@src/model'
-import { config, data, redis } from '@src/api/api'
-import fs from 'fs'
+import { __PATH } from '@src/model/paths'
+import { getRandomFromARR, notUndAndNull } from '@src/model/common'
+import { playerEfficiency } from '@src/model/efficiency'
+import { config, data, redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?退出宗门$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await data.existData('player', usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  let player = await data.getData('player', usr_qq)
+  const player = await data.getData('player', usr_qq)
   if (!notUndAndNull(player.宗门)) return false
-  let now = new Date()
-  let nowTime = now.getTime() //获取当前时间戳
+  const now = new Date()
+  const nowTime = now.getTime() //获取当前时间戳
   let addTime
-  let time: any = config.getConfig('xiuxian', 'xiuxian').CD.joinassociation //分钟
+  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.joinassociation //分钟
   if (typeof player.宗门.time == 'undefined') {
     addTime = player.宗门.加入时间[1] + 60000 * time
   } else {
@@ -34,7 +30,7 @@ export default onResponse(selects, async e => {
   }
 
   if (player.宗门.职位 != '宗主') {
-    let ass = await data.getAssociation(player.宗门.宗门名称)
+    const ass = await data.getAssociation(player.宗门.宗门名称)
     ass[player.宗门.职位] = ass[player.宗门.职位].filter(item => item != usr_qq)
     ass['所有成员'] = ass['所有成员'].filter(item => item != usr_qq)
     data.setAssociation(ass.宗门名称, ass)
@@ -43,7 +39,7 @@ export default onResponse(selects, async e => {
     await playerEfficiency(usr_qq)
     Send(Text('退出宗门成功'))
   } else {
-    let ass = await data.getAssociation(player.宗门.宗门名称)
+    const ass = await data.getAssociation(player.宗门.宗门名称)
     if (ass.所有成员.length < 2) {
       await redis.del(`${__PATH.association}:${player.宗门.宗门名称}`)
       delete player.宗门 //删除存档里的宗门信息
@@ -70,7 +66,7 @@ export default onResponse(selects, async e => {
       } else {
         randmember_qq = await getRandomFromARR(ass.所有成员)
       }
-      let randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
+      const randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
       ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
         item => item != randmember_qq
       ) //原来的职位表删掉这个幸运儿

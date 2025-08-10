@@ -69,7 +69,7 @@ export const openMoneySystem = async (
   }
 
   // 系统: 收益太多限制
-  const maxMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000
+  // const maxMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000
 
   // 风控：玩家限制大过最小值
   const minMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000

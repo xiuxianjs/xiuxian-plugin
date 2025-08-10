@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import { BossIsAlive } from '../../boss'
 
 export const selects = onSelects(['message.create'])

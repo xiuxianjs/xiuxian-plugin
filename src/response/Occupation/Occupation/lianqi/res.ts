@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/api/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -15,26 +15,26 @@ export const regular = /^(#|＃|\/)?打造.*(\*[0-9]*)?$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
-  let ifexistplay = await existplayer(usr_qq)
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.occupation != '炼器师') {
     Send(Text('铜都不炼你还炼器？'))
     return false
   }
-  let t = e.MessageText.replace(/^(#|＃|\/)?打造/, '').split('*')
-  let equipment_name = t[0]
+  const t = e.MessageText.replace(/^(#|＃|\/)?打造/, '').split('*')
+  const equipment_name = t[0]
   let suc_rate = 0
   let tmp_msg1 = ''
   let tmp_msg2 = ''
-  let tuzhi = data.tuzhi_list.find(item => item.name == equipment_name)
+  const tuzhi = data.tuzhi_list.find(item => item.name == equipment_name)
   if (!tuzhi) {
     Send(Text(`世界上没有[${equipment_name}]的图纸`))
     return false
   }
-  let materials = tuzhi.materials
-  let exp = tuzhi.exp
+  const materials = tuzhi.materials
+  const exp = tuzhi.exp
   let res_exp
   suc_rate += tuzhi.rate
 
@@ -59,9 +59,9 @@ export default onResponse(selects, async e => {
     tmp_msg2 += `，获得炼器经验${res_exp}`
   }
   tmp_msg1 += '消耗'
-  for (let i in materials) {
-    let material = materials[i]
-    let x = await existNajieThing(usr_qq, material.name, '材料')
+  for (const i in materials) {
+    const material = materials[i]
+    const x = await existNajieThing(usr_qq, material.name, '材料')
     if (x < material.amount || !x) {
       Send(
         Text(`纳戒中拥有${material.name}×${x}，打造需要${material.amount}份`)
@@ -69,14 +69,14 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  for (let i in materials) {
-    let material = materials[i]
+  for (const i in materials) {
+    const material = materials[i]
     tmp_msg1 += `${material.name}×${material.amount}，`
     await addNajieThing(usr_qq, material.name, '材料', -material.amount)
   }
-  let rand1 = Math.random()
+  const rand1 = Math.random()
   if (rand1 > suc_rate) {
-    let random = Math.random()
+    const random = Math.random()
     if (random < 0.5) {
       Send(Text(`打造装备时不小心锤断了刃芯，打造失败！`))
     } else {
@@ -84,7 +84,7 @@ export default onResponse(selects, async e => {
     }
     return false
   }
-  let pinji = Math.trunc(Math.random() * 7)
+  const pinji = Math.trunc(Math.random() * 7)
   if (pinji > 5) {
     Send(Text('在你细致的把控下，一把绝世极品即将问世！！！！'))
     await sleep(10000)

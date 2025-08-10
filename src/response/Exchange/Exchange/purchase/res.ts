@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/api/api'
+import { redis } from '@src/model/api'
 import {
   Go,
   readPlayer,
@@ -16,22 +16,22 @@ export const regular = /^(#|＃|\/)?选购.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //全局状态判断
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) return false
   //防并发cd
-  let time0 = 0.5 //分钟cd
+  const time0 = 0.5 //分钟cd
   //获取当前时间
-  let now_time = new Date().getTime()
-  let Exchange_res = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD')
+  const now_time = new Date().getTime()
+  const Exchange_res = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD')
   const ExchangeCD = parseInt(Exchange_res)
-  let transferTimeout = Math.floor(60000 * time0)
+  const transferTimeout = Math.floor(60000 * time0)
   if (now_time < ExchangeCD + transferTimeout) {
-    let ExchangeCDm = Math.trunc(
+    const ExchangeCDm = Math.trunc(
       (ExchangeCD + transferTimeout - now_time) / 60 / 1000
     )
-    let ExchangeCDs = Math.trunc(
+    const ExchangeCDs = Math.trunc(
       ((ExchangeCD + transferTimeout - now_time) % 60000) / 1000
     )
     Send(
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
   }
   //记录本次执行时间
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
-  let player = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   let Exchange = []
   try {
     Exchange = await readExchange()
@@ -53,21 +53,21 @@ export default onResponse(selects, async e => {
     //没有表要先建立一个！
     await writeExchange([])
   }
-  let t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*')
-  let x = (await convert2integer(t[0])) - 1
+  const t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*')
+  const x = (await convert2integer(t[0])) - 1
   if (x >= Exchange.length) {
     return false
   }
-  let thingqq = Exchange[x].qq
+  const thingqq = Exchange[x].qq
   if (thingqq == usr_qq) {
     Send(Text('自己买自己的东西？我看你是闲得蛋疼！'))
     return false
   }
   //根据qq得到物品
-  let thing_name = Exchange[x].name.name
-  let thing_class = Exchange[x].name.class
-  let thing_amount = Exchange[x].aconut
-  let thing_price = Exchange[x].price
+  const thing_name = Exchange[x].name.name
+  const thing_class = Exchange[x].name.class
+  const thing_amount = Exchange[x].aconut
+  const thing_price = Exchange[x].price
   let n = await convert2integer(t[1])
   if (!t[1]) {
     n = thing_amount
@@ -76,7 +76,7 @@ export default onResponse(selects, async e => {
     Send(Text(`冲水堂没有这么多【${thing_name}】!`))
     return false
   }
-  let money = n * thing_price
+  const money = n * thing_price
   //查灵石
   if (player.灵石 > money) {
     //加物品

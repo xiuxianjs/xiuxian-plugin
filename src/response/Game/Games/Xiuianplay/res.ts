@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { config, data } from '@src/api/api'
+import { config, data } from '@src/model/api'
 import {
   readPlayer,
   notUndAndNull,
@@ -16,30 +16,29 @@ export const regular = /^(#|＃|\/)?怡红院$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = config.getConfig('xiuxian', 'xiuxian')
-  let switchgame = cf.switch.play
+  const switchgame = cf.switch.play
   if (switchgame != true) {
     return false
   }
   //统一用户ID名
-  let usr_qq = e.UserId
+  const usr_qq = e.UserId
   //全局状态判断
   //得到用户信息
-  let player = await readPlayer(usr_qq)
-  let now_level_id
+  const player = await readPlayer(usr_qq)
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) {
     return false
   }
-  now_level_id = data.Level_list.find(
+  const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
   //用id当作收益用
   //收益用
-  let money = now_level_id * 1000
+  const money = now_level_id * 1000
   //如果是渡劫期。大概收益用为33*1000=3.3w
   //为防止丹药修为报废，这个收益要成曲线下降
   //得到的修为
@@ -53,7 +52,7 @@ export default onResponse(selects, async e => {
     addlevel = (9 / now_level_id) * money
   }
   //随机数
-  let rand = Math.random()
+  const rand = Math.random()
   let ql1 =
     "门口的大汉粗鲁的将你赶出来:'哪来的野小子,没钱还敢来学人家公子爷寻欢作乐?' 被人看出你囊中羞涩,攒到"
   let ql2 = '灵石再来吧！'
@@ -63,7 +62,7 @@ export default onResponse(selects, async e => {
   }
   //加修为
   if (rand < 0.5) {
-    let randexp = 90 + Math.floor(Math.random() * 20)
+    const randexp = 90 + Math.floor(Math.random() * 20)
     Send(
       Text(
         '花费了' +
@@ -77,9 +76,9 @@ export default onResponse(selects, async e => {
     )
     await addExp(usr_qq, addlevel)
     await addCoin(usr_qq, -money)
-    let gameswitch = cf.switch.Xiuianplay_key
+    const gameswitch = cf.switch.Xiuianplay_key
     if (gameswitch == true) {
-      setu(e)
+      setu()
     }
     return false
   }

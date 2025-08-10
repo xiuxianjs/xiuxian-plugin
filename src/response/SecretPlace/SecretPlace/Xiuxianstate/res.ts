@@ -7,7 +7,7 @@ export const regular = /^(#|＃|\/)?修仙状态$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let flag = await Go(e)
+  const flag = await Go(e)
   if (!flag) {
     return
   }
