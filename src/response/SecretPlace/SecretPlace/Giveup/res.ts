@@ -1,7 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/model/api'
-import { existplayer } from '@src/model'
+import { existplayer } from '@src/model/index'
+import { readAction, stopAction } from '@src/response/actionHelper'
+import { userKey, getString } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?逃离/
@@ -15,42 +16,30 @@ export default onResponse(selects, async e => {
     return false
   }
   //获取游戏状态
-  const game_action: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await getString(userKey(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
-  if (game_action == 1) {
+  if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  action = JSON.parse(action)
-  //不为空，有状态
-  if (action != null) {
-    //是在秘境状态
-    if (
-      action.Place_action == '0' ||
-      action.Place_actionplus == '0' ||
-      action.mojie == '0'
-    ) {
-      //把状态都关了
-      const arr = action
-      arr.is_jiesuan = 1 //结算状态
-      arr.shutup = 1 //闭关状态
-      arr.working = 1 //降妖状态
-      arr.power_up = 1 //渡劫状态
-      arr.Place_action = 1 //秘境
-      arr.Place_actionplus = 1 //沉迷状态
-      arr.mojie = 1
-      arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
-      delete arr.group_id //结算完去除group_id
-      await redis.set(
-        'xiuxian@1.3.0:' + usr_qq + ':action',
-        JSON.stringify(arr)
-      )
-      Send(Text('你已逃离！'))
-      return false
-    }
+  const action = await readAction(usr_qq)
+  if (
+    action &&
+    (action.Place_action === '0' ||
+      action.Place_actionplus === '0' ||
+      action.mojie === '0')
+  ) {
+    await stopAction(usr_qq, {
+      is_jiesuan: 1,
+      shutup: '1',
+      working: '1',
+      power_up: '1',
+      Place_action: '1',
+      Place_actionplus: '1',
+      mojie: '1'
+    })
+    Send(Text('你已逃离！'))
+    return false
   }
 })

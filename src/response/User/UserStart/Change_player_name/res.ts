@@ -1,6 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
-import { existplayer, shijianc, readPlayer, writePlayer } from '@src/model'
+import {
+  existplayer,
+  shijianc,
+  readPlayer,
+  writePlayer
+} from '@src/model/index'
 import { Show_player } from '../user'
 import { selects } from '@src/response/index'
 

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
+import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { redis } from '@src/model/api'

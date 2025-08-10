@@ -6,7 +6,7 @@ import {
   readPlayer,
   writePlayer,
   addNajieThing
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?供奉神石$/

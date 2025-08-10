@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { Go } from '@src/model'
+import { Go } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?修仙状态$/

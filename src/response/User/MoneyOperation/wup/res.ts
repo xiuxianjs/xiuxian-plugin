@@ -7,7 +7,7 @@ import {
   addExp2,
   foundthing,
   addNajieThing
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?发(灵石|修为|血气|.*)\*\d+$/

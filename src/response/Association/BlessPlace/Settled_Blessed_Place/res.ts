@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
-import { __PATH, notUndAndNull, readPlayer } from '@src/model'
+import { __PATH, notUndAndNull, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?入驻洞天.*$/

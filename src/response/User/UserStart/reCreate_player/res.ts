@@ -13,7 +13,7 @@ import {
   writeEquipment,
   Write_najie,
   writePlayer
-} from '@src/model'
+} from '@src/model/index'
 import fs from 'fs'
 import { selects } from '@src/response/index'
 import { Show_player } from '../user'

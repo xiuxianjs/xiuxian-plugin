@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { Go, existplayer, readPlayer, writePlayer } from '@src/model'
+import { Go, existplayer, readPlayer, writePlayer } from '@src/model/index'
 import type { AnyMessageEvent } from '@src/model/common'
 
 import { selects } from '@src/response/index'

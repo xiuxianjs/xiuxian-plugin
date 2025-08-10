@@ -1,5 +1,5 @@
 import { data, pushInfo } from '@src/model/api'
-import { addNajieThing, addExp4 } from '@src/model'
+import { addNajieThing, addExp4 } from '@src/model/index'
 import { DataMention, Mention } from 'alemonjs'
 
 export async function plant_jiesuan(user_id, time, group_id?) {

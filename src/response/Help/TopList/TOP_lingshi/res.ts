@@ -1,6 +1,12 @@
 import { Image, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
-import { existplayer, __PATH, sortBy, sleep, readPlayer } from '@src/model'
+import {
+  existplayer,
+  __PATH,
+  sortBy,
+  sleep,
+  readPlayer
+} from '@src/model/index'
 import { selects } from '@src/response/index'
 import { getRankingMoneyImage } from '@src/model/image'
 

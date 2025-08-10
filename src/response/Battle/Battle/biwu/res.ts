@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { existplayer, readPlayer, zdBattle } from '@src/model'
+import { existplayer, readPlayer, zdBattle } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^(以武会友)$/

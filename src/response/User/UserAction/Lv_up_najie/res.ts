@@ -7,7 +7,7 @@ import {
   readPlayer,
   addCoin,
   Write_najie
-} from '@src/model'
+} from '@src/model/index'
 import { config } from '@src/model/api'
 
 import { selects } from '@src/response/index'

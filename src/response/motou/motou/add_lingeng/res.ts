@@ -6,7 +6,7 @@ import {
   existNajieThing,
   addNajieThing,
   writePlayer
-} from '@src/model'
+} from '@src/model/index'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?供奉魔石$/

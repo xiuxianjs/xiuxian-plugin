@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, writePlayer } from '@src/model'
+import { __PATH, writePlayer } from '@src/model/index'
 import { data } from '@src/model/api'
 import { selects } from '@src/response/index'
 import { redis } from '@src/model/api'

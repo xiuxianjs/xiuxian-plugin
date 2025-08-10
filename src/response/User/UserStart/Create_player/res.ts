@@ -9,7 +9,7 @@ import {
   Write_najie,
   addHP,
   writeDanyao
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { getPlayerImage } from '@src/model/image'

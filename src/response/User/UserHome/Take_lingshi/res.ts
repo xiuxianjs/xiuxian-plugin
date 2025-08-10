@@ -8,7 +8,7 @@ import {
   convert2integer,
   addBagCoin,
   addCoin
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(存|取)灵石(.*)$/

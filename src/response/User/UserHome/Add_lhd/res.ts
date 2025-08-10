@@ -1,7 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { existplayer, existNajieThing, sleep, addNajieThing } from '@src/model'
+import {
+  existplayer,
+  existNajieThing,
+  sleep,
+  addNajieThing
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?供奉奇怪的石头$/

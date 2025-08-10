@@ -8,7 +8,7 @@ import {
   addNajieThing,
   sleep,
   addExp4
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?打造.*(\*[0-9]*)?$/

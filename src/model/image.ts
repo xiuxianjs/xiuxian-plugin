@@ -489,7 +489,11 @@ export async function getGongfaImage(
   if (!player) {
     return
   }
-  const xuexi_gongfa = player.学习的功法
+  // 学习的功法 可能被旧版本存档写成非数组（例如对象或 undefined），这里做兼容
+  const rawXuexi = (player as unknown as { 学习的功法?: unknown }).学习的功法
+  const xuexi_gongfa: string[] = Array.isArray(rawXuexi)
+    ? rawXuexi.filter((v: unknown) => typeof v === 'string')
+    : []
   const gongfa_have: NamedItem[] = []
   const gongfa_need: NamedItem[] = []
   const gongfa = ['gongfa_list', 'timegongfa_list']
@@ -498,7 +502,7 @@ export async function getGongfaImage(
     if (!Array.isArray(arr)) continue
     for (const j of arr as NamedItem[]) {
       if (
-        xuexi_gongfa.find(item => item == j.name) &&
+        xuexi_gongfa.includes(j.name) &&
         !gongfa_have.find(item => item.name == j.name)
       ) {
         gongfa_have.push(j)

@@ -1,4 +1,4 @@
-// import { Goweizhi } from '@src/model'
+// import { Goweizhi } from '@src/model/index'
 import { data } from '@src/model/api'
 import { Goweizhi } from '@src/model/image'
 

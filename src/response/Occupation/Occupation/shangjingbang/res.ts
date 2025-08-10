@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs'
 
 import { redis, puppeteer } from '@src/model/api'
-import { existplayer } from '@src/model'
+import { existplayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?赏金榜$/

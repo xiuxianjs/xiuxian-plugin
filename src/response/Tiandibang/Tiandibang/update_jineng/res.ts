@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
-import { existplayer, readPlayer } from '@src/model'
+import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 import { selects } from '@src/response/index'
 import type { TalentInfo } from '@src/types/player'

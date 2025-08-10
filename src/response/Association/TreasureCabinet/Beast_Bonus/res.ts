@@ -7,7 +7,7 @@ import {
   readDanyao,
   writeDanyao,
   addNajieThing
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?神兽赐福$/

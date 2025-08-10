@@ -1,7 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/model/api'
-import { existplayer, looktripod, readTripod, writeDuanlu } from '@src/model'
+import {
+  existplayer,
+  looktripod,
+  readTripod,
+  writeDuanlu
+} from '@src/model/index'
+import { stopActionWithSuffix } from '@src/response/actionHelper'
+import { setValue, userKey } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?清空锻炉/
@@ -23,11 +29,9 @@ export default onResponse(selects, async e => {
         item.状态 = 0
         item.预计时长 = 0
         await writeDuanlu(newtripod)
-        const action: any = null
-        await redis.set(
-          'xiuxian@1.3.0:' + user_qq + ':action10',
-          JSON.stringify(action)
-        )
+        await stopActionWithSuffix(user_qq, 'action10')
+        // 显式清空 key（兼容旧逻辑使用 null）
+        await setValue(userKey(user_qq, 'action10'), null)
         Send(Text('材料成功清除'))
         return false
       }

@@ -7,7 +7,7 @@ import {
   existplayer,
   Go,
   readPlayer
-} from '@src/model'
+} from '@src/model/index'
 import { data } from '@src/model/api'
 
 import { selects } from '@src/response/index'

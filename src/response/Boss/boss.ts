@@ -5,6 +5,12 @@ import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
 import { __PATH } from '@src/model/paths'
+import {
+  readAction,
+  isActionRunning,
+  remainingMs,
+  formatRemaining
+} from '@src/response/actionHelper'
 
 export const WorldBossBattleInfo = {
   CD: {},
@@ -113,19 +119,7 @@ export async function GetAverageDamage() {
       : temp.length == 0
         ? 0
         : AverageDamage / temp.length
-  const res = {
-    AverageDamage: AverageDamage,
-    player_quantity: TotalPlayer
-  }
-  return res
-}
-
-//获取妖王是否已开启
-export async function BossIsAlive() {
-  return (
-    (await redis.get('Xiuxian:WorldBossStatus')) &&
-    (await redis.get('xiuxian@1.3.0Record'))
-  )
+  return { player_quantity: TotalPlayer, AverageDamage }
 }
 export async function Boss2IsAlive() {
   return (
@@ -133,27 +127,32 @@ export async function Boss2IsAlive() {
     (await redis.get('xiuxian@1.3.0Record2'))
   )
 }
+// 兼容旧引用：BossIsAlive 指向新版 Boss2IsAlive（妖王）
+export const BossIsAlive = Boss2IsAlive
 export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
   const send = useSend(e)
-  if (await BossIsAlive()) {
-    let WorldBossStatusStr: any = await redis.get('Xiuxian:WorldBossStatus2')
-    if (WorldBossStatusStr) {
-      WorldBossStatusStr = JSON.parse(WorldBossStatusStr)
-      if (new Date().getTime() - WorldBossStatusStr.KilledTime < 86400000) {
+  if (await Boss2IsAlive()) {
+    const statusStr = await redis.get('Xiuxian:WorldBossStatus2')
+    if (statusStr) {
+      const status = JSON.parse(statusStr) as {
+        KilledTime: number
+        Health: number
+        Reward: number
+      }
+      if (Date.now() - status.KilledTime < 86400000) {
         send(Text(`金角大王正在刷新,20点开启`))
         return false
-      } else if (WorldBossStatusStr.KilledTime != -1) {
-        // if ((await InitWorldBoss()) == false)
-        //   await this.LookUpWorldBossStatus(e)
-        // tudo
+      } else if (status.KilledTime != -1) {
         return false
       }
       const ReplyMsg = [
-        `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatusStr.Health}\n奖励:${WorldBossStatusStr.Reward}`
+        `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${status.Health}\n奖励:${status.Reward}`
       ]
       send(Text(ReplyMsg.join('\n')))
     }
-  } else send(Text('金角大王未开启！'))
+  } else {
+    send(Text('金角大王未开启！'))
+  }
   return false
 }
 //排序
@@ -180,7 +179,7 @@ export async function SortPlayer(PlayerRecordJSON) {
 export async function WorldBossBattle(e) {
   const send = useSend(e)
   const WorldBOSSBattleCD = WorldBossBattleInfo.CD
-  if (!(await BossIsAlive())) {
+  if (!(await Boss2IsAlive())) {
     send(Text('妖王未开启！'))
     return false
   }
@@ -188,8 +187,8 @@ export async function WorldBossBattle(e) {
   let Time = 5
   const now_Time = new Date().getTime() //获取当前时间戳
   Time = Math.floor(60000 * Time)
-  let last_time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + 'BOSSCD') //获得上次的时间戳,
-  last_time = parseInt(last_time)
+  const last_time_raw = await redis.get('xiuxian@1.3.0:' + usr_qq + 'BOSSCD')
+  const last_time = parseInt(last_time_raw || '0', 10)
   if (now_Time < last_time + Time) {
     const Couple_m = Math.trunc((last_time + Time - now_Time) / 60 / 1000)
     const Couple_s = Math.trunc(((last_time + Time - now_Time) % 60000) / 1000)
@@ -202,19 +201,11 @@ export async function WorldBossBattle(e) {
       send(Text('你在仙界吗'))
       return false
     }
-    let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-    action = JSON.parse(action)
-    if (action != null) {
-      const action_end_time = action.end_time
-      const now_time = new Date().getTime()
-      if (now_time <= action_end_time) {
-        const m = Math.floor((action_end_time - now_time) / 1000 / 60)
-        const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
-        send(
-          Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒')
-        )
-        return false
-      }
+    const action = await readAction(usr_qq)
+    if (isActionRunning(action)) {
+      const left = formatRemaining(remainingMs(action))
+      send(Text(`正在${action.action}中,剩余时间:${left}`))
+      return false
     }
     if (player.当前血量 <= player.血量上限 * 0.1) {
       send(Text('还是先疗伤吧，别急着参战了'))

@@ -1,7 +1,7 @@
 import { Text, useMessage, Image } from 'alemonjs'
 import { data, puppeteer, redis } from '@src/model/api'
 import { selects } from '@src/response/index'
-import { __PATH } from '@src/model'
+import { __PATH } from '@src/model/index'
 
 export const regular = /^(#|＃|\/)?洞天福地列表$/
 export default onResponse(selects, async e => {

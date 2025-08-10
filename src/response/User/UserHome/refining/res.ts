@@ -1,6 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, foundthing, readNajie, addNajieThing } from '@src/model'
+import {
+  existplayer,
+  foundthing,
+  readNajie,
+  addNajieThing
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?打磨.*$/

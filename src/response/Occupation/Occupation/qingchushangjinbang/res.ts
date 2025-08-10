@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer } from '@src/model'
+import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'

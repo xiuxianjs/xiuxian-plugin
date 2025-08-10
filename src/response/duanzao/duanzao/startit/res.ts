@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/model/api'
 import {
   existplayer,
   looktripod,
@@ -8,7 +7,15 @@ import {
   writeDuanlu,
   readDanyao,
   writeDanyao
-} from '@src/model'
+} from '@src/model/index'
+import {
+  readActionWithSuffix,
+  isActionRunning,
+  startActionWithSuffix,
+  remainingMs,
+  formatRemaining
+} from '@src/response/actionHelper'
+import { setValue, userKey } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?开始炼制/
@@ -35,44 +42,53 @@ export default onResponse(selects, async e => {
         Send(Text(`炉子为空,无法炼制`))
         return false
       }
-      const action_res = await redis.get('xiuxian@1.3.0:' + user_qq + ':action10')
-      const action = JSON.parse(action_res)
-      if (action != null) {
-        //人物有动作查询动作结束时间
-        const action_end_time = action.end_time
-        const now_time = new Date().getTime()
-        if (now_time <= action_end_time) {
-          const m = Math.floor((action_end_time - now_time) / 1000 / 60)
-          const s = Math.floor(
-            (action_end_time - now_time - m * 60 * 1000) / 1000
+      const action = await readActionWithSuffix(user_qq, 'action10')
+      if (isActionRunning(action)) {
+        Send(
+          Text(
+            `正在${action!.action}中，剩余时间:${formatRemaining(remainingMs(action!))}`
           )
-          Send(
-            Text('正在' + action.action + '中，剩余时间:' + m + '分' + s + '秒')
-          )
-          return false
-        }
+        )
+        return false
       }
       item.状态 = 1
       item.TIME = Date.now()
       await writeDuanlu(newtripod)
       const action_time = 180 * 60 * 1000 //持续时间，单位毫秒
-      const arr = {
-        action: '锻造', //动作
-        end_time: new Date().getTime() + action_time, //结束时间
-        time: action_time //持续时间
+      const arr = await startActionWithSuffix(
+        user_qq,
+        'action10',
+        '锻造',
+        action_time,
+        {}
+      )
+      const rawDy = await readDanyao(user_qq)
+      interface LuckBuffLike {
+        xingyun?: number
+        beiyong5?: number
       }
-      const dy = await readDanyao(user_qq)
-      if (dy.xingyun >= 1) {
-        dy.xingyun--
-        if (dy.xingyun == 0) {
-          dy.beiyong5 = 0
+      let needWrite = false
+      // 兼容：遍历数组里包含 xingyun/beiyong5 字段的条目
+      let xingyunAfter = -1
+      for (const it of rawDy) {
+        const ref = it as unknown as LuckBuffLike
+        if (typeof ref.xingyun === 'number' && ref.xingyun >= 1) {
+          ref.xingyun--
+          xingyunAfter = ref.xingyun
+          needWrite = true
         }
       }
-      await writeDanyao(user_qq, dy)
-      await redis.set(
-        'xiuxian@1.3.0:' + user_qq + ':action10',
-        JSON.stringify(arr)
-      ) //redis设置动作
+      if (xingyunAfter === 0) {
+        for (const it of rawDy) {
+          const ref = it as unknown as LuckBuffLike
+          if (typeof ref.beiyong5 === 'number' && ref.beiyong5 > 0) {
+            ref.beiyong5 = 0
+            needWrite = true
+          }
+        }
+      }
+      if (needWrite) await writeDanyao(user_qq, rawDy)
+      await setValue(userKey(user_qq, 'action10'), arr)
       Send(Text(`现在开始锻造武器,最少需锻造30分钟,高级装备需要更多温养时间`))
       return false
     }

@@ -1,7 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { existplayer, readPlayer, shijianc, writePlayer } from '@src/model'
+import {
+  existplayer,
+  readPlayer,
+  shijianc,
+  writePlayer
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?踏入神界$/

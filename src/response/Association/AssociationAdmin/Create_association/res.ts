@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { notUndAndNull, setFileValue, timestampToTime } from '@src/model'
+import { notUndAndNull, setFileValue, timestampToTime } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?开宗立派$/

@@ -1,7 +1,7 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
-import { existplayer, addCoin } from '@src/model'
+import { existplayer, addCoin } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?抢红包$/

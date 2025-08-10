@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
-import { notUndAndNull, addNajieThing } from '@src/model'
+import { notUndAndNull, addNajieThing } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?拔苗助长.*$/

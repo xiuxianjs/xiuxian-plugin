@@ -7,7 +7,7 @@ import {
   existNajieThing,
   zdBattle,
   writePlayer
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?刺杀目标.*$/
@@ -25,7 +25,9 @@ export default onResponse(selects, async e => {
     const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
       const m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
+      const s = Math.floor(
+        (A_action_end_time - now_time - m * 60 * 1000) / 1000
+      )
       Send(
         Text('正在' + A_action.action + '中,剩余时间:' + m + '分' + s + '秒')
       )

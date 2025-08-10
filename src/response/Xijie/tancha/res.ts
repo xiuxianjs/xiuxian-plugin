@@ -1,7 +1,13 @@
 import { Text, Image, useSend } from 'alemonjs'
 
 import { data, puppeteer } from '@src/model/api'
-import { getString, getJSON, userKey } from '@src/model/utils/redisHelper'
+import { getString, userKey } from '@src/model/utils/redisHelper'
+import {
+  readAction,
+  isActionRunning,
+  remainingMs,
+  formatRemaining
+} from '@src/response/actionHelper'
 import {
   existplayer,
   readShop,
@@ -9,7 +15,7 @@ import {
   readPlayer,
   addCoin,
   existshop
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?探查.*$/
@@ -27,21 +33,14 @@ export default onResponse(selects, async e => {
     return false
   }
   //查询redis中的人物动作
-  interface ActionInfo {
-    end_time: number
-    action: string
-  }
-  const action = await getJSON<ActionInfo>(userKey(usr_qq, 'action'))
-  if (action != null) {
-    //人物有动作查询动作结束时间
-    const action_end_time = action.end_time
-    const now_time = new Date().getTime()
-    if (now_time <= action_end_time) {
-      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
-      return false
-    }
+  const action = await readAction(usr_qq)
+  if (isActionRunning(action)) {
+    Send(
+      Text(
+        `正在${action!.action}中,剩余时间:${formatRemaining(remainingMs(action!))}`
+      )
+    )
+    return false
   }
   let didian = e.MessageText.replace(/^(#|＃|\/)?探查/, '')
   didian = didian.trim()
@@ -49,7 +48,13 @@ export default onResponse(selects, async e => {
   try {
     shop = await readShop()
   } catch {
-    await writeShop(data.shop_list)
+    // 将原始 shop_list 转换为写入所需结构（确保存在 one 数组）
+    const converted = data.shop_list.map(item => ({
+      name: (item as any).name,
+      one: (item as any).one || [],
+      ...(item as Record<string, unknown>)
+    })) as unknown as Parameters<typeof writeShop>[0]
+    await writeShop(converted)
     shop = await readShop()
   }
   let i

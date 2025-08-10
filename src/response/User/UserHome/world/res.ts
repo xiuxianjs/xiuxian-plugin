@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
-import { __PATH } from '@src/model'
+import { __PATH } from '@src/model/index'
 export const regular = /^(#|＃|\/)?修仙世界$/
 
 export default onResponse(selects, async e => {

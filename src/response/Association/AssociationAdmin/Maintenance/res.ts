@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { config, data } from '@src/model/api'
-import { notUndAndNull, shijianc } from '@src/model'
+import { notUndAndNull, shijianc } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/

@@ -8,7 +8,7 @@ import {
   addExp,
   addCoin,
   setu
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?怡红院$/

@@ -1,7 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { existplayer, foundthing, addNajieThing, addCoin } from '@src/model'
+import {
+  existplayer,
+  foundthing,
+  addNajieThing,
+  addCoin
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键回收(.*)$/

@@ -1,6 +1,6 @@
 import { Text, useSend, useMention } from 'alemonjs'
 
-import { existplayer, readPlayer, writePlayer } from '@src/model'
+import { existplayer, readPlayer, writePlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|\/)打落凡间.*$/

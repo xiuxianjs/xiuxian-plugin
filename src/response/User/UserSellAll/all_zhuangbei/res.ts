@@ -6,7 +6,7 @@ import {
   readPlayer,
   foundthing,
   insteadEquipment
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { getQquipmentImage } from '@src/model/image'

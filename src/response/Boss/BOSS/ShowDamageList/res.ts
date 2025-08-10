@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { sleep } from '@src/model'
+import { sleep } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
 export const selects = onSelects(['message.create'])

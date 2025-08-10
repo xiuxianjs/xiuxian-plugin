@@ -8,7 +8,7 @@ import {
   foundthing,
   existNajieThing,
   addNajieThing
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { parseUnitNumber } from '@src/model/utils'
@@ -131,7 +131,12 @@ export default onResponse(selects, async e => {
     equ = najie.仙宠.find(item => item.name == thing_name)
   }
 
-  const x = await existNajieThing(A_qq, thing_name, thing_exist.class, thing_piji)
+  const x = await existNajieThing(
+    A_qq,
+    thing_name,
+    thing_exist.class,
+    thing_piji
+  )
   if (x < quantity || !x) {
     Send(Text(`你还没有这么多[${thing_name}]`))
     return false

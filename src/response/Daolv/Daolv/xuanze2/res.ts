@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { readPlayer, readQinmidu, writeQinmidu } from '@src/model'
+import { readPlayer, readQinmidu, writeQinmidu } from '@src/model/index'
 import { Daolv, found } from '../daolv'
 
 import { selects } from '@src/response/index'

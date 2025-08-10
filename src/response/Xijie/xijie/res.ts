@@ -8,10 +8,18 @@ import {
   writeShop,
   readPlayer,
   writePlayer
-} from '@src/model'
+} from '@src/model/index'
+import {
+  readAction,
+  isActionRunning,
+  startAction,
+  formatRemaining,
+  remainingMs
+} from '@src/response/actionHelper'
+import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import { setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?洗劫.*$/
 
 export default onResponse(selects, async e => {
@@ -21,32 +29,27 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  const game_action: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await getString(userKey(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
-  if (game_action == 1) {
+  if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   //查询redis中的人物动作
-  let action: any = await getDataByUserId(usr_qq, 'action')
-  action = JSON.parse(action)
-  const now_time = new Date().getTime()
-  if (action != null) {
-    //人物有动作查询动作结束时间
-    const action_end_time = action.end_time
-    if (now_time <= action_end_time) {
-      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
-      return false
-    }
+  const now_time = Date.now()
+  const current = await readAction(usr_qq)
+  if (isActionRunning(current)) {
+    Send(
+      Text(
+        `正在${current!.action}中,剩余时间:${formatRemaining(remainingMs(current!))}`
+      )
+    )
+    return false
   }
-  let lastxijie_time: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':lastxijie_time'
+  const lastxijie_raw = await redis.get(
+    `xiuxian@1.3.0:${usr_qq}:lastxijie_time`
   )
-  lastxijie_time = parseInt(lastxijie_time)
+  const lastxijie_time = lastxijie_raw ? parseInt(lastxijie_raw, 10) : 0
   if (now_time < lastxijie_time + 7200000) {
     const lastxijie_m = Math.trunc(
       (lastxijie_time + 7200000 - now_time) / 60 / 1000
@@ -73,8 +76,13 @@ export default onResponse(selects, async e => {
   let shop
 
   shop = await readShop()
-  if (shop.length == 0) {
-    await writeShop(data.shop_list)
+  if (shop.length === 0) {
+    // 将 ShopItem 转为 ShopData: 只保留 one 槽位, 其余保持空数组
+    const converted = data.shop_list.map(item => ({
+      name: item.name,
+      one: (item.one || []).map(g => ({ name: g.name, 数量: g.数量 }))
+    }))
+    await writeShop(converted)
     shop = await readShop()
   }
   let i
@@ -118,7 +126,7 @@ export default onResponse(selects, async e => {
   //锁定属性
   const A_player = {
     名号: player.名号,
-    攻击: parseInt(player.攻击),
+    攻击: parseInt(String(player.攻击), 10),
     防御: Math.floor(player.防御 * buff),
     当前血量: Math.floor(player.血量上限 * buff),
     暴击率: player.暴击率,
@@ -129,26 +137,22 @@ export default onResponse(selects, async e => {
   if (player.魔道值 > 999) {
     A_player.魔值 = 1
   }
-  const time: any = 15 //时间（分钟）
+  const time = 15 //时间（分钟）
   const action_time = 60000 * time //持续时间，单位毫秒
-  const arr = {
-    action: '洗劫', //动作
-    end_time: new Date().getTime() + action_time, //结束时间
-    time: action_time, //持续时间
-    shutup: '1', //闭关
-    working: '1', //降妖
-    Place_action: '1', //秘境状态---关闭
-    mojie: '1', //魔界状态---关闭
-    Place_actionplus: '1', //沉迷秘境状态---关闭
-    power_up: '1', //渡劫状态--关闭
-    xijie: '0', //洗劫状态开启
-    plant: '1', //采药-开启
-    mine: '1', //采矿-开启
-    //这里要保存秘境特别需要留存的信息
+  const arr = await startAction(usr_qq, '洗劫', action_time, {
+    shutup: '1',
+    working: '1',
+    Place_action: '1',
+    mojie: '1',
+    Place_actionplus: '1',
+    power_up: '1',
+    xijie: '0',
+    plant: '1',
+    mine: '1',
     Place_address: shop[i],
     A_player: A_player
-  }
-  await setDataByUserId(usr_qq, 'action', JSON.stringify(arr))
+  })
+  await setValue(userKey(usr_qq, 'action'), arr)
   await setDataByUserId(usr_qq, 'lastxijie_time', now_time)
   msg += '\n开始前往' + didian + ',祝你好运!'
   Send(Text(msg))

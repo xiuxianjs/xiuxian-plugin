@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs'
 import { redis, puppeteer } from '@src/model/api'
-import { existplayer, readPlayer, __PATH } from '@src/model'
+import { existplayer, readPlayer, __PATH } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?悬赏目标$/

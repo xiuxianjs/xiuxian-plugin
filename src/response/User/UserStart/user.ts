@@ -4,7 +4,7 @@ import {
   PublicEventMessageCreate,
   useSend
 } from 'alemonjs'
-import { existplayer } from '@src/model'
+import { existplayer } from '@src/model/index'
 import { getPlayerImage } from '@src/model/image'
 
 export async function Show_player(

@@ -7,7 +7,7 @@ import {
   alluser,
   readNajie,
   readEquipment
-} from '@src/model'
+} from '@src/model/index'
 import type { CustomEquipRecord } from '@src/model/duanzaofu'
 
 import { selects } from '@src/response/index'

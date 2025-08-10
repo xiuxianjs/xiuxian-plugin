@@ -1,7 +1,14 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis } from '@src/model/api'
-import { existplayer, readPlayer, writePlayer } from '@src/model'
+import { existplayer, readPlayer, writePlayer } from '@src/model/index'
+import {
+  readAction,
+  isActionRunning,
+  startAction,
+  remainingMs,
+  formatRemaining
+} from '@src/response/actionHelper'
+import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?堕入魔界$/
@@ -12,27 +19,21 @@ export default onResponse(selects, async e => {
   //查看存档
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const game_action: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await getString(userKey(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
-  if (game_action == 1) {
+  if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  action = JSON.parse(action)
-  if (action != null) {
-    //人物有动作查询动作结束时间
-    const action_end_time = action.end_time
-    const now_time = new Date().getTime()
-    if (now_time <= action_end_time) {
-      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
-      return false
-    }
+  const current = await readAction(usr_qq)
+  if (isActionRunning(current)) {
+    Send(
+      Text(
+        `正在${current!.action}中,剩余时间:${formatRemaining(remainingMs(current!))}`
+      )
+    )
+    return false
   }
   const player = await readPlayer(usr_qq)
   if (player.魔道值 < 1000) {
@@ -46,23 +47,20 @@ export default onResponse(selects, async e => {
   player.魔道值 -= 100
   player.修为 -= 4000000
   await writePlayer(usr_qq, player)
-  const time: any = 60 //时间（分钟）
-  const action_time = 60000 * time //持续时间，单位毫秒
-  const arr = {
-    action: '魔界', //动作
-    end_time: new Date().getTime() + action_time, //结束时间
-    time: action_time, //持续时间
-    shutup: '1', //闭关
-    working: '1', //降妖
-    Place_action: '1', //秘境状态---关闭
-    mojie: '0', //魔界状态---关闭
-    Place_actionplus: '1', //沉迷秘境状态---关闭
-    power_up: '1', //渡劫状态--关闭
-    xijie: '1', //洗劫状态开启
-    plant: '1', //采药-开启
-    mine: '1', //采矿-开启
-    cishu: '10'
-  }
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr))
-  Send(Text('开始进入魔界,' + time + '分钟后归来!'))
+  const time = 60
+  const action_time = time * 60 * 1000
+  const arr = await startAction(usr_qq, '魔界', action_time, {
+    shutup: '1',
+    working: '1',
+    Place_action: '1',
+    mojie: '0',
+    Place_actionplus: '1',
+    power_up: '1',
+    xijie: '1',
+    plant: '1',
+    mine: '1',
+    cishu: 10
+  })
+  await setValue(userKey(usr_qq, 'action'), arr)
+  Send(Text(`开始进入魔界,${time}分钟后归来!`))
 })

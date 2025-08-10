@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   looktripod,
@@ -13,9 +13,17 @@ import {
   mainyuansu,
   addNajieThing,
   addExp4
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import {
+  readActionWithSuffix,
+  isActionRunning,
+  remainingMs,
+  formatRemaining,
+  stopActionWithSuffix
+} from '@src/response/actionHelper'
+import { userKey, setValue } from '@src/model/utils/redisHelper'
 export const regular = /^(#|＃|\/)?开炉/
 
 export default onResponse(selects, async e => {
@@ -55,10 +63,19 @@ export default onResponse(selects, async e => {
       }
       //关闭状态
 
-      let action: any = await redis.get(
-        'xiuxian@1.3.0:' + user_qq + ':action10'
-      )
-      action = JSON.parse(action)
+      const action = await readActionWithSuffix(user_qq, 'action10')
+      if (!action) {
+        Send(Text('未开始锻造或未达到最短锻造时间'))
+        return false
+      }
+      if (isActionRunning(action)) {
+        Send(
+          Text(
+            `正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`
+          )
+        )
+        return false
+      }
 
       //判断属性九维值
       let cailiao
@@ -99,16 +116,14 @@ export default onResponse(selects, async e => {
 
       //寻找符合标准的装备
       const newwupin = await readAll(weizhi)
-      const bizhi = []
+      type EquipLike = { atk: number; def: number; HP: number; name: string }
+      const list = newwupin as unknown as EquipLike[]
+      const bizhi: number[] = []
 
-      for (const item2 in newwupin) {
-        bizhi[item2] = Math.abs(
-          newwupin[item2].atk -
-            jiuwei[0] +
-            newwupin[item2].def -
-            jiuwei[1] +
-            newwupin[item2].HP -
-            jiuwei[2]
+      for (let idx = 0; idx < list.length; idx++) {
+        const eq = list[idx]
+        bizhi[idx] = Math.abs(
+          eq.atk - jiuwei[0] + eq.def - jiuwei[1] + eq.HP - jiuwei[2]
         )
       }
       let min = bizhi[0]
@@ -119,7 +134,7 @@ export default onResponse(selects, async e => {
           new1 = item3
         }
       }
-      const wuqiname = newwupin[new1].name
+      const wuqiname = list[new1!].name
       const num = jiuwei[0] + jiuwei[1] + jiuwei[2]
       //计算所用时间(毫秒)带来的收益
       const overtime = (80 * num + 10) * 1000 * 60
@@ -137,10 +152,16 @@ export default onResponse(selects, async e => {
       //计算五维收益
       let i
       let qianzhui = 0
-      const wuwei: any = [jiuwei[4], jiuwei[5], jiuwei[6], jiuwei[7], jiuwei[8]]
+      const wuwei: number[] = [
+        jiuwei[4],
+        jiuwei[5],
+        jiuwei[6],
+        jiuwei[7],
+        jiuwei[8]
+      ]
       const wuxing = ['金', '木', '土', '水', '火']
       let max = wuwei[0]
-      let shuzu = [wuwei[0]]
+      let shuzu: string[] = [wuxing[0]]
       for (i = 0; i < wuwei.length; i++) {
         if (max < wuwei[i]) {
           max = wuwei[i]
@@ -152,7 +173,10 @@ export default onResponse(selects, async e => {
           qianzhui++
         }
       }
-      max = await getxuanze(shuzu, player.隐藏灵根.type)
+      const choose = await getxuanze(shuzu, player.隐藏灵根.type)
+      // getxuanze 返回 [string, number] 或 false，保留原逻辑 max[1] 用于 id
+      const selectArr = Array.isArray(choose) ? choose : ['无', 0]
+      const maxTuple = selectArr as [string, number]
       let fangyuxuejian = 0
       if (qianzhui == 5) {
         houzhui = '五行杂灵'
@@ -178,7 +202,7 @@ export default onResponse(selects, async e => {
       const newtime1 = Date.now() - Math.floor(Date.now() / 1000) * 1000
       const sum = jiuwei[0] + jiuwei[1] + jiuwei[2]
       const zhuangbei = {
-        id: max[1],
+        id: maxTuple[1],
         name: wuqiname + '·' + houzhui + newtime1,
         class: '装备',
         type: wehizhi1,
@@ -215,11 +239,10 @@ export default onResponse(selects, async e => {
       item.数量 = []
       await writeDuanlu(newtripod)
       //清除时间
-      const time = new Date().getTime()
-      await redis.set(
-        'xiuxian@1.3.0:' + user_qq + ':action10',
-        JSON.stringify(time)
-      )
+      // 结束标记：已在上面 stopActionWithSuffix 写入
+      await stopActionWithSuffix(user_qq, 'action10')
+      // 标记结束时间戳（可选：写入当前时间覆盖 key）
+      await setValue(userKey(user_qq, 'action10'), Date.now())
       Send(Text(`恭喜你获得了[${wuqiname}·${houzhui}],炼器经验增加了[${z}]`))
       return false
     }

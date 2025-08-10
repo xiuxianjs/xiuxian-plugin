@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
-import { existplayer, addNajieThing } from '@src/model'
+import { existplayer, addNajieThing } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?活动兑换.*$/

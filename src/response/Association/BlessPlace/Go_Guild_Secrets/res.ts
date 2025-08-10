@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
-import { Go, readPlayer, notUndAndNull, addCoin } from '@src/model'
+import { Go, readPlayer, notUndAndNull, addCoin } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/

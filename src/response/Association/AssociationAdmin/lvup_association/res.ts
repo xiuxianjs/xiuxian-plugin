@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { notUndAndNull, playerEfficiency } from '@src/model'
+import { notUndAndNull, playerEfficiency } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/

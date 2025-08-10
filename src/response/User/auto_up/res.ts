@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, readPlayer } from '@src/model'
+import { existplayer, readPlayer } from '@src/model/index'
 import { Level_up } from '../Level/level'
 import type { AnyMessageEvent } from '@src/model/common'
 

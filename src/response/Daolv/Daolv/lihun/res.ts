@@ -2,16 +2,21 @@ import { Text, useMention, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 import {
+  readAction,
+  isActionRunning,
+  remainingMs,
+  formatRemaining
+} from '@src/response/actionHelper'
+import {
   existplayer,
   readQinmidu,
   writeQinmidu,
   findQinmidu,
   readPlayer
-} from '@src/model'
+} from '@src/model/index'
 import { found, chaoshi, Daolv } from '../daolv'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?^(断绝姻缘)$/
 
 export default onResponse(selects, async e => {
@@ -21,20 +26,14 @@ export default onResponse(selects, async e => {
   if (!ifexistplay_A) {
     return false
   }
-  let A_action: any = await getDataByUserId(A, 'action')
-  A_action = JSON.parse(A_action)
-  if (A_action != null) {
-    const now_time = new Date().getTime()
-    //人物任务的动作是否结束
-    const A_action_end_time = A_action.end_time
-    if (now_time <= A_action_end_time) {
-      const m = Math.floor((A_action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((A_action_end_time - now_time - m * 60 * 1000) / 1000)
-      Send(
-        Text('正在' + A_action.action + '中,剩余时间:' + m + '分' + s + '秒')
+  const A_action = await readAction(A)
+  if (isActionRunning(A_action)) {
+    Send(
+      Text(
+        `正在${A_action!.action}中,剩余时间:${formatRemaining(remainingMs(A_action!))}`
       )
-      return false
-    }
+    )
+    return false
   }
   const last_game_timeA = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_game_time'
@@ -63,22 +62,14 @@ export default onResponse(selects, async e => {
     Send(Text('修仙者不可对凡人出手!'))
     return false
   }
-  let B_action: any = await redis.get('xiuxian@1.3.0:' + B + ':action')
-  B_action = JSON.parse(B_action)
-  if (B_action != null) {
-    const now_time = new Date().getTime()
-    //人物任务的动作是否结束
-    const B_action_end_time = B_action.end_time
-    if (now_time <= B_action_end_time) {
-      const m = Math.floor((B_action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((B_action_end_time - now_time - m * 60 * 1000) / 1000)
-      Send(
-        Text(
-          '对方正在' + B_action.action + '中,剩余时间:' + m + '分' + s + '秒'
-        )
+  const B_action = await readAction(B)
+  if (isActionRunning(B_action)) {
+    Send(
+      Text(
+        `对方正在${B_action!.action}中,剩余时间:${formatRemaining(remainingMs(B_action!))}`
       )
-      return false
-    }
+    )
+    return false
   }
   const last_game_timeB = await redis.get(
     'xiuxian@1.3.0:' + B + ':last_game_time'

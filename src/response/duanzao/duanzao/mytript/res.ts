@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, looktripod, readMytripod } from '@src/model'
+import { existplayer, looktripod, readMytripod } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?我的锻炉/

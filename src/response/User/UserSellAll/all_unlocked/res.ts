@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { existplayer, Write_najie } from '@src/model'
+import { existplayer, Write_najie } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键解锁(.*)$/

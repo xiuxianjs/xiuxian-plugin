@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data } from '@src/model/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   looktripod,
@@ -12,7 +12,7 @@ import {
   readTripod,
   writeDuanlu,
   addNajieThing
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?熔炼.*$/
@@ -23,15 +23,7 @@ export default onResponse(selects, async e => {
   //有无存档
   if (!(await existplayer(user_qq))) return false
   //不开放私聊
-  //获取游戏状态
-  const game_action = await redis.get(
-    'xiuxian@1.3.0:' + user_qq + ':game_action'
-  )
-  //防止继续其他娱乐行为
-  if (+game_action == 1) {
-    Send(Text('修仙：游戏进行中...'))
-    return false
-  }
+  //（已弃用 game_action 直接 redis 检查，若需要应接入统一状态辅助工具）
   const A = await looktripod(user_qq)
   if (A != 1) {
     Send(Text(`请先去#炼器师能力评测,再来煅炉吧`))
@@ -46,13 +38,18 @@ export default onResponse(selects, async e => {
   const code = thing.split('*')
   const thing_name = code[0] //物品
   const account = code[1] //数量
-  const thing_acount = await convert2integer(account)
+  const parsedCount = await convert2integer(account)
+  const thing_acount =
+    typeof parsedCount === 'number' && !Number.isNaN(parsedCount)
+      ? parsedCount
+      : 1
   const wupintype = await foundthing(thing_name)
   if (!wupintype || wupintype.type != '锻造') {
     Send(Text(`凡界物品无法放入煅炉`))
     return false
   }
-  const mynum = await existNajieThing(user_qq, thing_name, '材料')
+  const mynumRaw = await existNajieThing(user_qq, thing_name, '材料')
+  const mynum = typeof mynumRaw === 'number' ? mynumRaw : 0
   if (mynum < thing_acount) {
     Send(Text(`材料不足,无法放入`))
     return false
@@ -74,9 +71,14 @@ export default onResponse(selects, async e => {
     num += Number(tripod.数量[item])
   }
   let dyew = 0
-  const dy = await readDanyao(user_qq)
-  if (dy.beiyong5 > 0) {
-    dyew = dy.beiyong5
+  // 兼容：遍历丹药数组查找附加容量 buff (beiyong5)
+  const dyList = await readDanyao(user_qq)
+  for (const d of dyList) {
+    const extra = (d as unknown as { beiyong5?: number }).beiyong5
+    if (typeof extra === 'number' && extra > 0) {
+      dyew = extra
+      break
+    }
   }
   const shengyu =
     dyew +

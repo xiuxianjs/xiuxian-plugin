@@ -1,6 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existplayer, convert2integer, readPlayer, addCoin } from '@src/model'
+import {
+  existplayer,
+  convert2integer,
+  readPlayer,
+  addCoin
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?交税[1-9]d*/

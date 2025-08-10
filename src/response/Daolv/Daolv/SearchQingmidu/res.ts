@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, findQinmidu, sleep } from '@src/model'
+import { __PATH, findQinmidu, sleep } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { redis } from '@src/model/api'

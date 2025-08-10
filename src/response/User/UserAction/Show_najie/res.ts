@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs'
 
-import { existplayer } from '@src/model'
+import { existplayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { getNajieImage } from '@src/model/image'

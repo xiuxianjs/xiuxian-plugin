@@ -7,7 +7,7 @@ import {
   getLastsign,
   addNajieThing,
   addExp
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import type { LastSignTime } from '@src/model/common'

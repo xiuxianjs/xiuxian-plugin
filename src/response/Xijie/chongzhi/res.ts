@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { readShop, writeShop } from '@src/model'
+import { readShop, writeShop } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?重置.*$/

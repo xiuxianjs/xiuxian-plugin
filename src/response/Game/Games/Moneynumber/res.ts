@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import { config, data, redis } from '@src/model/api'
-import { Go } from '@src/model'
+import { Go } from '@src/model/index'
 import { selects } from '@src/response/index'
 import { game } from '../game'
 

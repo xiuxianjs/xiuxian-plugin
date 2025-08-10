@@ -8,7 +8,7 @@ import {
   addNajieThing,
   zdBattle,
   addCoin
-} from '@src/model'
+} from '@src/model/index'
 import { readTiandibang, Write_tiandibang, getLastbisai } from '../tian'
 
 import { selects } from '@src/response/index'

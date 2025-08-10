@@ -1,6 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 import { redis, data, config } from '@src/model/api'
-import { existplayer, readPlayer, notUndAndNull, addCoin } from '@src/model'
+import {
+  existplayer,
+  readPlayer,
+  notUndAndNull,
+  addCoin
+} from '@src/model/index'
 import { selects } from '@src/response/index'
 import { openMoneySystem } from '@src/model/money'
 import { game } from '../game'

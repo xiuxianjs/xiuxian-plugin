@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { readDanyao, readPlayer } from '@src/model'
+import { readDanyao, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?我的药效$/

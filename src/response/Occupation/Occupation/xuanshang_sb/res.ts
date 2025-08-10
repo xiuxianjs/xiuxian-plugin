@@ -6,7 +6,7 @@ import {
   readPlayer,
   convert2integer,
   writePlayer
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?悬赏.*$/

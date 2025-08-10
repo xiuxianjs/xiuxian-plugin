@@ -1,5 +1,5 @@
 import { redis, data, puppeteer } from '@src/model/api'
-import { __PATH, shijianc, readPlayer } from '@src/model'
+import { __PATH, shijianc, readPlayer } from '@src/model/index'
 import type { Player, TalentInfo } from '@src/types/player'
 
 // 榜单条目类型（简化，只列出必需字段，允许附加动态属性）

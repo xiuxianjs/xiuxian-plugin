@@ -6,7 +6,7 @@ import {
   existNajieThing,
   addNajieThing,
   addExp2
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键服用血气丹$/

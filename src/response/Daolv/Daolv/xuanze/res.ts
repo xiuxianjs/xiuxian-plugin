@@ -5,7 +5,7 @@ import {
   readQinmidu,
   writeQinmidu,
   addNajieThing
-} from '@src/model'
+} from '@src/model/index'
 import { Daolv, found } from '../daolv'
 
 import { selects } from '@src/response/index'

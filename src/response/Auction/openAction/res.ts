@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { config, redis } from '@src/model/api'
-import { openAU, readPlayer } from '@src/model'
+import { openAU, readPlayer } from '@src/model/index'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启星阁体系$/

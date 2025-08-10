@@ -1,5 +1,5 @@
 import { Image, useSend, Text } from 'alemonjs'
-import { __PATH, existplayer, readPlayer, sortBy } from '@src/model'
+import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
 import puppeteer from '@src/image/index.js'
 import { selects } from '@src/response/index'
 import { redis } from '@src/model/api'

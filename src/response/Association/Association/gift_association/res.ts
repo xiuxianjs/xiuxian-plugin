@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
-import { notUndAndNull, shijianc } from '@src/model'
+import { notUndAndNull, shijianc } from '@src/model/index'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 
 import { selects } from '@src/response/index'

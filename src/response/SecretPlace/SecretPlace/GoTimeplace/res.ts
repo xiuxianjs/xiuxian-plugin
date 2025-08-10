@@ -10,7 +10,7 @@ import {
   existNajieThing,
   addNajieThing,
   addExp
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?探索仙府$/

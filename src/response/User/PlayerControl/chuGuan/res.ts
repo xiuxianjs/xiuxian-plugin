@@ -11,7 +11,7 @@ import {
   addExp2,
   setFileValue,
   writeDanyao
-} from '@src/model'
+} from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
 
 import { selects } from '@src/response/index'

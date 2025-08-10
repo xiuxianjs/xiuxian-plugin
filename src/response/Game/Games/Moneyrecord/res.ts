@@ -1,7 +1,7 @@
 import { Image, useSend } from 'alemonjs'
 
 import { data, puppeteer } from '@src/model/api'
-import { notUndAndNull } from '@src/model'
+import { notUndAndNull } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?金银坊记录$/

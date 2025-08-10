@@ -10,7 +10,7 @@ import {
   addNajieThing,
   writeEquipment,
   addHP
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?轮回$/

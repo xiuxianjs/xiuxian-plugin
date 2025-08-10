@@ -9,7 +9,7 @@ import {
   convert2integer,
   addNajieThing,
   addCoin
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?选购.*$/
@@ -24,7 +24,9 @@ export default onResponse(selects, async e => {
   const time0 = 0.5 //分钟cd
   //获取当前时间
   const now_time = new Date().getTime()
-  const Exchange_res = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD')
+  const Exchange_res = await redis.get(
+    'xiuxian@1.3.0:' + usr_qq + ':ExchangeCD'
+  )
   const ExchangeCD = parseInt(Exchange_res)
   const transferTimeout = Math.floor(60000 * time0)
   if (now_time < ExchangeCD + transferTimeout) {

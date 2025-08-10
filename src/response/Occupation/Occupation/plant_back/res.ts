@@ -1,5 +1,5 @@
 import { redis } from '@src/model/api'
-import { getPlayerAction } from '@src/model'
+import { getPlayerAction } from '@src/model/index'
 import { plant_jiesuan } from '../../api'
 
 import { selects } from '@src/response/index'

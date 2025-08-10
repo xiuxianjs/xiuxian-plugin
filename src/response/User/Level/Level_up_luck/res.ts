@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { existNajieThing } from '@src/model'
+import { existNajieThing } from '@src/model/index'
 import { Level_up } from '../level'
 
 import { selects } from '@src/response/index'

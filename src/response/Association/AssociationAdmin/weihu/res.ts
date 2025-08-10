@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { notUndAndNull, convert2integer } from '@src/model'
+import { notUndAndNull, convert2integer } from '@src/model/index'
 
 import type { AssociationDetailData } from '@src/types/domain'
 import { selects } from '@src/response/index'

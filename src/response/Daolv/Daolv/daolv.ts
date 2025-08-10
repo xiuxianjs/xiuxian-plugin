@@ -1,4 +1,4 @@
-import { readQinmidu } from '@src/model'
+import { readQinmidu } from '@src/model/index'
 import { useMessage, Text } from 'alemonjs'
 
 export const Daolv = {

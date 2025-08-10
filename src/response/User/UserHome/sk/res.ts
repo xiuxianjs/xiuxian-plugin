@@ -7,7 +7,7 @@ import {
   addNajieThing,
   sleep,
   Add_仙宠
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/

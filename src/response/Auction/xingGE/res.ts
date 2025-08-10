@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { existplayer, notUndAndNull, readPlayer } from '@src/model'
+import { existplayer, notUndAndNull, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?星阁拍卖行$/

@@ -1,10 +1,11 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { existplayer } from '@src/model'
+import { existplayer } from '@src/model/index'
+import { readAction, stopAction } from '@src/response/actionHelper'
+import { userKey } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?解封.*$/
 
 export default onResponse(selects, async e => {
@@ -28,22 +29,17 @@ export default onResponse(selects, async e => {
     const ifexistplay = await existplayer(qq)
     if (!ifexistplay) return false
     //清除游戏状态
-    await redis.del('xiuxian@1.3.0:' + qq + ':game_action')
-    //查询redis中的人物动作
-    const action: any = await getDataByUserId(qq, 'action')
-    //不为空，有状态
-    if (action) {
-      //把状态都关了
-      const arr = JSON.parse(action)
-      arr.is_jiesuan = 1 //结算状态
-      arr.shutup = 1 //闭关状态
-      arr.working = 1 //降妖状态
-      arr.power_up = 1 //渡劫状态
-      arr.Place_action = 1 //秘境
-      arr.Place_actionplus = 1 //沉迷状态
-      arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
-      delete arr.group_id //结算完去除group_id
-      await setDataByUserId(qq, 'action', JSON.stringify(arr))
+    await redis.del(userKey(qq, 'game_action'))
+    const record = await readAction(qq)
+    if (record) {
+      await stopAction(qq, {
+        is_jiesuan: 1,
+        shutup: '1',
+        working: '1',
+        power_up: '1',
+        Place_action: '1',
+        Place_actionplus: '1'
+      })
       Send(Text('已解除！'))
       return false
     }

@@ -10,7 +10,7 @@ import {
   zdBattle,
   addHP,
   writePlayer
-} from '@src/model'
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
