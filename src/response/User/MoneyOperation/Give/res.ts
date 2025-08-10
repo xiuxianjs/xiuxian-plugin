@@ -11,7 +11,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-import { parseUnitNumber } from '@src/model/utils'
+import { parseUnitNumber } from '@src/model/utilsx'
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
 export const regular =

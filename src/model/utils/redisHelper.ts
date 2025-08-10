@@ -1,4 +1,4 @@
-import { redis } from '@src/model/api'
+import { redis } from '../../model/api'
 
 // 基础可空字符串类型
 type RedisScalar = string | null
