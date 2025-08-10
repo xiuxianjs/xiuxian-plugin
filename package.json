@@ -26,20 +26,18 @@
   },
   "devDependencies": {
     "@alemonjs/db": "^0.0.11",
-    "@alemonjs/gui": "^2.1.0-alpha.5",
-    "@alemonjs/qq-bot": "^2.1.0-alpha.17",
     "@eslint/js": "^9.18.0",
-    "@tailwindcss/postcss": "^4.1.11",
     "@types/lodash-es": "^4.17.12",
     "@types/md5": "^2.3.5",
     "@types/node": "^22.10.5",
     "@types/node-schedule": "^2.1.7",
     "alemonjs": "^2.1.0-alpha.31",
     "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",
     "lvyjs": "0.2.20",
-    "prettier": "^3.3.3",
+    "prettier": "^3",
     "tailwindcss": "3",
     "typescript-eslint": "^8.19.1"
   }

@@ -371,6 +371,7 @@
         "type": "Mention",
         "value": "916415899",
         "options": {
+          "name": "柠檬",
           "belong": "user"
         }
       }
@@ -388,6 +389,7 @@
         "type": "Mention",
         "value": "916415899",
         "options": {
+          "name": "柠檬",
           "belong": "user"
         }
       }
@@ -405,6 +407,7 @@
         "type": "Mention",
         "value": "916415899",
         "options": {
+          "name": "柠檬",
           "belong": "user"
         }
       }
@@ -422,6 +425,7 @@
         "type": "Mention",
         "value": "916415899",
         "options": {
+          "name": "柠檬",
           "belong": "user"
         }
       }
@@ -1598,42 +1602,60 @@
     ]
   },
   {
-    "title": "发灵石d",
+    "title": "发灵石100",
     "description": "/^(#|＃|\\/)?发(灵石|修为|血气|.*)\\*\\d+$/",
     "data": [
       {
         "type": "Text",
-        "value": "#发灵石d"
+        "value": "#发灵石100"
+      },
+      {
+        "type": "Mention",
+        "value": "1715713638",
+        "options": {
+          "name": "柠檬冲水",
+          "belong": "user"
+        }
       }
     ]
   },
   {
-    "title": "全体发灵石d",
+    "title": "全体发灵石100",
     "description": "/^(#|＃|\\/)?全体发(灵石|修为|血气)\\*\\d+$/",
     "data": [
       {
         "type": "Text",
-        "value": "#全体发灵石d"
+        "value": "#全体发灵石100"
       }
     ]
   },
   {
-    "title": "闭关$|(闭关分$)",
+    "title": "闭关",
     "description": "/^(#|＃|\\/)?(闭关$)|(闭关(.*)(分|分钟)$)/",
     "data": [
       {
         "type": "Text",
-        "value": "#闭关$|(闭关分$)"
+        "value": "#闭关"
       }
     ]
   },
   {
-    "title": "降妖$|(降妖分$)",
+    "title": "出关",
+    "description": "/^(#|＃|\\/)?出关$/",
+    "data": [
+      {
+        "type": "Text",
+        "value": "#出关"
+      }
+    ]
+  },
+  {
+    "title": "降妖",
     "description": "/^(#|＃|\\/)?(降妖$)|(降妖(.*)(分|分钟)$)/",
     "data": [
       {
         "type": "Text",
-        "value": "#降妖$|(降妖分$)"
+        "value": "#降妖"
       }
     ]
   },
