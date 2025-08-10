@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // 亲密度与婚姻逻辑抽离
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
@@ -67,16 +66,17 @@ export async function findQinmidu(A: string, B: string) {
     await writeQinmidu([])
   }
   let i: number
-  const QQ: any[] = []
+  const QQ: string[] = []
   for (i = 0; i < list.length; i++) {
     if (list[i].QQ_A == A || list[i].QQ_A == B) {
       if (list[i].婚姻 != 0) {
-        ;(QQ as any).push = list[i].QQ_B // 保持原始逻辑 bug 兼容
+        // 原逻辑是错误地把 push 当作属性赋值，这里直接 push
+        QQ.push(list[i].QQ_B)
         break
       }
     } else if (list[i].QQ_B == A || list[i].QQ_B == B) {
       if (list[i].婚姻 != 0) {
-        ;(QQ as any).push = list[i].QQ_A
+        QQ.push(list[i].QQ_A)
         break
       }
     }

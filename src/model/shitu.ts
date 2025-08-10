@@ -15,6 +15,8 @@ export interface ShituRecord {
   renwu3: number
   师徒BOOS剩余血量: number
   已出师徒弟: string[]
+  // 原逻辑中 findShitu / findTudi 访问的 "师徒" 字段（未在新增记录里写入），保持可选以兼容旧数据
+  师徒?: string
 }
 
 export async function writeShitu(list: ShituRecord[]) {
@@ -56,7 +58,8 @@ export async function addShitu(A: string, num: number) {
     await writeShitu([])
   }
   let i: number
-  for (i = 0; i < list.length; i++) if ((list as any)[i].A == A) break // 兼容原始错误字段
+  for (i = 0; i < list.length; i++)
+    if ((list[i] as unknown as { A?: string }).A == A) break // 兼容历史错误字段 A
   if (i == list.length) {
     await fstaddShitu(A)
     list = await readShitu()
@@ -65,7 +68,7 @@ export async function addShitu(A: string, num: number) {
   await writeShitu(list)
 }
 
-export async function findShitu(A: string) {
+export async function findShitu(A: string): Promise<string | false> {
   let list: ShituRecord[] = []
   try {
     list = await readShitu()
@@ -75,15 +78,14 @@ export async function findShitu(A: string) {
   let i: number
   for (i = 0; i < list.length; i++) if (list[i].师傅 == A) break
   if (i == list.length) return false
-  return (list as any)[i].师徒 // 兼容原结构
+  return list[i].师徒 ?? false // 兼容原结构：若不存在则 false
 }
 
-export async function findTudi(A: string) {
+export async function findTudi(A: string): Promise<string | false> {
   const list = await readShitu()
   const target = String(A)
   for (let i = 0; i < list.length; i++) {
-    if (String((list as any)[i].未出师徒弟) == target)
-      return (list as any)[i].师徒
+    if (String(list[i].未出师徒弟) == target) return list[i].师徒 ?? false
   }
   return false
 }

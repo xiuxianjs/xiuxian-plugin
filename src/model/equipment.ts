@@ -28,12 +28,19 @@ export async function writeEquipment(
     item => item.level_id == player.Physique_id
   )
   player.攻击 =
-    (levelInfo?.基础攻击 || 0) + player.攻击加成 + (physiqueInfo?.基础攻击 || 0)
+    Number(levelInfo?.基础攻击 ?? 0) +
+    Number(player.攻击加成 ?? 0) +
+    Number(physiqueInfo?.基础攻击 ?? 0)
   player.防御 =
-    (levelInfo?.基础防御 || 0) + player.防御加成 + (physiqueInfo?.基础防御 || 0)
+    Number(levelInfo?.基础防御 ?? 0) +
+    Number(player.防御加成 ?? 0) +
+    Number(physiqueInfo?.基础防御 ?? 0)
   player.血量上限 =
-    (levelInfo?.基础血量 || 0) + player.生命加成 + (physiqueInfo?.基础血量 || 0)
-  player.暴击率 = (levelInfo?.基础暴击 || 0) + (physiqueInfo?.基础暴击 || 0)
+    Number(levelInfo?.基础血量 ?? 0) +
+    Number(player.生命加成 ?? 0) +
+    Number(physiqueInfo?.基础血量 ?? 0)
+  player.暴击率 =
+    Number(levelInfo?.基础暴击 ?? 0) + Number(physiqueInfo?.基础暴击 ?? 0)
 
   const types = ['武器', '护具', '法宝'] as const
   for (const t of types) {

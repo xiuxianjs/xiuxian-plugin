@@ -96,9 +96,9 @@ export default onResponse(selects, async e => {
   }
   dj++
   //渡劫成功率
-  let l = (x - n) / (p + y * 0.1)
-  l = l * 100
-  l = l.toFixed(2)
+  let lRatio = (x - n) / (p + y * 0.1)
+  lRatio = lRatio * 100
+  const l = lRatio.toFixed(2) // 字符串形式百分比
   Send(Text('天道：就你，也敢逆天改命？'))
   Send(
     Text(
@@ -117,12 +117,12 @@ export default onResponse(selects, async e => {
     )
   )
   let aconut = 1
-  const time: any = setInterval(async function () {
+  const timer = setInterval(async () => {
     const flag = await LevelTask(e, n, m, y, aconut)
     aconut++
     if (!flag) {
       dj = 0
-      clearInterval(time)
+      clearInterval(timer)
     }
   }, 60000)
 })

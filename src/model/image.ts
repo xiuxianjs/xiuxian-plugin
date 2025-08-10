@@ -21,13 +21,70 @@ import { readExchange, writeExchange, readForum, writeForum } from './trade.js'
 import { GetPower, bigNumberTransform } from './utils/number.js'
 import { readQinmidu, writeQinmidu } from './qinmidu.js'
 
-export async function getSupermarketImage(e, thing_class) {
+// ==== 类型辅助声明（用于消除 any） ====
+export type ScreenshotResult = Buffer | string | false | undefined
+interface NamedItem {
+  name: string
+  class?: string
+  type?: string
+  [k: string]: unknown
+}
+interface ExchangeEntry {
+  num?: number
+  now_time: number
+  name: NamedItem
+}
+interface ForumEntry {
+  num?: number
+  now_time: number
+  class?: string
+  [k: string]: unknown
+}
+interface PlayerStatus {
+  action: string
+  time: string | null
+}
+type SendFn = (msg: unknown) => unknown
+interface AssociationInfo {
+  宗主: string
+  power: number
+  最低加入境界: number
+  副宗主: Record<string, string>
+  长老: Record<string, string>
+  内门弟子: Record<string, string>
+  外门弟子: Record<string, string>
+  维护时间: number
+  宗门驻地: number | string
+  宗门等级: number
+  宗门神兽: string | number
+}
+
+function isAssociationInfo(v: unknown): v is AssociationInfo {
+  return (
+    !!v &&
+    typeof v === 'object' &&
+    '宗主' in v &&
+    '副宗主' in v &&
+    '长老' in v &&
+    '内门弟子' in v &&
+    '外门弟子' in v &&
+    '维护时间' in v &&
+    '宗门驻地' in v &&
+    '宗门等级' in v &&
+    'power' in v
+  )
+}
+
+export async function getSupermarketImage(
+  e: PublicEventMessageCreate,
+  thing_class?: string
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let Exchange_list = []
+  let Exchange_list: ExchangeEntry[] = []
   try {
     Exchange_list = await readExchange()
   } catch {
@@ -55,13 +112,16 @@ export async function getSupermarketImage(e, thing_class) {
   return img
 }
 
-export async function getForumImage(e, thing_class) {
+export async function getForumImage(
+  e: PublicEventMessageCreate,
+  thing_class?: string
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
     return
   }
-  let Forum = []
+  let Forum: ForumEntry[] = []
   try {
     Forum = await readForum()
   } catch {
@@ -86,7 +146,9 @@ export async function getForumImage(e, thing_class) {
   return img
 }
 
-export async function getdanfangImage(e) {
+export async function getdanfangImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -103,7 +165,9 @@ export async function getdanfangImage(e) {
   return img
 }
 
-export async function getTuzhiImage(e) {
+export async function getTuzhiImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -129,7 +193,10 @@ export async function getTuzhiImage(e) {
  * 返回柠檬堂
  * @return image
  */
-export async function getNingmenghomeImage(e, thing_type) {
+export async function getNingmenghomeImage(
+  e: PublicEventMessageCreate,
+  thing_type?: string
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -176,7 +243,9 @@ export async function getNingmenghomeImage(e, thing_type) {
  * 返回万宝楼
  * @return image
  */
-export async function getValuablesImage(e) {
+export async function getValuablesImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -217,7 +286,7 @@ function Strand(
  */
 export async function getXianChongImage(
   e: PublicEventMessageCreate
-): Promise<any> {
+): Promise<ScreenshotResult> {
   let i: number
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -231,9 +300,9 @@ export async function getXianChongImage(
   const player = playerData as Player
   const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  const XianChong_have: any[] = []
-  const XianChong_need: any[] = []
-  const Kouliang: any[] = []
+  const XianChong_have: NamedItem[] = []
+  const XianChong_need: NamedItem[] = []
+  const Kouliang: NamedItem[] = []
   const XianChong_list = data.xianchon
   const Kouliang_list = data.xianchonkouliang
   for (i = 0; i < XianChong_list.length; i++) {
@@ -261,7 +330,9 @@ export async function getXianChongImage(
  * 返回该玩家的道具图片
  * @return image
  */
-export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
+export async function getDaojuImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -274,8 +345,8 @@ export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
   const player = playerData as Player
   const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  const daoju_have: any[] = []
-  const daoju_need: any[] = []
+  const daoju_have: NamedItem[] = []
+  const daoju_need: NamedItem[] = []
   for (const i of data.daoju_list) {
     if (najie.道具.find(item => item.name == i.name)) {
       daoju_have.push(i)
@@ -297,7 +368,9 @@ export async function getDaojuImage(e: PublicEventMessageCreate): Promise<any> {
  * 返回该玩家的武器图片
  * @return image
  */
-export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
+export async function getWuqiImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -309,8 +382,8 @@ export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
   if (!najie) return
   const equipment = await readEquipment(usr_qq)
   if (!equipment) return
-  const wuqi_have: any[] = []
-  const wuqi_need: any[] = []
+  const wuqi_have: NamedItem[] = []
+  const wuqi_need: NamedItem[] = []
   const wuqi_list = [
     'equipment_list',
     'timeequipmen_list',
@@ -319,7 +392,9 @@ export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
     'duanzhaobaowu'
   ]
   for (const i of wuqi_list) {
-    for (const j of data[i]) {
+    const arr = (data as Record<string, unknown>)[i]
+    if (!Array.isArray(arr)) continue
+    for (const j of arr as NamedItem[]) {
       if (
         najie['装备'].find(item => item.name == j.name) &&
         !wuqi_have.find(item => item.name == j.name)
@@ -354,7 +429,7 @@ export async function getWuqiImage(e: PublicEventMessageCreate): Promise<any> {
  */
 export async function getDanyaoImage(
   e: PublicEventMessageCreate
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -364,11 +439,13 @@ export async function getDanyaoImage(
   if (!player) return
   const najie = await readNajie(usr_qq)
   if (!najie) return
-  const danyao_have: any[] = []
-  const danyao_need: any[] = []
+  const danyao_have: NamedItem[] = []
+  const danyao_need: NamedItem[] = []
   const danyao = ['danyao_list', 'timedanyao_list', 'newdanyao_list']
   for (const i of danyao) {
-    for (const j of data[i]) {
+    const arr = (data as Record<string, unknown>)[i]
+    if (!Array.isArray(arr)) continue
+    for (const j of arr as NamedItem[]) {
       if (
         najie['丹药'].find(item => item.name == j.name) &&
         !danyao_have.find(item => item.name == j.name)
@@ -400,7 +477,9 @@ export async function getDanyaoImage(
  * 返回该玩家的功法图片
  * @return image
  */
-export async function getGongfaImage(e: PublicEventMessageCreate) {
+export async function getGongfaImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -411,11 +490,13 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
     return
   }
   const xuexi_gongfa = player.学习的功法
-  const gongfa_have: any = []
-  const gongfa_need: any = []
+  const gongfa_have: NamedItem[] = []
+  const gongfa_need: NamedItem[] = []
   const gongfa = ['gongfa_list', 'timegongfa_list']
   for (const i of gongfa) {
-    for (const j of data[i]) {
+    const arr = (data as Record<string, unknown>)[i]
+    if (!Array.isArray(arr)) continue
+    for (const j of arr as NamedItem[]) {
       if (
         xuexi_gongfa.find(item => item == j.name) &&
         !gongfa_have.find(item => item.name == j.name)
@@ -440,15 +521,17 @@ export async function getGongfaImage(e: PublicEventMessageCreate) {
  * 返回该玩家的法体
  * @return image
  */
-export async function getPowerImage(e: PublicEventMessageCreate) {
+export async function getPowerImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const Send = useSend(e) as any
+  const Send: SendFn = useSend(e) as SendFn
   const player = await await getPlayerDataSafe(usr_qq)
   if (!player) {
     Send(Text('玩家数据获取失败'))
     return
   }
-  let lingshi: any = Math.trunc(player.灵石)
+  let lingshi = Math.trunc(player.灵石)
   if (player.灵石 > 999999999999) {
     lingshi = 999999999999
   }
@@ -496,8 +579,10 @@ export async function getPowerImage(e: PublicEventMessageCreate) {
  * 返回该玩家的存档图片
  * @return image
  */
-export async function getPlayerImage(e: PublicEventMessageCreate) {
-  const Send = useSend(e) as any
+export async function getPlayerImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
+  const Send: SendFn = useSend(e) as SendFn
   let 法宝评级
   let 护具评级
   let 武器评级
@@ -516,12 +601,19 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     Send(Text('装备数据获取失败'))
     return
   }
-  const player_status: any = await getPlayerAction(usr_qq)
+  const player_status_raw = await getPlayerAction(usr_qq)
+  const player_status: PlayerStatus = {
+    action: String(player_status_raw.action),
+    time:
+      typeof player_status_raw.time === 'number'
+        ? String(player_status_raw.time)
+        : (player_status_raw.time ?? null)
+  }
   let status = '空闲'
   if (player_status.time != null) {
     status = player_status.action + '(剩余时间:' + player_status.time + ')'
   }
-  let lingshi: any = Math.trunc(player.灵石)
+  let lingshi: number = Math.trunc(player.灵石)
   if (player.灵石 > 999999999999) {
     lingshi = 999999999999
   }
@@ -537,7 +629,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     player.灵根.type = '无'
     player.灵根.name = '未知'
     player.灵根.法球倍率 = '0'
-    player.修炼效率提升 = '0'
+    player.修炼效率提升 = 0
   }
   if (!notUndAndNull(player.level_id)) {
     Send(Text('存档错误'))
@@ -550,9 +642,9 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   let nd = '无'
   if (player.隐藏灵根) nd = player.隐藏灵根.name
   const zd = ['攻击', '防御', '生命加成', '防御加成', '攻击加成']
-  const num: any = []
-  const p: any = []
-  const kxjs: any = []
+  const num: number[] = []
+  const p: (number | '')[] = []
+  const kxjs: (string | number)[] = []
   let count = 0
   for (const j of zd) {
     if (player[j] == 0) {
@@ -561,8 +653,9 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
       count++
       continue
     }
-    p[count] = Math.floor(Math.log(player[j]) / Math.LN10)
-    num[count] = player[j] * 10 ** -p[count]
+    const base = Number(player[j] || 0)
+    p[count] = Math.floor(Math.log(base) / Math.LN10)
+    num[count] = base * 10 ** -(p[count] as number)
     kxjs[count] = `${num[count].toFixed(2)} x 10`
     count++
   }
@@ -570,19 +663,18 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   const level = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level
-  let power: any =
+  const power = (
     (player.攻击 * 0.9 +
       player.防御 * 1.1 +
       player.血量上限 * 0.6 +
       player.暴击率 * player.攻击 * 0.5 +
       Number(player.灵根?.法球倍率 || 0) * player.攻击) /
     10000
-  power = Number(power)
-  power = power.toFixed(2)
-  let power2: any =
-    (player.攻击 + player.防御 * 1.1 + player.血量上限 * 0.5) / 10000
-  power2 = Number(power2)
-  power2 = power2.toFixed(2)
+  ).toFixed(2)
+  const power2 = (
+    (player.攻击 + player.防御 * 1.1 + player.血量上限 * 0.5) /
+    10000
+  ).toFixed(2)
   const level2 = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
   ).level
@@ -623,7 +715,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   }
   const pinji = ['劣', '普', '优', '精', '极', '绝', '顶']
   if (!equipment.武器) {
-    equipment.武器 = {}
+    equipment.武器 = { atk: 0, def: 0, HP: 0, bao: 0 }
   }
   if (!notUndAndNull(equipment.武器.pinji)) {
     武器评级 = '无'
@@ -631,7 +723,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     武器评级 = pinji[equipment.武器.pinji]
   }
   if (!equipment.护具) {
-    equipment.护具 = {}
+    equipment.护具 = { atk: 0, def: 0, HP: 0, bao: 0 }
   }
   if (!notUndAndNull(equipment.护具.pinji)) {
     护具评级 = '无'
@@ -639,7 +731,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     护具评级 = pinji[equipment.护具.pinji]
   }
   if (!equipment.法宝) {
-    equipment.法宝 = {}
+    equipment.法宝 = { atk: 0, def: 0, HP: 0, bao: 0 }
   }
   if (!notUndAndNull(equipment.法宝.pinji)) {
     法宝评级 = '无'
@@ -669,7 +761,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     player.暴击率
   )
   const PowerMini = bigNumberTransform(Power)
-  const bao: any = Math.floor(player.暴击率 * 100) + '%'
+  const bao: string = Math.floor(player.暴击率 * 100) + '%'
   // 创建装备数据的副本以进行修改
   const equipmentCopy = {
     武器: {
@@ -682,10 +774,10 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     },
     法宝: { ...equipment.法宝, bao: Math.floor(equipment.法宝.bao * 100) + '%' }
   }
-  lingshi = bigNumberTransform(lingshi)
+  const lingshiDisplay = bigNumberTransform(lingshi)
   let hunyin = '未知'
   const A = usr_qq
-  let qinmidu = []
+  let qinmidu: Array<{ QQ_A: string; QQ_B: string; 婚姻: number }> = []
   try {
     qinmidu = await readQinmidu()
   } catch {
@@ -696,17 +788,20 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     if (qinmidu[i].QQ_A == A || qinmidu[i].QQ_B == A) {
       if (qinmidu[i].婚姻 > 0) {
         if (qinmidu[i].QQ_A == A) {
-          const B: any = await readPlayer(qinmidu[i].QQ_B)
-          hunyin = B.名号
+          const B = (await readPlayer(qinmidu[i].QQ_B)) as Player | null
+          hunyin = B?.名号 || hunyin
         } else {
-          const A: any = await readPlayer(qinmidu[i].QQ_A)
-          hunyin = A.名号
+          const APlayer = (await readPlayer(qinmidu[i].QQ_A)) as Player | null
+          hunyin = APlayer?.名号 || hunyin
         }
         break
       }
     }
   }
-  const action: any = player.练气皮肤
+  const action: number | string | undefined = player.练气皮肤 as
+    | number
+    | string
+    | undefined
   const player_data = {
     neidan: nd,
     pifu: action,
@@ -743,7 +838,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     jczdl: power2,
     level: level,
     level2: level2,
-    lingshi: lingshi,
+    lingshi: lingshiDisplay,
     player_maxHP: player.血量上限,
     player_nowHP: player.当前血量,
     player_atk: kxjs[0],
@@ -785,10 +880,12 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
  * 我的宗门
  * @return image
  */
-export async function getAssociationImage(e: PublicEventMessageCreate) {
+export async function getAssociationImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   let item
   const usr_qq = e.UserId
-  const Send = useSend(e) as any
+  const Send: SendFn = useSend(e) as SendFn
   //无存档
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -808,13 +905,18 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   //有加入宗门
   const zongmenName =
     typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
-  const ass = await data.getAssociation(zongmenName)
-  if (ass === 'error' || Array.isArray(ass)) {
+  const assRaw = await data.getAssociation(zongmenName)
+  if (assRaw === 'error' || Array.isArray(assRaw)) {
     Send(Text('宗门数据获取失败'))
     return
   }
+  if (!isAssociationInfo(assRaw)) {
+    Send(Text('宗门数据结构异常'))
+    return
+  }
+  const ass = assRaw
   //寻找
-  const mainqqData = await data.getData('player', ass.宗主)
+  const mainqqData = await data.getData('player', String(ass.宗主))
   if (mainqqData === 'error' || Array.isArray(mainqqData)) {
     Send(Text('宗主数据获取失败'))
     return
@@ -834,56 +936,58 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   ).level
   // 副宗主
   const fuzong = []
-  for (item in ass.副宗主) {
-    fuzong[item] =
-      '道号：' +
-      (await data.getData('player', ass.副宗主[item]).名号) +
-      'QQ：' +
-      ass.副宗主[item]
+  for (item in ass.副宗主 || {}) {
+    const qq = ass.副宗主[item]
+    const pData = await data.getData('player', qq)
+    const name =
+      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    fuzong[item] = `道号：${name}QQ：${qq}`
   }
   //长老
   const zhanglao = []
-  for (item in ass.长老) {
-    zhanglao[item] =
-      '道号：' +
-      (await data.getData('player', ass.长老[item]).名号) +
-      'QQ：' +
-      ass.长老[item]
+  for (item in ass.长老 || {}) {
+    const qq = ass.长老[item]
+    const pData = await data.getData('player', qq)
+    const name =
+      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    zhanglao[item] = `道号：${name}QQ：${qq}`
   }
   //内门弟子
   const neimen = []
-  for (item in ass.内门弟子) {
-    neimen[item] =
-      '道号：' +
-      (await data.getData('player', ass.内门弟子[item]).名号) +
-      'QQ：' +
-      ass.内门弟子[item]
+  for (item in ass.内门弟子 || {}) {
+    const qq = ass.内门弟子[item]
+    const pData = await data.getData('player', qq)
+    const name =
+      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    neimen[item] = `道号：${name}QQ：${qq}`
   }
   //外门弟子
   const waimen = []
-  for (item in ass.外门弟子) {
-    waimen[item] =
-      '道号：' +
-      (await data.getData('player', ass.外门弟子[item]).名号) +
-      'QQ：' +
-      ass.外门弟子[item]
+  for (item in ass.外门弟子 || {}) {
+    const qq = ass.外门弟子[item]
+    const pData = await data.getData('player', qq)
+    const name =
+      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    waimen[item] = `道号：${name}QQ：${qq}`
   }
   let state = '需要维护'
   const now = new Date()
   const nowTime = now.getTime() //获取当前日期的时间戳
-  if (ass.维护时间 > nowTime - 1000 * 60 * 60 * 24 * 7) {
+  if (Number(ass.维护时间) > nowTime - 1000 * 60 * 60 * 24 * 7) {
     state = '不需要维护'
   }
   //计算修炼效率
   let xiulian
   const dongTan = await data.bless_list.find(item => item.name == ass.宗门驻地)
   if (ass.宗门驻地 == 0) {
-    xiulian = ass.宗门等级 * 0.05 * 100
+    xiulian = Number(ass.宗门等级) * 0.05 * 100
   } else {
     try {
-      xiulian = ass.宗门等级 * 0.05 * 100 + dongTan.efficiency * 100
+      xiulian =
+        Number(ass.宗门等级) * 0.05 * 100 +
+        Number(dongTan?.efficiency || 0) * 100
     } catch {
-      xiulian = ass.宗门等级 * 0.05 * 100 + 0.5
+      xiulian = Number(ass.宗门等级) * 0.05 * 100 + 0.5
     }
   }
   xiulian = Math.trunc(xiulian)
@@ -915,7 +1019,7 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
  */
 export async function getQquipmentImage(
   e: PublicEventMessageCreate
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const playerData = await data.getData('player', usr_qq)
   const ifexistplay = await data.existData('player', usr_qq)
@@ -954,7 +1058,9 @@ export async function getQquipmentImage(
  * 返回该玩家的纳戒图片
  * @return image
  */
-export async function getNajieImage(e: PublicEventMessageCreate): Promise<any> {
+export async function getNajieImage(
+  e: PublicEventMessageCreate
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -1002,7 +1108,7 @@ export async function getNajieImage(e: PublicEventMessageCreate): Promise<any> {
 export async function getStateImage(
   e: PublicEventMessageCreate,
   all_level: boolean
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -1034,7 +1140,7 @@ export async function getStateImage(
 export async function getStatezhiyeImage(
   e: PublicEventMessageCreate,
   all_level: boolean
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -1070,7 +1176,7 @@ export async function getStatezhiyeImage(
 export async function getStatemaxImage(
   e: PublicEventMessageCreate,
   all_level: boolean
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -1101,7 +1207,7 @@ export async function getStatemaxImage(
 
 export async function getTalentImage(
   e: PublicEventMessageCreate
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) {
@@ -1123,7 +1229,7 @@ export async function getTalentImage(
  */
 export async function getAdminsetImage(
   e: PublicEventMessageCreate
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const adminset = {
     //CD：分
@@ -1172,10 +1278,10 @@ export async function getAdminsetImage(
 
 export async function getRankingPowerImage(
   e: PublicEventMessageCreate,
-  Data: any[],
+  Data: Array<Record<string, unknown>>,
   usr_paiming: number,
   thisplayer: Player
-): Promise<any> {
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const level = data.Level_list.find(
     item => item.level_id == thisplayer.level_id
@@ -1205,12 +1311,12 @@ export async function getRankingPowerImage(
 }
 
 export async function getRankingMoneyImage(
-  e,
-  Data,
-  usr_paiming,
-  thisplayer,
-  thisnajie
-) {
+  e: PublicEventMessageCreate,
+  Data: Array<Record<string, unknown>>,
+  usr_paiming: number,
+  thisplayer: Player,
+  thisnajie: Najie
+): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const najie_lingshi = Math.trunc(thisnajie.灵石)
   const lingshi = Math.trunc(thisplayer.灵石 + thisnajie.灵石)
@@ -1229,8 +1335,11 @@ export async function getRankingMoneyImage(
   )
 }
 
-export async function Goweizhi(e, weizhi, addres) {
-  const Send = useSend(e)
+export async function Goweizhi(
+  e: PublicEventMessageCreate,
+  weizhi: NamedItem[]
+): Promise<void> {
+  const Send: SendFn = useSend(e) as SendFn
   const image = await puppeteer.screenshot('secret_place', e.UserId, {
     didian_list: weizhi
   })
@@ -1240,3 +1349,5 @@ export async function Goweizhi(e, weizhi, addres) {
   }
   Send(Image(image))
 }
+
+// （类型辅助已移至文件顶部）

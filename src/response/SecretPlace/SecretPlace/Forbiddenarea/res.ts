@@ -1,5 +1,5 @@
 import { Text, useMessage, Image } from 'alemonjs'
-import { data, puppeteer, redis } from '@src/model/api'
+import { data, puppeteer } from '@src/model/api'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?禁地$/
 

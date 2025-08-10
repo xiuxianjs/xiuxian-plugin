@@ -2,11 +2,14 @@ import { __PATH } from './paths.js'
 import type { Player } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'
 
-export async function writeIt(custom: any): Promise<void> {
+export type CustomRecord =
+  | Array<Record<string, unknown>>
+  | Record<string, unknown>
+
+export async function writeIt(custom: CustomRecord): Promise<void> {
   const new_ARR = JSON.stringify(custom, null, '\t')
   const redis = getIoRedis()
   redis.set(`${__PATH.custom}:custom`, new_ARR)
-  return
 }
 
 //写入存档信息,第二个参数是一个JavaScript对象

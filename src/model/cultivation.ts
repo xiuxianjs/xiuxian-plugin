@@ -3,7 +3,7 @@ import data from './XiuxianData.js'
 import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
 import type { Player, TalentInfo } from '../types/player.js'
 import { writePlayer, writeIt } from './pub.js'
-import { readIt } from './duanzaofu.js'
+import { readItTyped } from './duanzaofu.js'
 import { existNajieThing, addNajieThing } from './najie.js'
 import { readPlayer } from './xiuxian_impl.js'
 import { getRandomFromARR, notUndAndNull } from './common.js'
@@ -25,7 +25,7 @@ export async function dujie(user_qq: string): Promise<number> {
   new_defense = (new_defense * 6) / 10
   new_attack = (new_attack * 2) / 10
   const N = new_blood + new_defense
-  let x: any = N * new_attack
+  let x = N * new_attack
   if (player.灵根.type == '真灵根') x = x * 1.5
   else if (player.灵根.type == '天灵根') x = x * 1.75
   else x = x * 2
@@ -40,7 +40,7 @@ export async function LevelTask(
   aconut: number
 ): Promise<number> {
   const usr_qq = e.UserId
-  const Send = useSend(e as any)
+  const Send = useSend(e)
   const msg: string[] = [Number(usr_qq).toString()]
   const player: Player | null = await readPlayer(usr_qq)
   if (!player) {
@@ -93,14 +93,14 @@ export async function LevelTask(
   return 0
 }
 
-export function sortBy(field: string) {
-  return function (b: any, a: any) {
-    return a[field] - b[field]
+export function sortBy<T extends Record<string, number>>(field: keyof T) {
+  return function (b: T, a: T) {
+    return (a[field] as number) - (b[field] as number)
   }
 }
 
 export async function getAllExp(usr_qq: string) {
-  const player: any = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   let sum_exp = 0
   if (!notUndAndNull(player?.level_id)) return
   const now_level_id = data.Level_list.find(
@@ -155,15 +155,25 @@ export async function setFileValue(
   const user_data = await data.getData('player', user_qq)
   if (user_data === 'error' || Array.isArray(user_data)) return
   const player = user_data as Player
-  const current_num = (player as any)[type] || 0
+  const current_raw = (player as Record<string, unknown>)[type]
+  const current_num = typeof current_raw === 'number' ? current_raw : 0
   let new_num = current_num + num
   if (type == '当前血量' && new_num > player.血量上限) new_num = player.血量上限
-  ;(player as any)[type] = new_num
-  await data.setData('player', user_qq, player as any)
+  ;(player as Record<string, unknown>)[type] = new_num
+  // DataControl.setData 在 XiuxianData 上被继承；使用可选链防御
+  const maybe = data as {
+    setData?: (k: string, id: string, v: unknown) => void
+  }
+  if (typeof maybe.setData === 'function') {
+    maybe.setData('player', user_qq, player)
+  }
 }
 
-export async function foundthing(thing_name: string) {
-  let thing = [
+export type FoundThing = { name: string; [k: string]: unknown }
+export async function foundthing(
+  thing_name: string
+): Promise<FoundThing | false> {
+  const primaryGroups = [
     'equipment_list',
     'danyao_list',
     'daoju_list',
@@ -176,20 +186,39 @@ export async function foundthing(thing_name: string) {
     'xianchon',
     'xianchonkouliang',
     'duanzhaocailiao'
-  ]
-  for (const i of thing)
-    for (const j of (data as any)[i]) if (j.name == thing_name) return j
-  let A: any[] = []
+  ] as const
+  const hasName = (obj: unknown): obj is FoundThing =>
+    typeof obj === 'object' && obj !== null && 'name' in obj
+  for (const key of primaryGroups) {
+    const arr = (data as unknown as Record<string, unknown>)[key]
+    if (Array.isArray(arr)) {
+      for (const j of arr) if (hasName(j) && j.name === thing_name) return j
+    }
+  }
+  let customList: unknown
   try {
-    A = await readIt()
+    customList = await readItTyped()
   } catch {
     await writeIt([])
+    customList = []
   }
-  for (const j of A) if (j.name == thing_name) return j
-  thing_name = thing_name.replace(/[0-9]+/g, '')
-  thing = ['duanzhaowuqi', 'duanzhaohuju', 'duanzhaobaowu', 'zalei']
-  for (const i of thing)
-    for (const j of (data as any)[i]) if (j.name == thing_name) return j
+  if (Array.isArray(customList)) {
+    for (const j of customList)
+      if (hasName(j) && j.name === thing_name) return j
+  }
+  const simplifiedName = thing_name.replace(/[0-9]+/g, '')
+  const secondaryGroups = [
+    'duanzhaowuqi',
+    'duanzhaohuju',
+    'duanzhaobaowu',
+    'zalei'
+  ] as const
+  for (const key of secondaryGroups) {
+    const arr = (data as unknown as Record<string, unknown>)[key]
+    if (Array.isArray(arr)) {
+      for (const j of arr) if (hasName(j) && j.name === simplifiedName) return j
+    }
+  }
   return false
 }
 

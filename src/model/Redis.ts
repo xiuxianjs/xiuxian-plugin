@@ -19,11 +19,17 @@ export const getDataByUserId = async (user_id: string, action: ActionType) => {
   return await redis.get(baseKey + ':' + user_id + ':' + action)
 }
 
-export const setDataByUserId = async (
+export const setDataByUserId = async <
+  T extends string | number | boolean | object
+>(
   user_id: string,
   action: ActionType,
-  value: any
+  value: T
 ) => {
   const redis = getIoRedis()
-  return await redis.set(baseKey + ':' + user_id + ':' + action, value)
+  const payload =
+    typeof value === 'string' || typeof value === 'number'
+      ? String(value)
+      : JSON.stringify(value)
+  return await redis.set(baseKey + ':' + user_id + ':' + action, payload)
 }

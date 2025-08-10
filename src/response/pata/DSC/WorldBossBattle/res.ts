@@ -52,7 +52,8 @@ export default onResponse(selects, async e => {
     return false
   }
   let BattleFrame = 0
-  let TotalDamage = 0
+  // TotalDamage 暂未使用，后续可用于统计
+  let _totalDamage = 0
   const msg = []
   let BOSSCurrentAttack = bosszt.isAngry
     ? Math.trunc(bosszt.Attack * 1.8)
@@ -75,7 +76,7 @@ export default onResponse(selects, async e => {
       }
       Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * SuperAttack)
       bosszt.Health -= Player_To_BOSS_Damage
-      TotalDamage += Player_To_BOSS_Damage
+      _totalDamage += Player_To_BOSS_Damage
       if (bosszt.Health < 0) {
         bosszt.Health = 0
       }
@@ -90,8 +91,8 @@ export default onResponse(selects, async e => {
         Math.trunc(player.防御 * 0.1)
       )
       player.当前血量 -= BOSS_To_Player_Damage
-      bosszt.isAngry ? --bosszt.isAngry : 0
-      bosszt.isWeak ? --bosszt.isWeak : 0
+      if (bosszt.isAngry) bosszt.isAngry--
+      if (bosszt.isWeak) bosszt.isWeak--
       if (!bosszt.isAngry && BOSSCurrentAttack > bosszt.Attack)
         BOSSCurrentAttack = bosszt.Attack
       if (!bosszt.isWeak && BOSSCurrentDefence < bosszt.Defence)

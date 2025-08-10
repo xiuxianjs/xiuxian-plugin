@@ -25,19 +25,22 @@ export default onResponse(selects, async e => {
   const func = reg.exec(e.MessageText)[0]
   let msg = e.MessageText.replace(reg, '')
   msg = msg.replace(/^(#|＃|\/)?/, '')
-  let lingshi: any = msg.replace('灵石', '')
-  if (func == '存' && lingshi == '全部') {
+  // 提取灵石数量（可能是具体数字或“全部”），避免使用 any
+  let lingshi: string | number = msg.replace('灵石', '').trim()
+  if (func === '存' && lingshi === '全部') {
     const P = await readPlayer(usr_qq)
     lingshi = P.灵石
   }
-  if (func == '取' && lingshi == '全部') {
+  if (func === '取' && lingshi === '全部') {
     const N = await readNajie(usr_qq)
     lingshi = N.灵石
   }
-  lingshi = await convert2integer(lingshi)
+  if (typeof lingshi !== 'number') {
+    lingshi = await convert2integer(lingshi)
+  }
   if (func == '存') {
-    let player_lingshi = await readPlayer(usr_qq)
-    player_lingshi = player_lingshi.灵石
+    const player_info = await readPlayer(usr_qq)
+    const player_lingshi = player_info.灵石
     if (player_lingshi < lingshi) {
       Send(Text(`灵石不足,你目前只有${player_lingshi}灵石`))
       return false
@@ -66,8 +69,7 @@ export default onResponse(selects, async e => {
       Send(Text(`纳戒灵石不足,你目前最多取出${najie.灵石}灵石`))
       return false
     }
-    let player_lingshi = await readPlayer(usr_qq)
-    player_lingshi = player_lingshi.灵石
+    // 取出时无需读取玩家灵石（不参与判断与输出），避免未使用变量
     await addBagCoin(usr_qq, -lingshi)
     await addCoin(usr_qq, lingshi)
     Send(

@@ -11,6 +11,7 @@ export interface XianchongInfo {
   name: string
   type: string
   加成: number
+  灵魂绑定?: number
 }
 
 export interface Player {
@@ -32,18 +33,28 @@ export interface Player {
   镇妖塔层数: number
   神魄段数: number
   favorability: number
+  id?: string // 部分逻辑需要通过 id 读取装备
+  神石?: number // 神石数量（战斗减伤判定使用）
+  法球倍率?: number // 直接挂载在玩家上的法球倍率（部分旧代码直接访问）
   宣言?: string
   灵根: TalentInfo
   隐藏灵根?: TalentInfo
   仙宠: XianchongInfo
   学习的功法: unknown[]
-  修炼效率提升: string | number
+  修炼效率提升: number
   宗门?: string | { 宗门名称: string; 职位: string }
   sex?: string
   linggenshow?: number
   power_place?: number
   锻造天赋?: number
   occupation?: unknown
+  occupation_level?: number
+  occupation_exp?: number
+  // 幸运 / 魔道相关（在各任务与服用道具时使用）
+  islucky?: number
+  addluckyNo?: number
+  幸运?: number
+  魔道值?: number
   [key: string]: unknown // 添加索引签名以兼容动态属性
 }
 
@@ -66,8 +77,17 @@ export interface EquipmentItem {
 export interface NajieItem {
   name: string
   class: string
-  acount: number
+  acount?: number
   grade?: string
+  pinji?: number
+  出售价?: number
+  数量?: number
+  islockd?: number
+  atk?: number
+  def?: number
+  HP?: number
+  bao?: number
+  type?: string
 }
 
 export interface Najie {

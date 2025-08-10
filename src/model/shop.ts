@@ -3,26 +3,36 @@ import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
 import { getIoRedis } from '@alemonjs/db'
 
+interface ShopThing {
+  name: string
+  数量: number
+  [k: string]: unknown
+}
+interface ShopSlot {
+  one: ShopThing[]
+  name: string
+  [k: string]: unknown
+}
+type ShopData = ShopSlot[]
+
 const redis = getIoRedis()
 
-export async function writeShop(shop) {
+export async function writeShop(shop: ShopData) {
   await redis.set(`${__PATH.shop}:shop`, JSON.stringify(shop))
 }
 
-export async function readShop() {
+export async function readShop(): Promise<ShopData> {
   const shop = await redis.get(`${__PATH.shop}:shop`)
   if (!shop) return []
-  return safeParse(shop, [])
+  return safeParse<ShopData>(shop, [])
 }
 
-export async function existshop(didian) {
-  const shop: any = await readShop()
-  let i
-  const thing: any[] = []
-  for (i = 0; i < shop.length; i++) if (shop[i].name == didian) break
-  for (let j = 0; j < shop[i].one.length; j++)
-    if (shop[i].one[j].数量 > 0) thing.push(shop[i].one[j])
-  return thing.length > 0 ? thing : false
+export async function existshop(didian: string): Promise<ShopThing[] | false> {
+  const shop = await readShop()
+  const slot = shop.find(s => s.name == didian)
+  if (!slot) return false
+  const available = slot.one.filter(t => t.数量 > 0)
+  return available.length > 0 ? available : false
 }
 
 export default { writeShop, readShop, existshop }

@@ -1,16 +1,23 @@
 import { Image, Text, useSend } from 'alemonjs'
 
 import { redis, data, puppeteer } from '@src/model/api'
-import { readIt, writeIt, alluser, readNajie, readEquipment } from '@src/model'
+import {
+  readItTyped,
+  writeIt,
+  alluser,
+  readNajie,
+  readEquipment
+} from '@src/model'
+import type { CustomEquipRecord } from '@src/model/duanzaofu'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?神兵榜/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let wupin = []
+  let wupin: CustomEquipRecord[] = []
   try {
-    wupin = await readIt()
+    wupin = await readItTyped()
   } catch {
     await writeIt([])
   }
@@ -32,7 +39,7 @@ export default onResponse(selects, async e => {
         let exist = najie.装备.find(item => item.name == j.name)
         for (const m of type) {
           if (equ[m].name == j.name) {
-            exist = 1
+            exist = equ[m]
             break
           }
         }

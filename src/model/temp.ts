@@ -5,7 +5,9 @@ import { safeParse } from './utils/safe.js'
 
 const redis = getIoRedis()
 
-export type TempRecord = any // 兼容旧逻辑，后续细化
+export interface TempRecord {
+  [k: string]: unknown
+}
 
 export async function readTemp(): Promise<TempRecord[]> {
   const temp = await redis.get(`${__PATH.temp_path}:temp`)

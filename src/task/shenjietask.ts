@@ -18,14 +18,14 @@ scheduleJob('0 0/5 * * * ?', async () => {
     log_mag = log_mag + '查询' + player_id + '是否有动作,'
     //得到动作
 
-    let action: any = await getDataByUserId(player_id, 'action')
+    let action = await getDataByUserId(player_id, 'action')
     action = await JSON.parse(action)
     //不为空，存在动作
     if (action != null) {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
 
-      if (await action.hasOwnProperty('group_id')) {
+      if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
         if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
@@ -149,9 +149,8 @@ scheduleJob('0 0/5 * * * ?', async () => {
             arr.power_up = 1 //渡劫状态
             arr.Place_action = 1 //秘境
             arr.Place_actionplus = 1 //沉迷状态
-            ;((arr.mojie = 1), //魔界状态---关闭
-              //结束的时间也修改为当前时间
-              (arr.end_time = new Date().getTime()))
+            arr.mojie = 1 //魔界状态---关闭
+            arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
             //结算完去除group_id
             delete arr.group_id
             //写入redis

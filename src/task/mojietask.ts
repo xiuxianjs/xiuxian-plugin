@@ -8,23 +8,10 @@ import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
 import { __PATH } from '@src/model/paths'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import type { ExploreActionState } from '@src/types/task'
 
-interface ActionState {
-  end_time: number
-  time: number
-  mojie?: string | number
-  cishu?: number
-  group_id?: string
-  action?: string
-  shutup?: number
-  working?: number
-  power_up?: number
-  Place_action?: number
-  Place_actionplus?: number
-}
-
-function isActionState(a: unknown): a is ActionState {
-  return !!a && typeof a === 'object' && 'end_time' in a && 'time' in a
+function isExploreAction(a: unknown): a is ExploreActionState {
+  return !!a && typeof a === 'object' && 'end_time' in a
 }
 scheduleJob('0 0/5 * * * ?', async () => {
   // 获取缓存中人物列表
@@ -44,25 +31,33 @@ scheduleJob('0 0/5 * * * ?', async () => {
     if (action != null) {
       let push_address = player_id // 消息推送地址
       let is_group = false // 是否推送到群
-      if (isActionState(action) && notUndAndNull(action.group_id)) {
+      if (
+        isExploreAction(action) &&
+        notUndAndNull((action as ExploreActionState).group_id)
+      ) {
         is_group = true
-        push_address = action.group_id!
+        push_address = (action as ExploreActionState).group_id!
       }
 
       //最后发送的消息
       const msg: string[] = []
       //动作结束时间
-      if (!isActionState(action)) continue
-      let end_time = action.end_time
+      if (!isExploreAction(action)) continue
+      const act = action as ExploreActionState
+      let end_time = act.end_time
       // 现在的时间
       const now_time = Date.now()
       // 用户信息
       const player = await readPlayer(player_id)
 
       //有洗劫状态:这个直接结算即可
-      if (String(action.mojie) == '0') {
+      if (String(act.mojie) == '0') {
         //5分钟后开始结算阶段一
-        end_time = end_time - action.time
+        const baseDuration =
+          typeof act.time === 'number'
+            ? act.time
+            : parseInt(String(act.time || 0), 10)
+        end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration)
         //时间过了
         if (now_time > end_time) {
           let thing_name
@@ -131,6 +126,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               player.幸运 -= player.addluckyNo
               player.addluckyNo = 0
             }
+            // @ts-expect-error: data.setData 期望 JSONValue，Player 包含额外字段（运行时可序列化）
             await data.setData('player', player_id, player)
           }
           //默认结算装备数
@@ -165,9 +161,11 @@ scheduleJob('0 0/5 * * * ?', async () => {
             ',气血' +
             qixue +
             ',剩余次数' +
-            (action.cishu - 1)
+            ((act.cishu || 0) - 1)
           msg.push('\n' + player.名号 + last_msg + fyd_msg)
-          const arr: ActionState = action
+          const arr: ExploreActionState = {
+            ...(act as unknown as ExploreActionState)
+          }
           if (arr.cishu == 1) {
             //把状态都关了
             arr.shutup = 1 //闭关状态
@@ -188,7 +186,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             //发送消息
             await pushInfo(push_address, is_group, msg.join(''))
           } else {
-            arr.cishu--
+            if (typeof arr.cishu === 'number') arr.cishu--
 
             await setDataByUserId(player_id, 'action', JSON.stringify(arr))
             //先完结再结算

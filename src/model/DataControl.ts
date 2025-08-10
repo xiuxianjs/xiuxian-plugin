@@ -1,7 +1,9 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 // 类型定义
-type JSONData = Record<string, any> | Array<any>
+type JSONPrimitive = string | number | boolean | null
+export type JSONValue = JSONPrimitive | JSONValue[] | { [k: string]: JSONValue }
+type JSONData = { [k: string]: JSONValue } | JSONValue[]
 
 type FilePathType =
   | 'player'
@@ -74,7 +76,7 @@ export const writeDataByPath = (
   key: keyof typeof __PATH,
   from: string,
   name: string,
-  data: any
+  data: JSONData
 ): void => {
   const redis = getIoRedis()
   redis.set(

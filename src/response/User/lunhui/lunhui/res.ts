@@ -1,5 +1,4 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'fs'
 import { data, redis } from '@src/model/api'
 import {
   existplayer,

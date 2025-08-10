@@ -1,14 +1,21 @@
 // 通用玩家状态与工具函数抽离
-import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
+import {
+  useSend,
+  Text,
+  PublicEventMessageCreate,
+  PrivateEventMessageCreate,
+  PublicEventInteractionCreate,
+  PrivateEventInteractionCreate
+} from 'alemonjs'
 import { getDataByUserId } from './Redis.js'
 import { safeParse } from './utils/safe.js'
 
-export function getRandomFromARR<T = any>(ARR: T[]): T {
-  const randindex = Math.trunc(Math.random() * ARR.length)
-  return ARR[randindex]
+export function getRandomFromARR<T>(arr: T[]): T {
+  const randIndex = Math.trunc(Math.random() * arr.length)
+  return arr[randIndex]
 }
 
-export async function sleep(time: number) {
+export function sleep(time: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
@@ -38,26 +45,51 @@ export async function shijianc(time: number) {
   }
 }
 
-export async function getLastsign(usr_qq: string) {
-  const time: any = await getDataByUserId(usr_qq, 'lastsign_time')
+export interface LastSignTime {
+  Y: number
+  M: number
+  D: number
+  h: number
+  m: number
+  s: number
+}
+
+export async function getLastsign(
+  usr_qq: string
+): Promise<LastSignTime | false> {
+  const time = (await getDataByUserId(usr_qq, 'lastsign_time')) as string | null
   if (time != null) return await shijianc(parseInt(time))
   return false
 }
 
-export async function getPlayerAction(usr_qq: string) {
-  const arr: any = {}
-  let action: any = await getDataByUserId(usr_qq, 'action')
-  action = safeParse(action, null)
-  if (action != null) {
-    arr.action = action.action
-    arr.time = action.time
-    arr.end_time = action.end_time
-    arr.plant = action.plant
-    arr.mine = action.mine
-    return arr
+export interface PlayerActionData {
+  action: string
+  time?: number
+  end_time?: number
+  plant?: {
+    name: string
+    start: number
+    duration: number
+    [k: string]: unknown
   }
-  arr.action = '空闲'
-  return arr
+  mine?: { name: string; start: number; duration: number; [k: string]: unknown }
+}
+
+export async function getPlayerAction(
+  usr_qq: string
+): Promise<PlayerActionData> {
+  const raw = (await getDataByUserId(usr_qq, 'action')) as string | null
+  const parsed = safeParse(raw, null) as Partial<PlayerActionData> | null
+  if (parsed) {
+    return {
+      action: String(parsed.action),
+      time: parsed.time,
+      end_time: parsed.end_time,
+      plant: parsed.plant,
+      mine: parsed.mine
+    }
+  }
+  return { action: '空闲' }
 }
 
 export async function dataverification(e: PublicEventMessageCreate) {
@@ -69,29 +101,38 @@ export async function dataverification(e: PublicEventMessageCreate) {
   return 0
 }
 
-export function notUndAndNull(obj: any): boolean {
-  return !(obj == undefined || obj == null)
+export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
+  return !(obj == null)
 }
 
-export function isNotBlank(value: any): boolean {
-  return value ?? '' !== ''
+export function isNotBlank(value: unknown): boolean {
+  return !(value === null || value === undefined || value === '')
 }
 
-export async function Go(e: PublicEventMessageCreate) {
+export type AnyMessageEvent =
+  | PublicEventMessageCreate
+  | PrivateEventMessageCreate
+  | PublicEventInteractionCreate
+  | PrivateEventInteractionCreate
+
+export async function Go(e: AnyMessageEvent): Promise<boolean | 0> {
   const usr_qq = e.UserId
   const Send = useSend(e)
   const { existplayer } = await import('./xiuxian.js')
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return 0
-  const game_action: any = await getDataByUserId(usr_qq, 'game_action')
-  if (game_action == 1) {
+  const game_action = (await getDataByUserId(usr_qq, 'game_action')) as
+    | string
+    | number
+    | null
+  if (game_action === 1 || game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return 0
   }
-  let action: any = await getDataByUserId(usr_qq, 'action')
-  action = safeParse(action, null)
-  if (action != null) {
-    const action_end_time = action.end_time
+  const actionRaw = (await getDataByUserId(usr_qq, 'action')) as string | null
+  const action = safeParse(actionRaw, null) as PlayerActionData | null
+  if (action) {
+    const action_end_time = action.end_time ?? 0
     const now_time = new Date().getTime()
     if (now_time <= action_end_time) {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60)

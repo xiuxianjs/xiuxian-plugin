@@ -4,11 +4,12 @@ import {
   existplayer,
   existNajieThing,
   foundthing,
-  readIt,
+  readItTyped,
   writeIt,
   readNajie,
   Write_najie
 } from '@src/model'
+import type { CustomEquipRecord } from '@src/model/duanzaofu'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?赋名.*$/
@@ -31,13 +32,13 @@ export default onResponse(selects, async e => {
     Send(Text(`这个世间已经拥有这把武器了`))
     return false
   }
-  if (newname.length > 8) {
+  if (new_name.length > 8) {
     Send(Text('字符超出最大限制,请重新赋名'))
     return false
   }
-  let A = []
+  let A: CustomEquipRecord[] = []
   try {
-    A = await readIt()
+    A = await readItTyped()
   } catch {
     await writeIt([])
   }
@@ -59,7 +60,15 @@ export default onResponse(selects, async e => {
           item.atk + item.def > 1.95
         ) {
           item.name = new_name
-          A.push(item)
+          // 构造记录（确保必需字段）
+          A.push({
+            name: item.name,
+            type: item.type || '武器',
+            atk: Number(item.atk) || 0,
+            def: Number(item.def) || 0,
+            HP: Number(item.HP) || 0,
+            author_name: user_qq
+          })
           await Write_najie(user_qq, thingall)
           await writeIt(A)
           Send(Text(`附名成功,您的${thing_name}更名为${new_name}`))

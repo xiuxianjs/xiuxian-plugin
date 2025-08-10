@@ -9,6 +9,8 @@ import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import type { ActionState } from '@src/types/action'
+import type { DanyaoStatus } from '@src/types/player'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表
@@ -21,9 +23,9 @@ scheduleJob('0 0/1 * * * ?', async () => {
     log_mag += '查询' + player_id + '是否有动作,'
     //得到动作
     const actionRaw = await getDataByUserId(player_id, 'action')
-    let action: Record<string, any> | null = null
+    let action: ActionState | null = null
     try {
-      action = actionRaw ? JSON.parse(actionRaw) : null
+      action = actionRaw ? (JSON.parse(actionRaw) as ActionState) : null
     } catch {
       action = null
     }
@@ -62,7 +64,13 @@ scheduleJob('0 0/1 * * * ?', async () => {
             size * now_level_id * (player.修炼效率提升 + 1)
           ) //增加的修为
           const blood = Math.floor(player.血量上限 * 0.02)
-          const time = parseInt(action.time) / 1000 / 60 //分钟
+          const rawTime = action.time
+          const time =
+            (typeof rawTime === 'number'
+              ? rawTime
+              : parseInt(rawTime || '0', 10)) /
+            1000 /
+            60 // 分钟
           let rand = Math.random()
           let xueqi = 0
           let other_xiuwei = 0
@@ -70,7 +78,37 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let transformation = '修为'
           // 兼容旧版：readDanyao 现在返回数组，但老逻辑期望对象包含 biguan/biguanxl/lianti/beiyong4 等字段
           // 若未来需要，可引入独立的炼神状态存储结构
-          const dy: any = await readDanyao(player_id as string)
+          const rawDy = await readDanyao(player_id as string)
+          // 新版本 readDanyao 返回数组，旧逻辑期望对象；做兼容映射
+          const dy: DanyaoStatus = Array.isArray(rawDy)
+            ? ((): DanyaoStatus => {
+                const base: DanyaoStatus = {
+                  biguan: 0,
+                  biguanxl: 0,
+                  xingyun: 0,
+                  lianti: 0,
+                  ped: 0,
+                  modao: 0,
+                  beiyong1: 0,
+                  beiyong2: 0,
+                  beiyong3: 0,
+                  beiyong4: 0,
+                  beiyong5: 0
+                }
+                for (const item of rawDy) {
+                  if (item && typeof item === 'object') {
+                    for (const k of Object.keys(item)) {
+                      const v = (item as Record<string, unknown>)[k]
+                      if (k in base && typeof v === 'number') {
+                        const mut = base as unknown as { [key: string]: number }
+                        mut[k] = v
+                      }
+                    }
+                  }
+                }
+                return base
+              })()
+            : (rawDy as unknown as DanyaoStatus)
           if (dy.biguan > 0) {
             dy.biguan--
             if (dy.biguan == 0) {
@@ -173,7 +211,8 @@ scheduleJob('0 0/1 * * * ?', async () => {
             dy.lianti = 0
             dy.beiyong4 = 0
           }
-          await writeDanyao(player_id, dy)
+          // 仍按旧结构写回：若接口需要数组，后续可实现 fromStatus(dy)
+          await writeDanyao(player_id, dy as unknown as never)
         }
       } //炼丹师修正结束
       //降妖
@@ -195,7 +234,13 @@ scheduleJob('0 0/1 * * * ?', async () => {
           const lingshi = Math.floor(
             size * now_level_id * (1 + player.修炼效率提升) * 0.5
           )
-          const time = parseInt(action.time) / 1000 / 60 //分钟
+          const rawTime2 = action.time
+          const time =
+            (typeof rawTime2 === 'number'
+              ? rawTime2
+              : parseInt(rawTime2 || '0', 10)) /
+            1000 /
+            60 // 分钟
           let other_lingshi = 0
           let other_xueqi = 0
           let rand = Math.random()

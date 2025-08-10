@@ -9,7 +9,7 @@ export const regular = /^(#|＃|\/)?金银坊记录$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const qq = e.UserId
-  let shenglv
+  let shenglv: string | number
   //获取人物信息
   const player_data = await data.getData('player', qq)
   const victory = notUndAndNull(player_data.金银坊胜场)
@@ -35,7 +35,8 @@ export default onResponse(selects, async e => {
     victory,
     victory_num,
     defeated,
-    defeated_num
+    defeated_num,
+    shenglv
   })
   if (img) Send(Image(img))
 })

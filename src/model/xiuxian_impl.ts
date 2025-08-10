@@ -58,12 +58,12 @@ export async function Write_najie(usr_qq: string, najie: Najie): Promise<void> {
   await redis.set(`${__PATH.najie_path}:${usr_qq}`, JSON.stringify(najie))
 }
 
-export async function addExp4(usr_qq, exp = 0) {
+export async function addExp4(usr_qq: string, exp = 0) {
   if (exp === 0) return
   await playerRepo.addOccupationExp(usr_qq, exp)
 }
 
-export async function addConFaByUser(usr_qq, gongfa_name) {
+export async function addConFaByUser(usr_qq: string, gongfa_name: string) {
   const player = await readPlayer(usr_qq)
   player.学习的功法.push(gongfa_name)
   data.setData('player', usr_qq, player)
@@ -73,8 +73,8 @@ export async function addConFaByUser(usr_qq, gongfa_name) {
     .catch(() => {})
 }
 
-export async function addBagCoin(usr_qq, lingshi) {
-  const delta = Math.trunc(lingshi)
+export async function addBagCoin(usr_qq: string, lingshi: number) {
+  const delta = Math.trunc(Number(lingshi))
   if (delta === 0) return
   await najieRepo.addLingShi(usr_qq, delta)
 }

@@ -10,6 +10,7 @@ import {
 } from '@src/model'
 
 import { selects } from '@src/response/index'
+import type { LastSignTime } from '@src/model/common'
 export const regular = /^(#|＃|\/)?修仙签到$/
 
 export default onResponse(selects, async e => {
@@ -23,24 +24,14 @@ export default onResponse(selects, async e => {
   const Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000) //获得昨天日期
   const Today = await shijianc(nowTime)
   const lastsign_time = await getLastsign(usr_qq) //获得上次签到日期
-  if (
-    Today.Y == lastsign_time.Y &&
-    Today.M == lastsign_time.M &&
-    Today.D == lastsign_time.D
-  ) {
+  const isSameDay = (a: LastSignTime, b: LastSignTime) =>
+    a.Y === b.Y && a.M === b.M && a.D === b.D
+  if (lastsign_time && isSameDay(Today as LastSignTime, lastsign_time)) {
     Send(Text(`今日已经签到过了`))
     return false
   }
-  let Sign_Yesterday //昨日日是否签到
-  if (
-    Yesterday.Y == lastsign_time.Y &&
-    Yesterday.M == lastsign_time.M &&
-    Yesterday.D == lastsign_time.D
-  ) {
-    Sign_Yesterday = true
-  } else {
-    Sign_Yesterday = false
-  }
+  const Sign_Yesterday =
+    !!lastsign_time && isSameDay(Yesterday as LastSignTime, lastsign_time)
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':lastsign_time', nowTime) //redis设置签到时间
   const player = await await data.getData('player', usr_qq)
   if (player.连续签到天数 == 7 || !Sign_Yesterday) {

@@ -4,15 +4,16 @@ import { data, redis } from '@src/model/api'
 import { __PATH } from '@src/model/paths'
 import { readPlayer } from '@src/model/xiuxian'
 import { scheduleJob } from 'node-schedule'
+import type { TiandibangRankEntry as RankEntry } from '@src/types/task'
 
 scheduleJob('0 0 0 ? * 1', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  const temp = []
-  let t
+  const temp: RankEntry[] = []
+  let t: RankEntry | undefined
   for (let k = 0; k < playerList.length; k++) {
-    const this_qq: any = playerList[k]
-    const player = await readPlayer(this_qq)
+    const this_qq_str = playerList[k]
+    const player = await readPlayer(this_qq_str)
     const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
     ).level_id
@@ -28,7 +29,7 @@ scheduleJob('0 0 0 ? * 1', async () => {
       学习的功法: player.学习的功法,
       魔道值: player.魔道值,
       神石: player.神石,
-      qq: this_qq,
+      qq: parseInt(this_qq_str, 10),
       次数: 3,
       积分: 0
     }

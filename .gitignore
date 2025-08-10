@@ -17,3 +17,4 @@ mysql-connector-j-9.1.0
 /liquibase
 *.memory-card.json
 .data
+.eslintcache

@@ -1,5 +1,4 @@
 import { Text, useSend } from 'alemonjs'
-import fs from 'fs'
 import { redis, data } from '@src/model/api'
 import {
   existplayer,
@@ -15,6 +14,13 @@ import {
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
+
+// 玩家行动状态（统一抽象）
+interface PlayerActionState {
+  action: string
+  end_time: number
+  [k: string]: unknown
+}
 export const regular = /^(#|＃|\/)?登仙$/
 
 export default onResponse(selects, async e => {
@@ -26,9 +32,10 @@ export default onResponse(selects, async e => {
   //不开放私聊
 
   //获取游戏状态
-  const game_action: any = await redis.get(
+  const game_action_raw = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
+  const game_action = game_action_raw == null ? 0 : Number(game_action_raw)
   //防止继续其他娱乐行为
   if (game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
@@ -46,8 +53,13 @@ export default onResponse(selects, async e => {
   }
   //查询redis中的人物动作
 
-  let action: any = await getDataByUserId(usr_qq, 'action')
-  action = JSON.parse(action)
+  const actionRaw = await getDataByUserId(usr_qq, 'action')
+  let action: PlayerActionState | null = null
+  try {
+    action = actionRaw ? (JSON.parse(actionRaw) as PlayerActionState) : null
+  } catch {
+    action = null
+  }
   //不为空
   if (action != null) {
     const action_end_time = action.end_time
@@ -106,18 +118,25 @@ export default onResponse(selects, async e => {
       //有宗门
       if (player.宗门.职位 != '宗主') {
         const ass = await data.getAssociation(player.宗门.宗门名称)
-        ass[player.宗门.职位] = ass[player.宗门.职位].filter(
-          item => item != usr_qq
-        )
-        ass['所有成员'] = ass['所有成员'].filter(item => item != usr_qq)
-        data.setAssociation(ass.宗门名称, ass)
+        if (ass === 'error') return false
+        const association = ass
+        // 成员职位列表统一视为 string[]
+        const pos = player.宗门.职位 as string
+        const curList = (association[pos] as string[] | undefined) || []
+        association[pos] = curList.filter(item => item != usr_qq)
+        const allList = (association['所有成员'] as string[] | undefined) || []
+        association['所有成员'] = allList.filter(item => item != usr_qq)
+        data.setAssociation(association.宗门名称 as string, association)
         delete player.宗门
         data.setData('player', usr_qq, player)
         await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
         const ass = await data.getAssociation(player.宗门.宗门名称)
-        if (ass.所有成员.length < 2) {
+        if (ass === 'error') return false
+        const association = ass
+        const allList = (association.所有成员 as string[] | undefined) || []
+        if (allList.length < 2) {
           await redis.del(`${data.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
           data.setData('player', usr_qq, player)
@@ -126,30 +145,35 @@ export default onResponse(selects, async e => {
             Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹')
           )
         } else {
-          ass['所有成员'] = ass['所有成员'].filter(item => item != usr_qq) //原来的成员表删掉这个B
+          association['所有成员'] = allList.filter(item => item != usr_qq) // 剔除原成员
           delete player.宗门 //删除这个B存档里的宗门信息
           data.setData('player', usr_qq, player)
           await playerEfficiency(usr_qq)
           //随机一个幸运儿的QQ,优先挑选等级高的
           let randmember_qq
-          if (ass.副宗主.length > 0) {
-            randmember_qq = await getRandomFromARR(ass.副宗主)
-          } else if (ass.长老.length > 0) {
-            randmember_qq = await getRandomFromARR(ass.长老)
-          } else if (ass.内门弟子.length > 0) {
-            randmember_qq = await getRandomFromARR(ass.内门弟子)
+          const list_v = (association.副宗主 as string[] | undefined) || []
+          const list_l = (association.长老 as string[] | undefined) || []
+          const list_n = (association.内门弟子 as string[] | undefined) || []
+          if (list_v.length > 0) {
+            randmember_qq = await getRandomFromARR(list_v)
+          } else if (list_l.length > 0) {
+            randmember_qq = await getRandomFromARR(list_l)
+          } else if (list_n.length > 0) {
+            randmember_qq = await getRandomFromARR(list_n)
           } else {
-            randmember_qq = await getRandomFromARR(ass.所有成员)
+            randmember_qq = await getRandomFromARR(
+              (association.所有成员 as string[] | undefined) || []
+            )
           }
           const randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
-          ass[randmember.宗门.职位] = ass[randmember.宗门.职位].filter(
-            item => item != randmember_qq
-          ) //原来的职位表删掉这个幸运儿
-          ass['宗主'] = randmember_qq //新的职位表加入这个幸运儿
+          const rPos = randmember.宗门.职位 as string
+          const rList = (association[rPos] as string[] | undefined) || []
+          association[rPos] = rList.filter(item => item != randmember_qq)
+          association['宗主'] = randmember_qq //新的职位表加入这个幸运儿
           randmember.宗门.职位 = '宗主' //成员存档里改职位
           data.setData('player', randmember_qq, randmember) //记录到存档
           data.setData('player', usr_qq, player)
-          data.setAssociation(ass.宗门名称, ass) //记录到宗门
+          data.setAssociation(association.宗门名称 as string, association) //记录到宗门
           Send(
             Text(
               `飞升前,遵循你的嘱托,${randmember.名号}将继承你的衣钵,成为新一任的宗主`

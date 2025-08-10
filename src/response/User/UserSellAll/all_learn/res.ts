@@ -19,7 +19,6 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   //检索方法
   const najie = await await data.getData('najie', usr_qq)
-  const gongfa = []
   const player = await readPlayer(usr_qq)
   let name = ''
   for (const l of najie.功法) {

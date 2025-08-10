@@ -3,6 +3,27 @@ import { notUndAndNull } from './common.js'
 import { readEquipment } from './equipment.js'
 import * as _ from 'lodash-es'
 import type { Player, Equipment } from '../types/player.js'
+import type { SkillItem } from '../types/data_extra'
+
+// 轻量战斗实体，用于任务脚本临时构造不完整玩家对象
+export interface BattleEntity {
+  名号: string
+  攻击: number
+  防御: number
+  当前血量: number
+  暴击率: number
+  灵根: { 法球倍率?: number; name?: string; type?: string } & Record<
+    string,
+    unknown
+  >
+  隐藏灵根?: { name: string }
+  id?: string
+  魔道值?: number
+  level_id?: number
+  神石?: number
+  仙宠?: { type: string; 加成: number; name: string }
+  [k: string]: unknown
+}
 
 interface BattleResult {
   msg: string[]
@@ -13,11 +34,10 @@ interface BattleResult {
 type EquipmentSlots = '武器' | '护具' | '法宝'
 
 // 只定义在本文件需要使用到的技能字段最小子集
-interface Skill {
-  class: string
+// 与资源文件 SkillItem 对应，补充 battle 需要的字段（资源类型名称不完全一致时做兼容）
+interface Skill extends SkillItem {
   cnt: number
   pr: number
-  name: string
   msg1: string
   msg2: string
   beilv: number
@@ -30,21 +50,57 @@ interface Skill {
  * @param BB_player 参战玩家 B (对手)
  */
 export async function zdBattle(
-  AA_player: Player,
-  BB_player: Player
+  AA_player: Player | BattleEntity,
+  BB_player: Player | BattleEntity
 ): Promise<BattleResult> {
-  let A_player: Player = _.cloneDeep(BB_player)
-  let B_player: Player = _.cloneDeep(AA_player)
+  // 运行时克隆并断言为 Player 的最小子集；缺失字段使用回退默认值
+  const normalize = (p: Player | BattleEntity): Player => {
+    return {
+      名号: p.名号,
+      level_id: (p as Player).level_id ?? 0,
+      Physique_id: (p as Player).Physique_id ?? 0,
+      修为: (p as Player).修为 ?? 0,
+      灵石: (p as Player).灵石 ?? 0,
+      血气: (p as Player).血气 ?? 0,
+      当前血量: p.当前血量,
+      血量上限: (p as Player).血量上限 ?? p.当前血量,
+      攻击: p.攻击,
+      防御: p.防御,
+      攻击加成: (p as Player).攻击加成 ?? 0,
+      防御加成: (p as Player).防御加成 ?? 0,
+      生命加成: (p as Player).生命加成 ?? 0,
+      暴击率: p.暴击率,
+      暴击伤害: (p as Player).暴击伤害 ?? 0,
+      镇妖塔层数: (p as Player).镇妖塔层数 ?? 0,
+      神魄段数: (p as Player).神魄段数 ?? 0,
+      favorability: (p as Player).favorability ?? 0,
+      灵根: (p as Player).灵根 ?? { name: '未知', type: '普通', 法球倍率: 1 },
+      仙宠: (p as Player).仙宠 ?? { name: '无', type: 'none', 加成: 0 },
+      学习的功法: (p as Player).学习的功法 ?? [],
+      修炼效率提升: (p as Player).修炼效率提升 ?? 0,
+      宗门: (p as Player).宗门,
+      islucky: (p as Player).islucky ?? 0,
+      addluckyNo: (p as Player).addluckyNo ?? 0,
+      幸运: (p as Player).幸运 ?? 0,
+      魔道值: (p as Player).魔道值 ?? 0,
+      id: (p as Player).id,
+      神石: (p as Player).神石 ?? 0,
+      法球倍率:
+        Number((p as Player).法球倍率 ?? (p as Player).灵根?.法球倍率 ?? 1) || 1
+    }
+  }
+  let A_player: Player = normalize(BB_player)
+  let B_player: Player = normalize(AA_player)
   let cnt = 0
   let A_xue = 0
   let B_xue = 0
   let t: Player
   const msg: string[] = []
-  const jineng1: Skill[] = data.jineng1 as Skill[]
-  const jineng2: Skill[] = data.jineng2 as Skill[]
+  const jineng1: Skill[] = data.jineng1 as unknown as Skill[]
+  const jineng2: Skill[] = data.jineng2 as unknown as Skill[]
   const wuxing = ['金', '木', '土', '水', '火'] as const
   const type: EquipmentSlots[] = ['武器', '护具', '法宝']
-  if (A_player.隐藏灵根 && A_player.id) {
+  if (A_player.隐藏灵根 && typeof A_player.id === 'string') {
     let buff = 1
     const wx: string[] = []
     const equ = (await readEquipment(A_player.id)) as Equipment | null
@@ -62,7 +118,7 @@ export async function zdBattle(
       `${A_player.名号}与装备产生了共鸣,自身全属性提高${Math.trunc((buff - 1) * 100)}%`
     )
   }
-  if (B_player.隐藏灵根 && B_player.id) {
+  if (B_player.隐藏灵根 && typeof B_player.id === 'string') {
     let buff = 1
     const wx: string[] = []
     const equ = (await readEquipment(B_player.id)) as Equipment | null
@@ -82,13 +138,16 @@ export async function zdBattle(
   }
   // 双方初始魔道/神石处理复用原逻辑
   const preBuffCheck = (P: Player) => {
-    if (P.魔道值 > 999) {
+    if ((P.魔道值 ?? 0) > 999) {
       let buff = Math.trunc(P.魔道值 / 1000) / 100 + 1
       if (buff > 1.3) buff = 1.3
       if (P.灵根.name == '九重魔功') buff += 0.2
       msg.push(`魔道值为${P.名号}提供了${Math.trunc((buff - 1) * 100)}%的增伤`)
-    } else if (P.魔道值 < 1 && (P.灵根.type == '转生' || P.level_id > 41)) {
-      let buff = P.神石 * 0.0015
+    } else if (
+      (P.魔道值 ?? 0) < 1 &&
+      (P.灵根.type == '转生' || P.level_id > 41)
+    ) {
+      let buff = (P.神石 ?? 0) * 0.0015
       if (buff > 0.3) buff = 0.3
       if (P.灵根.name == '九转轮回体') buff += 0.2
       msg.push(`神石为${P.名号}提供了${Math.trunc(buff * 100)}%的减伤`)
@@ -119,7 +178,7 @@ export async function zdBattle(
         }
       }
     }
-    if (notUndAndNull(A_player.id)) {
+    if (typeof A_player.id === 'string') {
       const equipment = (await readEquipment(A_player.id)) as Equipment | null
       const ran = Math.random()
       if (equipment?.武器?.name == '紫云剑' && ran > 0.7) {
@@ -137,7 +196,7 @@ export async function zdBattle(
       }
     }
     let 伤害 = Harm(A_player.攻击 * 0.85, B_player.防御)
-    const 法球伤害 = Math.trunc(A_player.攻击 * A_player.法球倍率)
+    const 法球伤害 = Math.trunc(A_player.攻击 * (A_player.法球倍率 ?? 1))
     伤害 = Math.trunc(baoji * 伤害 + 法球伤害 + A_player.防御 * 0.1)
     let count = 0
     for (let i = 0; i < jineng1.length; i++) {
@@ -187,16 +246,16 @@ export async function zdBattle(
         伤害 = 伤害 * jineng2[i].beilv + jineng2[i].other
       }
     }
-    if (A_player.魔道值 > 999) {
-      buff += Math.trunc(A_player.魔道值 / 1000) / 100
+    if ((A_player.魔道值 ?? 0) > 999) {
+      buff += Math.trunc((A_player.魔道值 ?? 0) / 1000) / 100
       if (buff > 1.3) buff = 1.3
       if (A_player.灵根.name == '九重魔功') buff += 0.2
     }
     if (
-      B_player.魔道值 < 1 &&
+      (B_player.魔道值 ?? 0) < 1 &&
       (B_player.灵根.type == '转生' || B_player.level_id > 41)
     ) {
-      let buff2 = B_player.神石 * 0.0015
+      let buff2 = (B_player.神石 ?? 0) * 0.0015
       if (buff2 > 0.3) buff2 = 0.3
       if (B_player.灵根.name == '九转轮回体') buff2 += 0.2
       buff -= buff2

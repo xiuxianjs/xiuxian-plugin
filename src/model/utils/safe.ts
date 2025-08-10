@@ -16,12 +16,12 @@ export class PlayerRepo {
   async getRaw(id: string) {
     return this.redis.get(`${__PATH.player_path}:${id}`)
   }
-  async getObject<T = any>(id: string): Promise<T | null> {
+  async getObject<T>(id: string): Promise<T | null> {
     const raw = await this.getRaw(id)
     if (!raw) return null
-    return safeParse<T>(raw, null as any)
+    return safeParse<T | null>(raw, null)
   }
-  async setObject(id: string, obj: any) {
+  async setObject<T extends object | unknown>(id: string, obj: T) {
     await this.redis.set(`${__PATH.player_path}:${id}`, JSON.stringify(obj))
   }
   // 原子数值增减（字符串化 JSON 方式，不拆字段；若需高并发可改 hash 结构）
@@ -47,8 +47,17 @@ export class PlayerRepo {
       return cur
     `
     const key = `${__PATH.player_path}:${id}`
-    const res = await (this.redis as any).eval(lua, 1, key, field, delta)
-    return res as number | null
+    const redisClientTyped = this.redis as unknown as {
+      eval: (
+        script: string,
+        numKeys: number,
+        key: string,
+        field: string,
+        delta: number
+      ) => Promise<number | null | string>
+    }
+    const res = await redisClientTyped.eval(lua, 1, key, field, delta)
+    return typeof res === 'number' ? res : res == null ? null : Number(res)
   }
 }
 

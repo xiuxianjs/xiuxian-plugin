@@ -3,15 +3,17 @@ import { Write_najie, readNajie } from './xiuxian_impl.js'
 import { notUndAndNull } from './common.js'
 import type { Najie } from '../types/player.js'
 
-interface PetItem {
+export interface PetItem {
   name: string
+  class: string
   等级: number
   每级增加: number
   加成: number
   数量: number
   islockd: number
-  [k: string]: any
+  [k: string]: unknown
 }
+type PetList = PetItem[]
 
 export async function Add_仙宠(
   usr_qq: string,
@@ -23,22 +25,54 @@ export async function Add_仙宠(
   if (x === 0) return
   const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  const trr = (najie.仙宠 as any).find(
+  // Najie.仙宠 原结构为 NajieItem[]（无“数量”“islockd”等字段），需要转换
+  const rawList = Array.isArray(najie.仙宠) ? najie.仙宠 : []
+  const petList: PetList = rawList.map(r => {
+    const base: Partial<PetItem> = r as unknown as PetItem
+    return {
+      name: (base.name as string) ?? '',
+      class: '仙宠',
+      等级: typeof base.等级 === 'number' ? base.等级 : 1,
+      每级增加: typeof base.每级增加 === 'number' ? base.每级增加 : 0,
+      加成: typeof base.加成 === 'number' ? base.加成 : 0,
+      数量: typeof base.数量 === 'number' ? base.数量 : 0,
+      islockd: typeof base.islockd === 'number' ? base.islockd : 0
+    }
+  })
+  const trr = petList.find(
     (item: PetItem) => item.name == thing_name && item.等级 == thing_level
-  ) as PetItem | undefined
+  )
   if (x > 0 && !notUndAndNull(trr)) {
-    const base = (data.xianchon as any).find(
-      (item: PetItem) => item.name == thing_name
-    )
+    interface SourcePetLike {
+      name: string
+      等级?: number
+      初始加成?: number
+      每级增加?: number
+      加成?: number
+      [k: string]: unknown
+    }
+    const base = Array.isArray(data.xianchon)
+      ? (data.xianchon as SourcePetLike[]).find(item => item.name == thing_name)
+      : undefined
     if (!notUndAndNull(base)) {
       console.info('没有这个东西')
       return
     }
-    const newthing: PetItem = { ...(base as any) }
+    const newthing: PetItem = {
+      name: base.name,
+      class: '仙宠',
+      等级: typeof base.等级 === 'number' ? base.等级 : 1,
+      每级增加: base.每级增加 ?? base.初始加成 ?? 0,
+      加成: base.加成 ?? 0,
+      数量: 0,
+      islockd: 0
+    }
     if (thing_level != null) newthing.等级 = thing_level
-    ;(najie.仙宠 as any).push(newthing)
-    const target = (najie.仙宠 as any).find(
-      (item: PetItem) => item.name == thing_name && item.等级 == newthing.等级
+    petList.push(newthing)
+    // 回写
+    ;(najie as Najie).仙宠 = petList
+    const target = petList.find(
+      item => item.name == thing_name && item.等级 == newthing.等级
     ) as PetItem
     target.数量 = x
     target.加成 = target.等级 * target.每级增加
@@ -47,14 +81,15 @@ export async function Add_仙宠(
     return
   }
   if (!trr) return
-  const target = (najie.仙宠 as any).find(
-    (item: PetItem) => item.name == thing_name && item.等级 == trr.等级
+  const target = petList.find(
+    item => item.name == thing_name && item.等级 == trr.等级
   ) as PetItem
   target.数量 += x
   if (target.数量 < 1) {
-    ;(najie.仙宠 as any) = (najie.仙宠 as any).filter(
-      (item: PetItem) => item.name != thing_name || item.等级 != trr.等级
+    const next = petList.filter(
+      item => item.name != thing_name || item.等级 != trr.等级
     )
+    ;(najie as Najie).仙宠 = next
   }
   await Write_najie(usr_qq, najie)
 }
