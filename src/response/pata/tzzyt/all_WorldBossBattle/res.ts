@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let lingshi: any = 0
+  let lingshi = 0
   let cengshu = 0
   while (player.当前血量 > 0) {
     const ZYTcs = player.镇妖塔层数

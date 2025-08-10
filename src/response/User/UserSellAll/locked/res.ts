@@ -19,22 +19,22 @@ export default onResponse(selects, async e => {
   const thingParts = msg.substring(2).split('*')
   let thing_name = thingParts[0]
   const najie = await readNajie(usr_qq)
-  thingParts[0] = parseInt(thingParts[0])
-  // 品级
-  let thing_pinji
+  const index = parseInt(thingParts[0])
+  // 品级（仅在确定品级后初始化）
   //装备优化
-  if (thingParts[0]) {
-    if (thingParts[0] > 1000) {
+  if (!isNaN(index)) {
+    if (index > 1000) {
       try {
-        thing_name = najie.仙宠[thingParts[0] - 1001].name
+        thing_name = najie.仙宠[index - 1001].name
       } catch {
         Send(Text('仙宠代号输入有误!'))
         return false
       }
-    } else if (thingParts[0] > 100) {
+    } else if (index > 100) {
       try {
-        thing_name = najie.装备[thingParts[0] - 101].name
-        thingParts[1] = najie.装备[thingParts[0] - 101].pinji
+        thing_name = najie.装备[index - 101].name
+        // @ts-expect-error 动态数据结构: 装备项可能包含 pinji 属性
+        thingParts[1] = najie.装备[index - 101].pinji as unknown as string
       } catch {
         Send(Text('装备代号输入有误!'))
         return false
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
-  thing_pinji = pj[thingParts[1]]
+  const thing_pinji = pj[thingParts[1] as keyof typeof pj]
   let ifexist
   if (un_lock == '锁定') {
     ifexist = await updateBagThing(

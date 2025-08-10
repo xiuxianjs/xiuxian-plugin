@@ -71,9 +71,9 @@ export default onResponse(selects, async e => {
   let didian = e.MessageText.replace(/^(#|＃|\/)?洗劫/, '')
   didian = didian.trim()
   let shop
-  try {
-    shop = await readShop()
-  } catch {
+
+  shop = await readShop()
+  if (shop.length == 0) {
     await writeShop(data.shop_list)
     shop = await readShop()
   }

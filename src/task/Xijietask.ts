@@ -160,8 +160,6 @@ scheduleJob('0 0/1 * * * ?', async () => {
           const weizhi = action.Place_address
           let thing = await existshop(weizhi.name)
           const arr = action
-          let time
-          let action_time
           let last_msg = ''
           const thing_name = []
           let shop = await readShop()
