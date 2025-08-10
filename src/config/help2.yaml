@@ -121,12 +121,6 @@
     - icon: help-icon_18
       title: '@群友 #打劫'
       desc: '与其搏斗,胜方获得败方部分灵石'
-    - icon: help-icon_18
-      title: '@群友 #残云封天剑'
-      desc: '将其禁言'
-    - icon: help-icon_18
-  title: '#除你禁言'
-  desc: '解除禁言'
 - group: 一键功能
   list:
     - icon: help-icon_37

@@ -5,7 +5,7 @@ import {
   Go,
   readPlayer,
   convert2integer,
-  isNotNull,
+  notUndAndNull,
   existNajieThing,
   addNajieThing,
   addCoin
@@ -37,7 +37,7 @@ export default onResponse(selects, async e => {
   let i = await convert2integer(code[1])
   if (i > 12) return false
   let weizhi = await data.guildSecrets_list.find(item => item.name == didian)
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     return false
   }
   if (player.灵石 < weizhi.Price * i * 10) {
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
-  if (isNotNull(number) && number >= i) {
+  if (notUndAndNull(number) && number >= i) {
     await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))

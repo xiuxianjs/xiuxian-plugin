@@ -1,6 +1,5 @@
-import config from '../model/Config'
-import data from '../model/XiuxianData'
-
+import config from '@src/model/Config'
+import data from '@src/model/XiuxianData'
 import { getIoRedis } from '@alemonjs/db'
 import puppeteer from '@src/image/index'
 import { DataMention, Image, sendToChannel, sendToUser, Text } from 'alemonjs'

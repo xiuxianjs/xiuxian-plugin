@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, setFileValue, timestampToTime } from '@src/model'
+import { notUndAndNull, setFileValue, timestampToTime } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?开宗立派$/
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
     message.send(format(Text('修为达到化神再来吧')))
     return false
   }
-  if (isNotNull(player.宗门)) {
+  if (notUndAndNull(player.宗门)) {
     message.send(format(Text('已经有宗门了')))
     return false
   }

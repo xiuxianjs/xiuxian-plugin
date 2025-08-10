@@ -12,7 +12,7 @@ import {
   getEquipmentDataSafe,
   getPlayerAction,
   getPlayerDataSafe,
-  isNotNull,
+  notUndAndNull,
   playerEfficiency,
   readEquipment,
   readExchange,
@@ -461,12 +461,12 @@ export async function getPowerImage(e: PublicEventMessageCreate) {
   }
   await setPlayerDataSafe(usr_qq, player)
   await playerEfficiency(usr_qq)
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return
   }
   let this_association
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     this_association = {
       宗门名称: '无',
       职位: '无'
@@ -546,12 +546,12 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     player.灵根.法球倍率 = '0'
     player.修炼效率提升 = '0'
   }
-  if (!isNotNull(player.level_id)) {
-    Send(Text('请先#一键同步'))
+  if (!notUndAndNull(player.level_id)) {
+    Send(Text('存档错误'))
     return
   }
-  if (!isNotNull(player.sex)) {
-    Send(Text('请先#一键同步'))
+  if (!notUndAndNull(player.sex)) {
+    Send(Text('存档错误'))
     return
   }
   let nd = '无'
@@ -604,7 +604,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   let occupation_level_name
   let occupation_exp
   let occupation_need_exp
-  if (!isNotNull(player.occupation)) {
+  if (!notUndAndNull(player.occupation)) {
     occupation = '无'
     occupation_level_name = '-'
     occupation_exp = '-'
@@ -620,7 +620,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
     ).experience
   }
   let this_association
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     this_association = {
       宗门名称: '无',
       职位: '无'
@@ -632,7 +632,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   if (!equipment.武器) {
     equipment.武器 = {}
   }
-  if (!isNotNull(equipment.武器.pinji)) {
+  if (!notUndAndNull(equipment.武器.pinji)) {
     武器评级 = '无'
   } else {
     武器评级 = pinji[equipment.武器.pinji]
@@ -640,7 +640,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   if (!equipment.护具) {
     equipment.护具 = {}
   }
-  if (!isNotNull(equipment.护具.pinji)) {
+  if (!notUndAndNull(equipment.护具.pinji)) {
     护具评级 = '无'
   } else {
     护具评级 = pinji[equipment.护具.pinji]
@@ -648,7 +648,7 @@ export async function getPlayerImage(e: PublicEventMessageCreate) {
   if (!equipment.法宝) {
     equipment.法宝 = {}
   }
-  if (!isNotNull(equipment.法宝.pinji)) {
+  if (!notUndAndNull(equipment.法宝.pinji)) {
     法宝评级 = '无'
   } else {
     法宝评级 = pinji[equipment.法宝.pinji]
@@ -798,12 +798,12 @@ export async function getAssociationImage(e: PublicEventMessageCreate) {
   }
   //门派
   const player = await getPlayerDataSafe(usr_qq)
-  if (!player || !isNotNull(player.宗门)) {
+  if (!player || !notUndAndNull(player.宗门)) {
     return
   }
   //境界
   //let now_level_id;
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return
   }

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/api/api'
 import {
   convert2integer,
-  isNotNull,
+  notUndAndNull,
   existNajieThing,
   addNajieThing
 } from '@src/model'
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
   let thing_name = code[0] //物品
   let thing_value = await convert2integer(code[1]) //数量
   let ifexist = data.xianchonkouliang.find(item => item.name == thing_name) //查找
-  if (!isNotNull(ifexist)) {
+  if (!notUndAndNull(ifexist)) {
     Send(Text('此乃凡物,仙宠不吃' + thing_name))
     return false
   }

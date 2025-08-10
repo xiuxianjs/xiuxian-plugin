@@ -3,7 +3,7 @@ import fs from 'fs'
 import { data, redis } from '@src/api/api'
 import {
   existplayer,
-  isNotNull,
+  notUndAndNull,
   writePlayer,
   readEquipment,
   playerEfficiency,
@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
-  if (!isNotNull(player.lunhui)) {
+  if (!notUndAndNull(player.lunhui)) {
     player.lunhui = 0
     await writePlayer(usr_qq, player)
   }
@@ -90,7 +90,7 @@ export default onResponse(selects, async e => {
   }
   player.lunhui += 1
   //如果是仙宗人员，退出宗门
-  if (isNotNull(player.宗门)) {
+  if (notUndAndNull(player.宗门)) {
     let ass = await data.getAssociation(player.宗门.宗门名称)
     if (ass.power != 0) {
       //有宗门

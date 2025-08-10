@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { config, data } from '@src/api/api'
-import { isNotNull, shijianc } from '@src/model'
+import { notUndAndNull, shijianc } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/
@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     return false
   }
   if (player.宗门.职位 != '宗主' && player.宗门.职位 != '副宗主') {

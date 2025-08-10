@@ -1,5 +1,5 @@
+import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths'
-import { redis } from '@src/api/api'
 // 类型定义
 type JSONData = Record<string, any> | Array<any>
 
@@ -10,6 +10,7 @@ class Association {
    * @deprecated
    */
   async getAssociation(file_name: string): Promise<JSONData | 'error'> {
+    const redis = getIoRedis()
     const data = await redis.get(`${__PATH.association}:${file_name}`)
     if (!data) {
       // 如果没有数据，返回空对象
@@ -30,6 +31,7 @@ class Association {
    * @deprecated
    */
   async setAssociation(file_name: string, data: JSONData): Promise<void> {
+    const redis = getIoRedis()
     await redis.set(`${__PATH.association}:${file_name}`, JSON.stringify(data))
     return
   }

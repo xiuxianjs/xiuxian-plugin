@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/api/api'
-import { existplayer, isNotNull, readPlayer } from '@src/model'
+import { existplayer, notUndAndNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?星阁拍卖行$/
@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let res = await redis.get('xiuxian:AuctionofficialTask')
-  if (!isNotNull(res)) {
+  if (!notUndAndNull(res)) {
     Send(Text('目前没有拍卖正在进行'))
     return false
   }

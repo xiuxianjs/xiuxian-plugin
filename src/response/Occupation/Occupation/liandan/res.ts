@@ -5,7 +5,7 @@ import {
   existplayer,
   readPlayer,
   convert2integer,
-  isNotNull,
+  notUndAndNull,
   existNajieThing,
   addNajieThing,
   addExp4
@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
   let n = await convert2integer(t[1])
   let tmp_msg = ''
   let danfang = data.danfang_list.find(item => item.name == danyao)
-  if (!isNotNull(danfang)) {
+  if (!notUndAndNull(danfang)) {
     Send(Text(`世界上没有丹药[${danyao}]的配方`))
     return false
   }

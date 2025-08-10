@@ -1,7 +1,7 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull } from '@src/model'
+import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^任命.*/
@@ -19,7 +19,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }

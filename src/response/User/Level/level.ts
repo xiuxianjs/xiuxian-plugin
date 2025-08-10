@@ -3,7 +3,7 @@ import { redis, data, config } from '@src/api/api'
 import {
   existplayer,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   addNajieThing,
   writePlayer,
   addExp,
@@ -47,7 +47,7 @@ export async function Level_up(e, luck = false) {
   //根据名字取找境界id
   //根据名字找，不是很合适了！
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#刷新信息'))
     return false
   }
@@ -251,7 +251,7 @@ export async function LevelMax_up(e, luck) {
   }
   let player = await readPlayer(usr_qq)
   let now_level_id
-  if (!isNotNull(player.Physique_id)) {
+  if (!notUndAndNull(player.Physique_id)) {
     Send(Text('请先#刷新信息'))
     return false
   }

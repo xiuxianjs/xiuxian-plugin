@@ -4,7 +4,7 @@ import { config, data, redis } from '@src/api/api'
 import {
   existplayer,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   existNajieThing,
   addNajieThing,
   zdBattle,
@@ -72,7 +72,7 @@ export default onResponse(selects, async e => {
   let playerAA = await readPlayer(A)
   //境界
   let now_level_idAA
-  if (!isNotNull(playerAA.level_id)) {
+  if (!notUndAndNull(playerAA.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
@@ -88,7 +88,7 @@ export default onResponse(selects, async e => {
 
   let now_level_idBB
 
-  if (!isNotNull(playerBB.level_id)) {
+  if (!notUndAndNull(playerBB.level_id)) {
     Send(Text('对方为错误存档！'))
     return false
   }
@@ -115,7 +115,7 @@ export default onResponse(selects, async e => {
   }
   let playerA = await data.getData('player', A)
   let playerB = await data.getData('player', B)
-  if (isNotNull(playerA.宗门) && isNotNull(playerB.宗门)) {
+  if (notUndAndNull(playerA.宗门) && notUndAndNull(playerB.宗门)) {
     let assA = await data.getAssociation(playerA.宗门.宗门名称)
     let assB = await data.getAssociation(playerB.宗门.宗门名称)
     if (assA.宗门名称 == assB.宗门名称) {

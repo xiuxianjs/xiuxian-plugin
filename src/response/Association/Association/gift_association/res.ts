@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/api/api'
-import { isNotNull, shijianc } from '@src/model'
+import { notUndAndNull, shijianc } from '@src/model'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 
 import { selects } from '@src/response/index'
@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) return false
+  if (!notUndAndNull(player.宗门)) return false
   let ass = await data.getAssociation(player.宗门.宗门名称)
   let ismt = isNotMaintenance(ass)
   if (ismt) {

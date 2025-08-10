@@ -1,7 +1,7 @@
 import { config, data, pushInfo, redis } from '@src/api/api'
 import {
   playerEfficiency,
-  isNotNull,
+  notUndAndNull,
   readDanyao,
   existNajieThing,
   addNajieThing,
@@ -99,7 +99,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   await playerEfficiency(usr_qq)
   let player = await data.getData('player', usr_qq)
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     return false
   }
   now_level_id = data.Level_list.find(

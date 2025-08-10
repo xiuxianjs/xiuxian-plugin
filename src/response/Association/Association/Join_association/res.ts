@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, timestampToTime, playerEfficiency } from '@src/model'
+import { notUndAndNull, timestampToTime, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?加入宗门.*$/
@@ -13,9 +13,9 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (isNotNull(player.宗门)) return false
+  if (notUndAndNull(player.宗门)) return false
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }

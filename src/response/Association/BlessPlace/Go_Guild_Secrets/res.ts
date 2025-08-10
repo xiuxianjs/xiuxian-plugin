@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { Go, readPlayer, isNotNull, addCoin } from '@src/model'
+import { Go, readPlayer, notUndAndNull, addCoin } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
   let didian = e.MessageText.replace(/^(#|＃|\/)?探索宗门秘境/, '')
   didian = didian.trim()
   let weizhi = await data.guildSecrets_list.find(item => item.name == didian)
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     return false
   }
 

@@ -5,7 +5,7 @@ import {
   Go,
   readPlayer,
   sleep,
-  isNotNull,
+  notUndAndNull,
   addCoin,
   existNajieThing,
   addNajieThing,
@@ -30,7 +30,7 @@ export default onResponse(selects, async e => {
   Send(Text('你在冲水堂发现有人上架了一份仙府地图'))
   let didian = didianlist[suiji] //赋值
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
@@ -57,7 +57,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let weizhi = await data.timeplace_list.find(item => item.name == didian)
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     Send(Text('报错！地点错误，请找群主反馈'))
     return false
   }

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { isNotNull, addNajieThing } from '@src/model'
+import { notUndAndNull, addNajieThing } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?拔苗助长.*$/
@@ -12,9 +12,9 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) return false
+  if (!notUndAndNull(player.宗门)) return false
   let ass = await data.getAssociation(player.宗门.宗门名称)
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     return false
   } else if (ass.药园.药园等级 == 1) {
     //加入宗门，没有药园，则新建药园。

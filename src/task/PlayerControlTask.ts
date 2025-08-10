@@ -1,6 +1,6 @@
 import { redis, data, config, pushInfo } from '@src/api/api'
 import {
-  isNotNull,
+  notUndAndNull,
   readDanyao,
   existNajieThing,
   addNajieThing,
@@ -31,7 +31,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
       if (action.hasOwnProperty('group_id')) {
-        if (isNotNull(action.group_id)) {
+        if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
         }
@@ -51,7 +51,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           log_mag += '当前人物未结算，结算状态'
           let player = await data.getData('player', player_id)
           let now_level_id
-          if (!isNotNull(player.level_id)) {
+          if (!notUndAndNull(player.level_id)) {
             return false
           }
           now_level_id = data.Level_list.find(
@@ -184,7 +184,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           log_mag = log_mag + '当前人物未结算，结算状态'
           let player = await data.getData('player', player_id)
           let now_level_id
-          if (!isNotNull(player.level_id)) {
+          if (!notUndAndNull(player.level_id)) {
             return false
           }
           now_level_id = data.Level_list.find(

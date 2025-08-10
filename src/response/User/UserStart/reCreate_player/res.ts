@@ -8,7 +8,7 @@ import {
   getRandomFromARR,
   getRandomTalent,
   Go,
-  isNotNull,
+  notUndAndNull,
   writeDanyao,
   writeEquipment,
   Write_najie,
@@ -108,7 +108,7 @@ export default onResponse(selects, async e => {
         acount++
         //重生牵扯到宗门模块
         let player: any = await data.getData('player', usr_qq)
-        if (isNotNull(player.宗门)) {
+        if (notUndAndNull(player.宗门)) {
           if (player.宗门.职位 != '宗主') {
             //不是宗主
             let ass: any = await data.getAssociation(player.宗门.宗门名称)

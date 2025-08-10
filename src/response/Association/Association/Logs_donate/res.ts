@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, sortBy } from '@src/model'
+import { notUndAndNull, sortBy } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?宗门捐献记录$/
@@ -12,14 +12,14 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) return false
+  if (!notUndAndNull(player.宗门)) return false
   let ass = await data.getAssociation(player.宗门.宗门名称)
   let donate_list = []
   for (let i in ass.所有成员) {
     //遍历所有成员
     let member_qq = ass.所有成员[i]
     let member_data = await data.getData('player', member_qq)
-    if (!isNotNull(member_data.宗门.lingshi_donate)) {
+    if (!notUndAndNull(member_data.宗门.lingshi_donate)) {
       member_data.宗门.lingshi_donate = 0 //未定义捐赠数量则为0
     }
     donate_list[i] = {

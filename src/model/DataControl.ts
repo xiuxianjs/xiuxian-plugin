@@ -1,5 +1,5 @@
+import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
-import { redis } from '@src/api/api.js'
 // 类型定义
 type JSONData = Record<string, any> | Array<any>
 
@@ -36,6 +36,7 @@ export const existDataByPath = (
   name: string
 ) => {
   const dir = `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
+  const redis = getIoRedis()
   return redis.exists(dir)
 }
 
@@ -50,6 +51,7 @@ export const readDataByPath = async (
   from: string,
   name: string
 ) => {
+  const redis = getIoRedis()
   try {
     const data = await redis.get(
       `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
@@ -74,6 +76,7 @@ export const writeDataByPath = (
   name: string,
   data: any
 ): void => {
+  const redis = getIoRedis()
   redis.set(
     `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`,
     JSON.stringify(data)
@@ -91,6 +94,7 @@ class DataControl {
    * @deprecated
    */
   async existData(file_path_type: FilePathType, file_name: string) {
+    const redis = getIoRedis()
     const res = await redis.exists(
       `${filePathMap[file_path_type]}:${file_name}`
     )
@@ -104,6 +108,7 @@ class DataControl {
    * @deprecated
    */
   async getData(file_name: FilePathType | string, user_qq?: string) {
+    const redis = getIoRedis()
     if (user_qq) {
       const data = await redis.get(`${filePathMap[file_name]}:${user_qq}`)
       return data ? JSON.parse(data) : null
@@ -125,6 +130,7 @@ class DataControl {
     user_qq: string | null,
     data: JSONData
   ): void {
+    const redis = getIoRedis()
     redis.set(
       `${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`,
       JSON.stringify(data)

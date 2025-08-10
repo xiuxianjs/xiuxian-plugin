@@ -1,6 +1,6 @@
 import { scheduleJob } from 'node-schedule'
 import { redis, data, pushInfo } from '@src/api/api'
-import { isNotNull, addExp4, addNajieThing, __PATH } from '@src/model'
+import { notUndAndNull, addExp4, addNajieThing, __PATH } from '@src/model'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 scheduleJob('0 0/1 * * * ?', async () => {
@@ -17,7 +17,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
       if (action.hasOwnProperty('group_id')) {
-        if (isNotNull(action.group_id)) {
+        if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
         }
@@ -111,7 +111,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
         if (now_time > end_time) {
           log_mag += '当前人物未结算，结算状态'
           let player = await data.getData('player', player_id)
-          if (!isNotNull(player.level_id)) {
+          if (!notUndAndNull(player.level_id)) {
             return false
           }
           let time = parseInt(action.time) / 1000 / 60 //最高480分钟

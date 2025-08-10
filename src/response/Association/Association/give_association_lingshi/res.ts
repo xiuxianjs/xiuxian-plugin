@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { isNotNull, setFileValue } from '@src/model'
+import { notUndAndNull, setFileValue } from '@src/model'
 import { data } from '@src/api/api'
 
 import { selects } from '@src/response/index'
@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     return false
   }
 
@@ -57,7 +57,7 @@ export default onResponse(selects, async e => {
     return false
   }
   ass.灵石池 += lingshi
-  if (!isNotNull(player.宗门.lingshi_donate)) {
+  if (!notUndAndNull(player.宗门.lingshi_donate)) {
     player.宗门.lingshi_donate = 0 //未定义捐赠数量则为0
   }
   player.宗门.lingshi_donate += lingshi

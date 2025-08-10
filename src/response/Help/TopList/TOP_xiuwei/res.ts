@@ -5,7 +5,7 @@ import {
   __PATH,
   readPlayer,
   getAllExp,
-  isNotNull,
+  notUndAndNull,
   sortBy
 } from '@src/model'
 import { selects } from '@src/response/index'
@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
   for (let this_qq of playerList) {
     let player = await readPlayer(this_qq)
     let sum_exp = await getAllExp(this_qq)
-    if (!isNotNull(player.level_id)) {
+    if (!notUndAndNull(player.level_id)) {
       Send(Text('请先#同步信息'))
       return false
     }

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { existplayer, readPlayer, isNotNull, writePlayer } from '@src/model'
+import { existplayer, readPlayer, notUndAndNull, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?猎户转.*$/
@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   }
   let occupation = e.MessageText.replace(/^(#|＃|\/)?猎户转/, '')
   let x = data.occupation_list.find(item => item.name == occupation)
-  if (!isNotNull(x)) {
+  if (!notUndAndNull(x)) {
     Send(Text(`没有[${occupation}]这项职业`))
     return false
   }

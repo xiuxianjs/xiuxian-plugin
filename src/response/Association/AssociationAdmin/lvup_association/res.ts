@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull, playerEfficiency } from '@src/model'
+import { notUndAndNull, playerEfficiency } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/
@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }

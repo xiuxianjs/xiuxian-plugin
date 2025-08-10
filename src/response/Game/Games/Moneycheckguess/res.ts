@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 import { redis, data, config } from '@src/api/api'
-import { existplayer, readPlayer, isNotNull, addCoin } from '@src/model'
+import { existplayer, readPlayer, notUndAndNull, addCoin } from '@src/model'
 import { selects } from '@src/response/index'
 import { openMoneySystem } from '@src/model/money'
 import { game } from '../game'
@@ -58,7 +58,7 @@ export default onResponse(selects, async e => {
         y = 0
       }
       game.yazhu[usr_qq] = Math.trunc(inputMoney * x)
-      if (isNotNull(player.金银坊胜场)) {
+      if (notUndAndNull(player.金银坊胜场)) {
         player.金银坊胜场 = parseInt(player.金银坊胜场) + 1
         player.金银坊收入 =
           parseInt(player.金银坊收入) + parseInt(game.yazhu[usr_qq])
@@ -83,7 +83,7 @@ export default onResponse(selects, async e => {
       }
     } else {
       // 输了
-      if (isNotNull(player.金银坊败场)) {
+      if (notUndAndNull(player.金银坊败场)) {
         player.金银坊败场 = parseInt(player.金银坊败场) + 1
         player.金银坊支出 = parseInt(player.金银坊支出) + inputMoney
       } else {
@@ -109,7 +109,7 @@ export default onResponse(selects, async e => {
 
     if (isWin) {
       const winAmount = inputMoney * 5
-      if (isNotNull(player.金银坊胜场)) {
+      if (notUndAndNull(player.金银坊胜场)) {
         player.金银坊胜场 = parseInt(player.金银坊胜场) + 1
         player.金银坊收入 = parseInt(player.金银坊收入) + winAmount
       } else {
@@ -124,7 +124,7 @@ export default onResponse(selects, async e => {
         )
       )
     } else {
-      if (isNotNull(player.金银坊败场)) {
+      if (notUndAndNull(player.金银坊败场)) {
         player.金银坊败场 = parseInt(player.金银坊败场) + 1
         player.金银坊支出 = parseInt(player.金银坊支出) + inputMoney
       } else {

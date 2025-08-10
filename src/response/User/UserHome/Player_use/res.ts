@@ -10,7 +10,7 @@ import {
   existNajieThing,
   insteadEquipment,
   readDanyao,
-  isNotNull,
+  notUndAndNull,
   addHP,
   addNajieThing,
   addExp,
@@ -110,7 +110,7 @@ export default onResponse(selects, async e => {
     if (thing_exist.class != '丹药') return
     if (thing_exist.type == '血量') {
       let player = await readPlayer(usr_qq)
-      if (!isNotNull(thing_exist.HPp)) {
+      if (!notUndAndNull(thing_exist.HPp)) {
         thing_exist.HPp = 1
       }
       let blood = parseInt(player.血量上限 * thing_exist.HPp + thing_exist.HP)
@@ -387,7 +387,7 @@ export default onResponse(selects, async e => {
     }
     if (thing_name == '残卷') {
       let number = await existNajieThing(usr_qq, '残卷', '道具')
-      if (isNotNull(number) && number > 9) {
+      if (notUndAndNull(number) && number > 9) {
         /** 回复 */
         await message.send(
           format(

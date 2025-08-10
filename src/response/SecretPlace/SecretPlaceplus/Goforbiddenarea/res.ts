@@ -4,7 +4,7 @@ import { data, redis } from '@src/api/api'
 import {
   Go,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   convert2integer,
   existNajieThing,
   addNajieThing,
@@ -24,11 +24,11 @@ export default onResponse(selects, async e => {
   }
   let player = await readPlayer(usr_qq)
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
-  if (!isNotNull(player.power_place)) {
+  if (!notUndAndNull(player.power_place)) {
     Send(Text('请#同步信息'))
     return false
   }
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let weizhi = await data.forbiddenarea_list.find(item => item.name == didian)
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     return false
   }
   if (player.灵石 < weizhi.Price * 10 * i) {
@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
-  if (isNotNull(number) && number >= i) {
+  if (notUndAndNull(number) && number >= i) {
     await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))

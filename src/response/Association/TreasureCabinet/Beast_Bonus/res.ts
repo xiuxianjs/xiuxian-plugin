@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/api/api'
 import {
-  isNotNull,
+  notUndAndNull,
   shijianc,
   readDanyao,
   writeDanyao,
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
   //无宗门
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }

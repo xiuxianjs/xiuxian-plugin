@@ -1,4 +1,3 @@
-import { redis } from '@src/api/api.js'
 import data from './XiuxianData.js'
 import { readIt } from './duanzaofu.js'
 import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
@@ -7,6 +6,9 @@ import { writePlayer, writeIt } from './pub.js'
 import type { Player, Equipment, Najie, TalentInfo } from '../types/player.js'
 import * as _ from 'lodash-es'
 import { getDataByUserId } from './Redis.js'
+import { getIoRedis } from '@alemonjs/db'
+
+const redis = getIoRedis()
 
 export { __PATH }
 
@@ -333,10 +335,10 @@ export async function Add_仙宠(usr_qq, thing_name, n, thing_level = null) {
     item => item.name == thing_name && item.等级 == thing_level
   )
   let name = thing_name
-  if (x > 0 && !isNotNull(trr)) {
+  if (x > 0 && !notUndAndNull(trr)) {
     //无中生有
     let newthing = data.xianchon.find(item => item.name == name)
-    if (!isNotNull(newthing)) {
+    if (!notUndAndNull(newthing)) {
       logger.info('没有这个东西')
       return
     }
@@ -567,7 +569,7 @@ export async function playerEfficiency(usr_qq: string) {
   let linggen_efficiency //灵根效率加成
   let gongfa_efficiency = 0 //功法效率加成
   let xianchong_efficiency = 0 // 仙宠效率加成
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     //是否存在宗门信息
     Assoc_efficiency = 0 //不存在，宗门效率为0
   } else {
@@ -949,7 +951,7 @@ export async function getAllExp(usr_qq) {
   let player: any = await readPlayer(usr_qq)
   let sum_exp = 0
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     return
   }
   now_level_id = data.Level_list.find(
@@ -1109,7 +1111,7 @@ export async function dataverification(e) {
  * @param obj 对象
  * @returns
  */
-export function isNotNull(obj: any): boolean {
+export function notUndAndNull(obj: any): boolean {
   if (obj == undefined || obj == null) return false
   return true
 }
@@ -1556,7 +1558,7 @@ export async function zdBattle(AA_player, BB_player) {
     B_player = t
     let baoji = baojishanghai(A_player.暴击率)
     //仙宠
-    if (isNotNull(A_player.仙宠)) {
+    if (notUndAndNull(A_player.仙宠)) {
       if (A_player.仙宠.type == '暴伤') baoji += A_player.仙宠.加成
       else if (A_player.仙宠.type == '战斗') {
         let ran = Math.random()
@@ -1576,7 +1578,7 @@ export async function zdBattle(AA_player, BB_player) {
       }
     }
     //武器
-    if (isNotNull(A_player.id)) {
+    if (notUndAndNull(A_player.id)) {
       let equipment: any = await readEquipment(A_player.id)
       let ran = Math.random()
       if (equipment.武器.name == '紫云剑' && ran > 0.7) {

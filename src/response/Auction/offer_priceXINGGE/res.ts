@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis, config } from '@src/api/api'
-import { existplayer, isNotNull, readPlayer } from '@src/model'
+import { existplayer, notUndAndNull, readPlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?星阁出价.*$/
@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) return false
   // 是否到拍卖时间
   let auction = await redis.get('xiuxian:AuctionofficialTask')
-  if (!isNotNull(auction)) {
+  if (!notUndAndNull(auction)) {
     const { openHour, closeHour } = config.getConfig(
       'xiuxian',
       'xiuxian'

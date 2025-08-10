@@ -5,7 +5,7 @@ import {
   Go,
   existplayer,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   existNajieThing,
   addNajieThing,
   writePlayer
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
   let player = await readPlayer(usr_qq)
   let player_occupation = player.occupation
   let x = data.occupation_list.find(item => item.name == occupation)
-  if (!isNotNull(x)) {
+  if (!notUndAndNull(x)) {
     Send(Text(`没有[${occupation}]这项职业`))
     return false
   }

@@ -1,5 +1,4 @@
-import { redis } from '@src/api/api'
-
+import { getIoRedis } from '@alemonjs/db'
 const GAME_KEY = 'xiuxian@1.3.0:system:money_game'
 
 /**
@@ -12,11 +11,13 @@ export const openMoneySystem = async (
   isBig: boolean,
   inputMoney: number
 ): Promise<[boolean, number]> => {
+  const redis = getIoRedis()
   // 得到当前的总金额
   const totalMoney = await redis.get(GAME_KEY)
 
   // 必须让玩家输
   const mustCoseResult = async (): Promise<[boolean, number]> => {
+    const redis = getIoRedis()
     if (isBig) {
       // 玩家猜大，系统给小点数 [1,3]
       const randomNumber = Math.floor(Math.random() * 3) + 1
@@ -59,6 +60,7 @@ export const openMoneySystem = async (
   const randomResult = async (): Promise<[boolean, number]> => {
     const randomNumber = Math.floor(Math.random() * 6) + 1
     const isWin = (isBig && randomNumber > 3) || (!isBig && randomNumber < 4)
+    const redis = getIoRedis()
     await redis.set(
       GAME_KEY,
       (totalMoney ? Number(totalMoney) : 0) + (isWin ? -inputMoney : inputMoney)

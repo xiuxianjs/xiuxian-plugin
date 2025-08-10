@@ -4,7 +4,7 @@ import { redis, data, config } from '@src/api/api'
 import {
   existplayer,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   existNajieThing,
   zdBattle,
   addHP,
@@ -62,7 +62,7 @@ export default onResponse(selects, async e => {
   let playerAA = await readPlayer(A)
   //境界
   let now_level_idAA
-  if (!isNotNull(playerAA.level_id)) {
+  if (!notUndAndNull(playerAA.level_id)) {
     Send(Text('请先#同步信息'))
     return
   }
@@ -78,7 +78,7 @@ export default onResponse(selects, async e => {
 
   let now_level_idBB
 
-  if (!isNotNull(playerBB.level_id)) {
+  if (!notUndAndNull(playerBB.level_id)) {
     Send(Text('对方为错误存档！'))
     return
   }

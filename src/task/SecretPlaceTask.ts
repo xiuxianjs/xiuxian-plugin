@@ -1,6 +1,6 @@
 import { redis, data, config, pushInfo } from '@src/api/api'
 import {
-  isNotNull,
+  notUndAndNull,
   readPlayer,
   zdBattle,
   addNajieThing,
@@ -31,7 +31,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       let push_address //消息推送地址
       let is_group = false //是否推送到群
       if (await action.hasOwnProperty('group_id')) {
-        if (isNotNull(action.group_id)) {
+        if (notUndAndNull(action.group_id)) {
           is_group = true
           push_address = action.group_id
         }

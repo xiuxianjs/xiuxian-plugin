@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/api/api'
 import {
   Go,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   existHunyin,
   findQinmidu,
   addQinmidu,
@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
   let didian = e.MessageText.replace(/^(#|＃|\/)?降临秘境/, '')
   didian = didian.trim()
   let weizhi = await data.didian_list.find(item => item.name == didian)
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     return false
   }
   if (player.灵石 < weizhi.Price) {

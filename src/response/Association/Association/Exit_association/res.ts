@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import {
   __PATH,
   getRandomFromARR,
-  isNotNull,
+  notUndAndNull,
   playerEfficiency
 } from '@src/model'
 import { config, data, redis } from '@src/api/api'
@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   let ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
   let player = await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) return false
+  if (!notUndAndNull(player.宗门)) return false
   let now = new Date()
   let nowTime = now.getTime() //获取当前时间戳
   let addTime

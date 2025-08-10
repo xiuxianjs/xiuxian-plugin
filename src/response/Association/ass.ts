@@ -20,7 +20,7 @@ export function isNotMaintenance(ass) {
  * @param obj 对象
  * @returns obj==null/undefined,return false,other return true
  */
-export function isNotNull(obj) {
+export function notUndAndNull(obj) {
   if (obj == undefined || obj == null) return false
   return true
 }

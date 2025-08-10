@@ -4,7 +4,7 @@ import { data, redis } from '@src/api/api'
 import {
   Go,
   convert2integer,
-  isNotNull,
+  notUndAndNull,
   readPlayer,
   existNajieThing,
   addNajieThing,
@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let weizhi = await data.Fairyrealm_list.find(item => item.name == didian)
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     return false
   }
   let player = await readPlayer(usr_qq)
@@ -50,7 +50,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let number = await existNajieThing(usr_qq, '秘境之匙', '道具')
-  if (isNotNull(number) && number >= i) {
+  if (notUndAndNull(number) && number >= i) {
     await addNajieThing(usr_qq, '秘境之匙', '道具', -i)
   } else {
     Send(Text('你没有足够数量的秘境之匙'))

@@ -4,7 +4,7 @@ import { redis, data } from '@src/api/api'
 import {
   existplayer,
   readPlayer,
-  isNotNull,
+  notUndAndNull,
   writePlayer,
   readEquipment,
   writeEquipment,
@@ -65,7 +65,7 @@ export default onResponse(selects, async e => {
   }
   //需要的修为
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#刷新信息'))
     return false
   }
@@ -100,7 +100,7 @@ export default onResponse(selects, async e => {
     //突破成仙人
     if (now_level_id >= 42) {
       let player = await data.getData('player', usr_qq)
-      if (!isNotNull(player.宗门)) {
+      if (!notUndAndNull(player.宗门)) {
         return false
       }
       //有宗门

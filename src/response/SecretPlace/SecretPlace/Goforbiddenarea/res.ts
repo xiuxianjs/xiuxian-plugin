@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/api/api'
-import { Go, readPlayer, isNotNull, addCoin, addExp } from '@src/model'
+import { Go, readPlayer, notUndAndNull, addCoin, addExp } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?前往禁地.*$/
@@ -15,11 +15,11 @@ export default onResponse(selects, async e => {
   }
   let player = await readPlayer(usr_qq)
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
-  if (!isNotNull(player.power_place)) {
+  if (!notUndAndNull(player.power_place)) {
     Send(Text('请#同步信息'))
     return false
   }
@@ -37,7 +37,7 @@ export default onResponse(selects, async e => {
   //     Send(Text("仙人不得下凡")
   //     return  false;
   //  }
-  if (!isNotNull(weizhi)) {
+  if (!notUndAndNull(weizhi)) {
     return false
   }
   if (player.灵石 < weizhi.Price) {

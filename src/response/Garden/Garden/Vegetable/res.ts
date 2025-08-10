@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/api/api'
-import { isNotNull } from '@src/model'
+import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?药园*$/
@@ -15,10 +15,10 @@ export default onResponse(selects, async e => {
 
   let player = await data.getData('player', usr_qq)
 
-  if (!isNotNull(player.宗门)) return false
+  if (!notUndAndNull(player.宗门)) return false
 
   let ass = await data.getAssociation(player.宗门.宗门名称)
-  if (!isNotNull(player.宗门)) {
+  if (!notUndAndNull(player.宗门)) {
     return false
   } else if (ass.药园.药园等级 == 1 || ass.药园.药园等级 !== ass.宗门等级) {
     //加入宗门，没有药园或药园等级不等于宗门等级，则新建药园。

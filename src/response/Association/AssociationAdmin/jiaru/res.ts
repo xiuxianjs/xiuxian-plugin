@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { isNotNull } from '@src/model'
+import { notUndAndNull } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?设置门槛.*$/
@@ -10,7 +10,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   let usr_qq = e.UserId
   let player = await await data.getData('player', usr_qq)
-  if (!isNotNull(player.宗门)) return false
+  if (!notUndAndNull(player.宗门)) return false
   if (
     player.宗门.职位 == '宗主' ||
     player.宗门.职位 == '副宗主' ||

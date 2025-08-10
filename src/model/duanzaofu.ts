@@ -2,8 +2,8 @@ import { __PATH } from './paths.js'
 import data from './XiuxianData.js'
 import { writePlayer } from './pub.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
-import { redis } from '@src/api/api.js'
 import DataList from './DataList.js'
+import { getIoRedis } from '@alemonjs/db'
 
 export async function settripod(qq: string): Promise<string> {
   let tripod1: Tripod[] = []
@@ -75,6 +75,7 @@ export async function readMytripod(qq: string): Promise<Tripod | undefined> {
   }
 }
 export async function readTripod(): Promise<Tripod[]> {
+  const redis = getIoRedis()
   const data = await redis.get(`${__PATH.duanlu}:duanlu`)
   if (!data) {
     return []
@@ -83,6 +84,7 @@ export async function readTripod(): Promise<Tripod[]> {
 }
 
 export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
+  const redis = getIoRedis()
   redis.set(`${__PATH.duanlu}:duanlu`, JSON.stringify(duanlu, null, '\t'))
   return
 }
@@ -285,6 +287,7 @@ export async function restraint(
 }
 
 export async function readIt(): Promise<any> {
+  const redis = getIoRedis()
   const custom = await redis.get(`${__PATH.custom}:custom`)
   if (!custom) {
     //如果没有自定义数据，返回空对象
@@ -295,6 +298,7 @@ export async function readIt(): Promise<any> {
 }
 
 export async function alluser(): Promise<string[]> {
+  const redis = getIoRedis()
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const B = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   if (B.length == 0) {

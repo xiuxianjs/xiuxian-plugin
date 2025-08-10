@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/api/api'
-import { readNajie, isNotNull, Add_仙宠, writePlayer } from '@src/model'
+import { readNajie, notUndAndNull, Add_仙宠, writePlayer } from '@src/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?出战仙宠.*$/
@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     return false
   }
   let thing = data.xianchon.find(item => item.name == name) //查找仙宠
-  if (!isNotNull(thing)) {
+  if (!notUndAndNull(thing)) {
     Send(Text('这方世界不存在' + name))
     return false
   }
@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
     Send(Text('你没有' + name))
     return false
   }
-  if (isNotNull(player.仙宠.name)) {
+  if (notUndAndNull(player.仙宠.name)) {
     await Add_仙宠(usr_qq, player.仙宠.name, 1, player.仙宠.等级)
   }
   if (player.仙宠.type == '修炼') {

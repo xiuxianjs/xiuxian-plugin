@@ -1,5 +1,5 @@
 import { config, data, pushInfo, redis } from '@src/api/api'
-import { getPlayerAction, isNotNull, setFileValue } from '@src/model'
+import { getPlayerAction, notUndAndNull, setFileValue } from '@src/model'
 import { setDataByUserId } from '@src/model/Redis'
 
 import { selects } from '@src/response/index'
@@ -81,7 +81,7 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   let usr_qq = user_id
   let player = await data.getData('player', usr_qq)
   let now_level_id
-  if (!isNotNull(player.level_id)) {
+  if (!notUndAndNull(player.level_id)) {
     return false
   }
   now_level_id = data.Level_list.find(
