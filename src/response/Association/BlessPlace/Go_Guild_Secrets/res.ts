@@ -50,6 +50,7 @@ export default onResponse(selects, async e => {
     Place_action: '0', //秘境状态---开启
     Place_actionplus: '1', //沉迷秘境状态---关闭
     power_up: '1', //渡劫状态--关闭
+    group_id: e.ChannelId,
     //这里要保存秘境特别需要留存的信息
     Place_address: weizhi,
     XF: ass.power
