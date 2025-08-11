@@ -11,23 +11,54 @@ import {
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键服用修为丹$/
 
+interface DanYaoItem {
+  name: string
+  type: string
+  class: string | number
+  exp?: number
+}
+interface NajieLike {
+  丹药?: DanYaoItem[]
+}
+
+function num(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? n : d
+}
+function normalizeCategory(v: unknown): Parameters<typeof existNajieThing>[2] {
+  return String(v) as Parameters<typeof existNajieThing>[2]
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  //检索方法
-  const najie = await await data.getData('najie', usr_qq)
-  let xiuwei = 0
-  for (const l of najie.丹药) {
-    if (l.type == '修为') {
-      //纳戒中的数量
-      const quantity = await existNajieThing(usr_qq, l.name, l.class)
-      await addNajieThing(usr_qq, l.name, l.class, -quantity)
-      xiuwei = xiuwei + l.exp * quantity
+  if (!(await existplayer(usr_qq))) return false
+
+  const najie = (await data.getData('najie', usr_qq)) as NajieLike | null
+  const pills = Array.isArray(najie?.丹药) ? najie!.丹药! : []
+  if (!pills.length) {
+    Send(Text('纳戒内没有丹药'))
+    return false
+  }
+
+  let totalExp = 0
+  for (const pill of pills) {
+    if (!pill || pill.type !== '修为') continue
+    const category = normalizeCategory(pill.class)
+    const qty = num(await existNajieThing(usr_qq, pill.name, category), 0)
+    if (qty <= 0) continue
+    const gain = num(pill.exp, 0) * qty
+    if (gain > 0) {
+      await addNajieThing(usr_qq, pill.name, category, -qty)
+      totalExp += gain
     }
   }
-  await addExp(usr_qq, xiuwei)
-  Send(Text(`服用成功,修为增加${xiuwei}`))
+
+  if (totalExp <= 0) {
+    Send(Text('没有可服用的修为丹'))
+    return false
+  }
+  await addExp(usr_qq, totalExp)
+  Send(Text(`服用成功，修为增加${totalExp}`))
+  return false
 })

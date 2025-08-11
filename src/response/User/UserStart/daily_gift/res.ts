@@ -6,46 +6,85 @@ import {
   shijianc,
   getLastsign,
   addNajieThing,
-  addExp
+  addExp,
+  writePlayer
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-import type { LastSignTime } from '@src/model/common'
+import type { Player } from '@src/types'
 export const regular = /^(#|＃|\/)?修仙签到$/
+
+interface LastSignStruct {
+  Y: number
+  M: number
+  D: number
+}
+interface SignConfig {
+  Sign?: { ticket?: number }
+}
+function isLastSignStruct(v: unknown): v is LastSignStruct {
+  if (!v || typeof v !== 'object') return false
+  const obj = v as Record<string, unknown>
+  return (
+    typeof obj.Y === 'number' &&
+    typeof obj.M === 'number' &&
+    typeof obj.D === 'number'
+  )
+}
+const isSameDay = (a: LastSignStruct, b: LastSignStruct) =>
+  a.Y === b.Y && a.M === b.M && a.D === b.D
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无账号
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const now = new Date()
-  const nowTime = now.getTime() //获取当前日期的时间戳
-  const Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000) //获得昨天日期
-  const Today = await shijianc(nowTime)
-  const lastsign_time = await getLastsign(usr_qq) //获得上次签到日期
-  const isSameDay = (a: LastSignTime, b: LastSignTime) =>
-    a.Y === b.Y && a.M === b.M && a.D === b.D
-  if (lastsign_time && isSameDay(Today as LastSignTime, lastsign_time)) {
-    Send(Text(`今日已经签到过了`))
+  if (!(await existplayer(usr_qq))) return false
+
+  const nowTime = Date.now()
+  const yesterdayStruct = await shijianc(nowTime - 24 * 60 * 60 * 1000)
+  const todayStruct = await shijianc(nowTime)
+  const lastSignStruct = await getLastsign(usr_qq)
+
+  if (
+    isLastSignStruct(lastSignStruct) &&
+    isLastSignStruct(todayStruct) &&
+    isSameDay(todayStruct, lastSignStruct)
+  ) {
+    Send(Text('今日已经签到过了'))
     return false
   }
-  const Sign_Yesterday =
-    !!lastsign_time && isSameDay(Yesterday as LastSignTime, lastsign_time)
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':lastsign_time', nowTime) //redis设置签到时间
-  const player = await await data.getData('player', usr_qq)
-  if (player.连续签到天数 == 7 || !Sign_Yesterday) {
-    //签到连续7天或者昨天没有签到,连续签到天数清零
-    player.连续签到天数 = 0
-  }
-  player.连续签到天数 += 1
-  data.setData('player', usr_qq, player)
-  //给奖励
-  const gift_xiuwei = player.连续签到天数 * 3000
-  const cf = config.getConfig('xiuxian', 'xiuxian')
-  await addNajieThing(usr_qq, '秘境之匙', '道具', cf.Sign.ticket)
-  await addExp(usr_qq, gift_xiuwei)
-  const msg = `已经连续签到${player.连续签到天数}天了，获得了${gift_xiuwei}修为,秘境之匙x${cf.Sign.ticket}`
+  const continued =
+    isLastSignStruct(lastSignStruct) &&
+    isLastSignStruct(yesterdayStruct) &&
+    isSameDay(yesterdayStruct, lastSignStruct)
 
-  Send(Text(msg))
+  await redis.set(`xiuxian@1.3.0:${usr_qq}:lastsign_time`, String(nowTime))
+
+  const player = (await data.getData('player', usr_qq)) as Player | null
+  if (!player) {
+    Send(Text('玩家数据异常'))
+    return false
+  }
+  const record = player as unknown as Record<string, unknown>
+  let currentStreak = 0
+  const rawStreak = record['连续签到天数']
+  if (typeof rawStreak === 'number' && Number.isFinite(rawStreak))
+    currentStreak = rawStreak
+  let newStreak = currentStreak === 7 || !continued ? 0 : currentStreak
+  newStreak += 1
+  ;(record as { 连续签到天数: number }).连续签到天数 = newStreak
+
+  await writePlayer(usr_qq, player)
+
+  const cf = config.getConfig('xiuxian', 'xiuxian') as SignConfig | undefined
+  const ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0))
+  const gift_xiuwei = newStreak * 3000
+  if (ticketNum > 0) await addNajieThing(usr_qq, '秘境之匙', '道具', ticketNum)
+  await addExp(usr_qq, gift_xiuwei)
+
+  Send(
+    Text(
+      `已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''}`
+    )
+  )
+  return false
 })

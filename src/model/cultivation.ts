@@ -1,6 +1,6 @@
 // 修行/渡劫/物品查询等逻辑抽离
 import data from './XiuxianData.js'
-import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
+import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs'
 import type { Player, TalentInfo } from '../types/player.js'
 import { writePlayer, writeIt } from './pub.js'
 import { readItTyped } from './duanzaofu.js'
@@ -33,7 +33,7 @@ export async function dujie(user_qq: string): Promise<number> {
 }
 
 export async function LevelTask(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   power_n: number,
   power_m: number,
   power_Grade: number,

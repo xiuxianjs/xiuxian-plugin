@@ -11,123 +11,148 @@ import {
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?踏入神界$/
 
+interface ActionState {
+  action: string
+  end_time: number
+  time: number
+  shutup?: string
+  working?: string
+  Place_action?: string
+  mojie?: string
+  Place_actionplus?: string
+  power_up?: string
+  xijie?: string
+  plant?: string
+  mine?: string
+  cishu?: string | number
+  group_id?: string
+  [k: string]: unknown
+}
+interface DayInfo {
+  Y: number
+  M: number
+  D: number
+}
+
+function toInt(v: unknown, def = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.floor(n) : def
+}
+function parseJSON<T>(raw: unknown): T | null {
+  try {
+    if (typeof raw === 'string' && raw.trim()) return JSON.parse(raw) as T
+  } catch {
+    /* ignore */
+  }
+  return null
+}
+function isDayChanged(a: DayInfo | null, b: DayInfo | null): boolean {
+  if (!a || !b) return true
+  return a.Y !== b.Y || a.M !== b.M || a.D !== b.D
+}
+
+const LS_COST = 2_200_000
+const DURATION_MINUTES = 30
+const ACTION_KEY = (id: string) => `xiuxian@1.3.0:${id}:action`
+const LAST_DAGONG_KEY = (id: string) => `xiuxian@1.3.0:${id}:lastdagong_time`
+const GAME_ACTION_KEY = (id: string) => `xiuxian@1.3.0:${id}:game_action`
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //查看存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const game_action = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
-  //防止继续其他娱乐行为
-  if (+game_action == 1) {
+  if (!(await existplayer(usr_qq))) return false
+
+  // 全局娱乐占用状态
+  const gameActionRaw = await redis.get(GAME_ACTION_KEY(usr_qq))
+  if (toInt(gameActionRaw) === 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
-  //查询redis中的人物动作
-  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  action = JSON.parse(action)
-  if (action != null) {
-    //人物有动作查询动作结束时间
-    const action_end_time = action.end_time
-    const now_time = Date.now()
-    if (now_time <= action_end_time) {
-      const m = Math.floor((action_end_time - now_time) / 1000 / 60)
-      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'))
-      return false
-    }
+
+  // 当前动作占用
+  const actionRaw = await redis.get(ACTION_KEY(usr_qq))
+  const actionObj = parseJSON<ActionState>(actionRaw)
+  if (actionObj && toInt(actionObj.end_time) > Date.now()) {
+    const remain = actionObj.end_time - Date.now()
+    const m = Math.trunc(remain / 60000)
+    const s = Math.trunc((remain % 60000) / 1000)
+    Send(Text(`正在${actionObj.action}中, 剩余时间: ${m}分${s}秒`))
+    return false
   }
+
   let player = await readPlayer(usr_qq)
-  const now = new Date()
-  const nowTime = now.getTime() //获取当前日期的时间戳
-  const Today = await shijianc(nowTime)
-  const lastdagong_time = await getLastdagong(usr_qq) //获得上次签到日期
-  if (
-    (Today.Y != lastdagong_time.Y && Today.M != lastdagong_time.M) ||
-    Today.D != lastdagong_time.D
-  ) {
-    await redis.set('xiuxian@1.3.0:' + usr_qq + ':lastdagong_time', nowTime) //redis设置签到时间
+  if (!player) return false
+
+  const now = Date.now()
+  const today = (await shijianc(now)) as DayInfo
+  const lastTimeRaw = await redis.get(LAST_DAGONG_KEY(usr_qq))
+  const lastDay = lastTimeRaw
+    ? ((await shijianc(toInt(lastTimeRaw))) as DayInfo)
+    : null
+
+  // 每日刷新神界次数：逻辑修正为任一日期字段变化即刷新
+  if (isDayChanged(today, lastDay)) {
+    await redis.set(LAST_DAGONG_KEY(usr_qq), now)
     let n = 1
-    if (player.灵根.name == '二转轮回体') {
-      n = 2
-    } else if (
-      player.灵根.name == '三转轮回体' ||
-      player.灵根.name == '四转轮回体'
-    ) {
-      n = 3
-    } else if (
-      player.灵根.name == '五转轮回体' ||
-      player.灵根.name == '六转轮回体'
-    ) {
-      n = 4
-    } else if (
-      player.灵根.name == '七转轮回体' ||
-      player.灵根.name == '八转轮回体'
-    ) {
-      n = 4
-    } else if (player.灵根.name == '九转轮回体') {
-      n = 5
-    }
+    const ln = player.灵根?.name
+    if (ln === '二转轮回体') n = 2
+    else if (ln === '三转轮回体' || ln === '四转轮回体') n = 3
+    else if (ln === '五转轮回体' || ln === '六转轮回体') n = 4
+    else if (ln === '七转轮回体' || ln === '八转轮回体') n = 4
+    else if (ln === '九转轮回体') n = 5
     player.神界次数 = n
     await writePlayer(usr_qq, player)
   }
+
   player = await readPlayer(usr_qq)
+  if (!player) return false
+
+  // 资格校验
   if (
-    player.魔道值 > 0 ||
-    (player.灵根.type != '转生' && player.level_id < 42)
+    toInt(player.魔道值) > 0 ||
+    (player.灵根?.type !== '转生' && toInt(player.level_id) < 42)
   ) {
     Send(Text('你没有资格进入神界'))
     return false
   }
-  if (player.灵石 < 2200000) {
+  if (toInt(player.灵石) < LS_COST) {
     Send(Text('灵石不足'))
     return false
   }
-  player.灵石 -= 2200000
-  if (
-    Today.Y == lastdagong_time.Y &&
-    Today.M == lastdagong_time.M &&
-    Today.D == lastdagong_time.D &&
-    player.神界次数 == 0
-  ) {
+
+  player.灵石 = toInt(player.灵石) - LS_COST
+  const todayRef = (await shijianc(now)) as DayInfo // 重新拿一次防止 race（可选）
+  const lastDayRefRaw = await redis.get(LAST_DAGONG_KEY(usr_qq))
+  const lastDayRef = lastDayRefRaw
+    ? ((await shijianc(toInt(lastDayRefRaw))) as DayInfo)
+    : null
+  if (!isDayChanged(todayRef, lastDayRef) && toInt(player.神界次数) === 0) {
     Send(Text('今日次数用光了,请明日再来吧'))
     return false
-  } else {
-    player.神界次数--
   }
+  player.神界次数 = Math.max(0, toInt(player.神界次数) - 1)
   await writePlayer(usr_qq, player)
-  const time = 30 //时间（分钟）
-  const action_time = 60000 * time //持续时间，单位毫秒
-  const arr = {
-    action: '神界', //动作
-    end_time: Date.now() + action_time, //结束时间
-    time: action_time, //持续时间
-    shutup: '1', //闭关
-    working: '1', //降妖
-    Place_action: '1', //秘境状态---关闭
-    mojie: '-1', //魔界状态---关闭
-    Place_actionplus: '1', //沉迷秘境状态---关闭
-    power_up: '1', //渡劫状态--关闭
-    xijie: '1', //洗劫状态开启
-    plant: '1', //采药-开启
-    mine: '1', //采矿-开启
+
+  const durationMs = DURATION_MINUTES * 60000
+  const newAction: ActionState = {
+    action: '神界',
+    end_time: Date.now() + durationMs,
+    time: durationMs,
+    shutup: '1',
+    working: '1',
+    Place_action: '1',
+    mojie: '-1',
+    Place_actionplus: '1',
+    power_up: '1',
+    xijie: '1',
+    plant: '1',
+    mine: '1',
     cishu: '5'
   }
-  if (e.name === 'message.create') {
-    arr.group_id = e.ChannelId
-  }
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr))
-  Send(Text('开始进入神界,' + time + '分钟后归来!'))
-})
-async function getLastdagong(usr_qq) {
-  //查询redis中的人物动作
-  const time = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastdagong_time')
-  logger.info(time)
-  if (time != null) {
-    const data = await shijianc(parseInt(time))
-    return data
-  }
+  if (e.name === 'message.create') newAction.group_id = e.ChannelId
+  await redis.set(ACTION_KEY(usr_qq), JSON.stringify(newAction))
+  Send(Text(`开始进入神界, ${DURATION_MINUTES}分钟后归来!`))
   return false
-}
+})
+
+// 原辅助函数已整合逻辑，旧 getLastdagong 已移除。

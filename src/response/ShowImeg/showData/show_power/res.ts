@@ -1,10 +1,17 @@
 import { Image, useSend } from 'alemonjs'
 import { selects } from '@src/response/index'
 import { getPowerImage } from '@src/model/image'
+import { existplayer } from '@src/model'
 
 export const regular = /^(#|＃|\/)?我的炼体$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+  //查看存档
+  const usr_qq = e.UserId
+  const ifexistplay = await existplayer(usr_qq)
+  if (!ifexistplay) return false
   const img = await getPowerImage(e)
-  if (img) Send(Image(img))
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

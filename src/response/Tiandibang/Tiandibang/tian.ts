@@ -1,4 +1,5 @@
-import { redis, data, puppeteer } from '@src/model/api'
+import { screenshot } from '@src/image'
+import { redis, data } from '@src/model/api'
 import { __PATH, shijianc, readPlayer } from '@src/model/index'
 import type { Player, TalentInfo } from '@src/types'
 
@@ -59,11 +60,7 @@ export async function get_tianditang_img(e, jifen) {
     commodities_list: commodities_list
   }
 
-  const img = await puppeteer.screenshot(
-    'tianditang',
-    e.UserId,
-    tianditang_data
-  )
+  const img = await screenshot('tianditang', e.UserId, tianditang_data)
   return img
 }
 

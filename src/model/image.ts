@@ -2,8 +2,8 @@ import { mkdirSync, writeFileSync } from 'fs'
 import path from 'path'
 import data from './XiuxianData.js'
 import config from './Config.js'
-import { useSend, Text, PublicEventMessageCreate, Image } from 'alemonjs'
-import puppeteer from '@src/image/index.js'
+import { useSend, Text, EventsMessageCreateEnum, Image } from 'alemonjs'
+import { screenshot } from '@src/image/index.js'
 import type { Player, Equipment, Najie, StrandResult } from '../types/player.js'
 import { getRandomTalent } from './cultivation.js'
 import type {
@@ -48,7 +48,7 @@ function isAssociationInfo(v: unknown): v is AssociationInfo {
 }
 
 export async function getSupermarketImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   thing_class?: string
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
@@ -76,16 +76,12 @@ export async function getSupermarketImage(
     user_id: usr_qq,
     Exchange_list
   }
-  const img = await puppeteer.screenshot(
-    'supermarket',
-    e.UserId,
-    supermarket_data
-  )
+  const img = await screenshot('supermarket', e.UserId, supermarket_data)
   return img
 }
 
 export async function getForumImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   thing_class?: string
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
@@ -112,12 +108,12 @@ export async function getForumImage(
     user_id: usr_qq,
     Forum
   }
-  const img = await puppeteer.screenshot('forum', e.UserId, forum_data)
+  const img = await screenshot('forum', e.UserId, forum_data)
   return img
 }
 
 export async function getdanfangImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -131,12 +127,12 @@ export async function getdanfangImage(
     user_id: usr_qq,
     danfang_list: danfang_list
   }
-  const img = await puppeteer.screenshot('danfang', e.UserId, danfang_data)
+  const img = await screenshot('danfang', e.UserId, danfang_data)
   return img
 }
 
 export async function getTuzhiImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -155,7 +151,7 @@ export async function getTuzhiImage(
     mkdirSync(dir, { recursive: true })
     writeFileSync(`${dir}/tuzhi.json`, JSON.stringify(tuzhi_data, null, 2))
   }
-  const img = await puppeteer.screenshot('tuzhi', e.UserId, tuzhi_data)
+  const img = await screenshot('tuzhi', e.UserId, tuzhi_data)
   return img
 }
 
@@ -164,7 +160,7 @@ export async function getTuzhiImage(
  * @return image
  */
 export async function getNingmenghomeImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   thing_type?: string
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
@@ -202,11 +198,7 @@ export async function getNingmenghomeImage(
     user_id: usr_qq,
     commodities_list: commodities_list
   }
-  const img = await puppeteer.screenshot(
-    'ningmenghome',
-    e.UserId,
-    ningmenghome_data
-  )
+  const img = await screenshot('ningmenghome', e.UserId, ningmenghome_data)
   return img
 }
 /**
@@ -214,7 +206,7 @@ export async function getNingmenghomeImage(
  * @return image
  */
 export async function getValuablesImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -224,7 +216,7 @@ export async function getValuablesImage(
   const valuables_data = {
     user_id: usr_qq
   }
-  const img = await puppeteer.screenshot('valuables', e.UserId, valuables_data)
+  const img = await screenshot('valuables', e.UserId, valuables_data)
   return img
 }
 /**
@@ -259,7 +251,7 @@ function Strand(
  * @return image
  */
 export async function getXianChongImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   let i: number
   const usr_qq = e.UserId
@@ -297,7 +289,7 @@ export async function getXianChongImage(
     XianChong_need,
     Kouliang
   }
-  return await puppeteer.screenshot('xianchong', e.UserId, player_data)
+  return await screenshot('xianchong', e.UserId, player_data)
 }
 
 /**
@@ -305,7 +297,7 @@ export async function getXianChongImage(
  * @return image
  */
 export async function getDaojuImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -335,7 +327,7 @@ export async function getDaojuImage(
     daoju_need
   }
 
-  return await puppeteer.screenshot('daoju', e.UserId, player_data)
+  return await screenshot('daoju', e.UserId, player_data)
 }
 
 /**
@@ -343,7 +335,7 @@ export async function getDaojuImage(
  * @return image
  */
 export async function getWuqiImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -394,7 +386,7 @@ export async function getWuqiImage(
     wuqi_need
   }
 
-  return await puppeteer.screenshot('wuqi', e.UserId, player_data)
+  return await screenshot('wuqi', e.UserId, player_data)
 }
 
 /**
@@ -402,7 +394,7 @@ export async function getWuqiImage(
  * @return image
  */
 export async function getDanyaoImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -444,7 +436,7 @@ export async function getDanyaoImage(
       JSON.stringify(player_data, null, 2)
     )
   }
-  return await puppeteer.screenshot('danyao', e.UserId, player_data)
+  return await screenshot('danyao', e.UserId, player_data)
 }
 
 /**
@@ -452,7 +444,7 @@ export async function getDanyaoImage(
  * @return image
  */
 export async function getGongfaImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -492,7 +484,7 @@ export async function getGongfaImage(
     gongfa_need
   }
 
-  return await puppeteer.screenshot('gongfa', e.UserId, player_data)
+  return await screenshot('gongfa', e.UserId, player_data)
 }
 
 /**
@@ -500,7 +492,7 @@ export async function getGongfaImage(
  * @return image
  */
 export async function getPowerImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const Send: SendFn = useSend(e) as SendFn
@@ -549,7 +541,7 @@ export async function getPowerImage(
     learned_gongfa: player.学习的功法,
     association: this_association
   }
-  return await puppeteer.screenshot('playercopy', e.UserId, playercopy)
+  return await screenshot('playercopy', e.UserId, playercopy)
 }
 
 /**
@@ -557,7 +549,7 @@ export async function getPowerImage(
  * @return image
  */
 export async function getPlayerImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const Send: SendFn = useSend(e) as SendFn
   let 法宝评级
@@ -859,7 +851,7 @@ export async function getPlayerImage(
     mkdirSync(dir, { recursive: true })
     writeFileSync(`${dir}/user.json`, JSON.stringify(player_data, null, 2))
   }
-  return await puppeteer.screenshot('player', e.UserId, player_data)
+  return await screenshot('player', e.UserId, player_data)
 }
 
 /**
@@ -867,7 +859,7 @@ export async function getPlayerImage(
  * @return image
  */
 export async function getAssociationImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   let item
   const usr_qq = e.UserId
@@ -996,7 +988,7 @@ export async function getAssociationImage(
     state: state
   }
 
-  return await puppeteer.screenshot('association', e.UserId, association_data)
+  return await screenshot('association', e.UserId, association_data)
 }
 
 /**
@@ -1004,7 +996,7 @@ export async function getAssociationImage(
  * @return image
  */
 export async function getQquipmentImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const playerData = await data.getData('player', usr_qq)
@@ -1038,14 +1030,14 @@ export async function getQquipmentImage(
     mkdirSync(dir, { recursive: true })
     writeFileSync(`${dir}/equipment.json`, JSON.stringify(player_data, null, 2))
   }
-  return await puppeteer.screenshot('equipment', e.UserId, player_data)
+  return await screenshot('equipment', e.UserId, player_data)
 }
 /**
  * 返回该玩家的纳戒图片
  * @return image
  */
 export async function getNajieImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -1084,7 +1076,7 @@ export async function getNajieImage(
     strand_lingshi: strand_lingshi,
     pifu: player.练气皮肤 || 0
   }
-  return await puppeteer.screenshot('najie', e.UserId, player_data)
+  return await screenshot('najie', e.UserId, player_data)
 }
 
 /**
@@ -1092,7 +1084,7 @@ export async function getNajieImage(
  * @return image
  */
 export async function getStateImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   all_level: boolean
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
@@ -1120,11 +1112,11 @@ export async function getStateImage(
     user_id: usr_qq,
     Level_list: Level_list
   }
-  return await puppeteer.screenshot('state', e.UserId, state_data)
+  return await screenshot('state', e.UserId, state_data)
 }
 
 export async function getStatezhiyeImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   all_level: boolean
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
@@ -1152,7 +1144,7 @@ export async function getStatezhiyeImage(
     user_id: usr_qq,
     Level_list: Level_list
   }
-  return await puppeteer.screenshot('statezhiye', e.UserId, state_data)
+  return await screenshot('statezhiye', e.UserId, state_data)
 }
 
 /**
@@ -1160,7 +1152,7 @@ export async function getStatezhiyeImage(
  * @return image
  */
 export async function getStatemaxImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   all_level: boolean
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
@@ -1188,11 +1180,11 @@ export async function getStatemaxImage(
     user_id: usr_qq,
     LevelMax_list: LevelMax_list
   }
-  return await puppeteer.screenshot('statemax', e.UserId, statemax_data)
+  return await screenshot('statemax', e.UserId, statemax_data)
 }
 
 export async function getTalentImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -1206,7 +1198,7 @@ export async function getTalentImage(
     user_id: usr_qq,
     talent_list: talent_list
   }
-  return await puppeteer.screenshot('talent', e.UserId, talent_data)
+  return await screenshot('talent', e.UserId, talent_data)
 }
 
 /**
@@ -1214,7 +1206,7 @@ export async function getTalentImage(
  * @return image
  */
 export async function getAdminsetImage(
-  e: PublicEventMessageCreate
+  e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const adminset = {
@@ -1259,11 +1251,11 @@ export async function getAdminsetImage(
     SecretPlacetwo: cf.SecretPlace.two,
     SecretPlacethree: cf.SecretPlace.three
   }
-  return await puppeteer.screenshot('adminset', e.UserId, adminset)
+  return await screenshot('adminset', e.UserId, adminset)
 }
 
 export async function getRankingPowerImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   Data: Array<Record<string, unknown>>,
   usr_paiming: number,
   thisplayer: Player
@@ -1289,15 +1281,11 @@ export async function getRankingPowerImage(
       JSON.stringify(ranking_power_data, null, 2)
     )
   }
-  return await puppeteer.screenshot(
-    'ranking_power',
-    e.UserId,
-    ranking_power_data
-  )
+  return await screenshot('ranking_power', e.UserId, ranking_power_data)
 }
 
 export async function getRankingMoneyImage(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   Data: Array<Record<string, unknown>>,
   usr_paiming: number,
   thisplayer: Player,
@@ -1314,19 +1302,15 @@ export async function getRankingMoneyImage(
     usr_paiming: usr_paiming,
     allplayer: Data
   }
-  return await puppeteer.screenshot(
-    'ranking_money',
-    e.UserId,
-    ranking_money_data
-  )
+  return await screenshot('ranking_money', e.UserId, ranking_money_data)
 }
 
 export async function Goweizhi(
-  e: PublicEventMessageCreate,
+  e: EventsMessageCreateEnum,
   weizhi: NamedItem[]
 ): Promise<void> {
   const Send: SendFn = useSend(e) as SendFn
-  const image = await puppeteer.screenshot('secret_place', e.UserId, {
+  const image = await screenshot('secret_place', e.UserId, {
     didian_list: weizhi
   })
   if (!image) {

@@ -1,4 +1,4 @@
-import { PublicEventMessageCreate, useSend, Text } from 'alemonjs'
+import { EventsMessageCreateEnum, useSend, Text } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { data, pushInfo, redis } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
@@ -129,7 +129,7 @@ export async function Boss2IsAlive() {
 }
 // 兼容旧引用：BossIsAlive 指向新版 Boss2IsAlive（妖王）
 export const BossIsAlive = Boss2IsAlive
-export async function LookUpWorldBossStatus(e: PublicEventMessageCreate) {
+export async function LookUpWorldBossStatus(e: EventsMessageCreateEnum) {
   const send = useSend(e)
   if (await Boss2IsAlive()) {
     const statusStr = await redis.get('Xiuxian:WorldBossStatus2')

@@ -2,64 +2,112 @@ import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
 import { Go, readPlayer, notUndAndNull, addCoin } from '@src/model/index'
+import type { Player, AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
+
+interface PlayerGuildRef {
+  宗门名称: string
+  职位: string
+}
+function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
+}
+interface ExtAss extends AssociationDetailData {
+  宗门驻地?: string | number
+  灵石池?: number
+  power?: number
+}
+function isExtAss(v: unknown): v is ExtAss {
+  return !!v && typeof v === 'object' && 'power' in v
+}
+interface GuildSecret {
+  name: string
+  Price: number
+}
+function isGuildSecret(v: unknown): v is GuildSecret {
+  return !!v && typeof v === 'object' && 'name' in v && 'Price' in v
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const flag = await Go(e)
-  if (!flag) {
-    return false
-  }
-  const player = await readPlayer(usr_qq)
-  if (!player.宗门) {
+  if (!flag) return false
+
+  const player = (await readPlayer(usr_qq)) as Player | null
+  if (!player || !player.宗门 || !isPlayerGuildRef(player.宗门)) {
     Send(Text('请先加入宗门'))
     return false
   }
-  const ass = await data.getAssociation(player.宗门.宗门名称)
-  if (ass.宗门驻地 == 0) {
-    Send(Text(`你的宗门还没有驻地，不能探索秘境哦`))
+  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  if (assRaw === 'error' || !isExtAss(assRaw)) {
+    Send(Text('宗门数据不存在'))
     return false
   }
-  let didian = e.MessageText.replace(/^(#|＃|\/)?探索宗门秘境/, '')
-  didian = didian.trim()
-  const weizhi = await data.guildSecrets_list.find(item => item.name == didian)
-  if (!notUndAndNull(weizhi)) {
+  const ass = assRaw
+  if (!ass.宗门驻地 || ass.宗门驻地 === 0) {
+    Send(Text('你的宗门还没有驻地，不能探索秘境哦'))
     return false
   }
 
-  if (player.灵石 < weizhi.Price) {
-    Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'))
+  const didian = e.MessageText.replace(/^(#|＃|\/)?探索宗门秘境/, '').trim()
+  if (!didian) {
+    Send(Text('请在指令后面补充秘境名称'))
     return false
   }
-  const Price = weizhi.Price
-  ass.灵石池 += Price * 0.05
-  data.setAssociation(ass.宗门名称, ass)
+  const listRaw = data.guildSecrets_list as unknown[] | undefined
+  const weizhi = listRaw?.find(
+    item => isGuildSecret(item) && item.name === didian
+  ) as GuildSecret | undefined
+  if (!notUndAndNull(weizhi) || !isGuildSecret(weizhi)) {
+    Send(Text('未找到该宗门秘境'))
+    return false
+  }
 
-  await addCoin(usr_qq, -Price)
-  const time = config.getConfig('xiuxian', 'xiuxian').CD.secretplace //时间（分钟）
-  const action_time = 60000 * time //持续时间，单位毫秒
+  const playerCoin = Number((player as Record<string, unknown>).灵石 || 0)
+  const price = Number(weizhi.Price || 0)
+  if (price <= 0) {
+    Send(Text('秘境费用配置异常'))
+    return false
+  }
+  if (playerCoin < price) {
+    Send(Text(`没有灵石寸步难行, 攒到${price}灵石才够哦~`))
+    return false
+  }
+
+  // 灵石池收益 5% 向下取整
+  const guildGain = Math.trunc(price * 0.05)
+  ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain
+  await data.setAssociation(ass.宗门名称, ass)
+
+  await addCoin(usr_qq, -price)
+  interface XiuxianConfig {
+    CD?: { secretplace?: number }
+  }
+  const cfg = config.getConfig('xiuxian', 'xiuxian') as unknown as XiuxianConfig
+  const minute = cfg?.CD?.secretplace
+  const time = typeof minute === 'number' && minute > 0 ? minute : 10
+  const action_time = 60000 * time
   const arr = {
-    action: '历练', //动作
-    end_time: Date.now() + action_time, //结束时间
-    time: action_time, //持续时间
-    shutup: '1', //闭关
-    working: '1', //降妖
-    Place_action: '0', //秘境状态---开启
-    Place_actionplus: '1', //沉迷秘境状态---关闭
-    power_up: '1', //渡劫状态--关闭
+    action: '历练',
+    end_time: Date.now() + action_time,
+    time: action_time,
+    shutup: '1',
+    working: '1',
+    Place_action: '0',
+    Place_actionplus: '1',
+    power_up: '1',
     group_id: e.ChannelId,
-    //这里要保存秘境特别需要留存的信息
     Place_address: weizhi,
     XF: ass.power
   }
-
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr))
-  // setTimeout(() => {
-  //         SecretPlaceMax(e, weizhi);
-  //     }, 60000 );
-
-  Send(Text('开始探索' + didian + '宗门秘境,' + time + '分钟后归来!'))
+  await redis.set(`xiuxian@1.3.0:${usr_qq}:action`, JSON.stringify(arr))
+  Send(
+    Text(
+      `开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`
+    )
+  )
+  return false
 })

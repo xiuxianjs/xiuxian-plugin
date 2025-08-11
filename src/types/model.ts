@@ -34,7 +34,7 @@ import type { SkillItem } from './data_extra'
 import type { DataMention } from 'alemonjs'
 
 export type AnyIncomingEvent =
-  | import('alemonjs').PublicEventMessageCreate
+  | import('alemonjs').EventsMessageCreateEnum
   | import('alemonjs').PrivateEventMessageCreate
   | import('alemonjs').PublicEventInteractionCreate
   | import('alemonjs').PrivateEventInteractionCreate

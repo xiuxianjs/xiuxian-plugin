@@ -7,7 +7,8 @@ export const regular = /^(#|＃|\/)?修仙设置$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
-
   const img = await getAdminsetImage(e)
-  if (img) Send(Image(img))
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

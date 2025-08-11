@@ -3,9 +3,7 @@ import help from '@src/config/help.yaml'
 import help2 from '@src/config/help2.yaml'
 import set from '@src/config/set.yaml'
 import shituhelp from '@src/config/shituhelp.yaml'
-import namelist from '@src/config/namelist.yaml'
 import task from '@src/config/task.yaml'
-import version from '@src/config/version.yaml'
 import xiuxian from '@src/config/xiuxian.yaml'
 
 // 存档存放路径
@@ -40,8 +38,6 @@ export const __PATH_CONFIG = {
   help2,
   set,
   shituhelp,
-  namelist,
   task,
-  version,
   xiuxian
 }

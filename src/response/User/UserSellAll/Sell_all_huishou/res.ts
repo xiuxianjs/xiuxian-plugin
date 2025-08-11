@@ -11,54 +11,111 @@ import {
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键回收(.*)$/
 
+interface BagItem {
+  name: string
+  class: string | number
+  数量?: number
+  出售价?: number
+  pinji?: number | string
+}
+interface NajieData {
+  [k: string]: BagItem[] | unknown
+}
+const CATEGORIES = [
+  '装备',
+  '丹药',
+  '道具',
+  '功法',
+  '草药',
+  '材料',
+  '仙宠',
+  '仙宠口粮'
+] as const
+
+function num(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? n : d
+}
+function normalizeCat(v: unknown): string {
+  return String(v ?? '')
+}
+function normAddCat(v: unknown): Parameters<typeof addNajieThing>[2] {
+  return String(v) as Parameters<typeof addNajieThing>[2]
+}
+function normPinji(v: unknown): Parameters<typeof addNajieThing>[4] {
+  return v as Parameters<typeof addNajieThing>[4]
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const najie = await await data.getData('najie', usr_qq)
-  let lingshi = 0
-  let wupin = [
-    '装备',
-    '丹药',
-    '道具',
-    '功法',
-    '草药',
-    '材料',
-    '仙宠',
-    '仙宠口粮'
-  ]
-  const wupin1 = []
-  if (e.MessageText != '#一键回收') {
-    let thing = e.MessageText.replace(/^(#|＃|\/)?一键回收/, '')
-    for (const i of wupin) {
-      if (thing == i) {
-        wupin1.push(i)
-        thing = thing.replace(i, '')
+  if (!(await existplayer(usr_qq))) return false
+
+  const najie = (await data.getData('najie', usr_qq)) as NajieData | null
+  if (!najie) {
+    Send(Text('纳戒数据异常'))
+    return false
+  }
+
+  // 解析用户指定分类（可多个连续例如: #一键回收装备丹药）
+  const rawTail = e.MessageText.replace(/^(#|＃|\/)?一键回收/, '').trim()
+  let targetCats: string[] = [...CATEGORIES]
+  if (rawTail && rawTail !== '') {
+    const chosen: string[] = []
+    let rest = rawTail
+    for (const cat of CATEGORIES) {
+      if (rest.includes(cat)) {
+        chosen.push(cat)
+        rest = rest.replace(new RegExp(cat, 'g'), '')
       }
     }
-    if (thing.length == 0) {
-      wupin = wupin1
-    } else {
+    rest = rest.trim()
+    if (chosen.length === 0 || rest.length > 0) {
+      // 输入无法完全匹配分类，视为无效
       return false
     }
+    targetCats = chosen
   }
-  for (const i of wupin) {
-    for (const l of najie[i]) {
-      //纳戒中的数量
-      const thing_exist = await foundthing(l.name)
-      if (thing_exist) {
-        continue
-      }
-      await addNajieThing(usr_qq, l.name, l.class, -l.数量, l.pinji)
-      if (l.class == '材料' || l.class == '草药') {
-        lingshi += l.出售价 * l.数量
-      } else {
-        lingshi += l.出售价 * l.数量 * 2
-      }
+
+  let total = 0
+  let soldCount = 0
+
+  for (const cat of targetCats) {
+    const arr = najie[cat] as BagItem[] | undefined
+    if (!Array.isArray(arr) || arr.length === 0) continue
+    for (const item of arr) {
+      if (!item || !item.name) continue
+      const thing = await foundthing(item.name)
+      // 原逻辑错误：若存在则 continue，这里修复为不存在跳过
+      if (!thing) continue
+      const qty = num(item.数量)
+      if (qty <= 0) continue
+      const salePrice = num(item.出售价)
+      if (salePrice <= 0) continue
+      // 材料/草药 1 倍，其它 2 倍
+      const multiplier =
+        normalizeCat(item.class) === '材料' ||
+        normalizeCat(item.class) === '草药'
+          ? 1
+          : 2
+      total += salePrice * qty * multiplier
+      await addNajieThing(
+        usr_qq,
+        item.name,
+        normAddCat(item.class),
+        -qty,
+        normPinji(item.pinji)
+      )
+      soldCount += qty
     }
   }
-  await addCoin(usr_qq, lingshi)
-  Send(Text(`回收成功!  获得${lingshi}灵石 `))
+
+  if (total <= 0) {
+    Send(Text('没有可回收的物品'))
+    return false
+  }
+
+  await addCoin(usr_qq, total)
+  Send(Text(`回收成功，出售 ${soldCount} 件物品，获得 ${total} 灵石`))
+  return false
 })

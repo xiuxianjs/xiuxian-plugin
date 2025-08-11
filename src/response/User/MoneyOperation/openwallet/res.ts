@@ -14,7 +14,6 @@ export const regular = /^(#|＃|\/)?打开钱包$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   const player = await await data.getData('player', usr_qq)

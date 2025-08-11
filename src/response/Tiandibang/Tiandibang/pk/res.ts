@@ -9,29 +9,118 @@ import {
   zdBattle,
   addCoin
 } from '@src/model/index'
-import { readTiandibang, Write_tiandibang, getLastbisai } from '../tian'
+import {
+  readTiandibang,
+  Write_tiandibang,
+  getLastbisai,
+  TiandibangRow
+} from '../tian'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?比试$/
 
+// === 类型与工具 ===
+type RankEntry = TiandibangRow
+interface ActionState {
+  action: string
+  end_time: number
+}
+interface BattlePlayer {
+  名号: string
+  攻击: number
+  防御: number
+  当前血量: number
+  暴击率: number
+  学习的功法: unknown[]
+  灵根: { 法球倍率?: number; name?: string; type?: string } & Record<
+    string,
+    unknown
+  >
+  法球倍率?: number
+  [k: string]: unknown
+}
+const toNum = (v: unknown, d = 0) =>
+  typeof v === 'number' && !isNaN(v)
+    ? v
+    : typeof v === 'string' && !isNaN(+v)
+      ? +v
+      : d
+const RD_KEY = (qq: string, k: string) => `xiuxian@1.3.0:${qq}:${k}`
+const randomScale = () => 0.8 + 0.4 * Math.random()
+function buildBattlePlayer(
+  src: RankEntry,
+  atkMul = 1,
+  defMul = 1,
+  hpMul = 1
+): BattlePlayer {
+  const lgRaw = src.灵根
+  const linggenObj = (
+    lgRaw && typeof lgRaw === 'object' ? lgRaw : {}
+  ) as Record<string, unknown>
+  const linggen = linggenObj as {
+    法球倍率?: number
+    name?: string
+    type?: string
+  } & Record<string, unknown>
+  return {
+    名号: src.名号,
+    攻击: Math.floor(toNum(src.攻击) * atkMul),
+    防御: Math.floor(toNum(src.防御) * defMul),
+    当前血量: Math.floor(toNum(src.当前血量) * hpMul),
+    暴击率: toNum(src.暴击率),
+    学习的功法: Array.isArray(src.学习的功法)
+      ? (src.学习的功法 as unknown[])
+      : [],
+    灵根: linggen,
+    法球倍率:
+      typeof src.法球倍率 === 'number' ? src.法球倍率 : toNum(src.法球倍率)
+  }
+}
+function settleWin(
+  self: RankEntry,
+  isWild: boolean,
+  lastMsg: string[],
+  opponentName: string,
+  win: boolean
+) {
+  // wild: k == -1
+  if (win) {
+    self.积分 += isWild ? 1500 : 2000
+  } else {
+    self.积分 += isWild ? 800 : 1000
+  }
+  self.次数 -= 1
+  const lingshi = self.积分 * (isWild ? (win ? 8 : 6) : win ? 4 : 2)
+  lastMsg.push(
+    win
+      ? `${self.名号}击败了[${opponentName}],当前积分[${self.积分}],获得了[${lingshi}]灵石`
+      : `${self.名号}被[${opponentName}]打败了,当前积分[${self.积分}],获得了[${lingshi}]灵石`
+  )
+  return lingshi
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
+  const usr_qq_num = parseInt(usr_qq, 10)
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取游戏状态
-  const game_action = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await redis.get(RD_KEY(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
   if (+game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
   //查询redis中的人物动作
-  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
-  action = JSON.parse(action)
-  if (action != null) {
+  let action: ActionState | null = null
+  const actionStr = await redis.get(RD_KEY(usr_qq, 'action'))
+  if (actionStr) {
+    try {
+      action = JSON.parse(actionStr)
+    } catch {}
+  }
+  if (action) {
     //人物有动作查询动作结束时间
     const action_end_time = action.end_time
     const now_time = Date.now()
@@ -42,7 +131,7 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let tiandibang = []
+  let tiandibang: RankEntry[] = []
   try {
     tiandibang = await readTiandibang()
   } catch {
@@ -51,7 +140,7 @@ export default onResponse(selects, async e => {
   }
   let x = tiandibang.length
   for (let m = 0; m < tiandibang.length; m++) {
-    if (tiandibang[m].qq == usr_qq) {
+    if (tiandibang[m].qq === usr_qq_num) {
       x = m
       break
     }
@@ -60,7 +149,7 @@ export default onResponse(selects, async e => {
     Send(Text('请先报名!'))
     return false
   }
-  const last_msg = []
+  const last_msg: string[] = []
   let atk = 1
   let def = 1
   let blood = 1
@@ -69,21 +158,23 @@ export default onResponse(selects, async e => {
   const Today = await shijianc(nowTime)
   const lastbisai_time = await getLastbisai(usr_qq) //获得上次签到日期
   if (
-    Today.Y != lastbisai_time.Y ||
-    Today.M != lastbisai_time.M ||
-    Today.D != lastbisai_time.D
+    lastbisai_time &&
+    (Today.Y != lastbisai_time.Y ||
+      Today.M != lastbisai_time.M ||
+      Today.D != lastbisai_time.D)
   ) {
-    await redis.set('xiuxian@1.3.0:' + usr_qq + ':lastbisai_time', nowTime) //redis设置签到时间
+    await redis.set(RD_KEY(usr_qq, 'lastbisai_time'), nowTime) //redis设置签到时间
     tiandibang[x].次数 = 3
   }
   if (
+    lastbisai_time &&
     Today.Y == lastbisai_time.Y &&
     Today.M == lastbisai_time.M &&
     Today.D == lastbisai_time.D &&
     tiandibang[x].次数 < 1
   ) {
     const zbl = await existNajieThing(usr_qq, '摘榜令', '道具')
-    if (zbl) {
+    if (typeof zbl === 'number' && zbl > 0) {
       tiandibang[x].次数 = 1
       await addNajieThing(usr_qq, '摘榜令', '道具', -1)
       last_msg.push(`${tiandibang[x].名号}使用了摘榜令\n`)
@@ -92,8 +183,8 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  Write_tiandibang(tiandibang)
-  let lingshi
+  await Write_tiandibang(tiandibang)
+  let lingshi = 0
   tiandibang = await readTiandibang()
   if (x != 0) {
     let k
@@ -105,7 +196,7 @@ export default onResponse(selects, async e => {
         } else break
       }
     }
-    let B_player
+    let B_player: BattlePlayer
     if (k != -1) {
       if (tiandibang[k].攻击 / tiandibang[x].攻击 > 2) {
         atk = 2
@@ -120,72 +211,32 @@ export default onResponse(selects, async e => {
         def = 1.3
         blood = 1.3
       }
-      B_player = {
-        名号: tiandibang[k].名号,
-        攻击: tiandibang[k].攻击,
-        防御: tiandibang[k].防御,
-        当前血量: tiandibang[k].当前血量,
-        暴击率: tiandibang[k].暴击率,
-        学习的功法: tiandibang[k].学习的功法,
-        灵根: tiandibang[k].灵根,
-        法球倍率: tiandibang[k].法球倍率
-      }
+      B_player = buildBattlePlayer(tiandibang[k])
     }
-    const A_player = {
-      名号: tiandibang[x].名号,
-      攻击: parseInt(tiandibang[x].攻击) * atk,
-      防御: Math.floor(tiandibang[x].防御 * def),
-      当前血量: Math.floor(tiandibang[x].当前血量 * blood),
-      暴击率: tiandibang[x].暴击率,
-      学习的功法: tiandibang[x].学习的功法,
-      灵根: tiandibang[x].灵根,
-      法球倍率: tiandibang[x].法球倍率
-    }
+    const A_player = buildBattlePlayer(tiandibang[x], atk, def, blood)
     if (k == -1) {
-      atk = 0.8 + 0.4 * Math.random()
-      def = 0.8 + 0.4 * Math.random()
-      blood = 0.8 + 0.4 * Math.random()
-      B_player = {
-        名号: '灵修兽',
-        攻击: parseInt(tiandibang[x].攻击) * atk,
-        防御: Math.floor(tiandibang[x].防御 * def),
-        当前血量: Math.floor(tiandibang[x].当前血量 * blood),
-        暴击率: tiandibang[x].暴击率,
-        学习的功法: tiandibang[x].学习的功法,
-        灵根: tiandibang[x].灵根,
-        法球倍率: tiandibang[x].法球倍率
-      }
+      atk = randomScale()
+      def = randomScale()
+      blood = randomScale()
+      B_player = buildBattlePlayer(tiandibang[x], atk, def, blood)
+      B_player.名号 = '灵修兽'
     }
     const Data_battle = await zdBattle(A_player, B_player)
-    const msg = Data_battle.msg
+    const msg: string[] = Data_battle.msg || []
     const A_win = `${A_player.名号}击败了${B_player.名号}`
     const B_win = `${B_player.名号}击败了${A_player.名号}`
-    if (msg.find(item => item == A_win)) {
-      if (k == -1) {
-        tiandibang[x].积分 += 1500
-        lingshi = tiandibang[x].积分 * 8
-      } else {
-        tiandibang[x].积分 += 2000
-        lingshi = tiandibang[x].积分 * 4
-      }
-      tiandibang[x].次数 -= 1
-      last_msg.push(
-        `${A_player.名号}击败了[${B_player.名号}],当前积分[${tiandibang[x].积分}],获得了[${lingshi}]灵石`
+    if (msg.includes(A_win)) {
+      lingshi = settleWin(tiandibang[x], k == -1, last_msg, B_player.名号, true)
+      await Write_tiandibang(tiandibang as TiandibangRow[])
+    } else if (msg.includes(B_win)) {
+      lingshi = settleWin(
+        tiandibang[x],
+        k == -1,
+        last_msg,
+        B_player.名号,
+        false
       )
-      Write_tiandibang(tiandibang)
-    } else if (msg.find(item => item == B_win)) {
-      if (k == -1) {
-        tiandibang[x].积分 += 800
-        lingshi = tiandibang[x].积分 * 6
-      } else {
-        tiandibang[x].积分 += 1000
-        lingshi = tiandibang[x].积分 * 2
-      }
-      tiandibang[x].次数 -= 1
-      last_msg.push(
-        `${A_player.名号}被[${B_player.名号}]打败了,当前积分[${tiandibang[x].积分}],获得了[${lingshi}]灵石`
-      )
-      Write_tiandibang(tiandibang)
+      await Write_tiandibang(tiandibang as TiandibangRow[])
     } else {
       Send(Text(`战斗过程出错`))
       return false
@@ -195,53 +246,26 @@ export default onResponse(selects, async e => {
       logger.info('通过')
     } else {
       // await ForwardMsg(e, msg)
-      Send(Text(msg))
+      Send(Text(msg.join('\n')))
     }
     Send(Text(last_msg.join('\n')))
   } else {
-    const A_player = {
-      名号: tiandibang[x].名号,
-      攻击: tiandibang[x].攻击,
-      防御: tiandibang[x].防御,
-      当前血量: tiandibang[x].当前血量,
-      暴击率: tiandibang[x].暴击率,
-      学习的功法: tiandibang[x].学习的功法,
-      灵根: tiandibang[x].灵根,
-      法球倍率: tiandibang[x].法球倍率
-    }
-    atk = 0.8 + 0.4 * Math.random()
-    def = 0.8 + 0.4 * Math.random()
-    blood = 0.8 + 0.4 * Math.random()
-    const B_player = {
-      名号: '灵修兽',
-      攻击: parseInt(tiandibang[x].攻击) * atk,
-      防御: Math.floor(tiandibang[x].防御 * def),
-      当前血量: Math.floor(tiandibang[x].当前血量 * blood),
-      暴击率: tiandibang[x].暴击率,
-      学习的功法: tiandibang[x].学习的功法,
-      灵根: tiandibang[x].灵根,
-      法球倍率: tiandibang[x].法球倍率
-    }
+    const A_player = buildBattlePlayer(tiandibang[x])
+    atk = randomScale()
+    def = randomScale()
+    blood = randomScale()
+    const B_player = buildBattlePlayer(tiandibang[x], atk, def, blood)
+    B_player.名号 = '灵修兽'
     const Data_battle = await zdBattle(A_player, B_player)
-    const msg = Data_battle.msg
+    const msg: string[] = Data_battle.msg || []
     const A_win = `${A_player.名号}击败了${B_player.名号}`
     const B_win = `${B_player.名号}击败了${A_player.名号}`
-    if (msg.find(item => item == A_win)) {
-      tiandibang[x].积分 += 1500
-      tiandibang[x].次数 -= 1
-      lingshi = tiandibang[x].积分 * 8
-      last_msg.push(
-        `${A_player.名号}击败了[${B_player.名号}],当前积分[${tiandibang[x].积分}],获得了[${lingshi}]灵石`
-      )
-      Write_tiandibang(tiandibang)
-    } else if (msg.find(item => item == B_win)) {
-      tiandibang[x].积分 += 800
-      tiandibang[x].次数 -= 1
-      lingshi = tiandibang[x].积分 * 6
-      last_msg.push(
-        `${A_player.名号}被[${B_player.名号}]打败了,当前积分[${tiandibang[x].积分}],获得了[${lingshi}]灵石`
-      )
-      Write_tiandibang(tiandibang)
+    if (msg.includes(A_win)) {
+      lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, true)
+      await Write_tiandibang(tiandibang as TiandibangRow[])
+    } else if (msg.includes(B_win)) {
+      lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, false)
+      await Write_tiandibang(tiandibang as TiandibangRow[])
     } else {
       Send(Text(`战斗过程出错`))
       return false
@@ -251,23 +275,11 @@ export default onResponse(selects, async e => {
       logger.info('通过')
     } else {
       // await ForwardMsg(e, msg)
-      Send(Text(msg))
+      Send(Text(msg.join('\n')))
     }
     Send(Text(last_msg.join('\n')))
   }
   tiandibang = await readTiandibang()
-  let t
-  for (let i = 0; i < tiandibang.length - 1; i++) {
-    let count = 0
-    for (let j = 0; j < tiandibang.length - i - 1; j++) {
-      if (tiandibang[j].积分 < tiandibang[j + 1].积分) {
-        t = tiandibang[j]
-        tiandibang[j] = tiandibang[j + 1]
-        tiandibang[j + 1] = t
-        count = 1
-      }
-    }
-    if (count == 0) break
-  }
-  Write_tiandibang(tiandibang)
+  tiandibang.sort((a, b) => b.积分 - a.积分)
+  await Write_tiandibang(tiandibang as TiandibangRow[])
 })

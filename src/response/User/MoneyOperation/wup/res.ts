@@ -10,69 +10,114 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?发(灵石|修为|血气|.*)\*\d+$/
+// 允许：#发 灵石*100 | #发 修为*5000 | #发 血气*300 | #发 剑*优*1
+export const regular = /^(#|＃|\/)?发\S+(?:\*\S+){1,2}$/
+
+function toInt(v: unknown, def = 0): number {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.floor(n) : def
+}
+const PINJI_MAP: Record<string, number> = {
+  劣: 0,
+  普: 1,
+  优: 2,
+  精: 3,
+  极: 4,
+  绝: 5,
+  顶: 6
+}
+function parsePinji(raw: string | undefined): number | undefined {
+  if (!raw) return undefined
+  if (raw in PINJI_MAP) return PINJI_MAP[raw]
+  const n = Number(raw)
+  if (Number.isInteger(n) && n >= 0 && n <= 6) return n
+  return undefined
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
-  //对方
-  const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
-  if (!Mentions || Mentions.length === 0) {
-    return // @ 提及为空
+
+  // 解析 @ 目标
+  let targetQQ: string | undefined
+  try {
+    const mention = useMention(e)[0]
+    const res = await mention.find({ IsBot: false })
+    const list = res?.data || []
+    const user = list.find(i => !i.IsBot)
+    if (user) targetQQ = user.UserId
+  } catch {
+    // ignore
   }
-  // 查找用户类型的 @ 提及，且不是 bot
-  const User = Mentions.find(item => !item.IsBot)
-  if (!User) {
-    return // 未找到用户Id
-  }
-  const B_qq = User.UserId //对方qq
-  //检查存档
-  const ifexistplay = await existplayer(B_qq)
-  if (!ifexistplay) {
-    Send(Text('对方无存档'))
+  if (!targetQQ) return false
+
+  if (!(await existplayer(targetQQ))) {
+    Send(Text('对方无踏入仙途'))
     return false
   }
-  //获取发送灵石数量
-  const code = e.MessageText.replace(/^(#|＃|\/)?发/, '').split('*')
-  const thing_name = code[0]
-  let thing_amount = code[1] //数量
-  let thing_piji
-  thing_amount = Number(thing_amount)
-  if (isNaN(thing_amount)) {
-    thing_amount = 1
+
+  // 去掉前缀“发”
+  const raw = e.MessageText.replace(/^(#|＃|\/)?发/, '')
+  const parts = raw
+    .split('*')
+    .map(s => s.trim())
+    .filter(Boolean)
+  if (parts.length < 2) {
+    Send(Text('格式错误，应为: 发 资源名*数量 或 发 装备名*品级*数量'))
+    return false
   }
-  if (thing_name == '灵石') {
-    await addCoin(B_qq, thing_amount)
-  } else if (thing_name == '修为') {
-    await addExp(B_qq, thing_amount)
-  } else if (thing_name == '血气') {
-    await addExp2(B_qq, thing_amount)
-  } else {
-    const thing_exist = await foundthing(thing_name)
-    if (!thing_exist) {
-      Send(Text(`这方世界没有[${thing_name}]`))
+  const thingName = parts[0]
+
+  // 三类基础资源直接发放
+  if (thingName === '灵石' || thingName === '修为' || thingName === '血气') {
+    const amount = toInt(parts[1], 1)
+    if (amount <= 0) {
+      Send(Text('数量需为正整数'))
       return false
     }
-    const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
-    thing_piji = pj[code[1]]
-    if (thing_exist.class == '装备') {
-      if (thing_piji) {
-        thing_amount = code[2]
-      } else {
-        thing_piji = 0
-      }
-    }
-    thing_amount = Number(thing_amount)
-    if (isNaN(thing_amount)) {
-      thing_amount = 1
-    }
-    await addNajieThing(
-      B_qq,
-      thing_name,
-      thing_exist.class,
-      thing_amount,
-      thing_piji
-    )
+    if (thingName === '灵石') await addCoin(targetQQ, amount)
+    else if (thingName === '修为') await addExp(targetQQ, amount)
+    else await addExp2(targetQQ, amount)
+    Send(Text(`发放成功: ${thingName} x ${amount}`))
+    return false
   }
-  Send(Text(`发放成功,增加${thing_name} x ${thing_amount}`))
+
+  // 其他物品
+  const thingDef = await foundthing(thingName)
+  if (!thingDef) {
+    Send(Text(`这方世界没有[${thingName}]`))
+    return false
+  }
+  const itemClass = String(
+    (thingDef as Record<string, unknown>).class || '道具'
+  ) as Parameters<typeof addNajieThing>[2]
+
+  let pinji: number | undefined
+  let amountStr: string | undefined
+  if (itemClass === '装备') {
+    // 可能格式： 名称*品级*数量 / 名称*数量
+    const maybePinji = parsePinji(parts[1])
+    if (maybePinji !== undefined) {
+      pinji = maybePinji
+      amountStr = parts[2]
+    } else {
+      amountStr = parts[1]
+    }
+  } else {
+    amountStr = parts[1]
+  }
+
+  const amount = toInt(amountStr, 1)
+  if (amount <= 0) {
+    Send(Text('数量需为正整数'))
+    return false
+  }
+
+  await addNajieThing(targetQQ, thingName, itemClass, amount, pinji)
+  Send(
+    Text(
+      `发放成功, 增加${thingName} x ${amount}${pinji !== undefined ? ` (品级:${pinji})` : ''}`
+    )
+  )
+  return false
 })

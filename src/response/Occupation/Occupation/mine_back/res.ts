@@ -5,67 +5,111 @@ import { mine_jiesuan } from '../../api'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?结束采矿$/
 
-export default onResponse(selects, async e => {
-  const action = await getPlayerAction(e.UserId)
-  if (action.action == '空闲') return
+interface PlayerAction {
+  action: string
+  mine?: number
+  end_time?: number // 结束时间戳(ms)
+  time?: number // 持续时长(ms)
+  start?: number // 兼容另一种结构: 开始时间
+  duration?: number // 兼容: 持续时长
+  is_jiesuan?: number
+  plant?: number
+  shutup?: number
+  working?: number
+  power_up?: number
+  Place_action?: number
+  group_id?: string
+  [k: string]: unknown
+}
 
-  if (action.mine == 1) return false
-  //结算
-  const end_time = action.end_time
-  const start_time = action.end_time - action.time
-  const now_time = Date.now()
-  let time
-  const y = 30 //时间
-  const x = 24 //循环次数
-  if (end_time > now_time) {
-    //属于提前结束
-    time = Math.floor((Date.now() - start_time) / 1000 / 60)
+const BLOCK_MINUTES = 30 // 满 30 分钟结算一个周期
+const MAX_BLOCKS = 24 // 最多 24 个周期 (12 小时)
 
-    //超过就按最低的算，即为满足30分钟才结算一次
-    //如果是 >=16*33 ----   >=30
-    for (let i = x; i > 0; i--) {
-      if (time >= y * i) {
-        time = y * i
-        break
-      }
-    }
-    //如果<15，不给收益
-    if (time < y) {
-      time = 0
-    }
-  } else {
-    //属于结束了未结算
-    time = Math.floor(action.time / 1000 / 60)
-    //超过就按最低的算，即为满足30分钟才结算一次
-    //如果是 >=16*33 ----   >=30
-    for (let i = x; i > 0; i--) {
-      if (time >= y * i) {
-        time = y * i
-        break
-      }
-    }
-    //如果<15，不给收益
-    if (time < y) {
-      time = 0
-    }
+function toInt(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.trunc(n) : d
+}
+
+function normalizeAction(raw: unknown): PlayerAction {
+  if (!raw || typeof raw !== 'object') {
+    return { action: '空闲' }
   }
+  const r = raw as Record<string, unknown>
+  const action: PlayerAction = {
+    action: typeof r.action === 'string' ? r.action : '空闲',
+    mine: toInt(r.mine, undefined as unknown as number),
+    end_time: toInt(r.end_time, undefined as unknown as number),
+    time: toInt(r.time, undefined as unknown as number),
+    start: toInt(r.start, undefined as unknown as number),
+    duration: toInt(r.duration, undefined as unknown as number),
+    is_jiesuan: toInt(r.is_jiesuan, undefined as unknown as number),
+    plant: toInt(r.plant, undefined as unknown as number),
+    shutup: toInt(r.shutup, undefined as unknown as number),
+    working: toInt(r.working, undefined as unknown as number),
+    power_up: toInt(r.power_up, undefined as unknown as number),
+    Place_action: toInt(r.Place_action, undefined as unknown as number),
+    group_id: typeof r.group_id === 'string' ? r.group_id : undefined
+  }
+  // 将非法 0 视为未设置
+  if (!action.end_time) delete action.end_time
+  if (!action.time) delete action.time
+  if (!action.start) delete action.start
+  if (!action.duration) delete action.duration
+  return action
+}
+
+// 计算可结算分钟(按 30 分钟为一个周期取整; 未满首个周期视为 0)
+function calcEffectiveMinutes(act: PlayerAction, now: number): number {
+  // 优先使用 (end_time,time) 结构; 否则使用 (start,duration)
+  let startMs: number | undefined
+  let durationMs: number | undefined
+  if (act.end_time && act.time) {
+    durationMs = act.time
+    startMs = act.end_time - act.time
+  } else if (act.start && act.duration) {
+    startMs = act.start
+    durationMs = act.duration
+  }
+  if (!startMs || !durationMs) return 0
+
+  const endMs = startMs + durationMs
+  const elapsed = endMs > now ? Math.max(0, now - startMs) : durationMs
+  const minutes = Math.floor(elapsed / 60000)
+  if (minutes < BLOCK_MINUTES) return 0
+  const blocks = Math.min(MAX_BLOCKS, Math.floor(minutes / BLOCK_MINUTES))
+  return blocks * BLOCK_MINUTES
+}
+
+export default onResponse(selects, async e => {
+  const raw = await getPlayerAction(e.UserId)
+  const action = normalizeAction(raw)
+  if (action.action === '空闲') return false
+  if (action.mine === 1) return false
+
+  const now = Date.now()
+  const minutes = calcEffectiveMinutes(action, now)
 
   if (e.name === 'message.create') {
-    await mine_jiesuan(e.UserId, time, e.ChannelId) //提前闭关结束不会触发随机事件
+    await mine_jiesuan(e.UserId, minutes, e.ChannelId)
   } else {
-    await mine_jiesuan(e.UserId, time) //提前闭关结束不会触发随机事件
+    await mine_jiesuan(e.UserId, minutes)
   }
 
-  const arr = action
-  arr.is_jiesuan = 1 //结算状态
-  arr.mine = 1 //采药状态
-  arr.plant = 1 //采药状态
-  arr.shutup = 1 //闭关状态
-  arr.working = 1 //降妖状态
-  arr.power_up = 1 //渡劫状态
-  arr.Place_action = 1 //秘境
-  //结束的时间也修改为当前时间
-  arr.end_time = Date.now()
-  delete arr.group_id //结算完去除group_id
-  await redis.set('xiuxian@1.3.0:' + e.UserId + ':action', JSON.stringify(arr))
+  // 标记结束; 统一写入 end_time/time 结构方便后续命令
+  action.is_jiesuan = 1
+  action.mine = 1
+  action.plant = 1
+  action.shutup = 1
+  action.working = 1
+  action.power_up = 1
+  action.Place_action = 1
+  action.end_time = now
+  action.time =
+    (action.time && action.end_time && action.time) ||
+    action.duration ||
+    minutes * 60000 // 记录原始或推导时长
+  delete action.group_id
+
+  await redis.set(`xiuxian@1.3.0:${e.UserId}:action`, JSON.stringify(action))
+  return false
 })

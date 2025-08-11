@@ -47,5 +47,7 @@ export default onResponse(selects, async e => {
     thisplayer,
     thisnajie
   )
-  if (img) Send(Image(img))
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

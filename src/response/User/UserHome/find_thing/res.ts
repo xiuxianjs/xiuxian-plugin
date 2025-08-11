@@ -6,51 +6,109 @@ import { foundthing, existNajieThing, addNajieThing } from '@src/model/index'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?哪里有(.*)$/
 
+// 物品结构与地点结构(最小必要字段)定义
+interface ThingLike {
+  name?: string
+  [k: string]: unknown
+}
+interface AreaLike {
+  name?: string
+  one?: ThingLike[]
+  two?: ThingLike[]
+  three?: ThingLike[]
+  [k: string]: unknown
+}
+
+const AREA_COLLECTION_KEYS = [
+  'guildSecrets_list',
+  'forbiddenarea_list',
+  'Fairyrealm_list',
+  'timeplace_list',
+  'didian_list',
+  'shenjie',
+  'mojie',
+  'xingge',
+  'shop_list'
+] as const
+const ITEM_LEVEL_KEYS: (keyof AreaLike)[] = ['one', 'two', 'three']
+
+function normalizeName(raw: string): string {
+  return raw.trim()
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const reg = new RegExp(/哪里有/)
-  let msg = e.MessageText.replace(reg, '')
-  msg = msg.replace(/^(#|＃|\/)?/, '')
-  const thing_name = msg.replace('哪里有', '')
-  const didian = [
-    'guildSecrets_list',
-    'forbiddenarea_list',
-    'Fairyrealm_list',
-    'timeplace_list',
-    'didian_list',
-    'shenjie',
-    'mojie',
-    'xingge',
-    'shop_list'
-  ]
-  const found = []
-  const thing_exist = await foundthing(thing_name)
-  if (!thing_exist) {
-    Send(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`))
+
+  // 提取物品名
+  const thingName = normalizeName(
+    e.MessageText.replace(/^(#|＃|\/)?哪里有/, '')
+  )
+  if (!thingName) {
+    Send(Text('请输入要查找的物品名称'))
     return false
   }
-  const number = await existNajieThing(usr_qq, '寻物纸', '道具')
-  if (!number) {
+
+  // 校验物品是否存在于全局映射(避免无意义遍历)
+  const exists = await foundthing(thingName)
+  if (!exists) {
+    Send(Text(`你在瞎说啥呢?哪来的【${thingName}】?`))
+    return false
+  }
+
+  // 检查寻物纸数量
+  const paperCount = await existNajieThing(usr_qq, '寻物纸', '道具')
+  if (!paperCount || paperCount <= 0) {
     Send(Text('查找物品需要【寻物纸】'))
     return false
   }
-  for (const i of didian) {
-    for (const j of data[i]) {
-      const n = ['one', 'two', 'three']
-      for (const k of n) {
-        if (j[k] && j[k].find(item => item.name == thing_name)) {
-          found.push(j.name + '\n')
+
+  const foundPlaces: string[] = []
+  const seen = new Set<string>()
+
+  for (const key of AREA_COLLECTION_KEYS) {
+    const root: Record<string, unknown> = data as Record<string, unknown>
+    const collection = root[key]
+    if (!Array.isArray(collection)) continue
+    for (const areaRaw of collection) {
+      const area = areaRaw as AreaLike
+      if (!area || typeof area !== 'object') continue
+      const areaName = area.name || '未知地点'
+      let matched = false
+      for (const levelKey of ITEM_LEVEL_KEYS) {
+        const list = area[levelKey]
+        if (!Array.isArray(list) || list.length === 0) continue
+        if (
+          list.some(
+            it =>
+              it &&
+              typeof it === 'object' &&
+              (it as ThingLike).name === thingName
+          )
+        ) {
+          matched = true
           break
         }
       }
+      if (matched && !seen.has(areaName)) {
+        seen.add(areaName)
+        foundPlaces.push(areaName)
+      }
     }
   }
-  found.push('消耗了一张寻物纸')
-  if (found.length == 1) {
-    Send(Text('天地没有回应......'))
-  } else {
-    await Send(Text(found.join('')))
-  }
+
+  // 消耗寻物纸 (无论是否找到，以保持原逻辑的一致资源消耗，但向玩家说明)
   await addNajieThing(usr_qq, '寻物纸', '道具', -1)
+
+  if (foundPlaces.length === 0) {
+    Send(Text(`天地没有回应......(已消耗1张寻物纸)`))
+    return false
+  }
+
+  const resultMsg =
+    `【${thingName}】可能出现在:\n` +
+    foundPlaces.map(n => `- ${n}`).join('\n') +
+    '\n(已消耗1张寻物纸)'
+  Send(Text(resultMsg))
+  return false
 })

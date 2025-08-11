@@ -4,67 +4,144 @@ import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { addPet } from '@src/model/pets'
 import { readNajie, writePlayer } from '@src/model/xiuxian_impl'
+import type { Player, NajieItem, XianchongInfo } from '@src/types/player'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?出战仙宠.*$/
 
+interface PetDef {
+  name: string
+  type: string
+  每级增加: number
+}
+interface BagPetLike {
+  name?: string
+  等级?: unknown
+  每级增加?: unknown
+  灵魂绑定?: number
+  type?: string
+  加成?: unknown
+  [k: string]: unknown
+}
+
+function toInt(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.trunc(n) : d
+}
+function calcBonus(level: number, per: number) {
+  return toInt(level) * Number(per || 0)
+}
+function isBagPetLike(p: unknown): p is BagPetLike {
+  return (
+    !!p && typeof p === 'object' && 'name' in (p as Record<string, unknown>)
+  )
+}
+function getLevel(p: BagPetLike): number {
+  return toInt(p.等级, 1)
+}
+function getPer(p: BagPetLike): number | undefined {
+  const v = Number(p.每级增加)
+  return Number.isFinite(v) ? v : undefined
+}
+
+// 兼容 Player.仙宠 计算等级 (部分旧数据无等级字段)
+function getPlayerPetLevel(
+  p: XianchongInfo | (XianchongInfo & { 等级?: number })
+): number {
+  if (typeof (p as { 等级?: unknown }).等级 === 'number')
+    return Math.trunc((p as { 等级: number }).等级)
+  return 1
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
-  if (!ifexistplay) return false
-  const player = await data.getData('player', usr_qq)
-  let name = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '')
-  const num = parseInt(name)
+  if (!(await data.existData('player', usr_qq))) return false
+  const player = (await data.getData('player', usr_qq)) as Player
+  if (!player || typeof player !== 'object') return false
+  if (!player.仙宠) player.仙宠 = { name: '', type: '', 加成: 0 }
+
+  let input = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '').trim()
+  if (!input) {
+    Send(Text('请在指令后附上仙宠名称或代号(>1000)'))
+    return false
+  }
+
   const najie = await readNajie(usr_qq)
-  if (num && num > 1000) {
-    try {
-      name = najie.仙宠[num - 1001].name
-    } catch {
+  if (!najie || !Array.isArray(najie.仙宠)) {
+    Send(Text('纳戒数据异常'))
+    return false
+  }
+
+  const code = toInt(input, NaN)
+  if (!Number.isNaN(code) && code > 1000) {
+    const idx = code - 1001
+    const targetUnknown: unknown = najie.仙宠[idx]
+    if (idx < 0 || idx >= najie.仙宠.length || !isBagPetLike(targetUnknown)) {
       Send(Text('仙宠代号输入有误!'))
       return false
     }
+    input = targetUnknown.name || input
   }
-  if (player.仙宠.灵魂绑定 == 1) {
-    Send(Text('你已经与' + player.仙宠.name + '绑定了灵魂,无法更换别的仙宠！'))
+
+  if (player.仙宠?.灵魂绑定 === 1 && player.仙宠.name !== input) {
+    Send(Text(`你已经与${player.仙宠.name}绑定了灵魂,无法更换别的仙宠！`))
     return false
   }
-  const thing = data.xianchon.find(item => item.name == name) //查找仙宠
-  if (!notUndAndNull(thing)) {
-    Send(Text('这方世界不存在' + name))
+
+  const petDef = (data.xianchon as PetDef[]).find(p => p.name === input)
+  if (!notUndAndNull(petDef)) {
+    Send(Text('这方世界不存在' + input))
     return false
   }
-  //放回
-  let last = 114514
-  for (let i = 0; najie.仙宠.length > i; i++) {
-    if (najie.仙宠[i].name == name) {
-      last = najie.仙宠[i]
-      break
-    }
-  }
-  if (last == 114514) {
-    Send(Text('你没有' + name))
+
+  const bagPetUnknown: unknown = najie.仙宠.find(
+    p => (p as NajieItem).name === input
+  )
+  if (!isBagPetLike(bagPetUnknown)) {
+    Send(Text('你没有' + input))
     return false
   }
-  if (notUndAndNull(player.仙宠.name)) {
-    await addPet(usr_qq, player.仙宠.name, 1, player.仙宠.等级)
+  const bagPet = bagPetUnknown
+
+  if (player.仙宠?.name === bagPet.name) {
+    Send(Text('该仙宠已在出战中'))
+    return false
   }
-  if (player.仙宠.type == '修炼') {
-    player.修炼效率提升 = player.修炼效率提升 - player.仙宠.加成
+
+  if (player.仙宠 && notUndAndNull(player.仙宠.name)) {
+    const oldLevel = getPlayerPetLevel(player.仙宠)
+    if (player.仙宠.type === '修炼')
+      player.修炼效率提升 -= Number(player.仙宠.加成 || 0)
+    if (player.仙宠.type === '幸运')
+      player.幸运 -= Number(player.仙宠.加成 || 0)
+    await addPet(usr_qq, player.仙宠.name, 1, oldLevel)
   }
-  if (player.仙宠.type == '幸运') {
-    player.幸运 = player.幸运 - player.仙宠.加成
+
+  const level = getLevel(bagPet)
+  const per = getPer(bagPet) ?? petDef.每级增加
+  const bonus = calcBonus(level, per)
+
+  const newPet: XianchongInfo & {
+    等级: number
+    每级增加: number
+    灵魂绑定?: number
+  } = {
+    name: input,
+    type: petDef.type,
+    加成: bonus,
+    等级: level,
+    每级增加: per,
+    灵魂绑定: bagPet.灵魂绑定
   }
-  player.仙宠 = last
-  player.仙宠.加成 = player.仙宠.等级 * player.仙宠.每级增加
-  if (last.type == '幸运') {
-    player.幸运 = player.幸运 + last.加成
-  }
-  if (last.type == '修炼') {
-    player.修炼效率提升 = player.修炼效率提升 + last.加成
-  }
-  //增减仙宠方法
-  await addPet(usr_qq, last.name, -1, last.等级)
-  await writePlayer(usr_qq, player) //写入
-  Send(Text('成功出战' + name))
+  player.仙宠 = newPet
+
+  if (newPet.type === '修炼') player.修炼效率提升 += newPet.加成
+  if (newPet.type === '幸运') player.幸运 += newPet.加成
+
+  await addPet(usr_qq, newPet.name, -1, newPet.等级)
+  await writePlayer(usr_qq, player)
+
+  Send(Text('成功出战' + newPet.name))
+  return false
 })

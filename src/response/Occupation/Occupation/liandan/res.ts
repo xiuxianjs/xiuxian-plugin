@@ -14,24 +14,59 @@ import {
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?炼制.*(\*[0-9]*)?$/
 
+// 类型声明（最小必要字段）
+interface DanfangMaterial {
+  name: string
+  amount: number
+}
+interface DanfangRecipe {
+  name: string
+  level_limit: number
+  materials: DanfangMaterial[]
+  exp: number[]
+}
+
+const MAX_BATCH = 999
+const SPECIAL_PILLS = new Set([
+  '神心丹',
+  '九阶淬体丹',
+  '九阶玄元丹',
+  '起死回生丹'
+])
+
+function toInt(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.trunc(n) : d
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
+  if (!(await existplayer(usr_qq))) return false
   const player = await readPlayer(usr_qq)
-  if (player.occupation != '炼丹师') {
+  if (!player) return false
+  if (player.occupation !== '炼丹师') {
     Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'))
     return false
   }
-  let t = e.MessageText.replace(/^(#|＃|\/)?炼制/, '').split('*')
-  if (+t <= 0) {
-    t = 1
+
+  const body = e.MessageText.replace(/^(#|＃|\/)?炼制/, '').trim()
+  if (!body) {
+    Send(Text('格式: 炼制丹药名*数量(数量可省略)'))
+    return false
   }
-  const danyao = t[0]
-  let n = await convert2integer(t[1])
-  let tmp_msg = ''
-  const danfang = data.danfang_list.find(item => item.name == danyao)
+  const seg = body
+    .split('*')
+    .map(s => s.trim())
+    .filter(Boolean)
+  const danyao = seg[0]
+  let n = toInt(await convert2integer(seg[1]), 1)
+  if (n <= 0) n = 1
+  if (n > MAX_BATCH) n = MAX_BATCH
+
+  const danfang = (data.danfang_list as unknown as DanfangRecipe[]).find(
+    item => item.name === danyao
+  )
   if (!notUndAndNull(danfang)) {
     Send(Text(`世界上没有丹药[${danyao}]的配方`))
     return false
@@ -40,73 +75,72 @@ export default onResponse(selects, async e => {
     Send(Text(`${danfang.level_limit}级炼丹师才能炼制${danyao}`))
     return false
   }
-  const materials = danfang.materials
-  const exp = danfang.exp
-  tmp_msg += '消耗'
-  for (const i in materials) {
-    const material = materials[i]
-    let x = await existNajieThing(usr_qq, material.name, '草药')
-    if (x == false) {
-      x = 0
-    }
-    if (x < material.amount * n) {
-      Send(
-        Text(
-          `纳戒中拥有${material.name}${x}份，炼制需要${material.amount * n}份`
-        )
-      )
+
+  const materials = danfang.materials || []
+  if (materials.length === 0) {
+    Send(Text('配方材料缺失'))
+    return false
+  }
+
+  // 材料校验
+  for (const m of materials) {
+    const have = (await existNajieThing(usr_qq, m.name, '草药')) || 0
+    const need = m.amount * n
+    if (have < need) {
+      Send(Text(`纳戒中拥有 ${m.name} x ${have}，炼制需要 ${need} 份`))
       return false
     }
   }
-  for (const i in materials) {
-    const material = materials[i]
-    tmp_msg += `${material.name}×${material.amount * n}，`
-    await addNajieThing(usr_qq, material.name, '草药', -material.amount * n)
+
+  // 扣材料 & 拼接消耗信息
+  const consumeParts: string[] = []
+  for (const m of materials) {
+    const need = m.amount * n
+    consumeParts.push(`${m.name}×${need}`)
+    await addNajieThing(usr_qq, m.name, '草药', -need)
   }
-  const total_exp = exp[1] * n
-  if (player.仙宠.type == '炼丹') {
-    const random = Math.random()
-    if (random < player.仙宠.加成) {
-      n *= 2
+  const consumeMsg = '消耗' + consumeParts.join('，')
+
+  // 经验（按原逻辑：未受倍数影响）
+  const baseExp = Array.isArray(danfang.exp) ? toInt(danfang.exp[1], 0) : 0
+  const totalExp = baseExp * n
+
+  // 仙宠加成：可能翻倍数量（不影响经验）
+  let finalQty = n
+  if (player.仙宠?.type === '炼丹') {
+    const rand = Math.random()
+    if (rand < (player.仙宠.加成 || 0)) {
+      finalQty *= 2
       Send(
-        Text(
-          '你的仙宠' + player.仙宠.name + '辅佐了你进行炼丹,成功获得了双倍丹药'
-        )
+        Text(`你的仙宠${player.仙宠.name}辅佐了你进行炼丹, 成功获得了双倍丹药`)
       )
     } else {
       Send(Text('你的仙宠只是在旁边看着'))
     }
   }
-  if (
-    danyao == '神心丹' ||
-    danyao == '九阶淬体丹' ||
-    danyao == '九阶玄元丹' ||
-    danyao == '起死回生丹'
-  ) {
-    await addNajieThing(usr_qq, danyao, '丹药', n)
-    Send(Text(`${tmp_msg}得到${danyao}${n}颗，获得炼丹经验${total_exp}`))
+
+  let resultMsg = ''
+  if (SPECIAL_PILLS.has(danyao)) {
+    await addNajieThing(usr_qq, danyao, '丹药', finalQty)
+    resultMsg = `${consumeMsg} 得到 ${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`
   } else {
-    const dengjixiuzheng = player.occupation_level
-    const newrandom = Math.random()
-    const newrandom2 = Math.random()
-    if (newrandom >= 0.1 + (dengjixiuzheng * 3) / 100) {
-      await addNajieThing(usr_qq, '凡品' + danyao, '丹药', n)
-      Send(
-        Text(`${tmp_msg}得到"凡品"${danyao}${n}颗，获得炼丹经验${total_exp}`)
-      )
+    const lvl = player.occupation_level
+    const r1 = Math.random()
+    const r2 = Math.random()
+    // 成品质量判定（保持原阈值公式）
+    if (r1 >= 0.1 + (lvl * 3) / 100) {
+      await addNajieThing(usr_qq, '凡品' + danyao, '丹药', finalQty)
+      resultMsg = `${consumeMsg} 得到 "凡品"${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`
+    } else if (r2 >= 0.4) {
+      await addNajieThing(usr_qq, '极品' + danyao, '丹药', finalQty)
+      resultMsg = `${consumeMsg} 得到 "极品"${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`
     } else {
-      if (newrandom2 >= 0.4) {
-        await addNajieThing(usr_qq, '极品' + danyao, '丹药', n)
-        Send(
-          Text(`${tmp_msg}得到"极品"${danyao}${n}颗，获得炼丹经验${total_exp}`)
-        )
-      } else {
-        await addNajieThing(usr_qq, '仙品' + danyao, '丹药', n)
-        Send(
-          Text(`${tmp_msg}得到"仙品"${danyao}${n}颗，获得炼丹经验${total_exp}`)
-        )
-      }
+      await addNajieThing(usr_qq, '仙品' + danyao, '丹药', finalQty)
+      resultMsg = `${consumeMsg} 得到 "仙品"${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`
     }
   }
-  await addExp4(usr_qq, total_exp)
+
+  await addExp4(usr_qq, totalExp)
+  Send(Text(resultMsg))
+  return false
 })

@@ -1,6 +1,6 @@
 import { Text, Image, useSend } from 'alemonjs'
 
-import { data, puppeteer } from '@src/model/api'
+import { data } from '@src/model/api'
 import { getString, userKey } from '@src/model/utils/redisHelper'
 import {
   readAction,
@@ -18,6 +18,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?探查.*$/
 
 export default onResponse(selects, async e => {
@@ -97,7 +98,9 @@ export default onResponse(selects, async e => {
   }
   const didian_data = { name: shop[i].name, level, state, thing }
 
-  const img = await puppeteer.screenshot('shop', e.UserId, didian_data)
-  if (img) Send(Image(img))
+  const img = await screenshot('shop', e.UserId, didian_data)
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
   return false
 })

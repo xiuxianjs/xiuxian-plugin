@@ -13,7 +13,7 @@
     "dev": "npx lvy dev",
     "view": "npx lvy dev --jsxp",
     "build": "lvy build",
-    "eslint": "eslint src --ext .ts,.tsx,.js --cache --cache-location .eslintcache",
+    "eslint": "eslint src --fix",
     "format": "prettier --write .",
     "check-format": "git diff --exit-code",
     "lint:staged": "git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",

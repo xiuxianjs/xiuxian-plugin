@@ -13,5 +13,7 @@ export default onResponse(selects, async e => {
   const data = await Help.get()
   if (!data) return false
   const img = await cache(data, e.UserId)
-  if (img) Send(Image(img))
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

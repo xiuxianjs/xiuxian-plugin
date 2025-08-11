@@ -14,45 +14,72 @@ export const regular = /^(#|＃|\/)?悬赏.*$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const player = await readPlayer(usr_qq)
-  let qq = e.MessageText.replace(/^(#|＃|\/)?悬赏/, '')
-  const code = qq.split('*')
-  qq = code[0]
-  let money = await convert2integer(code[1])
-  if (money < 300000) {
-    money = 300000
+  if (!(await existplayer(usr_qq))) {
+    Send(Text('尚无存档'))
+    return false
   }
-  if (player.灵石 < money) {
+  const player = await readPlayer(usr_qq)
+  if (!player) {
+    Send(Text('玩家数据读取失败'))
+    return false
+  }
+  const rest = e.MessageText.replace(/^(#|＃|\/)?悬赏/, '').trim()
+  if (!rest) {
+    Send(Text('格式: 悬赏qq号*金额 (例:#悬赏123456*300000)'))
+    return false
+  }
+  const code = rest.split('*')
+  const targetQQ = code[0].trim()
+  if (!/^\d{5,}$/.test(targetQQ)) {
+    Send(Text('目标QQ格式不正确'))
+    return false
+  }
+  let money = await convert2integer(code[1])
+  if (!Number.isFinite(money)) money = 0
+  const MIN_BOUNTY = 300000
+  if (money < MIN_BOUNTY) money = MIN_BOUNTY
+  if (money > 1000000000) money = 1000000000
+
+  if ((player.灵石 || 0) < money) {
     Send(Text('您手头这点灵石,似乎在说笑'))
     return false
   }
-  let player_B
-  try {
-    player_B = await readPlayer(qq)
-  } catch {
-    Send(Text('世间没有这人')) //查无此人
+
+  if (!(await existplayer(targetQQ))) {
+    Send(Text('世间没有这人'))
     return false
   }
-  const arr = { 名号: player_B.名号, QQ: qq, 赏金: money }
-  let action = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
-  action = await JSON.parse(action)
-  if (action != null) {
-    action.push(arr)
-  } else {
-    action = []
-    action.push(arr)
+  const player_B = await readPlayer(targetQQ)
+  if (!player_B) {
+    Send(Text('查询目标玩家数据失败'))
+    return false
   }
-  player.灵石 -= money
+
+  const bountyRecord = { 名号: player_B.名号, QQ: targetQQ, 赏金: money }
+  const actionKey = 'xiuxian@1.3.0:1:shangjing'
+  const raw = await redis.get(actionKey)
+  let list: Array<{ 名号: string; QQ: string; 赏金: number }> = []
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed))
+        list = parsed.filter(v => v && typeof v === 'object')
+    } catch {
+      list = []
+    }
+  }
+  list.push(bountyRecord)
+
+  player.灵石 = (player.灵石 || 0) - money
   await writePlayer(usr_qq, player)
+  await redis.set(actionKey, JSON.stringify(list))
+
   Send(Text('悬赏成功!'))
-  let msg = ''
-  msg += '【全服公告】' + player_B.名号 + '被悬赏了' + money + '灵石'
+  const msg = `【全服公告】${player_B.名号}被悬赏了${money}灵石`
   const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
     pushInfo(group, true, msg)
   }
-  await redis.set('xiuxian@1.3.0:' + 1 + ':shangjing', JSON.stringify(action))
+  return false
 })

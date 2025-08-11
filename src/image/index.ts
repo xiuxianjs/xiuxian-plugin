@@ -47,7 +47,7 @@ import zongmeng from '../resources/html/zongmeng/zongmeng'
 import updateRecord from '../resources/html/updateRecord/updateRecord'
 import BlessPlace from '../resources/html/BlessPlace/BlessPlace'
 import jindi from '../resources/html/jindi/jindi'
- 
+
 const map = {
   adminset,
   association,
@@ -98,6 +98,15 @@ const map = {
   BlessPlace,
   jindi
 }
+
+export async function screenshot(
+  name: keyof typeof map,
+  uid: number | string,
+  data
+) {
+  return await renderComponentToBuffer(`data/${name}/${uid}`, map[name], data)
+}
+
 class Pic {
   async screenshot(name: keyof typeof map, uid: number | string, data) {
     return await renderComponentToBuffer(`data/${name}/${uid}`, map[name], data)

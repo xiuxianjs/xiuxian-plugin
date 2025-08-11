@@ -1,5 +1,5 @@
 import { Text, useSend, Image } from 'alemonjs'
-import puppeteer from '@src/image/index.js'
+import { screenshot } from '@src/image/index.js'
 import { data } from '@src/model/api'
 import { selects } from '@src/response/index'
 
@@ -7,7 +7,7 @@ export const regular = /^(#|＃|\/)?更新日志$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  const image = await puppeteer.screenshot('updateRecord', e.UserId, {
+  const image = await screenshot('updateRecord', e.UserId, {
     Record: data.updateRecord
   })
   if (!image) {

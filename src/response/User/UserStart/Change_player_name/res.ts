@@ -8,97 +8,104 @@ import {
 } from '@src/model/index'
 import { Show_player } from '../user'
 import { selects } from '@src/response/index'
+import type { Player } from '@src/types'
 
 export const regular = /^(#|＃|\/)?(改名|设置道宣).*$/
-
-// 切割正则
 const regularCut = /^(#|＃|\/)?(改名|设置道宣)/
+
+interface DateStruct {
+  Y: number
+  M: number
+  D: number
+}
+async function getDayStruct(ts: unknown): Promise<DateStruct | null> {
+  const n = Number(ts)
+  if (!Number.isFinite(n) || n <= 0) return null
+  try {
+    return (await shijianc(n)) as DateStruct
+  } catch {
+    return null
+  }
+}
+function sameDay(a: DateStruct | null, b: DateStruct | null) {
+  return !!a && !!b && a.Y === b.Y && a.M === b.M && a.D === b.D
+}
+function cleanInput(raw: string) {
+  return raw.replace(regularCut, '').replace(/\s+/g, '').replace(/\+/g, '')
+}
+function isMessageEvent(ev: unknown): ev is Parameters<typeof Show_player>[0] {
+  return !!ev && typeof ev === 'object' && 'MessageText' in ev
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return
-  if (/改名/.test(e.MessageText)) {
-    let new_name = e.MessageText.replace(regularCut, '')
-    new_name = new_name.replace(' ', '')
-    new_name = new_name.replace('+', '')
-    if (new_name.length == 0) {
+  if (!(await existplayer(usr_qq))) return false
+
+  const isRename = /改名/.test(e.MessageText)
+  const raw = cleanInput(e.MessageText)
+  if (isRename) {
+    if (raw.length === 0) {
       Send(Text('改名格式为:【#改名张三】请输入正确名字'))
-      return
-    } else if (new_name.length > 8) {
+      return false
+    }
+    if (raw.length > 8) {
       Send(Text('玩家名字最多八字'))
-      return
+      return false
     }
-    let player = {}
-    const now = new Date()
-    const nowTime = now.getTime() //获取当前日期的时间戳
-    //let Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000);//获得昨天日期
-    const Today = await shijianc(nowTime)
-    let lastsetname_time = await redis.get(
-      'xiuxian@1.3.0:' + usr_qq + ':last_setname_time'
-    ) //获得上次改名日期,
-    lastsetname_time = parseInt(lastsetname_time)
-    lastsetname_time = await shijianc(lastsetname_time)
-    if (
-      Today.Y == lastsetname_time.Y &&
-      Today.M == lastsetname_time.M &&
-      Today.D == lastsetname_time.D
-    ) {
+
+    const now = Date.now()
+    const today = (await shijianc(now)) as DateStruct
+    const lastKey = `xiuxian@1.3.0:${usr_qq}:last_setname_time`
+    const lastRaw = await redis.get(lastKey)
+    const lastStruct = await getDayStruct(lastRaw)
+    if (sameDay(today, lastStruct)) {
       Send(Text('每日只能改名一次'))
-      return
+      return false
     }
-    player = await readPlayer(usr_qq)
-    if (player.灵石 < 1000) {
-      Send(Text('改名需要1000灵石'))
-      return
+
+    const player = (await readPlayer(usr_qq)) as Player | null
+    if (!player) {
+      Send(Text('玩家数据异常'))
+      return false
     }
-    player.名号 = new_name
-    redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setname_time', nowTime) //redis设置本次改名时间戳
-    player.灵石 -= 1000
+    const cost = 1000
+    if (typeof player.灵石 !== 'number' || player.灵石 < cost) {
+      Send(Text(`改名需要${cost}灵石`))
+      return false
+    }
+    player.名号 = raw
+    player.灵石 -= cost
     await writePlayer(usr_qq, player)
-    //addCoin(usr_qq, -100);
-    Show_player(e)
-    return
+    await redis.set(lastKey, String(now))
+    if (isMessageEvent(e)) Show_player(e)
+    return false
   }
-  //设置道宣
-  else {
-    let new_msg = e.MessageText.replace(regularCut, '')
-    new_msg = new_msg.replace(' ', '')
-    new_msg = new_msg.replace('+', '')
-    if (new_msg.length == 0) {
-      return
-    } else if (new_msg.length > 50) {
-      Send(Text('道宣最多50字符'))
-      return
-    }
-    let player = {}
-    const now = new Date()
-    const nowTime = now.getTime() //获取当前日期的时间戳
-    //let Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000);//获得昨天日期
-    //
-    const Today = await shijianc(nowTime)
-    let lastsetxuanyan_time = await redis.get(
-      'xiuxian@1.3.0:' + usr_qq + ':last_setxuanyan_time'
-    )
-    //获得上次改道宣日期,
-    lastsetxuanyan_time = parseInt(lastsetxuanyan_time)
-    lastsetxuanyan_time = await shijianc(lastsetxuanyan_time)
-    if (
-      Today.Y == lastsetxuanyan_time.Y &&
-      Today.M == lastsetxuanyan_time.M &&
-      Today.D == lastsetxuanyan_time.D
-    ) {
-      Send(Text('每日仅可更改一次'))
-      return
-    }
-    //这里有问题，写不进去
-    player = await readPlayer(usr_qq)
-    player.宣言 = new_msg //
-    redis.set('xiuxian@1.3.0:' + usr_qq + ':last_setxuanyan_time', nowTime) //redis设置本次设道置宣时间戳
-    await writePlayer(usr_qq, player)
-    Show_player(e)
-    return
+  // 设置道宣
+  if (raw.length === 0) return false
+  if (raw.length > 50) {
+    Send(Text('道宣最多50字符'))
+    return false
   }
+
+  const now = Date.now()
+  const today = (await shijianc(now)) as DateStruct
+  const lastKey = `xiuxian@1.3.0:${usr_qq}:last_setxuanyan_time`
+  const lastRaw = await redis.get(lastKey)
+  const lastStruct = await getDayStruct(lastRaw)
+  if (sameDay(today, lastStruct)) {
+    Send(Text('每日仅可更改一次'))
+    return false
+  }
+
+  const player = (await readPlayer(usr_qq)) as Player | null
+  if (!player) {
+    Send(Text('玩家数据异常'))
+    return false
+  }
+  player.宣言 = raw
+  await writePlayer(usr_qq, player)
+  await redis.set(lastKey, String(now))
+  if (isMessageEvent(e)) Show_player(e)
+  return false
 })

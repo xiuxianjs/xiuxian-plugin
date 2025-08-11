@@ -12,107 +12,142 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?出售.*$/
+export const regular = /^(#|＃|\/)?出售\S+(?:\*\S+){0,2}$/
+
+// 辅助
+function toInt(v: unknown, def = 0): number {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.floor(n) : def
+}
+const PINJI_MAP: Record<string, number> = {
+  劣: 0,
+  普: 1,
+  优: 2,
+  精: 3,
+  极: 4,
+  绝: 5,
+  顶: 6
+}
+function parsePinji(raw: string | undefined): number | undefined {
+  if (!raw) return undefined
+  if (raw in PINJI_MAP) return PINJI_MAP[raw]
+  const n = Number(raw)
+  return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  //命令判断
-  const thing = e.MessageText.replace(/^(#|＃|\/)?出售/, '')
-  const code = thing.split('*')
-  let thing_name = code[0] //物品
-  code[0] = parseInt(code[0])
-  let thing_amount = code[1] //数量
-  let thing_piji
-  //判断列表中是否存在，不存在不能卖,并定位是什么物品
+  if (!(await existplayer(usr_qq))) return false
+
   const najie = await readNajie(usr_qq)
-  if (code[0]) {
-    if (code[0] > 1000) {
-      try {
-        thing_name = najie.仙宠[code[0] - 1001].name
-      } catch {
-        Send(Text('仙宠代号输入有误!'))
-        return false
-      }
-    } else if (code[0] > 100) {
-      try {
-        thing_name = najie.装备[code[0] - 101].name
-        code[1] = najie.装备[code[0] - 101].pinji
-      } catch {
-        Send(Text('装备代号输入有误!'))
-        return false
-      }
-    }
-  }
-  const thing_exist = await foundthing(thing_name)
-  if (!thing_exist) {
-    Send(Text(`这方世界没有[${thing_name}]`))
+  if (!najie) return false
+
+  // 提取命令部分（去前缀）
+  const raw = e.MessageText.replace(/^(#|＃|\/)?出售/, '').trim()
+  if (!raw) {
+    Send(
+      Text(
+        '格式：出售 物品名*(品级)*数量  例如: 出售 血气丹*10 / 出售 斩仙剑*优*1'
+      )
+    )
     return false
   }
-  const pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
-  thing_piji = pj[code[1]]
-  if (thing_exist.class == '装备') {
-    if (thing_piji) {
-      thing_amount = code[2]
+  const segs = raw
+    .split('*')
+    .map(s => s.trim())
+    .filter(Boolean)
+  if (!segs.length) {
+    Send(Text('未检测到物品名'))
+    return false
+  }
+
+  let thingName = segs[0]
+
+  // 支持数字代号：>1000 仙宠；>100 装备
+  const codeNum = Number(segs[0])
+  if (Number.isInteger(codeNum)) {
+    try {
+      if (codeNum > 1000)
+        thingName = najie.仙宠[codeNum - 1001]?.name || thingName
+      else if (codeNum > 100)
+        thingName = najie.装备[codeNum - 101]?.name || thingName
+    } catch {
+      Send(Text('代号解析失败'))
+      return false
+    }
+  }
+
+  const thingDef = await foundthing(thingName)
+  if (!thingDef) {
+    Send(Text(`这方世界没有[${thingName}]`))
+    return false
+  }
+  const itemClass = String(
+    (thingDef as Record<string, unknown>).class || '道具'
+  ) as Parameters<typeof addNajieThing>[2]
+
+  // 解析品级与数量
+  let pinji: number | undefined
+  let amountStr: string | undefined
+  if (itemClass === '装备') {
+    // 可能格式： 名称*品级*数量 或 名称*数量
+    const maybePinji = parsePinji(segs[1])
+    if (maybePinji !== undefined) {
+      pinji = maybePinji
+      amountStr = segs[2]
     } else {
-      let equ = najie.装备.find(item => item.name == thing_name)
-      if (!equ) {
-        Send(Text(`你没有[${thing_name}]这样的${thing_exist.class}`))
-        return false
-      }
-      for (const i of najie.装备) {
-        //遍历列表有没有比那把强的
-        if (i.name == thing_name && i.pinji < equ.pinji) {
-          equ = i
-        }
-      }
-      thing_piji = equ.pinji
+      amountStr = segs[1]
     }
+  } else {
+    amountStr = segs[1]
   }
-  thing_amount = await convert2integer(thing_amount)
-  const x = await existNajieThing(
-    usr_qq,
-    thing_name,
-    thing_exist.class,
-    thing_piji
-  )
-  //判断戒指中是否存在
-  if (!x) {
-    //没有
-    Send(Text(`你没有[${thing_name}]这样的${thing_exist.class}`))
+
+  let amount = await convert2integer(amountStr)
+  if (!amount || amount <= 0) amount = 1
+
+  // 装备 / 仙宠 默认数量为 1
+  if ((itemClass === '装备' || itemClass === '仙宠') && amount !== 1) {
+    amount = 1
+  }
+
+  // 若装备未指定品级，自动选择最高品级实例
+  if (itemClass === '装备' && pinji === undefined) {
+    const allEqu = (najie.装备 || []).filter(i => i.name === thingName)
+    if (!allEqu.length) {
+      Send(Text(`你没有[${thingName}]`))
+      return false
+    }
+    const best = allEqu.reduce((p, c) =>
+      toInt(c.pinji) > toInt(p.pinji) ? c : p
+    )
+    pinji = toInt(best.pinji, 0)
+  }
+
+  // 数量存在性校验
+  const owned = await existNajieThing(usr_qq, thingName, itemClass, pinji)
+  if (!owned || owned < amount) {
+    Send(Text(`你只有[${thingName}]*${owned || 0}`))
     return false
   }
-  //判断戒指中的数量
-  if (x < thing_amount) {
-    //不够
-    Send(Text(`你目前只有[${thing_name}]*${x}`))
-    return false
-  }
-  //数量够,数量减少,灵石增加
-  await addNajieThing(
-    usr_qq,
-    thing_name,
-    thing_exist.class,
-    -thing_amount,
-    thing_piji
-  )
-  let commodities_price
-  commodities_price = thing_exist.出售价 * thing_amount
-  if (data.zalei.find(item => item.name == thing_name.replace(/[0-9]+/g, ''))) {
-    const sell = najie.装备.find(
-      item => item.name == thing_name && thing_piji == item.pinji
+
+  // 扣除物品
+  await addNajieThing(usr_qq, thingName, itemClass, -amount, pinji)
+
+  // 价格计算：基础出售价 * 数量；若在杂类中且是装备需按背包装备条目出售价
+  let price = toInt((thingDef as Record<string, unknown>)['出售价']) * amount
+  if (data.zalei.find(it => it.name === thingName.replace(/[0-9]+/g, ''))) {
+    // 在 najie 中查找对应品级的装备
+    const sel = (najie.装备 || []).find(
+      i => i.name === thingName && toInt(i.pinji) === (pinji ?? 0)
     )
-    commodities_price = sell.出售价 * thing_amount
+    if (sel) price = toInt(sel.出售价) * amount
   }
-  await addCoin(usr_qq, commodities_price)
-  Send(
-    Text(
-      `出售成功!  获得${commodities_price}灵石,还剩余${thing_name}*${
-        x - thing_amount
-      } `
-    )
-  )
+  if (price <= 0) price = 1
+  await addCoin(usr_qq, price)
+
+  const remain =
+    (await existNajieThing(usr_qq, thingName, itemClass, pinji)) || 0
+  Send(Text(`出售成功! 获得${price}灵石, 剩余 ${thingName}*${remain}`))
+  return false
 })

@@ -5,69 +5,68 @@ import { plant_jiesuan } from '../../api'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?结束采药$/
 
+interface PlantAction {
+  action: string
+  time: number
+  end_time: number
+  plant?: {
+    name: string
+    start: number
+    duration: number
+    [k: string]: unknown
+  }
+  is_jiesuan?: number
+  shutup?: number
+  working?: number
+  power_up?: number
+  Place_action?: number
+  group_id?: unknown
+  [k: string]: unknown
+}
+
+function calcEffectiveMinutes(
+  start: number,
+  end: number,
+  now: number,
+  slot = 15,
+  maxSlots = 48
+) {
+  let minutes: number
+  if (end > now) {
+    minutes = Math.floor((now - start) / 60000)
+  } else {
+    minutes = Math.floor((end - start) / 60000)
+  }
+  if (minutes < slot) return 0
+  const full = Math.min(Math.floor(minutes / slot), maxSlots)
+  return full * slot
+}
+
 export default onResponse(selects, async e => {
-  const action = await getPlayerAction(e.UserId)
-  if (action.action == '空闲') return
+  const raw = (await getPlayerAction(e.UserId)) as PlantAction | null
+  if (!raw) return false
+  if (raw.action === '空闲') return false
 
-  if (action.plant == 1) {
-    return false
-  }
-  //结算
-  const end_time = action.end_time
-  const start_time = action.end_time - action.time
-  const now_time = Date.now()
-  let time
-  const y = 15 //固定时间
-  const x = 48 //循环次数
+  // 若已结算（通过自定义 is_jiesuan 标志）直接返回
+  if (raw.is_jiesuan === 1) return false
 
-  if (end_time > now_time) {
-    //属于提前结束
-    time = Math.floor((Date.now() - start_time) / 1000 / 60)
+  const start_time = raw.end_time - raw.time
+  const now = Date.now()
+  const effective = calcEffectiveMinutes(start_time, raw.end_time, now)
 
-    //超过就按最低的算，即为满足30分钟才结算一次
-    //如果是 >=16*33 ----   >=30
-    for (let i = x; i > 0; i--) {
-      if (time >= y * i) {
-        time = y * i
-        break
-      }
-    }
-    //如果<15，不给收益
-    if (time < y) {
-      time = 0
-    }
-  } else {
-    //属于结束了未结算
-    time = Math.floor(action.time / 1000 / 60)
-    //超过就按最低的算，即为满足30分钟才结算一次
-    //如果是 >=16*33 ----   >=30
+  if (e.name === 'message.create')
+    await plant_jiesuan(e.UserId, effective, e.ChannelId)
+  else await plant_jiesuan(e.UserId, effective)
 
-    for (let i = x; i > 0; i--) {
-      if (time >= y * i) {
-        time = y * i
-        break
-      }
-    }
-    //如果<15，不给收益
-    if (time < y) {
-      time = 0
-    }
-  }
-
-  if (e.name === 'message.create') {
-    await plant_jiesuan(e.UserId, time, e.ChannelId)
-  } else {
-    await plant_jiesuan(e.UserId, time)
-  }
-  const arr = action
-  arr.is_jiesuan = 1 //结算状态
-  arr.plant = 1 //采药状态
-  arr.shutup = 1 //闭关状态
-  arr.working = 1 //降妖状态
-  arr.power_up = 1 //渡劫状态
-  arr.Place_action = 1 //秘境
-  //结束的时间也修改为当前时间
-  arr.end_time = Date.now()
-  delete arr.group_id //结算完去除group_id
-  await redis.set('xiuxian@1.3.0:' + e.UserId + ':action', JSON.stringify(arr))
+  const next: PlantAction = { ...raw }
+  next.is_jiesuan = 1
+  next.plant = 1 as unknown as PlantAction['plant']
+  next.shutup = 1
+  next.working = 1
+  next.power_up = 1
+  next.Place_action = 1
+  next.end_time = Date.now()
+  delete (next as Record<string, unknown>).group_id
+  await redis.set(`xiuxian@1.3.0:${e.UserId}:action`, JSON.stringify(next))
+  return false
 })

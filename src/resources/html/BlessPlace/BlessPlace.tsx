@@ -73,8 +73,10 @@ const SecretPlace = ({ didian_list }) => {
                   </div>
                   <div className="use_data_body">
                     <div className="user_font">
-                        福地等级: {item.level}<br/>
-                        修炼效率: {item.efficiency}<br/>
+                      福地等级: {item.level}
+                      <br />
+                      修炼效率: {item.efficiency}
+                      <br />
                       <div></div>
                     </div>
                   </div>

@@ -1,6 +1,5 @@
-import { puppeteer } from '@src/model/api'
+import { screenshot } from '@src/image'
 import { mkdirSync, writeFileSync } from 'fs'
-// import { writeFileSync } from 'fs'
 import md5 from 'md5'
 
 const helpData = {
@@ -15,7 +14,7 @@ export async function cache(data, user_id) {
     mkdirSync(dir, { recursive: true })
     writeFileSync(`${dir}/help.json`, JSON.stringify(data, null, 2))
   }
-  helpData.img = await puppeteer.screenshot('help', user_id, data)
+  helpData.img = await screenshot('help', user_id, data)
   helpData.md5 = tmp
   return helpData.img
 }

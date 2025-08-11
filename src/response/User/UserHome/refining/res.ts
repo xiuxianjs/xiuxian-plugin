@@ -8,44 +8,80 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?打磨.*$/
+export const regular = /^(#|＃|\/)?打磨\S+\*\S+$/
+
+const PINJI_MAP: Record<string, number> = {
+  劣: 0,
+  普: 1,
+  优: 2,
+  精: 3,
+  极: 4,
+  绝: 5,
+  顶: 6
+}
+function parsePinji(raw: string | undefined): number | undefined {
+  if (!raw) return undefined
+  if (raw in PINJI_MAP) return PINJI_MAP[raw]
+  const n = Number(raw)
+  return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  //固定写法
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  let thing_name = e.MessageText.replace(/^(#|＃|\/)?打磨/, '')
-  const code = thing_name.split('*')
-  thing_name = code[0]
-  const thing_exist = await foundthing(thing_name)
-  if (!thing_exist) {
-    Send(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`))
+  if (!(await existplayer(usr_qq))) return false
+
+  const raw = e.MessageText.replace(/^(#|＃|\/)?打磨/, '').trim()
+  const parts = raw
+    .split('*')
+    .map(s => s.trim())
+    .filter(Boolean)
+  if (parts.length < 2) {
+    Send(Text('格式：打磨 装备名*品级 例：打磨 斩仙剑*优'))
     return false
   }
-  let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
-  pj = pj[code[1]]
-  if (
-    pj > 5 ||
-    (thing_exist.atk < 10 && thing_exist.def < 10 && thing_exist.HP < 10)
-  ) {
-    Send(Text(`${thing_name}(${code[1]})不支持打磨`))
+  const thingName = parts[0]
+  const pinjiInput = parsePinji(parts[1])
+  if (pinjiInput === undefined) {
+    Send(Text(`未知品级：${parts[1]}`))
     return false
   }
+  // 最高品级顶(6)不可再打磨
+  if (pinjiInput >= 6) {
+    Send(Text(`${thingName}(${parts[1]})已是最高品级，无法继续打磨`))
+    return false
+  }
+
+  const thingDef = await foundthing(thingName)
+  if (!thingDef) {
+    Send(Text(`你在瞎说啥呢? 哪来的【${thingName}】?`))
+    return false
+  }
+  // 仅允许有基础数值的装备打磨（任一 >=10 即可）
+  const atk = Number((thingDef as Record<string, unknown>).atk || 0)
+  const def = Number((thingDef as Record<string, unknown>).def || 0)
+  const hp = Number((thingDef as Record<string, unknown>).HP || 0)
+  if (atk < 10 && def < 10 && hp < 10) {
+    Send(Text(`${thingName}(${parts[1]})不支持打磨`))
+    return false
+  }
+
   const najie = await readNajie(usr_qq)
-  let x = 0
-  for (const i of najie['装备']) {
-    if (i.name == thing_name && i.pinji == pj) x++
-  }
-  if (x < 3) {
-    Send(Text(`你只有${thing_name}(${code[1]})x${x}`))
+  if (!najie) return false
+  const equips = (najie.装备 || []).filter(
+    i => i.name === thingName && (i.pinji ?? -1) === pinjiInput
+  )
+  const count = equips.length
+  if (count < 3) {
+    Send(
+      Text(`需要同品级装备 3 件，你只有 ${thingName}(${parts[1]}) x${count}`)
+    )
     return false
   }
-  //都通过了
-  for (let i = 0; i < 3; i++)
-    await addNajieThing(usr_qq, thing_name, '装备', -1, pj)
-  await addNajieThing(usr_qq, thing_name, '装备', 1, pj + 1)
-  Send(Text('打磨成功获得' + thing_name))
+
+  // 扣除 3 件，增加下一品级 1 件
+  await addNajieThing(usr_qq, thingName, '装备', -3, pinjiInput)
+  await addNajieThing(usr_qq, thingName, '装备', 1, pinjiInput + 1)
+  Send(Text(`打磨成功！${thingName} 品级 ${parts[1]} -> ${pinjiInput + 1}`))
+  return false
 })

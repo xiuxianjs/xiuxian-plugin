@@ -1,7 +1,6 @@
 import config from './Config'
 import data from './XiuxianData'
 import { getIoRedis } from '@alemonjs/db'
-import puppeteer from '@src/image/index'
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
 import type {
   AnyIncomingEvent,
@@ -21,7 +20,7 @@ export const verc = ({
 }): boolean => {
   const { whitecrowd, blackid } = config.getConfig(
     'parameter',
-    'namelist'
+    'xiuxian'
   ) as NameListConfig
   if (
     Array.isArray(whitecrowd) &&
@@ -32,7 +31,7 @@ export const verc = ({
   return true
 }
 
-export { data, config, puppeteer }
+export { data, config }
 
 /**
  *

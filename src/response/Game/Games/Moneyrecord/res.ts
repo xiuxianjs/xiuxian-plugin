@@ -1,36 +1,35 @@
-import { Image, useSend } from 'alemonjs'
+import { Image, useSend, Text } from 'alemonjs'
 
-import { data, puppeteer } from '@src/model/api'
-import { notUndAndNull } from '@src/model/index'
+import { data } from '@src/model/api'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?金银坊记录$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const qq = e.UserId
-  let shenglv: string | number
-  //获取人物信息
-  const player_data = await data.getData('player', qq)
-  const victory = notUndAndNull(player_data.金银坊胜场)
-    ? player_data.金银坊胜场
-    : 0
-  const victory_num = notUndAndNull(player_data.金银坊收入)
-    ? player_data.金银坊收入
-    : 0
-  const defeated = notUndAndNull(player_data.金银坊败场)
-    ? player_data.金银坊败场
-    : 0
-  const defeated_num = notUndAndNull(player_data.金银坊支出)
-    ? player_data.金银坊支出
-    : 0
-  if (parseInt(victory) + parseInt(defeated) == 0) {
-    shenglv = 0
-  } else {
-    shenglv = ((victory / (victory + defeated)) * 100).toFixed(2)
-  }
 
-  const img = await puppeteer.screenshot('moneyCheck', e.UserId, {
+  const player_raw = await data.getData('player', qq)
+  if (!player_raw || player_raw === 'error' || Array.isArray(player_raw)) {
+    return false
+  }
+  const player_data = player_raw as Record<string, unknown>
+
+  const toNum = (v: unknown): number => {
+    const n = Number(v)
+    return Number.isFinite(n) ? n : 0
+  }
+  const victory = toNum(player_data.金银坊胜场)
+  const victory_num = toNum(player_data.金银坊收入)
+  const defeated = toNum(player_data.金银坊败场)
+  const defeated_num = toNum(player_data.金银坊支出)
+
+  const totalRounds = victory + defeated
+  const shenglv =
+    totalRounds > 0 ? ((victory / totalRounds) * 100).toFixed(2) : '0'
+
+  const img = await screenshot('moneyCheck', e.UserId, {
     user_qq: qq,
     victory,
     victory_num,
@@ -38,5 +37,10 @@ export default onResponse(selects, async e => {
     defeated_num,
     shenglv
   })
-  if (img) Send(Image(img))
+  if (!img) {
+    Send(Text('生成记录失败'))
+    return false
+  }
+  Send(Image(img))
+  return false
 })

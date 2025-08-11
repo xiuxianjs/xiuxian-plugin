@@ -20,23 +20,35 @@ import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 
 import { selects } from '@src/response/index'
 import { setDataByUserId } from '@src/model/Redis'
+import type { Player } from '@src/types'
 export const regular = /^(#|＃|\/)?洗劫.*$/
+
+interface ShopItemLite {
+  name: string
+  price?: number
+  Grade?: number
+  state?: number
+  [k: string]: unknown
+}
+function isShopItem(v: unknown): v is ShopItemLite {
+  return !!v && typeof v === 'object' && 'name' in v
+}
+const num = (v: unknown, d = 0) => {
+  const n = Number(v)
+  return Number.isFinite(n) ? n : d
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //查看存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
+  if (!(await existplayer(usr_qq))) return false
 
   const game_action = await getString(userKey(usr_qq, 'game_action'))
-  //防止继续其他娱乐行为
   if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
-  //查询redis中的人物动作
-  const now_time = Date.now()
+
   const current = await readAction(usr_qq)
   if (isActionRunning(current)) {
     Send(
@@ -46,38 +58,35 @@ export default onResponse(selects, async e => {
     )
     return false
   }
+
+  const now_time = Date.now()
   const lastxijie_raw = await redis.get(
     `xiuxian@1.3.0:${usr_qq}:lastxijie_time`
   )
   const lastxijie_time = lastxijie_raw ? parseInt(lastxijie_raw, 10) : 0
-  if (now_time < lastxijie_time + 7200000) {
-    const lastxijie_m = Math.trunc(
-      (lastxijie_time + 7200000 - now_time) / 60 / 1000
-    )
-    const lastxijie_s = Math.trunc(
-      ((lastxijie_time + 7200000 - now_time) % 60000) / 1000
-    )
-    Send(
-      Text(
-        `每120分钟洗劫一次，正在CD中，` +
-          `剩余cd: ${lastxijie_m}分${lastxijie_s}秒`
-      )
-    )
+  const cdMs = 120 * 60 * 1000 // 120 分钟
+  if (now_time < lastxijie_time + cdMs) {
+    const remain = lastxijie_time + cdMs - now_time
+    const m = Math.trunc(remain / 60000)
+    const s = Math.trunc((remain % 60000) / 1000)
+    Send(Text(`每120分钟洗劫一次，正在CD中，剩余cd: ${m}分${s}秒`))
     return false
   }
-  //判断是否在开启时段
+
   const Today = await shijianc(now_time)
   if (Today.h > 19 && Today.h < 21) {
-    Send(Text(`每日20-21点商店修整中,请过会再来`))
+    Send(Text('每日20-21点商店修整中,请过会再来'))
     return false
   }
-  let didian = e.MessageText.replace(/^(#|＃|\/)?洗劫/, '')
-  didian = didian.trim()
-  let shop
 
-  shop = await readShop()
-  if (shop.length === 0) {
-    // 将 ShopItem 转为 ShopData: 只保留 one 槽位, 其余保持空数组
+  const didian = e.MessageText.replace(/^(#|＃|\/)?洗劫/, '').trim()
+  if (!didian) {
+    Send(Text('请指定洗劫目标地点'))
+    return false
+  }
+
+  let shop = await readShop()
+  if (!Array.isArray(shop) || shop.length === 0) {
     const converted = data.shop_list.map(item => ({
       name: item.name,
       one: (item.one || []).map(g => ({ name: g.name, 数量: g.数量 }))
@@ -85,60 +94,65 @@ export default onResponse(selects, async e => {
     await writeShop(converted)
     shop = await readShop()
   }
-  let i
-  for (i = 0; i < shop.length; i++) {
-    if (shop[i].name == didian) {
-      break
-    }
-  }
-  if (i == shop.length) {
+
+  const index = shop.findIndex(s => isShopItem(s) && s.name === didian)
+  if (index === -1) return false
+  const target = shop[index]
+  if (!isShopItem(target)) {
+    Send(Text('目标商店数据异常'))
     return false
   }
-  if (shop[i].state == 1) {
-    Send(Text(didian + '已经戒备森严了,还是不要硬闯好了'))
+
+  const state = num(target.state)
+  if (state === 1) {
+    Send(Text(`${didian}已经戒备森严了,还是不要硬闯好了`))
     return false
   }
-  let msg = ''
-  const player = await readPlayer(usr_qq)
-  const Price = shop[i].price * shop[i].Grade
-  const buff = shop[i].Grade + 1
-  if (player.灵石 < Price) {
+
+  const player = (await readPlayer(usr_qq)) as Player | null
+  if (!player) {
+    Send(Text('玩家数据异常'))
+    return false
+  }
+
+  const grade = Math.max(1, num(target.Grade, 1))
+  const priceBase = num(target.price, 0)
+  const Price = priceBase * grade
+  const buff = grade + 1
+  if (num(player.灵石) < Price) {
     Send(Text('灵石不足,无法进行强化'))
     return false
-  } else {
-    player.灵石 -= Price
-    msg +=
-      '你消费了' +
-      Price +
-      '灵石,防御力和生命值提高了' +
-      Math.trunc((buff - buff / (1 + shop[i].Grade * 0.05)) * 100) +
-      '%'
   }
-  //开始准备洗劫
-  player.魔道值 += 25 * shop[i].Grade
+
+  player.灵石 = num(player.灵石) - Price
+  let msg = `你消费了${Price}灵石,防御力和生命值提高了${Math.trunc((buff - buff / (1 + grade * 0.05)) * 100)}%`
+
+  player.魔道值 = num(player.魔道值) + 25 * grade
   await writePlayer(usr_qq, player)
 
-  shop[i].state = 1
+  target.state = 1
   await writeShop(shop)
-  if (player.灵根 == null || player.灵根 == undefined) {
-    player.修炼效率提升 += 0
-  }
-  //锁定属性
+
+  const linggenRaw = player.灵根 as unknown
+  const linggen =
+    linggenRaw && typeof linggenRaw === 'object'
+      ? (linggenRaw as Record<string, unknown>)
+      : null
+  const faqiu = linggen ? num(linggen['法球倍率'], 0) : 0
+  const pRec = player as unknown as Record<string, unknown>
   const A_player = {
-    名号: player.名号,
-    攻击: parseInt(String(player.攻击), 10),
-    防御: Math.floor(player.防御 * buff),
-    当前血量: Math.floor(player.血量上限 * buff),
-    暴击率: player.暴击率,
-    灵根: player.灵根,
-    法球倍率: player.灵根.法球倍率,
-    魔值: 0
+    名号: String(pRec['名号'] ?? ''),
+    攻击: num(pRec['攻击']),
+    防御: Math.floor(num(pRec['防御']) * buff),
+    当前血量: Math.floor(num(pRec['血量上限']) * buff),
+    暴击率: num(pRec['暴击率']),
+    灵根: linggen || {},
+    法球倍率: faqiu,
+    魔值: num(pRec['魔道值']) > 999 ? 1 : 0
   }
-  if (player.魔道值 > 999) {
-    A_player.魔值 = 1
-  }
-  const time = 15 //时间（分钟）
-  const action_time = 60000 * time //持续时间，单位毫秒
+
+  const timeMin = 15
+  const action_time = timeMin * 60 * 1000
   const arr = await startAction(usr_qq, '洗劫', action_time, {
     shutup: '1',
     working: '1',
@@ -149,11 +163,12 @@ export default onResponse(selects, async e => {
     xijie: '0',
     plant: '1',
     mine: '1',
-    Place_address: shop[i],
-    A_player: A_player
+    Place_address: target,
+    A_player
   })
   await setValue(userKey(usr_qq, 'action'), arr)
   await setDataByUserId(usr_qq, 'lastxijie_time', now_time)
-  msg += '\n开始前往' + didian + ',祝你好运!'
+  msg += `\n开始前往${didian},祝你好运!`
   Send(Text(msg))
+  return false
 })

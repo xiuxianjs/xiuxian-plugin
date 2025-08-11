@@ -1,5 +1,5 @@
 // 通用玩家状态与工具函数抽离
-import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
+import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs'
 import { getDataByUserId } from './Redis.js'
 import { safeParse } from './utils/safe.js'
 import type { LastSignTime, PlayerActionData } from '../types/model'
@@ -64,7 +64,7 @@ export async function getPlayerAction(
   return { action: '空闲' }
 }
 
-export async function dataverification(e: PublicEventMessageCreate) {
+export async function dataverification(e: EventsMessageCreateEnum) {
   if (e.name !== 'message.create') return 1
   const usr_qq = e.UserId
   const { existplayer } = await import('./xiuxian.js')

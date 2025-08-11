@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
-import { existplayer, Harm, ifbaoji } from '@src/model/index'
+import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?炼神魄$/
@@ -9,123 +9,129 @@ export const regular = /^(#|＃|\/)?炼神魄$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const player = await await data.getData('player', usr_qq)
-  if (player.神魄段数 > 6000) {
+  if (!(await existplayer(usr_qq))) return false
+
+  const player = await readPlayer(usr_qq)
+  if (!player) {
+    Send(Text('玩家数据读取失败'))
+    return false
+  }
+
+  const layer = Number(player.神魄段数) || 0
+  if (layer > 6000) {
     Send(Text('已达到上限'))
     return false
   }
-  const 神魄段数 = player.神魄段数
-  //人数的万倍
-  const Health = 100000 * 神魄段数
-  //攻击
-  const Attack = 250000 * 神魄段数
-  //防御
-  const Defence = 200000 * 神魄段数
-  //奖励下降
-  let Reward = 1200 * 神魄段数
+
+  // BOSS（神魄段）属性计算
+  const Health = 100000 * layer
+  const Attack = 250000 * layer
+  const Defence = 200000 * layer
+  let Reward = 1200 * layer
   if (Reward > 400000) Reward = 400000
+  if (Reward < 0) Reward = 0
+
   const bosszt = {
-    Health: Health,
+    Health,
     OriginHealth: Health,
     isAngry: 0,
     isWeak: 0,
-    Attack: Attack,
-    Defence: Defence,
+    Attack,
+    Defence,
     KilledTime: -1,
-    Reward: Reward
+    Reward
   }
-  const Time = 2
-  const now_Time = Date.now() //获取当前时间戳
-  const shuangxiuTimeout = Math.floor(60000 * Time)
-  let last_time = await redis.get('xiuxian@1.3.0:' + usr_qq + 'CD') //获得上次的时间戳,
-  last_time = parseInt(last_time)
-  if (now_Time < last_time + shuangxiuTimeout) {
-    const Couple_m = Math.trunc(
-      (last_time + shuangxiuTimeout - now_Time) / 60 / 1000
-    )
-    const Couple_s = Math.trunc(
-      ((last_time + shuangxiuTimeout - now_Time) % 60000) / 1000
-    )
-    Send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
+
+  // CD（默认 2 分钟）
+  const CD_MIN = 2
+  const now = Date.now()
+  const cdKey = `xiuxian@1.3.0:${usr_qq}:dsc_cd`
+  const lastRaw = await redis.get(cdKey)
+  const lastNum = Number(lastRaw)
+  const cdMs = CD_MIN * 60 * 1000
+  if (Number.isFinite(lastNum) && now < lastNum + cdMs) {
+    const left = lastNum + cdMs - now
+    const m = Math.trunc(left / 60000)
+    const s = Math.trunc((left % 60000) / 1000)
+    Send(Text(`正在CD中，剩余cd: ${m}分 ${s}秒`))
     return false
   }
+
   let BattleFrame = 0
-  // TotalDamage 暂未使用，后续可用于统计
-  let _totalDamage = 0
-  const msg = []
-  let BOSSCurrentAttack = bosszt.isAngry
-    ? Math.trunc(bosszt.Attack * 1.8)
-    : bosszt.isWeak
-      ? Math.trunc(bosszt.Attack * 0.7)
-      : bosszt.Attack
-  let BOSSCurrentDefence = bosszt.isWeak
-    ? Math.trunc(bosszt.Defence * 0.7)
-    : bosszt.Defence
-  while (player.当前血量 > 0 && bosszt.Health > 0) {
+  let _totalDamage = 0 // 预留统计
+  const msg: string[] = []
+  const BOSSCurrentAttack = bosszt.Attack
+  const BOSSCurrentDefence = bosszt.Defence
+
+  while ((Number(player.当前血量) || 0) > 0 && bosszt.Health > 0) {
+    const Random = Math.random()
     if (!(BattleFrame & 1)) {
-      let Player_To_BOSS_Damage =
-        Harm(player.攻击, BOSSCurrentDefence) +
-        Math.trunc(player.攻击 * player.灵根.法球倍率)
-      const SuperAttack = 2 < player.暴击率 ? 1.5 : 1
+      // 玩家回合
+      let damage =
+        Harm(Number(player.攻击) || 0, BOSSCurrentDefence) +
+        Math.trunc(
+          (Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0)
+        )
+      const isCrit = Math.random() < (Number(player.暴击率) || 0)
+      const critMul = isCrit ? 1.5 : 1
       msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`)
-      if (BattleFrame == 0) {
+      if (BattleFrame === 0) {
         msg.push('你进入锻神池，开始了！')
-        Player_To_BOSS_Damage = 0
+        damage = 0
       }
-      Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * SuperAttack)
-      bosszt.Health -= Player_To_BOSS_Damage
-      _totalDamage += Player_To_BOSS_Damage
-      if (bosszt.Health < 0) {
-        bosszt.Health = 0
-      }
+      damage = Math.trunc(damage * critMul)
+      bosszt.Health -= damage
+      _totalDamage += damage
+      if (bosszt.Health < 0) bosszt.Health = 0
       msg.push(
-        `${player.名号}${ifbaoji(
-          SuperAttack
-        )}消耗了${Player_To_BOSS_Damage}，此段剩余${bosszt.Health}未炼化`
+        `${player.名号}${ifbaoji(critMul)}消耗了${damage}，此段剩余${bosszt.Health}未炼化`
       )
     } else {
-      const BOSS_To_Player_Damage = Harm(
+      // 反噬（BOSS回合）
+      let bossDamage = Harm(
         BOSSCurrentAttack,
-        Math.trunc(player.防御 * 0.1)
+        Math.trunc((Number(player.防御) || 0) * 0.1)
       )
-      player.当前血量 -= BOSS_To_Player_Damage
-      if (bosszt.isAngry) bosszt.isAngry--
-      if (bosszt.isWeak) bosszt.isWeak--
-      if (!bosszt.isAngry && BOSSCurrentAttack > bosszt.Attack)
-        BOSSCurrentAttack = bosszt.Attack
-      if (!bosszt.isWeak && BOSSCurrentDefence < bosszt.Defence)
-        BOSSCurrentDefence = bosszt.Defence
-      if (player.当前血量 < 0) {
-        player.当前血量 = 0
+      if (Random > 0.94) {
+        msg.push('你规避了部分反噬')
+        bossDamage = Math.trunc(bossDamage * 0.6)
+      } else if (Random > 0.9) {
+        msg.push('你抵挡了一部分反噬')
+        bossDamage = Math.trunc(bossDamage * 0.8)
+      } else if (Random < 0.1) {
+        msg.push('反噬更猛烈了一些')
+        bossDamage = Math.trunc(bossDamage * 1.2)
       }
+      player.当前血量 = (Number(player.当前血量) || 0) - bossDamage
+      if (player.当前血量 < 0) player.当前血量 = 0
       msg.push(
-        `${player.名号}损失血量${BOSS_To_Player_Damage}，${player.名号}剩余血量${player.当前血量}`
+        `${player.名号}损失血量${bossDamage}，剩余血量${player.当前血量}`
       )
     }
     BattleFrame++
   }
-  if (msg.length <= 30) {
-    await Send(Text(msg.join('\n')))
-  } else {
+
+  if (msg.length > 30) {
     msg.length = 30
-    // await ForwardMsg(e, msg)
-    await Send(Text(msg.join('\n')))
+    Send(Text(msg.join('\n')))
     Send(Text('战斗过长，仅展示部分内容'))
+  } else {
+    Send(Text(msg.join('\n')))
   }
-  await redis.set('xiuxian@1.3.0:' + usr_qq + 'CD', now_Time)
+
+  await redis.set(cdKey, now)
+
   if (bosszt.Health <= 0) {
-    player.神魄段数 += 5
-    player.血气 += Reward
-    player.当前血量 = player.血量上限
-    Send(Text(`\n你成功突破一段神魄，段数+5！血气增加${Reward} 血量补偿满血！`))
-    data.setData('player', usr_qq, player)
+    player.神魄段数 = layer + 5
+    player.血气 = (Number(player.血气) || 0) + Reward
+    player.当前血量 = Number(player.血量上限) || player.当前血量
+    Send(Text(`\n你成功突破一段神魄，段数+5！血气+${Reward} 血量已回满`))
+  } else if ((Number(player.当前血量) || 0) <= 0) {
+    const lose = Math.trunc(Reward * 2)
+    player.修为 = Math.max(0, (Number(player.修为) || 0) - lose)
+    Send(Text(`\n你未能通过此层锻神池！修为-${lose}`))
   }
-  if (player.当前血量 <= 0) {
-    player.当前血量 = 0
-    player.修为 -= Math.trunc(Reward * 2)
-    Send(Text(`\n你未能通过此层锻神池！修为-${Math.trunc(Reward * 2)}`))
-    data.setData('player', usr_qq, player)
-  }
+
+  data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
+  return false
 })

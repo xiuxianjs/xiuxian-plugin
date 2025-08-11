@@ -1,8 +1,9 @@
 import { Image, Text, useSend } from 'alemonjs'
-import { redis, puppeteer } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { existplayer, readPlayer, __PATH } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?悬赏目标$/
 
 export default onResponse(selects, async e => {
@@ -23,7 +24,7 @@ export default onResponse(selects, async e => {
     if (action.end_time > Date.now()) {
       msg = action.arm
       const msg_data = { msg, type }
-      const img = await puppeteer.screenshot('msg', e.UserId, msg_data)
+      const img = await screenshot('msg', e.UserId, msg_data)
       Send(Image(img))
       return false
     }
@@ -77,6 +78,8 @@ export default onResponse(selects, async e => {
   }
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':shangjing', JSON.stringify(arr))
   const msg_data = { msg, type }
-  const img = await puppeteer.screenshot('msg', e.UserId, msg_data)
-  if (img) Send(Image(img))
+  const img = await screenshot('msg', e.UserId, msg_data)
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

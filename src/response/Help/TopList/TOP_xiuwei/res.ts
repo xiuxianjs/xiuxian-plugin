@@ -49,5 +49,7 @@ export default onResponse(selects, async e => {
   }
   const thisplayer = await await data.getData('player', usr_qq)
   const img = await getRankingPowerImage(e, Data, usr_paiming, thisplayer)
-  if (img) Send(Image(img))
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

@@ -1,11 +1,12 @@
 import { Text, useMessage, Image } from 'alemonjs'
-import { data, puppeteer } from '@src/model/api'
+import { data } from '@src/model/api'
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?禁地$/
 
 export default onResponse(selects, async e => {
   const [message] = useMessage(e)
-  const image = await puppeteer.screenshot('jindi', e.UserId, {
+  const image = await screenshot('jindi', e.UserId, {
     didian_list: data.forbiddenarea_list
   })
   if (!image) {

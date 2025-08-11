@@ -12,7 +12,6 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) {
-    Send(Text('没存档你逃个锤子!'))
     return false
   }
   //获取游戏状态

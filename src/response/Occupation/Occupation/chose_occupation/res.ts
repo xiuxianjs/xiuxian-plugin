@@ -14,46 +14,63 @@ import {
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?转职.*$/
 
+interface OccupationItem {
+  name: string
+}
+interface FuzhiData {
+  职业名: string
+  职业经验: number
+  职业等级: number
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const flag = await Go(e)
-  if (!flag) {
+  if (!flag) return false
+  if (!(await existplayer(usr_qq))) return false
+
+  const occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '').trim()
+  if (!occupation) {
+    Send(Text('格式: 转职职业名'))
     return false
   }
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-
-  const occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '')
   const player = await readPlayer(usr_qq)
-  const player_occupation = player.occupation
-  const x = data.occupation_list.find(item => item.name == occupation)
-  if (!notUndAndNull(x)) {
+  if (!player) {
+    Send(Text('玩家数据读取失败'))
+    return false
+  }
+  const player_occupation = String(player.occupation || '')
+  const targetOcc = (data.occupation_list as OccupationItem[]).find(
+    o => o.name === occupation
+  )
+  if (!notUndAndNull(targetOcc)) {
     Send(Text(`没有[${occupation}]这项职业`))
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const levelRow = data.Level_list.find(
     item => item.level_id == player.level_id
-  ).level_id
-  if (now_level_id < 17 && occupation == '采矿师') {
+  )
+  const now_level_id = levelRow ? levelRow.level_id : 0
+  if (now_level_id < 17 && occupation === '采矿师') {
     Send(Text('包工头:就你这小身板还来挖矿？再去修炼几年吧'))
     return false
   }
   const thing_name = occupation + '转职凭证'
   const thing_class = '道具'
-  const n = -1
   const thing_quantity = await existNajieThing(usr_qq, thing_name, thing_class)
-  if (!thing_quantity) {
-    //没有
+  if (!thing_quantity || thing_quantity <= 0) {
     Send(Text(`你没有【${thing_name}】`))
     return false
   }
-  if (player_occupation == occupation) {
+  if (player_occupation === occupation) {
     Send(Text(`你已经是[${player_occupation}]了，可使用[职业转化凭证]重新转职`))
     return false
   }
-  await addNajieThing(usr_qq, thing_name, thing_class, n)
-  if (player.occupation.length == 0) {
+  await addNajieThing(usr_qq, thing_name, thing_class, -1)
+
+  // 如果当前没有主职业
+  if (!player_occupation || player_occupation.length === 0) {
     player.occupation = occupation
     player.occupation_level = 1
     player.occupation_exp = 0
@@ -61,21 +78,20 @@ export default onResponse(selects, async e => {
     Send(Text(`恭喜${player.名号}转职为[${occupation}]`))
     return false
   }
-  let action = await redis.get('xiuxian:player:' + usr_qq + ':fuzhi') //副职
-  action = await JSON.parse(action)
-  if (action == null) {
-    action = []
+
+  // 存储原主职业为副职（覆盖逻辑简化：只保留最近一次）
+  const fuzhi: FuzhiData = {
+    职业名: player_occupation,
+    职业经验: Number(player.occupation_exp) || 0,
+    职业等级: Number(player.occupation_level) || 1
   }
-  const arr = {
-    职业名: player.occupation,
-    职业经验: player.occupation_exp,
-    职业等级: player.occupation_level
-  }
-  action = arr
-  await redis.set('xiuxian:player:' + usr_qq + ':fuzhi', JSON.stringify(action))
+  await redis.set(`xiuxian:player:${usr_qq}:fuzhi`, JSON.stringify(fuzhi))
   player.occupation = occupation
   player.occupation_level = 1
   player.occupation_exp = 0
   await writePlayer(usr_qq, player)
-  Send(Text(`恭喜${player.名号}转职为[${occupation}],您的副职为${arr.职业名}`))
+  Send(
+    Text(`恭喜${player.名号}转职为[${occupation}], 你的副职为${fuzhi.职业名}`)
+  )
+  return false
 })

@@ -9,63 +9,89 @@ import {
   readPlayer
 } from '@src/model/index'
 import { data } from '@src/model/api'
+import type { NajieCategory } from '@src/types/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?购买((.*)|(.*)*(.*))$/
 
+interface Commodity {
+  name: string
+  出售价: number
+  class: NajieCategory | string
+}
+function toInt(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.trunc(n) : d
+}
+
+const PRICE_RATE = 1.2
+const MAX_QTY = 9999
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const flag = await Go(e)
-  if (!flag) {
+  if (!(await existplayer(usr_qq))) return false
+  if (!(await Go(e))) return false
+
+  const raw = e.MessageText.replace(/^(#|＃|\/)?购买/, '').trim()
+  if (!raw) {
+    Send(Text('格式: 购买物品名*数量 (数量可省略)'))
     return false
   }
-  const thing = e.MessageText.replace(/^(#|＃|\/)?购买/, '')
-  const code = thing.split('*')
-  const thing_name = code[0]
-  const ifexist = data.commodities_list.find(item => item.name == thing_name)
-  if (!ifexist) {
-    Send(Text(`柠檬堂还没有这样的东西:${thing_name}`))
+  const [rawName, rawQty] = raw.split('*')
+  const thing_name = rawName?.trim()
+  if (!thing_name) {
+    Send(Text('物品名称不能为空'))
     return false
   }
-  const quantity = await convert2integer(code[1])
+
+  const commodity = (data.commodities_list as Commodity[]).find(
+    item => item.name === thing_name
+  )
+  if (!commodity) {
+    Send(Text(`柠檬堂还没有这样的东西: ${thing_name}`))
+    return false
+  }
+
+  let qty = toInt(await convert2integer(rawQty), 1)
+  if (!Number.isFinite(qty) || qty <= 0) qty = 1
+  if (qty > MAX_QTY) qty = MAX_QTY
+
   const player = await readPlayer(usr_qq)
-  const lingshi = player.灵石
-  //如果没钱，或者为负数
-  if (lingshi <= 0) {
-    Send(Text(`掌柜：就你这穷酸样，也想来柠檬堂？走走走！`))
+  if (!player) {
+    Send(Text('存档异常'))
     return false
   }
-  // 价格倍率
-  //价格
-  let commodities_price = ifexist.出售价 * 1.2 * quantity
-  commodities_price = Math.trunc(commodities_price)
-  //判断金额
-  if (lingshi < commodities_price) {
+  const lingshi = Number(player.灵石) || 0
+  if (lingshi <= 0) {
+    Send(Text('掌柜：就你这穷酸样，也想来柠檬堂？走走走！'))
+    return false
+  }
+
+  const unitPrice = Math.max(0, Number(commodity.出售价) || 0)
+  let totalPrice = Math.trunc(unitPrice * PRICE_RATE * qty)
+  if (totalPrice <= 0) totalPrice = 1
+  // 防溢出
+  if (!Number.isFinite(totalPrice) || totalPrice > 1e15) {
+    Send(Text('价格异常，购买已取消'))
+    return false
+  }
+
+  if (lingshi < totalPrice) {
     Send(
       Text(
-        `口袋里的灵石不足以支付${thing_name},还需要${
-          commodities_price - lingshi
-        }灵石`
+        `口袋里的灵石不足以支付 ${thing_name}, 还需要 ${totalPrice - lingshi} 灵石`
       )
     )
     return false
   }
-  //符合就往戒指加
-  await addNajieThing(usr_qq, thing_name, ifexist.class, quantity)
-  await addCoin(usr_qq, -commodities_price)
-  //发送消息
+
+  await addNajieThing(usr_qq, thing_name, commodity.class as NajieCategory, qty)
+  await addCoin(usr_qq, -totalPrice)
   Send(
     Text(
-      [
-        `购买成功!  获得[${thing_name}]*${quantity},花[${commodities_price}]灵石,剩余[${
-          lingshi - commodities_price
-        }]灵石  `,
-        '\n可以在【我的纳戒】中查看'
-      ].join('')
+      `购买成功! 获得[${thing_name}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`
     )
   )
+  return false
 })

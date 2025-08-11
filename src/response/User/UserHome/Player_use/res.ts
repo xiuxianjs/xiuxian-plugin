@@ -1,7 +1,7 @@
 import { Image, Mention, Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { convert2integer, notUndAndNull } from '@src/model/common'
+import { convert2integer } from '@src/model/common'
 import { foundthing, getRandomTalent } from '@src/model/cultivation'
 import {
   existNajieThing,
@@ -10,7 +10,7 @@ import {
 } from '@src/model/najie'
 import { addExp, addExp2, addExp3, addHP } from '@src/model/economy'
 import { readEquipment, writeEquipment } from '@src/model/equipment'
-import { playerEfficiency, addConFaByUser } from '@src/model/efficiency'
+import { playerEfficiency } from '@src/model/efficiency'
 import {
   existplayer,
   readPlayer,
@@ -18,159 +18,235 @@ import {
   writePlayer
 } from '@src/model/xiuxian_impl'
 import { readDanyao, writeDanyao, readAll } from '@src/model/danyao'
+import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 
 import { selects } from '@src/response/index'
 import { getQquipmentImage } from '@src/model/image'
-export const regular = /^(#|＃|\/)?(装备|消耗|服用|学习)((.*)|(.*)*(.*))$/
+import type { DanyaoItem, NajieCategory } from '@src/types/model'
+import type { TalentInfo } from '@src/types/player'
+
+// 优化：仅匹配指令 + 至少一个非空字符
+export const regular = /^(#|＃|\/)?(装备|消耗|服用|学习)\s*\S+/
+
+// 辅助: 安全数字
+const PINJI_MAP: Record<string, number> = {
+  劣: 0,
+  普: 1,
+  优: 2,
+  精: 3,
+  极: 4,
+  绝: 5,
+  顶: 6
+}
+const parsePinji = (raw: unknown): number | undefined => {
+  if (typeof raw !== 'string' || raw === '') return undefined
+  if (raw in PINJI_MAP) return PINJI_MAP[raw]
+  const n = Number(raw)
+  return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined
+}
+
+const toNumber = (v: unknown, def = 0) => (typeof v === 'number' ? v : def)
+const thingType = (obj: unknown): string | undefined =>
+  obj && typeof obj === 'object' && 'type' in obj
+    ? (obj as { type?: string }).type
+    : undefined
 
 export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const [message] = useMessage(e)
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return
+  if (!(await existplayer(usr_qq))) return
   const player = await readPlayer(usr_qq)
   const najie = await readNajie(usr_qq)
-  //检索方法
-  const reg = new RegExp(/装备|服用|消耗|学习/)
-  const func = reg.exec(e.MessageText)
+  if (!player || !najie) return
 
-  let msg = e.MessageText.replace(reg, '')
-  msg = msg.replace('#', '')
-  const code = msg.split('*')
-  let thing_name = code[0]
-  code[0] = parseInt(code[0])
-  let quantity = code[1]
-  quantity = await convert2integer(quantity)
-  //装备优化
-  if (func[0] == '装备' && code[0] && code[0] > 100) {
+  const reg = /装备|服用|消耗|学习/
+  const func = reg.exec(e.MessageText)
+  if (!func) return
+
+  const msg = e.MessageText.replace(reg, '').replace(/^#/, '').trim()
+  if (!msg) return
+  const code = msg.split('*').map(s => s.trim())
+  let thing_name: string = code[0]
+  const maybeIndex = Number(code[0])
+  const quantityRaw = code[1]
+  let quantity = await convert2integer(quantityRaw)
+  if (!quantity || quantity <= 0) quantity = 1
+
+  // 装备代号解析
+  if (func[0] === '装备' && Number.isInteger(maybeIndex) && maybeIndex > 100) {
     try {
-      thing_name = najie.装备[code[0] - 101].name
-      code[1] = najie.装备[code[0] - 101].pinji
+      const target = najie.装备[maybeIndex - 101]
+      if (!target) throw new Error('no equip')
+      thing_name = target.name
+      code[1] = String(target.pinji)
     } catch {
-      // message.send(format(Text('装备代号输入有误!')
       message.send(format(Text('装备代号输入有误!')))
       return
     }
   }
-  //看看物品名称有没有设定,是不是瞎说的
+
   const thing_exist = await foundthing(thing_name)
   if (!thing_exist) {
     message.send(format(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`)))
     return
   }
-  let pj = {
-    劣: 0,
-    普: 1,
-    优: 2,
-    精: 3,
-    极: 4,
-    绝: 5,
-    顶: 6
-  }
-  pj = pj[code[1]]
-  const x = await existNajieThing(usr_qq, thing_name, thing_exist.class, pj)
+  const thingClass = (thing_exist as Record<string, unknown>).class as
+    | string
+    | undefined
+  // 品级解析（修复 0 被视为 falsy 问题）
+  const pinji = parsePinji(code[1])
+  const x = await existNajieThing(
+    usr_qq,
+    thing_name,
+    (thingClass || '道具') as NajieCategory,
+    pinji
+  )
   if (!x) {
     message.send(
-      format(Text(`你没有【${thing_name}】这样的【${thing_exist.class}】`))
+      format(
+        Text(`你没有【${thing_name}】这样的【${thingClass || '未知类别'}】`)
+      )
     )
     return
   }
-  if (x < quantity) {
+  if (x < quantity && func[0] !== '装备') {
+    // 装备数量默认按 1 处理
     message.send(format(Text(`你只有${thing_name}x${x}`)))
     return
   }
-  if (func[0] == '装备') {
-    let equ
-    if (!pj) {
-      equ = najie.装备.find(item => item.name == thing_name)
-      for (const i of najie.装备) {
-        //遍历列表有没有比那把强的
-        if (i.name == thing_name && i.pinji > equ.pinji) {
-          equ = i
+
+  // 装备
+  if (func[0] === '装备') {
+    const equ =
+      pinji !== undefined
+        ? najie.装备.find(i => i.name === thing_name && i.pinji === pinji)
+        : najie.装备
+            .filter(i => i.name === thing_name)
+            .sort((a, b) => (b.pinji ?? 0) - (a.pinji ?? 0))[0]
+    if (!equ) {
+      message.send(format(Text(`找不到可装备的 ${thing_name}`)))
+      return
+    }
+    await insteadEquipment(
+      usr_qq,
+      equ as unknown as import('@src/types/model').EquipmentLike
+    )
+    const img = await getQquipmentImage(
+      e as Parameters<typeof getQquipmentImage>[0]
+    )
+    if (img) {
+      if (Buffer.isBuffer(img)) message.send(format(Image(img)))
+      else if (typeof img === 'string') {
+        try {
+          message.send(format(Image(Buffer.from(img))))
+        } catch {
+          /* ignore */
         }
       }
-    } else {
-      equ = najie.装备.find(item => item.name == thing_name && item.pinji == pj)
     }
-    await insteadEquipment(usr_qq, equ)
-    const img = await getQquipmentImage(e)
-    message.send(format(Image(img)))
     return
   }
+
+  // 服用丹药
   if (func[0] == '服用') {
-    const dy = await readDanyao(usr_qq)
-    if (thing_exist.class != '丹药') return
-    if (thing_exist.type == '血量') {
-      const player = await readPlayer(usr_qq)
-      if (!notUndAndNull(thing_exist.HPp)) {
-        thing_exist.HPp = 1
+    if (thingClass !== '丹药') return
+    const dyArray = await readDanyao(usr_qq)
+    const dy = mapDanyaoArrayToStatus(dyArray)
+    const tType = thingType(thing_exist)
+    const numOr = (k: string) =>
+      toNumber((thing_exist as Record<string, unknown>)[k])
+    const writeDy = () => {
+      // 旧结构: 使用第一项聚合; 若没有则创建
+      let first: DanyaoItem | undefined = dyArray[0]
+      if (!first) {
+        first = {
+          biguan: dy.biguan,
+          biguanxl: dy.biguanxl,
+          xingyun: dy.xingyun,
+          lianti: dy.lianti,
+          ped: dy.ped,
+          modao: dy.modao,
+          beiyong1: dy.beiyong1,
+          beiyong2: dy.beiyong2,
+          beiyong3: dy.beiyong3,
+          beiyong4: dy.beiyong4,
+          beiyong5: dy.beiyong5,
+          count: 1,
+          name: '聚合丹药',
+          class: '内部',
+          type: '聚合'
+        } as unknown as DanyaoItem
+        dyArray.push(first)
+      } else {
+        Object.assign(first, dy)
       }
-      const blood = parseInt(player.血量上限 * thing_exist.HPp + thing_exist.HP)
+      return writeDanyao(usr_qq, dyArray)
+    }
+
+    if (tType === '血量') {
+      const nowPlayer = await readPlayer(usr_qq)
+      const HPp = numOr('HPp') || 1
+      const HP = numOr('HP')
+      const blood = Math.trunc(nowPlayer.血量上限 * HPp + HP)
       await addHP(usr_qq, quantity * blood)
-      const now_HP = await readPlayer(usr_qq)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      message.send(format(Text(`服用成功,当前血量为:${now_HP.当前血量} `)))
+      const after = await readPlayer(usr_qq)
+      message.send(format(Text(`服用成功,当前血量为:${after.当前血量} `)))
       return
     }
-    if (thing_exist.type == '修为') {
-      await addExp(usr_qq, +quantity * thing_exist.exp)
-      message.send(
-        format(Text(`服用成功,修为增加${+quantity * thing_exist.exp}`))
-      )
-      await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      return
-    }
-    if (thing_exist.type == '血气') {
-      await addExp2(usr_qq, quantity * thing_exist.xueqi)
-      message.send(
-        format(Text(`服用成功,血气增加${+quantity * thing_exist.xueqi}`))
-      )
+    if (tType === '修为') {
+      const exp = numOr('exp')
+      await addExp(usr_qq, quantity * exp)
+      message.send(format(Text(`服用成功,修为增加${quantity * exp}`)))
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '幸运') {
-      if (player.islucky > 0) {
+    if (tType === '血气') {
+      const xq = numOr('xueqi')
+      await addExp2(usr_qq, quantity * xq)
+      message.send(format(Text(`服用成功,血气增加${quantity * xq}`)))
+      await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
+      return
+    }
+    if (tType === '幸运') {
+      if (player.islucky && player.islucky > 0) {
         message.send(
           format(Text('目前尚有福源丹在发挥效果，身体无法承受更多福源'))
         )
         return
       }
+      const xingyun = numOr('xingyun')
       player.islucky = 10 * quantity
-      player.addluckyNo = thing_exist.xingyun
-      player.幸运 += thing_exist.xingyun
-      data.setData('player', usr_qq, player)
+      player.addluckyNo = xingyun
+      player.幸运 = (player.幸运 || 0) + xingyun
+      await writePlayer(usr_qq, player)
       message.send(
         format(
           Text(
-            `${thing_name}服用成功，将在之后的 ${
-              +quantity * 10
-            }次冒险旅途中为你提高幸运值！`
+            `${thing_name}服用成功，将在之后的 ${quantity * 10}次冒险旅途中为你提高幸运值！`
           )
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '闭关') {
+    if (tType === '闭关') {
       dy.biguan = quantity
-      dy.biguanxl = thing_exist.biguan
+      dy.biguanxl = numOr('biguan')
       message.send(
         format(
           Text(
-            `${thing_name}提高了你的忍耐力,提高了下次闭关的效率,当前提高${
-              dy.biguanxl * 100
-            }%\n查看练气信息后生效`
+            `${thing_name}提高了你的忍耐力,提高了下次闭关的效率,当前提高${dy.biguanxl * 100}%\n查看练气信息后生效`
           )
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDanyao(usr_qq, dy)
+      await writeDy()
       return
     }
-    if (thing_exist.type == '仙缘') {
+    if (tType === '仙缘') {
       dy.ped = 5 * quantity
-      dy.beiyong1 = thing_exist.gailv
+      dy.beiyong1 = numOr('gailv')
       message.send(
         format(
           Text(
@@ -179,52 +255,39 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDanyao(usr_qq, dy)
+      await writeDy()
       return
     }
-    if (thing_exist.type == '凝仙') {
-      if (dy.biguan > 0) {
-        dy.biguan += thing_exist.机缘 * quantity
-      }
-      if (dy.lianti > 0) {
-        dy.lianti += thing_exist.机缘 * quantity
-      }
-      if (dy.ped > 0) {
-        dy.ped += thing_exist.机缘 * quantity
-      }
-      if (dy.beiyong2 > 0) {
-        dy.beiyong2 += thing_exist.机缘 * quantity
-      }
+    if (tType === '凝仙') {
+      const addTimes = numOr('机缘') * quantity
+      if (dy.biguan > 0) dy.biguan += addTimes
+      if (dy.lianti > 0) dy.lianti += addTimes
+      if (dy.ped > 0) dy.ped += addTimes
+      if (dy.beiyong2 > 0) dy.beiyong2 += addTimes
       message.send(
-        format(
-          Text(
-            `丹韵入体,身体内蕴含的仙丹药效增加了${thing_exist.机缘 * quantity}次`
-          )
-        )
+        format(Text(`丹韵入体,身体内蕴含的仙丹药效增加了${addTimes}次`))
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDanyao(usr_qq, dy)
+      await writeDy()
       return
     }
-    if (thing_exist.type == '炼神') {
+    if (tType === '炼神') {
       dy.lianti = quantity
-      dy.beiyong4 = thing_exist.lianshen
+      dy.beiyong4 = numOr('lianshen')
       message.send(
         format(
           Text(
-            `服用了${thing_name},获得了炼神之力,下次闭关获得了炼神之力,当前炼神之力为${
-              thing_exist.lianshen * 100
-            }%`
+            `服用了${thing_name},获得了炼神之力,下次闭关获得了炼神之力,当前炼神之力为${dy.beiyong4 * 100}%`
           )
         )
       )
-      await writeDanyao(usr_qq, dy)
+      await writeDy()
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '神赐') {
+    if (tType === '神赐') {
       dy.beiyong2 = quantity
-      dy.beiyong3 = thing_exist.概率
+      dy.beiyong3 = numOr('概率')
       message.send(
         format(
           Text(
@@ -232,14 +295,27 @@ export default onResponse(selects, async e => {
           )
         )
       )
-      await writeDanyao(usr_qq, dy)
+      await writeDy()
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '灵根') {
-      const a = await readAll('隐藏灵根')
-      const newa = Math.floor(Math.random() * a.length)
-      player.隐藏灵根 = a[newa]
+    if (tType === '灵根') {
+      const list = await readAll('隐藏灵根')
+      const newIndex = Math.floor(Math.random() * list.length)
+      const next = list[newIndex] as {
+        name: string
+        type: string
+        法球倍率?: number
+        eff?: number
+      }
+      // 必需字段补全
+      const hidden: TalentInfo = {
+        name: next.name,
+        type: next.type,
+        法球倍率: next.法球倍率 ?? 1,
+        eff: next.eff
+      }
+      player.隐藏灵根 = hidden
       await writePlayer(usr_qq, player)
       message.send(
         format(
@@ -251,18 +327,17 @@ export default onResponse(selects, async e => {
       await addNajieThing(usr_qq, thing_name, '丹药', -1)
       return
     }
-    if (thing_exist.type == '器灵') {
+    if (tType === '器灵') {
       if (!player.锻造天赋) {
-        message.send(format(Text(`请先去#炼器师能力评测,再来更改天赋吧`)))
+        message.send(format(Text('请先去#炼器师能力评测,再来更改天赋吧')))
         return
       }
-      player.锻造天赋 = player.锻造天赋 + thing_exist.天赋 * quantity
+      const addTalent = numOr('天赋') * quantity
+      player.锻造天赋 = (player.锻造天赋 || 0) + addTalent
       message.send(
         format(
           Text(
-            `服用成功,您额外获得了${
-              thing_exist.天赋 * quantity
-            }天赋上限,您当前炼器天赋为${player.锻造天赋}`
+            `服用成功,您额外获得了${addTalent}天赋上限,您当前炼器天赋为${player.锻造天赋}`
           )
         )
       )
@@ -270,117 +345,97 @@ export default onResponse(selects, async e => {
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '锻造上限') {
+    if (tType === '锻造上限') {
       if (dy.beiyong5 > 0) {
-        message.send(format(Text(`您已经增加了锻造上限,消耗完毕再接着服用吧`)))
+        message.send(format(Text('您已经增加了锻造上限,消耗完毕再接着服用吧')))
         return
       }
       dy.xingyun = quantity
-      dy.beiyong5 = thing_exist.额外数量
+      dy.beiyong5 = numOr('额外数量')
       message.send(
         format(
-          Text(
-            `服用成功,您下一次的炼器获得了额外的炼器格子[${thing_exist.额外数量}]`
-          )
+          Text(`服用成功,您下一次的炼器获得了额外的炼器格子[${dy.beiyong5}]`)
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDanyao(usr_qq, dy)
+      await writeDy()
       return
     }
-    if (thing_exist.type == '魔道值') {
-      await addExp3(usr_qq, -quantity * thing_exist.modao)
-      message.send(
-        format(
-          Text(`获得了转生之力,降低了${quantity * thing_exist.modao}魔道值`)
-        )
-      )
+    if (tType === '魔道值') {
+      const md = numOr('modao')
+      await addExp3(usr_qq, -quantity * md)
+      message.send(format(Text(`获得了转生之力,降低了${quantity * md}魔道值`)))
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '入魔') {
-      await addExp3(usr_qq, quantity * thing_exist.modao)
+    if (tType === '入魔') {
+      const md = numOr('modao')
+      await addExp3(usr_qq, quantity * md)
       message.send(
-        format(
-          Text(
-            `${quantity}道黑色魔气入体,增加了${quantity * thing_exist.modao}魔道值`
-          )
-        )
+        format(Text(`${quantity}道黑色魔气入体,增加了${quantity * md}魔道值`))
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
-    if (thing_exist.type == '补根') {
+    if (tType === '补根') {
+      // 去除 id 字段（TalentInfo 无 id）
       player.灵根 = {
-        id: 70001,
         name: '垃圾五灵根',
         type: '伪灵根',
         eff: 0.01,
         法球倍率: 0.01
       }
-      data.setData('player', usr_qq, player)
+      await writePlayer(usr_qq, player)
       message.send(
-        format(Text(`服用成功,当前灵根为垃圾五灵根,你具备了称帝资格`))
+        format(Text('服用成功,当前灵根为垃圾五灵根,你具备了称帝资格'))
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -1)
       return
     }
-    if (thing_exist.type == '补天') {
-      player.灵根 = {
-        id: 70054,
-        name: '天五灵根',
-        type: '圣体',
-        eff: 0.2,
-        法球倍率: 0.12
-      }
-      data.setData('player', usr_qq, player)
-      message.send(format(Text(`服用成功,当前灵根为天五灵根,你具备了称帝资格`)))
+    if (tType === '补天') {
+      player.灵根 = { name: '天五灵根', type: '圣体', eff: 0.2, 法球倍率: 0.12 }
+      await writePlayer(usr_qq, player)
+      message.send(format(Text('服用成功,当前灵根为天五灵根,你具备了称帝资格')))
       await addNajieThing(usr_qq, thing_name, '丹药', -1)
       return
     }
-    if (thing_exist.type == '突破') {
-      if (player.breakthrough == true) {
-        message.send(format(Text(`你已经吃过破境丹了`)))
-        return
-      } else {
-        player.breakthrough = true
-        data.setData('player', usr_qq, player)
-        message.send(format(Text(`服用成功,下次突破概率增加20%`)))
-        await addNajieThing(usr_qq, thing_name, '丹药', -1)
+    if (tType === '突破') {
+      if ((player as Record<string, unknown>).breakthrough === true) {
+        message.send(format(Text('你已经吃过破境丹了')))
         return
       }
+      ;(player as Record<string, unknown>).breakthrough = true
+      await writePlayer(usr_qq, player)
+      message.send(format(Text('服用成功,下次突破概率增加20%')))
+      await addNajieThing(usr_qq, thing_name, '丹药', -1)
+      return
     }
   }
+  // 消耗道具
   if (func[0] == '消耗') {
     if (thing_name == '轮回阵旗') {
-      player.lunhuiBH = 1
-      data.setData('player', usr_qq, player)
+      ;(player as Record<string, unknown>).lunhuiBH = 1
+      await writePlayer(usr_qq, player)
       message.send(
-        format(
-          Text(
-            ['已得到"轮回阵旗"的辅助，下次轮回可抵御轮回之苦的十之八九'].join(
-              ''
-            )
-          )
-        )
+        format(Text('已得到"轮回阵旗"的辅助，下次轮回可抵御轮回之苦的十之八九'))
       )
       await addNajieThing(usr_qq, '轮回阵旗', '道具', -1)
       return
     }
     if (thing_name == '仙梦之匙') {
-      if (player.仙宠 == []) {
+      if (!player.仙宠) {
         message.send(format(Text('你还没有出战仙宠')))
         return
       }
       player.仙宠.灵魂绑定 = 0
-      data.setData('player', usr_qq, player)
+      await writePlayer(usr_qq, player)
       await addNajieThing(usr_qq, '仙梦之匙', '道具', -1)
       message.send(format(Text('出战仙宠解绑成功!')))
       return
     }
     if (thing_name == '残卷') {
       const number = await existNajieThing(usr_qq, '残卷', '道具')
-      if (notUndAndNull(number) && number > 9) {
+      if (typeof number === 'number' && number > 9) {
         /** 回复 */
         await message.send(
           format(
@@ -441,39 +496,39 @@ export default onResponse(selects, async e => {
     }
     if (thing_name == '重铸石') {
       const equipment = await readEquipment(usr_qq)
-      const type = ['武器', '护具', '法宝']
+      if (!equipment) return
+      const type = ['武器', '护具', '法宝'] as const
       const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5]
-      for (const j in type) {
+      for (const t of type) {
         const random = Math.trunc(Math.random() * 6)
-        if (!z[equipment[type[j]].pinji]) continue
-        equipment[type[j]].atk =
-          (equipment[type[j]].atk / z[equipment[type[j]].pinji]) * z[random]
-        equipment[type[j]].def =
-          (equipment[type[j]].def / z[equipment[type[j]].pinji]) * z[random]
-        equipment[type[j]].HP =
-          (equipment[type[j]].HP / z[equipment[type[j]].pinji]) * z[random]
-        equipment[type[j]].pinji = random
+        const cur = equipment[t]
+        if (!cur || cur.pinji === undefined || !z[cur.pinji]) continue
+        cur.atk = (cur.atk / z[cur.pinji]) * z[random]
+        cur.def = (cur.def / z[cur.pinji]) * z[random]
+        cur.HP = (cur.HP / z[cur.pinji]) * z[random]
+        cur.pinji = random
       }
       await writeEquipment(usr_qq, equipment)
       await addNajieThing(usr_qq, '重铸石', '道具', -1)
       message.send(format(Text('使用成功,发送#我的装备查看属性')))
       return
     }
-    if (thing_exist.type == '洗髓') {
-      if ((await player.linggenshow) != 0) {
+    if (thing_exist && thingType(thing_exist) == '洗髓') {
+      const numberOwned = await existNajieThing(usr_qq, thing_name, '道具')
+      if ((player.linggenshow ?? 0) != 0) {
         await message.send(format(Text('你未开灵根，无法洗髓！')))
         return
       }
       await addNajieThing(usr_qq, thing_name, '道具', -1)
       player.灵根 = await getRandomTalent()
-      data.setData('player', usr_qq, player)
+      await writePlayer(usr_qq, player)
       await playerEfficiency(usr_qq)
       message.send(
         format(
           Mention(usr_qq),
           Text(
             [
-              `  服用成功,剩余 ${thing_name}数量: ${x - 1}，新的灵根为 "${
+              `  服用成功,剩余 ${thing_name}数量: ${(typeof numberOwned === 'number' ? numberOwned : 0) - 1}，新的灵根为 "${
                 player.灵根.type
               }"：${player.灵根.name}`,
               '\n可以在【#我的练气】中查看'
@@ -501,44 +556,39 @@ export default onResponse(selects, async e => {
       )
       return
     }
-    const qh = data.qianghua.find(item => item.name == thing_exist.name)
+    const qh = data.qianghua.find(
+      item => item.name == (thing_exist as { name?: string }).name
+    )
     if (qh) {
-      if (qh.class == '魔头' && player.魔道值 < 1000) {
+      if (qh.class == '魔头' && (player.魔道值 ?? 0) < 1000) {
         message.send(format(Text(`你还是提升点魔道值再用吧!`)))
         return
       } else if (
         qh.class == '神人' &&
-        (player.魔道值 > 0 ||
+        ((player.魔道值 ?? 0) > 0 ||
           (player.灵根.type != '转生' && player.level_id < 42))
       ) {
         message.send(format(Text(`你尝试使用它,但是失败了`)))
         return
       }
-      player.攻击加成 += qh.攻击 * quantity
-      player.防御加成 += qh.防御 * quantity
-      player.生命加成 += qh.血量 * quantity
+      if (typeof player.攻击加成 !== 'number')
+        player.攻击加成 = Number(player.攻击加成) || 0
+      if (typeof player.防御加成 !== 'number')
+        player.防御加成 = Number(player.防御加成) || 0
+      if (typeof player.生命加成 !== 'number')
+        player.生命加成 = Number(player.生命加成) || 0
+      player.攻击加成 +=
+        toNumber((qh as Record<string, unknown>).攻击) * quantity
+      player.防御加成 +=
+        toNumber((qh as Record<string, unknown>).防御) * quantity
+      player.生命加成 +=
+        toNumber((qh as Record<string, unknown>).血量) * quantity
       await writePlayer(usr_qq, player)
-      const equipment = await readEquipment(usr_qq)
-      await writeEquipment(usr_qq, equipment)
       await addNajieThing(usr_qq, thing_name, '道具', -quantity)
-      message.send(format(Text(`${qh.msg}`)))
+      message.send(
+        format(Text(`${(qh as Record<string, unknown>).msg || '使用成功'}`))
+      )
       return
     }
-    message.send(format(Text(`功能开发中,敬请期待`)))
-    return
-  }
-  if (func[0] == '学习') {
-    const player = await readPlayer(usr_qq)
-    const islearned = player.学习的功法.find(item => item == thing_name)
-    if (islearned) {
-      message.send(format(Text(`你已经学过该功法了`)))
-      return
-    }
-    await addNajieThing(usr_qq, thing_name, '功法', -1)
-    //
-    await addConFaByUser(usr_qq, thing_name)
-    message.send(
-      format(Text(`你学会了${thing_name},可以在【#我的炼体】中查看`))
-    )
   }
 })

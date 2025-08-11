@@ -2,6 +2,7 @@ import { Text, useMention, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/index'
+import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?^任命.*/
@@ -9,86 +10,143 @@ const 副宗主人数上限 = [1, 1, 1, 1, 2, 2, 3, 3]
 const 长老人数上限 = [1, 2, 3, 4, 5, 7, 8, 9]
 const 内门弟子上限 = [2, 3, 4, 5, 6, 8, 10, 12]
 
+interface PlayerGuildRef {
+  宗门名称: string
+  职位: string
+  lingshi_donate?: number
+}
+function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
+}
+interface ExtAss extends AssociationDetailData {
+  所有成员?: string[]
+  宗门等级?: number
+  副宗主?: string[]
+  长老?: string[]
+  内门弟子?: string[]
+  外门弟子?: string[]
+}
+function isExtAss(v: unknown): v is ExtAss {
+  return !!v && typeof v === 'object' && 'power' in v
+}
+function serializePlayer(p: Player): Record<string, JSONValue> {
+  const r: Record<string, JSONValue> = {}
+  for (const [k, v] of Object.entries(p)) {
+    if (typeof v === 'function') continue
+    if (v && typeof v === 'object') r[k] = JSON.parse(JSON.stringify(v))
+    else r[k] = v as JSONValue
+  }
+  return r
+}
+
+const VALID_APPOINT = ['副宗主', '长老', '内门弟子', '外门弟子'] as const
+
+type Appointment = (typeof VALID_APPOINT)[number]
+function isAppointment(v: string): v is Appointment {
+  return (VALID_APPOINT as readonly string[]).includes(v)
+}
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
-  if (!Mentions || Mentions.length === 0) {
-    return // @ 提及为空
-  }
-  const ifexistplay = await data.existData('player', usr_qq)
-  if (!ifexistplay) return false
-  const player = await await data.getData('player', usr_qq)
-  if (!notUndAndNull(player.宗门)) {
+  const mentionAPI = useMention(e)[0]
+  const Mentions = (await mentionAPI.find({ IsBot: false })).data
+  if (!Mentions || Mentions.length === 0) return false
+  if (!(await data.existData('player', usr_qq))) return false
+  const player = (await data.getData('player', usr_qq)) as Player | null
+  if (
+    !player ||
+    !notUndAndNull(player.宗门) ||
+    !isPlayerGuildRef(player.宗门)
+  ) {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  if (player.宗门.职位 != '宗主' && player.宗门.职位 != '副宗主') {
+  if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  const User = Mentions.find(item => !item.IsBot)
-  if (!User) {
-    return // 未找到用户Id
-  }
-  const member_qq = User.UserId
-  if (usr_qq == member_qq) {
-    Send(Text('???'))
+  const targetMention = Mentions.find(item => !item.IsBot)
+  if (!targetMention) return false
+  const member_qq = targetMention.UserId
+  if (usr_qq === member_qq) {
+    Send(Text('不能对自己任命'))
     return false
-  } //at宗主自己,这不扯犊子呢
-
-  const ass = await await data.getAssociation(player.宗门.宗门名称)
-  const isinass = ass.所有成员.some(item => item == member_qq) //这个命名可太糟糕了
-  if (!isinass) {
+  }
+  if (!(await data.existData('player', member_qq))) {
+    Send(Text('目标未踏入仙途'))
+    return false
+  }
+  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  if (assRaw === 'error' || !isExtAss(assRaw)) return false
+  const ass = assRaw
+  ass.所有成员 = Array.isArray(ass.所有成员) ? ass.所有成员 : []
+  if (!ass.所有成员.includes(member_qq)) {
     Send(Text('只能设置宗门内弟子的职位'))
     return false
   }
-  const member = await data.getData('player', member_qq) //获取这个B的存档
-  const now_apmt = member.宗门.职位 //这个B现在的职位
-  if (player.宗门.职位 == '副宗主' && now_apmt == '宗主') {
+  const member = (await data.getData('player', member_qq)) as Player | null
+  if (!member || !notUndAndNull(member.宗门) || !isPlayerGuildRef(member.宗门))
+    return false
+  const now_apmt = member.宗门.职位
+  if (player.宗门.职位 === '副宗主' && now_apmt === '宗主') {
     Send(Text('你想造反吗！？'))
     return false
   }
   if (
-    player.宗门.职位 == '副宗主' &&
-    (now_apmt == '副宗主' || now_apmt == '长老')
+    player.宗门.职位 === '副宗主' &&
+    (now_apmt === '副宗主' || now_apmt === '长老')
   ) {
     Send(Text(`宗门${now_apmt}任免请上报宗主！`))
     return false
   }
-  let full_apmt = ass.所有成员.length
-  //检索输入的第一个职位
-  const reg = new RegExp(/副宗主|长老|外门弟子|内门弟子/)
-  const msg = reg.exec(e.MessageText) //获取输入的职位
-  if (!msg) {
+  // 解析新职位
+  const match = /(副宗主|长老|外门弟子|内门弟子)/.exec(e.MessageText)
+  if (!match) {
     Send(Text('请输入正确的职位'))
     return false
   }
-  const appointment = msg[0]
-  if (appointment == now_apmt) {
+  const appointment = match[0]
+  if (!isAppointment(appointment)) {
+    Send(Text('无效职位'))
+    return false
+  }
+  if (appointment === now_apmt) {
     Send(Text(`此人已经是本宗门的${appointment}`))
     return false
   }
-  if (appointment == '长老') {
-    full_apmt = 长老人数上限[ass.宗门等级 - 1]
+  const level = Number(ass.宗门等级 || 1)
+  const idx = Math.max(0, Math.min(副宗主人数上限.length - 1, level - 1))
+  const limitMap: Record<Appointment, number> = {
+    副宗主: 副宗主人数上限[idx],
+    长老: 长老人数上限[idx],
+    内门弟子: 内门弟子上限[idx],
+    外门弟子: Infinity
   }
-  if (appointment == '副宗主') {
-    full_apmt = 副宗主人数上限[ass.宗门等级 - 1]
-  } else if (appointment == '内门弟子') {
-    full_apmt = 内门弟子上限[ass.宗门等级 - 1]
+  const listMap = (role: Appointment): string[] => {
+    const raw = (ass as Record<string, unknown>)[role]
+    return Array.isArray(raw) ? (raw as string[]) : []
   }
-  if (ass[appointment].length >= full_apmt) {
+  const targetList = listMap(appointment)
+  if (targetList.length >= limitMap[appointment]) {
     Send(Text(`本宗门的${appointment}人数已经达到上限`))
     return false
   }
-  member.宗门.职位 = appointment //成员存档里改职位
-  ass[now_apmt] = ass[now_apmt].filter(item => item != member_qq) //原来的职位表删掉这个B
-  ass[appointment].push(member_qq) //新的职位表加入这个B
-  data.setData('player', member_qq, member) //记录到存档
-  data.setAssociation(ass.宗门名称, ass) //记录到宗门
+  // 更新旧职位表
+  const oldList = listMap(now_apmt as Appointment)
+  ;(ass as Record<string, unknown>)[now_apmt] = oldList.filter(
+    q => q !== member_qq
+  )
+  // 添加新职位
+  targetList.push(member_qq)
+  ;(ass as Record<string, unknown>)[appointment] = targetList
+  member.宗门.职位 = appointment
+  await data.setData('player', member_qq, serializePlayer(member))
+  await data.setAssociation(ass.宗门名称, ass)
   Send(
     Text(
       `${ass.宗门名称} ${player.宗门.职位} 已经成功将${member.名号}任命为${appointment}!`
     )
   )
+  return false
 })

@@ -1,9 +1,10 @@
-import { puppeteer, pushInfo } from '@src/model/api'
+import { pushInfo } from '@src/model/api'
 // 细粒度导入避免 barrel 循环
 import { readTemp, writeTemp } from '@src/model/temp'
 import { scheduleJob } from 'node-schedule'
 import { TempRecord as TempRecordLegacy } from '@src/types/model'
 import type { TempMessage } from '@src/types'
+import { screenshot } from '@src/image'
 
 scheduleJob('20 0/5 * * * ?', async () => {
   let temp: (TempMessage & TempRecordLegacy)[] = []
@@ -30,7 +31,7 @@ scheduleJob('20 0/5 * * * ?', async () => {
       }
       const temp_data = { temp: msg }
 
-      const img = await puppeteer.screenshot('temp', i, temp_data)
+      const img = await screenshot('temp', i, temp_data)
       if (img) await pushInfo(i, true, img)
     }
     await writeTemp([])

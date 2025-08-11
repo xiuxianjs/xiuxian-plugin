@@ -1,17 +1,46 @@
-import { Image, useSend } from 'alemonjs'
+import { Image, useSend, Text } from 'alemonjs'
+import type { EventsMessageCreateEnum } from 'alemonjs'
 
 import { existplayer } from '@src/model/index'
-
+import { redis } from '@src/model/api'
 import { selects } from '@src/response/index'
 import { getNajieImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?我的纳戒$/
 
+function toInt(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.trunc(n) : d
+}
+
+const CD_MS = 10 * 1000 // 10秒冷却，避免频繁截图占用资源
+
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const img = await getNajieImage(e)
-  if (img) Send(Image(img))
+  if (!(await existplayer(usr_qq))) return false
+
+  // 冷却判断
+  const cdKey = `xiuxian@1.3.0:${usr_qq}:showNajieCD`
+  const lastTs = toInt(await redis.get(cdKey))
+  const now = Date.now()
+  if (now < lastTs + CD_MS) {
+    const remain = lastTs + CD_MS - now
+    const s = Math.ceil(remain / 1000)
+    Send(Text(`请求过于频繁，请${s}秒后再试`))
+    return false
+  }
+  await redis.set(cdKey, String(now))
+
+  const publicEvent = e as EventsMessageCreateEnum
+  const img = await getNajieImage(publicEvent)
+  if (!img) {
+    Send(Text('纳戒信息生成失败，请稍后重试'))
+    return false
+  }
+  if (typeof img === 'string') {
+    Send(Image(Buffer.from(img)))
+  } else {
+    Send(Image(img))
+  }
+  return false
 })

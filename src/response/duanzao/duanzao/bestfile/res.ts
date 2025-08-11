@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { redis, data, puppeteer } from '@src/model/api'
+import { redis, data } from '@src/model/api'
 import {
   readItTyped,
   writeIt,
@@ -8,102 +8,162 @@ import {
   readNajie,
   readEquipment
 } from '@src/model/index'
-import type { CustomEquipRecord } from '@src/model/duanzaofu'
+interface CustomEquipRecord {
+  name: string
+  type: string
+  atk: number
+  def: number
+  HP: number
+  author_name?: string
+}
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?神兵榜/
+import { screenshot } from '@src/image'
+export const regular = /^(#|＃|\/)?神兵榜$/
+
+interface EquipScoreEntry {
+  name: string
+  type: string
+  评分: number
+  制作者: string
+  使用者: string
+}
+interface PlayerLite {
+  名号: string
+  宗门?: { 宗门名称: string } | string
+}
+
+type CustomEquipRecordWithOwner = CustomEquipRecord & { owner_name?: string }
+
+function calcScore(r: { atk: number; def: number; HP: number }) {
+  return Math.trunc((r.atk * 1.2 + r.def * 1.5 + r.HP * 1.5) * 10000)
+}
+function getSectDisplay(p: PlayerLite | null): string {
+  if (!p || !p.宗门) return '无门无派'
+  if (typeof p.宗门 === 'string') return p.宗门 || '无门无派'
+  return p.宗门.宗门名称 || '无门无派'
+}
+
+const CACHE_KEY_TIME = 'xiuxian:bestfileCD'
+const CACHE_KEY_LIST = 'xiuxian:bestfileList'
+const CACHE_EXPIRE_MS = 30 * 60 * 1000
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  let wupin: CustomEquipRecord[] = []
+  const now = Date.now()
+  const lastTsRaw = await redis.get(CACHE_KEY_TIME)
+  const lastTs = lastTsRaw ? Number(lastTsRaw) : 0
+  let needRebuild = !lastTs || now - lastTs > CACHE_EXPIRE_MS
+
+  let wupin: CustomEquipRecordWithOwner[] = []
   try {
-    wupin = await readItTyped()
+    wupin = (await readItTyped()) as unknown as CustomEquipRecordWithOwner[]
   } catch {
     await writeIt([])
+    wupin = []
   }
-  let newwupin = []
-  const type = ['武器', '护具', '法宝']
-  const nowTime = Date.now()
-  // if 根本还没记录时间或者过了时间，就遍历生成，额外往wupin里添加owner_name（号）属性，并重写回去custom.json
-  if (
-    !(await redis.exists('xiuxian:bestfileCD')) ||
-    +(await redis.get('xiuxian:bestfileCD')) - nowTime > 30 * 60 * 1000
-  ) {
-    await redis.set('xiuxian:bestfileCD', nowTime)
 
+  let result: EquipScoreEntry[] = []
+  if (needRebuild) {
+    await redis.set(CACHE_KEY_TIME, String(now))
     const all = await alluser()
-    for (const [wpId, j] of wupin.entries()) {
-      for (const i of all) {
-        const najie = await readNajie(i)
-        const equ = await readEquipment(i)
-        let exist = najie.装备.find(item => item.name == j.name)
-        for (const m of type) {
-          if (equ[m].name == j.name) {
-            exist = equ[m]
-            break
+    const playerCache = new Map<string, PlayerLite | null>()
+    async function getPlayer(qq: string): Promise<PlayerLite | null> {
+      if (playerCache.has(qq)) return playerCache.get(qq) || null
+      try {
+        const p = await data.getData('player', qq)
+        if (p && typeof p === 'object' && !Array.isArray(p)) {
+          playerCache.set(qq, p as PlayerLite)
+          return p as PlayerLite
+        }
+      } catch {
+        playerCache.set(qq, null)
+        return null
+      }
+      playerCache.set(qq, null)
+      return null
+    }
+    const equipTypes: Array<'武器' | '护具' | '法宝'> = ['武器', '护具', '法宝']
+    for (const [idx, rec] of wupin.entries()) {
+      for (const qq of all) {
+        const najie = await readNajie(qq)
+        interface EquipSlots {
+          武器?: { name?: string } | null
+          护具?: { name?: string } | null
+          法宝?: { name?: string } | null
+          [k: string]: unknown
+        }
+        const equ = (await readEquipment(qq)) as unknown as EquipSlots
+        if (!najie || !equ) continue
+        let found: { name?: string } | undefined = najie.装备.find(
+          it => it.name === rec.name
+        )
+        if (!found) {
+          for (const t of equipTypes) {
+            const slot = equ[t] as { name?: string } | null | undefined
+            if (slot && slot.name === rec.name) {
+              found = slot
+              break
+            }
           }
         }
-        let D = '无门无派'
-        let author = '神秘匠师'
-        if (exist) {
-          if (j.author_name) {
-            const player = await await data.getData('player', j.author_name)
-            author = player.名号
-          }
-          const usr_player = await await data.getData('player', i)
-          wupin[wpId].owner_name = i
-          if (usr_player.宗门) D = usr_player.宗门.宗门名称
-          newwupin.push({
-            name: j.name,
-            type: j.type,
-            评分: Math.trunc((j.atk * 1.2 + j.def * 1.5 + j.HP * 1.5) * 10000),
-            制作者: author,
-            使用者: usr_player.名号 + '(' + D + ')'
-          })
-          break
+        if (!found) continue
+        wupin[idx].owner_name = qq
+        let authorName = '神秘匠师'
+        if (rec.author_name) {
+          const authorP = await getPlayer(rec.author_name)
+          if (authorP) authorName = authorP.名号
         }
+        const ownerP = await getPlayer(qq)
+        const ownerDisplay = `${ownerP?.名号 || qq}(${getSectDisplay(ownerP)})`
+        result.push({
+          name: rec.name,
+          type: rec.type,
+          评分: calcScore(rec),
+          制作者: authorName,
+          使用者: ownerDisplay
+        })
+        break
       }
     }
-    await writeIt(wupin) // 重写custom.json
-  }
-  // 否则，直接按照custom.json记录的数据生成newwupin
-  else {
-    for (const wp of wupin) {
-      let D = '无门无派'
-      let author = '神秘匠师'
-      if (wp.author_name) {
-        const player = await await data.getData('player', wp.author_name)
-        author = player.名号
-      }
-      const usr_player = await await data.getData('player', wp.owner_name)
-      if (usr_player.宗门) D = usr_player.宗门.宗门名称
-
-      newwupin.push({
-        name: wp.name,
-        type: wp.type,
-        评分: Math.trunc((wp.atk * 1.2 + wp.def * 1.5 + wp.HP * 1.5) * 10000),
-        制作者: author,
-        使用者: usr_player.名号 + '(' + D + ')'
-      })
-    }
-  }
-
-  // 让newwupin工作
-  newwupin.sort(function (a, b) {
-    return b.评分 - a.评分
-  })
-  if (newwupin[20] && newwupin[0].评分 == newwupin[20].评分) {
-    const num = Math.floor((newwupin.length - 20) * Math.random())
-    newwupin = newwupin.slice(num, num + 20)
+    const plain = wupin.map(r => ({ ...r })) as unknown as Record<
+      string,
+      unknown
+    >[]
+    await writeIt(plain)
+    await redis.set(CACHE_KEY_LIST, JSON.stringify(result))
   } else {
-    newwupin = newwupin.slice(0, 20)
+    const cachedList = await redis.get(CACHE_KEY_LIST)
+    if (cachedList) {
+      try {
+        result = JSON.parse(cachedList) as EquipScoreEntry[]
+      } catch {
+        result = []
+      }
+    }
+    if (result.length === 0) {
+      needRebuild = true
+      await redis.del(CACHE_KEY_TIME)
+      Send(Text('数据缓存缺失，稍后再试'))
+      return false
+    }
   }
-  const bd_date = { newwupin }
 
-  const tu = await puppeteer.screenshot('shenbing', e.UserId, bd_date)
+  result.sort((a, b) => b.评分 - a.评分)
+  if (result.length > 20) {
+    if (result[0].评分 === result[20].评分) {
+      const offset = Math.floor(Math.random() * (result.length - 20))
+      result = result.slice(offset, offset + 20)
+    } else {
+      result = result.slice(0, 20)
+    }
+  }
+
+  const tu = await screenshot('shenbing', e.UserId, { newwupin: result })
   if (tu) {
     Send(Image(tu))
   } else {
     Send(Text('图片生成失败'))
   }
+  return false
 })

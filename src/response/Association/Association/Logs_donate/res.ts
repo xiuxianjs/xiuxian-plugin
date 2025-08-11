@@ -2,40 +2,70 @@ import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
-import { sortBy } from '@src/model/cultivation'
+import type { AssociationDetailData, Player } from '@src/types'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?宗门捐献记录$/
+
+interface ExtAss extends Omit<AssociationDetailData, '宗门名称'> {
+  宗门名称: string
+  所有成员?: string[]
+}
+function isExtAss(v: unknown): v is ExtAss {
+  return !!v && typeof v === 'object' && '宗门名称' in v
+}
+interface PlayerGuildRef {
+  宗门名称: string
+  职位: string
+  lingshi_donate?: number
+}
+function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return false
-  const player = await data.getData('player', usr_qq)
-  if (!notUndAndNull(player.宗门)) return false
-  const ass = await data.getAssociation(player.宗门.宗门名称)
-  const donate_list = []
-  for (const i in ass.所有成员) {
-    //遍历所有成员
-    const member_qq = ass.所有成员[i]
-    const member_data = await data.getData('player', member_qq)
-    if (!notUndAndNull(member_data.宗门.lingshi_donate)) {
-      member_data.宗门.lingshi_donate = 0 //未定义捐赠数量则为0
-    }
-    donate_list[i] = {
-      name: member_data.名号,
-      lingshi_donate: member_data.宗门.lingshi_donate
-    }
+  const player = (await data.getData('player', usr_qq)) as Player | null
+  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门))
+    return false
+  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  if (assRaw === 'error' || !isExtAss(assRaw)) return false
+  const ass = assRaw
+  const members = Array.isArray(ass.所有成员) ? ass.所有成员 : []
+  if (members.length === 0) {
+    Send(Text('宗门暂无成员'))
+    return false
   }
-  donate_list.sort(sortBy('lingshi_donate'))
-  const msg = [`${ass.宗门名称} 灵石捐献记录表`]
-  for (let i = 0; i < donate_list.length; i++) {
-    msg.push(
-      `第${i + 1}名  ${donate_list[i].name}  捐赠灵石:${
-        donate_list[i].lingshi_donate
-      }`
+  const donate_list: Array<{ name: string; lingshi_donate: number }> = []
+  for (const member_qq of members) {
+    const member_data = (await data.getData(
+      'player',
+      member_qq
+    )) as Player | null
+    if (
+      !member_data ||
+      !notUndAndNull(member_data.宗门) ||
+      !isPlayerGuildRef(member_data.宗门)
     )
+      continue
+    const donate = Number(member_data.宗门.lingshi_donate || 0)
+    donate_list.push({
+      name: String(member_data.名号 || member_qq),
+      lingshi_donate: donate
+    })
   }
-  await Send(Text(msg.join('')))
+  if (donate_list.length === 0) {
+    Send(Text('暂无捐献记录'))
+    return false
+  }
+  donate_list.sort((a, b) => b.lingshi_donate - a.lingshi_donate)
+  const msg: string[] = [`${ass.宗门名称} 灵石捐献记录表`]
+  donate_list.forEach((row, idx) => {
+    msg.push(`第${idx + 1}名  ${row.name}  捐赠灵石:${row.lingshi_donate}`)
+  })
+  await Send(Text(msg.join('\n')))
+  return false
 })

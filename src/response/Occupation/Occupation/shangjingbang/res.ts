@@ -1,9 +1,10 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { redis, puppeteer } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { existplayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?赏金榜$/
 
 export default onResponse(selects, async e => {
@@ -33,6 +34,8 @@ export default onResponse(selects, async e => {
   const type = 1
   const msg_data = { msg: action, type }
 
-  const img = await puppeteer.screenshot('msg', e.UserId, msg_data)
-  if (img) Send(Image(img))
+  const img = await screenshot('msg', e.UserId, msg_data)
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

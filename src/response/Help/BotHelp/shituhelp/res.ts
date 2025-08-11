@@ -7,7 +7,7 @@ export const regular = /^(#|＃|\/)?师徒帮助$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  const data = await Help2.shituhelp(e)
+  const data = await Help2.shituhelp()
   if (!data) return false
   const img = await cache(data, e.UserId)
   await Send(Image(img))

@@ -8,78 +8,115 @@ import {
   writeExchange,
   addNajieThing
 } from '@src/model/index'
+import type {
+  ExchangeRecord as RawExchangeRecord,
+  NajieCategory
+} from '@src/types/model'
 
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?下架[1-9]d*/
+export const regular = /^(#|＃|\/)?下架[1-9]\d*$/
+
+interface LegacyRecord {
+  qq: string
+  name: { name: string; class: NajieCategory } | string
+  aconut?: number
+  pinji2?: number
+  class?: NajieCategory
+  [k: string]: unknown
+}
+
+function toInt(v: unknown, d = 0) {
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.trunc(n) : d
+}
+function mapRecord(r: unknown): LegacyRecord | null {
+  if (!r || typeof r !== 'object') return null
+  const rec = r as LegacyRecord
+  if ('qq' in rec && rec.name) return rec
+  const er = r as RawExchangeRecord
+  if (er.thing) {
+    const name = {
+      name: String(er.thing.name || ''),
+      class: (er.thing.class || '道具') as NajieCategory
+    }
+    return { qq: String(er.last_offer_player || ''), name, aconut: er.amount }
+  }
+  return null
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  //固定写法
   const usr_qq = e.UserId
-  //有无存档
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  //防并发cd
-  const time0 = 0.5 //分钟cd
-  //获取当前时间
-  const now_time = Date.now()
-  let ExchangeCD = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD')
-  ExchangeCD = parseInt(ExchangeCD)
-  const transferTimeout = Math.floor(60000 * time0)
-  if (now_time < ExchangeCD + transferTimeout) {
-    const ExchangeCDm = Math.trunc(
-      (ExchangeCD + transferTimeout - now_time) / 60 / 1000
-    )
-    const ExchangeCDs = Math.trunc(
-      ((ExchangeCD + transferTimeout - now_time) % 60000) / 1000
-    )
-    Send(
-      Text(
-        `每${transferTimeout / 1000 / 60}分钟操作一次，` +
-          `CD: ${ExchangeCDm}分${ExchangeCDs}秒`
-      )
-    )
-    //存在CD。直接返回
+  if (!(await existplayer(usr_qq))) return false
+
+  const now = Date.now()
+  const cdMs = Math.floor(0.5 * 60000)
+  const cdKey = `xiuxian@1.3.0:${usr_qq}:ExchangeCD`
+  const lastTs = toInt(await redis.get(cdKey))
+  if (now < lastTs + cdMs) {
+    const remain = lastTs + cdMs - now
+    const m = Math.trunc(remain / 60000)
+    const s = Math.trunc((remain % 60000) / 1000)
+    Send(Text(`每${cdMs / 60000}分钟操作一次，CD: ${m}分${s}秒`))
     return false
   }
-  let Exchange = []
-  //记录本次执行时间
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
-  const player = await readPlayer(usr_qq)
-  const x = parseInt(e.MessageText.replace(/^(#|＃|\/)?下架/, '')) - 1
+  await redis.set(cdKey, String(now))
+
+  const idx = toInt(e.MessageText.replace(/^(#|＃|\/)?下架/, ''), 0) - 1
+  if (idx < 0) {
+    Send(Text('编号格式错误'))
+    return false
+  }
+
+  let rawList: unknown[] = []
   try {
-    Exchange = await readExchange()
+    rawList = (await readExchange()) as unknown[]
   } catch {
-    //没有表要先建立一个！
-    await writeExchange([])
+    await writeExchange([] as unknown as RawExchangeRecord[])
+    rawList = []
   }
-  if (x >= Exchange.length) {
-    Send(Text(`没有编号为${x + 1}的物品`))
+  const list: LegacyRecord[] = rawList
+    .map(mapRecord)
+    .filter(Boolean) as LegacyRecord[]
+  if (idx >= list.length) {
+    Send(Text(`没有编号为${idx + 1}的物品`))
     return false
   }
-  const thingqq = Exchange[x].qq
-  //对比qq是否相等
-  if (thingqq != usr_qq) {
+
+  const rec = list[idx]
+  if (rec.qq !== usr_qq) {
     Send(Text('不能下架别人上架的物品'))
     return false
   }
-  const thing_name = Exchange[x].name.name
-  const thing_class = Exchange[x].name.class
-  const thing_amount = Exchange[x].aconut
-  if (thing_class == '装备' || thing_class == '仙宠') {
-    await addNajieThing(
-      usr_qq,
-      Exchange[x].name,
-      thing_class,
-      thing_amount,
-      Exchange[x].pinji2
-    )
+
+  let thingName = ''
+  let thingClass: NajieCategory | '' = ''
+  if (typeof rec.name === 'string') {
+    thingName = rec.name
+    thingClass = rec.class || ''
   } else {
-    await addNajieThing(usr_qq, thing_name, thing_class, thing_amount)
+    thingName = rec.name.name
+    thingClass = rec.name.class
   }
-  Exchange.splice(x, 1)
-  await writeExchange(Exchange)
-  await redis.set('xiuxian@1.3.0:' + thingqq + ':Exchange', 0)
-  Send(Text(player.名号 + '下架' + thing_name + '成功！'))
+  if (!thingName) {
+    Send(Text('物品名称缺失'))
+    return false
+  }
+  const amount = toInt(rec.aconut, 1)
+  const cate: NajieCategory = (thingClass || '道具') as NajieCategory
+
+  if (cate === '装备' || cate === '仙宠') {
+    const equipName = typeof rec.name === 'string' ? rec.name : rec.name.name
+    await addNajieThing(usr_qq, equipName, cate, amount, rec.pinji2)
+  } else {
+    await addNajieThing(usr_qq, thingName, cate, amount)
+  }
+
+  rawList.splice(idx, 1)
+  await writeExchange(rawList as RawExchangeRecord[])
+  await redis.set(`xiuxian@1.3.0:${usr_qq}:Exchange`, '0')
+
+  const player = await readPlayer(usr_qq)
+  Send(Text(`${player?.名号 || usr_qq}下架${thingName}成功！`))
   return false
 })

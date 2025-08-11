@@ -6,123 +6,141 @@ import { data } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?渡劫$/
-let dj = 0
+let dj = 0 // 同时仅允许一个玩家进行渡劫（简单内存锁）
+
+// 常量配置
+const MIN_HP_RATIO = 0.9
+const BASE_N = 1380
+const RANGE_P = 280
+const STRIKE_DELAY_MS = 60_000 // 每道雷间隔 60s
+
+function buildLinggenFactor(type: string): number {
+  switch (type) {
+    case '伪灵根':
+      return 3
+    case '真灵根':
+      return 6
+    case '天灵根':
+      return 9
+    case '体质':
+      return 10
+    case '转生':
+    case '魔头':
+      return 21
+    case '转圣':
+      return 26
+    default:
+      return 12
+  }
+}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  //有无账号
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  //不开放私聊
+  if (!(await existplayer(usr_qq))) return false
 
   const player = await readPlayer(usr_qq)
-  //境界
-  const now_level = data.Level_list.find(
-    item => item.level_id == player.level_id
-  ).level
-  if (now_level != '渡劫期') {
-    Send(Text(`你非渡劫期修士！`))
+  if (!player) return false
+
+  const levelInfo = data.Level_list.find(l => l.level_id === player.level_id)
+  if (!levelInfo) {
+    Send(Text('境界数据缺失'))
     return false
   }
-  if (player.linggenshow == 1) {
-    Send(Text(`你灵根未开，不能渡劫！`))
+
+  if (levelInfo.level !== '渡劫期') {
+    Send(Text('你非渡劫期修士！'))
     return false
   }
-  if (player.power_place == 0) {
-    //已经开了
+  if (player.linggenshow === 1) {
+    Send(Text('你灵根未开，不能渡劫！'))
+    return false
+  }
+  if (player.power_place === 0) {
     Send(Text('你已度过雷劫，请感应仙门#登仙'))
     return false
   }
-  //看看当前血量
-  const now_HP = player.当前血量
-  const list_HP = data.Level_list.find(item => item.level == now_level).基础血量
-  if (now_HP < list_HP * 0.9) {
+
+  const baseHpNeed = Number(levelInfo.基础血量) || 0
+  if (Number(player.当前血量) < baseHpNeed * MIN_HP_RATIO) {
     player.当前血量 = 1
     await writePlayer(usr_qq, player)
-    Send(Text(player.名号 + '血量亏损，强行渡劫后晕倒在地！'))
-    return false
-  }
-  //境界id
-  const now_level_id = data.Level_list.find(
-    item => item.level == now_level
-  ).level_id
-  //修为
-  const now_exp = player.修为
-  //修为
-  const need_exp = data.Level_list.find(
-    item => item.level_id == now_level_id
-  ).exp
-  if (now_exp < need_exp) {
-    Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可突破`))
+    Send(Text(`${player.名号}血量亏损，强行渡劫后晕倒在地！`))
     return false
   }
 
-  //当前系数计算
-  const x = await dujie(usr_qq)
-  //默认为3
-  let y = 3
-  if (player.灵根.type == '伪灵根') {
-    y = 3
-  } else if (player.灵根.type == '真灵根') {
-    y = 6
-  } else if (player.灵根.type == '天灵根') {
-    y = 9
-  } else if (player.灵根.type == '体质') {
-    y = 10
-  } else if (player.灵根.type == '转生' || player.灵根.type == '魔头') {
-    y = 21
-  } else if (player.灵根.type == '转圣') {
-    y = 26
-  } else {
-    y = 12
+  const needExp = levelInfo.exp
+  if (player.修为 < needExp) {
+    Send(Text(`修为不足,再积累${needExp - player.修为}修为后方可突破`))
+    return false
   }
-  //渡劫系数区间
-  const n = 1380 //最低
-  const p = 280 //变动
-  const m = n + p
+
+  // 计算雷抗系数
+  const x = await dujie(usr_qq)
+  const y = buildLinggenFactor(player.灵根.type)
+  const n = BASE_N
+  const p = RANGE_P
 
   if (x <= n) {
-    //没有达到最低要求
     player.当前血量 = 0
-    player.修为 -= Math.floor(need_exp / 4)
+    player.修为 -= Math.floor(needExp / 4)
+    if (player.修为 < 0) player.修为 = 0
     await writePlayer(usr_qq, player)
     Send(Text('天空一声巨响，未降下雷劫，就被天道的气势震死了。'))
     return false
   }
+
   if (dj > 0) {
     Send(Text('已经有人在渡劫了,建议打死他'))
     return false
   }
   dj++
-  //渡劫成功率
-  let lRatio = (x - n) / (p + y * 0.1)
-  lRatio = lRatio * 100
-  const l = lRatio.toFixed(2) // 字符串形式百分比
+
+  // 成功率计算
+  const denominator = p + y * 0.1
+  const lRatio = denominator > 0 ? ((x - n) / denominator) * 100 : 0
+  const percent = lRatio.toFixed(2)
+
   Send(Text('天道：就你，也敢逆天改命？'))
   Send(
     Text(
-      '[' +
-        player.名号 +
-        ']' +
-        '\n雷抗：' +
-        x +
-        '\n成功率：' +
-        l +
-        '%\n灵根：' +
-        player.灵根.type +
-        '\n需渡' +
-        y +
-        '道雷劫\n将在一分钟后落下\n[温馨提示]\n请把其他渡劫期打死后再渡劫！'
+      `【${player.名号}】\n雷抗：${x}\n成功率：${percent}%\n灵根：${player.灵根.type}\n需渡${y}道雷劫\n将在1分钟后落下\n[温馨提示]\n请把其他渡劫期打死后再渡劫！`
     )
   )
-  let aconut = 1
-  const timer = setInterval(async () => {
-    const flag = await LevelTask(e, n, m, y, aconut)
-    aconut++
-    if (!flag) {
-      dj = 0
-      clearInterval(timer)
+
+  let strikeIndex = 1
+  let active = true
+
+  const doStrike = async () => {
+    if (!active) return
+    const stillPlayer = await readPlayer(usr_qq)
+    if (!stillPlayer) {
+      release('玩家数据缺失')
+      return
     }
-  }, 60000)
+    // 若玩家死亡/非渡劫期/已登仙则终止
+    if (stillPlayer.当前血量 <= 0 || stillPlayer.power_place === 0) {
+      release('状态结束')
+      return
+    }
+
+    const publicEvent = e as import('alemonjs').EventsMessageCreateEnum
+    const cont = await LevelTask(publicEvent, n, n + p, y, strikeIndex)
+    strikeIndex++
+    if (!cont || strikeIndex > y) {
+      release('流程结束')
+      return
+    }
+    setTimeout(doStrike, STRIKE_DELAY_MS)
+  }
+
+  const release = (_reason: string) => {
+    if (!active) return
+    active = false
+    dj = 0
+    // 可选调试: console.debug('渡劫结束:', usr_qq, reason)
+  }
+
+  setTimeout(doStrike, STRIKE_DELAY_MS)
+  return false
 })

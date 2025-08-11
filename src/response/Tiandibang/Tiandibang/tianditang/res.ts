@@ -30,5 +30,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const img = await get_tianditang_img(e, tiandibang[m].积分)
-  if (img) Send(Image(img))
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 })

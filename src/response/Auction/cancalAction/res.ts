@@ -8,7 +8,7 @@ export const regular = /^(#|＃|\/)?取消星阁体系$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) {
-    Send(Text('只有只因器人主人可以取消'))
+    Send(Text('只有主人可以取消'))
     return false
   }
 
