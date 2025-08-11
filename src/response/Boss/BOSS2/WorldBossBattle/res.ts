@@ -14,6 +14,7 @@ import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
 
 import { selects } from '@src/response/index'
+import { existplayer } from '@src/model'
 export const regular = /^(#|＃|\/)?讨伐金角大王$/
 
 interface PlayerRecordData {
@@ -47,6 +48,10 @@ function toInt(v: unknown, d = 0) {
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
 
   if (!(await Boss2IsAlive())) {
     Send(Text('金角大王未开启！'))

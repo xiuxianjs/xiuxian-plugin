@@ -1,4 +1,4 @@
-import { Image, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
 import {
   existplayer,
@@ -33,29 +33,16 @@ function pickEquip(name: string) {
   return data.equipment_list.find(i => i.name === name) || null
 }
 
-function isPublicMessage(evt: unknown): evt is { Guild: unknown } {
-  return !!evt && typeof evt === 'object' && 'Guild' in evt
-}
-
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (await existplayer(usr_qq)) {
-    if (isPublicMessage(e)) {
-      const img = await getPlayerImage(
-        e as Parameters<typeof getPlayerImage>[0]
-      )
-      if (img) {
-        if (Buffer.isBuffer(img)) Send(Image(img))
-        else if (typeof img === 'string') {
-          try {
-            Send(Image(Buffer.from(img)))
-          } catch {
-            /* ignore */
-          }
-        }
-      }
+    const img = await getPlayerImage(e as Parameters<typeof getPlayerImage>[0])
+    if (Buffer.isBuffer(img)) {
+      Send(Image(img))
+      return false
     }
+    Send(Text('图片加载失败'))
     return false
   }
   // 玩家计数：使用 redis key 数量作为序号（若需精确可改为读取文件系统）
@@ -146,18 +133,11 @@ export default onResponse(selects, async e => {
     usr_qq,
     danyaoInit as unknown as Parameters<typeof writeDanyao>[1]
   )
-  const img = isPublicMessage(e)
-    ? await getPlayerImage(e as Parameters<typeof getPlayerImage>[0])
-    : null
-  if (img) {
-    if (Buffer.isBuffer(img)) Send(Image(img))
-    else if (typeof img === 'string') {
-      try {
-        Send(Image(Buffer.from(img)))
-      } catch {
-        /* ignore */
-      }
-    }
+  const img = await getPlayerImage(e as Parameters<typeof getPlayerImage>[0])
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+    return false
   }
+  Send(Text('图片加载失败'))
   return false
 })

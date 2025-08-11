@@ -11,6 +11,7 @@ import {
   remainingMs,
   formatRemaining
 } from '@src/response/actionHelper'
+import { existplayer } from '@src/model'
 
 export const WorldBossBattleInfo = {
   CD: {},
@@ -131,6 +132,11 @@ export async function Boss2IsAlive() {
 export const BossIsAlive = Boss2IsAlive
 export async function LookUpWorldBossStatus(e: EventsMessageCreateEnum) {
   const send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   if (await Boss2IsAlive()) {
     const statusStr = await redis.get('Xiuxian:WorldBossStatus2')
     if (statusStr) {
@@ -178,6 +184,11 @@ export async function SortPlayer(PlayerRecordJSON) {
 }
 export async function WorldBossBattle(e) {
   const send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   const WorldBOSSBattleCD = WorldBossBattleInfo.CD
   if (!(await Boss2IsAlive())) {
     send(Text('妖王未开启！'))

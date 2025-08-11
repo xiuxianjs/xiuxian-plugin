@@ -9,6 +9,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?回收.*$/
 
 export default onResponse(selects, async e => {
@@ -26,7 +27,8 @@ export default onResponse(selects, async e => {
   }
   let lingshi = 0
   const najie = await readNajie(usr_qq)
-  const type = [
+  if (!najie) return false
+  const type: NajieCategory[] = [
     '装备',
     '丹药',
     '道具',
@@ -36,21 +38,29 @@ export default onResponse(selects, async e => {
     '仙宠',
     '仙宠口粮'
   ]
-  for (const i of type) {
-    const thing = najie[i].find(item => item.name == thing_name)
-    if (thing) {
-      if (thing.class == '材料' || thing.class == '草药') {
-        lingshi += thing.出售价 * thing.数量
-      } else {
-        lingshi += thing.出售价 * 2 * thing.数量
-      }
-      await addNajieThing(
-        usr_qq,
-        thing.name,
-        thing.class,
-        -thing.数量,
-        thing.pinji
-      )
+  for (const cate of type) {
+    const list = (najie as unknown as Record<string, unknown>)[cate]
+    if (!Array.isArray(list)) continue
+    const thing = (
+      list as Array<{
+        name: string
+        出售价?: number
+        数量?: number
+        class?: string
+        pinji?: number
+      }>
+    ).find(item => item.name == thing_name)
+    if (!thing) continue
+    const sell = typeof thing.出售价 === 'number' ? thing.出售价 : 0
+    const num = typeof thing.数量 === 'number' ? thing.数量 : 0
+    const cls = (thing.class as NajieCategory) || cate
+    if (cls == '材料' || cls == '草药') {
+      lingshi += sell * num
+    } else {
+      lingshi += sell * 2 * num
+    }
+    if (num !== 0) {
+      await addNajieThing(usr_qq, thing.name, cls, -num, thing.pinji)
     }
   }
   await addCoin(usr_qq, lingshi)

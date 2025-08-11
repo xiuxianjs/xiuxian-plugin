@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, findQinmidu, sleep } from '@src/model/index'
+import { __PATH, existplayer, findQinmidu, sleep } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { redis } from '@src/model/api'
@@ -7,14 +7,13 @@ export const regular = /^(#|＃|\/)?查询亲密度$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   const A = e.UserId
-  /*
-            @xxx
-            -----qq----- -亲密度-
-            1726566892   200
-            12345674     50  
-            3309758991   20
-         */
+
   let flag = 0 //关系人数
   const msg = [] //回复的消息
   msg.push(`\n-----qq----- -亲密度-`)

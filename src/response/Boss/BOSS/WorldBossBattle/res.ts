@@ -13,6 +13,7 @@ import {
   WorldBossBattle,
   WorldBossBattleInfo
 } from '../../boss'
+import { existplayer } from '@src/model'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?讨伐妖王$/
@@ -50,10 +51,15 @@ function toInt(v: unknown, d = 0) {
 export default onResponse(selects, async e => {
   const Send = useSend(e)
 
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   if (!(await BossIsAlive())) {
     Send(Text('妖王未开启！'))
     return false
   }
+
   const usr_qq = e.UserId
   const now_Time = Date.now()
   const cdMs = 5 * 60000

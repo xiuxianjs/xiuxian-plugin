@@ -13,6 +13,8 @@ export default onResponse(selects, async e => {
       await redis.del('Xiuxian:WorldBossStatus')
       await redis.del('xiuxian@1.3.0Record')
       Send(Text('妖王挑战关闭！'))
-    } else Send(Text('妖王未开启'))
+    } else {
+      Send(Text('妖王未开启'))
+    }
   }
 })

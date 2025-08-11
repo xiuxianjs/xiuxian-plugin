@@ -2,6 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
+import { existplayer } from '@src/model'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?金角大王状态$/
@@ -26,6 +27,11 @@ function formatNum(n: unknown) {
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   if (!(await Boss2IsAlive())) {
     Send(Text('金角大王未开启！'))
     return false

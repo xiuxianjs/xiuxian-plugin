@@ -16,6 +16,11 @@ interface TianditangItem {
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   const now = new Date()
   if (now.getDay() !== 0) {
     Send(Text('物品筹备中，等到周日再来兑换吧'))
@@ -23,7 +28,6 @@ export default onResponse(selects, async e => {
   }
 
   const usr_qq = e.UserId
-  if (!(await existplayer(usr_qq))) return false
 
   const thingName = e.MessageText.replace(/^(#|＃|\/)?积分兑换/, '').trim()
   if (!thingName) {

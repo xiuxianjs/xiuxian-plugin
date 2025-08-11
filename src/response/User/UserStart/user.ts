@@ -27,17 +27,12 @@ export async function Show_player(
       const img = await getPlayerImage(
         e as Parameters<typeof getPlayerImage>[0]
       )
-      if (img) {
-        if (Buffer.isBuffer(img)) Send(Image(img))
-        else if (typeof img === 'string') {
-          try {
-            Send(Image(Buffer.from(img)))
-          } catch {
-            /* ignore */
-          }
-        }
+      if (Buffer.isBuffer(img)) {
+        Send(Image(img))
         return false
       }
+      Send(Text('图片加载失败'))
+      return false
     } catch {
       Send(Text('角色卡生成失败'))
       return false

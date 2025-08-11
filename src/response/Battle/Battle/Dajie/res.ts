@@ -55,6 +55,11 @@ function extractFaQiu(lg: unknown): number | undefined {
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
+
   // 时间窗口校验（星阁开启时禁止）
   const nowDate = new Date()
   const { openHour, closeHour } = config.getConfig(

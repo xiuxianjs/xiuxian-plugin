@@ -1,4 +1,11 @@
-import { Image, Mention, Text, useMessage, useSubscribe } from 'alemonjs'
+import {
+  Image,
+  Mention,
+  Text,
+  useMessage,
+  useSend,
+  useSubscribe
+} from 'alemonjs'
 
 import { data } from '@src/model/api'
 import { convert2integer } from '@src/model/common'
@@ -134,16 +141,13 @@ export default onResponse(selects, async e => {
     const img = await getQquipmentImage(
       e as Parameters<typeof getQquipmentImage>[0]
     )
-    if (img) {
-      if (Buffer.isBuffer(img)) message.send(format(Image(img)))
-      else if (typeof img === 'string') {
-        try {
-          message.send(format(Image(Buffer.from(img))))
-        } catch {
-          /* ignore */
-        }
-      }
+    const Send = useSend(e)
+    if (Buffer.isBuffer(img)) {
+      Send(Image(img))
+      return false
     }
+    Send(Text('图片加载失败'))
+
     return
   }
 

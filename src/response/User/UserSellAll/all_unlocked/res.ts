@@ -39,6 +39,8 @@ export default onResponse(selects, async e => {
     }
   }
   for (const i of wupin) {
+    const list = najie[i] as unknown
+    if (!Array.isArray(list)) continue
     for (const l of najie[i]) {
       //纳戒中的数量
       l.islockd = 0

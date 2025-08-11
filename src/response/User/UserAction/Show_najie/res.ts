@@ -37,10 +37,10 @@ export default onResponse(selects, async e => {
     Send(Text('纳戒信息生成失败，请稍后重试'))
     return false
   }
-  if (typeof img === 'string') {
-    Send(Image(Buffer.from(img)))
-  } else {
+  if (Buffer.isBuffer(img)) {
     Send(Image(img))
+    return false
   }
+  Send(Text('图片加载失败'))
   return false
 })

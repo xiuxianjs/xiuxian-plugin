@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { sleep } from '@src/model/index'
+import { existplayer, sleep } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
 export const selects = onSelects(['message.create'])
@@ -30,6 +30,10 @@ function parseJson<T>(raw: string | null): T | null {
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
   if (!(await BossIsAlive())) {
     Send(Text('妖王未开启！'))
     return false

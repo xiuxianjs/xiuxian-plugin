@@ -1,7 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { foundthing, existNajieThing, addNajieThing } from '@src/model/index'
+import {
+  foundthing,
+  existNajieThing,
+  addNajieThing,
+  existplayer
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?哪里有(.*)$/
@@ -39,6 +44,10 @@ function normalizeName(raw: string): string {
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
+
+  const user_qq = e.UserId //用户qq
+  //有无存档
+  if (!(await existplayer(user_qq))) return false
 
   // 提取物品名
   const thingName = normalizeName(

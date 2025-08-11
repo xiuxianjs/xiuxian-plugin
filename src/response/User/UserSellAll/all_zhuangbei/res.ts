@@ -159,16 +159,11 @@ export default onResponse(selects, async e => {
     const img = await getQquipmentImage(
       e as Parameters<typeof getQquipmentImage>[0]
     )
-    if (img) {
-      if (Buffer.isBuffer(img)) Send(Image(img))
-      else if (typeof img === 'string') {
-        try {
-          Send(Image(Buffer.from(img)))
-        } catch {
-          /* ignore */
-        }
-      }
+    if (Buffer.isBuffer(img)) {
+      Send(Image(img))
+      return false
     }
+    Send(Text('图片加载失败'))
   }
   return false
 })

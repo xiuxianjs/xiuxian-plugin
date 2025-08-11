@@ -13,11 +13,12 @@ export const regular = /^(#|＃|\/)?悬赏.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) {
-    Send(Text('尚无存档'))
     return false
   }
+
   const player = await readPlayer(usr_qq)
   if (!player) {
     Send(Text('玩家数据读取失败'))

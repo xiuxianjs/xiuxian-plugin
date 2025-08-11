@@ -48,7 +48,8 @@ export async function existNajieThing(
   if (!najie) return false
   let ifexist: NajieItem | undefined
   if (thing_class == '装备' && (thing_pinji || thing_pinji == 0)) {
-    ifexist = najie.装备.find(
+    const equipList = Array.isArray(najie.装备) ? najie.装备 : []
+    ifexist = equipList.find(
       item => item.name == thing_name && item.pinji == thing_pinji
     )
   } else {
@@ -62,8 +63,10 @@ export async function existNajieThing(
       '仙宠',
       '仙宠口粮'
     ]
-    for (const i of type) {
-      ifexist = najie[i].find(item => item.name == thing_name)
+    for (const cat of type) {
+      const list = (najie as unknown as Record<string, unknown>)[cat]
+      if (!Array.isArray(list)) continue
+      ifexist = (list as NajieItem[]).find(item => item.name == thing_name)
       if (ifexist) break
     }
   }

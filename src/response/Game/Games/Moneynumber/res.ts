@@ -7,16 +7,17 @@ import { game } from '../game'
 export const regular = /^(#|＃|\/)?金银坊$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+
+  const usr_qq = e.UserId
+  // 基础进入校验
+  if (!(await existplayer(usr_qq))) {
+    return false
+  }
+
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const gameswitch = cf?.switch?.Moneynumber
   if (gameswitch !== true) return false
-  const usr_qq = e.UserId
 
-  // 基础进入校验
-  if (!(await existplayer(usr_qq))) {
-    Send(Text('尚无存档'))
-    return false
-  }
   const flag = await Go(e)
   if (!flag) return false
 

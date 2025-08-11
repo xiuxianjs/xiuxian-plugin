@@ -4,6 +4,7 @@ import { data } from '@src/model/api'
 import { existplayer, addNajieThing, addCoin, sleep } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
 
 export default onResponse(selects, async e => {
@@ -13,8 +14,12 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   let commodities_price = 0
-  const najie = await await data.getData('najie', usr_qq)
-  let wupin = [
+  const najie = (await data.getData('najie', usr_qq)) as Record<
+    string,
+    unknown
+  > | null
+  if (!najie) return false
+  let wupin: NajieCategory[] = [
     '装备',
     '丹药',
     '道具',
@@ -24,7 +29,7 @@ export default onResponse(selects, async e => {
     '仙宠',
     '仙宠口粮'
   ]
-  const wupin1 = []
+  const wupin1: NajieCategory[] = []
   if (e.MessageText != '#一键出售') {
     let thing = e.MessageText.replace(/^(#|＃|\/)?/, '')
     for (const i of wupin) {
@@ -39,12 +44,22 @@ export default onResponse(selects, async e => {
       return false
     }
     for (const i of wupin) {
-      for (const l of najie[i]) {
-        if (l && l.islockd == 0) {
-          //纳戒中的数量
-          const quantity = l.数量
-          await addNajieThing(usr_qq, l.name, l.class, -quantity, l.pinji)
-          commodities_price = commodities_price + l.出售价 * quantity
+      const list = najie[i] as unknown
+      if (!Array.isArray(list)) continue
+      for (const l of list as Array<{
+        name: string
+        islockd?: number
+        数量?: number
+        出售价?: number
+        class?: string
+        pinji?: number
+      }>) {
+        if (l && (l.islockd ?? 0) == 0) {
+          const quantity = typeof l.数量 === 'number' ? l.数量 : 0
+          const price = typeof l.出售价 === 'number' ? l.出售价 : 0
+          const cls = (l.class as NajieCategory) || i
+          await addNajieThing(usr_qq, l.name, cls, -quantity, l.pinji)
+          commodities_price += price * quantity
         }
       }
     }
@@ -53,13 +68,18 @@ export default onResponse(selects, async e => {
     return false
   }
   let goodsNum = 0
-  const goods = []
+  const goods: string[] = []
   goods.push('正在出售:')
   for (const i of wupin) {
-    for (const l of najie[i]) {
-      if (l && l.islockd == 0) {
-        //纳戒中的数量
-        const quantity = l.数量
+    const list = najie[i] as unknown
+    if (!Array.isArray(list)) continue
+    for (const l of list as Array<{
+      name: string
+      islockd?: number
+      数量?: number
+    }>) {
+      if (l && (l.islockd ?? 0) == 0) {
+        const quantity = typeof l.数量 === 'number' ? l.数量 : 0
         goods.push('\n' + l.name + '*' + quantity)
         goodsNum++
       }
@@ -79,22 +99,24 @@ export default onResponse(selects, async e => {
   const sub = subscribe.mount(
     async event => {
       clearTimeout(timeout)
-      // 创建
       const [message] = useMessage(event)
-      // 获取文本
       const new_msg = event.MessageText
-      const difficulty = new_msg === '1'
-      if (!difficulty) {
+      const confirm = new_msg === '1'
+      if (!confirm) {
         message.send(format(Text('已取消出售')))
         return
       }
-      /**出售*/
-
       const usr_qq = event.UserId
-      //有无存档
-      const najie = await data.getData('najie', usr_qq)
+      const najie2 = (await data.getData('najie', usr_qq)) as Record<
+        string,
+        unknown
+      > | null
+      if (!najie2) {
+        message.send(format(Text('数据缺失，出售失败')))
+        return
+      }
       let commodities_price = 0
-      const wupin = [
+      const wupin: NajieCategory[] = [
         '装备',
         '丹药',
         '道具',
@@ -105,12 +127,22 @@ export default onResponse(selects, async e => {
         '仙宠口粮'
       ]
       for (const i of wupin) {
-        for (const l of najie[i]) {
-          if (l && l.islockd == 0) {
-            //纳戒中的数量
-            const quantity = l.数量
-            await addNajieThing(usr_qq, l.name, l.class, -quantity, l.pinji)
-            commodities_price = commodities_price + l.出售价 * quantity
+        const list = najie2[i] as unknown
+        if (!Array.isArray(list)) continue
+        for (const l of list as Array<{
+          name: string
+          islockd?: number
+          数量?: number
+          出售价?: number
+          class?: string
+          pinji?: number
+        }>) {
+          if (l && (l.islockd ?? 0) == 0) {
+            const quantity = typeof l.数量 === 'number' ? l.数量 : 0
+            const price = typeof l.出售价 === 'number' ? l.出售价 : 0
+            const cls = (l.class as NajieCategory) || i
+            await addNajieThing(usr_qq, l.name, cls, -quantity, l.pinji)
+            commodities_price += price * quantity
           }
         }
       }
@@ -122,9 +154,7 @@ export default onResponse(selects, async e => {
   const timeout = setTimeout(
     () => {
       try {
-        // 不能在回调中执行
         subscribe.cancel(sub)
-        // 发送消息
         message.send(format(Text('超时自动取消出售')))
       } catch (e) {
         logger.error('取消订阅失败', e)

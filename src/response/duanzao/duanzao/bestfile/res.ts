@@ -6,7 +6,8 @@ import {
   writeIt,
   alluser,
   readNajie,
-  readEquipment
+  readEquipment,
+  existplayer
 } from '@src/model/index'
 interface CustomEquipRecord {
   name: string
@@ -50,6 +51,11 @@ const CACHE_EXPIRE_MS = 30 * 60 * 1000
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+  const user_qq = e.UserId
+  const ifexistplay_A = await existplayer(user_qq)
+  if (!ifexistplay_A) {
+    return false
+  }
   const now = Date.now()
   const lastTsRaw = await redis.get(CACHE_KEY_TIME)
   const lastTs = lastTsRaw ? Number(lastTsRaw) : 0
