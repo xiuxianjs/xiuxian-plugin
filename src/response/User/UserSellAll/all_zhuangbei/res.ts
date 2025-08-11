@@ -82,10 +82,6 @@ function score(e: EquipItem, base: [number, number, number]): number {
     : e.atk * 0.43 + e.def * 0.16 + e.HP * 0.41
 }
 
-function isPublic(evt: unknown): evt is { Guild: unknown } {
-  return !!evt && typeof evt === 'object' && 'Guild' in evt
-}
-
 function toEquipLike(item: EquipItem, cls: string | number): EquipmentLikeArg {
   return {
     name: item.name,
@@ -154,16 +150,12 @@ export default onResponse(selects, async e => {
       }
     }
   }
-
-  if (isPublic(e)) {
-    const img = await getQquipmentImage(
-      e as Parameters<typeof getQquipmentImage>[0]
-    )
-    if (Buffer.isBuffer(img)) {
-      Send(Image(img))
-      return false
-    }
-    Send(Text('图片加载失败'))
+  const img = await getQquipmentImage(
+    e as Parameters<typeof getQquipmentImage>[0]
+  )
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+    return false
   }
-  return false
+  Send(Text('图片加载失败'))
 })
