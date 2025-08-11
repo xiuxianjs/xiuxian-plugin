@@ -269,7 +269,11 @@ function Strand(
   style: { width: string }
   num: string
 } {
-  const num = ((now / max) * 100).toFixed(0)
+  // 确保输入值是有效的数字
+  const validNow = Number(now) || 0
+  const validMax = Number(max) || 1
+
+  const num = ((validNow / validMax) * 100).toFixed(0)
   const mini = Number(num) > 100 ? 100 : num
 
   const strand = {
@@ -600,6 +604,13 @@ export async function getPlayerImage(
     Send(Text('玩家数据获取失败'))
     return
   }
+
+  // 学习的功法 可能被旧版本存档写成非数组（例如对象或 undefined），这里做兼容
+  const rawXuexi = (player as unknown as { 学习的功法?: unknown }).学习的功法
+  const learned_gongfa: string[] = Array.isArray(rawXuexi)
+    ? rawXuexi.filter((v: unknown) => typeof v === 'string')
+    : []
+
   const equipment = await getEquipmentDataSafe(usr_qq)
   if (!equipment) {
     Send(Text('装备数据获取失败'))
@@ -696,8 +707,8 @@ export async function getPlayerImage(
   if (!notUndAndNull(player.occupation)) {
     occupation = '无'
     occupation_level_name = '-'
-    occupation_exp = '-'
-    occupation_need_exp = '-'
+    occupation_exp = 0
+    occupation_need_exp = 1
   } else {
     occupation_level = player.occupation_level
     occupation_level_name = data.occupation_exp_list.find(
@@ -770,13 +781,16 @@ export async function getPlayerImage(
   const equipmentCopy = {
     武器: {
       ...equipment.武器,
-      bao: Math.floor(equipment.武器.bao * 100) + '%'
+      bao: Math.floor((equipment.武器.bao || 0) * 100) + '%'
     },
     护具: {
       ...equipment.护具,
-      bao: Math.floor(equipment.护具.bao * 100) + '%'
+      bao: Math.floor((equipment.护具.bao || 0) * 100) + '%'
     },
-    法宝: { ...equipment.法宝, bao: Math.floor(equipment.法宝.bao * 100) + '%' }
+    法宝: {
+      ...equipment.法宝,
+      bao: Math.floor((equipment.法宝.bao || 0) * 100) + '%'
+    }
   }
   const lingshiDisplay = bigNumberTransform(lingshi)
   let hunyin = '未知'
@@ -865,12 +879,12 @@ export async function getPlayerImage(
     armor: equipmentCopy.护具,
     treasure: equipmentCopy.法宝,
     association: this_association,
-    learned_gongfa: player.学习的功法,
+    learned_gongfa: learned_gongfa,
     婚姻状况: hunyin,
     武器评级: 武器评级,
     护具评级: 护具评级,
     法宝评级: 法宝评级,
-    avatar: player.avatar
+    avatar: player.avatar || `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
   }
   if (process.env.NODE_ENV === 'development') {
     const dir = './views'

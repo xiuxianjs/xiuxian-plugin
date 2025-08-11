@@ -43,47 +43,34 @@ export function createPlayerRepository(
     },
     async addOccupationExp(id, delta) {
       if (delta === 0) return null
-      // 使用 Lua 实现原子读取 + 升级计算
-      const script = `
-local k = KEYS[1]
-local delta = tonumber(ARGV[1])
-local tblJson = ARGV[2]
-local data = redis.call('GET', k)
-if not data then return nil end
-local ok, player = pcall(cjson.decode, data)
-if not ok then return nil end
-local occExp = tonumber(player['occupation_exp'] or 0)
-local occLevel = tonumber(player['occupation_level'] or 1)
-local expTable = cjson.decode(tblJson)
-occExp = occExp + delta
-while true do
-  local need = nil
-  for i=1,#expTable do
-    local row = expTable[i]
-    if tonumber(row.id) == occLevel then need = tonumber(row.experience); break end
-  end
-  if (not need) or (need > occExp) then break end
-  occExp = occExp - need
-  occLevel = occLevel + 1
-end
-player['occupation_exp'] = occExp
-player['occupation_level'] = occLevel
-redis.call('SET', k, cjson.encode(player))
-return occLevel .. ':' .. occExp
-`
+
+      // 传统的读取-修改-写入方式
+      const player = await this.get(id)
+      if (!player) return null
+
       const occupationTable = getOccupationTable()
-      const evalResult = (await redis.eval(
-        script,
-        1,
-        keys.player(id),
-        String(delta),
-        JSON.stringify(occupationTable)
-      )) as unknown
-      const res: string | null =
-        typeof evalResult === 'string' ? evalResult : null
-      if (!res) return null
-      const [levelStr, expStr] = res.split(':')
-      return { level: Number(levelStr), exp: Number(expStr) }
+      let occExp = Number(player.occupation_exp || 0)
+      let occLevel = Number(player.occupation_level || 1)
+
+      occExp = occExp + delta
+
+      // 处理升级逻辑
+      while (true) {
+        const expRow = occupationTable.find(row => row.id === occLevel)
+        if (!expRow || expRow.experience > occExp) break
+
+        occExp = occExp - expRow.experience
+        occLevel = occLevel + 1
+      }
+
+      // 更新玩家数据
+      player.occupation_exp = occExp
+      player.occupation_level = occLevel
+
+      // 保存回 Redis
+      await this.save(id, player)
+
+      return { level: occLevel, exp: occExp }
     }
   }
 }

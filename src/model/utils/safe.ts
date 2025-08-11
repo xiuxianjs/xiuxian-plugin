@@ -31,36 +31,20 @@ export class PlayerRepo {
     delta: number
   ): Promise<number | null> {
     if (!delta) return null
-    // 使用 Lua：读取 -> 修改 -> 写回；避免读改写竞态
-    const lua = `
-  local key = KEYS[1]
-  local field = ARGV[1]
-  local delta = tonumber(ARGV[2])
-  local raw = redis.call('GET', key)
-  if not raw then return nil end
-  local ok, obj = pcall(cjson.decode, raw)
-  if not ok or type(obj) ~= 'table' then return nil end
-  -- 若 obj 是数组（#obj > 0），直接返回 nil，避免数组被当作对象处理
-  if #obj > 0 then return nil end
-  local cur = obj[field] or 0
-  cur = cur + delta
-  obj[field] = cur
-  redis.call('SET', key, cjson.encode(obj))
-  return cur
-`
-    // ...existing code...
-    const key = `${__PATH.player_path}:${id}`
-    const redisClientTyped = this.redis as unknown as {
-      eval: (
-        script: string,
-        numKeys: number,
-        key: string,
-        field: string,
-        delta: number
-      ) => Promise<number | null | string>
-    }
-    const res = await redisClientTyped.eval(lua, 1, key, field, delta)
-    return typeof res === 'number' ? res : res == null ? null : Number(res)
+
+    // 传统的读取-修改-写入方式
+    const obj = await this.getObject<Record<string, unknown>>(id)
+    if (!obj) return null
+
+    // 若 obj 是数组，直接返回 null，避免数组被当作对象处理
+    if (Array.isArray(obj)) return null
+
+    const current = Number(obj[field] || 0)
+    const newValue = current + delta
+    obj[field] = newValue
+
+    await this.setObject(id, obj)
+    return newValue
   }
 }
 
