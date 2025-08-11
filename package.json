@@ -15,7 +15,11 @@
     "build": "lvy build",
     "eslint": "eslint src --fix",
     "format": "prettier --write .",
-    "check-format": "git diff --exit-code"
+    "check-format": "git diff --exit-code",
+    "lint:staged": "git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",
+    "lint:changed": "git diff origin/main...HEAD --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",
+    "lint:fix": "eslint src --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
+    "lint:baseline": "eslint -f json src > eslint-baseline.json || true"
   },
   "dependencies": {
     "dayjs": "^1.11.13",
