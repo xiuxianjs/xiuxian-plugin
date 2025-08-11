@@ -3,46 +3,12 @@ import { notUndAndNull } from './common.js'
 import { readEquipment } from './equipment.js'
 import * as _ from 'lodash-es'
 import type { Player, Equipment } from '../types/player.js'
-import type { SkillItem } from '../types/data_extra'
-
-// 轻量战斗实体，用于任务脚本临时构造不完整玩家对象
-export interface BattleEntity {
-  名号: string
-  攻击: number
-  防御: number
-  当前血量: number
-  暴击率: number
-  灵根: { 法球倍率?: number; name?: string; type?: string } & Record<
-    string,
-    unknown
-  >
-  隐藏灵根?: { name: string }
-  id?: string
-  魔道值?: number
-  level_id?: number
-  神石?: number
-  仙宠?: { type: string; 加成: number; name: string }
-  [k: string]: unknown
-}
-
-interface BattleResult {
-  msg: string[]
-  A_xue: number
-  B_xue: number
-}
-
-type EquipmentSlots = '武器' | '护具' | '法宝'
-
-// 只定义在本文件需要使用到的技能字段最小子集
-// 与资源文件 SkillItem 对应，补充 battle 需要的字段（资源类型名称不完全一致时做兼容）
-interface Skill extends SkillItem {
-  cnt: number
-  pr: number
-  msg1: string
-  msg2: string
-  beilv: number
-  other: number
-}
+import type {
+  BattleEntity,
+  BattleResult,
+  Skill,
+  EquipmentSlots
+} from '../types/model'
 
 /**
  * 进行自动战斗计算

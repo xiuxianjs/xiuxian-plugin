@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let action: any = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
+  let action = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
   action = await JSON.parse(action)
   action = null
   Send(Text('清除完成'))

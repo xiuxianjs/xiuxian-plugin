@@ -1,7 +1,5 @@
 import { redis } from '../../model/api'
-
-// 基础可空字符串类型
-type RedisScalar = string | null
+import type { RedisScalar } from '../../types/model'
 
 // 通用获取：保留字符串或 null
 export async function getString(key: string): Promise<RedisScalar> {

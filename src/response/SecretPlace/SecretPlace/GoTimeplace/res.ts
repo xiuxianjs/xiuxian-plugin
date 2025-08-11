@@ -88,9 +88,9 @@ export default onResponse(selects, async e => {
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.timeplace //时间（分钟）
   const action_time = 60000 * time //持续时间，单位毫秒
-  const arr: any = {
+  const arr = {
     action: '探索', //动作
-    end_time: new Date().getTime() + action_time, //结束时间
+    end_time: Date.now() + action_time, //结束时间
     time: action_time, //持续时间
     shutup: '1', //闭关
     working: '1', //降妖

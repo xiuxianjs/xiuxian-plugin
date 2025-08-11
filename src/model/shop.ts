@@ -2,18 +2,7 @@
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
 import { getIoRedis } from '@alemonjs/db'
-
-interface ShopThing {
-  name: string
-  数量: number
-  [k: string]: unknown
-}
-interface ShopSlot {
-  one: ShopThing[]
-  name: string
-  [k: string]: unknown
-}
-type ShopData = ShopSlot[]
+import type { ShopThing, ShopData } from '../types/model'
 
 const redis = getIoRedis()
 

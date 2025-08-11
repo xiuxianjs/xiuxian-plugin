@@ -50,3 +50,35 @@ export interface ActionState {
   thing?: PlaceThing[]
   [k: string]: unknown
 }
+
+export interface SecretPlacePlusItem {
+  name: string
+  class: string
+}
+export interface SecretPlacePlusAddress {
+  name: string
+  one: SecretPlacePlusItem[]
+  two: SecretPlacePlusItem[]
+  three: SecretPlacePlusItem[]
+}
+export interface SecretPlacePlusAction extends ActionState {
+  Place_actionplus?: number | string
+  Place_address?: SecretPlacePlusAddress
+  cishu: number
+}
+export interface MonsterLike {
+  名号: string
+  攻击: number
+  防御: number
+  当前血量: number
+  暴击率: number
+}
+export interface ShenjieTierItem {
+  name: string
+  class: string
+}
+export interface ShenjiePlace {
+  one: ShenjieTierItem[]
+  two: ShenjieTierItem[]
+  three: ShenjieTierItem[]
+}

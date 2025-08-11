@@ -2,31 +2,13 @@ import config from './Config'
 import data from './XiuxianData'
 import { getIoRedis } from '@alemonjs/db'
 import puppeteer from '@src/image/index'
-import { DataMention, Image, sendToChannel, sendToUser, Text } from 'alemonjs'
+import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
 import type {
-  PublicEventMessageCreate,
-  PrivateEventMessageCreate,
-  PublicEventInteractionCreate,
-  PrivateEventInteractionCreate
-} from 'alemonjs'
-
-/**
- *
- * @param param0
- * @returns
- */
-// 触发白名单/黑名单校验上下文事件联合类型
-export type AnyIncomingEvent =
-  | PublicEventMessageCreate
-  | PrivateEventMessageCreate
-  | PublicEventInteractionCreate
-  | PrivateEventInteractionCreate
-
-interface NameListConfig {
-  whitecrowd: Array<string | number>
-  blackid: Array<string | number>
-  [k: string]: unknown
-}
+  AnyIncomingEvent,
+  NameListConfig,
+  MessageEnumsArray,
+  MessageInput
+} from '../types/model'
 
 /**
  * 校验事件是否通过白名单/黑名单限制
@@ -66,9 +48,6 @@ export const redis = getIoRedis()
  * @returns
  */
 // alemonjs 的 format(Text(..), ...) 返回内部统一的 DataEnums[]，这里用宽松别名
-export type MessageEnumsArray = ReturnType<typeof Text>[]
-export type MessageInput = Buffer | string | Array<string | DataMention>
-
 export async function pushInfo(
   guild_id: string,
   isGroup: boolean,

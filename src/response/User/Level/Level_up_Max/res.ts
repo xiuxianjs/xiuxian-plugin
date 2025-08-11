@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
   //不为空
   if (action != null) {
     const action_end_time = action.end_time
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     if (now_time <= action_end_time) {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60)
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)

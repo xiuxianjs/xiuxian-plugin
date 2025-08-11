@@ -3,28 +3,7 @@ import { readPlayer, addConFaByUser } from './xiuxian_impl.js'
 import data from './XiuxianData.js'
 import type { Player } from '../types/player.js'
 export { addConFaByUser }
-
-export interface PlayerEfficiencyResult {
-  灵石每小时: number
-  修为每小时: number
-  阴德每小时: number
-  公式: {
-    灵石: string
-    修为: string
-    阴德: string
-  }
-}
-
-// 经验 / 修为加成来源权重
-interface EfficiencyFactors {
-  levelMul: number
-  physiqueMul: number
-  talentMul: number
-  gongfaMul: number
-  petMul: number
-  luckyMul: number
-  customMul: number
-}
+import type { PlayerEfficiencyResult, EfficiencyFactors } from '../types/model'
 
 function calcTalentMultiplier(p: Player): number {
   const t = p.灵根?.type || ''

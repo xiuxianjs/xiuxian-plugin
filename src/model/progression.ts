@@ -1,12 +1,5 @@
 // 经验/等级通用计算工具
-export interface ExpRow {
-  id: number
-  experience: number
-}
-export interface LevelExpState {
-  level: number
-  exp: number
-}
+import type { ExpRow, LevelExpState } from '../types/model'
 
 export function applyExp(
   rows: ExpRow[],

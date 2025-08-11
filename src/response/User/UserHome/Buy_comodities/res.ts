@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
   }
   const quantity = await convert2integer(code[1])
   const player = await readPlayer(usr_qq)
-  const lingshi: any = player.灵石
+  const lingshi = player.灵石
   //如果没钱，或者为负数
   if (lingshi <= 0) {
     Send(Text(`掌柜：就你这穷酸样，也想来柠檬堂？走走走！`))

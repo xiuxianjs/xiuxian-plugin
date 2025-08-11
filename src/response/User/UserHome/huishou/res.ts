@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
     Send(Text(`${thing_name}可以使用,不需要回收`))
     return false
   }
-  let lingshi: any = 0
+  let lingshi = 0
   const najie = await readNajie(usr_qq)
   const type = [
     '装备',

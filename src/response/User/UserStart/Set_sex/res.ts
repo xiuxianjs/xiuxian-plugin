@@ -13,7 +13,7 @@ export default onResponse(selects, async e => {
   //有无存档
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const player: any = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.sex != 0) {
     Send(Text('每个存档仅可设置一次性别！'))
     return

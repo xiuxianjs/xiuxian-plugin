@@ -9,8 +9,7 @@ import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
-import type { ActionState } from '@src/types/action'
-import type { DanyaoStatus } from '@src/types/player'
+import type { ActionState, DanyaoStatus } from '@src/types'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表

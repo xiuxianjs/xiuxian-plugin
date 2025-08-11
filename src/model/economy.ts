@@ -3,15 +3,6 @@ import { readPlayer } from './xiuxian_impl.js'
 import type { Player } from '../types/player.js'
 import { playerRepo } from './utils/safe.js'
 
-export interface EconomyDelta {
-  coin?: number
-  hp?: number
-  exp?: number
-  exp2?: number
-  exp3?: number
-  exp4?: number
-}
-
 export async function addCoin(userId: string, delta: number) {
   delta = Math.trunc(delta)
   if (!delta) return

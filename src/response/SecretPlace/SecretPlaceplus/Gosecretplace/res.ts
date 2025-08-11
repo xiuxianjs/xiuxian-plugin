@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
     typeof placeUnknown !== 'object' ||
     !('Price' in placeUnknown) ||
     !('name' in placeUnknown) ||
-    typeof (placeUnknown as any).Price !== 'number'
+    typeof placeUnknown.Price !== 'number'
   ) {
     return false
   }

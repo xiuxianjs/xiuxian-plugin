@@ -4,28 +4,7 @@ import { getIoRedis } from '@alemonjs/db'
 import data from './XiuxianData.js'
 import { safeParse } from './utils/safe.js'
 import type { AuctionItem } from '../types/data_extra'
-
-// 拍卖 / 交易结构类型声明
-export interface ExchangeThingSnapshot {
-  name?: string
-  名号?: string
-  class?: string
-  type?: string
-  出售价?: number
-  pinji?: number | string
-  [k: string]: unknown
-}
-export interface ExchangeRecord {
-  thing: ExchangeThingSnapshot
-  start_price: number
-  last_price: number
-  amount: number
-  last_offer_price: number
-  last_offer_player: number | string
-  groupList: string[]
-  [k: string]: unknown
-}
-export type ForumRecord = ExchangeRecord
+import type { ExchangeRecord, ForumRecord } from '../types/model'
 
 const redis = getIoRedis()
 

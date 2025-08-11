@@ -10,7 +10,29 @@ import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
-import type { ActionState } from '@src/types/action'
+import type {
+  Player,
+  CoreNajieCategory as NajieCategory,
+  ActionState
+} from '@src/types'
+import { writePlayer } from '@src/model/xiuxian'
+import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
+// NajieCategory 断言工具
+const NAJIE_CATEGORIES: readonly NajieCategory[] = [
+  '装备',
+  '丹药',
+  '道具',
+  '功法',
+  '草药',
+  '材料',
+  '仙宠',
+  '仙宠口粮'
+] as const
+function isNajieCategory(v: unknown): v is NajieCategory {
+  return (
+    typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v)
+  )
+}
 
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表
@@ -38,9 +60,10 @@ scheduleJob('0 0/1 * * * ?', async () => {
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      const now_time = new Date().getTime()
+      const now_time = Date.now()
       //用户信息
-      const player = await readPlayer(player_id)
+      const player = (await readPlayer(player_id)) as Player | null
+      if (!player) continue
       //有秘境状态:这个直接结算即可
       if (action.Place_action == '0') {
         //这里改一改,要在结束时间的前两分钟提前结算
@@ -48,34 +71,50 @@ scheduleJob('0 0/1 * * * ?', async () => {
         //时间过了
         if (now_time > end_time) {
           const weizhi = action.Place_address
+          if (!weizhi) continue
           const A_player = {
             名号: player.名号,
             攻击: player.攻击,
             防御: player.防御,
             当前血量: player.当前血量,
             暴击率: player.暴击率,
-            法球倍率: player.灵根.法球倍率,
-            仙宠: player.仙宠
+            法球倍率: Number(player.灵根?.法球倍率) || 1,
+            灵根: {
+              name: player.灵根?.name || '未知',
+              type: player.灵根?.type || '普通',
+              法球倍率: Number(player.灵根?.法球倍率) || 1
+            },
+            仙宠: player.仙宠 || { name: '无', type: 'none', 加成: 0 }
           }
           let buff = 1
           if (weizhi.name == '大千世界' || weizhi.name == '仙界矿场') buff = 0.6
           const monster_length = data.monster_list.length
+          if (monster_length === 0) return
           const monster_index = Math.trunc(Math.random() * monster_length)
-          const monster = data.monster_list[monster_index]
+          const monster = data.monster_list[monster_index] as {
+            名号: string
+            攻击: number
+            防御: number
+            当前血量: number
+            暴击率: number
+          }
           const B_player = {
             名号: monster.名号,
-            攻击: Math.floor(monster.攻击 * player.攻击 * buff),
-            防御: Math.floor(monster.防御 * player.防御 * buff),
-            当前血量: Math.floor(monster.当前血量 * player.血量上限 * buff),
-            暴击率: monster.暴击率 * buff,
-            法球倍率: 0.1
+            攻击: Math.floor(Number(monster.攻击 || 0) * player.攻击 * buff),
+            防御: Math.floor(Number(monster.防御 || 0) * player.防御 * buff),
+            当前血量: Math.floor(
+              Number(monster.当前血量 || 0) * player.血量上限 * buff
+            ),
+            暴击率: Number(monster.暴击率 || 0) * buff,
+            法球倍率: 0.1,
+            灵根: { name: '野怪', type: '普通', 法球倍率: 0.1 }
           }
           const Data_battle = await zdBattle(A_player, B_player)
           const msgg = Data_battle.msg
           const A_win = `${A_player.名号}击败了${B_player.名号}`
           const B_win = `${B_player.名号}击败了${A_player.名号}`
-          let thing_name
-          let thing_class
+          let thing_name: string | undefined
+          let thing_class: NajieCategory | undefined
           const cf = config.getConfig('xiuxian', 'xiuxian')
           const x = cf.SecretPlace.one
           const random1 = Math.random()
@@ -85,10 +124,10 @@ scheduleJob('0 0/1 * * * ?', async () => {
           const random3 = Math.random()
           let random4
           let m = ''
-          let fyd_msg = ''
+          // let fyd_msg = '' // 已不再使用
           //查找秘境
-          let t1
-          let t2
+          let t1 = 1
+          let t2 = 1
           let n = 1
           let last_msg = ''
           if (random1 <= x) {
@@ -96,14 +135,16 @@ scheduleJob('0 0/1 * * * ?', async () => {
               if (random3 <= z) {
                 random4 = Math.floor(Math.random() * weizhi.three.length)
                 thing_name = weizhi.three[random4].name
-                thing_class = weizhi.three[random4].class
+                if (isNajieCategory(weizhi.three[random4].class))
+                  thing_class = weizhi.three[random4].class as NajieCategory
                 m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是：[${thing_name}`
                 t1 = 2 + Math.random()
                 t2 = 2 + Math.random()
               } else {
                 random4 = Math.floor(Math.random() * weizhi.two.length)
                 thing_name = weizhi.two[random4].name
-                thing_class = weizhi.two[random4].class
+                if (isNajieCategory(weizhi.two[random4].class))
+                  thing_class = weizhi.two[random4].class as NajieCategory
                 m = `在洞穴中拿到[${thing_name}`
                 t1 = 1 + Math.random()
                 t2 = 1 + Math.random()
@@ -115,7 +156,8 @@ scheduleJob('0 0/1 * * * ?', async () => {
             } else {
               random4 = Math.floor(Math.random() * weizhi.one.length)
               thing_name = weizhi.one[random4].name
-              thing_class = weizhi.one[random4].class
+              if (isNajieCategory(weizhi.one[random4].class))
+                thing_class = weizhi.one[random4].class as NajieCategory
               m = `捡到了[${thing_name}`
               t1 = 0.5 + Math.random() * 0.5
               t2 = 0.5 + Math.random() * 0.5
@@ -150,13 +192,13 @@ scheduleJob('0 0/1 * * * ?', async () => {
             if (player.islucky > 0) {
               player.islucky--
               if (player.islucky != 0) {
-                fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`
+                // fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`
               } else {
-                fyd_msg = `  \n本次探索后，福源丹已失效\n`
+                // fyd_msg = `  \n本次探索后，福源丹已失效\n`
                 player.幸运 -= player.addluckyNo
                 player.addluckyNo = 0
               }
-              data.setData('player', player_id, player)
+              await writePlayer(player_id, player)
             }
           }
           m += `]×${n}个。`
@@ -173,7 +215,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             qixue = Math.trunc(
               2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1
             )
-            if (thing_name) {
+            if (thing_name && thing_class) {
               await addNajieThing(player_id, thing_name, thing_class, n)
             }
             last_msg += `${m}不巧撞见[${
@@ -183,24 +225,31 @@ scheduleJob('0 0/1 * * * ?', async () => {
             }`
             const random = Math.random() //万分之一出神迹
             let newrandom = 0.995
-            const dy = await readDanyao(player_id)
-            newrandom -= dy.beiyong1
+            const dyRaw = await readDanyao(player_id)
+            const dy = mapDanyaoArrayToStatus(dyRaw)
+            newrandom -= Number(dy.beiyong1 || 0)
             if (dy.ped > 0) {
               dy.ped--
             } else {
               dy.beiyong1 = 0
               dy.ped = 0
             }
-            await writeDanyao(player_id, dy)
+            // 旧逻辑写回：无法直接存储状态对象，只能原样写回列表（保持兼容）
+            await writeDanyao(
+              player_id,
+              (Array.isArray(dyRaw) ? dyRaw : []) as unknown as []
+            )
             if (random > newrandom) {
               const length = data.xianchonkouliang.length
-              const index = Math.trunc(Math.random() * length)
-              const kouliang = data.xianchonkouliang[index]
-              last_msg +=
-                '\n七彩流光的神奇仙谷[' +
-                kouliang.name +
-                ']深埋在土壤中，是仙兽们的最爱。'
-              await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1)
+              if (length > 0) {
+                const index = Math.trunc(Math.random() * length)
+                const kouliang = data.xianchonkouliang[index]
+                last_msg +=
+                  '\n七彩流光的神奇仙谷[' +
+                  kouliang.name +
+                  ']深埋在土壤中，是仙兽们的最爱。'
+                await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1)
+              }
             }
             if (random > 0.1 && random < 0.1002) {
               last_msg +=
@@ -218,26 +267,21 @@ scheduleJob('0 0/1 * * * ?', async () => {
               xiuwei +
               ']'
           }
-          msg.push('\n' + player.名号 + last_msg + fyd_msg)
-          const arr = action
-          //把状态都关了
-          arr.shutup = 1 //闭关状态
-          arr.working = 1 //降妖状态
-          arr.power_up = 1 //渡劫状态
-          arr.Place_action = 1 //秘境
-          arr.Place_actionplus = 1 //沉迷状态
-          //结束的时间也修改为当前时间
-          arr.end_time = new Date().getTime()
-          //结算完去除group_id
+          msg.push('\n' + player.名号 + last_msg)
+          const arr: ActionState = action
+          //把状态都关了(强制置数字 1)
+          arr.shutup = 1
+          arr.working = 1
+          arr.power_up = 1
+          arr.Place_action = 1
+          arr.Place_actionplus = 1
+          arr.end_time = Date.now()
           delete arr.group_id
-          //写入redis
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))
-          //先完结再结算
           await addExp2(player_id, qixue)
           await addExp(player_id, xiuwei)
           await addHP(player_id, Data_battle.A_xue)
-          //发送消息
-          if (is_group) {
+          if (is_group && push_address) {
             await pushInfo(push_address, is_group, msg)
           } else {
             await pushInfo(player_id, is_group, msg)

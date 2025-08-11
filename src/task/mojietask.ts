@@ -8,7 +8,7 @@ import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
 import { __PATH } from '@src/model/paths'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
-import type { ExploreActionState } from '@src/types/task'
+import type { ExploreActionState } from '@src/types'
 
 function isExploreAction(a: unknown): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'end_time' in a

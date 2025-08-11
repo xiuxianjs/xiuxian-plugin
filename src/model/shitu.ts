@@ -2,22 +2,9 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
+import type { ShituRecord } from '../types/model'
 
 const redis = getIoRedis()
-
-export interface ShituRecord {
-  师傅: string
-  收徒: number
-  未出师徒弟: number
-  任务阶段: number
-  renwu1: number
-  renwu2: number
-  renwu3: number
-  师徒BOOS剩余血量: number
-  已出师徒弟: string[]
-  // 原逻辑中 findShitu / findTudi 访问的 "师徒" 字段（未在新增记录里写入），保持可选以兼容旧数据
-  师徒?: string
-}
 
 export async function writeShitu(list: ShituRecord[]) {
   await redis.set(`${__PATH.shitu}:shitu`, JSON.stringify(list))

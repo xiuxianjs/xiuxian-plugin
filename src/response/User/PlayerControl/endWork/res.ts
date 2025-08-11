@@ -3,17 +3,20 @@ import { getPlayerAction, notUndAndNull, setFileValue } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
 
 import { selects } from '@src/response/index'
-import { Mention } from 'alemonjs'
+import { Mention, DataMention } from 'alemonjs'
+import type { ActionState } from '@src/types'
 export const regular = /^(#|＃|\/)?降妖归来$/
 
 export default onResponse(selects, async e => {
-  const action: any = await getPlayerAction(e.UserId)
+  const rawAction = await getPlayerAction(e.UserId)
+  if (!rawAction) return
+  const action: ActionState = rawAction as unknown as ActionState
   if (action.action == '空闲') return
   if (action.working == 1) return false
   //结算
   const end_time = action.end_time
-  const start_time = action.end_time - action.time
-  const now_time = new Date().getTime()
+  const start_time = action.end_time - Number(action.time)
+  const now_time = Date.now()
   let time
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const y = cf.work.time //固定时间
@@ -21,7 +24,7 @@ export default onResponse(selects, async e => {
 
   if (end_time > now_time) {
     //属于提前结束
-    time = Math.floor((new Date().getTime() - start_time) / 1000 / 60)
+    time = Math.floor((Date.now() - start_time) / 1000 / 60)
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
@@ -36,7 +39,7 @@ export default onResponse(selects, async e => {
     }
   } else {
     //属于结束了未结算
-    time = Math.floor(action.time / 1000 / 60)
+    time = Math.floor(Number(action.time) / 1000 / 60)
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
@@ -63,7 +66,7 @@ export default onResponse(selects, async e => {
   arr.power_up = 1 //渡劫状态
   arr.Place_action = 1 //秘境
   //结束的时间也修改为当前时间
-  arr.end_time = new Date().getTime()
+  arr.end_time = Date.now()
   delete arr.group_id //结算完去除group_id
   await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
   await setDataByUserId(e.UserId, 'game_action', 0)
@@ -94,7 +97,7 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   )
   let other_lingshi = 0 //额外的灵石
   const Time = time
-  const msg: any[] = [Mention(usr_qq)]
+  const msg: Array<DataMention | string> = [Mention(usr_qq)]
   if (is_random) {
     //随机事件预留空间
     let rand = Math.random()

@@ -24,7 +24,7 @@ export default onResponse(selects, async e => {
     Send(Text('兑换码不存在!'))
     return false
   }
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':duihuan') //兑换码
+  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':duihuan') //兑换码
   action = await JSON.parse(action)
   if (action == null) {
     action = []

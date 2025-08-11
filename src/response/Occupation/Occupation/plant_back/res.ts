@@ -6,7 +6,7 @@ import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?结束采药$/
 
 export default onResponse(selects, async e => {
-  const action: any = await getPlayerAction(e.UserId)
+  const action = await getPlayerAction(e.UserId)
   if (action.action == '空闲') return
 
   if (action.plant == 1) {
@@ -15,14 +15,14 @@ export default onResponse(selects, async e => {
   //结算
   const end_time = action.end_time
   const start_time = action.end_time - action.time
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   let time
   const y = 15 //固定时间
   const x = 48 //循环次数
 
   if (end_time > now_time) {
     //属于提前结束
-    time = Math.floor((new Date().getTime() - start_time) / 1000 / 60)
+    time = Math.floor((Date.now() - start_time) / 1000 / 60)
 
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
@@ -67,7 +67,7 @@ export default onResponse(selects, async e => {
   arr.power_up = 1 //渡劫状态
   arr.Place_action = 1 //秘境
   //结束的时间也修改为当前时间
-  arr.end_time = new Date().getTime()
+  arr.end_time = Date.now()
   delete arr.group_id //结算完去除group_id
   await redis.set('xiuxian@1.3.0:' + e.UserId + ':action', JSON.stringify(arr))
 })

@@ -1,6 +1,6 @@
 import { config, data, pushInfo } from '@src/model/api'
 import { getJSON, userKey } from '@src/model/utils/redisHelper'
-import type { ActionState } from '@src/types/action'
+import type { ActionState } from '@src/types'
 import {
   playerEfficiency,
   notUndAndNull,
@@ -9,10 +9,10 @@ import {
   addNajieThing,
   addExp,
   addExp2,
-  setFileValue,
-  writeDanyao
+  setFileValue
 } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
+import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 
 import { selects } from '@src/response/index'
 import { DataMention, Mention } from 'alemonjs'
@@ -26,7 +26,7 @@ export default onResponse(selects, async e => {
   //结算
   const end_time = action.end_time
   const start_time = action.end_time - Number(action.time)
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   let time
 
   const cf = config.getConfig('xiuxian', 'xiuxian')
@@ -36,7 +36,7 @@ export default onResponse(selects, async e => {
 
   if (end_time > now_time) {
     //属于提前结束
-    time = Math.floor((new Date().getTime() - start_time) / 1000 / 60)
+    time = Math.floor((Date.now() - start_time) / 1000 / 60)
     //超过就按最低的算，即为满足30分钟才结算一次
     //如果是 >=16*33 ----   >=30
     for (let i = x; i > 0; i--) {
@@ -75,7 +75,7 @@ export default onResponse(selects, async e => {
   arr.working = 1 //降妖状态
   arr.power_up = 1 //渡劫状态
   arr.Place_action = 1 //秘境
-  arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
+  arr.end_time = Date.now() //结束的时间也修改为当前时间
   delete arr.group_id //结算完去除group_id
   await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
   await setDataByUserId(e.UserId, 'game_action', 0)
@@ -117,7 +117,8 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   //炼丹师丹药修正
   let transformation = '修为'
   let xueqi = 0
-  const dy = await readDanyao(usr_qq)
+  const dyRaw = await readDanyao(usr_qq)
+  const dy = mapDanyaoArrayToStatus(dyRaw)
   if (dy.biguan > 0) {
     dy.biguan--
     if (dy.biguan == 0) {
@@ -220,6 +221,6 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     dy.beiyong4 = 0
   }
   //炼丹师修正结束
-  await writeDanyao(usr_qq, dy)
+  // 写回：当前闭关不修改原始丹药数组结构（mapDanyaoArrayToStatus 仅用于结算显示），故此处不调用 writeDanyao 覆写
   return false
 }

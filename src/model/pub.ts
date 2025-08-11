@@ -1,10 +1,7 @@
 import { __PATH } from './paths.js'
 import type { Player } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'
-
-export type CustomRecord =
-  | Array<Record<string, unknown>>
-  | Record<string, unknown>
+import type { CustomRecord } from '../types/model'
 
 export async function writeIt(custom: CustomRecord): Promise<void> {
   const new_ARR = JSON.stringify(custom, null, '\t')

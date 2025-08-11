@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   // //获取发送灵石数量
   const code = e.MessageText.replace(/^(#|＃|\/)?全体发/, '').split('*')
   const thing_name = code[0]
-  let thing_amount: any = Number(code[1])
+  let thing_amount = Number(code[1])
   if (thing_name == '灵石') {
     for (let i = 0; i < File_length; i++) {
       const this_qq = playerList[i]

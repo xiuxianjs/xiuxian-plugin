@@ -1,18 +1,11 @@
 import { randomInt } from 'crypto'
 import { getIoRedis } from '@alemonjs/db'
+import type { DiceGameResult, RiskProfile } from '../types/model'
 // 资金池 Redis Key
 const GAME_KEY = 'xiuxian@1.3.0:system:money_game'
 
-// 骰子游戏结果（语义化返回值代替元组）
-export interface DiceGameResult {
-  win: boolean
-  dice: number // 1~6
-}
-
 // 内部风控参数（根据投入金额动态判定）
-interface RiskProfile {
-  forceLose: boolean // 是否强制输
-}
+// 移除本地 interface RiskProfile，使用集中类型
 
 function buildRiskProfile(inputMoney: number): RiskProfile {
   const minMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000

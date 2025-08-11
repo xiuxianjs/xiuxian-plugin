@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
   const ass = await await data.getAssociation(player.宗门.宗门名称)
   const now = new Date()
   const nowTime = now.getTime() //获取当前日期的时间戳
-  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.association
+  const time = config.getConfig('xiuxian', 'xiuxian').CD.association
   let nextmt_time = await shijianc(ass.维护时间 + 60000 * time) //获得下次宗门维护日期,7天后
   if (ass.维护时间 > nowTime - 1000 * 60 * 60 * 24 * 7) {
     Send(

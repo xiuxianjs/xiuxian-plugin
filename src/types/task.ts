@@ -5,7 +5,6 @@ import type { TalentInfo } from './player'
 import type { ActionState, PlaceThing, PlaceAddress } from './action'
 import type { ShopItem } from './data_extra'
 import type { Player } from './player'
-import type { TiandibangRow } from '@src/response/Tiandibang/Tiandibang/tian'
 
 /****************************** 公共辅助 ******************************/
 /** 任务阶段统一时间戳（毫秒） */
@@ -33,12 +32,27 @@ export interface AuctionSession {
   [k: string]: unknown
 }
 
+export type NajieCategory =
+  | '装备'
+  | '丹药'
+  | '道具'
+  | '功法'
+  | '草药'
+  | '材料'
+  | '仙宠'
+  | '仙宠口粮'
+
 /****************************** 交易 / 论坛 (ExchangeTask / ForumTask) ******************************/
 export interface ExchangeEntry {
   now_time: Timestamp
   qq: string
   aconut: number // 数量（原拼写保留）
-  name: { name: string; class: string; pinji?: string; [k: string]: unknown }
+  name: {
+    name: string
+    class: NajieCategory
+    pinji?: string
+    [k: string]: unknown
+  }
 }
 export interface ForumEntry {
   now_time: Timestamp
@@ -122,6 +136,25 @@ export type DynamicShopItem = ShopItem & {
 }
 
 /****************************** 天地榜 (Tiandibang) ******************************/
+/** 榜单条目基础结构（来自原 response/Tiandibang/Tiandibang/tian.ts） */
+export interface TiandibangRow {
+  名号: string
+  境界: number
+  攻击: number
+  防御: number
+  当前血量: number
+  暴击率: number
+  灵根: TalentInfo | Record<string, unknown>
+  法球倍率?: number | string
+  学习的功法: unknown
+  魔道值: number
+  神石: number
+  qq: number
+  次数: number
+  积分: number
+  [k: string]: unknown
+}
+
 export interface TiandibangRankEntry extends TiandibangRow {
   名号: string
   境界: number

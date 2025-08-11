@@ -2,12 +2,9 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
+import type { TempRecord } from '../types/model'
 
 const redis = getIoRedis()
-
-export interface TempRecord {
-  [k: string]: unknown
-}
 
 export async function readTemp(): Promise<TempRecord[]> {
   const temp = await redis.get(`${__PATH.temp_path}:temp`)

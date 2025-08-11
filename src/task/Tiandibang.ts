@@ -4,7 +4,7 @@ import { data, redis } from '@src/model/api'
 import { __PATH } from '@src/model/paths'
 import { readPlayer } from '@src/model/xiuxian'
 import { scheduleJob } from 'node-schedule'
-import type { TiandibangRankEntry as RankEntry } from '@src/types/task'
+import type { TiandibangRankEntry as RankEntry } from '@src/types'
 
 scheduleJob('0 0 0 ? * 1', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)

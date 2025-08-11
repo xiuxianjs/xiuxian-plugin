@@ -12,12 +12,12 @@ export default onResponse(selects, async e => {
 
   const usr_qq = e.UserId
   //获取当前时间戳
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   //文档
   const ifexistplay = await existplayer(usr_qq)
   //得到此人的状态
   //判断是否是投入用户
-  const game_action: any = await redis.get(
+  const game_action = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
 

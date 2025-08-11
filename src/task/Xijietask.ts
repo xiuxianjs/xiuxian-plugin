@@ -6,7 +6,7 @@ import { readShop, writeShop, existshop } from '@src/model/shop'
 import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
-import type { RaidActionState } from '@src/types/task'
+import type { RaidActionState } from '@src/types'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
@@ -40,7 +40,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
       //动作结束时间
       let end_time = action.end_time
       //现在的时间
-      const now_time = new Date().getTime()
+      const now_time = Date.now()
 
       //有洗劫状态:这个直接结算即可
       if (action.xijie == '0') {
@@ -142,7 +142,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             const action_time = 60000 * time //持续时间，单位毫秒
             arr.A_player = A_player
             arr.action = '搜刮'
-            arr.end_time = new Date().getTime() + action_time
+            arr.end_time = Date.now() + action_time
             arr.time = action_time
             arr.xijie = -1 //进入二阶段
             last_msg +=
@@ -169,7 +169,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             const action_time = 60000 * time //持续时间，单位毫秒
             arr.action = '禁闭'
             arr.xijie = 1 //关闭洗劫
-            arr.end_time = new Date().getTime() + action_time
+            arr.end_time = Date.now() + action_time
             const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
             const groupList = await redis.smembers(redisGlKey)
             const xx =
@@ -217,7 +217,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             //没有物品,进入下一阶段
             last_msg += '已经被搬空了'
           } else {
-            const gradeNum = Number((shop[i] as any).Grade ?? 0) || 0
+            const gradeNum = Number(shop[i].Grade ?? 0) || 0
             let x = gradeNum * 2
             while (x > 0 && thing != false) {
               const t = (() => {
@@ -246,7 +246,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           arr.action = '逃跑'
           const time = 30 //时间（分钟）
           const action_time = 60000 * time //持续时间，单位毫秒
-          arr.end_time = new Date().getTime() + action_time
+          arr.end_time = Date.now() + action_time
           arr.time = action_time
           arr.xijie = -2 //进入三阶段
           arr.thing = thing_name

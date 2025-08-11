@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   const najie = await await data.getData('najie', usr_qq)
-  let lingshi: any = 0
+  let lingshi = 0
   let wupin = [
     '装备',
     '丹药',

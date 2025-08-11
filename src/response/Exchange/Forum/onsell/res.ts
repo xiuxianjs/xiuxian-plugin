@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
   } catch {
     await writeForum([])
   }
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   const whole = Math.trunc(thing_value * thing_amount)
   let off = Math.trunc(whole * 0.03)
   if (off < 100000) off = 100000

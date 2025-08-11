@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   const now = new Date()
   const nowTime = now.getTime() //获取当前时间戳
   let addTime
-  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.joinassociation //分钟
+  const time = config.getConfig('xiuxian', 'xiuxian').CD.joinassociation //分钟
   if (typeof player.宗门.time == 'undefined') {
     addTime = player.宗门.加入时间[1] + 60000 * time
   } else {

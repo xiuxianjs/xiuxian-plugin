@@ -61,7 +61,7 @@ export default onResponse(selects, async e => {
     Send(Text(`恭喜${player.名号}转职为[${occupation}]`))
     return false
   }
-  let action: any = await redis.get('xiuxian:player:' + usr_qq + ':fuzhi') //副职
+  let action = await redis.get('xiuxian:player:' + usr_qq + ':fuzhi') //副职
   action = await JSON.parse(action)
   if (action == null) {
     action = []

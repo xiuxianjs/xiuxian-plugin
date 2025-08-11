@@ -22,10 +22,8 @@ export default onResponse(selects, async e => {
   //防并发cd
   const time0 = 0.5 //分钟cd
   //获取当前时间
-  const now_time = new Date().getTime()
-  let ExchangeCD: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':ExchangeCD'
-  )
+  const now_time = Date.now()
+  let ExchangeCD = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD')
   ExchangeCD = parseInt(ExchangeCD)
   const transferTimeout = Math.floor(60000 * time0)
   if (now_time < ExchangeCD + transferTimeout) {

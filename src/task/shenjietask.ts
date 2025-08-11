@@ -1,6 +1,7 @@
 import { redis, data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
+import { writePlayer } from '@src/model/xiuxian'
 import { addNajieThing } from '@src/model/najie'
 import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
@@ -8,186 +9,179 @@ import { __PATH } from '@src/model/paths'
 import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
+import type {
+  Player,
+  CoreNajieCategory as NajieCategory,
+  ActionState,
+  ShenjiePlace
+} from '@src/types'
+import { safeParse } from '@src/model/utils/safe'
+
+const NAJIE_CATEGORIES: readonly NajieCategory[] = [
+  '装备',
+  '丹药',
+  '道具',
+  '功法',
+  '草药',
+  '材料',
+  '仙宠',
+  '仙宠口粮'
+] as const
+function isNajieCategory(v: unknown): v is NajieCategory {
+  return (
+    typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v)
+  )
+}
 
 scheduleJob('0 0/5 * * * ?', async () => {
-  //获取缓存中人物列表
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
-    let log_mag = '' //查询当前人物动作日志信息
-    log_mag = log_mag + '查询' + player_id + '是否有动作,'
-    //得到动作
+    const actionRaw = await getDataByUserId(player_id, 'action')
+    const action = safeParse<ActionState | null>(actionRaw, null)
+    if (!action) continue
+    let push_address: string | undefined
+    let is_group = false
+    if ('group_id' in action && notUndAndNull(action.group_id)) {
+      is_group = true
+      push_address = String(action.group_id)
+    }
+    const msg: Array<DataMention | string> = [Mention(player_id)]
+    let end_time = Number(action.end_time) || 0
+    const now_time = Date.now()
+    const player = (await readPlayer(player_id)) as Player | null
+    if (!player) continue
 
-    let action = await getDataByUserId(player_id, 'action')
-    action = await JSON.parse(action)
-    //不为空，存在动作
-    if (action != null) {
-      let push_address //消息推送地址
-      let is_group = false //是否推送到群
-
-      if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
-        if (notUndAndNull(action.group_id)) {
-          is_group = true
-          push_address = action.group_id
-        }
-      }
-
-      //最后发送的消息
-      const msg: Array<DataMention | string> = [Mention(player_id)]
-      //动作结束时间
-      let end_time = action.end_time
-      //现在的时间
-      const now_time = new Date().getTime()
-      //用户信息
-      const player = await readPlayer(player_id)
-
-      //有洗劫状态:这个直接结算即可
-      if (action.mojie == '-1') {
-        //5分钟后开始结算阶段一
-        end_time = end_time - action.time
-        //时间过了
-        if (now_time > end_time) {
-          let thing_name
-          let thing_class
-          const x = 0.98
-          const random1 = Math.random()
-          const y = 0.4
-          const random2 = Math.random()
-          const z = 0.15
-          const random3 = Math.random()
-          let random4
-          let m = ''
-          let n = 1
-          let t1
-          let t2
-          let last_msg = ''
-          let fyd_msg = ''
-          if (random1 <= x) {
-            if (random2 <= y) {
-              if (random3 <= z) {
-                random4 = Math.floor(
-                  Math.random() * data.shenjie[0].three.length
-                )
-                thing_name = data.shenjie[0].three[random4].name
-                thing_class = data.shenjie[0].three[random4].class
+    if (String(action.mojie) === '-1') {
+      end_time = end_time - Number(action.time || 0)
+      if (now_time > end_time) {
+        let thing_name: string | undefined
+        let thing_class: NajieCategory | undefined
+        const x = 0.98
+        const random1 = Math.random()
+        const y = 0.4
+        const random2 = Math.random()
+        const z = 0.15
+        const random3 = Math.random()
+        let m = ''
+        let n = 1
+        let t1 = 1
+        let t2 = 1
+        let last_msg = ''
+        let fyd_msg = ''
+        const place = data.shenjie?.[0] as ShenjiePlace | undefined
+        if (!place) continue
+        if (random1 <= x) {
+          if (random2 <= y) {
+            if (random3 <= z) {
+              if (place.three.length) {
+                const idx = Math.floor(Math.random() * place.three.length)
+                thing_name = place.three[idx].name
+                if (isNajieCategory(place.three[idx].class))
+                  thing_class = place.three[idx].class
                 m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thing_name}]`
                 t1 = 2 + Math.random()
                 t2 = 2 + Math.random()
-              } else {
-                random4 = Math.floor(Math.random() * data.shenjie[0].two.length)
-                thing_name = data.shenjie[0].two[random4].name
-                thing_class = data.shenjie[0].two[random4].class
-                m = `在洞穴中拿到[${thing_name}]`
-                t1 = 1 + Math.random()
-                t2 = 1 + Math.random()
               }
-            } else {
-              random4 = Math.floor(Math.random() * data.shenjie[0].one.length)
-              thing_name = data.shenjie[0].one[random4].name
-              thing_class = data.shenjie[0].one[random4].class
-              m = `捡到了[${thing_name}]`
-              t1 = 0.5 + Math.random() * 0.5
-              t2 = 0.5 + Math.random() * 0.5
+            } else if (place.two.length) {
+              const idx = Math.floor(Math.random() * place.two.length)
+              thing_name = place.two[idx].name
+              if (isNajieCategory(place.two[idx].class))
+                thing_class = place.two[idx].class
+              m = `在洞穴中拿到[${thing_name}]`
+              t1 = 1 + Math.random()
+              t2 = 1 + Math.random()
             }
+          } else if (place.one.length) {
+            const idx = Math.floor(Math.random() * place.one.length)
+            thing_name = place.one[idx].name
+            if (isNajieCategory(place.one[idx].class))
+              thing_class = place.one[idx].class
+            m = `捡到了[${thing_name}]`
+            t1 = 0.5 + Math.random() * 0.5
+            t2 = 0.5 + Math.random() * 0.5
+          }
+        } else {
+          m = '走在路上都没看见一只蚂蚁！'
+          t1 = 2 + Math.random()
+          t2 = 2 + Math.random()
+        }
+        const random = Math.random()
+        if (random < (Number(player.幸运) || 0)) {
+          if (random < (Number(player.addluckyNo) || 0)) {
+            last_msg += '福源丹生效，所以在'
+          } else if (player.仙宠?.type == '幸运') {
+            last_msg += '仙宠使你在探索中欧气满满，所以在'
+          }
+          // 机缘翻倍
+          n++
+          last_msg += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n'
+        }
+        if ((player.islucky || 0) > 0) {
+          player.islucky!--
+          if (player.islucky !== 0) {
+            fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`
           } else {
-            thing_name = ''
-            thing_class = ''
-            m = '走在路上都没看见一只蚂蚁！'
-            t1 = 2 + Math.random()
-            t2 = 2 + Math.random()
+            fyd_msg = `  \n本次探索后，福源丹已失效\n`
+            player.幸运 =
+              Number(player.幸运 || 0) - Number(player.addluckyNo || 0)
+            player.addluckyNo = 0
           }
-          const random = Math.random()
-          if (random < player.幸运) {
-            if (random < player.addluckyNo) {
-              last_msg += '福源丹生效，所以在'
-            } else if (player.仙宠.type == '幸运') {
-              last_msg += '仙宠使你在探索中欧气满满，所以在'
+          await writePlayer(player_id, player)
+        }
+        const now_level_id = player.level_id || 0
+        const now_physique_id = player.Physique_id || 0
+        const xiuwei = Math.trunc(
+          2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5
+        )
+        const qixue = Math.trunc(
+          2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1
+        )
+        if (thing_name && thing_class) {
+          await addNajieThing(player_id, thing_name, thing_class, n)
+        }
+        last_msg += `${m},获得修为${xiuwei},气血${qixue},剩余次数${(Number(action.cishu) || 0) - 1}`
+        msg.push('\n' + player.名号 + last_msg + fyd_msg)
+        const arr: ActionState = action
+        const remain = Number(arr.cishu) || 0
+        if (remain <= 1) {
+          arr.shutup = 1
+          arr.working = 1
+          arr.power_up = 1
+          arr.Place_action = 1
+          arr.Place_actionplus = 1
+          arr.mojie = 1
+          arr.end_time = Date.now()
+          delete arr.group_id
+          await setDataByUserId(player_id, 'action', JSON.stringify(arr))
+          await addExp2(player_id, qixue)
+          await addExp(player_id, xiuwei)
+          if (is_group && push_address)
+            await pushInfo(push_address, is_group, msg)
+          else await pushInfo(player_id, is_group, msg)
+        } else {
+          arr.cishu = remain - 1
+          await setDataByUserId(player_id, 'action', JSON.stringify(arr))
+          await addExp2(player_id, qixue)
+          await addExp(player_id, xiuwei)
+          try {
+            const temp = await readTemp()
+            const p: { msg: string; qq_group?: string } = {
+              msg: player.名号 + last_msg + fyd_msg,
+              qq_group: push_address
             }
-            n++
-            last_msg += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n'
-          }
-          if (player.islucky > 0) {
-            player.islucky--
-            if (player.islucky != 0) {
-              fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`
-            } else {
-              fyd_msg = `  \n本次探索后，福源丹已失效\n`
-              player.幸运 -= player.addluckyNo
-              player.addluckyNo = 0
+            temp.push(p)
+            await writeTemp(temp)
+          } catch {
+            const temp: Array<{ msg: string; qq: string; qq_group?: string }> =
+              []
+            const p = {
+              msg: player.名号 + last_msg + fyd_msg,
+              qq: player_id,
+              qq_group: push_address
             }
-            await data.setData('player', player_id, player)
-          }
-          //默认结算装备数
-          const now_level_id = player.level_id
-          const now_physique_id = player.Physique_id
-          //结算
-          let qixue = 0
-          let xiuwei = 0
-          xiuwei = Math.trunc(
-            2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5
-          )
-          qixue = Math.trunc(
-            2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1
-          )
-          if (thing_name != '' || thing_class != '') {
-            await addNajieThing(player_id, thing_name, thing_class, n)
-          }
-          last_msg +=
-            m +
-            ',获得修为' +
-            xiuwei +
-            ',气血' +
-            qixue +
-            ',剩余次数' +
-            (action.cishu - 1)
-          msg.push('\n' + player.名号 + last_msg + fyd_msg)
-          const arr = action
-          if (arr.cishu == 1) {
-            //把状态都关了
-            arr.shutup = 1 //闭关状态
-            arr.working = 1 //降妖状态
-            arr.power_up = 1 //渡劫状态
-            arr.Place_action = 1 //秘境
-            arr.Place_actionplus = 1 //沉迷状态
-            arr.mojie = 1 //魔界状态---关闭
-            arr.end_time = new Date().getTime() //结束的时间也修改为当前时间
-            //结算完去除group_id
-            delete arr.group_id
-            //写入redis
-            await setDataByUserId(player_id, 'action', JSON.stringify(arr))
-            //先完结再结算
-            await addExp2(player_id, qixue)
-            await addExp(player_id, xiuwei)
-            //发送消息
-            if (is_group) {
-              await pushInfo(push_address, is_group, msg)
-            } else {
-              await pushInfo(player_id, is_group, msg)
-            }
-          } else {
-            arr.cishu--
-            await setDataByUserId(player_id, 'action', JSON.stringify(arr))
-            //先完结再结算
-            await addExp2(player_id, qixue)
-            await addExp(player_id, xiuwei)
-            try {
-              const temp = await readTemp()
-              const p = {
-                msg: player.名号 + last_msg + fyd_msg,
-                qq_group: push_address
-              }
-              temp.push(p)
-              await writeTemp(temp)
-            } catch {
-              const temp = []
-              const p = {
-                msg: player.名号 + last_msg + fyd_msg,
-                qq: player_id,
-                qq_group: push_address
-              }
-              temp.push(p)
-              await writeTemp(temp)
-            }
+            temp.push(p)
+            await writeTemp(temp)
           }
         }
       }

@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
   //查看存档
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const game_action: any = await redis.get(
+  const game_action = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   //防止继续其他娱乐行为
@@ -26,12 +26,12 @@ export default onResponse(selects, async e => {
     return false
   }
   //查询redis中的人物动作
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
   action = JSON.parse(action)
   if (action != null) {
     //人物有动作查询动作结束时间
     const action_end_time = action.end_time
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     if (now_time <= action_end_time) {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60)
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
@@ -98,11 +98,11 @@ export default onResponse(selects, async e => {
     player.神界次数--
   }
   await writePlayer(usr_qq, player)
-  const time: any = 30 //时间（分钟）
+  const time = 30 //时间（分钟）
   const action_time = 60000 * time //持续时间，单位毫秒
-  const arr: any = {
+  const arr = {
     action: '神界', //动作
-    end_time: new Date().getTime() + action_time, //结束时间
+    end_time: Date.now() + action_time, //结束时间
     time: action_time, //持续时间
     shutup: '1', //闭关
     working: '1', //降妖
@@ -123,9 +123,7 @@ export default onResponse(selects, async e => {
 })
 async function getLastdagong(usr_qq) {
   //查询redis中的人物动作
-  const time: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':lastdagong_time'
-  )
+  const time = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastdagong_time')
   logger.info(time)
   if (time != null) {
     const data = await shijianc(parseInt(time))

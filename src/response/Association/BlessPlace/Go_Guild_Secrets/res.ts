@@ -39,11 +39,11 @@ export default onResponse(selects, async e => {
   data.setAssociation(ass.宗门名称, ass)
 
   await addCoin(usr_qq, -Price)
-  const time: any = config.getConfig('xiuxian', 'xiuxian').CD.secretplace //时间（分钟）
+  const time = config.getConfig('xiuxian', 'xiuxian').CD.secretplace //时间（分钟）
   const action_time = 60000 * time //持续时间，单位毫秒
   const arr = {
     action: '历练', //动作
-    end_time: new Date().getTime() + action_time, //结束时间
+    end_time: Date.now() + action_time, //结束时间
     time: action_time, //持续时间
     shutup: '1', //闭关
     working: '1', //降妖

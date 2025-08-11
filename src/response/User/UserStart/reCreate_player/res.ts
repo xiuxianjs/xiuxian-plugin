@@ -31,9 +31,7 @@ export default onResponse(selects, async e => {
     //没有存档，初始化次数
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':reCreate_acount', 1)
   }
-  const acount: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':reCreate_acount'
-  )
+  const acount = await redis.get('xiuxian@1.3.0:' + usr_qq + ':reCreate_acount')
   if (acount == undefined || acount == null || isNaN(acount) || acount <= 0) {
     await redis.set('xiuxian@1.3.0:' + usr_qq + ':reCreate_acount', 1)
   }
@@ -49,7 +47,7 @@ export default onResponse(selects, async e => {
   }
   const now = new Date()
   const nowTime = now.getTime() //获取当前时间戳
-  let lastrestart_time: any = await redis.get(
+  let lastrestart_time = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':last_reCreate_time'
   ) //获得上次重生时间戳,
   lastrestart_time = parseInt(lastrestart_time)
@@ -95,7 +93,7 @@ export default onResponse(selects, async e => {
       } else if (choice == '断绝此生') {
         clearTimeout(timeout)
         //得到重生次数
-        let acount: any = await redis.get(
+        let acount = await redis.get(
           'xiuxian@1.3.0:' + usr_qq + ':reCreate_acount'
         )
         //
@@ -107,11 +105,11 @@ export default onResponse(selects, async e => {
         acount = Number(acount)
         acount++
         //重生牵扯到宗门模块
-        const player: any = await data.getData('player', usr_qq)
+        const player = await data.getData('player', usr_qq)
         if (notUndAndNull(player.宗门)) {
           if (player.宗门.职位 != '宗主') {
             //不是宗主
-            const ass: any = await data.getAssociation(player.宗门.宗门名称)
+            const ass = await data.getAssociation(player.宗门.宗门名称)
             ass[player.宗门.职位] = ass[player.宗门.职位].filter(
               item => item != usr_qq
             )
@@ -121,7 +119,7 @@ export default onResponse(selects, async e => {
             await data.setData('player', usr_qq, player)
           } else {
             //是宗主
-            const ass: any = await data.getAssociation(player.宗门.宗门名称)
+            const ass = await data.getAssociation(player.宗门.宗门名称)
             if (ass.所有成员.length < 2) {
               fs.rmSync(`${data.association}/${player.宗门.宗门名称}.json`)
             } else {

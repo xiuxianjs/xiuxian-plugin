@@ -1,17 +1,4 @@
-export interface SetuOptions {
-  r18?: boolean
-  keyword?: string
-  num?: number
-}
-
-export interface SetuItem {
-  pid: number
-  title: string
-  author: string
-  url: string
-  tags: string[]
-  r18: boolean
-}
+import type { SetuOptions, SetuItem } from '../../types/model'
 
 // 这里保留原本实现的占位，等待接入真实 API
 export async function setu(_options: SetuOptions = {}): Promise<SetuItem[]> {

@@ -22,7 +22,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   //命令判断
   const thing = e.MessageText.replace(/^(#|＃|\/)?出售/, '')
-  const code: any = thing.split('*')
+  const code = thing.split('*')
   let thing_name = code[0] //物品
   code[0] = parseInt(code[0])
   let thing_amount = code[1] //数量

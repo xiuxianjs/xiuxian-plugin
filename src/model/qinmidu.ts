@@ -2,15 +2,9 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
+import type { QinmiduRecord } from '../types/model'
 
 const redis = getIoRedis()
-
-export interface QinmiduRecord {
-  QQ_A: string
-  QQ_B: string
-  亲密度: number
-  婚姻: number // 0 未婚 1 已婚 (原逻辑保持)
-}
 
 export async function readQinmidu(): Promise<QinmiduRecord[]> {
   const qinmidu = await redis.get(`${__PATH.qinmidu}:qinmidu`)

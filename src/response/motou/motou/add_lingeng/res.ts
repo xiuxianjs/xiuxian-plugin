@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
   //有无存档
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return
-  const player: any = await readPlayer(usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.魔道值 < 1000) {
     Send(Text('你不是魔头'))
     return

@@ -36,7 +36,7 @@ export function sortBy(field) {
 //获取上次签到时间
 export async function getLastsign_Asso(usr_qq) {
   //查询redis中的人物动作
-  const time: any = await redis.get(
+  const time = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':lastsign_Asso_time'
   )
   if (time != null) {

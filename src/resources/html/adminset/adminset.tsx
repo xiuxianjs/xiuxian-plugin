@@ -51,7 +51,7 @@ const SettingItem = ({
   unit = ''
 }: {
   label: string
-  value: any
+  value
   unit?: string
 }) => (
   <div>

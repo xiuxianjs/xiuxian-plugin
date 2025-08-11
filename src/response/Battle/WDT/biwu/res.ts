@@ -85,7 +85,7 @@ export default onResponse(selects, async e => {
   const A_action_res = await redis.get('xiuxian@1.3.0:' + A + ':action')
   const A_action = JSON.parse(A_action_res)
   if (A_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
@@ -112,7 +112,7 @@ export default onResponse(selects, async e => {
   const B_action_res = await redis.get('xiuxian@1.3.0:' + B + ':action')
   const B_action = JSON.parse(B_action_res)
   if (B_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
@@ -156,7 +156,7 @@ export default onResponse(selects, async e => {
   const A_player = await readPlayer(A)
   const Time = cf.CD.couple //6个小时
   const shuangxiuTimeout = Math.floor(60000 * Time)
-  const now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = Date.now() //获取当前时间戳
   const last_timeA_raw = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_biwu_time'
   ) //获得上次的时间戳,

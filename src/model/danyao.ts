@@ -3,14 +3,9 @@ import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
 import { readAll } from './duanzaofu.js'
-import type { DanyaoItemDef } from '../types/data'
+import type { DanyaoItem } from '../types/model'
 
 const redis = getIoRedis()
-
-// 丹药：数据定义 + 用户拥有数量
-export interface DanyaoItem extends DanyaoItemDef {
-  count: number // 玩家持有数量
-}
 
 export async function readDanyao(userId: string): Promise<DanyaoItem[]> {
   const danyao = await redis.get(`${__PATH.danyao_path}:${userId}`)

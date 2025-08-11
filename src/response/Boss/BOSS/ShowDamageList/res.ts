@@ -10,8 +10,8 @@ export const regular = /^(#|＃|\/)?妖王贡献榜$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (await BossIsAlive()) {
-    let PlayerRecord: any = await redis.get('xiuxian@1.3.0Record')
-    let WorldBossStatusStr: any = await redis.get('Xiuxian:WorldBossStatus')
+    let PlayerRecord = await redis.get('xiuxian@1.3.0Record')
+    let WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
     WorldBossStatusStr = JSON.parse(WorldBossStatusStr)
     PlayerRecord = JSON.parse(PlayerRecord)
     const PlayerList = await SortPlayer(PlayerRecord)

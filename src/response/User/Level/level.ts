@@ -73,7 +73,7 @@ export async function Level_up(e, luck = false) {
   }
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const Time = cf.CD.level_up
-  const now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)
   const last_time_raw = await getString(userKey(usr_qq, 'last_Levelup_time'))
   const last_time = last_time_raw ? parseInt(last_time_raw, 10) : 0
@@ -243,7 +243,7 @@ export async function LevelMax_up(e, luck) {
   }
   const cf = config.getConfig('xiuxian', 'xiuxian')
   const Time = cf.CD.level_up
-  const now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)
   const last_time_raw2 = await getString(
     userKey(usr_qq, 'last_LevelMaxup_time')

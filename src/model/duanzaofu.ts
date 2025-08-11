@@ -5,53 +5,11 @@ import { safeParse } from './utils/safe.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
 import DataList from './DataList.js'
 import { getIoRedis } from '@alemonjs/db'
+// 新增：集中导入已抽取的锻造资源映射常量与可读 key 类型
+import { LIB_MAP, LibHumanReadable } from '../types/model.js'
+import type { CustomRecord } from '../types/model.js'
 
-// ---- 数据库字段映射（顶层常量便于复用 & 泛型约束） ----
-const LIB_MAP = {
-  npc列表: 'npc_list',
-  shop列表: 'shop_list',
-  丹药列表: 'danyao_list',
-  仙境列表: 'Fairyrealm_list',
-  仙宠列表: 'xianchon',
-  仙宠口粮列表: 'xianchonkouliang',
-  兑换列表: 'duihuan',
-  八品: 'bapin',
-  功法列表: 'gongfa_list',
-  商品列表: 'commodities_list',
-  地点列表: 'didian_list',
-  天地堂: 'tianditang',
-  宗门秘境: 'guildSecrets_list',
-  常驻仙宠: 'changzhuxianchon',
-  强化列表: 'qianghua',
-  怪物列表: 'monster_list',
-  技能列表: 'jineng',
-  技能列表1: 'jineng1',
-  技能列表2: 'jineng2',
-  星阁拍卖行列表: 'xingge',
-  洞天福地: 'bless_list',
-  灵根列表: 'talent_list',
-  炼丹师丹药: 'newdanyao_list',
-  神界列表: 'shenjie',
-  禁地列表: 'forbiddenarea_list',
-  积分商城: 'shitujifen',
-  草药列表: 'caoyao_list',
-  装备列表: 'equipment_list',
-  道具列表: 'daoju_list',
-  锻造宝物: 'duanzhaobaowu',
-  锻造护具: 'duanzhaohuju',
-  锻造杂类: 'zalei',
-  锻造材料: 'duanzhaocailiao',
-  锻造武器: 'duanzhaowuqi',
-  隐藏灵根: 'yincang',
-  魔界列表: 'mojie'
-} as const
-type LibHumanReadable = keyof typeof LIB_MAP
-type DataListInstance = typeof DataList
-type LibInternalKey<K extends LibHumanReadable> = (typeof LIB_MAP)[K]
-type LibArrayType<K extends LibHumanReadable> =
-  DataListInstance[LibInternalKey<K>]
-type LibElementType<K extends LibHumanReadable> =
-  LibArrayType<K> extends (infer U)[] | readonly (infer U)[] ? U : never
+// 已集中：移除本文件内部的高级 DataList 泛型推断，保持简单实现避免类型错误
 
 export async function settripod(qq: string): Promise<string> {
   let tripod1: Tripod[] = []
@@ -167,15 +125,14 @@ export async function jiaozheng(value: unknown): Promise<number> {
 }
 
 //读取item 中某个json文件中的属性
-export async function readThat<K extends LibHumanReadable>(
+export async function readThat(
   thing_name: string,
-  weizhi: K
-): Promise<LibElementType<K> | undefined> {
-  const arr = (DataList as DataListInstance)[LIB_MAP[weizhi]] as
-    | LibArrayType<K>
-    | undefined
+  weizhi: LibHumanReadable
+): Promise<unknown | undefined> {
+  const key = LIB_MAP[weizhi]
+  const arr = (DataList as Record<string, unknown>)[key]
   if (Array.isArray(arr)) {
-    for (const item of arr as unknown as LibElementType<K>[]) {
+    for (const item of arr as unknown[]) {
       if (
         item &&
         typeof item === 'object' &&
@@ -190,14 +147,10 @@ export async function readThat<K extends LibHumanReadable>(
 
 //读取item某个文件的全部物品
 // 返回 unknown[] 保持宽松兼容
-export async function readAll<K extends LibHumanReadable>(
-  weizhi: K
-): Promise<LibElementType<K>[]> {
-  const arr = (DataList as DataListInstance)[LIB_MAP[weizhi]] as
-    | LibArrayType<K>
-    | undefined
-  const safeArr = Array.isArray(arr) ? (arr as LibElementType<K>[]) : []
-  return safeArr
+export async function readAll(weizhi: LibHumanReadable): Promise<unknown[]> {
+  const key = LIB_MAP[weizhi]
+  const arr = (DataList as Record<string, unknown>)[key]
+  return Array.isArray(arr) ? (arr as unknown[]) : []
 }
 
 //对值相同的五行进行挑选
@@ -296,27 +249,14 @@ export async function readIt(): Promise<unknown> {
   const customData = safeParse(custom, [])
   return customData
 }
-// 自定义装备记录（神兵榜）条目（根据使用处推断）
-export interface CustomEquipRecord {
-  name: string
-  type: string
-  atk: number
-  def: number
-  HP: number
-  owner_name?: string // 使用者 QQ
-  author_name?: string // 制作者 QQ
-  [k: string]: unknown
-}
 
-export async function readItTyped(): Promise<CustomEquipRecord[]> {
+export async function readItTyped(): Promise<CustomRecord[]> {
   const redis = getIoRedis()
   const custom = await redis.get(`${__PATH.custom}:custom`)
   if (!custom) return []
   const raw = safeParse<unknown>(custom, [])
   if (!Array.isArray(raw)) return []
-  return raw.filter(
-    r => typeof r === 'object' && r && 'name' in r
-  ) as CustomEquipRecord[]
+  return raw.filter(r => typeof r === 'object' && r) as CustomRecord[]
 }
 
 export async function alluser(): Promise<string[]> {

@@ -6,7 +6,7 @@ import {
   existNajieThing,
   addNajieThing,
   sleep,
-  Add_仙宠
+  addPet
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
@@ -55,6 +55,6 @@ export default onResponse(selects, async e => {
         data.changzhuxianchon[tianluoRandom].name
     )
   )
-  await Add_仙宠(usr_qq, data.changzhuxianchon[tianluoRandom].name, 1)
+  await addPet(usr_qq, data.changzhuxianchon[tianluoRandom].name, 1)
   Send(Text('恭喜获得' + data.changzhuxianchon[tianluoRandom].name))
 })

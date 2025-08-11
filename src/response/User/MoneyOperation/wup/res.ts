@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   //获取发送灵石数量
   const code = e.MessageText.replace(/^(#|＃|\/)?发/, '').split('*')
   const thing_name = code[0]
-  let thing_amount: any = code[1] //数量
+  let thing_amount = code[1] //数量
   let thing_piji
   thing_amount = Number(thing_amount)
   if (isNaN(thing_amount)) {

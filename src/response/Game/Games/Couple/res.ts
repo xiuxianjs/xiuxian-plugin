@@ -42,8 +42,8 @@ export default onResponse(selects, async e => {
   const Time = cf.CD.couple //6个小时
   const shuangxiuTimeout = Math.floor(60000 * Time)
   //自己的cd
-  const now_Time = new Date().getTime() //获取当前时间戳
-  let last_timeA: any = await redis.get(
+  const now_Time = Date.now() //获取当前时间戳
+  let last_timeA = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_shuangxiu_time'
   ) //获得上次的时间戳,
   last_timeA = Math.floor(last_timeA)
@@ -57,7 +57,7 @@ export default onResponse(selects, async e => {
     Send(Text(`双修冷却:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
-  let last_timeB: any = await redis.get(
+  let last_timeB = await redis.get(
     'xiuxian@1.3.0:' + B + ':last_shuangxiu_time'
   ) //获得上次的时间戳,
   last_timeB = Math.floor(last_timeB)

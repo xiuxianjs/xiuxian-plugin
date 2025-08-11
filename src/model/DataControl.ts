@@ -1,27 +1,14 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
-// 类型定义
-type JSONPrimitive = string | number | boolean | null
-export type JSONValue = JSONPrimitive | JSONValue[] | { [k: string]: JSONValue }
-type JSONData = { [k: string]: JSONValue } | JSONValue[]
-
-type FilePathType =
-  | 'player'
-  | 'equipment'
-  | 'najie'
-  | 'lib'
-  | 'Timelimit'
-  | 'Level'
-  | 'association'
-  | 'occupation'
+import type { JSONData, FilePathType } from '../types/model'
 
 const filePathMap = {
   player: __PATH.player_path,
   equipment: __PATH.equipment_path,
   najie: __PATH.najie_path,
   lib: __PATH.lib_path,
-  Timelimit: __PATH.Timelimit, // 限定
-  Level: __PATH.Level, // 境界
+  Timelimit: __PATH.Timelimit,
+  Level: __PATH.Level,
   association: __PATH.association,
   occupation: __PATH.occupation
 }

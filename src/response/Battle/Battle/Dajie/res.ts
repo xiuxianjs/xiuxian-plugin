@@ -124,7 +124,7 @@ export default onResponse(selects, async e => {
   const A_action_res = await getDataByUserId(A, 'action')
   const A_action = JSON.parse(A_action_res)
   if (A_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
@@ -152,7 +152,7 @@ export default onResponse(selects, async e => {
   const B_action_res = await redis.get('xiuxian@1.3.0:' + B + ':action')
   const B_action = JSON.parse(B_action_res)
   if (B_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {
@@ -176,7 +176,7 @@ export default onResponse(selects, async e => {
 
   const now = new Date()
   const nowTime = now.getTime() //获取当前时间戳
-  let last_dajie_time: any = await redis.get(
+  let last_dajie_time = await redis.get(
     'xiuxian@1.3.0:' + A + ':last_dajie_time'
   ) //获得上次打劫的时间戳,
   last_dajie_time = parseInt(last_dajie_time)
@@ -249,7 +249,7 @@ export default onResponse(selects, async e => {
       return false
     }
     const mdzJL = A_player.魔道值
-    let lingshi: any = Math.trunc(B_player.灵石 / 5)
+    let lingshi = Math.trunc(B_player.灵石 / 5)
     const qixue = Math.trunc(100 * now_level_idAA)
     const mdz = Math.trunc(lingshi / 10000)
     if (lingshi >= B_player.灵石) {
@@ -272,16 +272,16 @@ export default onResponse(selects, async e => {
       await writePlayer(B, B_player)
       const time2 = 60 //时间（分钟）
       const action_time2 = 60000 * time2 //持续时间，单位毫秒
-      let action2: any = await redis.get('xiuxian@1.3.0:' + A + ':action')
+      let action2 = await redis.get('xiuxian@1.3.0:' + A + ':action')
       action2 = await JSON.parse(action2)
       action2.action = '禁闭'
-      action2.end_time = new Date().getTime() + action_time2
+      action2.end_time = Date.now() + action_time2
       await redis.set('xiuxian@1.3.0:' + A + ':action', JSON.stringify(action2))
       final_msg.push(
         `经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号} 真是偷鸡不成蚀把米,被关禁闭60分钟`
       )
     } else {
-      let lingshi: any = Math.trunc(A_player.灵石 / 4)
+      let lingshi = Math.trunc(A_player.灵石 / 4)
       const qixue = Math.trunc(100 * now_level_idBB)
       if (lingshi <= 0) {
         lingshi = 0

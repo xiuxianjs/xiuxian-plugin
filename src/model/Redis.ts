@@ -1,13 +1,7 @@
 import { getIoRedis } from '@alemonjs/db'
+import type { ActionType } from '../types/model'
 
 const baseKey = 'xiuxian@1.3.0'
-
-type ActionType =
-  | 'shangjing'
-  | 'lastsign_time'
-  | 'action'
-  | 'game_action'
-  | 'lastxijie_time'
 
 /**
  * @param user_id

@@ -16,11 +16,11 @@ export default onResponse(selects, async e => {
     return false
   }
   let msg = []
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
+  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
   action = await JSON.parse(action)
   const type = 0
   if (action != null) {
-    if (action.end_time > new Date().getTime()) {
+    if (action.end_time > Date.now()) {
       msg = action.arm
       const msg_data = { msg, type }
       const img = await puppeteer.screenshot('msg', e.UserId, msg_data)
@@ -73,7 +73,7 @@ export default onResponse(selects, async e => {
   }
   const arr = {
     arm: msg,
-    end_time: new Date().getTime() + 60000 * 60 * 20 //结束时间
+    end_time: Date.now() + 60000 * 60 * 20 //结束时间
   }
   await redis.set('xiuxian@1.3.0:' + usr_qq + ':shangjing', JSON.stringify(arr))
   const msg_data = { msg, type }

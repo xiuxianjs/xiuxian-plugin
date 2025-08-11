@@ -50,8 +50,8 @@ export default onResponse(selects, async e => {
   } catch {
     // 将原始 shop_list 转换为写入所需结构（确保存在 one 数组）
     const converted = data.shop_list.map(item => ({
-      name: (item as any).name,
-      one: (item as any).one || [],
+      name: item.name,
+      one: item.one || [],
       ...(item as Record<string, unknown>)
     })) as unknown as Parameters<typeof writeShop>[0]
     await writeShop(converted)

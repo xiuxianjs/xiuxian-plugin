@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
   if (player.level_id > 31 || player.lunhui == 0) return false
   Send(Text('已为你开启10次自动突破'))
   let num = 1
-  const time: any = setInterval(() => {
+  const time = setInterval(() => {
     Level_up(e)
     num++
     if (num > 10) clearInterval(time)

@@ -135,9 +135,7 @@ export default onResponse(selects, async e => {
 })
 async function getLastsign_Bonus(usr_qq) {
   //查询redis中的人物动作
-  const time: any = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':getLastsign_Bonus'
-  )
+  const time = await redis.get('xiuxian@1.3.0:' + usr_qq + ':getLastsign_Bonus')
   if (time != null) {
     const data = await shijianc(parseInt(time))
     return data

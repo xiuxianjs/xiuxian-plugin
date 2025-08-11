@@ -5,12 +5,19 @@ import config from './Config.js'
 import { useSend, Text, PublicEventMessageCreate, Image } from 'alemonjs'
 import puppeteer from '@src/image/index.js'
 import type { Player, Equipment, Najie, StrandResult } from '../types/player.js'
-// 由聚合文件切换为精确子模块导入，避免与 xiuxian.ts 形成跨 chunk 循环
 import { getRandomTalent } from './cultivation.js'
+import type {
+  ScreenshotResult,
+  NamedItem,
+  PlayerStatus,
+  SendFn,
+  AssociationInfo,
+  ExchangeView,
+  ForumView
+} from '../types/model.js'
 import {
   getEquipmentDataSafe,
   getPlayerDataSafe,
-  setPlayerDataSafe,
   readPlayer,
   readNajie
 } from './xiuxian_impl.js'
@@ -21,43 +28,8 @@ import { readExchange, writeExchange, readForum, writeForum } from './trade.js'
 import { GetPower, bigNumberTransform } from './utils/number.js'
 import { readQinmidu, writeQinmidu } from './qinmidu.js'
 
-// ==== 类型辅助声明（用于消除 any） ====
-export type ScreenshotResult = Buffer | string | false | undefined
-interface NamedItem {
-  name: string
-  class?: string
-  type?: string
-  [k: string]: unknown
-}
-interface ExchangeEntry {
-  num?: number
-  now_time: number
-  name: NamedItem
-}
-interface ForumEntry {
-  num?: number
-  now_time: number
-  class?: string
-  [k: string]: unknown
-}
-interface PlayerStatus {
-  action: string
-  time: string | null
-}
-type SendFn = (msg: unknown) => unknown
-interface AssociationInfo {
-  宗主: string
-  power: number
-  最低加入境界: number
-  副宗主: Record<string, string>
-  长老: Record<string, string>
-  内门弟子: Record<string, string>
-  外门弟子: Record<string, string>
-  维护时间: number
-  宗门驻地: number | string
-  宗门等级: number
-  宗门神兽: string | number
-}
+// ==== 类型辅助声明（已迁移至 src/types/model.ts） ====
+// 原地定义已移除：ScreenshotResult, NamedItem, ExchangeEntry, ForumEntry, PlayerStatus, SendFn, AssociationInfo
 
 function isAssociationInfo(v: unknown): v is AssociationInfo {
   return (
@@ -84,25 +56,25 @@ export async function getSupermarketImage(
   if (!ifexistplay) {
     return
   }
-  let Exchange_list: ExchangeEntry[] = []
+  let Exchange_list: ExchangeView[] = []
   try {
-    Exchange_list = await readExchange()
+    const raw = await readExchange()
+    Exchange_list = raw.map((rec, idx) => ({
+      ...rec,
+      num: idx + 1,
+      now_time: rec.last_offer_price,
+      name: rec.thing
+    }))
   } catch {
     await writeExchange([])
-  }
-  for (let i = 0; i < Exchange_list.length; i++) {
-    Exchange_list[i].num = i + 1
   }
   if (thing_class) {
     Exchange_list = Exchange_list.filter(item => item.name.class == thing_class)
   }
-
-  Exchange_list.sort(function (a, b) {
-    return b.now_time - a.now_time
-  })
+  Exchange_list.sort((a, b) => b.now_time - a.now_time)
   const supermarket_data = {
     user_id: usr_qq,
-    Exchange_list: Exchange_list
+    Exchange_list
   }
   const img = await puppeteer.screenshot(
     'supermarket',
@@ -121,27 +93,25 @@ export async function getForumImage(
   if (!ifexistplay) {
     return
   }
-  let Forum: ForumEntry[] = []
+  let Forum: ForumView[] = []
   try {
-    Forum = await readForum()
+    const raw = await readForum()
+    Forum = raw.map((rec, idx) => ({
+      ...rec,
+      num: idx + 1,
+      now_time: rec.last_offer_price
+    }))
   } catch {
     await writeForum([])
   }
-  for (let i = 0; i < Forum.length; i++) {
-    Forum[i].num = i + 1
-  }
   if (thing_class) {
-    Forum = Forum.filter(item => item.class == thing_class)
+    Forum = Forum.filter(item => item.thing.class == thing_class)
   }
-
-  Forum.sort(function (a, b) {
-    return b.now_time - a.now_time
-  })
+  Forum.sort((a, b) => b.now_time - a.now_time)
   const forum_data = {
     user_id: usr_qq,
-    Forum: Forum
+    Forum
   }
-
   const img = await puppeteer.screenshot('forum', e.UserId, forum_data)
   return img
 }
@@ -543,7 +513,6 @@ export async function getPowerImage(
   if (player.灵石 > 999999999999) {
     lingshi = 999999999999
   }
-  await setPlayerDataSafe(usr_qq, player)
   await playerEfficiency(usr_qq)
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
@@ -638,7 +607,6 @@ export async function getPlayerImage(
   if (player.灵根 == null || player.灵根 == undefined) {
     player.灵根 = await getRandomTalent()
   }
-  await setPlayerDataSafe(usr_qq, player)
   await playerEfficiency(usr_qq) // 注意这里刷新了修炼效率提升
   if ((await player.linggenshow) != 0) {
     player.灵根.type = '无'

@@ -9,10 +9,10 @@ export const regular = /^(#|＃|\/)?金角大王状态$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (await Boss2IsAlive()) {
-    let WorldBossStatusStr: any = await redis.get('Xiuxian:WorldBossStatus2')
+    let WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus2')
     if (WorldBossStatusStr) {
       WorldBossStatusStr = JSON.parse(WorldBossStatusStr)
-      if (new Date().getTime() - WorldBossStatusStr.KilledTime < 86400000) {
+      if (Date.now() - WorldBossStatusStr.KilledTime < 86400000) {
         Send(Text(`金角大王正在刷新,20点开启`))
         return false
       } else if (WorldBossStatusStr.KilledTime != -1) {

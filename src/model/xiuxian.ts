@@ -14,7 +14,7 @@ export {
   GetPower,
   datachange
 } from './utils/number.js'
-export { Add_仙宠 } from './pets.js'
+export { addPet } from './pets.js'
 export { setu } from './external/setu.js'
 export { addCoin, addExp, addExp2, addExp3, addHP } from './economy.js'
 export {
@@ -80,7 +80,6 @@ export {
 // 从实现文件导出原有逻辑函数
 export {
   getPlayerDataSafe,
-  setPlayerDataSafe,
   getEquipmentDataSafe,
   existplayer,
   readPlayer,

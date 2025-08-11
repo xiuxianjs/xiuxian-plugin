@@ -1,25 +1,9 @@
 import { getIoRedis } from '@alemonjs/db'
 import type { Player } from '../../types/player.js'
 import { keys } from './keys.js'
+import type { PlayerRepository, OccupationExpRow } from '../../types/model'
 
 const redis = getIoRedis()
-
-export interface PlayerRepository {
-  get(id: string): Promise<Player | null>
-  save(id: string, player: Player): Promise<void>
-  exists(id: string): Promise<boolean>
-  // 原子增加职业经验
-  addOccupationExp(
-    id: string,
-    delta: number
-  ): Promise<{ level: number; exp: number } | null>
-}
-
-// 经验表 item 类型（减少对 data 的直接耦合）
-interface OccupationExpRow {
-  id: number
-  experience: number
-}
 
 export function createPlayerRepository(
   getOccupationTable: () => OccupationExpRow[]

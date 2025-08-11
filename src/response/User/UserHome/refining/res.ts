@@ -25,7 +25,7 @@ export default onResponse(selects, async e => {
     Send(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`))
     return false
   }
-  let pj: any = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
+  let pj = { 劣: 0, 普: 1, 优: 2, 精: 3, 极: 4, 绝: 5, 顶: 6 }
   pj = pj[code[1]]
   if (
     pj > 5 ||

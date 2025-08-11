@@ -1,17 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths'
-import type { AssociationData } from '@src/types/domain'
-
-// 更严格的 JSON 数据表示（递归结构）
-
-type JSONPrimitive = string | number | boolean | null
-export type JSONValue = JSONPrimitive | JSONArray | JSONObject
-export interface JSONObject {
-  [k: string]: JSONValue
-}
-// 使用类型别名而不是空接口扩展，避免 no-empty-object-type 规则报错
-export type JSONArray = JSONValue[]
-export type JSONData = JSONObject | JSONArray
+import type { AssociationData } from '@src/types'
 
 class Association {
   /**

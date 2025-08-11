@@ -17,10 +17,10 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let A_action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  let A_action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
   A_action = JSON.parse(A_action)
   if (A_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
@@ -34,9 +34,9 @@ export default onResponse(selects, async e => {
       return false
     }
   }
-  let action: any = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
+  let action = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
   action = await JSON.parse(action)
-  let num: any = e.MessageText.replace(/^(#|＃|\/)?刺杀目标/, '')
+  let num = e.MessageText.replace(/^(#|＃|\/)?刺杀目标/, '')
   num = num.trim() - 1
   let qq
   try {
@@ -60,10 +60,10 @@ export default onResponse(selects, async e => {
     Send(Text(`对方已经没有血了,请等一段时间再刺杀他吧`))
     return false
   }
-  let B_action: any = await redis.get('xiuxian@1.3.0:' + qq + ':action')
+  let B_action = await redis.get('xiuxian@1.3.0:' + qq + ':action')
   B_action = JSON.parse(B_action)
   if (B_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const B_action_end_time = B_action.end_time
     if (now_time <= B_action_end_time) {

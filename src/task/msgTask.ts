@@ -2,11 +2,11 @@ import { puppeteer, pushInfo } from '@src/model/api'
 // 细粒度导入避免 barrel 循环
 import { readTemp, writeTemp } from '@src/model/temp'
 import { scheduleJob } from 'node-schedule'
-import type { TempMessage } from '@src/types/task'
-import type { TempRecord } from '@src/model/temp'
+import { TempRecord as TempRecordLegacy } from '@src/types/model'
+import type { TempMessage } from '@src/types'
 
 scheduleJob('20 0/5 * * * ?', async () => {
-  let temp: (TempMessage & TempRecord)[] = []
+  let temp: (TempMessage & TempRecordLegacy)[] = []
   try {
     temp = await readTemp()
   } catch {

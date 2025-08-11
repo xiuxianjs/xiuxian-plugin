@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
   //防并发cd
   const time0 = 0.5 //分钟cd
   //获取当前时间
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   const Exchange_res = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':ExchangeCD'
   )

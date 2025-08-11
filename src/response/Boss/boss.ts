@@ -185,7 +185,7 @@ export async function WorldBossBattle(e) {
   }
   const usr_qq = e.UserId
   let Time = 5
-  const now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = Date.now() //获取当前时间戳
   Time = Math.floor(60000 * Time)
   const last_time_raw = await redis.get('xiuxian@1.3.0:' + usr_qq + 'BOSSCD')
   const last_time = parseInt(last_time_raw || '0', 10)
@@ -213,7 +213,7 @@ export async function WorldBossBattle(e) {
     }
     if (WorldBOSSBattleCD[usr_qq]) {
       const Seconds = Math.trunc(
-        (300000 - (new Date().getTime() - WorldBOSSBattleCD[usr_qq])) / 1000
+        (300000 - (Date.now() - WorldBOSSBattleCD[usr_qq])) / 1000
       )
       if (Seconds <= 300 && Seconds >= 0) {
         send(
@@ -225,7 +225,7 @@ export async function WorldBossBattle(e) {
     const WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
     const PlayerRecord = await redis.get('xiuxian@1.3.0Record')
     const WorldBossStatus = JSON.parse(WorldBossStatusStr)
-    if (new Date().getTime() - WorldBossStatus.KilledTime < 86400000) {
+    if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
       send(Text(`妖王正在刷新,21点开启`))
       return false
     } else if (WorldBossStatus.KilledTime != -1) {
@@ -360,7 +360,7 @@ export async function WorldBossBattle(e) {
       await addCoin(usr_qq, 1000000)
       logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
-      WorldBossStatus.KilledTime = new Date().getTime()
+      WorldBossStatus.KilledTime = Date.now()
       redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
       const PlayerList = await SortPlayer(PlayerRecordJSON)
       send(
@@ -433,7 +433,7 @@ export async function WorldBossBattle(e) {
       // await ForwardMsg(e, Rewardmsg)
       send(Text(Rewardmsg.join('\n')))
     }
-    WorldBOSSBattleCD[usr_qq] = new Date().getTime()
+    WorldBOSSBattleCD[usr_qq] = Date.now()
     WorldBossBattleInfo.setLock(0)
     return false
   } else {

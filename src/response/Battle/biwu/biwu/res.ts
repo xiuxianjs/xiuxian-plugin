@@ -123,8 +123,8 @@ async function battle(e, num) {
     'xiuxian@1.3.0:' + B_QQ[num].QQ + ':bisai',
     JSON.stringify(action_B)
   )
-  const buff_A: any = {}
-  const buff_B: any = {}
+  const buff_A = {}
+  const buff_B = {}
   const msgg = []
   while (A_player.当前血量 > 0 && B_player.当前血量 > 0) {
     msg_A = [`指令样式:#释放技能1\n第${cnt}回合,是否释放以下技能:`]
@@ -237,7 +237,9 @@ async function battle(e, num) {
     //伤害计算
     const A_baoji = baojishanghai(A_player.暴击率)
     let A_伤害 = Harm(A_player.攻击, B_player.防御)
-    const A_法球伤害 = Math.trunc(A_player.攻击 * Number(A_player.灵根.法球倍率))
+    const A_法球伤害 = Math.trunc(
+      A_player.攻击 * Number(A_player.灵根.法球倍率)
+    )
     A_伤害 = Math.trunc(A_baoji * A_伤害 + A_法球伤害 + A_player.防御 * 0.1)
     //技能判断
     if (action_A.use != -1) {
@@ -368,7 +370,9 @@ async function battle(e, num) {
     }
     const B_baoji = baojishanghai(B_player.暴击率)
     let B_伤害 = Harm(B_player.攻击, A_player.防御)
-    const B_法球伤害 = Math.trunc(B_player.攻击 * Number(B_player.灵根.法球倍率))
+    const B_法球伤害 = Math.trunc(
+      B_player.攻击 * Number(B_player.灵根.法球倍率)
+    )
     B_伤害 = Math.trunc(B_baoji * B_伤害 + B_法球伤害 + B_player.防御 * 0.1)
     if (action_B.use != -1) {
       if (action_B.技能[action_B.use].name == '四象封印') {

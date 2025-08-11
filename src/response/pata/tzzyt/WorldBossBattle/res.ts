@@ -55,9 +55,9 @@ export default onResponse(selects, async e => {
     Reward: Reward
   }
   const Time = 2
-  const now_Time = new Date().getTime() //获取当前时间戳
+  const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)
-  let last_time: any = await redis.get('xiuxian@1.3.0:' + usr_qq + 'CD') //获得上次的时间戳,
+  let last_time = await redis.get('xiuxian@1.3.0:' + usr_qq + 'CD') //获得上次的时间戳,
   last_time = parseInt(last_time)
   if (now_Time < last_time + shuangxiuTimeout) {
     const Couple_m = Math.trunc(

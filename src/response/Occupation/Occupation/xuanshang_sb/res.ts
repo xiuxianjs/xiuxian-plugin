@@ -36,7 +36,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const arr = { 名号: player_B.名号, QQ: qq, 赏金: money }
-  let action: any = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
+  let action = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
   action = await JSON.parse(action)
   if (action != null) {
     action.push(arr)

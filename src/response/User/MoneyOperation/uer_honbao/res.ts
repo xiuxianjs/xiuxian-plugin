@@ -14,8 +14,8 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   const player = await await data.getData('player', usr_qq)
   //抢红包要有一分钟的CD
-  const now_time = new Date().getTime()
-  let lastgetbung_time: any = await redis.get(
+  const now_time = Date.now()
+  let lastgetbung_time = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':last_getbung_time'
   )
   lastgetbung_time = parseInt(lastgetbung_time)
@@ -53,9 +53,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //这里有错
-  let acount: any = await redis.get(
-    'xiuxian@1.3.0:' + honbao_qq + ':honbaoacount'
-  )
+  let acount = await redis.get('xiuxian@1.3.0:' + honbao_qq + ':honbaoacount')
   acount = Number(acount)
   //根据个数判断
   if (acount <= 0) {

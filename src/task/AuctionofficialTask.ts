@@ -4,8 +4,10 @@ import { readPlayer } from '@src/model/xiuxian'
 import { addCoin } from '@src/model/economy'
 import { addNajieThing } from '@src/model/najie'
 import { scheduleJob } from 'node-schedule'
-import type { AuctionSession } from '@src/types/task'
-import type { NajieCategory } from '@src/model/najie'
+import type {
+  AuctionSession,
+  CoreNajieCategory as NajieCategory
+} from '@src/types'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   const set = config.getConfig('xiuxian', 'xiuxian')

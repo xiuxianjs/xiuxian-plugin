@@ -2,20 +2,9 @@ import data from './XiuxianData.js'
 import { Write_najie, readNajie } from './xiuxian_impl.js'
 import { notUndAndNull } from './common.js'
 import type { Najie } from '../types/player.js'
+import type { OwnedPetItem, PetList } from '../types/model'
 
-export interface PetItem {
-  name: string
-  class: string
-  等级: number
-  每级增加: number
-  加成: number
-  数量: number
-  islockd: number
-  [k: string]: unknown
-}
-type PetList = PetItem[]
-
-export async function Add_仙宠(
+export async function addPet(
   usr_qq: string,
   thing_name: string,
   n: number,
@@ -28,7 +17,7 @@ export async function Add_仙宠(
   // Najie.仙宠 原结构为 NajieItem[]（无“数量”“islockd”等字段），需要转换
   const rawList = Array.isArray(najie.仙宠) ? najie.仙宠 : []
   const petList: PetList = rawList.map(r => {
-    const base: Partial<PetItem> = r as unknown as PetItem
+    const base: Partial<OwnedPetItem> = r as unknown as OwnedPetItem
     return {
       name: (base.name as string) ?? '',
       class: '仙宠',
@@ -40,7 +29,7 @@ export async function Add_仙宠(
     }
   })
   const trr = petList.find(
-    (item: PetItem) => item.name == thing_name && item.等级 == thing_level
+    (item: OwnedPetItem) => item.name == thing_name && item.等级 == thing_level
   )
   if (x > 0 && !notUndAndNull(trr)) {
     interface SourcePetLike {
@@ -58,7 +47,7 @@ export async function Add_仙宠(
       console.info('没有这个东西')
       return
     }
-    const newthing: PetItem = {
+    const newthing: OwnedPetItem = {
       name: base.name,
       class: '仙宠',
       等级: typeof base.等级 === 'number' ? base.等级 : 1,
@@ -73,7 +62,7 @@ export async function Add_仙宠(
     ;(najie as Najie).仙宠 = petList
     const target = petList.find(
       item => item.name == thing_name && item.等级 == newthing.等级
-    ) as PetItem
+    ) as OwnedPetItem
     target.数量 = x
     target.加成 = target.等级 * target.每级增加
     target.islockd = 0
@@ -83,7 +72,7 @@ export async function Add_仙宠(
   if (!trr) return
   const target = petList.find(
     item => item.name == thing_name && item.等级 == trr.等级
-  ) as PetItem
+  ) as OwnedPetItem
   target.数量 += x
   if (target.数量 < 1) {
     const next = petList.filter(
@@ -94,4 +83,4 @@ export async function Add_仙宠(
   await Write_najie(usr_qq, najie)
 }
 
-export default { Add_仙宠 }
+export default { addPet }

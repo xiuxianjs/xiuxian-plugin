@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
-import { Add_仙宠 } from '@src/model/pets'
+import { addPet } from '@src/model/pets'
 import { readNajie, writePlayer } from '@src/model/xiuxian_impl'
 
 import { selects } from '@src/response/index'
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //放回
-  let last: any = 114514
+  let last = 114514
   for (let i = 0; najie.仙宠.length > i; i++) {
     if (najie.仙宠[i].name == name) {
       last = najie.仙宠[i]
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
     return false
   }
   if (notUndAndNull(player.仙宠.name)) {
-    await Add_仙宠(usr_qq, player.仙宠.name, 1, player.仙宠.等级)
+    await addPet(usr_qq, player.仙宠.name, 1, player.仙宠.等级)
   }
   if (player.仙宠.type == '修炼') {
     player.修炼效率提升 = player.修炼效率提升 - player.仙宠.加成
@@ -64,7 +64,7 @@ export default onResponse(selects, async e => {
     player.修炼效率提升 = player.修炼效率提升 + last.加成
   }
   //增减仙宠方法
-  await Add_仙宠(usr_qq, last.name, -1, last.等级)
+  await addPet(usr_qq, last.name, -1, last.等级)
   await writePlayer(usr_qq, player) //写入
   Send(Text('成功出战' + name))
 })

@@ -12,7 +12,7 @@ export default onResponse(selects, async e => {
     const WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
     if (WorldBossStatusStr) {
       const WorldBossStatus = JSON.parse(WorldBossStatusStr)
-      if (new Date().getTime() - WorldBossStatus.KilledTime < 86400000) {
+      if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
         Send(Text(`妖王正在刷新,21点开启`))
         return false
       } else if (WorldBossStatus.KilledTime != -1) {

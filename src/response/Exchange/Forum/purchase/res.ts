@@ -22,10 +22,10 @@ export default onResponse(selects, async e => {
   const flag = await Go(e)
   if (!flag) return false
   //防并发cd
-  const time: any = 0.5 //分钟cd
+  const time = 0.5 //分钟cd
   //获取当前时间
-  const now_time = new Date().getTime()
-  let ForumCD: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ForumCD')
+  const now_time = Date.now()
+  let ForumCD = await redis.get('xiuxian@1.3.0:' + usr_qq + ':ForumCD')
   ForumCD = parseInt(ForumCD)
   const transferTimeout = Math.floor(60000 * time)
   if (now_time < ForumCD + transferTimeout) {

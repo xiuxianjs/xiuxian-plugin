@@ -31,12 +31,12 @@ export default onResponse(selects, async e => {
       Send(Text('玩家名字最多八字'))
       return
     }
-    let player: any = {}
+    let player = {}
     const now = new Date()
     const nowTime = now.getTime() //获取当前日期的时间戳
     //let Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000);//获得昨天日期
     const Today = await shijianc(nowTime)
-    let lastsetname_time: any = await redis.get(
+    let lastsetname_time = await redis.get(
       'xiuxian@1.3.0:' + usr_qq + ':last_setname_time'
     ) //获得上次改名日期,
     lastsetname_time = parseInt(lastsetname_time)
@@ -73,13 +73,13 @@ export default onResponse(selects, async e => {
       Send(Text('道宣最多50字符'))
       return
     }
-    let player: any = {}
+    let player = {}
     const now = new Date()
     const nowTime = now.getTime() //获取当前日期的时间戳
     //let Yesterday = await shijianc(nowTime - 24 * 60 * 60 * 1000);//获得昨天日期
     //
     const Today = await shijianc(nowTime)
-    let lastsetxuanyan_time: any = await redis.get(
+    let lastsetxuanyan_time = await redis.get(
       'xiuxian@1.3.0:' + usr_qq + ':last_setxuanyan_time'
     )
     //获得上次改道宣日期,

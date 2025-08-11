@@ -3,7 +3,7 @@ import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 import { selects } from '@src/response/index'
-import type { TalentInfo } from '@src/types/player'
+import type { TalentInfo } from '@src/types'
 export const regular = /^(#|＃|\/)?更新属性$/
 
 export default onResponse(selects, async e => {
@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   // 榜单数据类型定义（局部）
   interface RankRow {
-    qq: string | number
+    qq: number
     名号: string
     境界: number
     攻击: number
@@ -29,6 +29,10 @@ export default onResponse(selects, async e => {
       | Record<string, unknown>
     法球倍率?: number | string
     积分: number
+    // 补全 TiandibangRow 所需字段
+    魔道值: number
+    神石: number
+    次数: number
     [k: string]: unknown
   }
   let tiandibang: RankRow[] = []
@@ -38,12 +42,18 @@ export default onResponse(selects, async e => {
     //没有表要先建立一个！
     await Write_tiandibang([])
   }
-  const index = tiandibang.findIndex(item => item.qq == usr_qq)
+  const index = tiandibang.findIndex(item => item.qq === Number(usr_qq))
   if (index === -1) {
     Send(Text('请先报名!'))
     return false
   }
   const player = await readPlayer(usr_qq)
+  // 若缺失补全默认字段
+  if (typeof tiandibang[index].魔道值 !== 'number')
+    tiandibang[index].魔道值 = player.魔道值 || 0
+  if (typeof tiandibang[index].神石 !== 'number')
+    tiandibang[index].神石 = player.神石 || 0
+  if (typeof tiandibang[index].次数 !== 'number') tiandibang[index].次数 = 0
   const level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id

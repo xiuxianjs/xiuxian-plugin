@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
       '\n' +
       `药园药草如下:`
   ]
-  const nowTime = new Date().getTime() //获取当前时间
+  const nowTime = Date.now() //获取当前时间
 
   for (let i = 0; i < ass.药园.作物.length; i++) {
     zuowu = ass.药园.作物
@@ -48,7 +48,7 @@ export default onResponse(selects, async e => {
       zuowu[i].name == '创世花'
     )
       continue
-    const vegetable_Oldtime: any = await redis.get(
+    const vegetable_Oldtime = await redis.get(
       'xiuxian:' + ass.宗门名称 + zuowu[i].name
     ) //获得上次的成熟时间戳,
     let chengshu_t = Math.trunc((vegetable_Oldtime - nowTime) / 86400000) //成熟天数

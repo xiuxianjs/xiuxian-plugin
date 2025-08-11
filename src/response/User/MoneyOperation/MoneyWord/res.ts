@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取发送灵石数量
-  let lingshi: any = e.MessageText.replace(/^(#|＃|\/)?交税/, '')
+  let lingshi = e.MessageText.replace(/^(#|＃|\/)?交税/, '')
   lingshi = await convert2integer(lingshi)
   const player = await readPlayer(usr_qq)
   if (player.灵石 <= lingshi) {

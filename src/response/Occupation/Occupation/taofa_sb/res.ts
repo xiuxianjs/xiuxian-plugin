@@ -17,12 +17,12 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let A_action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+  let A_action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
   if (!A_action) {
     A_action = JSON.parse(A_action)
   }
   if (A_action != null) {
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     //人物任务的动作是否结束
     const A_action_end_time = A_action.end_time
     if (now_time <= A_action_end_time) {
@@ -41,7 +41,7 @@ export default onResponse(selects, async e => {
     Send(Text('侠客资质不足,需要进行训练'))
     return false
   }
-  let action: any = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
+  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
   if (action) {
     action = JSON.parse(action)
   }
@@ -53,7 +53,7 @@ export default onResponse(selects, async e => {
     Send(Text('每日限杀,请等待20小时后新的赏金目标')) //悬赏做完了(20h后刷新)
     return false
   }
-  let num: any = e.MessageText.replace(/^(#|＃|\/)?讨伐目标/, '')
+  let num = e.MessageText.replace(/^(#|＃|\/)?讨伐目标/, '')
   num = num.trim() - 1
   let qq
   try {
@@ -64,7 +64,7 @@ export default onResponse(selects, async e => {
   }
   let last_msg = ''
   if (qq != 1) {
-    const player_B: any = await readPlayer(qq)
+    const player_B = await readPlayer(qq)
     player_B.当前血量 = player_B.血量上限
 
     player_B.法球倍率 = player_B.灵根.法球倍率

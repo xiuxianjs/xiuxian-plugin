@@ -11,7 +11,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-import { parseUnitNumber } from '@src/model/utilsx'
+import { parseUnitNumber } from '@src/model/utils/utilsx'
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
 export const regular =
@@ -47,7 +47,7 @@ export default onResponse(selects, async e => {
       return false
     }
     const nowTime = Date.now()
-    let lastgetbung_time: any = await redis.get(
+    let lastgetbung_time = await redis.get(
       'xiuxian@1.3.0:' + A_qq + ':last_getbung_time'
     )
     lastgetbung_time = parseInt(lastgetbung_time)

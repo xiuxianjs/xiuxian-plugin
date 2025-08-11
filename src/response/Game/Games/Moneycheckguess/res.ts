@@ -14,9 +14,9 @@ export const regular = /^(#|＃|\/)?((大|小)|([1-6]))$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   const ifexistplay = await existplayer(usr_qq)
-  const game_action: any = await redis.get(
+  const game_action = await redis.get(
     'xiuxian@1.3.0:' + usr_qq + ':game_action'
   )
   if (!ifexistplay || !game_action) return false

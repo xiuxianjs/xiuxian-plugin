@@ -7,49 +7,14 @@ import type {
   Equipment,
   EquipmentItem
 } from '../types/player.js'
+import type {
+  EquipmentLike,
+  XianchongLike,
+  XianchongSource,
+  NajieCategory
+} from '../types/model'
 
-// 类型辅助
-export type NajieCategory =
-  | '装备'
-  | '丹药'
-  | '道具'
-  | '功法'
-  | '草药'
-  | '材料'
-  | '仙宠'
-  | '仙宠口粮'
-export type EquipmentType = '武器' | '护具' | '法宝'
-
-interface EquipmentLike extends NajieItem {
-  atk?: number
-  def?: number
-  HP?: number
-  bao?: number
-  type?: EquipmentType
-}
-interface XianchongLike extends NajieItem {
-  加成?: number
-}
-interface XianchongSource {
-  id: number
-  name: string
-  class: string
-  type: string
-  atk: number
-  def: number
-  HP: number
-  初始加成: number
-  每级增加: number
-  加成: number
-  灵魂绑定: number
-  品级: string
-  desc: string
-  等级: number
-  获取难度: number
-  等级上限: number
-  出售价: number
-  [k: string]: unknown
-}
+// 类型已集中到 src/types/model.ts
 
 export async function updateBagThing(
   usr_qq: string,

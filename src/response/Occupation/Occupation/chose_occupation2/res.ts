@@ -11,7 +11,7 @@ export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   // Go 需要 AnyMessageEvent，e 框架事件此处显式断言为兼容结构
-  const flag = await Go(e as unknown as AnyMessageEvent)
+  const flag = await Go(e as unknown MessageEvent)
   if (!flag) {
     return false
   }

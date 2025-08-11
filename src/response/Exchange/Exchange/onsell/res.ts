@@ -20,7 +20,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   const najie = await readNajie(usr_qq)
   const thing = e.MessageText.replace(/^(#|＃|\/)?上架/, '')
-  const code: any = thing.split('*')
+  const code = thing.split('*')
   let thing_name = code[0] //物品
   code[0] = parseInt(code[0])
   let thing_value = code[1] //价格
@@ -93,7 +93,7 @@ export default onResponse(selects, async e => {
   } catch {
     await writeExchange([])
   }
-  const now_time = new Date().getTime()
+  const now_time = Date.now()
   const whole = Math.trunc(thing_value * thing_amount)
   let off = Math.trunc(whole * 0.03)
   if (off < 100000) off = 100000

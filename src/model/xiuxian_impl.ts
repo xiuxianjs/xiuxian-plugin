@@ -10,7 +10,9 @@ const playerRepo = createPlayerRepository(() => data.occupation_exp_list)
 const najieRepo = createNajieRepository()
 
 // 辅助函数：安全获取玩家数据
-export async function getPlayerDataSafe(usr_qq: string): Promise<Player> {
+export async function getPlayerDataSafe(
+  usr_qq: string
+): Promise<Player | null> {
   const playerData = await data.getData('player', usr_qq)
   if (!playerData || Array.isArray(playerData)) {
     return null
@@ -18,13 +20,10 @@ export async function getPlayerDataSafe(usr_qq: string): Promise<Player> {
   return playerData as Player
 }
 
-// 辅助函数：安全设置玩家数据
-export function setPlayerDataSafe(usr_qq: string, player: Player): void {
-  data.setData('player', usr_qq, player)
-}
-
 // 辅助函数：安全获取装备数据
-export async function getEquipmentDataSafe(usr_qq: string): Promise<Equipment> {
+export async function getEquipmentDataSafe(
+  usr_qq: string
+): Promise<Equipment | null> {
   const equipmentData = await data.getData('equipment', usr_qq)
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return null
@@ -47,7 +46,7 @@ export async function readPlayer(usr_qq: string): Promise<Player | null> {
 }
 
 // 读取纳戒信息
-export async function readNajie(usr_qq: string): Promise<Najie> {
+export async function readNajie(usr_qq: string): Promise<Najie | null> {
   const raw = await redis.get(`${__PATH.najie_path}:${usr_qq}`)
   if (!raw) return null
   return JSON.parse(raw) as Najie
@@ -65,8 +64,11 @@ export async function addExp4(usr_qq: string, exp = 0) {
 
 export async function addConFaByUser(usr_qq: string, gongfa_name: string) {
   const player = await readPlayer(usr_qq)
+  if (!player) return
+  if (!Array.isArray(player.学习的功法)) player.学习的功法 = []
   player.学习的功法.push(gongfa_name)
-  data.setData('player', usr_qq, player)
+  // 使用底层 writePlayer 避免 JSONData 结构限制
+  await import('./pub.js').then(m => m.writePlayer(usr_qq, player))
   // 动态加载效率计算，避免与 efficiency.ts 形成静态循环依赖
   import('./efficiency.js')
     .then(m => m.playerEfficiency(usr_qq))

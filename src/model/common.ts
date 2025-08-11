@@ -1,14 +1,8 @@
 // 通用玩家状态与工具函数抽离
-import {
-  useSend,
-  Text,
-  PublicEventMessageCreate,
-  PrivateEventMessageCreate,
-  PublicEventInteractionCreate,
-  PrivateEventInteractionCreate
-} from 'alemonjs'
+import { useSend, Text, PublicEventMessageCreate } from 'alemonjs'
 import { getDataByUserId } from './Redis.js'
 import { safeParse } from './utils/safe.js'
+import type { LastSignTime, PlayerActionData } from '../types/model'
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length)
@@ -45,34 +39,12 @@ export async function shijianc(time: number) {
   }
 }
 
-export interface LastSignTime {
-  Y: number
-  M: number
-  D: number
-  h: number
-  m: number
-  s: number
-}
-
 export async function getLastsign(
   usr_qq: string
 ): Promise<LastSignTime | false> {
   const time = (await getDataByUserId(usr_qq, 'lastsign_time')) as string | null
   if (time != null) return await shijianc(parseInt(time))
   return false
-}
-
-export interface PlayerActionData {
-  action: string
-  time?: number
-  end_time?: number
-  plant?: {
-    name: string
-    start: number
-    duration: number
-    [k: string]: unknown
-  }
-  mine?: { name: string; start: number; duration: number; [k: string]: unknown }
 }
 
 export async function getPlayerAction(
@@ -109,13 +81,7 @@ export function isNotBlank(value: unknown): boolean {
   return !(value === null || value === undefined || value === '')
 }
 
-export type AnyMessageEvent =
-  | PublicEventMessageCreate
-  | PrivateEventMessageCreate
-  | PublicEventInteractionCreate
-  | PrivateEventInteractionCreate
-
-export async function Go(e: AnyMessageEvent): Promise<boolean | 0> {
+export async function Go(e): Promise<boolean | 0> {
   const usr_qq = e.UserId
   const Send = useSend(e)
   const { existplayer } = await import('./xiuxian.js')
@@ -133,7 +99,7 @@ export async function Go(e: AnyMessageEvent): Promise<boolean | 0> {
   const action = safeParse(actionRaw, null) as PlayerActionData | null
   if (action) {
     const action_end_time = action.end_time ?? 0
-    const now_time = new Date().getTime()
+    const now_time = Date.now()
     if (now_time <= action_end_time) {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60)
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000)
