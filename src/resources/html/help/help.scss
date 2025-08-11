@@ -1,0 +1,18 @@
+@use 'sass:math';
+
+// Sprite 图标定位 (生成 .help-icon_1 ~ .help-icon_60)
+$icon-size: 50px;
+$cols: 10;
+$total: 60;
+
+@for $i from 1 through $total {
+    $index: $i - 1;
+    $col: $index % $cols;
+    $row: math.floor(math.div($index, $cols));
+    $x: $col * $icon-size;
+    $y: $row * $icon-size;
+
+    .help-icon_#{$i} {
+        background-position: -#{$x} -#{$y};
+    }
+}
