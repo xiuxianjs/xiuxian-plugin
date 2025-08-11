@@ -2,12 +2,11 @@ import { Text, useSend } from 'alemonjs'
 
 import { existplayer, readPlayer } from '@src/model/index'
 import { Level_up } from '../Level/level'
-import type { AnyMessageEvent } from '@src/model/common'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?自动突破$/
 
-export default onResponse(selects, async (e: AnyMessageEvent) => {
+export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)

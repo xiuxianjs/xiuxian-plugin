@@ -2,7 +2,6 @@ import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 import { Go, existplayer, readPlayer, writePlayer } from '@src/model/index'
-import type { AnyMessageEvent } from '@src/model/common'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?转换副职$/
@@ -10,8 +9,8 @@ export const regular = /^(#|＃|\/)?转换副职$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  // Go 需要 AnyMessageEvent，e 框架事件此处显式断言为兼容结构
-  const flag = await Go(e as unknown MessageEvent)
+  // 校验当前是否可进行操作
+  const flag = await Go(e)
   if (!flag) {
     return false
   }

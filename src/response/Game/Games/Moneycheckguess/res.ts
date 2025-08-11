@@ -42,14 +42,18 @@ export default onResponse(selects, async e => {
 
   const inputMoney = game.yazhu[usr_qq]
 
+  function ensureNumber(v: unknown): number {
+    return typeof v === 'number' ? v : parseInt(String(v || 0)) || 0
+  }
+
   if (/^(#|＃|\/)?(大|小)$/.test(es)) {
     // 统一转换为boolean
     const isBig = es === '大'
 
-    // 调用系统核心逻辑
-    const [win, tou] = await openMoneySystem(isBig, inputMoney)
+    // 调用系统核心逻辑 (对象返回结构)
+    const { win, dice } = await openMoneySystem(isBig, inputMoney)
     isWin = win
-    touzi = tou
+    touzi = dice
 
     const cf = config.getConfig('xiuxian', 'xiuxian')
     let x = cf.percentage.Moneynumber
@@ -64,14 +68,14 @@ export default onResponse(selects, async e => {
       }
       game.yazhu[usr_qq] = Math.trunc(inputMoney * x)
       if (notUndAndNull(player.金银坊胜场)) {
-        player.金银坊胜场 = parseInt(player.金银坊胜场) + 1
+        player.金银坊胜场 = ensureNumber(player.金银坊胜场) + 1
         player.金银坊收入 =
-          parseInt(player.金银坊收入) + parseInt(game.yazhu[usr_qq])
+          ensureNumber(player.金银坊收入) + ensureNumber(game.yazhu[usr_qq])
       } else {
         player.金银坊胜场 = 1
-        player.金银坊收入 = parseInt(game.yazhu[usr_qq])
+        player.金银坊收入 = ensureNumber(game.yazhu[usr_qq])
       }
-      data.setData('player', usr_qq, player)
+      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
       addCoin(usr_qq, game.yazhu[usr_qq])
       if (y == 1) {
         Send(
@@ -89,13 +93,13 @@ export default onResponse(selects, async e => {
     } else {
       // 输了
       if (notUndAndNull(player.金银坊败场)) {
-        player.金银坊败场 = parseInt(player.金银坊败场) + 1
-        player.金银坊支出 = parseInt(player.金银坊支出) + inputMoney
+        player.金银坊败场 = ensureNumber(player.金银坊败场) + 1
+        player.金银坊支出 = ensureNumber(player.金银坊支出) + inputMoney
       } else {
         player.金银坊败场 = 1
         player.金银坊支出 = inputMoney
       }
-      data.setData('player', usr_qq, player)
+      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
       addCoin(usr_qq, -inputMoney)
       const now_money = player.灵石 - inputMoney
       const msg = [`骰子最终为 ${touzi} 你猜错了！\n现在拥有灵石:${now_money}`]
@@ -115,13 +119,13 @@ export default onResponse(selects, async e => {
     if (isWin) {
       const winAmount = inputMoney * 5
       if (notUndAndNull(player.金银坊胜场)) {
-        player.金银坊胜场 = parseInt(player.金银坊胜场) + 1
-        player.金银坊收入 = parseInt(player.金银坊收入) + winAmount
+        player.金银坊胜场 = ensureNumber(player.金银坊胜场) + 1
+        player.金银坊收入 = ensureNumber(player.金银坊收入) + winAmount
       } else {
         player.金银坊胜场 = 1
         player.金银坊收入 = winAmount
       }
-      data.setData('player', usr_qq, player)
+      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
       addCoin(usr_qq, winAmount)
       Send(
         Text(
@@ -130,13 +134,13 @@ export default onResponse(selects, async e => {
       )
     } else {
       if (notUndAndNull(player.金银坊败场)) {
-        player.金银坊败场 = parseInt(player.金银坊败场) + 1
-        player.金银坊支出 = parseInt(player.金银坊支出) + inputMoney
+        player.金银坊败场 = ensureNumber(player.金银坊败场) + 1
+        player.金银坊支出 = ensureNumber(player.金银坊支出) + inputMoney
       } else {
         player.金银坊败场 = 1
         player.金银坊支出 = inputMoney
       }
-      data.setData('player', usr_qq, player)
+      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
       addCoin(usr_qq, -inputMoney)
       const now_money = player.灵石 - inputMoney
       const msg = [`骰子最终为 ${touzi}，你猜错了！\n现在拥有灵石:${now_money}`]
