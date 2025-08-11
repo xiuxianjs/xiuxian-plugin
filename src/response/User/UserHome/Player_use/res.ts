@@ -154,7 +154,9 @@ export default onResponse(selects, async e => {
   // 服用丹药
   if (func[0] == '服用') {
     if (thingClass !== '丹药') return
-    const dyArray = await readDanyao(usr_qq)
+    // 读取丹药列表并做最终防御：确保为数组
+    let dyArray = await readDanyao(usr_qq)
+    if (!Array.isArray(dyArray)) dyArray = []
     const dy = mapDanyaoArrayToStatus(dyArray)
     const tType = thingType(thing_exist)
     const numOr = (k: string) =>
@@ -180,6 +182,8 @@ export default onResponse(selects, async e => {
           class: '内部',
           type: '聚合'
         } as unknown as DanyaoItem
+        // 再次确保 dyArray 可 push
+        if (!Array.isArray(dyArray)) dyArray = []
         dyArray.push(first)
       } else {
         Object.assign(first, dy)
