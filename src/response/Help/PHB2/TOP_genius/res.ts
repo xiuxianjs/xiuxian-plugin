@@ -34,6 +34,8 @@ export default onResponse(selects, async e => {
   //根据力量排序
   temp.sort(sortBy('power'))
 
+  //取前10名
+  const top = temp.slice(0, 10)
   const image = await screenshot('immortal_genius', usr_qq, {
     allplayer: top,
     title: '神魄榜'
