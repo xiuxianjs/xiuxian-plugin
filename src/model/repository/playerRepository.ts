@@ -34,7 +34,7 @@ export function createPlayerRepository(
 
       const occupationTable = getOccupationTable()
       let occExp = Number(player.occupation_exp || 0)
-      let occLevel = Number(player.occupation_level || 1)
+      let occLevel = Number(player.occupation_level || 0)
 
       occExp = occExp + delta
 

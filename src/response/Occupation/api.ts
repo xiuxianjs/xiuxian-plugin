@@ -147,9 +147,9 @@ export async function mine_jiesuan(
     `\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.max(1, Math.trunc(num / 48))}`
   )
   if (group_id) {
-    await pushInfo(group_id, true, msg.join(''))
+    await pushInfo(group_id, true, msg)
   } else {
-    await pushInfo(usr_qq, false, msg.join(''))
+    await pushInfo(usr_qq, false, msg)
   }
   return false
 }
