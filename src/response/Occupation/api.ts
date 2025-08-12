@@ -138,13 +138,13 @@ export async function mine_jiesuan(
     usr_qq,
     B[xuanze],
     '材料',
-    Math.max(1, Math.trunc(num / 48))
+    Math.max(0, Math.trunc(num / 48))
   )
   await addExp4(usr_qq, exp)
   const msg: Array<DataMention | string> = [Mention(usr_qq)]
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`)
   msg.push(
-    `\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.max(1, Math.trunc(num / 48))}`
+    `\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.max(0, Math.trunc(num / 48))}`
   )
   if (group_id) {
     await pushInfo(group_id, true, msg)
