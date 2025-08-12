@@ -58,7 +58,8 @@ export async function getPlayerAction(
       time: parsed.time,
       end_time: parsed.end_time,
       plant: parsed.plant,
-      mine: parsed.mine
+      mine: parsed.mine,
+      is_jiesuan: parsed.is_jiesuan ?? 0
     }
   }
   return { action: '空闲' }

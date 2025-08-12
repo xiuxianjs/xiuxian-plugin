@@ -268,6 +268,7 @@ export interface PlayerActionData {
     [k: string]: unknown
   }
   mine?: { name: string; start: number; duration: number; [k: string]: unknown }
+  is_jiesuan?: number
 }
 
 // setu
