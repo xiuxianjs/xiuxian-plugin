@@ -1,7 +1,5 @@
 import React from 'react'
-import { LinkStyleSheet } from 'jsxp'
-import cssURL from '@src/resources/styles/tw.scss'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
+import HTML from './HTML'
 import backgroundURL from '@src/resources/img/equipment.jpg'
 
 /**
@@ -155,52 +153,38 @@ const Equipment: React.FC<EquipmentProps> = ({
   }
 
   return (
-    <html>
-      <head>
-        <LinkStyleSheet src={cssURL} />
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
-              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
-            `
-          }}
+    <HTML
+      className="min-h-screen w-full p-4 md:p-8 bg-top bg-cover"
+      style={{ backgroundImage: `url(${backgroundURL})` }}
+    >
+      <main className="max-w-4xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+        <EquipmentCard
+          title="[武器]"
+          equipment={arms}
+          qualities={qualities}
+          renderStats={renderStats}
         />
-      </head>
-      <body
-        className="min-h-screen w-full p-4 md:p-8 bg-top bg-cover"
-        style={{ backgroundImage: `url(${backgroundURL})` }}
-      >
-        <main className="max-w-4xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <EquipmentCard
-            title="[武器]"
-            equipment={arms}
-            qualities={qualities}
-            renderStats={renderStats}
-          />
-          <EquipmentCard
-            title="[护具]"
-            equipment={armor}
-            qualities={qualities}
-            renderStats={renderStats}
-          />
-          <EquipmentCard
-            title="[法宝]"
-            equipment={treasure}
-            qualities={qualities}
-            renderStats={renderStats}
-          />
-          <PlayerStats
-            nickname={nickname}
-            player_maxHP={player_maxHP}
-            player_atk={player_atk}
-            player_def={player_def}
-            player_bao={player_bao}
-          />
-        </main>
-      </body>
-    </html>
+        <EquipmentCard
+          title="[护具]"
+          equipment={armor}
+          qualities={qualities}
+          renderStats={renderStats}
+        />
+        <EquipmentCard
+          title="[法宝]"
+          equipment={treasure}
+          qualities={qualities}
+          renderStats={renderStats}
+        />
+        <PlayerStats
+          nickname={nickname}
+          player_maxHP={player_maxHP}
+          player_atk={player_atk}
+          player_def={player_def}
+          player_bao={player_bao}
+        />
+      </main>
+    </HTML>
   )
 }
 

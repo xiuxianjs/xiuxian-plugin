@@ -36,6 +36,7 @@
     "@types/node": "^22.10.5",
     "@types/node-schedule": "^2.1.7",
     "alemonjs": "^2.1.0-alpha.31",
+    "classnames": "^2.5.1",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.3",

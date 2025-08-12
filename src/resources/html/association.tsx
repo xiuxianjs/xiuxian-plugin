@@ -1,10 +1,8 @@
 import React from 'react'
-import { LinkStyleSheet } from 'jsxp'
-import cssURL from '@src/resources/styles/tw.scss'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import user_stateURL from '@src/resources/img/user_state.png'
+import HTML from './HTML'
 
 interface AssociationData {
   宗门名称?: string
@@ -83,84 +81,72 @@ const Association: React.FC<AssociationProps> = ({
   waimen
 }) => {
   return (
-    <html>
-      <head>
-        <LinkStyleSheet src={cssURL} />
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
-              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
-            `
-          }}
-        />
-      </head>
-      <body
-        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
-        style={{
-          backgroundImage: `url(${playerURL}), url(${playerFooterURL})`
-        }}
-      >
-        <main className="max-w-6xl mx-auto space-y-8">
-          <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div className="flex flex-col items-center gap-4">
-              <div
-                className="w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
-                style={{ backgroundImage: `url(${user_stateURL})` }}
-              >
-                <img
-                  className="w-full h-full rounded-full object-cover mix-blend-luminosity"
-                  src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-                  alt="头像"
-                />
-              </div>
-              <div className="px-5 py-1.5 rounded-2xl bg-black/40 backdrop-blur text-white text-lg font-semibold shadow">
-                QQ: {user_id}
-              </div>
+    <HTML
+      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
+      style={{
+        backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
+        backgroundRepeat: 'no-repeat, repeat',
+        backgroundSize: '100%, auto'
+      }}
+    >
+      <main className="max-w-6xl mx-auto space-y-8">
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <div className="flex flex-col items-center gap-4">
+            <div
+              className="w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
+              style={{ backgroundImage: `url(${user_stateURL})` }}
+            >
+              <img
+                className="w-full h-full rounded-full object-cover mix-blend-luminosity"
+                src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+                alt="头像"
+              />
             </div>
-            <div className="flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              <InfoItem label="名称" value={ass?.宗门名称 || '-'} />
-              <InfoItem label="宗主" value={`${mainname}${mainqq}`} />
-              <InfoItem label="等级" value={ass?.宗门等级 ?? '-'} />
-              <InfoItem label="灵石" value={ass?.灵石池 ?? 0} />
-              <InfoItem label="人数" value={ass?.所有成员?.length ?? 0} />
-              <InfoItem label="宗门位置" value={weizhi || '-'} />
+            <div className="px-5 py-1.5 rounded-2xl bg-black/40 backdrop-blur text-white text-lg font-semibold shadow">
+              QQ: {user_id}
             </div>
-          </header>
-
-          <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
-            <h2 className="text-xl md:text-2xl font-semibold text-white tracking-wider flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-brand-accent rounded-full" />
-              信息
-            </h2>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              <InfoItem label="门派状态" value={state} />
-              <InfoItem label="天赋加强" value={`${xiulian}%`} />
-              <InfoItem label="大阵强度" value={ass?.大阵血量 ?? 0} />
-              <InfoItem label="入宗门槛" value={level} />
-              <InfoItem label="宗门建设等级" value={ass?.宗门建设等级 ?? '-'} />
-              <InfoItem label="镇宗神兽" value={ass?.宗门神兽 ?? '-'} />
-            </div>
-          </section>
-
-          <div className="grid gap-8 md:grid-cols-2">
-            <BadgeList title="副宗主" items={fuzong} />
-            <BadgeList title="长老" items={zhanglao} />
           </div>
-          <div className="grid gap-8 md:grid-cols-2">
-            <BadgeList title="内门弟子" items={neimen} />
-            <BadgeList title="外门弟子" items={waimen} />
+          <div className="flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <InfoItem label="名称" value={ass?.宗门名称 || '-'} />
+            <InfoItem label="宗主" value={`${mainname}${mainqq}`} />
+            <InfoItem label="等级" value={ass?.宗门等级 ?? '-'} />
+            <InfoItem label="灵石" value={ass?.灵石池 ?? 0} />
+            <InfoItem label="人数" value={ass?.所有成员?.length ?? 0} />
+            <InfoItem label="宗门位置" value={weizhi || '-'} />
           </div>
+        </header>
 
-          <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card">
-            <p className="text-white/80 text-sm md:text-base tracking-wide">
-              创立于: {ass?.创立时间?.[0] || '-'}
-            </p>
-          </section>
-        </main>
-      </body>
-    </html>
+        <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
+          <h2 className="text-xl md:text-2xl font-semibold text-white tracking-wider flex items-center gap-2">
+            <span className="w-1.5 h-6 bg-brand-accent rounded-full" />
+            信息
+          </h2>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <InfoItem label="门派状态" value={state} />
+            <InfoItem label="天赋加强" value={`${xiulian}%`} />
+            <InfoItem label="大阵强度" value={ass?.大阵血量 ?? 0} />
+            <InfoItem label="入宗门槛" value={level} />
+            <InfoItem label="宗门建设等级" value={ass?.宗门建设等级 ?? '-'} />
+            <InfoItem label="镇宗神兽" value={ass?.宗门神兽 ?? '-'} />
+          </div>
+        </section>
+
+        <div className="grid gap-8 md:grid-cols-2">
+          <BadgeList title="副宗主" items={fuzong} />
+          <BadgeList title="长老" items={zhanglao} />
+        </div>
+        <div className="grid gap-8 md:grid-cols-2">
+          <BadgeList title="内门弟子" items={neimen} />
+          <BadgeList title="外门弟子" items={waimen} />
+        </div>
+
+        <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card">
+          <p className="text-white/80 text-sm md:text-base tracking-wide">
+            创立于: {ass?.创立时间?.[0] || '-'}
+          </p>
+        </section>
+      </main>
+    </HTML>
   )
 }
 

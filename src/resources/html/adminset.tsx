@@ -1,9 +1,7 @@
 import React from 'react'
-import { LinkStyleSheet } from 'jsxp'
-import cssURL from '@src/resources/styles/tw.scss'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import stateURL from '@src/resources/img/state.jpg'
 import user_state from '@src/resources/img/user_state.png'
+import HTML from './HTML'
 
 interface XiuxianSettingsProps {
   // 冷却时间设置
@@ -137,53 +135,37 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
     { title: '出金设置', settings: goldSettings }
   ]
 
-  const styles = `
-    @font-face {
-      font-family: 'tttgbnumber';
-      src: url('${tttgbnumberURL}');
-      font-weight: normal;
-      font-style: normal;
-    }
-    body { font-family: 'tttgbnumber', system-ui, sans-serif; }
-  `
   return (
-    <html>
-      <head>
-        <LinkStyleSheet src={cssURL} />
-        <style dangerouslySetInnerHTML={{ __html: styles }} />
-      </head>
-      <body
-        className="min-h-screen w-full bg-cover bg-fixed bg-top text-center p-4 md:p-8 space-y-8"
-        style={{ backgroundImage: `url(${stateURL})` }}
-      >
-        <main className="max-w-6xl mx-auto space-y-8">
-          <header className="text-center space-y-4">
-            <div
-              className="mx-auto w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
-              style={{ backgroundImage: `url(${user_state})` }}
-            />
-            <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
-              #修仙设置
-            </h1>
-          </header>
-
-          <div className="flex flex-col gap-8">
-            {settingSections.map((section, sectionIndex) => (
-              <SettingSection key={sectionIndex} title={section.title}>
-                {section.settings.map((setting, index) => (
-                  <SettingItem
-                    key={index}
-                    label={setting.label}
-                    value={setting.value}
-                    unit={setting.unit}
-                  />
-                ))}
-              </SettingSection>
-            ))}
-          </div>
-        </main>
-      </body>
-    </html>
+    <HTML
+      className="min-h-screen w-full bg-cover bg-fixed bg-top text-center p-4 md:p-8 space-y-8"
+      style={{ backgroundImage: `url(${stateURL})` }}
+    >
+      <main className="max-w-6xl mx-auto space-y-8">
+        <header className="text-center space-y-4">
+          <div
+            className="mx-auto w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
+            style={{ backgroundImage: `url(${user_state})` }}
+          />
+          <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+            #修仙设置
+          </h1>
+        </header>
+        <div className="flex flex-col gap-8">
+          {settingSections.map((section, sectionIndex) => (
+            <SettingSection key={sectionIndex} title={section.title}>
+              {section.settings.map((setting, index) => (
+                <SettingItem
+                  key={index}
+                  label={setting.label}
+                  value={setting.value}
+                  unit={setting.unit}
+                />
+              ))}
+            </SettingSection>
+          ))}
+        </div>
+      </main>
+    </HTML>
   )
 }
 
