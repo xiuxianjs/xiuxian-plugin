@@ -1,5 +1,3 @@
-import { mkdirSync, writeFileSync } from 'fs'
-import path from 'path'
 import data from './XiuxianData.js'
 import config from './Config.js'
 import { useSend, Text, EventsMessageCreateEnum, Image } from 'alemonjs'
@@ -1282,11 +1280,9 @@ export async function Goweizhi(
   const image = await screenshot('secret_place', e.UserId, {
     didian_list: weizhi
   })
-  if (!image) {
-    Send(Text('获取秘境图片失败，请稍后再试'))
+  if (Buffer.isBuffer(image)) {
+    Send(Image(image))
     return
   }
-  Send(Image(image))
+  Send(Text('获取图片失败，请稍后再试'))
 }
-
-// （类型辅助已移至文件顶部）

@@ -30,7 +30,6 @@ jobs:
 
       - name: 加载依赖
         run: |
-          npm install yarn@1.19.1 -g
           yarn install --ignore-engines
 
       - name: 格式化检查

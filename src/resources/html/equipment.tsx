@@ -1,6 +1,5 @@
 import React from 'react'
 import HTML from './HTML'
-import backgroundURL from '@src/resources/img/equipment.jpg'
 
 // 装备项接口
 interface EquipmentItem {

@@ -31,11 +31,10 @@ jobs:
       - name: 设置Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: 安装依赖项
         run: |
-          npm install yarn@1.19.1 -g
           yarn install --ignore-engines
 
       - name: 打包

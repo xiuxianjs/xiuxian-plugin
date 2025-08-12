@@ -29,9 +29,7 @@ const HTML = (
           }}
         />
         {dangerouslySetInnerHTML && (
-          <style
-            dangerouslySetInnerHTML={{ __html: dangerouslySetInnerHTML }}
-          />
+          <style dangerouslySetInnerHTML={dangerouslySetInnerHTML} />
         )}
       </head>
       <body {...reSet} />
