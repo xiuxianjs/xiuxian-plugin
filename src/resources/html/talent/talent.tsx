@@ -1,80 +1,41 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './talent.css'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import talentURL from '@src/resources/img/fairyrealm.jpg'
-import user_stateURL from '@src/resources/img/user_state.png'
 
 const Talent = ({ talent_list = [] }) => {
   return (
-    <html>
-      <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
-        <LinkStyleSheet src={cssURL} />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            text-align: center;
-            background-image: url('${talentURL}');
-            background-size: 100% auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${user_stateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
-          }}
-        >
-          {}
-        </style>
-      </head>
-
-      <body>
-        <div>
-          <div className="user_bottom1">
-            <div className="use_data">
+    <div
+      className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
+      style={{
+        backgroundImage: `url('${talentURL}')`,
+        backgroundSize: 'cover'
+      }}
+    >
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center">
+          <div className="text-2xl font-bold text-blue-700 mb-2">灵根列表</div>
+          <div className="w-full">
+            {talent_list.map((item, index) => (
               <div
-                className="user_font use_data_head"
-                style={{ textAlign: 'center', paddingLeft: '0px' }}
+                key={index}
+                className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition mb-4"
               >
-                <div>灵根列表</div>
+                <div className="font-bold text-blue-800 text-lg mb-2">
+                  【{item.type}】{item.name}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-block bg-blue-200 text-blue-900 rounded px-2 py-1 text-xs font-semibold">
+                    修炼效率：{item.eff * 100}%
+                  </span>
+                  <span className="inline-block bg-green-200 text-green-900 rounded px-2 py-1 text-xs font-semibold">
+                    额外增伤：{item.法球倍率 * 100}%
+                  </span>
+                </div>
               </div>
-              <div className="use_data_body">
-                {talent_list.map((item, index) => (
-                  <div key={index} className="user_font">
-                    <div>
-                      <div style={{ display: 'inline-block' }}>
-                        【{item.type}】{item.name}
-                      </div>
-                    </div>
-                    <div className="info" style={{ width: '200px' }}>
-                      修炼效率：{item.eff * 100}%
-                    </div>
-                    <div className="info" style={{ width: '200px' }}>
-                      额外增伤：{item.法球倍率 * 100}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
   )
 }
 

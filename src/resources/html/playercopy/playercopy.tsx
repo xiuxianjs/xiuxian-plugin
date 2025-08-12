@@ -22,6 +22,7 @@ const PlayerCopy = ({
   return (
     <html>
       <head>
+        <LinkStyleSheet src={cssURL} />
         <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
         <style

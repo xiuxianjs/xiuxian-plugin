@@ -1,113 +1,116 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './gongfa.css'
+import { LinkStyleSheet } from 'jsxp'
+import cssURL from './tailwindcss.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
-import user_stateURL from '@src/resources/img/user_state.png'
 
-const Gongfa = ({ nickname, gongfa_need = [], gongfa_have = [] }) => {
+interface GongfaItem {
+  name: string
+  修炼加成: number
+  出售价: number
+}
+
+const Gongfa = ({
+  nickname,
+  gongfa_need = [],
+  gongfa_have = []
+}: {
+  nickname: string
+  gongfa_need?: GongfaItem[]
+  gongfa_have?: GongfaItem[]
+}) => {
   return (
     <html>
       <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
+        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            text-align: center;
-            background-image: url('${playerURL}'), url('${playerFooterURL}');
-            background-repeat: no-repeat, repeat;
-            background-size: 100%, auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${user_stateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
+              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
+              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+            `
           }}
         />
       </head>
-
-      <body>
-        <div>
-          <div className="header"></div>
-
-          <div className="card_box">
-            <div className="use_data">
-              <div className="user_font user_font_title">{nickname}的功法</div>
-            </div>
-          </div>
+      <body
+        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
+        style={{
+          backgroundImage: `url(${playerURL}), url(${playerFooterURL})`
+        }}
+      >
+        <main className="max-w-4xl mx-auto space-y-8">
+          <header className="space-y-4 flex flex-col items-center">
+            <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+              {nickname}的功法
+            </h1>
+          </header>
 
           {gongfa_need.length > 0 && (
-            <div className="card_box">
-              <div className="use_data">
-                <div className="user_font user_font_title">【未学习】</div>
-                <div className="user_font wupin">
-                  {gongfa_need.map((item, index) => (
-                    <div key={index} className="item">
-                      <div
-                        className="item_title font_item_title"
-                        style={{ height: '45px' }}
-                      >
-                        {item.name}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        修炼加成：{(item.修炼加成 * 100).toFixed(0)}%
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        价格：{item.出售价.toFixed(0)}
-                      </div>
+            <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
+              <h2 className="text-lg md:text-xl font-semibold text-white tracking-wide mb-2">
+                【未学习】
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {gongfa_need.map((item, index) => (
+                  <article
+                    key={index}
+                    className="rounded-xl bg-white/10 p-4 flex flex-col gap-2 shadow"
+                  >
+                    <h3 className="text-base font-bold text-white tracking-wide mb-1">
+                      {item.name}
+                    </h3>
+                    <div className="text-sm text-white/80">
+                      修炼加成：
+                      <span className="font-semibold text-brand-accent">
+                        {(item.修炼加成 * 100).toFixed(0)}%
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-sm text-white/80">
+                      价格：
+                      <span className="font-semibold text-brand-accent">
+                        {item.出售价.toFixed(0)}
+                      </span>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </div>
+            </section>
           )}
 
           {gongfa_have.length > 0 && (
-            <div className="card_box">
-              <div className="use_data">
-                <div className="user_font user_font_title">【已学习】</div>
-                <div className="user_font wupin">
-                  {gongfa_have.map((item, index) => (
-                    <div key={index} className="item">
-                      <div
-                        className="item_title font_item_title"
-                        style={{ height: '45px' }}
-                      >
-                        {item.name}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        修炼加成：{(item.修炼加成 * 100).toFixed(0)}%
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        价格：{item.出售价.toFixed(0)}
-                      </div>
+            <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
+              <h2 className="text-lg md:text-xl font-semibold text-brand-accent tracking-wide mb-2">
+                【已学习】
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {gongfa_have.map((item, index) => (
+                  <article
+                    key={index}
+                    className="rounded-xl bg-white/10 p-4 flex flex-col gap-2 shadow hover:bg-brand-accent/10 transition"
+                  >
+                    <h3 className="text-base font-bold text-white tracking-wide mb-1">
+                      {item.name}
+                    </h3>
+                    <div className="text-sm text-white/80">
+                      修炼加成：
+                      <span className="font-semibold text-brand-accent">
+                        {(item.修炼加成 * 100).toFixed(0)}%
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-sm text-white/80">
+                      价格：
+                      <span className="font-semibold text-brand-accent">
+                        {item.出售价.toFixed(0)}
+                      </span>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </div>
+            </section>
           )}
-
-          <div className="user_bottom2"></div>
-        </div>
+        </main>
       </body>
     </html>
   )

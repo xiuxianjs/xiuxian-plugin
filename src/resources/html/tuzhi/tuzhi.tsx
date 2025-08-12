@@ -1,88 +1,51 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './tuzhi.css'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import tuzhiURL from '@src/resources/img/fairyrealm.jpg'
-import userStateURL from '@src/resources/img/user_state.png'
 
 const Tuzhi = ({ tuzhi_list }) => {
   return (
-    <html>
-      <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
-        <LinkStyleSheet src={cssURL} />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            text-align: center;
-            background-image: url('${tuzhiURL}');
-            background-size: 100% auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${userStateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
-          }}
-        >
-          {}
-        </style>
-      </head>
-
-      <body>
-        <div>
-          <div className="user_bottom1">
-            <div className="use_data">
+    <div
+      className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
+      style={{ backgroundImage: `url('${tuzhiURL}')`, backgroundSize: 'cover' }}
+    >
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center">
+          <div className="text-2xl font-bold text-blue-700 mb-2">图纸</div>
+          <div className="text-base text-gray-600 mb-1">
+            炼制指令：#打造+武器名
+          </div>
+          <div className="text-base text-green-600 mb-4">
+            炼制成功率 = 炼制成功率 + 玩家职业等级成功率
+          </div>
+          <div className="w-full">
+            {tuzhi_list?.map((item, index) => (
               <div
-                className="user_font use_data_head"
-                style={{ textAlign: 'center', paddingLeft: '0px' }}
+                key={index}
+                className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition mb-4"
               >
-                <div>图纸</div>
-                <div style={{ fontSize: '0.8em' }}>炼制指令：#打造+武器名</div>
-                <div style={{ fontSize: '0.8em' }}>
-                  炼制成功率 = 炼制成功率 + 玩家职业等级成功率
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-blue-800 text-lg">
+                    {item.name}
+                  </span>
+                  <span className="text-sm text-gray-700">
+                    基础成功率 {~~(item.rate * 100)}%
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {item.materials?.map((material, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-block bg-blue-200 text-blue-900 rounded px-2 py-1 text-xs font-semibold"
+                    >
+                      {material.name} × {material.amount}
+                    </span>
+                  ))}
                 </div>
               </div>
-              <div className="use_data_body">
-                {tuzhi_list?.map((item, index) => (
-                  <div key={index} className="user_font">
-                    <div>
-                      <div style={{ display: 'inline-block' }}>{item.name}</div>
-                      <div className="rate">
-                        基础成功率{~~(item.rate * 100)}%
-                      </div>
-                    </div>
-                    {item.materials?.map((material, idx) => (
-                      <div
-                        key={idx}
-                        className="info"
-                        style={{ width: '130px' }}
-                      >
-                        {material.name}×{material.amount}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
   )
 }
 

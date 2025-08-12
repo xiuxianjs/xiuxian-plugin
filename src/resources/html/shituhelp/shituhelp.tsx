@@ -1,97 +1,58 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import commonCssURL from './common.css'
-import cssURL from './shituhelp.css'
-import NumberURL from '@src/resources/font/tttgbnumber.ttf'
 import bgURL from '@src/resources/img/shituhelp.jpg'
 import iconURL from '@src/resources/img/icon.png'
 
 const ShituHelp = ({ version, helpData = [] }) => {
   return (
-    <html>
-      <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
-        <LinkStyleSheet src={commonCssURL} />
-        <LinkStyleSheet src={cssURL} />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          @font-face {
-            font-family: 'Number';
-            src: url('${NumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-          }
-          body {
-            font-size: 18px;
-            color: #47ada8;
-            font-family: Number, YS2, PingFangSC-Medium, PingFang SC, sans-serif;
-            transform: scale(1.4);
-            transform-origin: 0 0;
-            width: 600px;
-          }
-          body {
-            transform: scale(1);
-            width: 100%;
-            background: url('${bgURL}') top left no-repeat;
-            background-size: 100% 100%;
-          }
-          .help-icon {
-            width: 40px;
-            height: 40px;
-            display: block;
-            position: absolute;
-            background: url('${iconURL}') 0 0 no-repeat;
-            background-size: 500px auto;
-            border-radius: 5px;
-            left: 6px;
-            top: 12px;
-            transform: scale(0.85);
-          }
-        `
-          }}
-        >
-          {}
-        </style>
-      </head>
-      <body className="elem-default default-mode">
-        <div className="container" id="container">
-          <div className="info_box">
-            <div className="head-box type">
-              <div className="title">
-                #师徒帮助<span className="version">{version}</span>
-              </div>
-            </div>
-          </div>
-          {helpData.map((val, idx) => (
-            <div className="cont-box" key={idx}>
-              <div className="help-group">{val.group}</div>
-              <div className="help-table">
-                <div className="tr">
-                  {val.list.map((item, i) => (
-                    <div className="td" key={i}>
-                      <span className={`help-icon ${item.icon}`}></span>
-                      <strong className="help-title">{item.title}</strong>
-                      <span className="help-desc">{item.desc}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-          <div className="copyright">
-            Created By xiuxian<span className="version">@1.3.0</span>
+    <div
+      className="min-h-screen bg-cover bg-center flex flex-col items-center py-8"
+      style={{ backgroundImage: `url('${bgURL}')` }}
+    >
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="rounded-xl shadow-lg bg-white/80 p-6 mb-6 flex flex-col items-center">
+          <div className="text-2xl font-bold text-blue-700 mb-2 flex items-center gap-2">
+            <span className="flex w-10 h-10 rounded bg-blue-200 items-center justify-center">
+              <img src={iconURL} alt="icon" className="w-8 h-8" />
+            </span>
+            #师徒帮助
+            <span className="ml-2 text-base text-gray-500">{version}</span>
           </div>
         </div>
-      </body>
-    </html>
+        {helpData.map((val, idx) => (
+          <div className="rounded-xl shadow bg-white/70 p-4 mb-6" key={idx}>
+            <div className="text-lg font-semibold text-blue-600 mb-2">
+              {val.group}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {val.list.map((item, i) => (
+                <div
+                  className="flex items-start gap-3 p-3 border rounded-lg bg-gray-50"
+                  key={i}
+                >
+                  <span
+                    className={`flex w-10 h-10 rounded bg-blue-100 items-center justify-center ${item.icon}`}
+                  >
+                    <img src={iconURL} alt="icon" className="w-8 h-8" />
+                  </span>
+                  <div>
+                    <strong className="block text-base text-blue-800 mb-1">
+                      {item.title}
+                    </strong>
+                    <span className="block text-sm text-gray-700">
+                      {item.desc}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        <div className="text-center text-gray-500 mt-8">
+          Created By xiuxian
+          <span className="ml-2 text-base text-blue-400">@1.3.0</span>
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -1,128 +1,90 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './tujian.css'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg'
-import user_stateURL from '@src/resources/img/user_state.png'
 
 const TuJian = ({ commodities_list }) => {
   return (
-    <html>
-      <head>
-        <LinkStyleSheet src={cssURL} />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            text-align: center;
-            background-image: url('${ningmenghomeURL}');
-            background-size: 100% auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${user_stateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
-          }}
-        >
-          {}
-        </style>
-      </head>
-      <body>
-        <div>
-          <div className="user_bottom1">
-            <div className="use_data">
-              <div
-                className="user_font use_data_head"
-                style={{ textAlign: 'center', paddingLeft: '0px' }}
-              >
-                <div>斩首神器堂</div>
-              </div>
-              <div className="use_data_body">
-                {commodities_list &&
-                  commodities_list.map((item, index) => (
-                    <div key={index} className="user_font">
-                      <div>
-                        <div style={{ display: 'inline-block' }}>
-                          【{item.desc[0]}
-                          {item.type}】{item.name}
-                        </div>
+    <div
+      className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
+      style={{
+        backgroundImage: `url('${ningmenghomeURL}')`,
+        backgroundSize: 'cover'
+      }}
+    >
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center">
+          <div className="text-2xl font-bold text-blue-700 mb-2">
+            斩首神器堂
+          </div>
+          <div className="w-full">
+            {commodities_list &&
+              commodities_list.map((item, index) => (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition mb-4"
+                >
+                  <div className="font-bold text-blue-800 text-lg mb-2">
+                    【{item.desc[0]}
+                    {item.type}】{item.name}
+                  </div>
+                  {item.class === '装备' && (
+                    <div className="space-y-1">
+                      <div className="text-sm text-gray-700">
+                        契合元素：【{item.desc[4]}】
                       </div>
-                      {item.class === '装备' && (
-                        <>
-                          <div className="info" style={{ width: '600px' }}>
-                            契合元素：【{item.desc[4]}】
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            锋利度：{item.atk}
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            刃体强度：{item.def}
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            血晶核：{item.HP}
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            元素爆发率：{item.bao * 100}%
-                          </div>
-                          <div className="info" style={{ width: '999px' }}>
-                            特性{item.desc[1]}
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            {item.desc[2]}
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            {item.desc[3]}
-                          </div>
-                          <div className="info" style={{ width: '600px' }}>
-                            获取途径:{item.tujin}
-                          </div>
-                        </>
-                      )}
-                      {item.class === '丹药' && (
-                        <div className="info">
-                          {item.type}：
-                          {item.type === '修为'
-                            ? item.exp
-                            : item.type === '血气'
-                              ? item.xueqi
-                              : item.type === '血量'
-                                ? item.HP
-                                : ''}
-                        </div>
-                      )}
-                      {item.class === '功法' && (
-                        <div className="info">
-                          修炼加成：{item.修炼加成 * 100}%
-                        </div>
-                      )}
-                      {item.class === '道具' && (
-                        <div className="info">描述：{item.desc}</div>
-                      )}
-                      {item.class === '草药' && (
-                        <div className="info">描述：{item.desc}</div>
-                      )}
+                      <div className="text-sm text-gray-700">
+                        锋利度：{item.atk}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        刃体强度：{item.def}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        血晶核：{item.HP}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        元素爆发率：{item.bao * 100}%
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        特性：{item.desc[1]}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        {item.desc[2]}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        {item.desc[3]}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        获取途径：{item.tujin}
+                      </div>
                     </div>
-                  ))}
-              </div>
-            </div>
+                  )}
+                  {item.class === '丹药' && (
+                    <div className="text-sm text-gray-700">
+                      {item.type}：
+                      {item.type === '修为'
+                        ? item.exp
+                        : item.type === '血气'
+                          ? item.xueqi
+                          : item.type === '血量'
+                            ? item.HP
+                            : ''}
+                    </div>
+                  )}
+                  {item.class === '功法' && (
+                    <div className="text-sm text-gray-700">
+                      修炼加成：{item.修炼加成 * 100}%
+                    </div>
+                  )}
+                  {(item.class === '道具' || item.class === '草药') && (
+                    <div className="text-sm text-gray-700">
+                      描述：{item.desc}
+                    </div>
+                  )}
+                </div>
+              ))}
           </div>
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
   )
 }
 

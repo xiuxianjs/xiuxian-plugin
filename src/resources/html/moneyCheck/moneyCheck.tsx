@@ -1,68 +1,74 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from '../ningmenghome/ningmenghome.css'
+import { LinkStyleSheet } from 'jsxp'
+import cssURL from './tailwindcss.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import ningmenghomeBgURL from '@src/resources/img/fairyrealm.jpg'
-import userStateURL from '@src/resources/img/user_state.png'
 
-const MoneyCheck = ({ qq, victory, victory_num, defeated, defeated_num }) => {
+const MoneyCheck = ({
+  qq,
+  victory,
+  victory_num,
+  defeated,
+  defeated_num
+}: {
+  qq: string | number
+  victory: number | string
+  victory_num: number | string
+  defeated: number | string
+  defeated_num: number | string
+}) => {
   return (
     <html>
       <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
+        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            text-align: center;
-            background-image: url('${ningmenghomeBgURL}');
-            background-size: 100% auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${userStateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-          `
+              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
+              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+            `
           }}
         />
       </head>
-
-      <body>
-        <div>
-          <div className="user_bottom1">
-            <div className="use_data">
-              <div
-                className="user_font use_data_head"
-                style={{ textAlign: 'center', paddingLeft: '0px' }}
-              >
-                <div>金银坊记录</div>
-                <div style={{ fontSize: '0.8em' }}>{qq}</div>
+      <body
+        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
+        style={{ backgroundImage: `url(${ningmenghomeBgURL})` }}
+      >
+        <main className="max-w-xl mx-auto space-y-8">
+          <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-6 shadow-card flex flex-col items-center gap-4">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-widest text-brand-accent mb-2">
+              金银坊记录
+            </h1>
+            <div className="text-white/70 text-base mb-4">QQ：{qq}</div>
+            <div className="grid gap-3 text-white/90 text-lg font-medium">
+              <div>
+                胜场：
+                <span className="text-brand-accent font-semibold">
+                  {victory}
+                </span>
               </div>
-              <div className="use_data_body">
-                <div className="user_font">
-                  <div className="info">胜场：{victory}</div>
-                  <div className="info">共卷走灵石：{victory_num}</div>
-                  <div className="info">败场：{defeated}</div>
-                  <div className="info">共献祭灵石：{defeated_num}</div>
-                </div>
+              <div>
+                共卷走灵石：
+                <span className="text-brand-accent font-semibold">
+                  {victory_num}
+                </span>
+              </div>
+              <div>
+                败场：
+                <span className="text-brand-accent font-semibold">
+                  {defeated}
+                </span>
+              </div>
+              <div>
+                共献祭灵石：
+                <span className="text-brand-accent font-semibold">
+                  {defeated_num}
+                </span>
               </div>
             </div>
-          </div>
-        </div>
+          </section>
+        </main>
       </body>
     </html>
   )

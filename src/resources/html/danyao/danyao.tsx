@@ -1,18 +1,33 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from '../gongfa/gongfa.css'
+import { LinkStyleSheet } from 'jsxp'
+import cssURL from './tailwindcss.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import user_stateURL from '@src/resources/img/user_state.png'
+
+interface DanyaoItem {
+  name: string
+  type: string
+  HP?: number | string
+  exp?: number | string
+  xueqi?: number | string
+  xingyun?: number
+  出售价: number
+}
 
 const Danyao = ({
   nickname,
   danyao_have = [],
   danyao2_have = [],
   danyao_need = []
+}: {
+  nickname: string
+  danyao_have?: DanyaoItem[]
+  danyao2_have?: DanyaoItem[]
+  danyao_need?: DanyaoItem[]
 }) => {
-  const renderEffect = item => {
+  const renderEffect = (item: DanyaoItem) => {
     const effects = []
     if (item.HP) effects.push(item.HP)
     if (item.exp) effects.push(item.exp)
@@ -24,123 +39,110 @@ const Danyao = ({
   return (
     <html>
       <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
+        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            text-align: center;
-            background-image: url('${playerURL}'), url('${playerFooterURL}');
-            background-repeat: no-repeat, repeat;
-            background-size: 100%, auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${user_stateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
+              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
+              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+            `
           }}
         />
       </head>
+      <body
+        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
+        style={{
+          backgroundImage: `url(${playerURL}), url(${playerFooterURL})`
+        }}
+      >
+        <main className="max-w-4xl mx-auto space-y-8">
+          <header className="space-y-4 flex flex-col items-center">
+            <div
+              className="w-40 h-40 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
+              style={{ backgroundImage: `url(${user_stateURL})` }}
+            />
+            <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+              {nickname}的丹药
+            </h1>
+          </header>
 
-      <body>
-        <div>
-          <div className="header"></div>
-          {/* 上 */}
-          <div className="card_box">
-            <div className="use_data">
-              <div className="user_font user_font_title">{nickname}的丹药</div>
-            </div>
-          </div>
-
-          {/* 下 */}
           {(danyao_have.length > 0 || danyao2_have.length > 0) && (
-            <div className="card_box">
-              <div className="use_data">
-                <div className="user_font user_font_title">【已拥有】</div>
-                <div className="user_font wupin">
-                  {danyao_have.map((item, index) => (
-                    <div key={`danyao_${index}`} className="item">
-                      <div className="item_title font_item_title">
-                        {item.name}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        类型：{item.type}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        效果：{renderEffect(item)}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        价格：{item.出售价.toFixed(0)}
-                      </div>
+            <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
+              <h2 className="text-lg md:text-xl font-semibold text-brand-accent tracking-wide mb-2">
+                【已拥有】
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[...danyao_have, ...danyao2_have].map((item, index) => (
+                  <article
+                    key={index}
+                    className="rounded-xl bg-white/10 p-4 flex flex-col gap-2 shadow hover:bg-brand-accent/10 transition"
+                  >
+                    <h3 className="text-base font-bold text-white tracking-wide mb-1">
+                      {item.name}
+                    </h3>
+                    <div className="text-sm text-white/80">
+                      类型：
+                      <span className="font-semibold text-brand-accent">
+                        {item.type}
+                      </span>
                     </div>
-                  ))}
-
-                  {danyao2_have.map((item, index) => (
-                    <div key={`danyao2_${index}`} className="item">
-                      <div className="item_title font_item_title">
-                        {item.name}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        类型：{item.type}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        效果：{renderEffect(item)}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        价格：{item.出售价.toFixed(0)}
-                      </div>
+                    <div className="text-sm text-white/80">
+                      效果：
+                      <span className="font-semibold text-brand-accent">
+                        {renderEffect(item)}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-sm text-white/80">
+                      价格：
+                      <span className="font-semibold text-brand-accent">
+                        {item.出售价.toFixed(0)}
+                      </span>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </div>
+            </section>
           )}
 
-          {/* 下 */}
           {danyao_need.length > 0 && (
-            <div className="card_box">
-              <div className="use_data">
-                <div className="user_font user_font_title">【未拥有】</div>
-                <div className="user_font wupin">
-                  {danyao_need.map((item, index) => (
-                    <div key={`need_${index}`} className="item">
-                      <div className="item_title font_item_title">
-                        {item.name}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        类型：{item.type}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        效果：{renderEffect(item)}
-                      </div>
-                      <div className="item_int" style={{ paddingLeft: '38px' }}>
-                        价格：{item.出售价.toFixed(0)}
-                      </div>
+            <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
+              <h2 className="text-lg md:text-xl font-semibold text-white tracking-wide mb-2">
+                【未拥有】
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {danyao_need.map((item, index) => (
+                  <article
+                    key={index}
+                    className="rounded-xl bg-white/10 p-4 flex flex-col gap-2 shadow"
+                  >
+                    <h3 className="text-base font-bold text-white tracking-wide mb-1">
+                      {item.name}
+                    </h3>
+                    <div className="text-sm text-white/80">
+                      类型：
+                      <span className="font-semibold text-brand-accent">
+                        {item.type}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-sm text-white/80">
+                      效果：
+                      <span className="font-semibold text-brand-accent">
+                        {renderEffect(item)}
+                      </span>
+                    </div>
+                    <div className="text-sm text-white/80">
+                      价格：
+                      <span className="font-semibold text-brand-accent">
+                        {item.出售价.toFixed(0)}
+                      </span>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </div>
+            </section>
           )}
-
-          <div className="user_bottom2"></div>
-        </div>
+        </main>
       </body>
     </html>
   )

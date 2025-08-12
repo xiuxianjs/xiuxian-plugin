@@ -1,89 +1,120 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from '../ningmenghome/ningmenghome.css'
+import { LinkStyleSheet } from 'jsxp'
+import cssURL from './tailwindcss.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg'
-import user_stateURL from '@src/resources/img/user_state.png'
 
-const ZongMeng = ({ temp }) => {
+interface ZongMengItem {
+  宗名: string
+  人数: number | string
+  宗门人数上限: number | string
+  位置: string
+  等级: string | number
+  天赋加成: number | string
+  宗门建设等级: string | number
+  镇宗神兽: string
+  宗门驻地: string
+  最低加入境界: string
+  宗主: string
+}
+
+const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
   return (
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
+        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            text-align: center;
-            background-image: url('${ningmenghomeURL}');
-            background-size: 100% auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${user_stateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
+              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
+              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+            `
           }}
-        >
-          {}
-        </style>
+        />
       </head>
-      <body>
-        <div>
-          <div className="user_bottom1">
-            <div className="use_data">
-              <div
-                className="user_font use_data_head"
-                style={{ textAlign: 'center', paddingLeft: '0px' }}
-              >
-                <div>宗门列表</div>
-              </div>
-              <div className="use_data_body">
-                {temp &&
-                  temp.map((item, index) => (
-                    <div key={index} className="user_font">
-                      <div className="info">宗门名称：{item.宗名}</div>
-                      <br />
-                      <div className="info">
-                        宗门人数：{item.人数}/{item.宗门人数上限}
-                      </div>
-                      <br />
-                      <div className="info">宗门类型：{item.位置}</div>
-                      <br />
-                      <div className="info">宗门等级：{item.等级}</div>
-                      <br />
-                      <div className="info">天赋加成：{item.天赋加成}%</div>
-                      <br />
-                      <div className="info">建设等级：{item.宗门建设等级}</div>
-                      <br />
-                      <div className="info">镇宗神兽：{item.镇宗神兽}</div>
-                      <br />
-                      <div className="info">宗门驻地：{item.宗门驻地}</div>
-                      <br />
-                      <div className="info">加入门槛：{item.最低加入境界}</div>
-                      <br />
-                      <div className="info">
-                        宗主Q&nbsp;&nbsp;Q：{item.宗主}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </div>
+      <body
+        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
+        style={{ backgroundImage: `url(${ningmenghomeURL})` }}
+      >
+        <main className="max-w-5xl mx-auto space-y-8">
+          <header className="space-y-4 flex flex-col items-center">
+            <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+              宗门列表
+            </h1>
+          </header>
+
+          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {temp?.length ? (
+              temp.map((item, index) => (
+                <article
+                  key={index}
+                  className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-2 shadow-card hover:ring-brand-accent hover:bg-white/10 transition"
+                >
+                  <h2 className="text-lg font-semibold text-brand-accent tracking-wide mb-1">
+                    {item.宗名}
+                  </h2>
+                  <div className="text-sm text-white/80">
+                    人数：
+                    <span className="font-semibold text-brand-accent">
+                      {item.人数}/{item.宗门人数上限}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    类型：
+                    <span className="font-semibold text-brand-accent">
+                      {item.位置}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    等级：
+                    <span className="font-semibold text-brand-accent">
+                      {item.等级}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    天赋加成：
+                    <span className="font-semibold text-brand-accent">
+                      {item.天赋加成}%
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    建设等级：
+                    <span className="font-semibold text-brand-accent">
+                      {item.宗门建设等级}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    镇宗神兽：
+                    <span className="font-semibold text-brand-accent">
+                      {item.镇宗神兽}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    驻地：
+                    <span className="font-semibold text-brand-accent">
+                      {item.宗门驻地}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    加入门槛：
+                    <span className="font-semibold text-brand-accent">
+                      {item.最低加入境界}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/80">
+                    宗主QQ：
+                    <span className="font-semibold text-brand-accent">
+                      {item.宗主}
+                    </span>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <p className="col-span-full text-white/60">暂无宗门</p>
+            )}
+          </section>
+        </main>
       </body>
     </html>
   )

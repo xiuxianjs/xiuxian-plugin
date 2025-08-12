@@ -1,12 +1,26 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from '@src/resources/html/danfang/danfang.css'
+import { LinkStyleSheet } from 'jsxp'
+import cssURL from './tailwindcss.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import danfangURL from '@src/resources/img/fairyrealm.jpg'
 import user_stateURL from '@src/resources/img/user_state.png'
 
-const Danfang = ({ danfang_list }) => {
-  const renderItemInfo = item => {
+interface Material {
+  name: string
+  amount: number | string
+}
+interface DanfangItem {
+  type: string
+  name: string
+  rate: number
+  level_limit: number | string
+  HP?: number | string
+  exp2?: number | string
+  materials?: Material[]
+}
+
+const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
+  const renderItemInfo = (item: DanfangItem) => {
     switch (item.type) {
       case '血量':
         return item.HP
@@ -22,89 +36,91 @@ const Danfang = ({ danfang_list }) => {
   return (
     <html>
       <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
+        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            text-align: center;
-            background-image: url('${danfangURL}');
-            background-size: 100% auto;
-          }
-
-          .user_top_img_bottom {
-            margin: auto;
-            background-image: url('${user_stateURL}');
-            background-size: 100% auto;
-            width: 280px;
-            height: 280px;
-          }
-        `
+              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
+              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+            `
           }}
         />
       </head>
+      <body
+        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
+        style={{ backgroundImage: `url(${danfangURL})` }}
+      >
+        <main className="max-w-6xl mx-auto space-y-10">
+          <header className="space-y-3">
+            <div
+              className="mx-auto w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
+              style={{ backgroundImage: `url(${user_stateURL})` }}
+            />
+            <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+              丹方
+            </h1>
+            <p className="text-white/70 text-sm md:text-base">
+              炼制指令：#炼制+丹药名
+            </p>
+            <p className="text-white/60 text-xs md:text-sm">
+              炼制成功率 = 丹方成功率 + 玩家职业等级成功率
+            </p>
+          </header>
 
-      <body>
-        <div>
-          <div className="user_bottom1">
-            <div className="use_data">
-              <div
-                className="user_font use_data_head"
-                style={{ textAlign: 'center', paddingLeft: '0px' }}
-              >
-                <div>丹方</div>
-                <div style={{ fontSize: '0.8em' }}>炼制指令：#炼制+丹药名</div>
-                <div style={{ fontSize: '0.8em' }}>
-                  炼制成功率 = 丹方成功率 + 玩家职业等级成功率
-                </div>
-              </div>
-              <div className="use_data_body">
-                {danfang_list?.map((item, index) => (
-                  <div key={index} className="user_font">
-                    <div>
-                      <div style={{ display: 'inline-block' }}>
-                        【{item.type}】{item.name}
-                      </div>
-                      <div className="rate" style={{ width: '50px' }}>
-                        {Math.floor(item.rate * 100)}%
-                      </div>
-                      <div className="rate" style={{ width: '50px' }}>
+          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {danfang_list?.map((item, index) => {
+              const ratePercent = Math.floor(item.rate * 100)
+              return (
+                <article
+                  key={index}
+                  className="group rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-3 shadow-card hover:ring-brand-accent hover:bg-white/10 transition"
+                >
+                  <header className="space-y-1">
+                    <h2 className="text-lg font-semibold text-white tracking-wide">
+                      <span className="text-brand-accent">【{item.type}】</span>
+                      {item.name}
+                    </h2>
+                    <div className="flex items-center gap-3 text-sm text-white/80">
+                      <span className="px-2 py-0.5 rounded-full bg-brand-dark/60 text-brand-accent font-medium shadow">
+                        {ratePercent}%
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent font-medium shadow">
                         lv.{item.level_limit}
-                      </div>
+                      </span>
                     </div>
-                    <div className="info">
-                      {item.type}：{renderItemInfo(item)}
-                    </div>
-                    <div>
-                      <div className="info">配方：</div>
-                      <div style={{ padding: '10px' }}>
-                        {item.materials?.map((material, materialIndex) => (
-                          <div
-                            key={materialIndex}
-                            className="info"
-                            style={{ width: '250px' }}
-                          >
-                            {material.name}×{material.amount}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                  </header>
+                  <div className="text-sm text-white/90 font-medium">
+                    {item.type}：
+                    <span className="text-brand-accent font-semibold">
+                      {renderItemInfo(item)}
+                    </span>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+                  <div className="mt-auto space-y-2">
+                    <h3 className="text-sm font-semibold text-white/80 tracking-wide">
+                      配方
+                    </h3>
+                    <ul className="space-y-1 max-h-40 overflow-auto pr-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                      {item.materials?.map((m, mi) => (
+                        <li
+                          key={mi}
+                          className="flex justify-between gap-4 text-xs md:text-sm text-white/80 bg-white/5 rounded px-2 py-1"
+                        >
+                          <span className="truncate" title={m.name}>
+                            {m.name}
+                          </span>
+                          <span className="text-brand-accent font-semibold">
+                            ×{m.amount}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              )
+            }) || <p className="col-span-full text-white/60">暂无丹方</p>}
+          </section>
+        </main>
       </body>
     </html>
   )

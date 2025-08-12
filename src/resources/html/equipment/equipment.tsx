@@ -1,6 +1,6 @@
-import { LinkStyleSheet } from 'jsxp'
 import React from 'react'
-import cssURL from './equipment.css'
+import { LinkStyleSheet } from 'jsxp'
+import cssURL from './tailwindcss.css'
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
 import backgroundURL from '@src/resources/img/equipment.jpg'
 
@@ -45,17 +45,45 @@ const EquipmentCard: React.FC<{
     HP: string
   }
 }> = ({ title, equipment, qualities, renderStats }) => (
-  <div className="equipment-card">
-    <div className="user_font_title">{title}</div>
-    <div className="user_font">
-      名称:{equipment.name}({qualities[equipment.pinji]})
+  <article className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-2 shadow-card hover:ring-brand-accent hover:bg-white/10 transition">
+    <h2 className="text-lg font-bold text-brand-accent tracking-wide mb-1">
+      {title}
+    </h2>
+    <div className="text-white/90 text-base font-semibold">
+      {equipment.name}{' '}
+      <span className="text-brand-accent">({qualities[equipment.pinji]})</span>
     </div>
-    <div className="user_font">属性:{renderStats(equipment).attribute}</div>
-    <div className="user_font">攻击:{renderStats(equipment).atk}</div>
-    <div className="user_font">防御:{renderStats(equipment).def}</div>
-    <div className="user_font">血量:{renderStats(equipment).HP}</div>
-    <div className="user_font">暴击率:{(equipment.bao * 100).toFixed(0)}%</div>
-  </div>
+    <div className="text-sm text-white/80">
+      属性：
+      <span className="font-semibold text-brand-accent">
+        {renderStats(equipment).attribute}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      攻击：
+      <span className="font-semibold text-brand-accent">
+        {renderStats(equipment).atk}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      防御：
+      <span className="font-semibold text-brand-accent">
+        {renderStats(equipment).def}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      血量：
+      <span className="font-semibold text-brand-accent">
+        {renderStats(equipment).HP}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      暴击率：
+      <span className="font-semibold text-brand-accent">
+        {(equipment.bao * 100).toFixed(0)}%
+      </span>
+    </div>
+  </article>
 )
 
 /**
@@ -68,14 +96,38 @@ const PlayerStats: React.FC<{
   player_def: number
   player_bao: number
 }> = ({ nickname, player_maxHP, player_atk, player_def, player_bao }) => (
-  <div className="equipment-card">
-    <div className="user_font_title">[属性板]</div>
-    <div className="user_font2">道号:{nickname}</div>
-    <div className="user_font2">血量:{player_maxHP.toFixed(0)}</div>
-    <div className="user_font2">攻击:{player_atk.toFixed(0)}</div>
-    <div className="user_font2">防御:{player_def.toFixed(0)}</div>
-    <div className="user_font2">暴击率:{player_bao.toFixed(0)}%</div>
-  </div>
+  <article className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-2 shadow-card">
+    <h2 className="text-lg font-bold text-white tracking-wide mb-1">
+      [属性板]
+    </h2>
+    <div className="text-base text-white/90 font-semibold">
+      道号：<span className="text-brand-accent">{nickname}</span>
+    </div>
+    <div className="text-sm text-white/80">
+      血量：
+      <span className="font-semibold text-brand-accent">
+        {player_maxHP.toFixed(0)}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      攻击：
+      <span className="font-semibold text-brand-accent">
+        {player_atk.toFixed(0)}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      防御：
+      <span className="font-semibold text-brand-accent">
+        {player_def.toFixed(0)}
+      </span>
+    </div>
+    <div className="text-sm text-white/80">
+      暴击率：
+      <span className="font-semibold text-brand-accent">
+        {player_bao.toFixed(0)}%
+      </span>
+    </div>
+  </article>
 )
 
 const Equipment: React.FC<EquipmentProps> = ({
@@ -105,57 +157,40 @@ const Equipment: React.FC<EquipmentProps> = ({
   return (
     <html>
       <head>
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <LinkStyleSheet src={cssURL} />
+        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          @font-face {
-            font-family: 'tttgbnumber';
-            src: url('${tttgbnumberURL}');
-            font-weight: normal;
-            font-style: normal;
-          }
-
-          body {
-            transform: scale(1);
-            width: 100%;
-            // height: 600px;
-            margin: 0;
-            background-image: url('${backgroundURL}');
-            background-size: 100% auto;
-            // display: flex;
-            // align-items: center;
-            // justify-content: center;
-          }
-        `
+              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
+              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+            `
           }}
         />
       </head>
-
-      <body>
-        <div className="equipment-container">
+      <body
+        className="min-h-screen w-full p-4 md:p-8 bg-top bg-cover"
+        style={{ backgroundImage: `url(${backgroundURL})` }}
+      >
+        <main className="max-w-4xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
           <EquipmentCard
             title="[武器]"
             equipment={arms}
             qualities={qualities}
             renderStats={renderStats}
           />
-
           <EquipmentCard
             title="[护具]"
             equipment={armor}
             qualities={qualities}
             renderStats={renderStats}
           />
-
           <EquipmentCard
             title="[法宝]"
             equipment={treasure}
             qualities={qualities}
             renderStats={renderStats}
           />
-
           <PlayerStats
             nickname={nickname}
             player_maxHP={player_maxHP}
@@ -163,7 +198,7 @@ const Equipment: React.FC<EquipmentProps> = ({
             player_def={player_def}
             player_bao={player_bao}
           />
-        </div>
+        </main>
       </body>
     </html>
   )

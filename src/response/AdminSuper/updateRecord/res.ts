@@ -10,9 +10,9 @@ export default onResponse(selects, async e => {
   const image = await screenshot('updateRecord', e.UserId, {
     Record: data.updateRecord
   })
-  if (!image) {
-    Send(Text('更新日志获取失败'))
-    return false
+  if (Buffer.isBuffer(image)) {
+    Send(Image(image))
+    return
   }
-  Send(Image(image))
+  Send(Text('更新日志获取失败'))
 })
