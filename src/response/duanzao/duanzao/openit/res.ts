@@ -188,7 +188,7 @@ export default onResponse(selects, async e => {
         houzhui = '三灵共堂'
         xishu += 0.05
       } else if (qianzhui == 2) {
-        const shuzufu = await restraint(wuwei, max[0])
+        const shuzufu = await restraint(wuwei, maxTuple[0])
         houzhui = shuzufu[0]
         xishu += shuzufu[1]
         if (shuzufu[1] == 0.5) {
@@ -218,7 +218,8 @@ export default onResponse(selects, async e => {
 
       //灵根影响值
       const v =
-        player.隐藏灵根.控器 / (Math.abs(max[1] - player.隐藏灵根.type) + 5)
+        player.隐藏灵根.控器 /
+        (Math.abs(maxTuple[1] - player.隐藏灵根.type) + 5)
       //天赋影响值
       const k = ((player.锻造天赋 + 100) * v) / 200 + 1
       //基础值
