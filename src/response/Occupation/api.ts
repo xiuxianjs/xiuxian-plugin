@@ -18,10 +18,7 @@ function toNum(v: unknown, d = 0) {
 function calcOccupationFactor(occupation_level: number): number {
   const row = data.occupation_exp_list.find(r => r.id === occupation_level)
   if (!row) return 0
-  const base = toNum(row.experience)
-  // 经验越高系数越高，缩放到 0~1 区间再做一定倍率（经验表未知上限，做软归一）
-  const factor = Math.min(base / 10000, 1)
-  return factor
+  return row.rate
 }
 
 export async function plant_jiesuan(
@@ -79,6 +76,7 @@ export async function plant_jiesuan(
     await addNajieThing(usr_qq, names[i], '草药', val)
   }
   await addExp4(usr_qq, exp)
+
   if (group_id) {
     await pushInfo(group_id, true, msg)
   } else {
@@ -95,7 +93,6 @@ export async function mine_jiesuan(
   const usr_qq = user_id
   const player = (await data.getData('player', usr_qq)) as PlayerLite | null
   if (!player) return false
-  time = Math.max(1, toNum(time))
   // 基础经验
   const exp = time * 10
   const occFactor = calcOccupationFactor(player.occupation_level)
@@ -106,10 +103,9 @@ export async function mine_jiesuan(
     rate * 100
   )}%,`
   // 普通矿石量：4 * (rate + 1) * 基础 * 等级缩放
-  let end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
-  end_amount = Math.floor(end_amount * (player.level_id / 40))
+  const end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
   // 锻造材料数量：按时间 & rate 缩放
-  const num = Math.max(1, Math.floor(((rate / 12) * time) / 30))
+  const num = Math.floor(((rate / 12) * time) / 30)
   const A = [
     '金色石胚',
     '棕色石胚',
@@ -145,7 +141,7 @@ export async function mine_jiesuan(
     Math.max(1, Math.trunc(num / 48))
   )
   await addExp4(usr_qq, exp)
-  const msg: string[] = []
+  const msg: Array<DataMention | string> = [Mention(usr_qq)]
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`)
   msg.push(
     `\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.max(1, Math.trunc(num / 48))}`

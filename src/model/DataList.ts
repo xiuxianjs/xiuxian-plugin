@@ -128,6 +128,7 @@ export class DataList implements XiuxianDataShape {
     id: number
     name: string
     experience: number
+    rate: number
   }>
   danfang_list: DanfangItem[] = 炼丹配方 as DanfangItem[]
   tuzhi_list: EquipmentTuzhiItem[] = 装备图纸 as EquipmentTuzhiItem[]
