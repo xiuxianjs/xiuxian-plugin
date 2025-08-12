@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
 import { notUndAndNull } from '@src/model/common'
-import { setFileValue } from '@src/model/cultivation'
 import { data } from '@src/model/api'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
@@ -79,12 +78,12 @@ export default onResponse(selects, async e => {
   }
   ass.灵石池 = pool + lingshi
   player.宗门.lingshi_donate = (player.宗门.lingshi_donate || 0) + lingshi
-  await setFileValue(usr_qq, -lingshi, '灵石')
+  player.灵石 -= lingshi
   await data.setData('player', usr_qq, serializePlayer(player))
   await data.setAssociation(ass.宗门名称, ass)
   Send(
     Text(
-      `捐赠成功,你身上还有${player.灵石 - lingshi}灵石,宗门灵石池目前有${ass.灵石池}灵石`
+      `捐赠成功,你身上还有${player.灵石}灵石,宗门灵石池目前有${ass.灵石池}灵石`
     )
   )
   return false
