@@ -134,18 +134,11 @@ export async function mine_jiesuan(
   await addNajieThing(usr_qq, '庚金', '材料', end_amount)
   await addNajieThing(usr_qq, '玄土', '材料', end_amount)
   await addNajieThing(usr_qq, A[xuanze], '材料', num)
-  await addNajieThing(
-    usr_qq,
-    B[xuanze],
-    '材料',
-    Math.max(0, Math.trunc(num / 48))
-  )
+  await addNajieThing(usr_qq, B[xuanze], '材料', Math.trunc(num / 48))
   await addExp4(usr_qq, exp)
   const msg: Array<DataMention | string> = [Mention(usr_qq)]
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`)
-  msg.push(
-    `\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.max(0, Math.trunc(num / 48))}`
-  )
+  msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
   if (group_id) {
     await pushInfo(group_id, true, msg)
   } else {

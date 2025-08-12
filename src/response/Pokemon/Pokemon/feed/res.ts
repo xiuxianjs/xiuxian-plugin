@@ -9,6 +9,8 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import DataList from '@src/model/DataList'
+import { PetItem } from '@src/types'
 export const regular = /^(#|＃|\/)?喂给仙宠.*$/
 
 export default onResponse(selects, async e => {
@@ -32,6 +34,22 @@ export default onResponse(selects, async e => {
     Send(Text('此乃凡物,仙宠不吃' + thing_name))
     return false
   }
+  if (!player.仙宠.等级上限) {
+    const list = ['xianchon', 'changzhuxianchon']
+    for (const item of list) {
+      const i = (DataList[item] as PetItem[]).find(
+        x => x.name == player.仙宠.name
+      )
+      if (i) {
+        player.仙宠.等级上限 = i.等级上限
+        break
+      }
+    }
+    if (!notUndAndNull(player.仙宠.等级上限)) {
+      Send(Text('存档出错，请联系管理员'))
+      return false
+    }
+  }
   if (player.仙宠.等级 == player.仙宠.等级上限 && player.仙宠.品级 != '仙灵') {
     Send(Text('等级已达到上限,请主人尽快为仙宠突破品级'))
     return false
@@ -50,7 +68,7 @@ export default onResponse(selects, async e => {
   //纳戒数量减少
   await addNajieThing(usr_qq, thing_name, '仙宠口粮', -thing_value)
   //待完善加成
-  let jiachen = ifexist.level * thing_value //加的等级
+  let jiachen = +ifexist.level * thing_value //加的等级
   if (jiachen > player.仙宠.等级上限 - player.仙宠.等级) {
     jiachen = player.仙宠.等级上限 - player.仙宠.等级
   }
