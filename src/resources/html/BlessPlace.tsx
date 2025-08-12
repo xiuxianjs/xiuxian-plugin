@@ -13,7 +13,7 @@ interface BlessPlaceItem {
 const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover relative text-white"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-cover relative text-white"
       style={{ backgroundImage: `url(${secretPlaceURL})` }}
     >
       {/* 背景渐变遮罩 */}
@@ -44,10 +44,10 @@ const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
               <div className="relative z-10 p-4 md:p-5 flex flex-col h-full justify-between">
                 <header className="space-y-1">
                   <h2 className="text-lg font-semibold tracking-wide drop-shadow-md">
+                    {item.name}
                     <span className="block text-sm font-medium text-blue-100/90">
                       【入驻宗门: {item.ass || '-'}】
                     </span>
-                    {item.name}
                   </h2>
                 </header>
 

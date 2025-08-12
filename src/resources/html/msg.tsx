@@ -10,7 +10,7 @@ interface MsgItem {
 const Msg = ({ type, msg }: { type: number; msg?: MsgItem[] }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-cover"
       style={{ backgroundImage: `url(${supermarketURL})` }}
     >
       <main className="max-w-3xl mx-auto space-y-8">

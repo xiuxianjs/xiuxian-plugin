@@ -23,7 +23,7 @@ const ForbiddenArea = ({
 }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-cover"
       style={{ backgroundImage: `url(${forbiddenAreaBgURL})` }}
     >
       <main className="max-w-5xl mx-auto space-y-8">

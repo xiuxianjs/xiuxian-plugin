@@ -15,5 +15,6 @@
   "eslint.codeActionsOnSave.mode": "all",
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "commentTranslate.targetLanguage": "zh-CN"
 }

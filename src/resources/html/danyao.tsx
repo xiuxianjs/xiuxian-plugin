@@ -39,7 +39,7 @@ const Danyao = ({
 
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat relative"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-no-repeat relative"
       style={{
         backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
         backgroundRepeat: 'no-repeat, repeat',

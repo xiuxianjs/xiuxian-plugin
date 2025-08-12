@@ -20,7 +20,7 @@ const Gongfa = ({
 }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-no-repeat"
       style={{
         backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
         backgroundRepeat: 'no-repeat, repeat',

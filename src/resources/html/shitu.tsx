@@ -21,7 +21,7 @@ const Shitu = ({
   return (
     <HTML>
       <div
-        className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
+        className=" bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
         style={{
           backgroundImage: `url('${playerURL}')`,
           backgroundSize: 'cover'

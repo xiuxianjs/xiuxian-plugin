@@ -5,7 +5,7 @@ import najieURL from '@src/resources/img/najie.jpg'
 const Log = ({ log }: { log?: string[] }) => {
   return (
     <HTML
-      className="min-h-screen w-full bg-top bg-cover relative p-4 md:p-8"
+      className=" w-full bg-top bg-cover relative p-4 md:p-8"
       style={{ backgroundImage: `url(${najieURL})` }}
     >
       {/* 背景遮罩渐变，防止文字与背景冲突 */}

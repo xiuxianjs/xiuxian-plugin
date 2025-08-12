@@ -7,7 +7,7 @@ const ShituHelp = ({ version, helpData = [] }) => {
   return (
     <HTML>
       <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center py-8"
+        className=" bg-cover bg-center flex flex-col items-center py-8"
         style={{ backgroundImage: `url('${bgURL}')` }}
       >
         <div className="w-full max-w-2xl mx-auto">

@@ -6,7 +6,7 @@ const Ningmenghome = ({ commodities_list }) => {
   return (
     <HTML>
       <div
-        className="min-h-screen w-full flex flex-col items-center justify-start p-6 md:p-12 bg-center bg-cover relative"
+        className=" w-full flex flex-col items-center justify-start p-6 md:p-12 bg-center bg-cover relative"
         style={{
           backgroundImage: `url(${ningmenghomeURL})`
         }}

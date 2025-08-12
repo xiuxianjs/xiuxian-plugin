@@ -5,7 +5,7 @@ import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg'
 const SearchForum = ({ Forum, nowtime }) => {
   return (
     <HTML
-      className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
+      className=" bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
       style={{
         backgroundImage: `url('${ningmenghomeURL}')`,
         backgroundSize: 'cover'

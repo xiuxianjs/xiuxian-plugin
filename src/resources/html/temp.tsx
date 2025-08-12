@@ -6,7 +6,7 @@ const Temp = ({ temp }) => {
   return (
     <HTML>
       <div
-        className="min-h-screen bg-gradient-to-b from-yellow-100 to-yellow-300 flex flex-col items-center py-8"
+        className=" bg-gradient-to-b from-yellow-100 to-yellow-300 flex flex-col items-center py-8"
         style={{
           backgroundImage: `url('${najieURL}')`,
           backgroundSize: 'cover'

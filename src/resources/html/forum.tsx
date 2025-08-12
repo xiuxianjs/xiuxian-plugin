@@ -15,7 +15,7 @@ interface ForumItem {
 const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover relative"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-cover relative"
       style={{ backgroundImage: `url(${supermarketURL})` }}
     >
       {/* 星空粒子层 */}

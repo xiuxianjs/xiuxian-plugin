@@ -29,7 +29,7 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
 
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover relative"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-cover relative"
       style={{ backgroundImage: `url(${danfangURL})` }}
     >
       {/* 背景渐变遮罩 */}

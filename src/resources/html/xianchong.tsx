@@ -1,124 +1,284 @@
 import React from 'react'
 import HTML from './HTML'
+
 const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
   return (
     <HTML>
-      <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-6">
-        <div className="w-full max-w-2xl mx-auto">
-          <div className="text-2xl font-bold text-blue-700 mb-6 text-center drop-shadow">
-            {nickname}的仙宠
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+        {/* 背景装饰元素 */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-32 h-32 border border-purple-400 rounded-full"></div>
+          <div className="absolute top-32 right-20 w-24 h-24 border border-blue-400 rounded-full"></div>
+          <div className="absolute bottom-20 left-1/4 w-16 h-16 border border-cyan-400 rounded-full"></div>
+          <div className="absolute bottom-40 right-1/3 w-20 h-20 border border-pink-400 rounded-full"></div>
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 py-8">
+          {/* 主标题区域 */}
+          <div className="text-center mb-12">
+            <div className="inline-block relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur-lg opacity-50"></div>
+              <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl px-8 py-4 border border-purple-400/30">
+                <h1 className="text-3xl font-bold text-white tracking-wider">
+                  ✨ {nickname}的仙宠图鉴 ✨
+                </h1>
+              </div>
+            </div>
+            <div className="mt-4 text-purple-200 text-sm">
+              🐉 修仙之路，仙宠相伴 🐉
+            </div>
           </div>
 
-          {XianChong_have && XianChong_have.length > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-              <div className="text-lg font-semibold text-green-600 mb-2">
-                【已拥有】
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {XianChong_have.map((item, index) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
-                  >
-                    <div className="font-bold text-blue-800 text-lg mb-2">
-                      {item.name}
+          <div className="max-w-6xl mx-auto space-y-8">
+            {/* 已拥有仙宠 */}
+            {XianChong_have && XianChong_have.length > 0 && (
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-3xl blur-xl"></div>
+                <div className="relative backdrop-blur-sm bg-white/10 rounded-3xl border border-green-400/30 p-8">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center mr-4 border border-green-300/50">
+                      <span className="text-2xl">🌟</span>
                     </div>
-                    <div className="text-sm text-gray-700">
-                      类型：{item.type}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      初始加成：{item.初始加成 * 100}%
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      每级增加：{item.每级增加 * 100}%
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      加成：{item.加成 * 100}%
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      灵魂绑定：{item.灵魂绑定 === 0 ? '否' : '是'}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      品级：{item.品级}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      等级上限：{item.等级上限}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      价格：{item.出售价}
-                    </div>
+                    <h2 className="text-2xl font-bold text-green-300 tracking-wide">
+                      【已拥有仙宠】
+                    </h2>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  <div className="grid grid-cols-2 gap-6">
+                    {XianChong_have.map((item, index) => (
+                      <div key={index} className="group relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-600/20 rounded-2xl blur-sm"></div>
+                        <div className="relative backdrop-blur-md bg-white/5 rounded-2xl border border-green-400/40 p-6 hover:border-green-300/60 transition-all duration-300">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-green-200 group-hover:text-green-100 transition-colors">
+                              {item.name}
+                            </h3>
+                            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-lg flex items-center justify-center">
+                              <span className="text-sm">🐾</span>
+                            </div>
+                          </div>
 
-          {XianChong_need && XianChong_need.length > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-              <div className="text-lg font-semibold text-red-600 mb-2">
-                【未拥有】
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {XianChong_need.map((item, index) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
-                  >
-                    <div className="font-bold text-blue-800 text-lg mb-2">
-                      {item.name}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      类型：{item.type}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      初始加成：{item.初始加成 * 100}%
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      每级增加：{item.每级增加 * 100}%
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      加成：{item.加成 * 100}%
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      灵魂绑定：{item.灵魂绑定 === 0 ? '否' : '是'}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      品级：{item.品级}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      等级上限：{item.等级上限}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      价格：{item.出售价}
-                    </div>
+                          <div className="space-y-3">
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">类型</span>
+                              <span className="text-green-100 font-medium">
+                                {item.type}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                初始加成
+                              </span>
+                              <span className="text-green-100 font-medium">
+                                {(item.初始加成 * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                每级增加
+                              </span>
+                              <span className="text-green-100 font-medium">
+                                {(item.每级增加 * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                当前加成
+                              </span>
+                              <span className="text-green-100 font-medium">
+                                {(item.加成 * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                灵魂绑定
+                              </span>
+                              <span
+                                className={`font-medium ${item.灵魂绑定 === 0 ? 'text-red-300' : 'text-green-300'}`}
+                              >
+                                {item.灵魂绑定 === 0 ? '❌ 否' : '✅ 是'}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">品级</span>
+                              <span className="text-green-100 font-medium">
+                                {item.品级}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                等级上限
+                              </span>
+                              <span className="text-green-100 font-medium">
+                                {item.等级上限}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">价格</span>
+                              <span className="text-yellow-300 font-medium">
+                                {item.出售价}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <div className="text-lg font-semibold text-yellow-600 mb-2">
-              【口粮图鉴】
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Kouliang &&
-                Kouliang.map((item, index) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
-                  >
-                    <div className="font-bold text-blue-800 text-lg mb-2">
-                      {item.name}
+            {/* 未拥有仙宠 */}
+            {XianChong_need && XianChong_need.length > 0 && (
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-pink-500/20 rounded-3xl blur-xl"></div>
+                <div className="relative backdrop-blur-sm bg-white/10 rounded-3xl border border-red-400/30 p-8">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-pink-600 rounded-xl flex items-center justify-center mr-4 border border-red-300/50">
+                      <span className="text-2xl">🔮</span>
                     </div>
-                    <div className="text-sm text-gray-700">
-                      等级：{item.level}
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      价格：{item.出售价.toFixed(0)}
-                    </div>
+                    <h2 className="text-2xl font-bold text-red-300 tracking-wide">
+                      【未拥有仙宠】
+                    </h2>
                   </div>
-                ))}
+                  <div className="grid grid-cols-2 gap-6">
+                    {XianChong_need.map((item, index) => (
+                      <div key={index} className="group relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-400/20 to-pink-600/20 rounded-2xl blur-sm"></div>
+                        <div className="relative backdrop-blur-md bg-white/5 rounded-2xl border border-red-400/40 p-6 hover:border-red-300/60 transition-all duration-300">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-red-200 group-hover:text-red-100 transition-colors">
+                              {item.name}
+                            </h3>
+                            <div className="w-8 h-8 bg-gradient-to-br from-red-400 to-pink-600 rounded-lg flex items-center justify-center">
+                              <span className="text-sm">🔒</span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">类型</span>
+                              <span className="text-red-100 font-medium">
+                                {item.type}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                初始加成
+                              </span>
+                              <span className="text-red-100 font-medium">
+                                {(item.初始加成 * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                每级增加
+                              </span>
+                              <span className="text-red-100 font-medium">
+                                {(item.每级增加 * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                当前加成
+                              </span>
+                              <span className="text-red-100 font-medium">
+                                {(item.加成 * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                灵魂绑定
+                              </span>
+                              <span
+                                className={`font-medium ${item.灵魂绑定 === 0 ? 'text-red-300' : 'text-green-300'}`}
+                              >
+                                {item.灵魂绑定 === 0 ? '❌ 否' : '✅ 是'}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">品级</span>
+                              <span className="text-red-100 font-medium">
+                                {item.品级}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">
+                                等级上限
+                              </span>
+                              <span className="text-red-100 font-medium">
+                                {item.等级上限}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">价格</span>
+                              <span className="text-yellow-300 font-medium">
+                                {item.出售价}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 口粮图鉴 */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-3xl blur-xl"></div>
+              <div className="relative backdrop-blur-sm bg-white/10 rounded-3xl border border-yellow-400/30 p-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-xl flex items-center justify-center mr-4 border border-yellow-300/50">
+                    <span className="text-2xl">🍖</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-yellow-300 tracking-wide">
+                    【口粮图鉴】
+                  </h2>
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  {Kouliang &&
+                    Kouliang.map((item, index) => (
+                      <div key={index} className="group relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-600/20 rounded-2xl blur-sm"></div>
+                        <div className="relative backdrop-blur-md bg-white/5 rounded-2xl border border-yellow-400/40 p-6 hover:border-yellow-300/60 transition-all duration-300">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-yellow-200 group-hover:text-yellow-100 transition-colors">
+                              {item.name}
+                            </h3>
+                            <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-lg flex items-center justify-center">
+                              <span className="text-sm">🥘</span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">等级</span>
+                              <span className="text-yellow-100 font-medium">
+                                {item.level}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-sm">
+                              <span className="w-16 text-purple-200">价格</span>
+                              <span className="text-yellow-300 font-medium">
+                                {item.出售价.toFixed(0)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 底部装饰 */}
+          <div className="text-center mt-12">
+            <div className="inline-block px-6 py-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full border border-purple-400/30 backdrop-blur-sm">
+              <span className="text-purple-200 text-sm">
+                ✨ 修仙之路漫漫，仙宠相伴前行 ✨
+              </span>
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ const Sudoku = ({ sudokuData }) => {
         />
       </head>
       <body>
-        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-blue-100 flex flex-col items-center py-8">
+        <div className=" bg-gradient-to-b from-gray-100 to-blue-100 flex flex-col items-center py-8">
           <div className="w-full max-w-xl mx-auto">
             <div className="rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center">
               <div className="flex flex-row mb-2">

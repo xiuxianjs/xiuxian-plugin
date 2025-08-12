@@ -17,7 +17,7 @@ const MoneyCheck = ({
 }) => {
   return (
     <HTML
-      className="min-h-screen w-full flex items-center justify-center p-6 md:p-12 relative bg-center bg-cover"
+      className=" w-full flex items-center justify-center p-6 md:p-12 relative bg-center bg-cover"
       style={{ backgroundImage: `url(${ningmenghomeBgURL})` }}
     >
       {/* 白色居中渐变叠加 */}

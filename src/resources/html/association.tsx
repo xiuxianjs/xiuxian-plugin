@@ -1,7 +1,6 @@
 import React from 'react'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
-import user_stateURL from '@src/resources/img/user_state.png'
 import HTML from './HTML'
 import { Avatar } from './Avatar'
 
@@ -83,7 +82,7 @@ const Association: React.FC<AssociationProps> = ({
 }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
+      className=" w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
       style={{
         backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
         backgroundRepeat: 'no-repeat, repeat',

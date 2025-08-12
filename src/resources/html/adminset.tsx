@@ -137,7 +137,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
 
   return (
     <HTML
-      className="min-h-screen w-full bg-cover bg-fixed bg-top text-center p-4 md:p-8 space-y-8"
+      className=" w-full bg-cover bg-fixed bg-top text-center p-4 md:p-8 space-y-8"
       style={{ backgroundImage: `url(${stateURL})` }}
     >
       <main className="max-w-6xl mx-auto space-y-8">

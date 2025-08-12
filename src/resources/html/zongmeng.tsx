@@ -27,7 +27,7 @@ const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
     <HTML>
       {/* 整体背景与布局 */}
       <div
-        className="min-h-screen w-full text-white/90 p-4 md:p-8 bg-center bg-cover font-serif"
+        className=" w-full text-white/90 p-4 md:p-8 bg-center bg-cover font-serif"
         style={{ backgroundImage: `url(${celestialSectsURL})` }}
       >
         <main className="max-w-6xl mx-auto space-y-8">
