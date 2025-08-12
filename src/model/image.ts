@@ -146,11 +146,6 @@ export async function getTuzhiImage(
     user_id: usr_qq,
     tuzhi_list: tuzhi_list
   }
-  if (process.env.NODE_ENV === 'development') {
-    const dir = './views'
-    mkdirSync(dir, { recursive: true })
-    writeFileSync(`${dir}/tuzhi.json`, JSON.stringify(tuzhi_data, null, 2))
-  }
   const img = await screenshot('tuzhi', e.UserId, tuzhi_data)
   return img
 }
@@ -427,14 +422,6 @@ export async function getDanyaoImage(
     nickname: player.名号,
     danyao_have,
     danyao_need
-  }
-  if (process.env.NODE_ENV === 'development') {
-    const dir = './views'
-    mkdirSync(dir, { recursive: true })
-    writeFileSync(
-      path.join(dir, 'danyao.json'),
-      JSON.stringify(player_data, null, 2)
-    )
   }
   return await screenshot('danyao', e.UserId, player_data)
 }
@@ -846,11 +833,6 @@ export async function getPlayerImage(
     法宝评级: 法宝评级,
     avatar: player.avatar || `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
   }
-  if (process.env.NODE_ENV === 'development') {
-    const dir = './views'
-    mkdirSync(dir, { recursive: true })
-    writeFileSync(`${dir}/user.json`, JSON.stringify(player_data, null, 2))
-  }
   return await screenshot('player', e.UserId, player_data)
 }
 
@@ -1024,11 +1006,6 @@ export async function getQquipmentImage(
     player_maxHP: player.血量上限,
     player_nowHP: player.当前血量,
     pifu: Number(player.装备皮肤 || 0)
-  }
-  if (process.env.NODE_ENV === 'development') {
-    const dir = './views'
-    mkdirSync(dir, { recursive: true })
-    writeFileSync(`${dir}/equipment.json`, JSON.stringify(player_data, null, 2))
   }
   return await screenshot('equipment', e.UserId, player_data)
 }
@@ -1272,14 +1249,6 @@ export async function getRankingPowerImage(
     level: level,
     usr_paiming: usr_paiming,
     allplayer: Data
-  }
-  if (process.env.NODE_ENV === 'development') {
-    const dir = './views'
-    mkdirSync(dir, { recursive: true })
-    writeFileSync(
-      `${dir}/ranking_power.json`,
-      JSON.stringify(ranking_power_data, null, 2)
-    )
   }
   return await screenshot('ranking_power', e.UserId, ranking_power_data)
 }
