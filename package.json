@@ -26,6 +26,7 @@
     "jsxp": "^1.2.2",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
+    "classnames": "^2.5.1",
     "node-schedule": "^2.1.1"
   }
 }
