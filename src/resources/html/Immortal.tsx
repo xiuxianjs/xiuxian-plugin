@@ -1,10 +1,10 @@
 import React from 'react'
 import Ranking from './Ranking'
 
-const Immortal = ({ allplayer = [] }) => {
+const Immortal = ({ allplayer = [], title = '' }) => {
   return (
     <Ranking
-      title="至尊榜"
+      title={title}
       values={allplayer.map(item => (
         <>
           <div className="flex gap-2 flex-col">

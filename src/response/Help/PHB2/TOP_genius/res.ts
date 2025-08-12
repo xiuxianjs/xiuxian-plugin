@@ -1,8 +1,9 @@
-import { Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { redis } from '@src/model/api'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?神魄榜$/
 
 export default onResponse(selects, async e => {
@@ -10,7 +11,6 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const msg = ['___[神魄榜]___']
   //数组
   const temp = []
 
@@ -33,28 +33,16 @@ export default onResponse(selects, async e => {
   }
   //根据力量排序
   temp.sort(sortBy('power'))
-  logger.info(temp)
-  let length
-  if (temp.length > 20) {
-    //只要十个
-    length = 20
-  } else {
-    length = temp.length
+
+  const image = await screenshot('immortal_genius', usr_qq, {
+    allplayer: top,
+    title: '神魄榜'
+  })
+
+  if (Buffer.isBuffer(image)) {
+    Send(Image(image))
+    return
   }
-  let j
-  for (j = 0; j < length; j++) {
-    msg.push(
-      '第' +
-        (j + 1) +
-        '名' +
-        '\n道号：' +
-        temp[j].name +
-        '\n神魄段数：' +
-        temp[j].power +
-        '\nQQ:' +
-        temp[j].qq
-    )
-  }
-  // await ForwardMsg(e, msg)
-  Send(Text(msg.join('\n')))
+
+  Send(Text('图片生产失败'))
 })

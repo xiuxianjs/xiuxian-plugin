@@ -39,16 +39,19 @@ export default onResponse(selects, async e => {
 
   //根据力量排序
   temp.sort(sortBy('power'))
-  logger.info(temp)
+
   //取前10名
   const top = temp.slice(0, 10)
   const image = await screenshot('immortal_genius', usr_qq, {
-    allplayer: top
+    allplayer: top,
+    title: '至尊榜'
   })
-  if (!image) {
-    Send(Text('图片生产失败'))
-    return false
+
+  if (Buffer.isBuffer(image)) {
+    Send(Image(image))
+    return
   }
-  Send(Image(image))
+
+  Send(Text('图片生产失败'))
 })
 // #至尊榜
