@@ -3,6 +3,7 @@ import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import user_stateURL from '@src/resources/img/user_state.png'
 import HTML from './HTML'
+import { Avatar } from './Avatar'
 
 interface AssociationData {
   宗门名称?: string
@@ -31,7 +32,7 @@ interface AssociationProps {
 }
 
 const BadgeList = ({ title, items }: { title: string; items?: string[] }) => (
-  <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-3">
+  <section className="w-full text-white rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-3">
     <h2 className="text-lg md:text-xl font-semibold  tracking-wider flex items-center gap-2">
       <span className="w-1.5 h-6 bg-brand-accent rounded-full" />
       {title}
@@ -92,27 +93,33 @@ const Association: React.FC<AssociationProps> = ({
       <main className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
           <div className="flex flex-col items-center gap-4">
-            <div
-              className="w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
-              style={{ backgroundImage: `url(${user_stateURL})` }}
-            >
-              <img
-                className="w-full h-full rounded-full object-cover mix-blend-luminosity"
-                src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-                alt="头像"
-              />
-            </div>
-            <div className="px-5 py-1.5 rounded-2xl bg-black/40 backdrop-blur  text-lg font-semibold shadow">
+            <Avatar
+              src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+              rootClassName="w-60 h-60"
+              className="w-40 h-40"
+            />
+            <div className="px-5 py-1.5 rounded-2xl bg-black/40 text-white backdrop-blur  text-lg font-semibold shadow">
               QQ: {user_id}
             </div>
           </div>
-          <div className="flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            <InfoItem label="名称" value={ass?.宗门名称 || '-'} />
-            <InfoItem label="宗主" value={`${mainname}${mainqq}`} />
-            <InfoItem label="等级" value={ass?.宗门等级 ?? '-'} />
-            <InfoItem label="灵石" value={ass?.灵石池 ?? 0} />
-            <InfoItem label="人数" value={ass?.所有成员?.length ?? 0} />
-            <InfoItem label="宗门位置" value={weizhi || '-'} />
+          <div className="flex-1 flex w-full rounded-2xl bg-white/5 p-2 pt-5 pb-5  ring-white/10 backdrop-blur-md  shadow-card">
+            <div className="flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <InfoItem label="名称" value={ass?.宗门名称 || '-'} />
+              <InfoItem
+                label="宗主"
+                value={
+                  <div>
+                    {mainname}
+                    <br />
+                    {mainqq}
+                  </div>
+                }
+              />
+              <InfoItem label="等级" value={ass?.宗门等级 ?? '-'} />
+              <InfoItem label="灵石" value={ass?.灵石池 ?? 0} />
+              <InfoItem label="人数" value={ass?.所有成员?.length ?? 0} />
+              <InfoItem label="宗门位置" value={weizhi || '-'} />
+            </div>
           </div>
         </header>
 

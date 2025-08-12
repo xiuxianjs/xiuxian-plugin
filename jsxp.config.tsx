@@ -63,8 +63,11 @@ import xianchongData from './views/xianchong.json'
 import Xianchong from '@src/resources/html/xianchong'
 import zongmengData from './views/zongmeng.json'
 import Zongmeng from '@src/resources/html/zongmeng'
+import association from './views/association.json'
+import Association from '@src/resources/html/association'
 export default defineConfig({
   routes: {
+    '/association': { component: <Association {...association} /> },
     '/BlessPlace': { component: <BlessPlace {...BlessPlaceData} /> },
     '/danfang': { component: <Danfang {...danfangData} /> },
     '/danyao': { component: <Danyao {...danyaoData} /> },

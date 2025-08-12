@@ -1,6 +1,7 @@
 import React from 'react'
 import HTML from './HTML'
 import playerURL from '@src/resources/img/player.jpg'
+import { Avatar } from './Avatar'
 
 const Shifu = ({
   user_id,
@@ -29,11 +30,12 @@ const Shifu = ({
         {/* 顶部信息 */}
         <div className="flex flex-row items-center gap-6 mb-6">
           <div className="flex flex-col items-center">
-            <img
-              className="w-28 h-28 rounded-full shadow-lg border-4 border-white/30 mb-2"
+            <Avatar
               src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
-              alt="头像"
+              rootClassName="w-60 h-60"
+              className="w-40 h-40"
             />
+
             <div className="text-sm text-gray-700">QQ:{user_id}</div>
           </div>
           <div className="flex-1 flex flex-col gap-2">
