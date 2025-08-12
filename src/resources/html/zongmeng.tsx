@@ -1,8 +1,6 @@
 import React from 'react'
-import { LinkStyleSheet } from 'jsxp'
-import cssURL from '@src/resources/styles/tw.scss'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg'
+import HTML from './HTML'
+import celestialSectsURL from '@src/resources/img/fairyrealm.jpg'
 
 interface ZongMengItem {
   宗名: string
@@ -18,105 +16,127 @@ interface ZongMengItem {
   宗主: string
 }
 
+/**
+ * ZongMeng (宗门列表) Component
+ * A beautifully redesigned component to display a list of sects in a Xianxia game.
+ * Design Concept: "Celestial Jade Steles" floating in a starry realm.
+ */
 const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
+  const data = temp || []
   return (
-    <html>
-      <head>
-        <LinkStyleSheet src={cssURL} />
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
-              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
-            `
-          }}
-        />
-      </head>
-      <body
-        className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
-        style={{ backgroundImage: `url(${ningmenghomeURL})` }}
+    <HTML>
+      {/* 整体背景与布局 */}
+      <div
+        className="min-h-screen w-full text-white/90 p-4 md:p-8 bg-center bg-cover font-serif"
+        style={{ backgroundImage: `url(${celestialSectsURL})` }}
       >
-        <main className="max-w-5xl mx-auto space-y-8">
-          <header className="space-y-4 flex flex-col items-center">
-            <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
-              宗门列表
+        <main className="max-w-6xl mx-auto space-y-8">
+          {/* 顶栏标题 - 如同天宫牌匾 */}
+          <header className="flex flex-col items-center text-center">
+            <h1
+              className="px-8 py-3 rounded-lg bg-black/30 backdrop-blur-md text-3xl md:text-4xl font-bold tracking-widest text-amber-200"
+              style={{ textShadow: '0 2px 8px rgba(252, 211, 77, 0.5)' }}
+            >
+              仙门百家
             </h1>
+            <p className="mt-2 text-base text-sky-200/80">
+              于此方天地，寻觅汝之道途
+            </p>
           </header>
 
-          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {temp?.length ? (
-              temp.map((item, index) => (
+          {/* 宗门卡片网格 */}
+          <section className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {data.length ? (
+              data.map((item, index) => (
+                // 卡片设计: "星玉石碑"
                 <article
                   key={index}
-                  className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-2 shadow-card hover:ring-brand-accent hover:bg-white/10 transition"
+                  className="flex flex-col rounded-xl bg-slate-900/60 backdrop-blur-lg border border-sky-500/30 transition-all duration-300 hover:border-amber-400 hover:shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-2"
                 >
-                  <h2 className="text-lg font-semibold text-brand-accent tracking-wide mb-1">
-                    {item.宗名}
-                  </h2>
-                  <div className="text-sm text-white/80">
-                    人数：
-                    <span className="font-semibold text-brand-accent">
-                      {item.人数}/{item.宗门人数上限}
+                  {/* 卡片头部: 宗名与等级徽章 */}
+                  <header className="p-4 border-b border-sky-500/20 flex justify-between items-center">
+                    <h2 className="text-xl font-semibold text-amber-100 tracking-wider">
+                      {item.宗名}
+                    </h2>
+                    <span className="px-3 py-1 text-sm font-bold bg-sky-800/80 border border-sky-600 rounded-md text-sky-200">
+                      Lv.{item.等级}
                     </span>
+                  </header>
+
+                  {/* 卡片主体: 核心信息 */}
+                  <div className="p-4 space-y-3 text-sm flex-grow">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sky-300 w-20 shrink-0">
+                        {' '}
+                        {/* Icon Placeholder */} 仙盟人数:
+                      </span>
+                      <span className="font-semibold text-white">
+                        {item.人数} / {item.宗门人数上限}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sky-300 w-20 shrink-0">
+                        {' '}
+                        {/* Icon Placeholder */} 天赋加成:
+                      </span>
+                      <span className="font-semibold text-green-300">
+                        {item.天赋加成}%
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sky-300 w-20 shrink-0">
+                        {' '}
+                        {/* Icon Placeholder */} 镇宗神兽:
+                      </span>
+                      <span className="font-semibold text-white">
+                        {item.镇宗神兽}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sky-300 w-20 shrink-0">
+                        {' '}
+                        {/* Icon Placeholder */} 宗门驻地:
+                      </span>
+                      <span className="font-semibold text-white">
+                        {item.宗门驻地}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sky-300 w-20 shrink-0">
+                        {' '}
+                        {/* Icon Placeholder */} 加入门槛:
+                      </span>
+                      <span className="font-semibold text-red-300">
+                        {item.最低加入境界}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-sm text-white/80">
-                    类型：
-                    <span className="font-semibold text-brand-accent">
-                      {item.位置}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    等级：
-                    <span className="font-semibold text-brand-accent">
-                      {item.等级}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    天赋加成：
-                    <span className="font-semibold text-brand-accent">
-                      {item.天赋加成}%
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    建设等级：
-                    <span className="font-semibold text-brand-accent">
-                      {item.宗门建设等级}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    镇宗神兽：
-                    <span className="font-semibold text-brand-accent">
-                      {item.镇宗神兽}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    驻地：
-                    <span className="font-semibold text-brand-accent">
-                      {item.宗门驻地}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    加入门槛：
-                    <span className="font-semibold text-brand-accent">
-                      {item.最低加入境界}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/80">
-                    宗主QQ：
-                    <span className="font-semibold text-brand-accent">
-                      {item.宗主}
-                    </span>
-                  </div>
+
+                  {/* 卡片底部: 宗主印章 */}
+                  <footer className="mt-auto p-3 bg-slate-950/50 rounded-b-xl border-t border-sky-500/20 flex items-center justify-between">
+                    <span className="text-xs text-sky-300/80">宗主法谕</span>
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${item.宗主}`}
+                        alt="宗主头像"
+                        className="w-6 h-6 rounded-full border border-amber-300/50"
+                      />
+                      <span className="font-mono text-amber-200 text-sm">
+                        {item.宗主}
+                      </span>
+                    </div>
+                  </footer>
                 </article>
               ))
             ) : (
-              <p className="col-span-full text-white/60">暂无宗门</p>
+              <p className="col-span-full text-center text-sky-200/70 text-lg">
+                混沌未开，暂无仙门
+              </p>
             )}
           </section>
         </main>
-      </body>
-    </html>
+      </div>
+    </HTML>
   )
 }
 

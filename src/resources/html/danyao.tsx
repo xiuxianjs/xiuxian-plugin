@@ -2,7 +2,8 @@ import React from 'react'
 import HTML from './HTML'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
-import user_stateURL from '@src/resources/img/user_state.png'
+import { getAvatar } from './core'
+import { Avatar } from './Avatar'
 
 interface DanyaoItem {
   name: string
@@ -16,11 +17,13 @@ interface DanyaoItem {
 
 const Danyao = ({
   nickname,
+  user_id,
   danyao_have = [],
   danyao2_have = [],
   danyao_need = []
 }: {
   nickname: string
+  user_id: string
   danyao_have?: DanyaoItem[]
   danyao2_have?: DanyaoItem[]
   danyao_need?: DanyaoItem[]
@@ -36,53 +39,58 @@ const Danyao = ({
 
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]"
+      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-no-repeat relative"
       style={{
         backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
         backgroundRepeat: 'no-repeat, repeat',
         backgroundSize: '100%, auto'
       }}
     >
-      <main className="max-w-4xl mx-auto space-y-8">
+      {/* 背景加仙气渐变遮罩 + 边角光晕 */}
+      <div className="absolute  bg-gradient-to-b from-emerald-900/50 via-emerald-700/30 to-red-900/50 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),transparent_70%)] pointer-events-none"></div>
+
+      <main className="relative max-w-4xl mx-auto space-y-8 z-10">
+        {/* 头像 + 标题 */}
         <header className="space-y-4 flex flex-col items-center">
-          <div
-            className="w-40 h-40 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
-            style={{ backgroundImage: `url(${user_stateURL})` }}
-          />
-          <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+          <div className="p-1 rounded-full bg-gradient-to-tr from-emerald-400 via-green-300 to-red-300 shadow-lg shadow-green-500/30">
+            <Avatar src={getAvatar(user_id)} />
+          </div>
+          <h1
+            className="inline-block px-8 py-3 rounded-3xl bg-white/20 backdrop-blur-md border border-emerald-300/40 
+            text-2xl md:text-3xl font-bold tracking-widest 
+            shadow-lg text-emerald-100 drop-shadow-[0_0_8px_rgba(0,255,180,0.6)]"
+          >
             {nickname}的丹药
           </h1>
         </header>
 
+        {/* 已拥有 */}
         {(danyao_have.length > 0 || danyao2_have.length > 0) && (
-          <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
-            <h2 className="text-lg md:text-xl font-semibold text-brand-accent tracking-wide mb-2">
+          <section className="rounded-2xl bg-emerald-600/20 backdrop-blur-md border border-emerald-300/30 p-4 md:p-6 shadow-xl shadow-emerald-900/20 space-y-4">
+            <h2 className="text-lg md:text-xl font-semibold tracking-wide mb-2 text-emerald-100 drop-shadow-[0_0_6px_rgba(0,255,200,0.5)]">
               【已拥有】
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {[...danyao_have, ...danyao2_have].map((item, index) => (
                 <article
                   key={index}
-                  className="rounded-xl bg-white/10 p-4 flex flex-col gap-2 shadow hover:bg-brand-accent/10 transition"
+                  className="rounded-xl bg-white/15 backdrop-blur-sm border border-emerald-300/30 p-4 flex flex-col gap-2 shadow-md 
+                             hover:scale-[1.03] hover:shadow-lg hover:bg-white/25 hover:border-emerald-200/50 transition-all duration-300"
                 >
-                  <h3 className="text-base font-bold text-white tracking-wide mb-1">
+                  <h3 className="text-base font-bold tracking-wide mb-1 text-emerald-50 drop-shadow">
                     {item.name}
                   </h3>
-                  <div className="text-sm text-white/80">
-                    类型：
-                    <span className="font-semibold text-brand-accent">
-                      {item.type}
-                    </span>
+                  <div className="text-sm text-emerald-100/90">
+                    类型：<span className="font-semibold">{item.type}</span>
                   </div>
-                  <div className="text-sm text-white/80">
+                  <div className="text-sm text-emerald-100/90">
                     效果：
-                    <span className="font-semibold text-brand-accent">
-                      {renderEffect(item)}
-                    </span>
+                    <span className="font-semibold">{renderEffect(item)}</span>
                   </div>
-                  <div className="text-sm text-white/80">
+                  <div className="text-sm text-emerald-100/90">
                     价格：
-                    <span className="font-semibold text-brand-accent">
+                    <span className="font-semibold">
                       {item.出售价.toFixed(0)}
                     </span>
                   </div>
@@ -92,35 +100,32 @@ const Danyao = ({
           </section>
         )}
 
+        {/* 未拥有 */}
         {danyao_need.length > 0 && (
-          <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
-            <h2 className="text-lg md:text-xl font-semibold text-white tracking-wide mb-2">
+          <section className="rounded-2xl bg-red-600/20 backdrop-blur-md border border-red-300/30 p-4 md:p-6 shadow-xl shadow-red-900/20 space-y-4">
+            <h2 className="text-lg md:text-xl font-semibold tracking-wide mb-2 text-red-100 drop-shadow-[0_0_6px_rgba(255,100,100,0.6)]">
               【未拥有】
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {danyao_need.map((item, index) => (
                 <article
                   key={index}
-                  className="rounded-xl bg-white/10 p-4 flex flex-col gap-2 shadow"
+                  className="rounded-xl bg-white/15 backdrop-blur-sm border border-red-300/30 p-4 flex flex-col gap-2 shadow-md 
+                             hover:scale-[1.03] hover:shadow-lg hover:bg-white/25 hover:border-red-200/50 transition-all duration-300"
                 >
-                  <h3 className="text-base font-bold text-white tracking-wide mb-1">
+                  <h3 className="text-base font-bold tracking-wide mb-1 text-red-50 drop-shadow">
                     {item.name}
                   </h3>
-                  <div className="text-sm text-white/80">
-                    类型：
-                    <span className="font-semibold text-brand-accent">
-                      {item.type}
-                    </span>
+                  <div className="text-sm text-red-100/90">
+                    类型：<span className="font-semibold">{item.type}</span>
                   </div>
-                  <div className="text-sm text-white/80">
+                  <div className="text-sm text-red-100/90">
                     效果：
-                    <span className="font-semibold text-brand-accent">
-                      {renderEffect(item)}
-                    </span>
+                    <span className="font-semibold">{renderEffect(item)}</span>
                   </div>
-                  <div className="text-sm text-white/80">
+                  <div className="text-sm text-red-100/90">
                     价格：
-                    <span className="font-semibold text-brand-accent">
+                    <span className="font-semibold">
                       {item.出售价.toFixed(0)}
                     </span>
                   </div>

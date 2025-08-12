@@ -17,20 +17,20 @@ const Msg = ({ type, msg }: { type: number; msg?: MsgItem[] }) => {
         <header className="space-y-4 flex flex-col items-center">
           {type === 0 && (
             <>
-              <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+              <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow">
                 悬赏目标
               </h1>
-              <div className="text-white/70 text-sm md:text-base">
+              <div className="/70 text-sm md:text-base">
                 指令：#讨伐目标+数字
               </div>
             </>
           )}
           {type === 1 && (
             <>
-              <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+              <h1 className="inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow">
                 悬赏榜
               </h1>
-              <div className="text-white/70 text-sm md:text-base">
+              <div className="/70 text-sm md:text-base">
                 指令：#刺杀目标+数字
               </div>
             </>
@@ -42,27 +42,23 @@ const Msg = ({ type, msg }: { type: number; msg?: MsgItem[] }) => {
             msg.map((item, index) => (
               <article
                 key={index}
-                className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-2 shadow-card hover:ring-brand-accent hover:bg-white/10 transition"
+                className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 flex flex-col gap-2 shadow-inner-card hover:ring-brand-accent hover:bg-white/30 transition"
               >
-                <div className="text-lg font-semibold text-brand-accent tracking-wide mb-1">
+                <div className="text-lg font-semibold  tracking-wide mb-1">
                   名号：{item.名号}
                 </div>
-                <div className="text-sm text-white/80">
+                <div className="text-sm /80">
                   编号：
-                  <span className="font-semibold text-brand-accent">
-                    No.{index + 1}
-                  </span>
+                  <span className="font-semibold ">No.{index + 1}</span>
                 </div>
-                <div className="text-sm text-white/80">
+                <div className="text-sm /80">
                   赏金：
-                  <span className="font-semibold text-brand-accent">
-                    {item.赏金}
-                  </span>
+                  <span className="font-semibold ">{item.赏金}</span>
                 </div>
               </article>
             ))
           ) : (
-            <p className="col-span-full text-white/60">暂无悬赏</p>
+            <p className="col-span-full /60">暂无悬赏</p>
           )}
         </section>
       </main>

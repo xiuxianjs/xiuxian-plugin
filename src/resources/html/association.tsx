@@ -32,7 +32,7 @@ interface AssociationProps {
 
 const BadgeList = ({ title, items }: { title: string; items?: string[] }) => (
   <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-3">
-    <h2 className="text-lg md:text-xl font-semibold text-white tracking-wider flex items-center gap-2">
+    <h2 className="text-lg md:text-xl font-semibold  tracking-wider flex items-center gap-2">
       <span className="w-1.5 h-6 bg-brand-accent rounded-full" />
       {title}
     </h2>
@@ -41,13 +41,13 @@ const BadgeList = ({ title, items }: { title: string; items?: string[] }) => (
         items.map((it, i) => (
           <span
             key={i}
-            className="px-3 py-1 rounded-full bg-brand-dark/60 text-brand-accent text-sm font-medium shadow ring-1 ring-brand-accent/20"
+            className="px-3 py-1 rounded-full bg-brand-dark/60  text-sm font-medium shadow ring-1 ring-brand-accent/20"
           >
             {it}
           </span>
         ))
       ) : (
-        <span className="text-white/60 text-sm">暂无</span>
+        <span className="/60 text-sm">暂无</span>
       )}
     </div>
   </section>
@@ -60,9 +60,9 @@ const InfoItem = ({
   label: string
   value: React.ReactNode
 }) => (
-  <div className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg bg-white/10 text-white text-sm md:text-base">
+  <div className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg bg-white/30  text-sm md:text-base">
     <span className="font-medium tracking-wide">{label}</span>
-    <span className="font-semibold text-brand-accent break-all">{value}</span>
+    <span className="font-semibold  break-all">{value}</span>
   </div>
 )
 
@@ -102,7 +102,7 @@ const Association: React.FC<AssociationProps> = ({
                 alt="头像"
               />
             </div>
-            <div className="px-5 py-1.5 rounded-2xl bg-black/40 backdrop-blur text-white text-lg font-semibold shadow">
+            <div className="px-5 py-1.5 rounded-2xl bg-black/40 backdrop-blur  text-lg font-semibold shadow">
               QQ: {user_id}
             </div>
           </div>
@@ -117,7 +117,7 @@ const Association: React.FC<AssociationProps> = ({
         </header>
 
         <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card space-y-4">
-          <h2 className="text-xl md:text-2xl font-semibold text-white tracking-wider flex items-center gap-2">
+          <h2 className="text-xl md:text-2xl font-semibold  tracking-wider flex items-center gap-2">
             <span className="w-1.5 h-6 bg-brand-accent rounded-full" />
             信息
           </h2>
@@ -141,7 +141,7 @@ const Association: React.FC<AssociationProps> = ({
         </div>
 
         <section className="w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card">
-          <p className="text-white/80 text-sm md:text-base tracking-wide">
+          <p className="/80 text-sm md:text-base tracking-wide">
             创立于: {ass?.创立时间?.[0] || '-'}
           </p>
         </section>

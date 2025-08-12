@@ -8,7 +8,7 @@ const SecretPlace = ({ didian_list }) => {
     <HTML
       className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8"
       style={{
-        backgroundImage: `url('${secretPlaceURL}')`,
+        backgroundImage: `url(${secretPlaceURL})`,
         backgroundSize: 'cover'
       }}
     >

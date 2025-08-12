@@ -52,9 +52,9 @@ const SettingItem = ({
   value: string | number
   unit?: string
 }) => (
-  <div className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm text-white text-sm md:text-base shadow-inner">
+  <div className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg bg-white/30 backdrop-blur-sm  text-sm md:text-base shadow-inner">
     <span className="font-medium tracking-wide">{label}</span>
-    <span className="font-semibold text-brand-accent">
+    <span className="font-semibold ">
       {value}
       {unit}
     </span>
@@ -70,7 +70,7 @@ const SettingSection = ({
   children: React.ReactNode
 }) => (
   <section className="w-full rounded-2xl bg-gradient-to-br from-white/5 to-white/10 shadow-card ring-1 ring-white/10 p-4 md:p-6 space-y-4">
-    <h2 className="text-xl md:text-2xl font-semibold text-white tracking-wider flex items-center gap-2">
+    <h2 className="text-xl md:text-2xl font-semibold  tracking-wider flex items-center gap-2">
       <span className="inline-block w-1.5 h-6 bg-brand-accent rounded-full" />
       {title}
     </h2>
@@ -146,7 +146,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
             className="mx-auto w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
             style={{ backgroundImage: `url(${user_state})` }}
           />
-          <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest text-white shadow">
+          <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow">
             #修仙设置
           </h1>
         </header>

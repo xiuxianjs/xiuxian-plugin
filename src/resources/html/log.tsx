@@ -5,22 +5,32 @@ import najieURL from '@src/resources/img/najie.jpg'
 const Log = ({ log }: { log?: string[] }) => {
   return (
     <HTML
-      className="min-h-screen w-full text-center p-4 md:p-8 bg-top bg-cover"
+      className="min-h-screen w-full bg-top bg-cover relative p-4 md:p-8"
       style={{ backgroundImage: `url(${najieURL})` }}
     >
-      <main className="max-w-3xl mx-auto space-y-4">
-        <section className="rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card">
+      {/* 背景遮罩渐变，防止文字与背景冲突 */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-none"></div>
+
+      <main className="relative max-w-3xl mx-auto space-y-6 z-10">
+        <section className="rounded-3xl bg-white/10 backdrop-blur-lg ring-1 ring-white/20 p-6 md:p-8 shadow-lg">
           {log?.length ? (
             log.map((item, index) => (
-              <div key={index} className="mb-4">
-                <div className="text-white text-base md:text-lg font-mono break-words whitespace-pre-line">
+              <div
+                key={index}
+                className="mb-6 last:mb-0 bg-white/20 rounded-lg p-4 shadow-md"
+              >
+                <div className="text-base md:text-lg font-mono leading-relaxed text-gray-100 break-words whitespace-pre-line">
                   {item}
                 </div>
-                <div className="border-b border-dashed border-white/30 my-2" />
+                {index !== log.length - 1 && (
+                  <hr className="border-t border-dashed border-white/30 mt-4" />
+                )}
               </div>
             ))
           ) : (
-            <p className="text-white/60">暂无日志</p>
+            <p className="text-gray-300 text-lg font-semibold pt-10">
+              暂无日志
+            </p>
           )}
         </section>
       </main>

@@ -10,7 +10,7 @@ const StateMax = ({ LevelMax_list }) => {
           <div className="font-bold text-blue-200 text-lg">
             境界：{item.level}
           </div>
-          <div className="text-sm text-white">突破修为：{item.exp}</div>
+          <div className="text-sm ">突破修为：{item.exp}</div>
         </div>
       ))}
     />

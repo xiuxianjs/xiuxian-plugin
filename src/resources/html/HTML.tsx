@@ -11,7 +11,7 @@ const HTML = (
     linkStyleSheets?: string[]
   }
 ) => {
-  const { linkStyleSheets = [], ...reSet } = props
+  const { linkStyleSheets = [], dangerouslySetInnerHTML, ...reSet } = props
   return (
     <html>
       <head>
@@ -28,6 +28,11 @@ const HTML = (
             `
           }}
         />
+        {dangerouslySetInnerHTML && (
+          <style
+            dangerouslySetInnerHTML={{ __html: dangerouslySetInnerHTML }}
+          />
+        )}
       </head>
       <body {...reSet} />
     </html>
