@@ -40,7 +40,8 @@ export default onResponse(selects, async e => {
   const top = temp.slice(0, 10)
   const image = await screenshot('immortal_genius', usr_qq, {
     allplayer: top,
-    title: '魔道榜'
+    title: '魔道榜',
+    label: '魔道值'
   })
 
   if (Buffer.isBuffer(image)) {
