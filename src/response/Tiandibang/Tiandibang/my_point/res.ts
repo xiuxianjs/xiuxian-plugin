@@ -1,9 +1,10 @@
-import { Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 
 import { existplayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?天地榜$/
 
 export default onResponse(selects, async e => {
@@ -19,56 +20,31 @@ export default onResponse(selects, async e => {
     //没有表要先建立一个！
     await Write_tiandibang([])
   }
-  let x = tiandibang.length
-  let l = 10
-  const msg = ['***天地榜(每日免费三次)***\n       周一0点清空积分']
-  for (let i = 0; i < tiandibang.length; i++) {
-    if (tiandibang[i].qq == usr_qq) {
-      x = i
-      break
-    }
-  }
-  if (x == tiandibang.length) {
+  // 查找用户是否报名
+  const userIndex = tiandibang.findIndex(p => p.qq == usr_qq)
+  if (userIndex === -1) {
     Send(Text('请先报名!'))
     return false
   }
-  if (l > tiandibang.length) {
-    l = tiandibang.length
+  // 生成图片，传递实际排行榜数据
+  const image = await screenshot('immortal_genius', usr_qq, {
+    allplayer: tiandibang
+      .sort((a, b) => b.积分 - a.积分)
+      .slice(0, 10)
+      .map(item => {
+        return {
+          power: item.积分,
+          qq: item.qq,
+          name: item.name
+        }
+      }),
+    title: '天地榜(每日免费三次)',
+    label: '积分'
+  })
+  if (Buffer.isBuffer(image)) {
+    Send(Image(image))
+    return
   }
-  if (x < l) {
-    for (let m = 0; m < l; m++) {
-      msg.push(
-        '名次：' +
-          (m + 1) +
-          '\n名号：' +
-          tiandibang[m].名号 +
-          '\n积分：' +
-          tiandibang[m].积分
-      )
-    }
-  } else if (x >= l && tiandibang.length - x < l) {
-    for (let m = tiandibang.length - l; m < tiandibang.length; m++) {
-      msg.push(
-        '名次：' +
-          (m + 1) +
-          '\n名号：' +
-          tiandibang[m].名号 +
-          '\n积分：' +
-          tiandibang[m].积分
-      )
-    }
-  } else {
-    for (let m = x - 5; m < x + 5; m++) {
-      msg.push(
-        '名次：' +
-          (m + 1) +
-          '\n名号：' +
-          tiandibang[m].名号 +
-          '\n积分：' +
-          tiandibang[m].积分
-      )
-    }
-  }
-  // await ForwardMsg(e, msg)
-  Send(Text(msg.join('\n')))
+  // 图片生成失败，仅提示错误
+  Send(Text('图片生产失败'))
 })

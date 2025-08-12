@@ -9,7 +9,7 @@ const Immortal = ({ allplayer = [], title = '', label = '战力' }) => {
         <>
           <div className="flex gap-2 flex-col">
             <div className="user_font">
-              [第{index}名]{item.name}
+              [第{index + 1}名]{item.name}
             </div>
             <div className="user_font">
               {label}: {item.power}
