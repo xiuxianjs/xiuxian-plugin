@@ -204,13 +204,10 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
                 </div>
 
                 <div className="mt-6">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600/30 to-red-700/30 border border-red-400/20 shadow-lg">
-                    <span className="text-red-200/90 text-sm md:text-base font-medium">
-                      翻页：
+                  <div className="inline-flex items-center shadow-inner gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600/30 to-red-700/30 border border-red-400/20 ">
+                    <span className="text-red-200/90  text-sm md:text-base font-medium">
+                      翻页： 指令后直接加页码
                     </span>
-                    <code className="px-3 py-1 rounded-lg bg-red-700/50 text-red-100 text-sm md:text-base font-mono shadow-inner border border-red-400/20">
-                      指令后直接加页码
-                    </code>
                   </div>
                 </div>
               </div>

@@ -68,7 +68,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let rawList[] = []
+  let rawList: any[] = []
   try {
     rawList = await readExchange()
   } catch {

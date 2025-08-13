@@ -1,5 +1,4 @@
 import React from 'react'
-import cssURL from '@src/resources/styles/player.scss'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import HTML from './HTML'
@@ -109,7 +108,6 @@ const Najie = ({
   return (
     <HTML
       className="p-0 m-0 w-full text-center"
-      linkStyleSheets={[cssURL]}
       dangerouslySetInnerHTML={{
         __html: `
           body {

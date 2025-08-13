@@ -1,5 +1,4 @@
 import React from 'react'
-import cssURL from '@src/resources/styles/player.scss'
 import HTML from './HTML'
 import { Avatar } from './Avatar'
 
@@ -16,7 +15,7 @@ const PlayerCopy = ({
   learned_gongfa = []
 }) => {
   return (
-    <HTML className="p-0 m-0 w-full text-center" linkStyleSheets={[cssURL]}>
+    <HTML className="p-0 m-0 w-full text-center">
       {/* 背景装饰层 */}
       <div className=" w-full max-w-4xl mx-auto">
         {/* 外层光晕效果 */}

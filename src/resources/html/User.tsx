@@ -1,5 +1,4 @@
 import React from 'react'
-import cssURL from '@src/resources/styles/player.scss'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import HTML from './HTML'
@@ -120,21 +119,44 @@ const Player = ({
 
   const Pets = ({ value }) => {
     return (
-      <div className="item wupin ">
-        <div className="item_title2">
-          【{value.品级}】{value.name}
-        </div>
-        <div className="item_int2">等级：{value.等级}</div>
-        {value.type === '战斗' ? (
-          <div className="item_int2">三维加成{value.atk}</div>
-        ) : (
-          <div className="item_int2">
-            {value.type}加成:
-            {(value.加成 * 100).toFixed(1)}%
+      <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg">
+        <div className="space-y-2">
+          <div className="text-center">
+            <h3 className="text-sm font-bold text-gray-800">
+              【{value.品级}】{value.name}
+            </h3>
           </div>
-        )}
-        <div className="item_int2">
-          绑定：{value.灵魂绑定 === 1 ? '有' : '无'}
+          <div className="space-y-1.5 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="font-medium text-gray-700">等级</span>
+              <span className="font-bold text-gray-800 text-sm">
+                {value.等级}
+              </span>
+            </div>
+            {value.type === '战斗' ? (
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-gray-700">三维加成</span>
+                <span className="font-bold text-gray-800 text-sm">
+                  {value.atk}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-gray-700">
+                  {value.type}加成
+                </span>
+                <span className="font-bold text-gray-800 text-sm">
+                  {(value.加成 * 100).toFixed(1)}%
+                </span>
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="font-medium text-gray-700">绑定</span>
+              <span className="font-bold text-gray-800 text-sm">
+                {value.灵魂绑定 === 1 ? '有' : '无'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -149,7 +171,6 @@ const Player = ({
   return (
     <HTML
       className="p-0 m-0 w-full text-center"
-      linkStyleSheets={[cssURL]}
       dangerouslySetInnerHTML={{
         __html: `
           body {
@@ -161,11 +182,10 @@ const Player = ({
       }}
     >
       <div>
-        <div className="header"></div>
         {/* 上 */}
-        <div className="card_box flex pb-6">
+        <div className="m-5 mx-auto flex flex-nowrap rounded-5xl z-999 bg-[radial-gradient(at_top_left,#ffffff10,#d7edea10)] border-t border-[#ffcc80] border-l border-[#ffcc80] border-r border-[#bb8020] border-b border-[#bb8020] backdrop-blur-sm w-[740px] pb-6">
           {/* 左 */}
-          <div className="user_top_left w-72">
+          <div className="text-center mt-7.5 ml-6 w-72">
             <div className="flex justify-center">
               <Avatar
                 src={avatar}
@@ -196,7 +216,7 @@ const Player = ({
             </div>
           </div>
           {/* 右 */}
-          <div className="user_top_right flex-1 text-slate-600">
+          <div className="float-right text-left mr-5 mt-5 rounded-5xl flex-1 text-slate-600">
             <div className="space-y-3">
               {/* 道号 */}
               <div className="flex items-center gap-2 bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-2 border border-white/20">
@@ -225,13 +245,20 @@ const Player = ({
                   <span className="font-medium ">生命</span>
                 </div>
                 {/* 血条 - 使用Tailwind CSS */}
-                <div className="relative w-72 text-white h-8 bg-gray-800/80 rounded-xl shadow-lg overflow-hidden border-2 border-l-yellow-300/50">
+                <div className="relative w-72 text-white h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg shadow-lg overflow-hidden border border-gray-600/50">
+                  {/* 背景装饰 */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
                   <div
-                    className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-lg transition-all duration-300 ease-out shadow-inner"
+                    className="h-full bg-gradient-to-r from-red-400 via-red-500 to-red-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden"
                     style={strand_hp.style}
-                  ></div>
+                  >
+                    {/* 进度条内部装饰 */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                    <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent"></div>
+                  </div>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-bold text-sm drop-shadow-lg">
+                    <span className="font-bold text-xs">
                       {player.当前血量?.toFixed(0)}/
                       {player.血量上限?.toFixed(0)}
                     </span>
@@ -242,7 +269,7 @@ const Player = ({
               {/* 灵石 */}
               <div className="flex items-center gap-2 bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-2 border border-white/20">
                 <span className=" text-sm">💰</span>
-                <span className="text-white font-medium">灵石：{lingshi}</span>
+                <span className=" font-medium">灵石：{lingshi}</span>
               </div>
 
               {/* 宗门 */}
@@ -264,168 +291,342 @@ const Player = ({
           </div>
         </div>
         {/* 下 */}
-        <div className="card_box">
-          <div className="use_data">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                <span className="text-lg">👤</span>
+        <div className="m-5 mx-auto flex flex-nowrap rounded-5xl z-999 bg-[radial-gradient(at_top_left,#ffffff10,#d7edea10)] border-t border-[#ffcc80] border-l border-[#ffcc80] border-r border-[#bb8020] border-b border-[#bb8020] backdrop-blur-sm w-[740px]">
+          <div className="m-5 w-[740px]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                <span className="text-base">👤</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-700">【基础信息】</h2>
+              <h2 className="text-xl font-bold text-gray-700">【基础信息】</h2>
             </div>
-            <div className="user_font wupin">
-              <div className="item">
-                <div className="item_title font_left">
-                  攻击：{player_atk}
-                  <sup>{player_atk2}</sup>
-                </div>
-                <div className="item_title font_left">
-                  防御：{player_def}
-                  <sup>{player_def2}</sup>
-                </div>
-                <div className="item_title font_left">暴击：{bao}</div>
-                <div className="item_title font_left">
-                  暴伤：{(player.暴击伤害 * 100).toFixed(0)}%
-                </div>
-              </div>
-              <div className="item">
-                <div className="item_title font_left">
-                  攻击：{攻击加成}
-                  <sup>{攻击加成_t}</sup>
-                </div>
-                <div className="item_title font_left">
-                  防御：{防御加成}
-                  <sup>{防御加成_t}</sup>
-                </div>
-                <div className="item_title font_left">
-                  生命：{生命加成}
-                  <sup>{生命加成_t}</sup>
-                </div>
-              </div>
-              <div className="item">
-                <div className="item_title font_left">修炼加成：{talent}%</div>
-                <div className="item_title font_left">职业：[{occupation}]</div>
-                <div className="item_title font_left">道侣[{婚姻状况}]</div>
-              </div>
-            </div>
-            <div className="user_font wupin">
-              <div className="item">
-                <div className="item_title font_left">
-                  {rank_lianqi}
-                  {player.修为 >= expmax_lianqi && '[UP]'}
-                </div>
-                {/* 练气进度条 - 使用Tailwind CSS */}
-                <div className="item_int">
-                  <div className="relative w-full h-6 bg-gray-700 rounded-lg overflow-hidden border border-gray-600">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg transition-all duration-300 ease-out shadow-inner"
-                      style={strand_lianqi.style}
-                    ></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-bold text-xs drop-shadow-lg">
-                        {strand_lianqi.num}%
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        攻击
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {player_atk}
+                        <sup className="text-xs text-gray-600 ml-0.5">
+                          {player_atk2}
+                        </sup>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        防御
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {player_def}
+                        <sup className="text-xs text-gray-600 ml-0.5">
+                          {player_def2}
+                        </sup>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        暴击
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {bao}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        暴伤
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {(player.暴击伤害 * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="item_int">
-                  {player.修为}/{expmax_lianqi}
-                </div>
-              </div>
-              <div className="item">
-                <div className="item_title font_left">
-                  {rank_llianti}
-                  {player.血气 >= expmax_llianti && '[UP]'}
-                </div>
-                {/* 炼体进度条 - 使用Tailwind CSS */}
-                <div className="item_int">
-                  <div className="relative w-full h-6 bg-gray-700 rounded-lg overflow-hidden border border-gray-600">
-                    <div
-                      className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-lg transition-all duration-300 ease-out shadow-inner"
-                      style={strand_llianti.style}
-                    ></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-bold text-xs drop-shadow-lg">
-                        {strand_llianti.num}%
+                <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        攻击加成
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {攻击加成}
+                        <sup className="text-xs text-gray-600 ml-0.5">
+                          {攻击加成_t}
+                        </sup>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        防御加成
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {防御加成}
+                        <sup className="text-xs text-gray-600 ml-0.5">
+                          {防御加成_t}
+                        </sup>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        生命加成
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {生命加成}
+                        <sup className="text-xs text-gray-600 ml-0.5">
+                          {生命加成_t}
+                        </sup>
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="item_int">
-                  {player.血气}/{expmax_llianti}
+                <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        修炼加成
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        {talent}%
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        职业
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        [{occupation}]
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        道侣
+                      </span>
+                      <span className="font-bold text-gray-800 text-sm">
+                        [{婚姻状况}]
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              {player.occupation.length == 0 ? (
-                <div className="item">
-                  <div className="item_title font_left">职业：</div>
-                  <div className="item_title font_left">无业游民</div>
-                </div>
-              ) : (
-                <div className="item">
-                  <div className="item_title font_left">
-                    {rank_liandan}
-                    {player.occupation_exp >= expmax_liandan && '[UP]'}
-                  </div>
-                  {/* 炼丹进度条 - 使用Tailwind CSS */}
-                  <div className="item_int">
-                    <div className="relative w-full h-6 bg-gray-700 rounded-lg overflow-hidden border border-gray-600">
+            </div>
+            <div className="space-y-3 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg relative overflow-hidden">
+                  {/* 装饰性光效 */}
+                  <div className="absolute top-0 right-0 w-12 h-12 bg-blue-400/10 rounded-full blur-lg"></div>
+                  <div className="absolute bottom-0 left-0 w-8 h-8 bg-blue-400/5 rounded-full blur-md"></div>
+                  <div className="space-y-2 relative z-10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700 flex items-center gap-1.5">
+                        <span className="w-3 h-3 bg-blue-500/20 rounded-full flex items-center justify-center">
+                          <span className="text-blue-500 text-xs">⚡</span>
+                        </span>
+                        <span className="text-sm font-semibold">
+                          {rank_lianqi}
+                        </span>
+                        {player.修为 >= expmax_lianqi && (
+                          <span className="text-green-500 text-xs">[UP]</span>
+                        )}
+                      </span>
+                    </div>
+                    {/* 练气进度条 - 使用Tailwind CSS */}
+                    <div className="relative w-full h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg overflow-hidden border border-gray-600/50 shadow-inner">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
                       <div
-                        className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg transition-all duration-300 ease-out shadow-inner"
-                        style={strand_liandan.style}
-                      ></div>
+                        className="h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden"
+                        style={strand_lianqi.style}
+                      >
+                        {/* 进度条内部装饰 */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent"></div>
+                      </div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-white font-bold text-xs drop-shadow-lg">
-                          {strand_liandan.num}%
+                        <span className="text-white font-bold text-xs ">
+                          {strand_lianqi.num}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-center text-xs font-medium text-gray-700">
+                      {player.修为}/{expmax_lianqi}
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg relative overflow-hidden">
+                  {/* 装饰性光效 */}
+                  <div className="absolute top-0 right-0 w-12 h-12 bg-green-400/10 rounded-full blur-lg"></div>
+                  <div className="absolute bottom-0 left-0 w-8 h-8 bg-green-400/5 rounded-full blur-md"></div>
+                  <div className="space-y-2 relative z-10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700 flex items-center gap-1.5">
+                        <span className="w-3 h-3 bg-green-500/20 rounded-full flex items-center justify-center">
+                          <span className="text-green-500 text-xs">💪</span>
+                        </span>
+                        <span className="text-sm font-semibold">
+                          {rank_llianti}
+                        </span>
+                        {player.血气 >= expmax_llianti && (
+                          <span className="text-green-500 text-xs">[UP]</span>
+                        )}
+                      </span>
+                    </div>
+                    {/* 炼体进度条 - 使用Tailwind CSS */}
+                    <div className="relative w-full h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg overflow-hidden border border-gray-600/50 shadow-inner">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                      <div
+                        className="h-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden"
+                        style={strand_llianti.style}
+                      >
+                        {/* 进度条内部装饰 */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent"></div>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white font-bold text-xs">
+                          {strand_llianti.num}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-center text-xs font-medium text-gray-700">
+                      {player.血气}/{expmax_llianti}
+                    </div>
+                  </div>
+                </div>
+                {player.occupation.length == 0 ? (
+                  <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-gray-700">
+                          职业
+                        </span>
+                        <span className="font-bold text-gray-800 text-sm">
+                          无业游民
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="item_int">
-                    {player.occupation_exp}/{expmax_liandan}
+                ) : (
+                  <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg relative overflow-hidden">
+                    {/* 装饰性光效 */}
+                    <div className="absolute top-0 right-0 w-12 h-12 bg-purple-400/10 rounded-full blur-lg"></div>
+                    <div className="absolute bottom-0 left-0 w-8 h-8 bg-purple-400/5 rounded-full blur-md"></div>
+                    <div className="space-y-2 relative z-10">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-gray-700 flex items-center gap-1.5">
+                          <span className="w-3 h-3 bg-purple-500/20 rounded-full flex items-center justify-center">
+                            <span className="text-purple-500 text-xs">🧪</span>
+                          </span>
+                          <span className="text-sm font-semibold">
+                            {rank_liandan}
+                          </span>
+                          {player.occupation_exp >= expmax_liandan && (
+                            <span className="text-green-500 text-xs">[UP]</span>
+                          )}
+                        </span>
+                      </div>
+                      {/* 炼丹进度条 - 使用Tailwind CSS */}
+                      <div className="relative w-full h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg overflow-hidden border border-gray-600/50 shadow-inner">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                        <div
+                          className="h-full bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden"
+                          style={strand_liandan.style}
+                        >
+                          {/* 进度条内部装饰 */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                          <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent"></div>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-white font-bold text-xs drop-shadow-lg bg-black/20 px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+                            {strand_liandan.num}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-center text-xs font-medium text-gray-700">
+                        {player.occupation_exp}/{expmax_liandan}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-            <div className="user_font wupin">
-              <div className="item">
-                <div className="item_title font_left">
-                  <div></div>
-                  灵根：【{player.灵根?.type}】
+            <div className="space-y-3 mt-4">
+              <div className="bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg">
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">灵根</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{player.灵根?.type}】
+                    </span>
+                  </div>
                   {player.灵根?.type !== '无' && (
                     <>
-                      {player.灵根?.name}
-                      <br />
-                      被动：【额外增伤】攻击+
-                      {(player.灵根?.法球倍率 * 100).toFixed(1)}%
+                      <div className="text-center text-gray-700 text-xs">
+                        {player.灵根?.name}
+                      </div>
+                      <div className="text-center text-gray-700 text-xs">
+                        被动：【额外增伤】攻击+
+                        {(player.灵根?.法球倍率 * 100).toFixed(1)}%
+                      </div>
                     </>
                   )}
-                  <br />
-                  镇妖：【{player.镇妖塔层数}层】
-                  <br />
-                  神魂：【{player.神魄段数}层】
-                  <br />
-                  幸运:【{(player.幸运 * 100).toFixed(1)}%】
-                  <br />
-                  魔道值:【{player.魔道值}】<br />
-                  内丹:【{neidan}】<br />
-                  状态：【{player_action}】
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">镇妖</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{player.镇妖塔层数}层】
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">神魂</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{player.神魄段数}层】
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">幸运</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{(player.幸运 * 100).toFixed(1)}%】
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">魔道值</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{player.魔道值}】
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">内丹</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{neidan}】
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">状态</span>
+                    <span className="font-bold text-gray-800 text-sm">
+                      【{player_action}】
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         {/* 仙宠 */}
-        <div className="card_box">
-          <div className="use_data">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                <span className="text-lg">🐈‍⬛</span>
+        <div className="m-5 mx-auto flex flex-nowrap rounded-5xl z-999 bg-[radial-gradient(at_top_left,#ffffff10,#d7edea10)] border-t border-[#ffcc80] border-l border-[#ffcc80] border-r border-[#bb8020] border-b border-[#bb8020] backdrop-blur-sm w-[740px]">
+          <div className="m-5 w-[740px]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                <span className="text-base">🐈‍⬛</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-700">仙宠</h2>
+              <h2 className="text-xl font-bold text-gray-700">仙宠</h2>
             </div>
-            <div className="user_font wupin">{PetsReander}</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {PetsReander}
+            </div>
           </div>
         </div>
-        <div className="user_bottom2"></div>
       </div>
     </HTML>
   )
