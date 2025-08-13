@@ -65,8 +65,14 @@ import zongmengData from './views/zongmeng.json'
 import Zongmeng from '@src/resources/html/zongmeng'
 import association from './views/association.json'
 import Association from '@src/resources/html/association'
+import adminset from './views/adminset.json'
+import Adminset from '@src/resources/html/adminset'
+import temp from './views/temp.json'
+import Temp from '@src/resources/html/temp'
 export default defineConfig({
   routes: {
+    '/temp': { component: <Temp temp={temp} /> },
+    '/adminset': { component: <Adminset {...adminset} /> },
     '/association': { component: <Association {...association} /> },
     '/BlessPlace': { component: <BlessPlace {...BlessPlaceData} /> },
     '/danfang': { component: <Danfang {...danfangData} /> },

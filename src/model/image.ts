@@ -1158,24 +1158,6 @@ export async function getStatemaxImage(
   return await screenshot('statemax', e.UserId, statemax_data)
 }
 
-export async function getTalentImage(
-  e: EventsMessageCreateEnum
-): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
-  if (!ifexistplay) {
-    return
-  }
-  // let player = await await data.getData('player', usr_qq)
-  // let Level_id = player.Physique_id
-  const talent_list = data.talent_list
-  const talent_data = {
-    user_id: usr_qq,
-    talent_list: talent_list
-  }
-  return await screenshot('talent', e.UserId, talent_data)
-}
-
 /**
  * 返回修仙设置
  * @return image

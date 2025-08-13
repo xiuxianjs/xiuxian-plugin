@@ -71,8 +71,7 @@ export default onResponse(selects, async e => {
   tiandibang = await readTiandibang() // 重新读取最新榜单
   const refreshed = tiandibang[index]
   refreshed.暴击率 = Math.trunc(refreshed.暴击率 * 100)
-  const msg = []
-  msg.push(
+  const msg = [
     '名次：' +
       (index + 1) +
       '\n名号：' +
@@ -87,7 +86,6 @@ export default onResponse(selects, async e => {
       refreshed.暴击率 +
       '%\n积分：' +
       refreshed.积分
-  )
-  // await ForwardMsg(e, msg)
+  ]
   Send(Text(msg.join('')))
 })

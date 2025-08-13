@@ -67,7 +67,7 @@ const Tuzhi = ({ tuzhi_list }) => {
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-20 h-2 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full shadow-lg"></div>
           <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-300 to-blue-500 rounded-full shadow-md"></div>
 
-          <div className="border-2 border-gradient-to-r from-blue-400/60 to-blue-600/60 rounded-2xl w-full flex flex-col justify-center bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-xl shadow-2xl py-8 relative overflow-hidden">
+          <div className="border-2 border-gradient-to-r  rounded-2xl w-full flex flex-col justify-center bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-xl shadow-2xl py-8 relative overflow-hidden">
             {/* 背景装饰 */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/5 via-transparent to-blue-600/5"></div>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/20 to-transparent"></div>

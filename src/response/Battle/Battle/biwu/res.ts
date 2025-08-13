@@ -1,9 +1,10 @@
-import { Text, useMention, useSend } from 'alemonjs'
+import { Image, Text, useMention, useSend } from 'alemonjs'
 
 import { existplayer, readPlayer, zdBattle } from '@src/model/index'
 import type { Player } from '@src/types'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?以武会友$/
 
 function isPlayer(v: unknown): v is Player {
@@ -15,6 +16,10 @@ function extractFaQiu(lg: unknown): number | undefined {
   const o = lg as Record<string, unknown>
   const v = o.法球倍率
   return typeof v === 'number' ? v : undefined
+}
+
+const getAvatar = (usr_qq: string) => {
+  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
 }
 
 export default onResponse(selects, async e => {
@@ -68,11 +73,46 @@ export default onResponse(selects, async e => {
 
   try {
     const Data_battle = await zdBattle(a, b)
-    const battleMsg = Array.isArray(Data_battle.msg)
-      ? Data_battle.msg.join('\n')
-      : '战斗结束'
+
     const header = `${A_player.名号}向${B_player.名号}发起了切磋。\n`
-    Send(Text(header + battleMsg))
+
+    const A_win = `${A_player.名号}击败了${B_player.名号}`
+    const B_win = `${B_player.名号}击败了${A_player.名号}`
+
+    const img = await screenshot('CombatResult', ``, {
+      msg: [header, ...(Data_battle.msg || [])],
+      playerA: {
+        id: A,
+        name: A_player.名号,
+        avatar: getAvatar(A),
+        power: A_player.战力,
+        hp: A_player.当前血量,
+        maxHp: A_player.血量上限
+      },
+      playerB: {
+        id: B,
+        name: B_player.名号,
+        avatar: getAvatar(B),
+        power: B_player.战力,
+        hp: B_player.当前血量,
+        maxHp: B_player.血量上限
+      },
+      result: Data_battle.msg.includes(A_win)
+        ? 'A'
+        : Data_battle.msg.includes(B_win)
+          ? 'B'
+          : 'draw'
+    })
+    if (Buffer.isBuffer(img)) {
+      Send(Image(img))
+    } else {
+      const result = Data_battle.msg.includes(A_win)
+        ? 'A'
+        : Data_battle.msg.includes(B_win)
+          ? 'B'
+          : 'draw'
+      Send(Text(header + result))
+    }
   } catch (_err) {
     Send(Text('战斗过程出现异常'))
   }

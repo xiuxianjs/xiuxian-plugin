@@ -1,4 +1,4 @@
-import { Text, useMention, useSend } from 'alemonjs'
+import { Image, Text, useMention, useSend } from 'alemonjs'
 
 import { config, data, redis } from '@src/model/api'
 import {
@@ -39,6 +39,7 @@ interface PlayerWithFaQiu extends Player {
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?打劫$/
 
 function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
@@ -51,6 +52,10 @@ function extractFaQiu(lg: unknown): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
   const v = (lg as Record<string, unknown>).法球倍率
   return typeof v === 'number' ? v : undefined
+}
+
+const getAvatar = (usr_qq: string) => {
+  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
 }
 
 export default onResponse(selects, async e => {
@@ -267,14 +272,36 @@ export default onResponse(selects, async e => {
     return false
   }
   const msgArr = Array.isArray(battle.msg) ? battle.msg : []
-  if (msgArr.length <= 35) {
-    Send(Text(msgArr.join('\n')))
-  }
+
   await addHP(A, battle.A_xue)
   await addHP(B, battle.B_xue)
 
   const A_win = `${A_player.名号}击败了${B_player.名号}`
   const B_win = `${B_player.名号}击败了${A_player.名号}`
+
+  const img = await screenshot('CombatResult', ``, {
+    msg: final_msg,
+    playerA: {
+      id: A,
+      name: A_player.名号,
+      avatar: getAvatar(A),
+      power: A_player.战力,
+      hp: A_player.当前血量,
+      maxHp: A_player.血量上限
+    },
+    playerB: {
+      id: B,
+      name: B_player.名号,
+      avatar: getAvatar(B),
+      power: B_player.战力,
+      hp: B_player.当前血量,
+      maxHp: B_player.血量上限
+    },
+    result: msgArr.includes(A_win) ? 'A' : msgArr.includes(B_win) ? 'B' : 'draw'
+  })
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  }
 
   if (msgArr.includes(A_win)) {
     const hasDoll = await existNajieThing(B, '替身人偶', '道具')
@@ -338,5 +365,6 @@ export default onResponse(selects, async e => {
   }
 
   Send(Text(final_msg.join('\n')))
+
   return false
 })

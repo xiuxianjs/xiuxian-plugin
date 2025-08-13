@@ -1,6 +1,5 @@
 import React from 'react'
 import stateURL from '@src/resources/img/state.jpg'
-import user_state from '@src/resources/img/user_state.png'
 import HTML from './HTML'
 
 interface XiuxianSettingsProps {
@@ -42,6 +41,45 @@ interface XiuxianSettingsProps {
   SecretPlacethree: number
 }
 
+// 修仙风格图标组件
+const XiuxianIcon = ({ type }: { type: string }) => {
+  const iconMap: { [key: string]: string } = {
+    宗门维护: '🏛️',
+    退宗: '🚪',
+    宗门大战: '⚔️',
+    打劫: '🗡️',
+    金银坊: '💰',
+    双修: '💕',
+    药园: '🌿',
+    突破: '⚡',
+    秘境: '🏔️',
+    仙府: '🏯',
+    禁地: '☠️',
+    重生: '🔄',
+    转账: '💸',
+    抢红包: '🧧',
+    手续费: '💎',
+    金银坊收益: '🏆',
+    出千收益: '🎲',
+    出千控制: '🎯',
+    怡红院: '🏮',
+    怡红院卡图: '🖼️',
+    闭关倍率: '🧘',
+    闭关最低时间: '⏰',
+    闭关周期: '📅',
+    除妖倍率: '👹',
+    除妖最低时间: '⏱️',
+    除妖周期: '🗓️',
+    第一概率: '🥇',
+    第二概率: '🥈',
+    第三概率: '🥉'
+  }
+
+  return (
+    <span className="text-lg mr-2 opacity-80">{iconMap[type] || '⚙️'}</span>
+  )
+}
+
 // 设置项组件
 const SettingItem = ({
   label,
@@ -52,12 +90,35 @@ const SettingItem = ({
   value: string | number
   unit?: string
 }) => (
-  <div className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg bg-white/30 backdrop-blur-sm  text-sm md:text-base shadow-inner">
-    <span className="font-medium tracking-wide">{label}</span>
-    <span className="font-semibold ">
-      {value}
-      {unit}
-    </span>
+  <div className="relative group">
+    {/* 装饰性边框 */}
+    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-orange-500/20 rounded-xl blur-sm"></div>
+    <div className="relative bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-md border border-white/20 rounded-xl p-4 shadow-xl">
+      {/* 顶部装饰线 */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <XiuxianIcon type={label} />
+          <span className="font-medium tracking-wide text-white/90 text-sm">
+            {label}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <span className="font-bold text-amber-300 text-lg tracking-wider">
+            {value}
+          </span>
+          {unit && (
+            <span className="ml-1 text-amber-200/80 text-sm font-medium">
+              {unit}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* 底部装饰线 */}
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
+    </div>
   </div>
 )
 
@@ -69,12 +130,30 @@ const SettingSection = ({
   title: string
   children: React.ReactNode
 }) => (
-  <section className="w-full rounded-2xl bg-gradient-to-br from-white/5 to-white/10 shadow-card ring-1 ring-white/10 p-4 md:p-6 space-y-4">
-    <h2 className="text-xl md:text-2xl font-semibold  tracking-wider flex items-center gap-2">
-      <span className="inline-block w-1.5 h-6 bg-brand-accent rounded-full" />
-      {title}
-    </h2>
-    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+  <section className="relative">
+    {/* 背景装饰 */}
+    <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/20 rounded-3xl blur-sm"></div>
+    <div className="relative bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-lg border border-white/20 rounded-3xl p-6 shadow-2xl">
+      {/* 四角装饰 */}
+      <div className="absolute top-4 left-4 w-3 h-3 border-l-2 border-t-2 border-amber-400 rounded-tl-lg"></div>
+      <div className="absolute top-4 right-4 w-3 h-3 border-r-2 border-t-2 border-amber-400 rounded-tr-lg"></div>
+      <div className="absolute bottom-4 left-4 w-3 h-3 border-l-2 border-b-2 border-amber-400 rounded-bl-lg"></div>
+      <div className="absolute bottom-4 right-4 w-3 h-3 border-r-2 border-b-2 border-amber-400 rounded-br-lg"></div>
+
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold tracking-widest text-center text-white/95 flex items-center justify-center gap-3">
+          <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          <span className="bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent">
+            {title}
+          </span>
+          <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+        </h2>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {children}
+      </div>
+    </div>
   </section>
 )
 
@@ -128,29 +207,31 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
 
   // 设置区块配置数组
   const settingSections = [
-    { title: '冷却设置', settings: cooldownSettings },
-    { title: '金银坊设置', settings: gamblingSettings },
-    { title: '开关', settings: switchSettings },
-    { title: '收益设置', settings: incomeSettings },
-    { title: '出金设置', settings: goldSettings }
+    { title: '⚡ 冷却设置', settings: cooldownSettings },
+    { title: '💰 金银坊设置', settings: gamblingSettings },
+    { title: '🎛️ 开关控制', settings: switchSettings },
+    { title: '📈 收益设置', settings: incomeSettings },
+    { title: '🏆 出金设置', settings: goldSettings }
   ]
 
   return (
     <HTML
-      className=" w-full bg-cover bg-fixed bg-top text-center p-4 md:p-8 space-y-8"
+      className="min-h-screen w-full bg-cover bg-fixed bg-center text-center p-4 md:p-8 space-y-8"
       style={{ backgroundImage: `url(${stateURL})` }}
     >
-      <main className="max-w-6xl mx-auto space-y-8">
-        <header className="text-center space-y-4">
-          <div
-            className="mx-auto w-56 h-56 rounded-full bg-cover bg-center ring-4 ring-white/30 shadow-card"
-            style={{ backgroundImage: `url(${user_state})` }}
-          />
-          <h1 className="inline-block px-6 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow">
-            #修仙设置
-          </h1>
+      <main className="max-w-7xl mx-auto space-y-10">
+        {/* 头部区域 */}
+        <header className="relative text-center space-y-6">
+          {/* 标题区域 */}
+          <div className="relative">
+            <h1 className="relative inline-block px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-md border border-amber-400/30 text-3xl md:text-4xl font-bold tracking-widest text-white shadow-2xl">
+              🏮 修仙设置 🏮
+            </h1>
+          </div>
         </header>
-        <div className="flex flex-col gap-8">
+
+        {/* 设置内容区域 */}
+        <div className="flex flex-col gap-10">
           {settingSections.map((section, sectionIndex) => (
             <SettingSection key={sectionIndex} title={section.title}>
               {section.settings.map((setting, index) => (
@@ -164,6 +245,15 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
             </SettingSection>
           ))}
         </div>
+
+        {/* 底部装饰 */}
+        <footer className="text-center py-8">
+          <div className="inline-block px-6 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border border-amber-400/20 rounded-xl">
+            <span className="text-amber-300/80 text-sm tracking-wide">
+              ✨ 修仙之路，道法自然 ✨
+            </span>
+          </div>
+        </footer>
       </main>
     </HTML>
   )

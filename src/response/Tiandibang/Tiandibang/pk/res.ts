@@ -1,4 +1,4 @@
-import { Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 import {
@@ -17,6 +17,7 @@ import {
 } from '../tian'
 
 import { selects } from '@src/response/index'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?比试$/
 
 // === 类型与工具 ===
@@ -239,13 +240,16 @@ export default onResponse(selects, async e => {
       return false
     }
     await addCoin(usr_qq, lingshi)
-    if (msg.length > 50) {
-      logger.info('通过')
-    } else {
-      // await ForwardMsg(e, msg)
-      Send(Text(msg.join('\n')))
-    }
     Send(Text(last_msg.join('\n')))
+    const img = await screenshot('CombatResult', ``, {
+      msg: msg,
+      playerA: A_player,
+      playerB: B_player,
+      result: msg.includes(A_win) ? 'A' : msg.includes(B_win) ? 'B' : 'draw'
+    })
+    if (Buffer.isBuffer(img)) {
+      Send(Image(img))
+    }
   } else {
     const A_player = buildBattlePlayer(tiandibang[x])
     atk = randomScale()
@@ -268,13 +272,16 @@ export default onResponse(selects, async e => {
       return false
     }
     await addCoin(usr_qq, lingshi)
-    if (msg.length > 50) {
-      logger.info('通过')
-    } else {
-      // await ForwardMsg(e, msg)
-      Send(Text(msg.join('\n')))
-    }
     Send(Text(last_msg.join('\n')))
+    const img = await screenshot('CombatResult', ``, {
+      msg: msg,
+      playerA: A_player,
+      playerB: B_player,
+      result: msg.includes(A_win) ? 'A' : msg.includes(B_win) ? 'B' : 'draw'
+    })
+    if (Buffer.isBuffer(img)) {
+      Send(Image(img))
+    }
   }
   tiandibang = await readTiandibang()
   tiandibang.sort((a, b) => b.积分 - a.积分)

@@ -36,11 +36,9 @@ import statemax from '../resources/html/statemax'
 import statezhiye from '../resources/html/statezhiye'
 import sudoku from '../resources/html/sudoku'
 import supermarket from '../resources/html/supermarket'
-import talent from '../resources/html/talent'
 import temp from '../resources/html/temp'
 import tianditang from '../resources/html/tianditang'
 import time_place from '../resources/html/time_place'
-import tujian from '../resources/html/tujian'
 import tuzhi from '../resources/html/tuzhi'
 import valuables from '../resources/html/valuables'
 import wuqi from '../resources/html/wuqi'
@@ -49,6 +47,7 @@ import zongmeng from '../resources/html/zongmeng'
 import updateRecord from '../resources/html/updateRecord'
 import BlessPlace from '../resources/html/BlessPlace'
 import jindi from '../resources/html/jindi'
+import CombatResult from '../resources/html/CombatResult'
 import { mkdirSync, writeFileSync } from 'fs'
 
 const map = {
@@ -87,11 +86,9 @@ const map = {
   statezhiye,
   sudoku,
   supermarket,
-  talent,
   temp,
   tianditang,
   time_place,
-  tujian,
   tuzhi,
   valuables,
   wuqi,
@@ -99,7 +96,8 @@ const map = {
   zongmeng,
   updateRecord,
   BlessPlace,
-  jindi
+  jindi,
+  CombatResult
 }
 
 // 简易内存缓存结构：每种页面+用户 只保存最近一次数据渲染结果

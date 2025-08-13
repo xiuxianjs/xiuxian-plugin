@@ -39,7 +39,7 @@ const Danyao = ({
 
   return (
     <HTML
-      className=" w-full text-center p-4 md:p-8 bg-top bg-no-repeat relative"
+      className="w-full text-center p-4 md:p-8 bg-top bg-no-repeat min-h-screen"
       style={{
         backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
         backgroundRepeat: 'no-repeat, repeat',
@@ -47,93 +47,149 @@ const Danyao = ({
       }}
     >
       {/* 背景加仙气渐变遮罩 + 边角光晕 */}
-      <div className="absolute  bg-gradient-to-b from-emerald-900/50 via-emerald-700/30 to-red-900/50 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/50 via-emerald-700/30 to-red-900/50 pointer-events-none"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),transparent_70%)] pointer-events-none"></div>
 
-      <main className="relative max-w-4xl mx-auto space-y-8 z-10">
+      <main className="relative max-w-5xl mx-auto space-y-12 z-10">
         {/* 头像 + 标题 */}
-        <header className="space-y-4 flex flex-col items-center">
-          <div className="p-1 rounded-full bg-gradient-to-tr from-emerald-400 via-green-300 to-red-300 shadow-lg shadow-green-500/30">
+        <header className="space-y-6 flex flex-col items-center">
+          <div className="relative">
             <Avatar src={getAvatar(user_id)} />
           </div>
-          <h1
-            className="inline-block px-8 py-3 rounded-3xl bg-white/20 backdrop-blur-md border border-emerald-300/40 
-            text-2xl md:text-3xl font-bold tracking-widest 
-            shadow-lg text-emerald-100 drop-shadow-[0_0_8px_rgba(0,255,180,0.6)]"
-          >
-            {nickname}的丹药
-          </h1>
         </header>
 
         {/* 已拥有 */}
         {(danyao_have.length > 0 || danyao2_have.length > 0) && (
-          <section className="rounded-2xl bg-emerald-600/20 backdrop-blur-md border border-emerald-300/30 p-4 md:p-6 shadow-xl shadow-emerald-900/20 space-y-4">
-            <h2 className="text-lg md:text-xl font-semibold tracking-wide mb-2 text-emerald-100 drop-shadow-[0_0_6px_rgba(0,255,200,0.5)]">
-              【已拥有】
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[...danyao_have, ...danyao2_have].map((item, index) => (
-                <article
-                  key={index}
-                  className="rounded-xl bg-white/15 backdrop-blur-sm border border-emerald-300/30 p-4 flex flex-col gap-2 shadow-md 
-                             hover:scale-[1.03] hover:shadow-lg hover:bg-white/25 hover:border-emerald-200/50 transition-all duration-300"
-                >
-                  <h3 className="text-base font-bold tracking-wide mb-1 text-emerald-50 drop-shadow">
-                    {item.name}
-                  </h3>
-                  <div className="text-sm text-emerald-100/90">
-                    类型：<span className="font-semibold">{item.type}</span>
-                  </div>
-                  <div className="text-sm text-emerald-100/90">
-                    效果：
-                    <span className="font-semibold">{renderEffect(item)}</span>
-                  </div>
-                  <div className="text-sm text-emerald-100/90">
-                    价格：
-                    <span className="font-semibold">
-                      {item.出售价.toFixed(0)}
-                    </span>
-                  </div>
-                </article>
-              ))}
+          <section className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl"></div>
+            <div className="relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-emerald-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-emerald-300/20">
+              <div className="flex items-center justify-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-emerald-400/30 rounded-full flex items-center justify-center">
+                  <span className="text-emerald-300 text-lg">💊</span>
+                </div>
+                <h2 className="text-xl md:text-2xl font-bold tracking-wider text-emerald-200 drop-shadow-lg">
+                  【已拥有】
+                </h2>
+                <div className="w-8 h-8 bg-emerald-400/30 rounded-full flex items-center justify-center">
+                  <span className="text-emerald-300 text-lg">💊</span>
+                </div>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {[...danyao_have, ...danyao2_have].map((item, index) => (
+                  <article
+                    key={index}
+                    className="relative rounded-2xl bg-gradient-to-br from-emerald-900/40 to-emerald-700/30 p-5 shadow-xl border border-emerald-400/30 backdrop-blur-md"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-t-2xl"></div>
+                    <div className="absolute top-2 right-2 w-3 h-3 bg-emerald-400/50 rounded-full"></div>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-emerald-300 text-lg">🧪</span>
+                        <h3 className="text-lg font-bold tracking-wide text-emerald-100 drop-shadow">
+                          {item.name}
+                        </h3>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center space-x-2 text-white/90">
+                          <span className="text-emerald-300">📋</span>
+                          <span>类型：</span>
+                          <span className="font-semibold text-emerald-200">
+                            {item.type}
+                          </span>
+                        </div>
+                        <div className="flex items-start space-x-2 text-white/90">
+                          <span className="text-emerald-300 mt-0.5">⚡</span>
+                          <span>效果：</span>
+                          <span className="font-semibold text-emerald-200">
+                            {renderEffect(item)}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-white/90">
+                          <span className="text-amber-300">💰</span>
+                          <span>价格：</span>
+                          <span className="font-bold text-amber-300 text-lg">
+                            {item.出售价.toFixed(0)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
         )}
 
         {/* 未拥有 */}
         {danyao_need.length > 0 && (
-          <section className="rounded-2xl bg-red-600/20 backdrop-blur-md border border-red-300/30 p-4 md:p-6 shadow-xl shadow-red-900/20 space-y-4">
-            <h2 className="text-lg md:text-xl font-semibold tracking-wide mb-2 text-red-100 drop-shadow-[0_0_6px_rgba(255,100,100,0.6)]">
-              【未拥有】
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {danyao_need.map((item, index) => (
-                <article
-                  key={index}
-                  className="rounded-xl bg-white/15 backdrop-blur-sm border border-red-300/30 p-4 flex flex-col gap-2 shadow-md 
-                             hover:scale-[1.03] hover:shadow-lg hover:bg-white/25 hover:border-red-200/50 transition-all duration-300"
-                >
-                  <h3 className="text-base font-bold tracking-wide mb-1 text-red-50 drop-shadow">
-                    {item.name}
-                  </h3>
-                  <div className="text-sm text-red-100/90">
-                    类型：<span className="font-semibold">{item.type}</span>
-                  </div>
-                  <div className="text-sm text-red-100/90">
-                    效果：
-                    <span className="font-semibold">{renderEffect(item)}</span>
-                  </div>
-                  <div className="text-sm text-red-100/90">
-                    价格：
-                    <span className="font-semibold">
-                      {item.出售价.toFixed(0)}
-                    </span>
-                  </div>
-                </article>
-              ))}
+          <section className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl"></div>
+            <div className="relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-red-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-red-300/20">
+              <div className="flex items-center justify-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-red-400/30 rounded-full flex items-center justify-center">
+                  <span className="text-red-300 text-lg">❌</span>
+                </div>
+                <h2 className="text-xl md:text-2xl font-bold tracking-wider text-red-200 drop-shadow-lg">
+                  【未拥有】
+                </h2>
+                <div className="w-8 h-8 bg-red-400/30 rounded-full flex items-center justify-center">
+                  <span className="text-red-300 text-lg">❌</span>
+                </div>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {danyao_need.map((item, index) => (
+                  <article
+                    key={index}
+                    className="relative rounded-2xl bg-gradient-to-br from-red-900/40 to-red-700/30 p-5 shadow-xl border border-red-400/30 backdrop-blur-md"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-300 rounded-t-2xl"></div>
+                    <div className="absolute top-2 right-2 w-3 h-3 bg-red-400/50 rounded-full"></div>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-red-300 text-lg">🧪</span>
+                        <h3 className="text-lg font-bold tracking-wide text-red-100 drop-shadow">
+                          {item.name}
+                        </h3>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center space-x-2 text-white/90">
+                          <span className="text-red-300">📋</span>
+                          <span>类型：</span>
+                          <span className="font-semibold text-red-200">
+                            {item.type}
+                          </span>
+                        </div>
+                        <div className="flex items-start space-x-2 text-white/90">
+                          <span className="text-red-300 mt-0.5">⚡</span>
+                          <span>效果：</span>
+                          <span className="font-semibold text-red-200">
+                            {renderEffect(item)}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-white/90">
+                          <span className="text-amber-300">💰</span>
+                          <span>价格：</span>
+                          <span className="font-bold text-amber-300 text-lg">
+                            {item.出售价.toFixed(0)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
         )}
+
+        {/* 底部装饰 */}
+        <div className="flex justify-center space-x-4 pt-8">
+          <div className="w-16 h-1 bg-gradient-to-r from-emerald-400/50 to-transparent rounded-full"></div>
+          <div className="w-8 h-8 bg-gradient-to-br from-emerald-400/30 to-red-400/30 rounded-full flex items-center justify-center">
+            <span className="text-white/70 text-sm">🔥</span>
+          </div>
+          <div className="w-16 h-1 bg-gradient-to-l from-red-400/50 to-transparent rounded-full"></div>
+        </div>
       </main>
     </HTML>
   )

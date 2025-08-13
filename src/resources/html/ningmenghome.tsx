@@ -38,7 +38,7 @@ const Ningmenghome = ({ commodities_list }) => {
                     【{item.type}】{item.name}
                   </span>
                   <span className="text-blue-700 font-bold">
-                    {(item.出售价 * 1.2).toFixed(2)} 灵石
+                    {(item.出售价 * 1.2).toFixed(0)} 灵石
                   </span>
                 </div>
 

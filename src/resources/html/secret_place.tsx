@@ -1,7 +1,6 @@
 import React from 'react'
 import HTML from './HTML'
 import secretPlaceURL from '@src/resources/img/fairyrealm.jpg'
-import cardURL from '@src/resources/img/road.jpg'
 
 const SecretPlace = ({ didian_list }) => {
   return (
@@ -28,7 +27,7 @@ const SecretPlace = ({ didian_list }) => {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur-lg opacity-30"></div>
               <div className="relative bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl px-8 py-4 border border-blue-400/30 backdrop-blur-sm">
                 <h1 className="text-3xl font-bold text-white tracking-wider">
-                  🏔️ 秘境图鉴 🏔️
+                  🏔️ 秘境 🏔️
                 </h1>
               </div>
             </div>
@@ -44,13 +43,6 @@ const SecretPlace = ({ didian_list }) => {
               <div className="relative backdrop-blur-sm bg-white/80 rounded-3xl border border-blue-400/30 p-8 shadow-xl">
                 {/* 头部信息 */}
                 <div className="text-center mb-8">
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-600 rounded-xl flex items-center justify-center border border-blue-300/50 shadow-lg">
-                      <span className="text-2xl">🏔️</span>
-                    </div>
-                    <h2 className="text-2xl font-bold text-blue-700">秘境</h2>
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-3 border border-blue-400/30 backdrop-blur-sm">
                       <div className="text-sm text-blue-700 font-medium">
@@ -76,14 +68,7 @@ const SecretPlace = ({ didian_list }) => {
                   {didian_list?.map((item, index) => (
                     <div key={index} className="relative group">
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-600/10 rounded-2xl blur-sm"></div>
-                      <div
-                        className="relative backdrop-blur-md bg-white/90 rounded-2xl border border-blue-400/40 p-6 shadow-lg"
-                        style={{
-                          backgroundImage: `url(${cardURL})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center'
-                        }}
-                      >
+                      <div className="relative backdrop-blur-md bg-white/90 rounded-2xl border border-blue-400/40 p-6 shadow-lg">
                         {/* 秘境标题和价格 */}
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-3">

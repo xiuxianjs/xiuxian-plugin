@@ -16,5 +16,6 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "commentTranslate.targetLanguage": "zh-CN"
+  "commentTranslate.targetLanguage": "zh-CN",
+  "commentTranslate.hover.enabled": true
 }

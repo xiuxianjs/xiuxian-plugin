@@ -1,4 +1,4 @@
-import { Text, useMention, useMessage, useSend } from 'alemonjs'
+import { Image, Text, useMention, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle'
 import { sleep } from '@src/model/common'
@@ -7,6 +7,7 @@ import { data, pushInfo, redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 import { biwuPlayer } from '../biwu'
+import { screenshot } from '@src/image'
 
 // 修正正则 (去掉重复 ^)
 export const regular = /^(#|＃|\/)?切磋$/
@@ -126,7 +127,6 @@ async function battle(e: unknown, num: number) {
   const A_QQ = biwuPlayer.A_QQ
   const B_QQ = biwuPlayer.B_QQ
   const Send = useSend(evt)
-  const [message] = useMessage(evt)
   const A_player = await readPlayer(A_QQ[num].QQ)
   const B_player = await readPlayer(B_QQ[num].QQ)
   // 同化属性（策划模式）
@@ -491,12 +491,20 @@ async function battle(e: unknown, num: number) {
     B_player.暴击率 = B_init.暴击率
   }
 
-  Send(Text(history.flat().join('\n')))
-  await sleep(200)
-  if (A_player.当前血量 <= 0) {
-    message.send([Text(`${B_player.名号}win!`)])
-  } else if (B_player.当前血量 <= 0) {
-    message.send([Text(`${A_player.名号}win!`)])
+  const img = await screenshot('CombatResult', ``, {
+    msg: history.flat(),
+    playerA: A_player,
+    playerB: B_player,
+    result: A_player.当前血量 <= 0 ? 'B' : B_player.当前血量 <= 0 ? 'A' : 'draw'
+  })
+  if (Buffer.isBuffer(img)) {
+    Send(Image(img))
+  } else {
+    Send(
+      Text(
+        A_player.当前血量 <= 0 ? `${B_player.名号}win!` : `${A_player.名号}win!`
+      )
+    )
   }
 
   // 清理（记录原 QQ 供删除 redis 用）
