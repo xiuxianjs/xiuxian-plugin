@@ -41,9 +41,9 @@ interface ShopSlotLike {
   name: string
   state?: number
   Grade?: number
-  one?[]
-  two?[]
-  three?[]
+  one?: any[]
+  two?: any[]
+  three?: any[]
 }
 
 scheduleJob('0 0/5 * * * ?', async () => {

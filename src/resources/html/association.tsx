@@ -8,7 +8,7 @@ interface AssociationData {
   宗门名称?: string
   宗门等级?: number | string
   灵石池?: number | string
-  所有成员?[]
+  所有成员?: string[]
   大阵血量?: number | string
   宗门建设等级?: number | string
   宗门神兽?: string
