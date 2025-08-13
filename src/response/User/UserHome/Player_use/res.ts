@@ -25,11 +25,10 @@ import {
   writePlayer
 } from '@src/model/xiuxian_impl'
 import { readDanyao, writeDanyao, readAll } from '@src/model/danyao'
-import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 
 import { selects } from '@src/response/index'
 import { getQquipmentImage } from '@src/model/image'
-import type { DanyaoItem, NajieCategory } from '@src/types/model'
+import type { NajieCategory } from '@src/types/model'
 import type { TalentInfo } from '@src/types/player'
 
 // 优化：仅匹配指令 + 至少一个非空字符
@@ -155,41 +154,10 @@ export default onResponse(selects, async e => {
   if (func[0] == '服用') {
     if (thingClass !== '丹药') return
     // 读取丹药列表并做最终防御：确保为数组
-    let dyArray = await readDanyao(usr_qq)
-    if (!Array.isArray(dyArray)) dyArray = []
-    const dy = mapDanyaoArrayToStatus(dyArray)
+    const dy = await readDanyao(usr_qq)
     const tType = thingType(thing_exist)
     const numOr = (k: string) =>
       toNumber((thing_exist as Record<string, unknown>)[k])
-    const writeDy = () => {
-      // 旧结构: 使用第一项聚合; 若没有则创建
-      let first: DanyaoItem | undefined = dyArray[0]
-      if (!first) {
-        first = {
-          biguan: dy.biguan,
-          biguanxl: dy.biguanxl,
-          xingyun: dy.xingyun,
-          lianti: dy.lianti,
-          ped: dy.ped,
-          modao: dy.modao,
-          beiyong1: dy.beiyong1,
-          beiyong2: dy.beiyong2,
-          beiyong3: dy.beiyong3,
-          beiyong4: dy.beiyong4,
-          beiyong5: dy.beiyong5,
-          count: 1,
-          name: '聚合丹药',
-          class: '内部',
-          type: '聚合'
-        } as unknown as DanyaoItem
-        // 再次确保 dyArray 可 push
-        if (!Array.isArray(dyArray)) dyArray = []
-        dyArray.push(first)
-      } else {
-        Object.assign(first, dy)
-      }
-      return writeDanyao(usr_qq, dyArray)
-    }
 
     if (tType === '血量') {
       const nowPlayer = await readPlayer(usr_qq)
@@ -249,7 +217,7 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDy()
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (tType === '仙缘') {
@@ -263,7 +231,7 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDy()
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (tType === '凝仙') {
@@ -276,7 +244,7 @@ export default onResponse(selects, async e => {
         format(Text(`丹韵入体,身体内蕴含的仙丹药效增加了${addTimes}次`))
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDy()
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (tType === '炼神') {
@@ -289,7 +257,7 @@ export default onResponse(selects, async e => {
           )
         )
       )
-      await writeDy()
+      await writeDanyao(usr_qq, dy)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
@@ -303,7 +271,7 @@ export default onResponse(selects, async e => {
           )
         )
       )
-      await writeDy()
+      await writeDanyao(usr_qq, dy)
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
       return
     }
@@ -366,7 +334,7 @@ export default onResponse(selects, async e => {
         )
       )
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity)
-      await writeDy()
+      await writeDanyao(usr_qq, dy)
       return
     }
     if (tType === '魔道值') {

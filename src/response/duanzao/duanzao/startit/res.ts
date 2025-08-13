@@ -62,32 +62,14 @@ export default onResponse(selects, async e => {
         action_time,
         {}
       )
-      const rawDy = await readDanyao(user_qq)
-      interface LuckBuffLike {
-        xingyun?: number
-        beiyong5?: number
-      }
-      let needWrite = false
-      // 兼容：遍历数组里包含 xingyun/beiyong5 字段的条目
-      let xingyunAfter = -1
-      for (const it of rawDy) {
-        const ref = it as unknown as LuckBuffLike
-        if (typeof ref.xingyun === 'number' && ref.xingyun >= 1) {
-          ref.xingyun--
-          xingyunAfter = ref.xingyun
-          needWrite = true
+      const dy = await readDanyao(user_qq)
+      if (dy.xingyun >= 1) {
+        dy.xingyun--
+        if (dy.xingyun == 0) {
+          dy.beiyong5 = 0
         }
       }
-      if (xingyunAfter === 0) {
-        for (const it of rawDy) {
-          const ref = it as unknown as LuckBuffLike
-          if (typeof ref.beiyong5 === 'number' && ref.beiyong5 > 0) {
-            ref.beiyong5 = 0
-            needWrite = true
-          }
-        }
-      }
-      if (needWrite) await writeDanyao(user_qq, rawDy)
+      await writeDanyao(user_qq, dy)
       await setValue(userKey(user_qq, 'action10'), arr)
       Send(Text(`现在开始锻造武器,最少需锻造30分钟,高级装备需要更多温养时间`))
       return false

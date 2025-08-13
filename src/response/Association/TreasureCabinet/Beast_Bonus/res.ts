@@ -1,15 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
-import {
-  notUndAndNull,
-  shijianc,
-  readDanyao,
-  writeDanyao,
-  addNajieThing
-} from '@src/model/index'
+import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
 import type { AssociationDetailData, Player } from '@src/types'
-import type { DanyaoItem } from '@src/types/model'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?神兽赐福$/
@@ -57,19 +50,6 @@ function toNamedList(arr: unknown): NamedClassItem[] {
     .filter(v => v !== undefined) as NamedClassItem[]
 }
 
-// 从丹药列表中聚合旧字段逻辑 (示例: 以 name 匹配特殊药材影响概率)
-function extractBlessProb(list: DanyaoItem[]): { bonus: number } {
-  let bonus = 0
-  for (const item of list) {
-    if (item.name === '赐福之花' && item.count > 0) {
-      bonus += 0.05 * item.count
-      // 消耗 1 件
-      if (item.count > 1) item.count -= 1
-    }
-  }
-  return { bonus }
-}
-
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
@@ -110,12 +90,7 @@ export default onResponse(selects, async e => {
 
   await redis.set(`xiuxian@1.3.0:${usr_qq}:getLastsign_Bonus`, String(nowTime))
 
-  let random = Math.random()
-  const dyList = await readDanyao(usr_qq)
-  const { bonus } = extractBlessProb(dyList)
-  random += bonus
-  await writeDanyao(usr_qq, dyList)
-
+  const random = Math.random()
   if (random <= 0.7) {
     Send(Text(`${ass.宗门神兽}闭上了眼睛，表示今天不想理你`))
     return false

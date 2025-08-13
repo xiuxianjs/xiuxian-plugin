@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
 import { readDanyao, readPlayer, existplayer } from '@src/model/index'
-import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?我的药效$/
@@ -12,13 +11,14 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) {
     return false
   }
-  const dyArray = await readDanyao(usr_qq)
-  const dy = mapDanyaoArrayToStatus(dyArray)
+  const dy = await readDanyao(usr_qq)
   const player = await readPlayer(usr_qq)
   if (!player) {
     Send(Text('玩家数据读取失败'))
     return false
   }
+  console.log(dy)
+
   const parts: string[] = ['丹药效果:']
   if (dy.ped > 0)
     parts.push(`仙缘丹药力${(dy.beiyong1 * 100).toFixed(0)}%药效${dy.ped}次`)

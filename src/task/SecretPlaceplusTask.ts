@@ -14,7 +14,6 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { Player, CoreNajieCategory as NajieCategory } from '@src/types'
 // import type { Player } from '@src/types/player'
 // import type { NajieCategory } from '@src/types/model'
-import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 
 // === 本文件局部类型声明，避免 any ===
 interface SecretPlaceItem {
@@ -224,15 +223,14 @@ scheduleJob('0 0/5 * * * ?', async () => {
           last_msg += `${m}不巧撞见[${B_player.名号}],经过一番战斗,击败对手,获得修为${xiuwei},气血${qixue},剩余血量${A_player.当前血量 + Data_battle.A_xue},剩余次数${(action.cishu || 0) - 1}`
           const random = Math.random()
           let newrandom = 0.995
-          const dyRaw = await readDanyao(player_id)
-          const dy = mapDanyaoArrayToStatus(dyRaw)
+          const dy = await readDanyao(player_id)
           newrandom -= Number(dy.beiyong1 || 0)
           if (dy.ped > 0) dy.ped--
           else {
             dy.beiyong1 = 0
             dy.ped = 0
           }
-          await writeDanyao(player_id, dyRaw as unknown as [])
+          await writeDanyao(player_id, dy)
           if (random > newrandom) {
             const length = data.xianchonkouliang.length
             if (length > 0) {

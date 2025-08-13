@@ -55,7 +55,7 @@ export async function playerEfficiency(userId: string): Promise<null> {
     xianchong_efficiency = player.仙宠.加成 // 存在修炼仙宠，仙宠效率为仙宠效率加成
   }
   const dy = await readDanyao(usr_qq)
-  const bgdan = dy['biguanxl'] || 0
+  const bgdan = dy.biguanxl || 0
 
   player.修炼效率提升 =
     linggen_efficiency +

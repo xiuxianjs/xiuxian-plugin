@@ -16,7 +16,6 @@ import type {
   ActionState
 } from '@src/types'
 import { writePlayer } from '@src/model/xiuxian'
-import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 // NajieCategory 断言工具
 const NAJIE_CATEGORIES: readonly NajieCategory[] = [
   '装备',
@@ -225,8 +224,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
             }`
             const random = Math.random() //万分之一出神迹
             let newrandom = 0.995
-            const dyRaw = await readDanyao(player_id)
-            const dy = mapDanyaoArrayToStatus(dyRaw)
+            const dy = await readDanyao(player_id)
             newrandom -= Number(dy.beiyong1 || 0)
             if (dy.ped > 0) {
               dy.ped--
@@ -235,10 +233,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
               dy.ped = 0
             }
             // 旧逻辑写回：无法直接存储状态对象，只能原样写回列表（保持兼容）
-            await writeDanyao(
-              player_id,
-              (Array.isArray(dyRaw) ? dyRaw : []) as unknown as []
-            )
+            await writeDanyao(player_id, dy)
             if (random > newrandom) {
               const length = data.xianchonkouliang.length
               if (length > 0) {

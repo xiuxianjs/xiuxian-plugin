@@ -12,7 +12,6 @@ import {
   setFileValue
 } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
-import { mapDanyaoArrayToStatus } from '@src/model/utils/danyao'
 
 import { selects } from '@src/response/index'
 import { DataMention, Mention } from 'alemonjs'
@@ -117,8 +116,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   //炼丹师丹药修正
   let transformation = '修为'
   let xueqi = 0
-  const dyRaw = await readDanyao(usr_qq)
-  const dy = mapDanyaoArrayToStatus(dyRaw)
+  const dy = await readDanyao(usr_qq)
   if (dy.biguan > 0) {
     dy.biguan--
     if (dy.biguan == 0) {

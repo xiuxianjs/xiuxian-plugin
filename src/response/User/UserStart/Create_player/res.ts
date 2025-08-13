@@ -116,7 +116,7 @@ export default onResponse(selects, async e => {
   }
   await Write_najie(usr_qq, new_najie)
   await addHP(usr_qq, 999999)
-  const danyaoInit: Record<string, number> = {
+  const danyaoInit = {
     biguan: 0,
     biguanxl: 0,
     xingyun: 0,
@@ -129,10 +129,7 @@ export default onResponse(selects, async e => {
     beiyong4: 0,
     beiyong5: 0
   }
-  await writeDanyao(
-    usr_qq,
-    danyaoInit as unknown as Parameters<typeof writeDanyao>[1]
-  )
+  await writeDanyao(usr_qq, danyaoInit)
   const img = await getPlayerImage(e as Parameters<typeof getPlayerImage>[0])
   if (Buffer.isBuffer(img)) {
     Send(Image(img))

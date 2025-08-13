@@ -8,7 +8,6 @@ import {
   foundthing,
   existNajieThing,
   readMytripod,
-  readDanyao,
   readTripod,
   writeDuanlu,
   addNajieThing
@@ -70,18 +69,7 @@ export default onResponse(selects, async e => {
   for (const item in tripod.数量) {
     num += Number(tripod.数量[item])
   }
-  let dyew = 0
-  // 兼容：遍历丹药数组查找附加容量 buff (beiyong5)
-  const dyList = await readDanyao(user_qq)
-  for (const d of dyList) {
-    const extra = (d as unknown as { beiyong5?: number }).beiyong5
-    if (typeof extra === 'number' && extra > 0) {
-      dyew = extra
-      break
-    }
-  }
   const shengyu =
-    dyew +
     tripod.容纳量 +
     num1 +
     Math.floor(player.occupation_level / 2) -
@@ -89,7 +77,7 @@ export default onResponse(selects, async e => {
     Number(thing_acount)
   if (
     num + Number(thing_acount) >
-    tripod.容纳量 + dyew + num1 + Math.floor(player.occupation_level / 2)
+    tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2)
   ) {
     Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`))
     return false
