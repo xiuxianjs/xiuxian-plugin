@@ -215,11 +215,11 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
   ]
 
   return (
-    <HTML
-      className="min-h-screen w-full bg-cover bg-fixed bg-center text-center p-4 md:p-8 space-y-8"
-      style={{ backgroundImage: `url(${stateURL})` }}
-    >
-      <main className="max-w-7xl mx-auto space-y-10">
+    <HTML>
+      <div
+        className=" w-full bg-cover bg-center text-center p-4 md:p-8 space-y-8"
+        style={{ backgroundImage: `url(${stateURL})` }}
+      >
         {/* 头部区域 */}
         <header className="relative text-center space-y-6">
           {/* 标题区域 */}
@@ -229,22 +229,23 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
             </h1>
           </div>
         </header>
-
-        {/* 设置内容区域 */}
-        <div className="flex flex-col gap-10">
-          {settingSections.map((section, sectionIndex) => (
-            <SettingSection key={sectionIndex} title={section.title}>
-              {section.settings.map((setting, index) => (
-                <SettingItem
-                  key={index}
-                  label={setting.label}
-                  value={setting.value}
-                  unit={setting.unit}
-                />
-              ))}
-            </SettingSection>
-          ))}
-        </div>
+        <main className="max-w-7xl mx-auto space-y-10">
+          {/* 设置内容区域 */}
+          <div className="flex flex-col gap-10">
+            {settingSections.map((section, sectionIndex) => (
+              <SettingSection key={sectionIndex} title={section.title}>
+                {section.settings.map((setting, index) => (
+                  <SettingItem
+                    key={index}
+                    label={setting.label}
+                    value={setting.value}
+                    unit={setting.unit}
+                  />
+                ))}
+              </SettingSection>
+            ))}
+          </div>
+        </main>
 
         {/* 底部装饰 */}
         <footer className="text-center py-8">
@@ -254,7 +255,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
             </span>
           </div>
         </footer>
-      </main>
+      </div>
     </HTML>
   )
 }

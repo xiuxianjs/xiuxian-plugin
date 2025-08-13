@@ -241,8 +241,20 @@ export default onResponse(selects, async e => {
     Send(Text(last_msg.join('\n')))
     const img = await screenshot('CombatResult', ``, {
       msg: msg,
-      playerA: A_player,
-      playerB: B_player,
+      playerA: {
+        id: A_player.qq,
+        name: A_player.名号,
+        power: A_player.攻击,
+        hp: A_player.当前血量,
+        maxHp: A_player.血量上限
+      },
+      playerB: {
+        id: B_player.qq,
+        name: B_player.名号,
+        power: B_player.攻击,
+        hp: B_player.当前血量,
+        maxHp: B_player.血量上限
+      },
       result: msg.includes(A_win) ? 'A' : msg.includes(B_win) ? 'B' : 'draw'
     })
     if (Buffer.isBuffer(img)) {
@@ -273,8 +285,20 @@ export default onResponse(selects, async e => {
     Send(Text(last_msg.join('\n')))
     const img = await screenshot('CombatResult', ``, {
       msg: msg,
-      playerA: A_player,
-      playerB: B_player,
+      playerA: {
+        id: A_player.qq,
+        name: A_player.名号,
+        power: A_player.攻击,
+        hp: A_player.当前血量,
+        maxHp: A_player.血量上限
+      },
+      playerB: {
+        id: B_player.qq,
+        name: B_player.名号,
+        power: B_player.攻击,
+        hp: B_player.当前血量,
+        maxHp: B_player.血量上限
+      },
       result: msg.includes(A_win) ? 'A' : msg.includes(B_win) ? 'B' : 'draw'
     })
     if (Buffer.isBuffer(img)) {

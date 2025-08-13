@@ -44,16 +44,16 @@ const CombatResult = ({
       {/* 主容器 */}
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* 标题区域 */}
-        <div className="mb-8">
-          <div className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-sm border border-amber-400/30 rounded-full shadow-2xl">
-            <div className="w-6 h-6 mr-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+        <div className="mb-6">
+          <div className="gap-2 inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-sm border border-amber-400/30 rounded-full shadow-2xl">
+            <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-bold">⚔</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
               修仙对决
             </h1>
             {/* 胜负结果 */}
-            <div className="mt-4">
+            <div>
               {result === 'A' && (
                 <div className="inline-flex items-center px-6 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm border border-green-400/30 rounded-full">
                   <span className="text-green-400 text-lg mr-2">🏆</span>
@@ -83,17 +83,16 @@ const CombatResult = ({
         </div>
 
         {/* 战斗结果主区域 */}
-        <div className="bg-gradient-to-br from-slate-800/80 via-purple-800/60 to-slate-800/80 backdrop-blur-md border border-purple-400/30 rounded-2xl shadow-2xl p-6 md:p-8 mb-8">
+        <div className="bg-gradient-to-br from-slate-800/80 via-purple-800/60 to-slate-800/80 backdrop-blur-md border border-purple-400/30 rounded-2xl shadow-2xl p-4">
           <div className="relative">
             {/* 装饰性边框 */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-transparent to-purple-500/20 rounded-2xl"></div>
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent"></div>
 
             {/* 战斗双方区域 */}
             <div className="relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              <div className="flex gap-4 mb-6">
                 {/* 战斗方A */}
-                <div className="bg-gradient-to-br from-blue-900/60 to-cyan-800/40 backdrop-blur-sm border border-blue-400/30 rounded-xl p-6 shadow-lg relative overflow-hidden">
+                <div className="flex-1 bg-gradient-to-br from-blue-900/60 to-cyan-800/40 backdrop-blur-sm border border-blue-400/30 rounded-xl p-6 shadow-lg relative overflow-hidden">
                   {/* 装饰性光效 */}
                   <div className="absolute top-0 right-0 w-20 h-20 bg-blue-400/10 rounded-full blur-xl"></div>
 
@@ -168,7 +167,11 @@ const CombatResult = ({
                       }`}
                     >
                       <span className="text-white text-2xl font-bold">
-                        {result === 'A' ? 'A胜' : result === 'B' ? 'B胜' : 'VS'}
+                        {result === 'A'
+                          ? '战胜'
+                          : result === 'B'
+                            ? '战败'
+                            : 'VS'}
                       </span>
                     </div>
                     <div
@@ -184,7 +187,7 @@ const CombatResult = ({
                 </div>
 
                 {/* 战斗方B */}
-                <div className="bg-gradient-to-br from-red-900/60 to-pink-800/40 backdrop-blur-sm border border-red-400/30 rounded-xl p-6 shadow-lg relative overflow-hidden">
+                <div className="flex-1 bg-gradient-to-br from-red-900/60 to-pink-800/40 backdrop-blur-sm border border-red-400/30 rounded-xl p-6 shadow-lg relative overflow-hidden">
                   {/* 装饰性光效 */}
                   <div className="absolute top-0 left-0 w-20 h-20 bg-red-400/10 rounded-full blur-xl"></div>
 

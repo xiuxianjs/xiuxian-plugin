@@ -69,8 +69,11 @@ import adminset from './views/adminset.json'
 import Adminset from '@src/resources/html/adminset'
 import temp from './views/temp.json'
 import Temp from '@src/resources/html/temp'
+import combatResult from './views/CombatResult.json'
+import CombatResult from '@src/resources/html/CombatResult'
 export default defineConfig({
   routes: {
+    '/combatResult': { component: <CombatResult {...combatResult} /> },
     '/temp': { component: <Temp temp={temp} /> },
     '/adminset': { component: <Adminset {...adminset} /> },
     '/association': { component: <Association {...association} /> },

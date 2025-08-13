@@ -61,7 +61,7 @@ const Tuzhi = ({ tuzhi_list }) => {
       <div className="h-8 w-full"></div>
 
       {/* 标题区域 - 炼器图纸牌匾 */}
-      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center px-5 mb-8">
+      <div className="relative z-10 w-full max-w-xl flex flex-col items-center px-5 mb-8">
         <div className="relative w-full">
           {/* 牌匾装饰 */}
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-20 h-2 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full shadow-lg"></div>
@@ -109,11 +109,11 @@ const Tuzhi = ({ tuzhi_list }) => {
       </div>
 
       {/* 图纸列表 */}
-      <div className="relative z-10 w-full max-w-5xl flex flex-col items-center px-5 gap-6">
+      <div className="relative z-10 w-full max-w-5xl min-w-xl flex flex-col items-center px-5 gap-6">
         {tuzhi_list?.map((item, index) => (
           <div
             key={index}
-            className="relative backdrop-blur-xl shadow-xl border-2 p-6 rounded-2xl border-blue-400/40 bg-gradient-to-r from-white/80 to-white/60 shadow-blue-500/20"
+            className="relative min-w-[34rem] backdrop-blur-xl shadow-xl border-2 p-6 rounded-2xl border-blue-400/40 bg-gradient-to-r from-white/80 to-white/60 shadow-blue-500/20"
           >
             {/* 装饰边框 */}
             <div className="absolute top-0 left-0 w-6 h-1 bg-gradient-to-r from-blue-400/40 to-transparent"></div>

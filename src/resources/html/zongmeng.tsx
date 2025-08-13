@@ -24,12 +24,12 @@ interface ZongMengItem {
 const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
   const data = temp || []
   return (
-    <HTML>
+    <HTML
+      className="w-full text-white/90 p-6 bg-center bg-cover font-serif"
+      style={{ backgroundImage: `url(${celestialSectsURL})` }}
+    >
       {/* 整体背景与布局 */}
-      <div
-        className=" w-full text-white/90 p-4 md:p-8 bg-center bg-cover font-serif"
-        style={{ backgroundImage: `url(${celestialSectsURL})` }}
-      >
+      <div className="bg-white bg-opacity-30 p-2 rounded-md backdrop-blur-sm">
         <main className="max-w-6xl mx-auto space-y-8">
           {/* 顶栏标题 - 如同天宫牌匾 */}
           <header className="flex flex-col items-center text-center">
@@ -39,7 +39,7 @@ const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
             >
               仙门百家
             </h1>
-            <p className="mt-2 text-base text-sky-200/80">
+            <p className="mt-2 text-base text-sky-800/80">
               于此方天地，寻觅汝之道途
             </p>
           </header>
