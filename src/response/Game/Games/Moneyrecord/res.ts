@@ -16,7 +16,7 @@ export default onResponse(selects, async e => {
   }
   const player_data = player_raw as Record<string, unknown>
 
-  const toNum = (v: unknown): number => {
+  const toNum = (v): number => {
     const n = Number(v)
     return Number.isFinite(n) ? n : 0
   }

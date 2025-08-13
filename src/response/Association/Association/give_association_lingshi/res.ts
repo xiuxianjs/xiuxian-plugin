@@ -15,7 +15,7 @@ interface GuildInfo {
   职位: string
   lingshi_donate?: number
 }
-function isGuildInfo(v: unknown): v is GuildInfo {
+function isGuildInfo(v): v is GuildInfo {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 function serializePlayer(p: Player): Record<string, JSONValue> {

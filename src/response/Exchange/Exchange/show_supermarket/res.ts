@@ -18,7 +18,7 @@ const VALID: ReadonlyArray<NajieCategory> = [
   '材料'
 ]
 const CD_MS = 10 * 1000
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

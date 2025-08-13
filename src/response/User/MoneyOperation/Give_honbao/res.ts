@@ -6,7 +6,7 @@ import { existplayer, Go, convert2integer, addCoin } from '@src/model/index'
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?发红包.*$/
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

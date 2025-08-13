@@ -19,7 +19,7 @@ export interface AuctionThing {
   name: string
   class: string
   pinji?: string | number
-  [k: string]: unknown
+  [k: string]
 }
 /** 拍卖运行期缓存结构（Redis: xiuxian:AuctionofficialTask） */
 export interface AuctionSession {
@@ -29,7 +29,7 @@ export interface AuctionSession {
   last_price: number // 当前最高价
   last_offer_price: number // 最后一笔出价发生的时间戳（命名沿用旧字段）
   groupList: GroupId[] // 需要广播的群
-  [k: string]: unknown
+  [k: string]
 }
 
 export type NajieCategory =
@@ -51,14 +51,14 @@ export interface ExchangeEntry {
     name: string
     class: NajieCategory
     pinji?: string
-    [k: string]: unknown
+    [k: string]
   }
 }
 export interface ForumEntry {
   now_time: Timestamp
   qq: string
   whole: number // 灵石数量
-  [k: string]: unknown
+  [k: string]
 }
 
 /****************************** 洗劫 / 逃跑 流程 (Xijietask / Taopaotask) ******************************/
@@ -124,7 +124,7 @@ export interface TempMessage {
   qq_group?: string
   /** 个人 QQ（早期结构保留） */
   qq?: string | number
-  [k: string]: unknown
+  [k: string]
 }
 
 /****************************** 商店动态 (Taopaotask / Shoptask / ShopGradetask) ******************************/
@@ -146,13 +146,13 @@ export interface TiandibangRow {
   暴击率: number
   灵根: TalentInfo | Record<string, unknown>
   法球倍率?: number | string
-  学习的功法: unknown
+  学习的功法
   魔道值: number
   神石: number
   qq: string
   次数: number
   积分: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface TiandibangRankEntry extends TiandibangRow {
@@ -191,14 +191,14 @@ export interface WorldBossStatus {
   /** -1 表示尚未被击杀，其它为击杀时间戳 */
   KilledTime: number
   Reward: number // 击杀奖励结算基数
-  [k: string]: unknown
+  [k: string]
 }
 /** Boss 伤害排行临时记录结构 */
 export interface WorldBossPlayerRecord {
   QQ: Array<string | number>
   TotalDamage: number[]
   Name: string[]
-  [k: string]: unknown
+  [k: string]
 }
 
 /****************************** 商店日常 (ShopGradetask / Shoptask) ******************************/
@@ -208,17 +208,17 @@ export interface ShopMutableSlot {
   Grade?: number
   state?: number
   price?: number
-  one?: Array<{ name: string; 数量: number; [k: string]: unknown }>
-  two?: Array<{ name: string; 数量: number; [k: string]: unknown }>
-  three?: Array<{ name: string; 数量: number; [k: string]: unknown }>
-  [k: string]: unknown
+  one?: Array<{ name: string; 数量: number; [k: string] }>
+  two?: Array<{ name: string; 数量: number; [k: string] }>
+  three?: Array<{ name: string; 数量: number; [k: string] }>
+  [k: string]
 }
 
 /****************************** 备份任务 (BackUptask) ******************************/
 /** 占位：未来若有备份元数据可在此扩展 */
 export interface BackupTaskMeta {
   lastRun?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 /****************************** 汇总联合类型（如需在外部做窄化） ******************************/
@@ -231,7 +231,7 @@ export type AnyTaskActionState =
   | ActionState // 兜底
 
 /****************************** Type Guard 辅助 ******************************/
-export function isRaidActionState(a: unknown): a is RaidActionState {
+export function isRaidActionState(a): a is RaidActionState {
   return (
     !!a &&
     typeof a === 'object' &&
@@ -239,23 +239,19 @@ export function isRaidActionState(a: unknown): a is RaidActionState {
     'end_time' in (a as Record<string, unknown>)
   )
 }
-export function isExploreActionState(a: unknown): a is ExploreActionState {
+export function isExploreActionState(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'mojie' in a
 }
-export function isSecretPlaceActionState(
-  a: unknown
-): a is SecretPlaceActionState {
+export function isSecretPlaceActionState(a): a is SecretPlaceActionState {
   return (
     !!a &&
     typeof a === 'object' &&
     ('Place_action' in a || 'Place_actionplus' in a)
   )
 }
-export function isOccupationActionState(
-  a: unknown
-): a is OccupationActionState {
+export function isOccupationActionState(a): a is OccupationActionState {
   return !!a && typeof a === 'object' && ('plant' in a || 'mine' in a)
 }
-export function isControlActionState(a: unknown): a is ControlActionState {
+export function isControlActionState(a): a is ControlActionState {
   return !!a && typeof a === 'object' && 'acount' in a
 }

@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
         | (Player & PlayerData)
         | null
       if (!player) continue
-      const guild = player.宗门 as unknown
+      const guild = player.宗门
       if (
         guild &&
         typeof guild === 'object' &&

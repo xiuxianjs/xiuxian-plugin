@@ -162,14 +162,14 @@ export async function setFileValue(
   ;(player as Record<string, unknown>)[type] = new_num
   // DataControl.setData 在 XiuxianData 上被继承；使用可选链防御
   const maybe = data as {
-    setData?: (k: string, id: string, v: unknown) => void
+    setData?: (k: string, id: string, v) => void
   }
   if (typeof maybe.setData === 'function') {
     maybe.setData('player', user_qq, player)
   }
 }
 
-export type FoundThing = { name: string; [k: string]: unknown }
+export type FoundThing = { name: string; [k: string] }
 export async function foundthing(
   thing_name: string
 ): Promise<FoundThing | false> {
@@ -187,15 +187,15 @@ export async function foundthing(
     'xianchonkouliang',
     'duanzhaocailiao'
   ] as const
-  const hasName = (obj: unknown): obj is FoundThing =>
+  const hasName = (obj): obj is FoundThing =>
     typeof obj === 'object' && obj !== null && 'name' in obj
   for (const key of primaryGroups) {
-    const arr = (data as unknown as Record<string, unknown>)[key]
+    const arr = (data as Record<string, unknown>)[key]
     if (Array.isArray(arr)) {
       for (const j of arr) if (hasName(j) && j.name === thing_name) return j
     }
   }
-  let customList: unknown
+  let customList
   try {
     customList = await readItTyped()
   } catch {
@@ -214,7 +214,7 @@ export async function foundthing(
     'zalei'
   ] as const
   for (const key of secondaryGroups) {
-    const arr = (data as unknown as Record<string, unknown>)[key]
+    const arr = (data as Record<string, unknown>)[key]
     if (Array.isArray(arr)) {
       for (const j of arr) if (hasName(j) && j.name === simplifiedName) return j
     }

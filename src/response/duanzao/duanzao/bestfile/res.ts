@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
 
   let wupin: CustomEquipRecordWithOwner[] = []
   try {
-    wupin = (await readItTyped()) as unknown as CustomEquipRecordWithOwner[]
+    wupin = (await readItTyped()) as CustomEquipRecordWithOwner[]
   } catch {
     await writeIt([])
     wupin = []
@@ -97,9 +97,9 @@ export default onResponse(selects, async e => {
           武器?: { name?: string } | null
           护具?: { name?: string } | null
           法宝?: { name?: string } | null
-          [k: string]: unknown
+          [k: string]
         }
-        const equ = (await readEquipment(qq)) as unknown as EquipSlots
+        const equ = (await readEquipment(qq)) as EquipSlots
         if (!najie || !equ) continue
         let found: { name?: string } | undefined = najie.装备.find(
           it => it.name === rec.name
@@ -132,10 +132,7 @@ export default onResponse(selects, async e => {
         break
       }
     }
-    const plain = wupin.map(r => ({ ...r })) as unknown as Record<
-      string,
-      unknown
-    >[]
+    const plain = wupin.map(r => ({ ...r })) as Record<string, unknown>[]
     await writeIt(plain)
     await redis.set(CACHE_KEY_LIST, JSON.stringify(result))
   } else {

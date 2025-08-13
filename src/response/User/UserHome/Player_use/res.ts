@@ -44,15 +44,15 @@ const PINJI_MAP: Record<string, number> = {
   绝: 5,
   顶: 6
 }
-const parsePinji = (raw: unknown): number | undefined => {
+const parsePinji = (raw): number | undefined => {
   if (typeof raw !== 'string' || raw === '') return undefined
   if (raw in PINJI_MAP) return PINJI_MAP[raw]
   const n = Number(raw)
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined
 }
 
-const toNumber = (v: unknown, def = 0) => (typeof v === 'number' ? v : def)
-const thingType = (obj: unknown): string | undefined =>
+const toNumber = (v, def = 0) => (typeof v === 'number' ? v : def)
+const thingType = (obj): string | undefined =>
   obj && typeof obj === 'object' && 'type' in obj
     ? (obj as { type?: string }).type
     : undefined
@@ -135,7 +135,7 @@ export default onResponse(selects, async e => {
     }
     await insteadEquipment(
       usr_qq,
-      equ as unknown as import('@src/types/model').EquipmentLike
+      equ as import('@src/types/model').EquipmentLike
     )
     const img = await getQquipmentImage(
       e as Parameters<typeof getQquipmentImage>[0]

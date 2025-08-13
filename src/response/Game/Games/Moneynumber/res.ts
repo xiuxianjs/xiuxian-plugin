@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const toInt = (v: unknown, d = 0) => {
+  const toInt = (v, d = 0) => {
     const n = Number(v)
     return Number.isFinite(n) ? n : d
   }

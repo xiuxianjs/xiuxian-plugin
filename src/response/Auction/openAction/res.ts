@@ -7,7 +7,7 @@ import type { ExchangeRecord } from '@src/types'
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启星阁体系$/
 
-function isExchangeRecord(v: unknown): v is ExchangeRecord {
+function isExchangeRecord(v): v is ExchangeRecord {
   return !!v && typeof v === 'object' && 'thing' in v && 'start_price' in v
 }
 

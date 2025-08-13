@@ -19,7 +19,7 @@ import { getDataByUserId } from '@src/model/Redis'
 interface PlayerActionState {
   action: string
   end_time: number
-  [k: string]: unknown
+  [k: string]
 }
 export const regular = /^(#|＃|\/)?登仙$/
 

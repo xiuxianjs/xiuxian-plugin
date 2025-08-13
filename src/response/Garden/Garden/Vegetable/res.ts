@@ -31,14 +31,14 @@ interface AssociationLike extends AssociationData {
   宗门名称: string
 }
 
-function isAssociationLike(v: unknown): v is AssociationLike {
+function isAssociationLike(v): v is AssociationLike {
   return !!v && typeof v === 'object' && '宗门名称' in v
 }
 
 function cap(n: number, max: number) {
   return n > max ? max : n
 }
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
@@ -58,7 +58,7 @@ export default onResponse(selects, async e => {
   const guildName = player?.宗门?.宗门名称
   if (!guildName) return false
 
-  let ass = (await data.getAssociation(guildName)) as unknown as GuildData
+  let ass = (await data.getAssociation(guildName)) as GuildData
   const garden = ass.药园
   const guildLevel = toInt(ass.宗门等级, 1)
 
@@ -69,7 +69,7 @@ export default onResponse(selects, async e => {
   ) {
     await createGarden(guildName, usr_qq, guildLevel)
     Send(Text('新建药园，种下了一棵草'))
-    ass = (await data.getAssociation(guildName)) as unknown as GuildData
+    ass = (await data.getAssociation(guildName)) as GuildData
   }
 
   const finalGarden = ass.药园 || { 药园等级: 1, 作物: [] }

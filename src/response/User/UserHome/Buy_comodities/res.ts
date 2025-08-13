@@ -19,7 +19,7 @@ interface Commodity {
   出售价: number
   class: NajieCategory | string
 }
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

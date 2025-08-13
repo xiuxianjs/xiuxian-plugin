@@ -18,7 +18,7 @@ interface EquipItem {
   atk: number
   def: number
   HP: number
-  [k: string]: unknown
+  [k: string]
 }
 interface NajieEquipBag {
   装备?: EquipItem[]
@@ -43,15 +43,15 @@ interface EquipmentLikeArg {
   class: string | number
 }
 
-function num(v: unknown, d = 0) {
+function num(v, d = 0) {
   return typeof v === 'number' && Number.isFinite(v) ? v : d
 }
 
-function extractStage(obj: unknown): BaseStage | null {
+function extractStage(obj): BaseStage | null {
   if (!obj || typeof obj !== 'object') return null
   const r = obj as Record<string, unknown>
   if ('基础攻击' in r || '基础防御' in r || '基础血量' in r)
-    return r as unknown as BaseStage
+    return r as BaseStage
   return null
 }
 
@@ -59,12 +59,10 @@ function calcBaseThree(
   player: Record<string, unknown>
 ): [number, number, number] | null {
   const levelObj = data.Level_list.find(
-    (i: unknown) =>
-      (i as Record<string, unknown>)?.['level_id'] === player['level_id']
+    i => (i as Record<string, unknown>)?.['level_id'] === player['level_id']
   )
   const phyObj = data.LevelMax_list.find(
-    (i: unknown) =>
-      (i as Record<string, unknown>)?.['level_id'] === player['Physique_id']
+    i => (i as Record<string, unknown>)?.['level_id'] === player['Physique_id']
   )
   const level = extractStage(levelObj)
   const phy = extractStage(phyObj)
@@ -93,7 +91,7 @@ function toEquipLike(item: EquipItem, cls: string | number): EquipmentLikeArg {
   }
 }
 
-function normalizeClass(v: unknown): string | number {
+function normalizeClass(v): string | number {
   if (typeof v === 'string' || typeof v === 'number') return v
   return String(v ?? '')
 }
@@ -104,10 +102,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) return false
 
   const najie = (await data.getData('najie', usr_qq)) as NajieEquipBag | null
-  const player = (await readPlayer(usr_qq)) as unknown as Record<
-    string,
-    unknown
-  >
+  const player = (await readPlayer(usr_qq)) as Record<string, unknown>
   const base = calcBaseThree(player)
   if (!base) {
     Send(Text('境界数据缺失，无法智能换装'))
@@ -145,7 +140,7 @@ export default onResponse(selects, async e => {
         const equipArg = toEquipLike(best, normalizeClass(defThing.class))
         await insteadEquipment(
           usr_qq,
-          equipArg as unknown as Parameters<typeof insteadEquipment>[1]
+          equipArg as Parameters<typeof insteadEquipment>[1]
         )
       }
     }

@@ -34,7 +34,7 @@ const SPECIAL_PILLS = new Set([
   '起死回生丹'
 ])
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
@@ -64,7 +64,7 @@ export default onResponse(selects, async e => {
   if (n <= 0) n = 1
   if (n > MAX_BATCH) n = MAX_BATCH
 
-  const danfang = (data.danfang_list as unknown as DanfangRecipe[]).find(
+  const danfang = (data.danfang_list as DanfangRecipe[]).find(
     item => item.name === danyao
   )
   if (!notUndAndNull(danfang)) {

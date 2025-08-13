@@ -28,12 +28,12 @@ interface ShopItemLite {
   price?: number
   Grade?: number
   state?: number
-  [k: string]: unknown
+  [k: string]
 }
-function isShopItem(v: unknown): v is ShopItemLite {
+function isShopItem(v): v is ShopItemLite {
   return !!v && typeof v === 'object' && 'name' in v
 }
-const num = (v: unknown, d = 0) => {
+const num = (v, d = 0) => {
   const n = Number(v)
   return Number.isFinite(n) ? n : d
 }
@@ -133,13 +133,13 @@ export default onResponse(selects, async e => {
   target.state = 1
   await writeShop(shop)
 
-  const linggenRaw = player.灵根 as unknown
+  const linggenRaw = player.灵根
   const linggen =
     linggenRaw && typeof linggenRaw === 'object'
       ? (linggenRaw as Record<string, unknown>)
       : null
   const faqiu = linggen ? num(linggen['法球倍率'], 0) : 0
-  const pRec = player as unknown as Record<string, unknown>
+  const pRec = player as Record<string, unknown>
   const A_player = {
     名号: String(pRec['名号'] ?? ''),
     攻击: num(pRec['攻击']),

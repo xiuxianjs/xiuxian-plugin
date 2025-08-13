@@ -11,10 +11,10 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
-function isAssDetail(v: unknown): v is AssociationDetailData {
+function isAssDetail(v): v is AssociationDetailData {
   return !!v && typeof v === 'object' && '宗门名称' in v
 }
 

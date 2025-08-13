@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   }
   const player = await readPlayer(usr_qq)
   // weizhi 结构断言（原 data.didian_list 项目应包含 Price:number）
-  const placeUnknown: unknown = weizhi
+  const placeUnknown = weizhi
   if (
     !placeUnknown ||
     typeof placeUnknown !== 'object' ||

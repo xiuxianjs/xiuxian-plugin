@@ -11,7 +11,7 @@ interface ExtAss extends AssociationDetailData {
   宗门驻地?: string | number
   宗门名称: string
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v
 }
 interface BlessPlace {
@@ -19,7 +19,7 @@ interface BlessPlace {
   level: number
   efficiency: number
 }
-function isBlessPlace(v: unknown): v is BlessPlace {
+function isBlessPlace(v): v is BlessPlace {
   return (
     !!v &&
     typeof v === 'object' &&
@@ -31,7 +31,7 @@ function isBlessPlace(v: unknown): v is BlessPlace {
 
 export default onResponse(selects, async e => {
   const [message] = useMessage(e)
-  const blessRaw = data.bless_list as unknown[] | undefined
+  const blessRaw = data.bless_list | undefined
   const blessList: BlessPlace[] = Array.isArray(blessRaw)
     ? blessRaw.filter(isBlessPlace)
     : []

@@ -14,7 +14,7 @@ scheduleJob('0 0 4 * * ?', async () => {
   const now_time = Date.now()
   // 现行 ExchangeRecord 不含旧逻辑字段，保持向前兼容：若首条具备 now_time/qq 等字段则按旧规则回退
   if (Exchange.length && 'now_time' in Exchange[0]) {
-    const list = Exchange as unknown as (ExchangeRecord & ExchangeEntry)[]
+    const list = Exchange as (ExchangeRecord & ExchangeEntry)[]
     for (let i = 0; i < list.length; i++) {
       const rec = list[i] as ExchangeRecord & ExchangeEntry
       if (!('now_time' in rec)) break

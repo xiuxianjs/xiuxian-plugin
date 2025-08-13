@@ -46,7 +46,7 @@ export async function addShitu(A: string, num: number) {
   }
   let i: number
   for (i = 0; i < list.length; i++)
-    if ((list[i] as unknown as { A?: string }).A == A) break // 兼容历史错误字段 A
+    if ((list[i] as { A?: string }).A == A) break // 兼容历史错误字段 A
   if (i == list.length) {
     await fstaddShitu(A)
     list = await readShitu()

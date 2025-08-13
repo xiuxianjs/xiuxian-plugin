@@ -96,17 +96,17 @@ scheduleJob('0 0/1 * * * ?', async () => {
           let last_msg = ''
           // 构造满足 BattleEntity 最小字段的参战对象（填补缺失字段的默认值）
           const talent = A_player.灵根
-          const getTalentName = (t: unknown): string =>
+          const getTalentName = (t): string =>
             typeof t === 'object' && t != null && 'name' in t
-              ? String((t as { name: unknown }).name)
+              ? String((t as { name }).name)
               : '凡灵根'
-          const getTalentType = (t: unknown): string =>
+          const getTalentType = (t): string =>
             typeof t === 'object' && t != null && 'type' in t
-              ? String((t as { type: unknown }).type)
+              ? String((t as { type }).type)
               : '普通'
-          const getTalentRate = (t: unknown): number =>
+          const getTalentRate = (t): number =>
             typeof t === 'object' && t != null && '法球倍率' in t
-              ? Number((t as { 法球倍率: unknown }).法球倍率) || 1
+              ? Number((t as { 法球倍率 }).法球倍率) || 1
               : 1
           const A_battle = {
             名号: A_player.名号,

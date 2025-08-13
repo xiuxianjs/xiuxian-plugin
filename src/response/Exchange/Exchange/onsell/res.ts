@@ -39,10 +39,10 @@ function parsePinji(raw: string | undefined): number | undefined {
   const n = Number(raw)
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined
 }
-function isPositive(n: unknown): n is number {
+function isPositive(n): n is number {
   return typeof n === 'number' && Number.isFinite(n) && n > 0
 }
-function normalizeCategory(v: unknown): NajieCategory {
+function normalizeCategory(v): NajieCategory {
   return String(v) as NajieCategory
 }
 

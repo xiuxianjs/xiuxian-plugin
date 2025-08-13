@@ -39,7 +39,7 @@ export default onResponse(selects, async e => {
     }
   }
   for (const i of wupin) {
-    const list = najie[i] as unknown
+    const list = najie[i]
     if (!Array.isArray(list)) continue
     for (const l of najie[i]) {
       //纳戒中的数量

@@ -26,7 +26,7 @@ interface ActionState {
   mine?: string
   cishu?: string | number
   group_id?: string
-  [k: string]: unknown
+  [k: string]
 }
 interface DayInfo {
   Y: number
@@ -34,11 +34,11 @@ interface DayInfo {
   D: number
 }
 
-function toInt(v: unknown, def = 0) {
+function toInt(v, def = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.floor(n) : def
 }
-function parseJSON<T>(raw: unknown): T | null {
+function parseJSON<T>(raw): T | null {
   try {
     if (typeof raw === 'string' && raw.trim()) return JSON.parse(raw) as T
   } catch {

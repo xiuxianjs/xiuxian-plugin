@@ -40,7 +40,7 @@ export default onResponse(selects, async e => {
     usr_qq
   )) as EquipData | null
   const equipNeed: (keyof EquipData)[] = ['武器', '护具', '法宝']
-  const safeNum = (v: unknown) => {
+  const safeNum = v => {
     const n = Number(v)
     return Number.isFinite(n) ? n : 0
   }

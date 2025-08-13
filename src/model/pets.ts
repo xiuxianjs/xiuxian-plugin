@@ -17,7 +17,7 @@ export async function addPet(
   // Najie.仙宠 原结构为 NajieItem[]（无“数量”“islockd”等字段），需要转换
   const rawList = Array.isArray(najie.仙宠) ? najie.仙宠 : []
   const petList: PetList = rawList.map(r => {
-    const base: Partial<OwnedPetItem> = r as unknown as OwnedPetItem
+    const base: Partial<OwnedPetItem> = r as OwnedPetItem
     return {
       name: (base.name as string) ?? '',
       class: '仙宠',
@@ -38,7 +38,7 @@ export async function addPet(
       初始加成?: number
       每级增加?: number
       加成?: number
-      [k: string]: unknown
+      [k: string]
     }
     const base = Array.isArray(data.xianchon)
       ? (data.xianchon as SourcePetLike[]).find(item => item.name == thing_name)

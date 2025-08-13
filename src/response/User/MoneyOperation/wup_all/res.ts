@@ -26,7 +26,7 @@ const QUALITY_MAP: Record<string, number> = {
 }
 const MAX_AMOUNT = 1_000_000_000
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

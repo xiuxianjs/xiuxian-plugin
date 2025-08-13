@@ -22,10 +22,10 @@ export default onResponse(selects, async e => {
     防御: number
     当前血量: number
     暴击率: number
-    学习的功法: unknown
+    学习的功法
     灵根:
       | TalentInfo
-      | { 法球倍率?: number | string; [k: string]: unknown }
+      | { 法球倍率?: number | string; [k: string] }
       | Record<string, unknown>
     法球倍率?: number | string
     积分: number
@@ -33,7 +33,7 @@ export default onResponse(selects, async e => {
     魔道值: number
     神石: number
     次数: number
-    [k: string]: unknown
+    [k: string]
   }
   let tiandibang: RankRow[] = []
   try {

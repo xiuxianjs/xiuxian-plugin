@@ -7,7 +7,7 @@ import { selects } from '@src/response/index'
 import { getNajieImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?我的纳戒$/
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

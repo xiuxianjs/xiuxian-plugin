@@ -14,14 +14,14 @@ export const regular = /^(#|＃|\/)?哪里有(.*)$/
 // 物品结构与地点结构(最小必要字段)定义
 interface ThingLike {
   name?: string
-  [k: string]: unknown
+  [k: string]
 }
 interface AreaLike {
   name?: string
   one?: ThingLike[]
   two?: ThingLike[]
   three?: ThingLike[]
-  [k: string]: unknown
+  [k: string]
 }
 
 const AREA_COLLECTION_KEYS = [

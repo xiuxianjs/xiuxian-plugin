@@ -11,7 +11,7 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
@@ -19,7 +19,7 @@ interface ExtAss extends AssociationDetailData {
   灵石池?: number
   power?: number
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 
@@ -77,7 +77,7 @@ export default onResponse(selects, async e => {
   interface XiuxianConfig {
     CD?: { secretplace?: number }
   }
-  const cfg = config.getConfig('xiuxian', 'xiuxian') as unknown as XiuxianConfig
+  const cfg = config.getConfig('xiuxian', 'xiuxian') as XiuxianConfig
   const minute = cfg?.CD?.secretplace
   const time = typeof minute === 'number' && minute > 0 ? minute : 10
   const action_time = 60000 * time

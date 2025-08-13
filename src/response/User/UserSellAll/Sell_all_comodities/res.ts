@@ -44,7 +44,7 @@ export default onResponse(selects, async e => {
       return false
     }
     for (const i of wupin) {
-      const list = najie[i] as unknown
+      const list = najie[i]
       if (!Array.isArray(list)) continue
       for (const l of list as Array<{
         name: string
@@ -71,7 +71,7 @@ export default onResponse(selects, async e => {
   const goods: string[] = []
   goods.push('正在出售:')
   for (const i of wupin) {
-    const list = najie[i] as unknown
+    const list = najie[i]
     if (!Array.isArray(list)) continue
     for (const l of list as Array<{
       name: string
@@ -127,7 +127,7 @@ export default onResponse(selects, async e => {
         '仙宠口粮'
       ]
       for (const i of wupin) {
-        const list = najie2[i] as unknown
+        const list = najie2[i]
         if (!Array.isArray(list)) continue
         for (const l of list as Array<{
           name: string

@@ -13,15 +13,15 @@ interface PlantAction {
     name: string
     start: number
     duration: number
-    [k: string]: unknown
+    [k: string]
   }
   is_jiesuan?: number
   shutup?: number
   working?: number
   power_up?: number
   Place_action?: number
-  group_id?: unknown
-  [k: string]: unknown
+  group_id?
+  [k: string]
 }
 
 function calcEffectiveMinutes(
@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
 
   const next: PlantAction = { ...raw }
   next.is_jiesuan = 1
-  next.plant = 1 as unknown as PlantAction['plant']
+  next.plant = 1 as PlantAction['plant']
   next.shutup = 1
   next.working = 1
   next.power_up = 1

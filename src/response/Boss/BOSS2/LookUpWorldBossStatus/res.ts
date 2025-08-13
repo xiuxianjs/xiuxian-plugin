@@ -12,7 +12,7 @@ interface WorldBossStatusInfo {
   Reward: number
   KilledTime: number
 }
-function parseJson<T>(raw: unknown, fallback: T): T {
+function parseJson<T>(raw, fallback: T): T {
   if (typeof raw !== 'string' || raw === '') return fallback
   try {
     return JSON.parse(raw) as T
@@ -20,7 +20,7 @@ function parseJson<T>(raw: unknown, fallback: T): T {
     return fallback
   }
 }
-function formatNum(n: unknown) {
+function formatNum(n) {
   const v = Number(n)
   return Number.isFinite(v) ? v.toLocaleString('zh-CN') : '0'
 }

@@ -22,7 +22,7 @@ interface ForumOrder {
     name?: string
     class?: string
     出售价?: number
-    [k: string]: unknown
+    [k: string]
   }
   start_price?: number
   last_price?: number
@@ -35,10 +35,10 @@ interface ForumOrder {
   whole?: number
   name?: string
   class?: string
-  [k: string]: unknown
+  [k: string]
 }
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

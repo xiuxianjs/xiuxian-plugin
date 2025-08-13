@@ -9,7 +9,7 @@ interface PlayerLite {
   神魄段数?: number
 }
 
-function toNum(v: unknown, d = 0) {
+function toNum(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? n : d
 }

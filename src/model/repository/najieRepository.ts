@@ -24,7 +24,7 @@ export function createNajieRepository(): NajieRepository {
       // 旧实现：直接读取-修改-写回（非原子，仅用于简单场景）
       const raw = await redis.get(keys.najie(id))
       if (!raw) return null
-      let obj: Najie & { [k: string]: unknown }
+      let obj: Najie & { [k: string] }
       try {
         obj = JSON.parse(raw)
       } catch {

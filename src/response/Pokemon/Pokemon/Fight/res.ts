@@ -16,22 +16,22 @@ interface PetDef {
 }
 interface BagPetLike {
   name?: string
-  等级?: unknown
-  每级增加?: unknown
+  等级?
+  每级增加?
   灵魂绑定?: number
   type?: string
-  加成?: unknown
-  [k: string]: unknown
+  加成?
+  [k: string]
 }
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
 function calcBonus(level: number, per: number) {
   return toInt(level) * Number(per || 0)
 }
-function isBagPetLike(p: unknown): p is BagPetLike {
+function isBagPetLike(p): p is BagPetLike {
   return (
     !!p && typeof p === 'object' && 'name' in (p as Record<string, unknown>)
   )
@@ -48,7 +48,7 @@ function getPer(p: BagPetLike): number | undefined {
 function getPlayerPetLevel(
   p: XianchongInfo | (XianchongInfo & { 等级?: number })
 ): number {
-  if (typeof (p as { 等级?: unknown }).等级 === 'number')
+  if (typeof (p as { 等级? }).等级 === 'number')
     return Math.trunc((p as { 等级: number }).等级)
   return 1
 }
@@ -76,7 +76,7 @@ export default onResponse(selects, async e => {
   const code = toInt(input, NaN)
   if (!Number.isNaN(code) && code > 1000) {
     const idx = code - 1001
-    const targetUnknown: unknown = najie.仙宠[idx]
+    const targetUnknown = najie.仙宠[idx]
     if (idx < 0 || idx >= najie.仙宠.length || !isBagPetLike(targetUnknown)) {
       Send(Text('仙宠代号输入有误!'))
       return false
@@ -95,9 +95,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const bagPetUnknown: unknown = najie.仙宠.find(
-    p => (p as NajieItem).name === input
-  )
+  const bagPetUnknown = najie.仙宠.find(p => (p as NajieItem).name === input)
   if (!isBagPetLike(bagPetUnknown)) {
     Send(Text('你没有' + input))
     return false

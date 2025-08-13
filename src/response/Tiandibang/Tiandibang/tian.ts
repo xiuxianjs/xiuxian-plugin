@@ -13,13 +13,13 @@ export interface TiandibangRow {
   暴击率: number
   灵根: TalentInfo | Record<string, unknown>
   法球倍率?: number | string
-  学习的功法: unknown
+  学习的功法
   魔道值: number
   神石: number
   qq: string
   次数: number
   积分: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export async function Write_tiandibang(wupin: TiandibangRow[]) {

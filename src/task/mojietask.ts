@@ -10,7 +10,7 @@ import { __PATH } from '@src/model/paths'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ExploreActionState } from '@src/types'
 
-function isExploreAction(a: unknown): a is ExploreActionState {
+function isExploreAction(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'end_time' in a
 }
 scheduleJob('0 0/5 * * * ?', async () => {
@@ -21,7 +21,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
     // 查询当前人物动作（日志变量已移除以减 lint 噪声）
     // 得到动作
     const rawAction = await getDataByUserId(player_id, 'action')
-    let action: unknown
+    let action
     try {
       action = JSON.parse(rawAction)
     } catch {
@@ -164,7 +164,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
             ((act.cishu || 0) - 1)
           msg.push('\n' + player.名号 + last_msg + fyd_msg)
           const arr: ExploreActionState = {
-            ...(act as unknown as ExploreActionState)
+            ...(act as ExploreActionState)
           }
           if (arr.cishu == 1) {
             //把状态都关了

@@ -11,14 +11,14 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
   所有成员?: string[]
-  [k: string]: unknown
+  [k: string]
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 function serializePlayer(p: Player): Record<string, JSONValue> {
@@ -86,7 +86,7 @@ export default onResponse(selects, async e => {
     bss.所有成员 = Array.isArray(bss.所有成员)
       ? bss.所有成员.filter(q => q !== member_qq)
       : []
-    delete (playerB as Player & { 宗门?: unknown }).宗门
+    delete (playerB as Player & { 宗门? }).宗门
   }
 
   if (actorRole === '宗主') {

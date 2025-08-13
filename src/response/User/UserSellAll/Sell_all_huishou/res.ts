@@ -32,17 +32,17 @@ const CATEGORIES = [
   '仙宠口粮'
 ] as const
 
-function num(v: unknown, d = 0) {
+function num(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? n : d
 }
-function normalizeCat(v: unknown): string {
+function normalizeCat(v): string {
   return String(v ?? '')
 }
-function normAddCat(v: unknown): Parameters<typeof addNajieThing>[2] {
+function normAddCat(v): Parameters<typeof addNajieThing>[2] {
   return String(v) as Parameters<typeof addNajieThing>[2]
 }
-function normPinji(v: unknown): Parameters<typeof addNajieThing>[4] {
+function normPinji(v): Parameters<typeof addNajieThing>[4] {
   return v as Parameters<typeof addNajieThing>[4]
 }
 

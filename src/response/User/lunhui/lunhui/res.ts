@@ -119,16 +119,14 @@ async function applyRebirthCommon(usr_qq: string, player: PlayerEx) {
   await writePlayer(usr_qq, player as Player)
 }
 
-function isAssociation(
-  obj: unknown
-): obj is AssociationData & { 所有成员?: string[] } {
+function isAssociation(obj): obj is AssociationData & { 所有成员?: string[] } {
   return !!obj && typeof obj === 'object' && '宗门名称' in obj
 }
 
 async function exitAssociationIfNeed(
   usr_qq: string,
   player: PlayerEx,
-  Send: (t: unknown) => unknown
+  Send: (t) => unknown
 ) {
   if (!notUndAndNull(player.宗门)) return
   const guild = player.宗门 as AssociationData
@@ -164,7 +162,7 @@ async function exitAssociationIfNeed(
   // 宗主：处理解散或继任
   const ass3Raw = await data.getAssociation(guild.宗门名称)
   if (!isAssociation(ass3Raw)) return
-  const ass3 = ass3Raw as AssociationData & { [k: string]: unknown }
+  const ass3 = ass3Raw as AssociationData & { [k: string] }
   if (!Array.isArray(ass3.所有成员)) ass3.所有成员 = []
   if ((ass3.所有成员 as string[]).length < 2) {
     await redis.del(`${data.association}:${guild.宗门名称}`)
@@ -177,7 +175,7 @@ async function exitAssociationIfNeed(
   const seq = ['副宗主', '长老', '内门弟子', '所有成员'] as const
   let succList: string[] = []
   for (const k of seq) {
-    const arr = ass3[k] as unknown
+    const arr = ass3[k]
     if (Array.isArray(arr) && arr.length) {
       succList = arr as string[]
       break
@@ -192,7 +190,7 @@ async function exitAssociationIfNeed(
       (randmember.宗门 as AssociationData).职位
     ) {
       const pos = (randmember.宗门 as AssociationData).职位 as string
-      const arr = ass3[pos] as unknown
+      const arr = ass3[pos]
       if (Array.isArray(arr))
         ass3[pos] = (arr as string[]).filter(q => q !== randmember_qq)
       ;(ass3 as Record<string, unknown>)['宗主'] = randmember_qq
@@ -213,8 +211,8 @@ async function exitAssociationIfNeed(
 const FAIL_PROB = 1 / 9
 
 // 辅助扩展类型与工具函数（放置在文件顶部下方，集中管理）
-type PlayerEx = Player & { [k: string]: unknown }
-const numVal = (v: unknown, d = 0) =>
+type PlayerEx = Player & { [k: string] }
+const numVal = (v, d = 0) =>
   typeof v === 'number' && !isNaN(v)
     ? v
     : typeof v === 'string' && !isNaN(+v)

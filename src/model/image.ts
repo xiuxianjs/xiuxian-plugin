@@ -29,7 +29,7 @@ import { readQinmidu, writeQinmidu } from './qinmidu.js'
 // ==== 类型辅助声明（已迁移至 src/types/model.ts） ====
 // 原地定义已移除：ScreenshotResult, NamedItem, ExchangeEntry, ForumEntry, PlayerStatus, SendFn, AssociationInfo
 
-function isAssociationInfo(v: unknown): v is AssociationInfo {
+function isAssociationInfo(v): v is AssociationInfo {
   return (
     !!v &&
     typeof v === 'object' &&
@@ -441,9 +441,9 @@ export async function getGongfaImage(
     return
   }
   // 学习的功法 可能被旧版本存档写成非数组（例如对象或 undefined），这里做兼容
-  const rawXuexi = (player as unknown as { 学习的功法?: unknown }).学习的功法
+  const rawXuexi = (player as { 学习的功法? }).学习的功法
   const xuexi_gongfa: string[] = Array.isArray(rawXuexi)
-    ? rawXuexi.filter((v: unknown) => typeof v === 'string')
+    ? rawXuexi.filter(v => typeof v === 'string')
     : []
   const gongfa_have: NamedItem[] = []
   const gongfa_need: NamedItem[] = []
@@ -552,9 +552,9 @@ export async function getPlayerImage(
   }
 
   // 学习的功法 可能被旧版本存档写成非数组（例如对象或 undefined），这里做兼容
-  const rawXuexi = (player as unknown as { 学习的功法?: unknown }).学习的功法
+  const rawXuexi = (player as { 学习的功法? }).学习的功法
   const learned_gongfa: string[] = Array.isArray(rawXuexi)
-    ? rawXuexi.filter((v: unknown) => typeof v === 'string')
+    ? rawXuexi.filter(v => typeof v === 'string')
     : []
 
   const equipment = await getEquipmentDataSafe(usr_qq)

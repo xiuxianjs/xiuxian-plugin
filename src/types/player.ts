@@ -40,14 +40,14 @@ export interface Player {
   灵根: TalentInfo
   隐藏灵根?: TalentInfo
   仙宠: XianchongInfo
-  学习的功法: unknown[]
+  学习的功法: any[]
   修炼效率提升: number
   宗门?: string | { 宗门名称: string; 职位: string }
   sex?: string
   linggenshow?: number
   power_place?: number
   锻造天赋?: number
-  occupation?: unknown
+  occupation?: any
   occupation_level?: number
   occupation_exp?: number
   // 幸运 / 魔道相关（在各任务与服用道具时使用）
@@ -55,7 +55,7 @@ export interface Player {
   addluckyNo?: number
   幸运?: number
   魔道值?: number
-  [key: string]: unknown // 添加索引签名以兼容动态属性
+  [key: string]: any // 添加索引签名以兼容动态属性
 }
 
 export interface Equipment {

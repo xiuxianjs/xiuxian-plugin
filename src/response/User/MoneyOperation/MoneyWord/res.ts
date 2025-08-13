@@ -10,7 +10,7 @@ import {
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?交税\s*\d+$/
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

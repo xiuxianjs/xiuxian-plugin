@@ -15,7 +15,7 @@ import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?出售\S+(?:\*\S+){0,2}$/
 
 // 辅助
-function toInt(v: unknown, def = 0): number {
+function toInt(v, def = 0): number {
   const n = Number(v)
   return Number.isFinite(n) ? Math.floor(n) : def
 }

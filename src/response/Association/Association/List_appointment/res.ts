@@ -19,7 +19,7 @@ interface ExtendedAss extends AssociationDetailData {
   最低加入境界?: number
   外门弟子?: string[]
 }
-function isExtendedAss(v: unknown): v is ExtendedAss {
+function isExtendedAss(v): v is ExtendedAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 

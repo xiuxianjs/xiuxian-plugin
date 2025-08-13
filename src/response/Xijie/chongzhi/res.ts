@@ -21,7 +21,7 @@ export default onResponse(selects, async e => {
   try {
     shop = await readShop()
   } catch {
-    await writeShop(data.shop_list as unknown as ShopData)
+    await writeShop(data.shop_list as ShopData)
     shop = await readShop()
   }
 

@@ -18,7 +18,7 @@ interface DateStruct {
   M: number
   D: number
 }
-async function getDayStruct(ts: unknown): Promise<DateStruct | null> {
+async function getDayStruct(ts): Promise<DateStruct | null> {
   const n = Number(ts)
   if (!Number.isFinite(n) || n <= 0) return null
   try {
@@ -33,7 +33,7 @@ function sameDay(a: DateStruct | null, b: DateStruct | null) {
 function cleanInput(raw: string) {
   return raw.replace(regularCut, '').replace(/\s+/g, '').replace(/\+/g, '')
 }
-function isMessageEvent(ev: unknown): ev is Parameters<typeof Show_player>[0] {
+function isMessageEvent(ev): ev is Parameters<typeof Show_player>[0] {
   return !!ev && typeof ev === 'object' && 'MessageText' in ev
 }
 

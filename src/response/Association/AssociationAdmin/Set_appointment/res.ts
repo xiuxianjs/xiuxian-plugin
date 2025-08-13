@@ -15,7 +15,7 @@ interface PlayerGuildRef {
   职位: string
   lingshi_donate?: number
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
@@ -26,7 +26,7 @@ interface ExtAss extends AssociationDetailData {
   内门弟子?: string[]
   外门弟子?: string[]
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 function serializePlayer(p: Player): Record<string, JSONValue> {

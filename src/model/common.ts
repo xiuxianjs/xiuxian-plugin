@@ -78,7 +78,7 @@ export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
   return !(obj == null)
 }
 
-export function isNotBlank(value: unknown): boolean {
+export function isNotBlank(value): boolean {
   return !(value === null || value === undefined || value === '')
 }
 

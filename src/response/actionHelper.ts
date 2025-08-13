@@ -19,9 +19,9 @@ export interface ActionRecord {
   cishu?: number
   group_id?: string
   // 位置/秘境等扩展信息
-  Place_address?: unknown
+  Place_address?
   // 允许额外字段（保持兼容），使用 unknown 再在使用点断言
-  [k: string]: unknown
+  [k: string]
 }
 
 // 默认动作 key；支持自定义 suffix 以兼容特殊场景（如锻造使用 action10）
@@ -111,7 +111,7 @@ export function normalizeBiguanMinutes(raw: number | undefined): number {
 // 通用分钟归一：
 // raw 任意输入；step 步长；loops 最大循环次数（决定最大 = step * loops）；min 最小值
 export function normalizeDurationMinutes(
-  raw: unknown,
+  raw,
   step: number,
   loops: number,
   min: number
@@ -169,7 +169,7 @@ export async function updateActionWithSuffix(
 // 提前结束当前动作（若存在），可附加额外字段覆盖；返回更新后的记录
 export async function stopAction(
   userId: string | number,
-  extra: Partial<ActionRecord & { [k: string]: unknown }> = {}
+  extra: Partial<ActionRecord & { [k: string] }> = {}
 ) {
   return updateAction(userId, prev => {
     if (!prev) return null
@@ -184,7 +184,7 @@ export async function stopAction(
 export async function stopActionWithSuffix(
   userId: string | number,
   suffix: string,
-  extra: Partial<ActionRecord & { [k: string]: unknown }> = {}
+  extra: Partial<ActionRecord & { [k: string] }> = {}
 ) {
   return updateActionWithSuffix(userId, suffix, prev => {
     if (!prev) return null

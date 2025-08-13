@@ -283,7 +283,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               msg: player.名号 + last_msg + fyd_msg,
               qq_group: push_address
             }
-            temp.push(p as unknown as Record<string, unknown>)
+            temp.push(p as Record<string, unknown>)
             await writeTemp(temp)
           } catch {
             const temp: Array<Record<string, unknown>> = []

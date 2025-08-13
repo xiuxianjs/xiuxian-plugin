@@ -32,15 +32,15 @@ interface BattlePlayer {
   防御: number
   当前血量: number
   暴击率: number
-  学习的功法: unknown[]
+  学习的功法: any[]
   灵根: { 法球倍率?: number; name?: string; type?: string } & Record<
     string,
     unknown
   >
   法球倍率?: number
-  [k: string]: unknown
+  [k: string]: any
 }
-const toNum = (v: unknown, d = 0) =>
+const toNum = (v, d = 0) =>
   typeof v === 'number' && !isNaN(v)
     ? v
     : typeof v === 'string' && !isNaN(+v)
@@ -69,9 +69,7 @@ function buildBattlePlayer(
     防御: Math.floor(toNum(src.防御) * defMul),
     当前血量: Math.floor(toNum(src.当前血量) * hpMul),
     暴击率: toNum(src.暴击率),
-    学习的功法: Array.isArray(src.学习的功法)
-      ? (src.学习的功法 as unknown[])
-      : [],
+    学习的功法: Array.isArray(src.学习的功法) ? src.学习的功法 : [],
     灵根: linggen,
     法球倍率:
       typeof src.法球倍率 === 'number' ? src.法球倍率 : toNum(src.法球倍率)

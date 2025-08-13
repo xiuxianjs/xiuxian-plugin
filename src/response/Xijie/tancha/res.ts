@@ -54,7 +54,7 @@ export default onResponse(selects, async e => {
       name: item.name,
       one: item.one || [],
       ...(item as Record<string, unknown>)
-    })) as unknown as Parameters<typeof writeShop>[0]
+    })) as Parameters<typeof writeShop>[0]
     await writeShop(converted)
     shop = await readShop()
   }

@@ -26,7 +26,7 @@ export async function getJSON<T = unknown>(key: string): Promise<T | null> {
 }
 
 // set：自动 stringify 对象
-export async function setValue(key: string, value: unknown): Promise<void> {
+export async function setValue(key: string, value): Promise<void> {
   if (typeof value === 'string') await redis.set(key, value)
   else await redis.set(key, JSON.stringify(value))
 }

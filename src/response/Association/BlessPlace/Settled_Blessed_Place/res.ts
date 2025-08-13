@@ -10,7 +10,7 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
@@ -20,13 +20,13 @@ interface ExtAss extends AssociationDetailData {
   所有成员?: string[]
   宗门名称: string
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v
 }
 interface BlessPlace {
   name: string
 }
-function isBlessPlace(v: unknown): v is BlessPlace {
+function isBlessPlace(v): v is BlessPlace {
   return !!v && typeof v === 'object' && 'name' in v
 }
 
@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
     Send(Text('请在指令后补充洞天名称'))
     return false
   }
-  const blessRaw = data.bless_list as unknown[] | undefined
+  const blessRaw = data.bless_list | undefined
   const dongTan = blessRaw?.find(
     i => isBlessPlace(i) && i.name === blessed_name
   ) as BlessPlace | undefined

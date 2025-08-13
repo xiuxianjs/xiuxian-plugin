@@ -14,10 +14,10 @@ interface PlayerGuildInfo {
   职位: string
   加入时间?: [number, number]
   time?: [number, number]
-  [k: string]: unknown
+  [k: string]
 }
 
-function isPlayerGuildInfo(val: unknown): val is PlayerGuildInfo {
+function isPlayerGuildInfo(val): val is PlayerGuildInfo {
   return !!val && typeof val === 'object' && '宗门名称' in val && '职位' in val
 }
 
@@ -36,7 +36,7 @@ function setRoleList(
   ;(ass as Record<string, unknown>)[role] = list
 }
 
-function ensureStringArray(v: unknown): string[] {
+function ensureStringArray(v): string[] {
   return Array.isArray(v)
     ? (v.filter(i => typeof i === 'string') as string[])
     : []
@@ -103,7 +103,7 @@ export default onResponse(selects, async e => {
     setRoleList(ass, role, roleList)
     ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== usr_qq)
     await data.setAssociation(ass.宗门名称, ass)
-    delete (player as Player & { 宗门?: unknown }).宗门
+    delete (player as Player & { 宗门? }).宗门
     await data.setData('player', usr_qq, serializePlayer(player))
     await playerEfficiency(usr_qq)
     Send(Text('退出宗门成功'))
@@ -111,7 +111,7 @@ export default onResponse(selects, async e => {
     ass.所有成员 = ensureStringArray(ass.所有成员)
     if (ass.所有成员.length < 2) {
       await redis.del(`${__PATH.association}:${guildInfo.宗门名称}`)
-      delete (player as Player & { 宗门?: unknown }).宗门
+      delete (player as Player & { 宗门? }).宗门
       await data.setData('player', usr_qq, serializePlayer(player))
       await playerEfficiency(usr_qq)
       Send(
@@ -121,7 +121,7 @@ export default onResponse(selects, async e => {
       )
     } else {
       ass.所有成员 = ass.所有成员.filter(item => item !== usr_qq)
-      delete (player as Player & { 宗门?: unknown }).宗门
+      delete (player as Player & { 宗门? }).宗门
       await data.setData('player', usr_qq, serializePlayer(player))
       await playerEfficiency(usr_qq)
       const fz = getRoleList(ass, '副宗主')

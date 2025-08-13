@@ -9,7 +9,7 @@ export interface MonsterItem {
   防御: number
   当前血量: number
   暴击率: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface EquipmentItem {
@@ -22,7 +22,7 @@ export interface EquipmentItem {
   HP: number
   bao: number
   出售价?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface DanyaoFullItem {
@@ -33,7 +33,7 @@ export interface DanyaoFullItem {
   xueqi?: number
   exp?: number
   出售价?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface SimpleNamedItem {
@@ -41,7 +41,7 @@ export interface SimpleNamedItem {
   名号?: string
   class?: string
   type?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface PlaceItem extends SimpleNamedItem {
@@ -72,20 +72,20 @@ export interface ForgingEquipItem extends SimpleNamedItem {
 export interface HiddenTalentItem {
   name: string
   说明?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface UpdateRecordItem {
   user: { name: string; avatar: string }
   text: string
   time: string
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface TalentRootRef {
   name: string
   法球倍率?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface NPCLevelEntry {
@@ -96,7 +96,7 @@ export interface NPCLevelEntry {
   blood: number
   baoji: number
   灵根?: TalentRootRef
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface NPCGroupItem {
@@ -105,14 +105,14 @@ export interface NPCGroupItem {
   one?: NPCLevelEntry[]
   two?: NPCLevelEntry[]
   three?: NPCLevelEntry[]
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface ShopGoodsItem {
   name: string
   class: string
   数量: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface ShopItem {
   id: number
@@ -123,19 +123,19 @@ export interface ShopItem {
   one?: ShopGoodsItem[]
   two?: ShopGoodsItem[]
   three?: ShopGoodsItem[]
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface ExchangeThingItem {
   name: string
   class: string
   数量: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface ExchangeItem {
   name: string
   thing: ExchangeThingItem[]
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface RealmShopGoods {
@@ -146,14 +146,14 @@ export interface RealmShopGoods {
   desc?: string
   修炼加成?: number
   出售价?: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface RealmShopGroupItem {
   name: string
   one?: RealmShopGoods[]
   two?: RealmShopGoods[]
   three?: RealmShopGoods[]
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface ScoreShopItem {
@@ -165,7 +165,7 @@ export interface ScoreShopItem {
   积分: number
   xueqi?: number
   exp?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface LimitedEquipItem {
@@ -178,7 +178,7 @@ export interface LimitedEquipItem {
   HP?: number
   bao?: number
   出售价?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface OccupationItem {
@@ -187,7 +187,7 @@ export interface OccupationItem {
   type?: string
   desc?: string
   经验加成?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface DanfangItem {
@@ -196,7 +196,7 @@ export interface DanfangItem {
   需要材料?: string
   成功概率?: number
   品级?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface BapinItem {
@@ -204,7 +204,7 @@ export interface BapinItem {
   name: string
   class?: string
   type?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface HallItem {
@@ -213,7 +213,7 @@ export interface HallItem {
   class?: string
   type?: string
   desc?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface PermanentPetItem {
@@ -234,7 +234,7 @@ export interface PermanentPetItem {
   等级上限?: number
   获取难度?: number
   出售价?: number
-  [k: string]: unknown
+  [k: string]
 }
 
 export interface SkillItem {
@@ -245,5 +245,5 @@ export interface SkillItem {
   desc?: string
   伤害倍率?: number
   冷却?: number
-  [k: string]: unknown
+  [k: string]
 }

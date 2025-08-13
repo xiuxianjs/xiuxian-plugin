@@ -54,9 +54,9 @@ export default onResponse(selects, async e => {
     return false
   }
   // 类型收窄
-  const weizhiUnknown: unknown = weizhiRaw
+  const weizhiUnknown = weizhiRaw
   const guardWeizhi = (
-    v: unknown
+    v
   ): v is { name: string; Price: number; experience: number } => {
     if (!v || typeof v !== 'object') return false
     const r = v as Record<string, unknown>

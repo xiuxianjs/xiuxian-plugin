@@ -22,14 +22,14 @@ interface LegacyRecord {
   aconut?: number
   pinji2?: number
   class?: NajieCategory
-  [k: string]: unknown
+  [k: string]
 }
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
-function mapRecord(r: unknown): LegacyRecord | null {
+function mapRecord(r): LegacyRecord | null {
   if (!r || typeof r !== 'object') return null
   const rec = r as LegacyRecord
   if ('qq' in rec && rec.name) return rec
@@ -68,11 +68,11 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  let rawList: unknown[] = []
+  let rawList[] = []
   try {
-    rawList = (await readExchange()) as unknown[]
+    rawList = await readExchange()
   } catch {
-    await writeExchange([] as unknown as RawExchangeRecord[])
+    await writeExchange([] as RawExchangeRecord[])
     rawList = []
   }
   const list: LegacyRecord[] = rawList

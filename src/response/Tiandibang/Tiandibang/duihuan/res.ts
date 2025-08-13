@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const table = (data.tianditang || []) as unknown as TianditangItem[]
+  const table = (data.tianditang || []) as TianditangItem[]
   const item = table.find(it => it.name === thingName)
   if (!item) {
     Send(Text(`天地堂还没有这样的东西: ${thingName}`))

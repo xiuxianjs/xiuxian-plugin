@@ -10,7 +10,7 @@ export const regular = /^(#|＃|\/)?降妖归来$/
 export default onResponse(selects, async e => {
   const rawAction = await getPlayerAction(e.UserId)
   if (!rawAction) return
-  const action: ActionState = rawAction as unknown as ActionState
+  const action: ActionState = rawAction as ActionState
   if (action.action == '空闲') return
   if (action.working == 1) return false
   //结算

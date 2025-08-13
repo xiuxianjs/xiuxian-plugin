@@ -23,7 +23,7 @@ const NAJIE_CATEGORIES: readonly NajieCategory[] = [
   '仙宠',
   '仙宠口粮'
 ] as const
-function isNajieCategory(v: unknown): v is NajieCategory {
+function isNajieCategory(v): v is NajieCategory {
   return (
     typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v)
   )
@@ -41,9 +41,9 @@ interface ShopSlotLike {
   name: string
   state?: number
   Grade?: number
-  one?: unknown[]
-  two?: unknown[]
-  three?: unknown[]
+  one?[]
+  two?[]
+  three?[]
 }
 
 scheduleJob('0 0/5 * * * ?', async () => {

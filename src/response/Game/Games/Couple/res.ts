@@ -15,7 +15,7 @@ import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?双修$/
 
 // 辅助：安全转数字（返回 >=0 的整数，失败为 0）
-function toInt(v: unknown): number {
+function toInt(v): number {
   const n = Number(v)
   return Number.isFinite(n) ? Math.floor(n) : 0
 }

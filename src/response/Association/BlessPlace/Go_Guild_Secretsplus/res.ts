@@ -15,7 +15,7 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
@@ -23,7 +23,7 @@ interface ExtAss extends AssociationDetailData {
   灵石池?: number
   power?: number
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 
@@ -84,9 +84,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const Price = priceSingle * i * 10
-  const playerCoin = Number(
-    (player as unknown as Record<string, unknown>).灵石 || 0
-  )
+  const playerCoin = Number((player as Record<string, unknown>).灵石 || 0)
   if (playerCoin < Price) {
     Send(Text(`没有灵石寸步难行, 需要${Price}灵石`))
     return false

@@ -6,9 +6,9 @@ import type { NamedItem } from '@src/types'
 export const regular = /^(#|＃|\/)?宗门秘境$/
 
 export default onResponse(selects, async e => {
-  const raw = data.guildSecrets_list as unknown
+  const raw = data.guildSecrets_list
   await Goweizhi(
-    e as unknown as import('alemonjs').EventsMessageCreateEnum,
+    e as import('alemonjs').EventsMessageCreateEnum,
     raw as NamedItem[]
   )
   return false

@@ -19,35 +19,35 @@ interface PlayerAction {
   power_up?: number
   Place_action?: number
   group_id?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 const BLOCK_MINUTES = 30 // 满 30 分钟结算一个周期
 const MAX_BLOCKS = 24 // 最多 24 个周期 (12 小时)
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
 
-function normalizeAction(raw: unknown): PlayerAction {
+function normalizeAction(raw): PlayerAction {
   if (!raw || typeof raw !== 'object') {
     return { action: '空闲' }
   }
   const r = raw as Record<string, unknown>
   const action: PlayerAction = {
     action: typeof r.action === 'string' ? r.action : '空闲',
-    mine: toInt(r.mine, undefined as unknown as number),
-    end_time: toInt(r.end_time, undefined as unknown as number),
-    time: toInt(r.time, undefined as unknown as number),
-    start: toInt(r.start, undefined as unknown as number),
-    duration: toInt(r.duration, undefined as unknown as number),
-    is_jiesuan: toInt(r.is_jiesuan, undefined as unknown as number),
-    plant: toInt(r.plant, undefined as unknown as number),
-    shutup: toInt(r.shutup, undefined as unknown as number),
-    working: toInt(r.working, undefined as unknown as number),
-    power_up: toInt(r.power_up, undefined as unknown as number),
-    Place_action: toInt(r.Place_action, undefined as unknown as number),
+    mine: toInt(r.mine, undefined as number),
+    end_time: toInt(r.end_time, undefined as number),
+    time: toInt(r.time, undefined as number),
+    start: toInt(r.start, undefined as number),
+    duration: toInt(r.duration, undefined as number),
+    is_jiesuan: toInt(r.is_jiesuan, undefined as number),
+    plant: toInt(r.plant, undefined as number),
+    shutup: toInt(r.shutup, undefined as number),
+    working: toInt(r.working, undefined as number),
+    power_up: toInt(r.power_up, undefined as number),
+    Place_action: toInt(r.Place_action, undefined as number),
     group_id: typeof r.group_id === 'string' ? r.group_id : undefined
   }
   // 将非法 0 视为未设置

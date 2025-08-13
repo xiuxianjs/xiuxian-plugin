@@ -7,13 +7,13 @@ export interface LevelStageItem {
   level_id: number
   level: string
   exp: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface PhysiqueStageItem {
   level_id: number
   level: string
   exp: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface CommodityItem {
   name: string
@@ -21,20 +21,20 @@ export interface CommodityItem {
   type?: string
   出售价?: number
   pinji?: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface TalentItem {
   type: string
   name: string
   法球倍率?: number | string
-  [k: string]: unknown
+  [k: string]
 }
 export interface GongfaItem {
   name: string
   class: string
   品级?: string
   type?: string
-  [k: string]: unknown
+  [k: string]
 }
 // 旧的简单丹药条目定义（保留以兼容历史引用）
 export interface DanyaoItemDef {
@@ -44,14 +44,14 @@ export interface DanyaoItemDef {
   type?: string
   加成?: number
   pinji?: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface EquipmentTuzhiItem {
   name: string
   class?: string // 原始图纸 JSON 可能未包含 class
   进阶?: string
   pinji?: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface PetItem {
   id?: number
@@ -71,19 +71,19 @@ export interface PetItem {
   等级上限?: number
   获取难度?: number
   出售价?: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface PetFoodItem {
   name: string
   class: string
   加成?: number
-  [k: string]: unknown
+  [k: string]
 }
 export interface ForgingMaterial {
   name: string
   class: string
   品级?: string
-  [k: string]: unknown
+  [k: string]
 }
 
 // 兼容遗留：先前使用的 UnknownEntry 别名，如不再需要可在各文件直接替换为 Record<string,unknown>
@@ -100,7 +100,7 @@ export interface BattleSkillItem {
   msg2: string
   beilv: number
   other: number
-  [k: string]: unknown
+  [k: string]
 }
 
 // Update 记录
@@ -108,7 +108,7 @@ export interface UpdateRecordItemLite {
   user: { name: string; avatar: string }
   text: string
   time: string
-  [k: string]: unknown
+  [k: string]
 }
 
 // 额外资源类型（与 data_extra.ts 做最小耦合，引入所需）
@@ -192,7 +192,7 @@ export interface XiuxianDataShape {
   jineng: SkillItem[]
   updateRecord: UpdateRecordItem[] | UpdateRecordItemLite[]
   // 兜底索引
-  [k: string]: unknown
+  [k: string]
 }
 
-export type DataAccessor = XiuxianDataShape & { [k: string]: unknown }
+export type DataAccessor = XiuxianDataShape & { [k: string] }

@@ -16,10 +16,10 @@ interface DateParts {
   m: number
   s: number
 }
-function isDateParts(v: unknown): v is DateParts {
+function isDateParts(v): v is DateParts {
   return !!v && typeof v === 'object' && 'Y' in v && 'M' in v && 'D' in v
 }
-function isGuildInfo(v: unknown): v is { 宗门名称: string; 职位: string } {
+function isGuildInfo(v): v is { 宗门名称: string; 职位: string } {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 function serializePlayer(p: Player): Record<string, JSONValue> {

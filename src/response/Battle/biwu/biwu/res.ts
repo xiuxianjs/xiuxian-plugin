@@ -65,7 +65,7 @@ function buildRoundMsg(skills: SkillRuntime[], cnt: number) {
 }
 function applyBuffDecay(
   source: BuffMap,
-  _targetUnused: unknown,
+  _targetUnused,
   buffName: string,
   effect: () => void,
   msgArr: string[],
@@ -122,7 +122,7 @@ export default onResponse(selects, async e => {
   return false
 })
 
-async function battle(e: unknown, num: number) {
+async function battle(e, num: number) {
   const evt = e as Parameters<typeof useSend>[0]
   const A_QQ = biwuPlayer.A_QQ
   const B_QQ = biwuPlayer.B_QQ
@@ -510,8 +510,8 @@ async function battle(e: unknown, num: number) {
   // 清理（记录原 QQ 供删除 redis 用）
   const aQQ = A_QQ[num].QQ
   const bQQ = B_QQ[num].QQ
-  A_QQ[num].QQ = null as unknown as string
-  B_QQ[num].QQ = null as unknown as string
+  A_QQ[num].QQ = null as string
+  B_QQ[num].QQ = null as string
   await redis.set(`xiuxian@1.3.0:${aQQ}:bisai`, '')
   await redis.set(`xiuxian@1.3.0:${bQQ}:bisai`, '')
   return false

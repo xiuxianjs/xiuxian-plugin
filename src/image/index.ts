@@ -118,7 +118,7 @@ const shotCache = new Map<string, ShotCacheEntry>()
 export async function screenshot(
   name: keyof typeof map,
   uid: number | string,
-  data: unknown,
+  data,
   enableCache = false
 ) {
   const keyBase = `data/${name}/${uid}`
@@ -127,7 +127,7 @@ export async function screenshot(
     mkdirSync(dir, { recursive: true })
     writeFileSync(`${dir}/${name}.json`, JSON.stringify(data, null, 2))
   }
-  const component = map[name] as unknown as ComponentType<unknown>
+  const component = map[name] as ComponentType
   if (!enableCache) {
     // @ts-expect-error 宽松适配多种组件 props 结构
     return await renderComponentToBuffer(keyBase, component, data)

@@ -64,7 +64,7 @@ export async function existNajieThing(
       '仙宠口粮'
     ]
     for (const cat of type) {
-      const list = (najie as unknown as Record<string, unknown>)[cat]
+      const list = (najie as Record<string, unknown>)[cat]
       if (!Array.isArray(list)) continue
       ifexist = (list as NajieItem[]).find(item => item.name == thing_name)
       if (ifexist) break

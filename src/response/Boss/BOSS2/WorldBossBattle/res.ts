@@ -33,7 +33,7 @@ interface ActionState {
   action?: string
 }
 
-function parseJson<T>(raw: unknown, fallback: T): T {
+function parseJson<T>(raw, fallback: T): T {
   if (typeof raw !== 'string' || raw === '') return fallback
   try {
     return JSON.parse(raw) as T
@@ -41,7 +41,7 @@ function parseJson<T>(raw: unknown, fallback: T): T {
     return fallback
   }
 }
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

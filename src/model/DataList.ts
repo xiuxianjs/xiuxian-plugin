@@ -91,7 +91,7 @@ import { __PATH } from './paths.js'
 // DataList 原始直接挂载各 JSON；这里加上显式类型，保持与 XiuxianDataShape 对应
 export class DataList implements XiuxianDataShape {
   // 允许动态访问（原代码大量通过字符串下标访问）
-  [k: string]: unknown
+  [k: string]
   player: string = __PATH.player_path
   equipment: string = __PATH.equipment_path
   najie: string = __PATH.najie_path

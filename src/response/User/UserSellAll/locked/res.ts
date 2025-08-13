@@ -59,7 +59,7 @@ export default onResponse(selects, async e => {
   let qualityToken = parts[1] || ''
 
   const najieRaw = await readNajie(usr_qq)
-  const najie = najieRaw as unknown as NajieLike
+  const najie = najieRaw as NajieLike
 
   const index = Number(thingName)
   if (Number.isFinite(index) && index >= 0) {

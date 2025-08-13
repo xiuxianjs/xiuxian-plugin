@@ -21,11 +21,11 @@ interface NajieLike {
   丹药?: DanYaoItem[]
 }
 
-function num(v: unknown, d = 0) {
+function num(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? n : d
 }
-function normalizeCategory(v: unknown): Parameters<typeof existNajieThing>[2] {
+function normalizeCategory(v): Parameters<typeof existNajieThing>[2] {
   return String(v) as Parameters<typeof existNajieThing>[2]
 }
 

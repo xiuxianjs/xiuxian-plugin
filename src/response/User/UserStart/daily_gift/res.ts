@@ -22,7 +22,7 @@ interface LastSignStruct {
 interface SignConfig {
   Sign?: { ticket?: number }
 }
-function isLastSignStruct(v: unknown): v is LastSignStruct {
+function isLastSignStruct(v): v is LastSignStruct {
   if (!v || typeof v !== 'object') return false
   const obj = v as Record<string, unknown>
   return (
@@ -64,7 +64,7 @@ export default onResponse(selects, async e => {
     Send(Text('玩家数据异常'))
     return false
   }
-  const record = player as unknown as Record<string, unknown>
+  const record = player as Record<string, unknown>
   let currentStreak = 0
   const rawStreak = record['连续签到天数']
   if (typeof rawStreak === 'number' && Number.isFinite(rawStreak))

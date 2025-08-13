@@ -33,8 +33,8 @@ export default onResponse(selects, async e => {
   if (!notUndAndNull(weizhiRaw)) {
     return false
   }
-  const weizhiUnknown: unknown = weizhiRaw
-  const guardWeizhi = (v: unknown): v is { name: string; Price: number } => {
+  const weizhiUnknown = weizhiRaw
+  const guardWeizhi = (v): v is { name: string; Price: number } => {
     if (!v || typeof v !== 'object') return false
     const r = v as Record<string, unknown>
     return typeof r.Price === 'number' && typeof r.name === 'string'

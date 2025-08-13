@@ -62,8 +62,8 @@ export async function zdBattle(
   let B_xue = 0
   let t: Player
   const msg: string[] = []
-  const jineng1: Skill[] = data.jineng1 as unknown as Skill[]
-  const jineng2: Skill[] = data.jineng2 as unknown as Skill[]
+  const jineng1: Skill[] = data.jineng1 as Skill[]
+  const jineng2: Skill[] = data.jineng2 as Skill[]
   const wuxing = ['金', '木', '土', '水', '火'] as const
   const type: EquipmentSlots[] = ['武器', '护具', '法宝']
   if (A_player.隐藏灵根 && typeof A_player.id === 'string') {

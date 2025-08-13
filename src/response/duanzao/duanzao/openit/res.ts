@@ -117,7 +117,7 @@ export default onResponse(selects, async e => {
       //寻找符合标准的装备
       const newwupin = await readAll(weizhi)
       type EquipLike = { atk: number; def: number; HP: number; name: string }
-      const list = newwupin as unknown as EquipLike[]
+      const list = newwupin as EquipLike[]
       const bizhi: number[] = []
 
       for (let idx = 0; idx < list.length; idx++) {

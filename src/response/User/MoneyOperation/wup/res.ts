@@ -13,7 +13,7 @@ import { selects } from '@src/response/index'
 // 允许：#发 灵石*100 | #发 修为*5000 | #发 血气*300 | #发 剑*优*1
 export const regular = /^(#|＃|\/)?发\S+(?:\*\S+){1,2}$/
 
-function toInt(v: unknown, def = 0): number {
+function toInt(v, def = 0): number {
   const n = Number(v)
   return Number.isFinite(n) ? Math.floor(n) : def
 }

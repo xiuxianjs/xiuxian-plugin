@@ -11,7 +11,7 @@ interface ExtAss extends Omit<AssociationDetailData, '宗门名称'> {
   宗门名称: string
   所有成员?: string[]
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && '宗门名称' in v
 }
 interface PlayerGuildRef {
@@ -19,7 +19,7 @@ interface PlayerGuildRef {
   职位: string
   lingshi_donate?: number
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 

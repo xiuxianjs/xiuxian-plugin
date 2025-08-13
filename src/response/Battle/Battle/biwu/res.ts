@@ -7,11 +7,11 @@ import { selects } from '@src/response/index'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?以武会友$/
 
-function isPlayer(v: unknown): v is Player {
+function isPlayer(v): v is Player {
   return !!v && typeof v === 'object' && '名号' in v && '血量上限' in v
 }
 
-function extractFaQiu(lg: unknown): number | undefined {
+function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
   const o = lg as Record<string, unknown>
   const v = o.法球倍率

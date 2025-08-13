@@ -9,10 +9,10 @@ export const regular = /^(#|＃|\/)?抢红包$/
 interface MentionUser {
   UserId: string
   IsBot?: boolean
-  [k: string]: unknown
+  [k: string]
 }
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }

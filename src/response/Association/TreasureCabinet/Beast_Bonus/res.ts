@@ -11,13 +11,13 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
   宗门神兽?: string
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 interface DateParts {
@@ -25,14 +25,14 @@ interface DateParts {
   M: number
   D: number
 }
-function isDateParts(v: unknown): v is DateParts {
+function isDateParts(v): v is DateParts {
   return !!v && typeof v === 'object' && 'Y' in v && 'M' in v && 'D' in v
 }
 interface NamedClassItem {
   name: string
   class?: string
 }
-function toNamedList(arr: unknown): NamedClassItem[] {
+function toNamedList(arr): NamedClassItem[] {
   if (!Array.isArray(arr)) return []
   return arr
     .map(it => {
@@ -125,9 +125,9 @@ export default onResponse(selects, async e => {
     Send(Text('本次赐福意外失败'))
     return false
   }
-  const category = (item.class && typeof item.class === 'string'
-    ? item.class
-    : '道具') as unknown as import('@src/types').NajieCategory
+  const category = (
+    item.class && typeof item.class === 'string' ? item.class : '道具'
+  ) as import('@src/types').NajieCategory
   await addNajieThing(usr_qq, item.name, category, 1)
   if (randomB > 0.9) {
     Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`))

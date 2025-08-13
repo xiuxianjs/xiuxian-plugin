@@ -46,7 +46,7 @@ export async function settripod(qq: string): Promise<string> {
   const a = await readAll('隐藏灵根')
   const newa = Math.floor(Math.random() * a.length)
   const candidate = a[newa]
-  const isTalentInfo = (x: unknown): x is TalentInfo =>
+  const isTalentInfo = (x): x is TalentInfo =>
     !!x &&
     typeof x === 'object' &&
     'type' in (x as Record<string, unknown>) &&
@@ -103,7 +103,7 @@ export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
   return
 }
 //数量矫正, 违规数量改成1
-export async function jiaozheng(value: unknown): Promise<number> {
+export async function jiaozheng(value): Promise<number> {
   let size: number
   if (typeof value === 'string') {
     const n = Number(value)
@@ -132,7 +132,7 @@ export async function readThat(
   const key = LIB_MAP[weizhi]
   const arr = (DataList as Record<string, unknown>)[key]
   if (Array.isArray(arr)) {
-    for (const item of arr as unknown[]) {
+    for (const item of arr) {
       if (
         item &&
         typeof item === 'object' &&
@@ -150,7 +150,7 @@ export async function readThat(
 export async function readAll(weizhi: LibHumanReadable): Promise<unknown[]> {
   const key = LIB_MAP[weizhi]
   const arr = (DataList as Record<string, unknown>)[key]
-  return Array.isArray(arr) ? (arr as unknown[]) : []
+  return Array.isArray(arr) ? arr : []
 }
 
 //对值相同的五行进行挑选

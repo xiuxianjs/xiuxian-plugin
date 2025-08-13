@@ -26,7 +26,7 @@ interface ExtAss extends AssociationDetailData {
 interface ActionState {
   action?: string
   end_time?: number
-  [k: string]: unknown
+  [k: string]
 }
 interface AuctionConfig {
   openHour?: number
@@ -42,13 +42,13 @@ import { getDataByUserId } from '@src/model/Redis'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?打劫$/
 
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v
 }
-function extractFaQiu(lg: unknown): number | undefined {
+function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
   const v = (lg as Record<string, unknown>).法球倍率
   return typeof v === 'number' ? v : undefined

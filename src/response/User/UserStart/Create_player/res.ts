@@ -18,9 +18,9 @@ export const regular = /^(#|＃|\/)?踏入仙途$/
 
 interface Talent {
   eff: number
-  [k: string]: unknown
+  [k: string]
 }
-function normalizeTalent(t: unknown): Talent {
+function normalizeTalent(t): Talent {
   if (t && typeof t === 'object') {
     const obj = t as Record<string, unknown>
     const eff = typeof obj.eff === 'number' ? obj.eff : 0
@@ -62,7 +62,7 @@ export default onResponse(selects, async e => {
     修为: 1,
     血气: 1,
     灵石: 10000,
-    灵根: talent as unknown as Player['灵根'],
+    灵根: talent as Player['灵根'],
     神石: 0,
     favorability: 0,
     breakthrough: false,
@@ -91,7 +91,7 @@ export default onResponse(selects, async e => {
     addluckyNo: 0,
     师徒任务阶段: 0,
     师徒积分: 0
-  } as unknown as Player
+  } as Player
   await writePlayer(usr_qq, new_player)
   const new_equipment = {
     武器: pickEquip('烂铁匕首'),

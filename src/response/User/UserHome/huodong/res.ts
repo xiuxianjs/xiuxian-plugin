@@ -18,11 +18,11 @@ interface ExchangeCode {
   thing: ExchangeThing[]
 }
 
-function toInt(v: unknown, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
-function parseJson<T>(raw: unknown): T | null {
+function parseJson<T>(raw): T | null {
   if (typeof raw !== 'string' || !raw) return null
   try {
     return JSON.parse(raw) as T

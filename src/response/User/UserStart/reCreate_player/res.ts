@@ -25,7 +25,7 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
-function isPlayerGuildRef(v: unknown): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 interface ExtAss extends AssociationDetailData {
@@ -34,13 +34,13 @@ interface ExtAss extends AssociationDetailData {
   长老?: string[]
   内门弟子?: string[]
   宗主?: string
-  [k: string]: unknown
+  [k: string]
 }
-function isExtAss(v: unknown): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v
 }
 
-function parseNum(v: unknown, def = 0) {
+function parseNum(v, def = 0) {
   const n = Number(v)
   return Number.isFinite(n) ? n : def
 }
@@ -203,14 +203,14 @@ export default onResponse(selects, async e => {
 
 interface Talent {
   eff: number
-  [k: string]: unknown
+  [k: string]
 }
 
-async function Create_player(e: unknown) {
+async function Create_player(e) {
   const base = e as { UserId: string; UserAvatar?: string }
   const usr_qq = base.UserId
   if (await existplayer(usr_qq)) {
-    Show_player(e as unknown as Parameters<typeof Show_player>[0])
+    Show_player(e as Parameters<typeof Show_player>[0])
     return false
   }
   const files = fs.readdirSync(__PATH.player_path)
@@ -232,7 +232,7 @@ async function Create_player(e: unknown) {
     修为: 1,
     血气: 1,
     灵石: 10000,
-    灵根: talent as unknown as Player['灵根'],
+    灵根: talent as Player['灵根'],
     神石: 0,
     favorability: 0,
     breakthrough: false,
@@ -261,7 +261,7 @@ async function Create_player(e: unknown) {
     addluckyNo: 0,
     师徒任务阶段: 0,
     师徒积分: 0
-  } as unknown as Player
+  } as Player
   await writePlayer(usr_qq, new_player)
   const new_equipment = {
     武器: data.equipment_list.find(i => i.name === '烂铁匕首'),
@@ -300,6 +300,6 @@ async function Create_player(e: unknown) {
     beiyong5: 0
   }
   await writeDanyao(usr_qq, danyaoInit)
-  await Show_player(e as unknown as Parameters<typeof Show_player>[0])
+  await Show_player(e as Parameters<typeof Show_player>[0])
   return false
 }

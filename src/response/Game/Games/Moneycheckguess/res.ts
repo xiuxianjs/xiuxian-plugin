@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
 
   const inputMoney = game.yazhu[usr_qq]
 
-  function ensureNumber(v: unknown): number {
+  function ensureNumber(v): number {
     return typeof v === 'number' ? v : parseInt(String(v || 0)) || 0
   }
 

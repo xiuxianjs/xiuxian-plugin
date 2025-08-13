@@ -18,7 +18,7 @@ interface GuildInfo extends AssociationDetailData {
   所有成员?: string[]
   外门弟子?: string[]
 }
-function isGuildInfo(v: unknown): v is GuildInfo {
+function isGuildInfo(v): v is GuildInfo {
   return !!v && typeof v === 'object' && 'power' in v
 }
 function serializePlayer(p: Player): Record<string, JSONValue> {

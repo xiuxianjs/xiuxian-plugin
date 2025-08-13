@@ -50,12 +50,12 @@ export default onResponse(selects, async e => {
   }
 
   interface AnyTuzhiLike {
-    name?: unknown
-    rate?: unknown
-    exp?: unknown
-    materials?: unknown
+    name?
+    rate?
+    exp?
+    materials?
   }
-  const tuzhiRaw = data.tuzhi_list as unknown[]
+  const tuzhiRaw = data.tuzhi_list
   const tuzhiCandidate = tuzhiRaw.find((it): it is AnyTuzhiLike => {
     return (
       !!it &&
