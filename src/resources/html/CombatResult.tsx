@@ -129,7 +129,7 @@ const CombatResult = ({
                       <div className="flex items-center justify-between">
                         <span className="text-blue-100 text-sm">战力</span>
                         <span className="text-amber-300 font-bold text-lg">
-                          {playerA.power.toLocaleString()}
+                          {playerA.power}
                         </span>
                       </div>
                     </div>
@@ -139,8 +139,7 @@ const CombatResult = ({
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-blue-100 text-sm">血量</span>
                         <span className="text-red-300 font-bold text-sm">
-                          {playerA.hp.toLocaleString()}/
-                          {playerA.maxHp.toLocaleString()}
+                          {playerA.hp}/{playerA.maxHp}
                         </span>
                       </div>
                       {/* 血条 */}
@@ -221,7 +220,7 @@ const CombatResult = ({
                       <div className="flex items-center justify-between">
                         <span className="text-red-100 text-sm">战力</span>
                         <span className="text-amber-300 font-bold text-lg">
-                          {playerB.power.toLocaleString()}
+                          {playerB.power}
                         </span>
                       </div>
                     </div>
@@ -231,8 +230,7 @@ const CombatResult = ({
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-red-100 text-sm">血量</span>
                         <span className="text-red-300 font-bold text-sm">
-                          {playerB.hp.toLocaleString()}/
-                          {playerB.maxHp.toLocaleString()}
+                          {playerB.hp}/{playerB.maxHp}
                         </span>
                       </div>
                       {/* 血条 */}
