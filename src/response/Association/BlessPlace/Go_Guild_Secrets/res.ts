@@ -22,13 +22,6 @@ interface ExtAss extends AssociationDetailData {
 function isExtAss(v: unknown): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
-interface GuildSecret {
-  name: string
-  Price: number
-}
-function isGuildSecret(v: unknown): v is GuildSecret {
-  return !!v && typeof v === 'object' && 'name' in v && 'Price' in v
-}
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -57,11 +50,9 @@ export default onResponse(selects, async e => {
     Send(Text('请在指令后面补充秘境名称'))
     return false
   }
-  const listRaw = data.guildSecrets_list as unknown[] | undefined
-  const weizhi = listRaw?.find(
-    item => isGuildSecret(item) && item.name === didian
-  ) as GuildSecret | undefined
-  if (!notUndAndNull(weizhi) || !isGuildSecret(weizhi)) {
+  const listRaw = data.guildSecrets_list
+  const weizhi = listRaw?.find(item => item.name === didian)
+  if (!notUndAndNull(weizhi)) {
     Send(Text('未找到该宗门秘境'))
     return false
   }

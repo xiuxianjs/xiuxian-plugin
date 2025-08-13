@@ -258,7 +258,7 @@ const CombatResult = ({
                   </h3>
                 </div>
 
-                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                <div className="space-y-4 pr-2">
                   {msg.map((item, index) => (
                     <div
                       key={index}
