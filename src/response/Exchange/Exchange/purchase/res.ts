@@ -66,9 +66,9 @@ export default onResponse(selects, async e => {
     return false
   }
   //根据qq得到物品
-  const thing_name = Exchange[x].name.name
-  const thing_class = Exchange[x].name.class
-  const thing_amount = Exchange[x].aconut
+  const thing_name = Exchange[x].thing.name
+  const thing_class = Exchange[x].thing.class
+  const thing_amount = Exchange[x].amount
   const thing_price = Exchange[x].price
   let n = await convert2integer(t[1])
   if (!t[1]) {

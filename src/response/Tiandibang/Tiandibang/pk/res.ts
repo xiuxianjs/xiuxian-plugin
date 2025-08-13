@@ -102,7 +102,6 @@ function settleWin(
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const usr_qq_num = parseInt(usr_qq, 10)
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取游戏状态
@@ -138,16 +137,10 @@ export default onResponse(selects, async e => {
     //没有表要先建立一个！
     await Write_tiandibang([])
   }
-  let x = tiandibang.length
-  for (let m = 0; m < tiandibang.length; m++) {
-    if (tiandibang[m].qq === usr_qq_num) {
-      x = m
-      break
-    }
-  }
-  if (x == tiandibang.length) {
+  const x = tiandibang.findIndex(item => String(item.qq) === usr_qq)
+  if (x === -1) {
     Send(Text('请先报名!'))
-    return false
+    return
   }
   const last_msg: string[] = []
   let atk = 1
@@ -157,6 +150,10 @@ export default onResponse(selects, async e => {
   const nowTime = now.getTime() //获取当前日期的时间戳
   const Today = await shijianc(nowTime)
   const lastbisai_time = await getLastbisai(usr_qq) //获得上次签到日期
+  if (!lastbisai_time) {
+    await redis.set(RD_KEY(usr_qq, 'lastbisai_time'), nowTime) //redis设置签到时间
+    tiandibang[x].次数 = 3
+  }
   if (
     lastbisai_time &&
     (Today.Y != lastbisai_time.Y ||

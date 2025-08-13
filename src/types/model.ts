@@ -121,12 +121,9 @@ export interface ExchangeThingSnapshot {
 }
 export interface ExchangeRecord {
   thing: ExchangeThingSnapshot
-  start_price: number
-  last_price: number
+  price: number
   amount: number
-  last_offer_price: number
-  last_offer_player: number | string
-  groupList: string[]
+  qq: string
   [k: string]: unknown
 }
 export type ForumRecord = ExchangeRecord

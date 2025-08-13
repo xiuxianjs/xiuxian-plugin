@@ -20,14 +20,8 @@ export default onResponse(selects, async e => {
     //没有表要先建立一个！
     await Write_tiandibang([])
   }
-  let x = tiandibang.length
-  for (let i = 0; i < tiandibang.length; i++) {
-    if (tiandibang[i].qq == usr_qq) {
-      x = i
-      break
-    }
-  }
-  if (x == tiandibang.length) {
+
+  if (!tiandibang.find(item => item.qq === usr_qq)) {
     const player = await readPlayer(usr_qq)
     const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
@@ -50,9 +44,9 @@ export default onResponse(selects, async e => {
     tiandibang.push(A_player)
     await Write_tiandibang(tiandibang)
     Send(Text('参赛成功!'))
-    return false
+    return
   } else {
     Send(Text('你已经参赛了!'))
-    return false
+    return
   }
 })

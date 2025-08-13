@@ -214,28 +214,20 @@ export default onResponse(selects, async e => {
         pinji2: finalPinji,
         名号: thingName
       },
-      start_price: price,
-      last_price: price,
-      amount: amount,
-      last_offer_price: price,
-      last_offer_player: usr_qq,
-      groupList: [],
-      whole: totalPrice,
+      price,
+      amount,
+      qq: usr_qq,
       now_time: nowTime
-    } as ExchangeRecord & { whole: number; now_time: number }
+    } as ExchangeRecord
     await addNajieThing(usr_qq, selected.name, itemClass, -amount, finalPinji)
   } else {
     newRecord = {
-      thing: { name: thingName, class: itemClass, 名号: thingName },
-      start_price: price,
-      last_price: price,
-      amount: amount,
-      last_offer_price: price,
-      last_offer_player: usr_qq,
-      groupList: [],
-      whole: totalPrice,
+      thing: { name: thingName, class: itemClass },
+      price,
+      amount,
+      qq: usr_qq,
       now_time: nowTime
-    } as ExchangeRecord & { whole: number; now_time: number }
+    } as ExchangeRecord
     await addNajieThing(usr_qq, thingName, itemClass, -amount)
   }
 
