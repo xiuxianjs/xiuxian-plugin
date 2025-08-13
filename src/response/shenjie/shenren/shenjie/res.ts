@@ -26,7 +26,7 @@ interface ActionState {
   mine?: string
   cishu?: string | number
   group_id?: string
-  [k: string]
+  [k: string]: any
 }
 interface DayInfo {
   Y: number

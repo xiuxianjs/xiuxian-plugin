@@ -54,7 +54,7 @@ export interface IDataList extends XiuxianDataShape {
   Level: string
   Occupation: string
   // 再次兜底
-  [k: string]
+  [k: string]: any
 }
 
 // Redis 基础 JSON 递归结构
@@ -117,14 +117,14 @@ export interface ExchangeThingSnapshot {
   type?: string
   出售价?: number
   pinji?: number | string
-  [k: string]
+  [k: string]: any
 }
 export interface ExchangeRecord {
   thing: ExchangeThingSnapshot
   price: number
   amount: number
   qq: string
-  [k: string]
+  [k: string]: any
 }
 export type ForumRecord = ExchangeRecord
 // 新增：Image 视图层扩展条目类型
@@ -160,7 +160,7 @@ export interface BattleEntity {
   level_id?: number
   神石?: number
   仙宠?: { type: string; 加成: number; name: string }
-  [k: string]
+  [k: string]: any
 }
 
 // 装备模块
@@ -198,7 +198,7 @@ export interface QinmiduRecord {
   婚姻: number
 }
 export interface TempRecord {
-  [k: string]
+  [k: string]: any
 }
 
 // 进度 / 经验
@@ -262,9 +262,9 @@ export interface PlayerActionData {
     name: string
     start: number
     duration: number
-    [k: string]
+    [k: string]: any
   }
-  mine?: { name: string; start: number; duration: number; [k: string] }
+  mine?: { name: string; start: number; duration: number; [k: string]: any }
   is_jiesuan?: number
 }
 
@@ -315,19 +315,19 @@ export type {
 export interface NameListConfig {
   whitecrowd: Array<string | number>
   blackid: Array<string | number>
-  [k: string]
+  [k: string]: any
 }
 
 // === 新增：Shop 模块相关类型 ===
 export interface ShopThing {
   name: string
   数量: number
-  [k: string]
+  [k: string]: any
 }
 export interface ShopSlot {
   one: ShopThing[]
   name: string
-  [k: string]
+  [k: string]: any
 }
 export type ShopData = ShopSlot[]
 
@@ -337,7 +337,7 @@ export interface NamedItem {
   name: string
   class?: string
   type?: string
-  [k: string]
+  [k: string]: any
 }
 export interface ExchangeEntry {
   num?: number
@@ -348,13 +348,13 @@ export interface ForumEntry {
   num?: number
   now_time: number
   class?: string
-  [k: string]
+  [k: string]: any
 }
 export interface PlayerStatus {
   action: string
   time: string | null
 }
-export type SendFn = (msg) => unknown
+export type SendFn = (msg: unknown) => unknown
 export interface AssociationInfo {
   宗主: string
   power: number
@@ -372,7 +372,7 @@ export interface AssociationInfo {
 // === 新增：Cultivation 模块 ===
 export interface FoundThing {
   name: string
-  [k: string]
+  [k: string]: any
 }
 
 // === 新增：Pub 模块 ===
@@ -426,7 +426,7 @@ export interface SourcePetLike {
   初始加成?: number
   每级增加?: number
   加成?: number
-  [k: string]
+  [k: string]: any
 }
 
 // 在此补充 OwnedPetItem 类型（宠物在背包中的形态）
@@ -438,7 +438,7 @@ export interface OwnedPetItem {
   加成: number
   数量: number
   islockd: number
-  [k: string]
+  [k: string]: any
 }
 export type PetList = OwnedPetItem[]
 

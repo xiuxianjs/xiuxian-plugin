@@ -19,7 +19,7 @@ export interface AuctionThing {
   name: string
   class: string
   pinji?: string | number
-  [k: string]
+  [k: string]: any
 }
 /** 拍卖运行期缓存结构（Redis: xiuxian:AuctionofficialTask） */
 export interface AuctionSession {
@@ -29,7 +29,7 @@ export interface AuctionSession {
   last_price: number // 当前最高价
   last_offer_price: number // 最后一笔出价发生的时间戳（命名沿用旧字段）
   groupList: GroupId[] // 需要广播的群
-  [k: string]
+  [k: string]: any
 }
 
 export type NajieCategory =
@@ -51,14 +51,14 @@ export interface ExchangeEntry {
     name: string
     class: NajieCategory
     pinji?: string
-    [k: string]
+    [k: string]: any
   }
 }
 export interface ForumEntry {
   now_time: Timestamp
   qq: string
   whole: number // 灵石数量
-  [k: string]
+  [k: string]: any
 }
 
 /****************************** 洗劫 / 逃跑 流程 (Xijietask / Taopaotask) ******************************/
@@ -124,7 +124,7 @@ export interface TempMessage {
   qq_group?: string
   /** 个人 QQ（早期结构保留） */
   qq?: string | number
-  [k: string]
+  [k: string]: any
 }
 
 /****************************** 商店动态 (Taopaotask / Shoptask / ShopGradetask) ******************************/
@@ -152,7 +152,7 @@ export interface TiandibangRow {
   qq: string
   次数: number
   积分: number
-  [k: string]
+  [k: string]: any
 }
 
 export interface TiandibangRankEntry extends TiandibangRow {
@@ -191,14 +191,14 @@ export interface WorldBossStatus {
   /** -1 表示尚未被击杀，其它为击杀时间戳 */
   KilledTime: number
   Reward: number // 击杀奖励结算基数
-  [k: string]
+  [k: string]: any
 }
 /** Boss 伤害排行临时记录结构 */
 export interface WorldBossPlayerRecord {
   QQ: Array<string | number>
   TotalDamage: number[]
   Name: string[]
-  [k: string]
+  [k: string]: any
 }
 
 /****************************** 商店日常 (ShopGradetask / Shoptask) ******************************/
@@ -208,17 +208,17 @@ export interface ShopMutableSlot {
   Grade?: number
   state?: number
   price?: number
-  one?: Array<{ name: string; 数量: number; [k: string] }>
-  two?: Array<{ name: string; 数量: number; [k: string] }>
-  three?: Array<{ name: string; 数量: number; [k: string] }>
-  [k: string]
+  one?: Array<{ name: string; 数量: number; [k: string]: any }>
+  two?: Array<{ name: string; 数量: number; [k: string]: any }>
+  three?: Array<{ name: string; 数量: number; [k: string]: any }>
+  [k: string]: any
 }
 
 /****************************** 备份任务 (BackUptask) ******************************/
 /** 占位：未来若有备份元数据可在此扩展 */
 export interface BackupTaskMeta {
   lastRun?: number
-  [k: string]
+  [k: string]: any
 }
 
 /****************************** 汇总联合类型（如需在外部做窄化） ******************************/

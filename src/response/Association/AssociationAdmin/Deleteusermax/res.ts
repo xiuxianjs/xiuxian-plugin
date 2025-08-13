@@ -16,7 +16,7 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
 }
 interface ExtAss extends AssociationDetailData {
   所有成员?: string[]
-  [k: string]
+  [k: string]: any
 }
 function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v

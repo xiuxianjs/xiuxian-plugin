@@ -126,7 +126,6 @@ scheduleJob('0 0/5 * * * ?', async () => {
               player.幸运 -= player.addluckyNo
               player.addluckyNo = 0
             }
-            // @ts-expect-error: data.setData 期望 JSONValue，Player 包含额外字段（运行时可序列化）
             await data.setData('player', player_id, player)
           }
           //默认结算装备数

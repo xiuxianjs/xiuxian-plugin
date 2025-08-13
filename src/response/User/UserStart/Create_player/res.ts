@@ -18,7 +18,7 @@ export const regular = /^(#|＃|\/)?踏入仙途$/
 
 interface Talent {
   eff: number
-  [k: string]
+  [k: string]: any
 }
 function normalizeTalent(t): Talent {
   if (t && typeof t === 'object') {

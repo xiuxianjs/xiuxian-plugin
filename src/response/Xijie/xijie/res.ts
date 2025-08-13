@@ -28,7 +28,7 @@ interface ShopItemLite {
   price?: number
   Grade?: number
   state?: number
-  [k: string]
+  [k: string]: any
 }
 function isShopItem(v): v is ShopItemLite {
   return !!v && typeof v === 'object' && 'name' in v

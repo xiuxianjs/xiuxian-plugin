@@ -22,7 +22,7 @@ interface LegacyRecord {
   aconut?: number
   pinji2?: number
   class?: NajieCategory
-  [k: string]
+  [k: string]: any
 }
 
 function toInt(v, d = 0) {

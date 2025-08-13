@@ -10,13 +10,13 @@ export const regular = /^(#|＃|\/)?妖王贡献榜$/
 interface WorldBossStatus {
   Reward?: number
   Health?: number
-  [k: string]
+  [k: string]: any
 }
 interface PlayerRecordData {
   QQ: Array<string | number>
   TotalDamage: number[]
   Name: string[]
-  [k: string]
+  [k: string]: any
 }
 
 function parseJson<T>(raw: string | null): T | null {

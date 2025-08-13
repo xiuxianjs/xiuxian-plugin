@@ -15,7 +15,7 @@ interface EquipData {
   武器?: EquipSlot
   护具?: EquipSlot
   法宝?: EquipSlot
-  [k: string]: EquipSlot | unknown
+  [k: string]: EquipSlot
 }
 
 export default onResponse(selects, async e => {

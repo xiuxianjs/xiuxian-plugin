@@ -34,7 +34,7 @@ interface ExtAss extends AssociationDetailData {
   长老?: string[]
   内门弟子?: string[]
   宗主?: string
-  [k: string]
+  [k: string]: any
 }
 function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v
@@ -203,7 +203,7 @@ export default onResponse(selects, async e => {
 
 interface Talent {
   eff: number
-  [k: string]
+  [k: string]: any
 }
 
 async function Create_player(e) {

@@ -26,7 +26,7 @@ interface ExtAss extends AssociationDetailData {
 interface ActionState {
   action?: string
   end_time?: number
-  [k: string]
+  [k: string]: any
 }
 interface AuctionConfig {
   openHour?: number

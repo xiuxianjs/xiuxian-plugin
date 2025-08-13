@@ -169,7 +169,7 @@ export async function setFileValue(
   }
 }
 
-export type FoundThing = { name: string; [k: string] }
+export type FoundThing = { name: string; [k: string]: any }
 export async function foundthing(
   thing_name: string
 ): Promise<FoundThing | false> {

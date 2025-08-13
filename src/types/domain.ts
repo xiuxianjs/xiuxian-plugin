@@ -15,7 +15,7 @@ export interface AssociationData {
   职位?: GuildRole
   power?: number
   最低加入境界?: number
-  [k: string]
+  [k: string]: any
 }
 
 // 运行期实际使用到的更完整的宗门数据结构（增量类型，避免大量 any）
@@ -26,7 +26,7 @@ export interface AssociationDetailData extends AssociationData {
   副宗主?: string[]
   长老?: string[]
   内门弟子?: string[]
-  [k: string]
+  [k: string]: any
 }
 
 // 关卡/境界等级条目
@@ -39,7 +39,7 @@ export interface LevelItem {
 export interface PlayerData {
   UserId?: string
   宗门?: AssociationData
-  [k: string]
+  [k: string]: any
 }
 
 // 数据访问接口（从 data 对象推测）

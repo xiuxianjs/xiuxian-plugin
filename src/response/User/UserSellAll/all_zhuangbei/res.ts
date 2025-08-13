@@ -18,7 +18,7 @@ interface EquipItem {
   atk: number
   def: number
   HP: number
-  [k: string]
+  [k: string]: any
 }
 interface NajieEquipBag {
   装备?: EquipItem[]

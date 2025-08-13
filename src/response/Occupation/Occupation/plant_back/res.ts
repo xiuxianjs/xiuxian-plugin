@@ -13,7 +13,7 @@ interface PlantAction {
     name: string
     start: number
     duration: number
-    [k: string]
+    [k: string]: any
   }
   is_jiesuan?: number
   shutup?: number
@@ -21,7 +21,7 @@ interface PlantAction {
   power_up?: number
   Place_action?: number
   group_id?
-  [k: string]
+  [k: string]: any
 }
 
 function calcEffectiveMinutes(

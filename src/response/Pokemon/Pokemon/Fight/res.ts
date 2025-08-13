@@ -21,7 +21,7 @@ interface BagPetLike {
   灵魂绑定?: number
   type?: string
   加成?
-  [k: string]
+  [k: string]: any
 }
 
 function toInt(v, d = 0) {
