@@ -16,7 +16,7 @@ export interface TiandibangRow {
   学习的功法: unknown
   魔道值: number
   神石: number
-  qq: number
+  qq: string
   次数: number
   积分: number
   [k: string]: unknown
@@ -70,7 +70,6 @@ export async function re_bangdang() {
   const temp: TiandibangRow[] = []
   for (let k = 0; k < playerList.length; k++) {
     const thisQqStr = playerList[k]!
-    const thisQq = parseInt(thisQqStr, 10)
     const player = await readPlayer(thisQqStr)
     const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
@@ -88,7 +87,7 @@ export async function re_bangdang() {
       学习的功法: player.学习的功法,
       魔道值: (player as Player & { 魔道值?: number }).魔道值 ?? 0,
       神石: (player as Player & { 神石?: number }).神石 ?? 0,
-      qq: thisQq,
+      qq: thisQqStr,
       次数: 3,
       积分: 0
     })

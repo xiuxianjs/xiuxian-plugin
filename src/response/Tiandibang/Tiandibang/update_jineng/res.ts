@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   // 榜单数据类型定义（局部）
   interface RankRow {
-    qq: number
+    qq: string
     名号: string
     境界: number
     攻击: number
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
     //没有表要先建立一个！
     await Write_tiandibang([])
   }
-  const index = tiandibang.findIndex(item => item.qq === Number(usr_qq))
+  const index = tiandibang.findIndex(item => item.qq === usr_qq)
   if (index === -1) {
     Send(Text('请先报名!'))
     return false

@@ -149,7 +149,7 @@ export interface TiandibangRow {
   学习的功法: unknown
   魔道值: number
   神石: number
-  qq: number
+  qq: string
   次数: number
   积分: number
   [k: string]: unknown
@@ -167,7 +167,7 @@ export interface TiandibangRankEntry extends TiandibangRow {
   学习的功法: Player['学习的功法']
   魔道值: number
   神石: number
-  qq: number
+  qq: string
   次数: number
   积分: number
 }
