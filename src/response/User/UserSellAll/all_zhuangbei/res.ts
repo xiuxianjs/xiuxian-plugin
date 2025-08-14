@@ -10,15 +10,17 @@ import {
 
 import { selects } from '@src/response/index'
 import { getQquipmentImage } from '@src/model/image'
+import DataList from '@src/model/DataList'
+import { EquipmentLike } from '@src/types/model'
 export const regular = /^(#|＃|\/)?一键装备$/
 
 interface EquipItem {
   name: string
-  type: string
+  type: '武器' | '护具' | '法宝'
   atk: number
   def: number
   HP: number
-  [k: string]: any
+  [k: string]: unknown
 }
 interface NajieEquipBag {
   装备?: EquipItem[]
@@ -29,47 +31,29 @@ interface EquipmentSlots {
   法宝?: EquipItem
   [k: string]: EquipItem | undefined
 }
-interface BaseStage {
-  基础攻击?: number
-  基础防御?: number
-  基础血量?: number
-}
-interface EquipmentLikeArg {
-  name: string
-  type: string
-  atk: number
-  def: number
-  HP: number
-  class: string | number
-}
 
 function num(v, d = 0) {
-  return typeof v === 'number' && Number.isFinite(v) ? v : d
-}
-
-function extractStage(obj): BaseStage | null {
-  if (!obj || typeof obj !== 'object') return null
-  const r = obj as Record<string, unknown>
-  if ('基础攻击' in r || '基础防御' in r || '基础血量' in r)
-    return r as BaseStage
-  return null
+  const num = Number(v)
+  if (isNaN(num) || !isFinite(num)) return d
+  return num
 }
 
 function calcBaseThree(
   player: Record<string, unknown>
 ): [number, number, number] | null {
-  const levelObj = data.Level_list.find(
-    i => (i as Record<string, unknown>)?.['level_id'] === player['level_id']
+  const levelObj = DataList.Level_list.find(
+    i => i['level_id'] === player['level_id']
   )
-  const phyObj = data.LevelMax_list.find(
-    i => (i as Record<string, unknown>)?.['level_id'] === player['Physique_id']
+  const phyObj = DataList.LevelMax_list.find(
+    i => i['level_id'] === player['Physique_id']
   )
-  const level = extractStage(levelObj)
-  const phy = extractStage(phyObj)
-  if (!level || !phy) return null
-  const atk = num(level.基础攻击) + num(player['攻击加成']) + num(phy.基础攻击)
-  const def = num(level.基础防御) + num(player['防御加成']) + num(phy.基础防御)
-  const hp = num(level.基础血量) + num(player['生命加成']) + num(phy.基础血量)
+  if (!levelObj || !phyObj) return null
+  const atk =
+    num(levelObj.基础攻击) + num(player['攻击加成']) + num(phyObj.基础攻击)
+  const def =
+    num(levelObj.基础防御) + num(player['防御加成']) + num(phyObj.基础防御)
+  const hp =
+    num(levelObj.基础血量) + num(player['生命加成']) + num(phyObj.基础血量)
   return [atk, def, hp]
 }
 
@@ -80,20 +64,17 @@ function score(e: EquipItem, base: [number, number, number]): number {
     : e.atk * 0.43 + e.def * 0.16 + e.HP * 0.41
 }
 
-function toEquipLike(item: EquipItem, cls: string | number): EquipmentLikeArg {
+function toEquipLike(item: EquipItem, cls: string): EquipmentLike {
   return {
     name: item.name,
     type: item.type,
     atk: num(item.atk),
     def: num(item.def),
     HP: num(item.HP),
-    class: cls
+    class: cls,
+    bao: num(item.bao),
+    pinji: num(item.pinji)
   }
-}
-
-function normalizeClass(v): string | number {
-  if (typeof v === 'string' || typeof v === 'number') return v
-  return String(v ?? '')
 }
 
 export default onResponse(selects, async e => {
@@ -123,12 +104,14 @@ export default onResponse(selects, async e => {
     const current = equipment[slot]
     if (!current) continue
     let bestScore = score(current, base)
+
     let best: EquipItem | null = null
     for (const item of bagList) {
       if (!item || item.type !== slot) continue
       const thing = await foundthing(item.name)
       if (!thing) continue
       const sc = score(item, base)
+
       if (sc > bestScore) {
         bestScore = sc
         best = item
@@ -136,12 +119,11 @@ export default onResponse(selects, async e => {
     }
     if (best) {
       const defThing = await foundthing(best.name)
+
       if (defThing) {
-        const equipArg = toEquipLike(best, normalizeClass(defThing.class))
-        await insteadEquipment(
-          usr_qq,
-          equipArg as Parameters<typeof insteadEquipment>[1]
-        )
+        const equipArg = toEquipLike(best, defThing.class)
+
+        await insteadEquipment(usr_qq, equipArg)
       }
     }
   }
