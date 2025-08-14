@@ -59,7 +59,7 @@ export default onResponse(selects, async e => {
     v
   ): v is { name: string; Price: number; experience: number } => {
     if (!v || typeof v !== 'object') return false
-    const r = v as Record<string, unknown>
+    const r = v
     return (
       typeof r.Price === 'number' &&
       typeof r.experience === 'number' &&

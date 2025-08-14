@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
   if (!player_raw || player_raw === 'error' || Array.isArray(player_raw)) {
     return false
   }
-  const player_data = player_raw as Record<string, unknown>
+  const player_data = player_raw
 
   const toNum = (v): number => {
     const n = Number(v)

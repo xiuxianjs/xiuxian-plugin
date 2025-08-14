@@ -2,10 +2,11 @@ import { Text, useSend } from 'alemonjs'
 import { __PATH } from '@src/model/paths'
 import { getRandomFromARR, notUndAndNull } from '@src/model/common'
 import { playerEfficiency } from '@src/model/efficiency'
-import { config, data, redis } from '@src/model/api'
+import { data, redis } from '@src/model/api'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/index'
+import { getConfig } from '@src/model'
 export const regular = /^(#|＃|\/)?退出宗门$/
 
 // 成员宗门信息运行期形状（旧数据兼容）
@@ -23,7 +24,7 @@ function isPlayerGuildInfo(val): val is PlayerGuildInfo {
 
 type RoleKey = '宗主' | '副宗主' | '长老' | '内门弟子' | string
 function getRoleList(ass: AssociationDetailData, role: RoleKey): string[] {
-  const raw = (ass as Record<string, unknown>)[role]
+  const raw = ass[role]
   return Array.isArray(raw)
     ? (raw.filter(i => typeof i === 'string') as string[])
     : []
@@ -33,7 +34,7 @@ function setRoleList(
   role: RoleKey,
   list: string[]
 ): void {
-  ;(ass as Record<string, unknown>)[role] = list
+  ass[role] = list
 }
 
 function ensureStringArray(v): string[] {
@@ -80,7 +81,7 @@ export default onResponse(selects, async e => {
 
   const guildInfo = player.宗门
   const nowTime = Date.now()
-  const timeCfg = config.getConfig('xiuxian', 'xiuxian').CD.joinassociation // 分钟
+  const timeCfg = getConfig('xiuxian', 'xiuxian').CD.joinassociation // 分钟
   const joinTuple = guildInfo.time || guildInfo.加入时间
   if (joinTuple && Array.isArray(joinTuple) && joinTuple.length >= 2) {
     const addTime = joinTuple[1] + 60000 * timeCfg

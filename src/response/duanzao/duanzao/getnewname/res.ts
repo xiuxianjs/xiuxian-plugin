@@ -82,7 +82,7 @@ export default onResponse(selects, async e => {
   // 读取已命名记录
   let records: CustomEquipRecord[] = []
   try {
-    records = (await readItTyped()) as CustomEquipRecord[]
+    records = await readItTyped()
   } catch {
     await writeIt([])
     records = []
@@ -129,7 +129,7 @@ export default onResponse(selects, async e => {
 
   await Write_najie(user_qq, najie)
   // 写回记录（转为通用结构数组）
-  await writeIt(records.map(r => ({ ...r })) as Record<string, unknown>[])
+  await writeIt(records.map(r => ({ ...r })))
 
   Send(Text(`附名成功,您的${thing_name}更名为${new_name}`))
   return false

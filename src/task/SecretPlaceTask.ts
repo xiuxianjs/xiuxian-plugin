@@ -1,4 +1,4 @@
-import { redis, data, config, pushInfo } from '@src/model/api'
+import { redis, data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
 import { zdBattle } from '@src/model/battle'
@@ -16,6 +16,7 @@ import type {
   ActionState
 } from '@src/types'
 import { writePlayer } from '@src/model/xiuxian'
+import { getConfig } from '@src/model'
 // NajieCategory 断言工具
 const NAJIE_CATEGORIES: readonly NajieCategory[] = [
   '装备',
@@ -114,7 +115,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
           const B_win = `${B_player.名号}击败了${A_player.名号}`
           let thing_name: string | undefined
           let thing_class: NajieCategory | undefined
-          const cf = config.getConfig('xiuxian', 'xiuxian')
+          const cf = getConfig('xiuxian', 'xiuxian')
           const x = cf.SecretPlace.one
           const random1 = Math.random()
           const y = cf.SecretPlace.two

@@ -1,6 +1,6 @@
 import { Text, useMessage, useSend, useSubscribe } from 'alemonjs'
 
-import { redis, data, config } from '@src/model/api'
+import { redis, data } from '@src/model/api'
 import {
   __PATH,
   addHP,
@@ -12,7 +12,8 @@ import {
   writeDanyao,
   writeEquipment,
   Write_najie,
-  writePlayer
+  writePlayer,
+  getConfig
 } from '@src/model/index'
 import fs from 'fs'
 import { selects } from '@src/response/index'
@@ -45,9 +46,8 @@ function parseNum(v, def = 0) {
   return Number.isFinite(n) ? n : def
 }
 function removeFromRole(ass: ExtAss, role: string, qq: string) {
-  const list = (ass as Record<string, unknown>)[role]
-  if (Array.isArray(list))
-    (ass as Record<string, unknown>)[role] = list.filter(v => v !== qq)
+  const list = ass[role]
+  if (Array.isArray(list)) ass[role] = list.filter(v => v !== qq)
 }
 
 export default onResponse(selects, async e => {
@@ -83,7 +83,7 @@ export default onResponse(selects, async e => {
   const lastKey = `xiuxian@1.3.0:${usr_qq}:last_reCreate_time`
   const lastRestartRaw = await redis.get(lastKey)
   const lastRestart = parseNum(lastRestartRaw)
-  const cf = config.getConfig('xiuxian', 'xiuxian') as Partial<{
+  const cf = getConfig('xiuxian', 'xiuxian') as Partial<{
     CD?: { reborn?: number }
   }>
   const rebornMin = cf?.CD?.reborn ?? 60
@@ -167,7 +167,7 @@ export default onResponse(selects, async e => {
                   isPlayerGuildRef(randmember.宗门)
                 ) {
                   removeFromRole(ass, randmember.宗门.职位, randmember_qq)
-                  ;(ass as Record<string, unknown>).宗主 = randmember_qq
+                  ass.宗主 = randmember_qq
                   randmember.宗门.职位 = '宗主'
                   await writePlayer(randmember_qq, randmember)
                   await data.setAssociation(ass.宗门名称, ass)
@@ -216,7 +216,7 @@ async function Create_player(e) {
   const files = fs.readdirSync(__PATH.player_path)
   const n = files.length + 1
   const talentUnknown = await getRandomTalent()
-  const rawTalent = (talentUnknown ?? {}) as Record<string, unknown>
+  const rawTalent = talentUnknown ?? {}
   const effVal =
     typeof rawTalent.eff === 'number' ? (rawTalent.eff as number) : 0
   const talent: Talent = { ...rawTalent, eff: effVal }

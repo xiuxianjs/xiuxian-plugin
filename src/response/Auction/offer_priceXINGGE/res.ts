@@ -1,7 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, config } from '@src/model/api'
-import { existplayer, notUndAndNull, readPlayer } from '@src/model/index'
+import { redis } from '@src/model/api'
+import {
+  existplayer,
+  getConfig,
+  notUndAndNull,
+  readPlayer
+} from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?星阁出价.*$/
@@ -21,10 +26,7 @@ export default onResponse(selects, async e => {
   // 是否到拍卖时间
   const auction = await redis.get('xiuxian:AuctionofficialTask')
   if (!notUndAndNull(auction)) {
-    const { openHour, closeHour } = config.getConfig(
-      'xiuxian',
-      'xiuxian'
-    ).Auction
+    const { openHour, closeHour } = getConfig('xiuxian', 'xiuxian').Auction
     Send(Text(`不在拍卖时间，开启时间为每天${openHour}时~${closeHour}时`))
     return false
   }

@@ -139,7 +139,7 @@ async function exitAssociationIfNeed(
   if (guild.职位 !== '宗主') {
     const ass2Raw = await data.getAssociation(guild.宗门名称)
     if (isAssociation(ass2Raw)) {
-      const ass2 = ass2Raw as Record<string, unknown>
+      const ass2 = ass2Raw
       if (Array.isArray(ass2[guild.职位]))
         (ass2[guild.职位] as string[]) = (ass2[guild.职位] as string[]).filter(
           q => q !== usr_qq
@@ -193,7 +193,7 @@ async function exitAssociationIfNeed(
       const arr = ass3[pos]
       if (Array.isArray(arr))
         ass3[pos] = (arr as string[]).filter(q => q !== randmember_qq)
-      ;(ass3 as Record<string, unknown>)['宗主'] = randmember_qq
+      ass3['宗主'] = randmember_qq
       ;(randmember.宗门 as AssociationData).职位 = '宗主'
       await writePlayer(randmember_qq, randmember as Player)
     }
@@ -219,7 +219,7 @@ const numVal = (v, d = 0) =>
       ? +v
       : d
 const setNum = (p: PlayerEx, k: string, v: number) => {
-  ;(p as Record<string, unknown>)[k] = v
+  p[k] = v
 }
 
 // 主逻辑

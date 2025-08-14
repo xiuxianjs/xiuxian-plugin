@@ -50,7 +50,7 @@ function isExtAss(v): v is ExtAss {
 }
 function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
-  const v = (lg as Record<string, unknown>).法球倍率
+  const v = lg.法球倍率
   return typeof v === 'number' ? v : undefined
 }
 

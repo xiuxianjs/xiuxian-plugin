@@ -12,17 +12,8 @@ import type {
   CoreNajieCategory as NajieCategory
 } from '@src/types'
 import { Mention, DataMention } from 'alemonjs'
+import { NAJIE_CATEGORIES } from '@src/model/settions'
 
-const NAJIE_CATEGORIES: readonly NajieCategory[] = [
-  '装备',
-  '丹药',
-  '道具',
-  '功法',
-  '草药',
-  '材料',
-  '仙宠',
-  '仙宠口粮'
-] as const
 function isNajieCategory(v): v is NajieCategory {
   return (
     typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v)

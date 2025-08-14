@@ -1,8 +1,7 @@
 import { randomInt } from 'crypto'
 import { getIoRedis } from '@alemonjs/db'
 import type { DiceGameResult, RiskProfile } from '../types/model'
-// 资金池 Redis Key
-const GAME_KEY = 'xiuxian@1.3.0:system:money_game'
+import { GAME_KEY } from './settions'
 
 // 内部风控参数（根据投入金额动态判定）
 // 移除本地 interface RiskProfile，使用集中类型

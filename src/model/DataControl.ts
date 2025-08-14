@@ -1,17 +1,7 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import type { JSONData, FilePathType } from '../types/model'
-
-const filePathMap = {
-  player: __PATH.player_path,
-  equipment: __PATH.equipment_path,
-  najie: __PATH.najie_path,
-  lib: __PATH.lib_path,
-  Timelimit: __PATH.Timelimit,
-  Level: __PATH.Level,
-  association: __PATH.association,
-  occupation: __PATH.occupation
-}
+import { filePathMap } from './settions.js'
 
 /**
  * @param key
@@ -73,58 +63,55 @@ export const writeDataByPath = (
 }
 
 /**
+ * 检测存档存在
+ * @param file_path_type ["player" , "association" ]
+ * @param file_name
  * @deprecated
  */
-class DataControl {
-  /**
-   * 检测存档存在
-   * @param file_path_type ["player" , "association" ]
-   * @param file_name
-   * @deprecated
-   */
-  async existData(file_path_type: FilePathType, file_name: string) {
-    const redis = getIoRedis()
-    const res = await redis.exists(
-      `${filePathMap[file_path_type]}:${file_name}`
-    )
-    return res === 1
-  }
+async function existData(file_path_type: FilePathType, file_name: string) {
+  const redis = getIoRedis()
+  const res = await redis.exists(`${filePathMap[file_path_type]}:${file_name}`)
+  return res === 1
+}
 
-  /**
-   * 获取文件数据(user_qq为空查询item下的file_name文件)
-   * @param file_name  [player,equipment,najie]
-   * @param user_qq
-   * @deprecated
-   */
-  async getData(file_name: FilePathType | string, user_qq?: string) {
-    const redis = getIoRedis()
-    if (user_qq) {
-      const data = await redis.get(`${filePathMap[file_name]}:${user_qq}`)
-      return data ? JSON.parse(data) : null
-    } else {
-      const data = await redis.get(`${filePathMap[file_name]}`)
-      return data ? JSON.parse(data) : null
-    }
-  }
-
-  /**
-   * 写入数据
-   * @param file_name [player,equipment,najie]
-   * @param user_qq
-   * @param data
-   * @deprecated
-   */
-  setData(
-    file_name: FilePathType | string,
-    user_qq: string | null,
-    data: JSONData
-  ): void {
-    const redis = getIoRedis()
-    redis.set(
-      `${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`,
-      JSON.stringify(data)
-    )
-    return
+/**
+ * 获取文件数据(user_qq为空查询item下的file_name文件)
+ * @param file_name  [player,equipment,najie]
+ * @param user_qq
+ * @deprecated
+ */
+async function getData(file_name: FilePathType | string, user_qq?: string) {
+  const redis = getIoRedis()
+  if (user_qq) {
+    const data = await redis.get(`${filePathMap[file_name]}:${user_qq}`)
+    return data ? JSON.parse(data) : null
+  } else {
+    const data = await redis.get(`${filePathMap[file_name]}`)
+    return data ? JSON.parse(data) : null
   }
 }
-export default new DataControl()
+
+/**
+ * 写入数据
+ * @param file_name [player,equipment,najie]
+ * @param user_qq
+ * @param data
+ * @deprecated
+ */
+function setData(
+  file_name: FilePathType | string,
+  user_qq: string | null,
+  data: JSONData
+): void {
+  const redis = getIoRedis()
+  redis.set(
+    `${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`,
+    JSON.stringify(data)
+  )
+  return
+}
+export default {
+  existData,
+  getData,
+  setData
+}

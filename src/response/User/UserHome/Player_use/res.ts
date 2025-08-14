@@ -96,9 +96,7 @@ export default onResponse(selects, async e => {
     message.send(format(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`)))
     return
   }
-  const thingClass = (thing_exist as Record<string, unknown>).class as
-    | string
-    | undefined
+  const thingClass = thing_exist.class as string | undefined
   // 品级解析（修复 0 被视为 falsy 问题）
   const pinji = parsePinji(code[1])
   const x = await existNajieThing(
@@ -156,8 +154,7 @@ export default onResponse(selects, async e => {
     // 读取丹药列表并做最终防御：确保为数组
     const dy = await readDanyao(usr_qq)
     const tType = thingType(thing_exist)
-    const numOr = (k: string) =>
-      toNumber((thing_exist as Record<string, unknown>)[k])
+    const numOr = (k: string) => toNumber(thing_exist[k])
 
     if (tType === '血量') {
       const nowPlayer = await readPlayer(usr_qq)
@@ -376,11 +373,11 @@ export default onResponse(selects, async e => {
       return
     }
     if (tType === '突破') {
-      if ((player as Record<string, unknown>).breakthrough === true) {
+      if (player.breakthrough === true) {
         message.send(format(Text('你已经吃过破境丹了')))
         return
       }
-      ;(player as Record<string, unknown>).breakthrough = true
+      player.breakthrough = true
       await writePlayer(usr_qq, player)
       message.send(format(Text('服用成功,下次突破概率增加20%')))
       await addNajieThing(usr_qq, thing_name, '丹药', -1)
@@ -390,7 +387,7 @@ export default onResponse(selects, async e => {
   // 消耗道具
   if (func[0] == '消耗') {
     if (thing_name == '轮回阵旗') {
-      ;(player as Record<string, unknown>).lunhuiBH = 1
+      player.lunhuiBH = 1
       await writePlayer(usr_qq, player)
       message.send(
         format(Text('已得到"轮回阵旗"的辅助，下次轮回可抵御轮回之苦的十之八九'))
@@ -553,17 +550,12 @@ export default onResponse(selects, async e => {
         player.防御加成 = Number(player.防御加成) || 0
       if (typeof player.生命加成 !== 'number')
         player.生命加成 = Number(player.生命加成) || 0
-      player.攻击加成 +=
-        toNumber((qh as Record<string, unknown>).攻击) * quantity
-      player.防御加成 +=
-        toNumber((qh as Record<string, unknown>).防御) * quantity
-      player.生命加成 +=
-        toNumber((qh as Record<string, unknown>).血量) * quantity
+      player.攻击加成 += toNumber(qh.攻击) * quantity
+      player.防御加成 += toNumber(qh.防御) * quantity
+      player.生命加成 += toNumber(qh.血量) * quantity
       await writePlayer(usr_qq, player)
       await addNajieThing(usr_qq, thing_name, '道具', -quantity)
-      message.send(
-        format(Text(`${(qh as Record<string, unknown>).msg || '使用成功'}`))
-      )
+      message.send(format(Text(`${qh.msg || '使用成功'}`)))
       return
     }
   }

@@ -47,10 +47,7 @@ export async function settripod(qq: string): Promise<string> {
   const newa = Math.floor(Math.random() * a.length)
   const candidate = a[newa]
   const isTalentInfo = (x): x is TalentInfo =>
-    !!x &&
-    typeof x === 'object' &&
-    'type' in (x as Record<string, unknown>) &&
-    'name' in (x as Record<string, unknown>)
+    !!x && typeof x === 'object' && 'type' in x && 'name' in x
   if (isTalentInfo(candidate)) {
     player.隐藏灵根 = candidate
   }
@@ -130,14 +127,14 @@ export async function readThat(
   weizhi: LibHumanReadable
 ): Promise<unknown | undefined> {
   const key = LIB_MAP[weizhi]
-  const arr = (DataList as Record<string, unknown>)[key]
+  const arr = DataList[key]
   if (Array.isArray(arr)) {
     for (const item of arr) {
       if (
         item &&
         typeof item === 'object' &&
-        'name' in (item as Record<string, unknown>) &&
-        (item as Record<string, unknown>).name === thing_name
+        'name' in item &&
+        item.name === thing_name
       )
         return item
     }
@@ -149,7 +146,7 @@ export async function readThat(
 // 返回 unknown[] 保持宽松兼容
 export async function readAll(weizhi: LibHumanReadable): Promise<unknown[]> {
   const key = LIB_MAP[weizhi]
-  const arr = (DataList as Record<string, unknown>)[key]
+  const arr = DataList[key]
   return Array.isArray(arr) ? arr : []
 }
 

@@ -1,4 +1,4 @@
-import { redis, data, config, pushInfo } from '@src/model/api'
+import { redis, data, pushInfo } from '@src/model/api'
 // 细粒度导入，避免通过 barrel 触发循环 re-export
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer, writePlayer } from '@src/model/xiuxian'
@@ -12,6 +12,7 @@ import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { Player, CoreNajieCategory as NajieCategory } from '@src/types'
+import { getConfig } from '@src/model'
 // import type { Player } from '@src/types/player'
 // import type { NajieCategory } from '@src/types/model'
 
@@ -120,7 +121,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
         const B_win = `${B_player.名号}击败了${A_player.名号}`
         let thing_name: string | undefined
         let thing_class: NajieCategory | undefined
-        const cf = config.getConfig('xiuxian', 'xiuxian')
+        const cf = getConfig('xiuxian', 'xiuxian')
         const x = Number(cf.SecretPlace.one) || 0
         const y = Number(cf.SecretPlace.two) || 0
         const z = Number(cf.SecretPlace.three) || 0
@@ -283,7 +284,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               msg: player.名号 + last_msg + fyd_msg,
               qq_group: push_address
             }
-            temp.push(p as Record<string, unknown>)
+            temp.push(p)
             await writeTemp(temp)
           } catch {
             const temp: Array<Record<string, unknown>> = []
@@ -292,7 +293,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
               qq: player_id,
               qq_group: push_address
             }
-            temp.push(p as Record<string, unknown>)
+            temp.push(p)
             await writeTemp(temp)
           }
         }

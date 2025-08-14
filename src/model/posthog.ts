@@ -1,15 +1,8 @@
-import { createRequire } from 'module'
 import { getConfigValue } from 'alemonjs'
 import { EventMessage, PostHog } from 'posthog-node'
+import { pkg } from './settions'
 
 let log: typeof PostHog.prototype = null
-
-const require = createRequire(import.meta.url)
-
-const pkg = require('../../package.json') as {
-  name: string
-  version: string
-}
 
 export const LOG_EVENT_NAME = {
   // 机器人启动

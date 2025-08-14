@@ -53,7 +53,7 @@ export default onResponse(selects, async e => {
     const converted = data.shop_list.map(item => ({
       name: item.name,
       one: item.one || [],
-      ...(item as Record<string, unknown>)
+      ...item
     })) as Parameters<typeof writeShop>[0]
     await writeShop(converted)
     shop = await readShop()

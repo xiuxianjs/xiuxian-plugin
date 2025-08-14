@@ -41,9 +41,7 @@ export default onResponse(selects, async e => {
 
   const ass = (await data.getAssociation(guildName)) as AssociationData
   // 兼容药园结构（可能未定义）
-  const gardenAny = (ass as Record<string, unknown>)['药园'] as
-    | Record<string, unknown>
-    | undefined
+  const gardenAny = ass['药园'] as Record<string, unknown> | undefined
   const garden = gardenAny as
     | { 药园等级?: number; 作物?: GardenCrop[] }
     | undefined

@@ -1,4 +1,4 @@
-import { redis, config, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
 import { openAU } from '@src/model/trade'
 import { readPlayer } from '@src/model/xiuxian'
 import { addCoin } from '@src/model/economy'
@@ -8,9 +8,10 @@ import type {
   AuctionSession,
   CoreNajieCategory as NajieCategory
 } from '@src/types'
+import { getConfig } from '@src/model'
 
 scheduleJob('0 0/1 * * * ?', async () => {
-  const set = config.getConfig('xiuxian', 'xiuxian')
+  const set = getConfig('xiuxian', 'xiuxian')
   const wupinStr = await redis.get('xiuxian:AuctionofficialTask')
 
   if (!wupinStr) {

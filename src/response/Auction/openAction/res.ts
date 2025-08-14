@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
-import { config, redis } from '@src/model/api'
-import { openAU, readPlayer } from '@src/model/index'
+import { redis } from '@src/model/api'
+import { getConfig, openAU, readPlayer } from '@src/model/index'
 import type { ExchangeRecord } from '@src/types'
 
 export const selects = onSelects(['message.create'])
@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   }
 
   // 尚未开启：检查时间窗口
-  const cfg = config.getConfig('xiuxian', 'xiuxian') as Partial<{
+  const cfg = getConfig('xiuxian', 'xiuxian') as Partial<{
     openHour: number
     closeHour: number
   }>

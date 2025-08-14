@@ -7,7 +7,6 @@ import {
   Go,
   addExp,
   addCoin,
-  setu,
   existplayer
 } from '@src/model/index'
 
@@ -77,10 +76,6 @@ export default onResponse(selects, async e => {
     )
     await addExp(usr_qq, addlevel)
     await addCoin(usr_qq, -money)
-    const gameswitch = cf.switch.Xiuianplay_key
-    if (gameswitch == true) {
-      setu()
-    }
     return false
   } else if (rand > 0.7) {
     await addCoin(usr_qq, -money)

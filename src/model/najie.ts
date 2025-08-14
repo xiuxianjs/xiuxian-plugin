@@ -64,7 +64,7 @@ export async function existNajieThing(
       '仙宠口粮'
     ]
     for (const cat of type) {
-      const list = (najie as Record<string, unknown>)[cat]
+      const list = najie[cat]
       if (!Array.isArray(list)) continue
       ifexist = (list as NajieItem[]).find(item => item.name == thing_name)
       if (ifexist) break
@@ -97,7 +97,7 @@ export async function addNajieThing(
           'duanzhaobaowu'
         ]
         for (const i of list) {
-          const arr = (data as Record<string, unknown>)[i]
+          const arr = data[i]
           if (!Array.isArray(arr)) continue
           const thing = (arr as NajieItem[]).find(item => item.name == name)
           if (thing) {
@@ -180,7 +180,7 @@ export async function addNajieThing(
       'duanzhaocailiao'
     ]
     for (const i of list) {
-      const arr = (data as Record<string, unknown>)[i]
+      const arr = data[i]
       if (!Array.isArray(arr)) continue
       thing = (arr as NajieItem[]).find(item => item.name == name)
       if (thing) {

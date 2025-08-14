@@ -58,9 +58,9 @@ export default onResponse(selects, async e => {
     return false
   }
   // 仅允许有基础数值的装备打磨（任一 >=10 即可）
-  const atk = Number((thingDef as Record<string, unknown>).atk || 0)
-  const def = Number((thingDef as Record<string, unknown>).def || 0)
-  const hp = Number((thingDef as Record<string, unknown>).HP || 0)
+  const atk = Number(thingDef.atk || 0)
+  const def = Number(thingDef.def || 0)
+  const hp = Number(thingDef.HP || 0)
   if (atk < 10 && def < 10 && hp < 10) {
     Send(Text(`${thingName}(${parts[1]})不支持打磨`))
     return false

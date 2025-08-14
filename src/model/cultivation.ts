@@ -8,12 +8,13 @@ import { existNajieThing, addNajieThing } from './najie.js'
 import { readPlayer } from './xiuxian_impl.js'
 import { getRandomFromARR, notUndAndNull } from './common.js'
 
-// 概率常量保持与原文件一致
-const 体质概率 = 0.2
-const 伪灵根概率 = 0.37
-const 真灵根概率 = 0.29
-const 天灵根概率 = 0.08
-const 圣体概率 = 0.01
+import {
+  体质概率,
+  伪灵根概率,
+  真灵根概率,
+  天灵根概率,
+  圣体概率
+} from './settions.js'
 
 export async function dujie(user_qq: string): Promise<number> {
   const player: Player | null = await readPlayer(user_qq)
@@ -155,11 +156,11 @@ export async function setFileValue(
   const user_data = await data.getData('player', user_qq)
   if (user_data === 'error' || Array.isArray(user_data)) return
   const player = user_data as Player
-  const current_raw = (player as Record<string, unknown>)[type]
+  const current_raw = player[type]
   const current_num = typeof current_raw === 'number' ? current_raw : 0
   let new_num = current_num + num
   if (type == '当前血量' && new_num > player.血量上限) new_num = player.血量上限
-  ;(player as Record<string, unknown>)[type] = new_num
+  player[type] = new_num
   // DataControl.setData 在 XiuxianData 上被继承；使用可选链防御
   const maybe = data as {
     setData?: (k: string, id: string, v) => void
@@ -190,7 +191,7 @@ export async function foundthing(
   const hasName = (obj): obj is FoundThing =>
     typeof obj === 'object' && obj !== null && 'name' in obj
   for (const key of primaryGroups) {
-    const arr = (data as Record<string, unknown>)[key]
+    const arr = data[key]
     if (Array.isArray(arr)) {
       for (const j of arr) if (hasName(j) && j.name === thing_name) return j
     }
@@ -214,7 +215,7 @@ export async function foundthing(
     'zalei'
   ] as const
   for (const key of secondaryGroups) {
-    const arr = (data as Record<string, unknown>)[key]
+    const arr = data[key]
     if (Array.isArray(arr)) {
       for (const j of arr) if (hasName(j) && j.name === simplifiedName) return j
     }

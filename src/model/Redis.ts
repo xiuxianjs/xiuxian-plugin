@@ -1,7 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 import type { ActionType } from '../types/model'
-
-const baseKey = 'xiuxian@1.3.0'
+import { baseKey } from './settions'
 
 /**
  * @param user_id

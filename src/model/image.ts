@@ -1,5 +1,4 @@
 import data from './XiuxianData.js'
-import config from './Config.js'
 import { useSend, Text, EventsMessageCreateEnum, Image } from 'alemonjs'
 import { screenshot } from '@src/image/index.js'
 import type { Player, Equipment, Najie, StrandResult } from '../types/player.js'
@@ -25,6 +24,7 @@ import { readEquipment } from './equipment.js'
 import { readExchange, writeExchange, readForum, writeForum } from './trade.js'
 import { GetPower, bigNumberTransform } from './utils/number.js'
 import { readQinmidu, writeQinmidu } from './qinmidu.js'
+import { getConfig } from './Config.js'
 
 // ==== 类型辅助声明（已迁移至 src/types/model.ts） ====
 // 原地定义已移除：ScreenshotResult, NamedItem, ExchangeEntry, ForumEntry, PlayerStatus, SendFn, AssociationInfo
@@ -351,7 +351,7 @@ export async function getWuqiImage(
     'duanzhaobaowu'
   ]
   for (const i of wuqi_list) {
-    const arr = (data as Record<string, unknown>)[i]
+    const arr = data[i]
     if (!Array.isArray(arr)) continue
     for (const j of arr as NamedItem[]) {
       if (
@@ -402,7 +402,7 @@ export async function getDanyaoImage(
   const danyao_need: NamedItem[] = []
   const danyao = ['danyao_list', 'timedanyao_list', 'newdanyao_list']
   for (const i of danyao) {
-    const arr = (data as Record<string, unknown>)[i]
+    const arr = data[i]
     if (!Array.isArray(arr)) continue
     for (const j of arr as NamedItem[]) {
       if (
@@ -449,7 +449,7 @@ export async function getGongfaImage(
   const gongfa_need: NamedItem[] = []
   const gongfa = ['gongfa_list', 'timegongfa_list']
   for (const i of gongfa) {
-    const arr = (data as Record<string, unknown>)[i]
+    const arr = data[i]
     if (!Array.isArray(arr)) continue
     for (const j of arr as NamedItem[]) {
       if (
@@ -1165,7 +1165,7 @@ export async function getStatemaxImage(
 export async function getAdminsetImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = getConfig('xiuxian', 'xiuxian')
   const adminset = {
     //CD：分
     CDassociation: cf.CD.association,

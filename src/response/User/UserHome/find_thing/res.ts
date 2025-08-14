@@ -76,7 +76,7 @@ export default onResponse(selects, async e => {
   const seen = new Set<string>()
 
   for (const key of AREA_COLLECTION_KEYS) {
-    const root: Record<string, unknown> = data as Record<string, unknown>
+    const root: Record<string, unknown> = data
     const collection = root[key]
     if (!Array.isArray(collection)) continue
     for (const areaRaw of collection) {

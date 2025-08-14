@@ -1,7 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/model/api'
-import { Go, readPlayer, notUndAndNull, addCoin } from '@src/model/index'
+import { data, redis } from '@src/model/api'
+import {
+  Go,
+  readPlayer,
+  notUndAndNull,
+  addCoin,
+  getConfig
+} from '@src/model/index'
 import type { Player, AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/index'
@@ -57,7 +63,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const playerCoin = Number((player as Record<string, unknown>).灵石 || 0)
+  const playerCoin = Number(player.灵石 || 0)
   const price = Number(weizhi.Price || 0)
   if (price <= 0) {
     Send(Text('秘境费用配置异常'))
@@ -77,7 +83,7 @@ export default onResponse(selects, async e => {
   interface XiuxianConfig {
     CD?: { secretplace?: number }
   }
-  const cfg = config.getConfig('xiuxian', 'xiuxian') as XiuxianConfig
+  const cfg = getConfig('xiuxian', 'xiuxian') as XiuxianConfig
   const minute = cfg?.CD?.secretplace
   const time = typeof minute === 'number' && minute > 0 ? minute : 10
   const action_time = 60000 * time

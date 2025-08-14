@@ -84,7 +84,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const Price = priceSingle * i * 10
-  const playerCoin = Number((player as Record<string, unknown>).灵石 || 0)
+  const playerCoin = Number(player.灵石 || 0)
   if (playerCoin < Price) {
     Send(Text(`没有灵石寸步难行, 需要${Price}灵石`))
     return false

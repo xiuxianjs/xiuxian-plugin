@@ -13,7 +13,7 @@ function isPlayer(v): v is Player {
 
 function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
-  const o = lg as Record<string, unknown>
+  const o = lg
   const v = o.法球倍率
   return typeof v === 'number' ? v : undefined
 }

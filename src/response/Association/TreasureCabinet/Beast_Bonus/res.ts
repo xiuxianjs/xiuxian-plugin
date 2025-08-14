@@ -37,7 +37,7 @@ function toNamedList(arr): NamedClassItem[] {
   return arr
     .map(it => {
       if (it && typeof it === 'object') {
-        const o = it as Record<string, unknown>
+        const o = it
         if (typeof o.name === 'string') {
           return {
             name: o.name,

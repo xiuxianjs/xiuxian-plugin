@@ -1,7 +1,7 @@
 import YAML from 'yaml'
 import fs from 'fs'
 import { join } from 'path'
-import { __PATH_CONFIG } from './paths'
+import { __PATH_CONFIG, __PATH_CONFIG_MAP } from './paths'
 import { createRequire } from 'module'
 
 const pkg = createRequire(import.meta.url)('../../package.json') as {
@@ -20,7 +20,7 @@ export function getConfig(_app: string, name: keyof typeof __PATH_CONFIG) {
   const fileURL = __PATH_CONFIG[name]
   const data = YAML.parse(fs.readFileSync(fileURL, 'utf8'))
   // 先检查是否存在 自定义配置
-  const curPath = join(configPath, pkg.name, `${name}.yaml`)
+  const curPath = join(configPath, pkg.name, `${__PATH_CONFIG_MAP[name]}.yaml`)
   // 如果存在则读取自定义配置
   if (fs.existsSync(curPath)) {
     const curData = YAML.parse(fs.readFileSync(curPath, 'utf8'))
@@ -32,15 +32,6 @@ export function getConfig(_app: string, name: keyof typeof __PATH_CONFIG) {
   return data
 }
 
-/**
- * @deprecated 请使用 getConfig 方法
- */
-class Config {
-  /**
-   * 获取用户自己配置的配置文件信息
-   * @param app
-   * @param name
-   */
-  getConfig = getConfig
+export default {
+  getConfig
 }
-export default new Config()

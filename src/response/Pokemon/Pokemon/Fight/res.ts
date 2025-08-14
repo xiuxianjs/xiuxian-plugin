@@ -32,9 +32,7 @@ function calcBonus(level: number, per: number) {
   return toInt(level) * Number(per || 0)
 }
 function isBagPetLike(p): p is BagPetLike {
-  return (
-    !!p && typeof p === 'object' && 'name' in (p as Record<string, unknown>)
-  )
+  return !!p && typeof p === 'object' && 'name' in p
 }
 function getLevel(p: BagPetLike): number {
   return toInt(p.等级, 1)

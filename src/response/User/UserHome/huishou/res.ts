@@ -39,7 +39,7 @@ export default onResponse(selects, async e => {
     '仙宠口粮'
   ]
   for (const cate of type) {
-    const list = (najie as Record<string, unknown>)[cate]
+    const list = najie[cate]
     if (!Array.isArray(list)) continue
     const thing = (
       list as Array<{

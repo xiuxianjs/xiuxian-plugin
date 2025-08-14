@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
-import { config, data } from '@src/model/api'
-import { notUndAndNull, shijianc } from '@src/model/index'
+import { data } from '@src/model/api'
+import { getConfig, notUndAndNull, shijianc } from '@src/model/index'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/index'
@@ -50,7 +50,7 @@ export default onResponse(selects, async e => {
   }
   const ass = assRaw
   const nowTime = Date.now()
-  const cfg = config.getConfig('xiuxian', 'xiuxian')
+  const cfg = getConfig('xiuxian', 'xiuxian')
   const time = cfg.CD.association
   const lastMaintain = Number(ass.维护时间 || 0)
   const nextMaintainTs = lastMaintain + 60000 * time

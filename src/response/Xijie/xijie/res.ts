@@ -135,11 +135,9 @@ export default onResponse(selects, async e => {
 
   const linggenRaw = player.灵根
   const linggen =
-    linggenRaw && typeof linggenRaw === 'object'
-      ? (linggenRaw as Record<string, unknown>)
-      : null
+    linggenRaw && typeof linggenRaw === 'object' ? linggenRaw : null
   const faqiu = linggen ? num(linggen['法球倍率'], 0) : 0
-  const pRec = player as Record<string, unknown>
+  const pRec = player
   const A_player = {
     名号: String(pRec['名号'] ?? ''),
     攻击: num(pRec['攻击']),

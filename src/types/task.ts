@@ -236,7 +236,7 @@ export function isRaidActionState(a): a is RaidActionState {
     !!a &&
     typeof a === 'object' &&
     ('xijie' in a || 'Place_address' in a) &&
-    'end_time' in (a as Record<string, unknown>)
+    'end_time' in a
   )
 }
 export function isExploreActionState(a): a is ExploreActionState {

@@ -34,7 +34,7 @@ function normalizeAction(raw): PlayerAction {
   if (!raw || typeof raw !== 'object') {
     return { action: '空闲' }
   }
-  const r = raw as Record<string, unknown>
+  const r = raw
   const action: PlayerAction = {
     action: typeof r.action === 'string' ? r.action : '空闲',
     mine: toInt(r.mine, undefined as number),

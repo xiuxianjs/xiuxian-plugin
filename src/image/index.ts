@@ -129,7 +129,6 @@ export async function screenshot(
   }
   const component = map[name] as ComponentType
   if (!enableCache) {
-    // @ts-expect-error 宽松适配多种组件 props 结构
     return await renderComponentToBuffer(keyBase, component, data)
   }
 
@@ -138,7 +137,6 @@ export async function screenshot(
   try {
     hash = md5(JSON.stringify(data))
   } catch {
-    // @ts-expect-error 宽松适配
     return await renderComponentToBuffer(keyBase, component, data)
   }
 
@@ -148,7 +146,6 @@ export async function screenshot(
     return existed.buffer
   }
 
-  // @ts-expect-error 宽松适配
   const buffer = await renderComponentToBuffer(keyBase, component, data)
   shotCache.set(cacheKey, { hash, buffer, at: Date.now() })
 
@@ -163,7 +160,6 @@ export async function screenshot(
   return buffer
 }
 
-class Pic {
-  screenshot = screenshot
+export default {
+  screenshot
 }
-export default new Pic()

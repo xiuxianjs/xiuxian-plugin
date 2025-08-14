@@ -88,9 +88,9 @@ export default onResponse(selects, async e => {
     Send(Text(`这方世界没有[${thingName}]`))
     return false
   }
-  const itemClass = String(
-    (thingDef as Record<string, unknown>).class || '道具'
-  ) as Parameters<typeof addNajieThing>[2]
+  const itemClass = String(thingDef.class || '道具') as Parameters<
+    typeof addNajieThing
+  >[2]
 
   let pinji: number | undefined
   let amountStr: string | undefined

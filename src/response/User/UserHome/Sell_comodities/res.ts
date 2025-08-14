@@ -83,9 +83,9 @@ export default onResponse(selects, async e => {
     Send(Text(`这方世界没有[${thingName}]`))
     return false
   }
-  const itemClass = String(
-    (thingDef as Record<string, unknown>).class || '道具'
-  ) as Parameters<typeof addNajieThing>[2]
+  const itemClass = String(thingDef.class || '道具') as Parameters<
+    typeof addNajieThing
+  >[2]
 
   // 解析品级与数量
   let pinji: number | undefined
@@ -135,7 +135,7 @@ export default onResponse(selects, async e => {
   await addNajieThing(usr_qq, thingName, itemClass, -amount, pinji)
 
   // 价格计算：基础出售价 * 数量；若在杂类中且是装备需按背包装备条目出售价
-  let price = toInt((thingDef as Record<string, unknown>)['出售价']) * amount
+  let price = toInt(thingDef['出售价']) * amount
   if (data.zalei.find(it => it.name === thingName.replace(/[0-9]+/g, ''))) {
     // 在 najie 中查找对应品级的装备
     const sel = (najie.装备 || []).find(

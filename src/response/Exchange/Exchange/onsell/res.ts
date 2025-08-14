@@ -95,12 +95,8 @@ export default onResponse(selects, async e => {
   }
   // 运行时守卫：只要包含 name 即可，其余字段容错
   const baseItem: NajieItem = {
-    name: String((thingDefRaw as Record<string, unknown>).name || thingName),
-    class: String(
-      (thingDefRaw as Record<string, unknown>).class ||
-        (thingDefRaw as Record<string, unknown>).type ||
-        '道具'
-    )
+    name: String(thingDefRaw.name || thingName),
+    class: String(thingDefRaw.class || thingDefRaw.type || '道具')
   }
   const itemClass = normalizeCategory(baseItem.class)
 

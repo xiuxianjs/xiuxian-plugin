@@ -63,7 +63,7 @@ export default onResponse(selects, async e => {
 
   let wupin: CustomEquipRecordWithOwner[] = []
   try {
-    wupin = (await readItTyped()) as CustomEquipRecordWithOwner[]
+    wupin = await readItTyped()
   } catch {
     await writeIt([])
     wupin = []
@@ -132,7 +132,7 @@ export default onResponse(selects, async e => {
         break
       }
     }
-    const plain = wupin.map(r => ({ ...r })) as Record<string, unknown>[]
+    const plain = wupin.map(r => ({ ...r }))
     await writeIt(plain)
     await redis.set(CACHE_KEY_LIST, JSON.stringify(result))
   } else {
@@ -163,7 +163,7 @@ export default onResponse(selects, async e => {
   }
 
   const tu = await screenshot('shenbing', e.UserId, { newwupin: result })
-  if (tu) {
+  if (Buffer.isBuffer(tu)) {
     Send(Image(tu))
   } else {
     Send(Text('图片生成失败'))

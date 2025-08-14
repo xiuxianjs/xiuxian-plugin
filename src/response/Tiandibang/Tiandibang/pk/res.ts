@@ -55,9 +55,7 @@ function buildBattlePlayer(
   hpMul = 1
 ): BattlePlayer {
   const lgRaw = src.灵根
-  const linggenObj = (
-    lgRaw && typeof lgRaw === 'object' ? lgRaw : {}
-  ) as Record<string, unknown>
+  const linggenObj = lgRaw && typeof lgRaw === 'object' ? lgRaw : {}
   const linggen = linggenObj as {
     法球倍率?: number
     name?: string

@@ -32,7 +32,7 @@ export default onResponse(selects, async e => {
   const weizhiUnknown = weizhiRaw
   const guardWeizhi = (v): v is { name: string; Price: number } => {
     if (!v || typeof v !== 'object') return false
-    const r = v as Record<string, unknown>
+    const r = v
     return typeof r.Price === 'number' && typeof r.name === 'string'
   }
   if (!guardWeizhi(weizhiUnknown)) {

@@ -124,7 +124,7 @@ export default onResponse(selects, async e => {
     外门弟子: Infinity
   }
   const listMap = (role: Appointment): string[] => {
-    const raw = (ass as Record<string, unknown>)[role]
+    const raw = ass[role]
     return Array.isArray(raw) ? (raw as string[]) : []
   }
   const targetList = listMap(appointment)
@@ -134,12 +134,10 @@ export default onResponse(selects, async e => {
   }
   // 更新旧职位表
   const oldList = listMap(now_apmt as Appointment)
-  ;(ass as Record<string, unknown>)[now_apmt] = oldList.filter(
-    q => q !== member_qq
-  )
+  ass[now_apmt] = oldList.filter(q => q !== member_qq)
   // 添加新职位
   targetList.push(member_qq)
-  ;(ass as Record<string, unknown>)[appointment] = targetList
+  ass[appointment] = targetList
   member.宗门.职位 = appointment
   await data.setData('player', member_qq, serializePlayer(member))
   await data.setAssociation(ass.宗门名称, ass)

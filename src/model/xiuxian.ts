@@ -15,7 +15,6 @@ export {
   datachange
 } from './utils/number.js'
 export { addPet } from './pets.js'
-export { setu } from './external/setu.js'
 export { addCoin, addExp, addExp2, addExp3, addHP } from './economy.js'
 export {
   updateBagThing,

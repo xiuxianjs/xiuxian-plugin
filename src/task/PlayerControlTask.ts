@@ -1,4 +1,4 @@
-import { redis, data, config, pushInfo } from '@src/model/api'
+import { redis, data, pushInfo } from '@src/model/api'
 // 直接从具体模块导入，避免经由 barrel 产生的 re-export 循环
 import { notUndAndNull } from '@src/model/common'
 import { readDanyao, writeDanyao } from '@src/model/danyao'
@@ -10,13 +10,14 @@ import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ActionState } from '@src/types'
+import { getConfig } from '@src/model'
 
 scheduleJob('0 0/1 * * * ?', async () => {
   //获取缓存中人物列表
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = getConfig('xiuxian', 'xiuxian')
   for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息（需累计变更）
     log_mag += '查询' + player_id + '是否有动作,'

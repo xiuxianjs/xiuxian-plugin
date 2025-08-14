@@ -66,7 +66,7 @@ export default onResponse(selects, async e => {
   next.power_up = 1
   next.Place_action = 1
   next.end_time = Date.now()
-  delete (next as Record<string, unknown>).group_id
+  delete next.group_id
   await redis.set(`xiuxian@1.3.0:${e.UserId}:action`, JSON.stringify(next))
   return false
 })

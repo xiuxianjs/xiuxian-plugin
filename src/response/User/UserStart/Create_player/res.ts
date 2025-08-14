@@ -22,7 +22,7 @@ interface Talent {
 }
 function normalizeTalent(t): Talent {
   if (t && typeof t === 'object') {
-    const obj = t as Record<string, unknown>
+    const obj = t
     const eff = typeof obj.eff === 'number' ? obj.eff : 0
     return { ...obj, eff }
   }

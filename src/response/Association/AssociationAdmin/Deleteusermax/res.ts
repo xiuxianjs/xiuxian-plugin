@@ -77,11 +77,9 @@ export default onResponse(selects, async e => {
   const actorRole = player.宗门.职位
   const targetRole = playerB.宗门.职位
   const removeMember = () => {
-    const roleList = (bss as Record<string, unknown>)[targetRole]
+    const roleList = bss[targetRole]
     if (Array.isArray(roleList)) {
-      ;(bss as Record<string, unknown>)[targetRole] = roleList.filter(
-        q => q !== member_qq
-      )
+      bss[targetRole] = roleList.filter(q => q !== member_qq)
     }
     bss.所有成员 = Array.isArray(bss.所有成员)
       ? bss.所有成员.filter(q => q !== member_qq)

@@ -83,7 +83,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) return false
 
   const najie = (await data.getData('najie', usr_qq)) as NajieEquipBag | null
-  const player = (await readPlayer(usr_qq)) as Record<string, unknown>
+  const player = await readPlayer(usr_qq)
   const base = calcBaseThree(player)
   if (!base) {
     Send(Text('境界数据缺失，无法智能换装'))

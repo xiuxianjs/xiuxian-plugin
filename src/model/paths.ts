@@ -1,8 +1,8 @@
-import Association from '@src/config/Association.yaml'
-import help from '@src/config/help.yaml'
-import help2 from '@src/config/help2.yaml'
-import set from '@src/config/set.yaml'
-import shituhelp from '@src/config/shituhelp.yaml'
+import Association from '@src/config/help/association.yaml'
+import help from '@src/config/help/base.yaml'
+import help2 from '@src/config/help/extensions.yaml'
+import set from '@src/config/help/admin.yaml'
+import shituhelp from '@src/config/help/professor.yaml'
 import task from '@src/config/task.yaml'
 import xiuxian from '@src/config/xiuxian.yaml'
 
@@ -31,6 +31,16 @@ const __PATH = {
 }
 
 export { __PATH }
+
+export const __PATH_CONFIG_MAP = {
+  Association: '/help/association',
+  help: '/help/base',
+  help2: '/help/extensions',
+  set: '/help/admin',
+  shituhelp: '/help/professor',
+  task: '/task',
+  xiuxian: '/xiuxian'
+}
 
 export const __PATH_CONFIG = {
   Association,

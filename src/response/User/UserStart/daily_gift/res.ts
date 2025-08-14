@@ -1,13 +1,14 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data, config } from '@src/model/api'
+import { redis, data } from '@src/model/api'
 import {
   existplayer,
   shijianc,
   getLastsign,
   addNajieThing,
   addExp,
-  writePlayer
+  writePlayer,
+  getConfig
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
@@ -24,7 +25,7 @@ interface SignConfig {
 }
 function isLastSignStruct(v): v is LastSignStruct {
   if (!v || typeof v !== 'object') return false
-  const obj = v as Record<string, unknown>
+  const obj = v
   return (
     typeof obj.Y === 'number' &&
     typeof obj.M === 'number' &&
@@ -64,7 +65,7 @@ export default onResponse(selects, async e => {
     Send(Text('玩家数据异常'))
     return false
   }
-  const record = player as Record<string, unknown>
+  const record = player
   let currentStreak = 0
   const rawStreak = record['连续签到天数']
   if (typeof rawStreak === 'number' && Number.isFinite(rawStreak))
@@ -75,7 +76,7 @@ export default onResponse(selects, async e => {
 
   await writePlayer(usr_qq, player)
 
-  const cf = config.getConfig('xiuxian', 'xiuxian') as SignConfig | undefined
+  const cf = getConfig('xiuxian', 'xiuxian') as SignConfig | undefined
   const ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0))
   const gift_xiuwei = newStreak * 3000
   if (ticketNum > 0) await addNajieThing(usr_qq, '秘境之匙', '道具', ticketNum)
