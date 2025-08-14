@@ -93,6 +93,22 @@ redis:
 
 > 机器人全部使用redis存储，请务必启动redis持久化存储
 
+## 埋点
+
+我们将使用 postlog 记录用户的行为，
+
+若有需要，可进行配置后重启机器人，即可推送行为数据
+
+```yaml
+alemonjs-xiuxian:
+  postlog:
+    api_key: ''
+    options:
+      host: 'https://us.i.posthog.com'
+```
+
+> 注意：开发模式下并不会发送数据
+
 ## 其他版本
 
 | Project          | Status | Description            |

@@ -2,9 +2,19 @@ import { Image, useSend } from 'alemonjs'
 import { selects } from '@src/response/index'
 import { getConfig } from '@src/model/Config'
 import { screenshot } from '@src/image'
+import { COMMAND_NAME, postLogCommand } from '@src/model/posthog'
 export const regular = /^(#|＃|\/)??(修仙|仙侠)?帮助(\d+)?$/
 
 export default onResponse(selects, async e => {
+  postLogCommand({
+    id: e.UserId,
+    value: e.MessageText,
+    name: COMMAND_NAME.HELP,
+    ext: {
+      username: e.UserName
+    }
+  })
+
   const Send = useSend(e)
   const helpData = getConfig('help', 'help')
   // data 是一个数组。需要默认按每3组进行分页。
