@@ -29,7 +29,7 @@ export default onResponse(selects, async e => {
   const lastKey = `xiuxian@1.3.0:${usr_qq}:last_getbung_time`
   const lastStr = await redis.get(lastKey)
   const lastTime = toInt(lastStr)
-  const cf = config.getConfig('xiuxian', 'xiuxian') || {}
+  const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {}
   const cdMinutes = toInt(cf?.CD?.honbao, 1)
   const cdMs = cdMinutes * 60000
   if (now < lastTime + cdMs) {

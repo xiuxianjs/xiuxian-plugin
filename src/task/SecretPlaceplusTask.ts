@@ -121,7 +121,7 @@ scheduleJob('0 0/5 * * * ?', async () => {
         const B_win = `${B_player.名号}击败了${A_player.名号}`
         let thing_name: string | undefined
         let thing_class: NajieCategory | undefined
-        const cf = getConfig('xiuxian', 'xiuxian')
+        const cf = await getConfig('xiuxian', 'xiuxian')
         const x = Number(cf.SecretPlace.one) || 0
         const y = Number(cf.SecretPlace.two) || 0
         const z = Number(cf.SecretPlace.three) || 0

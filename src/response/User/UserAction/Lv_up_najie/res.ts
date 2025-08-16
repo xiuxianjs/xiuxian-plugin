@@ -23,7 +23,7 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
   const najie = await readNajie(usr_qq)
   const player = await readPlayer(usr_qq)
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const najie_num = cf.najie_num
   const najie_price = cf.najie_price
   if (najie.等级 == najie_num.length) {

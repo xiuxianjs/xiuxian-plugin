@@ -6,6 +6,8 @@ node_modules
 /public
 /build
 /dist
+/assets
+/index.html
 *.log
 .env.*
 alemon*.env

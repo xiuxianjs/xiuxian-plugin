@@ -1,14 +1,29 @@
 import YAML from 'yaml'
-import fs from 'fs'
-import { join } from 'path'
+import { readFileSync } from 'fs'
 import { __PATH_CONFIG, __PATH_CONFIG_MAP } from './paths'
-import { createRequire } from 'module'
+import { getIoRedis } from '@alemonjs/db'
+import { getRedisConfigKey } from './key'
 
-const pkg = createRequire(import.meta.url)('../../package.json') as {
-  name: string
+export type ConfigKey = keyof typeof __PATH_CONFIG
+
+export const hasConfig = async (name: ConfigKey) => {
+  const redis = getIoRedis()
+  const key = getRedisConfigKey(name)
+  const e = await redis.exists(key)
+  return e > 0
 }
 
-const configPath = join(process.cwd(), 'config')
+export const setConfig = async (name: ConfigKey, data: any) => {
+  try {
+    const redis = getIoRedis()
+    const key = getRedisConfigKey(name)
+    await redis.set(key, JSON.stringify(data))
+    return true
+  } catch (error) {
+    logger.error(error)
+    return false
+  }
+}
 
 /**
  *
@@ -16,17 +31,17 @@ const configPath = join(process.cwd(), 'config')
  * @param name
  * @returns
  */
-export function getConfig(_app: string, name: keyof typeof __PATH_CONFIG) {
+export async function getConfig(_app: string, name: ConfigKey) {
+  const redis = getIoRedis()
+  const key = getRedisConfigKey(name)
   const fileURL = __PATH_CONFIG[name]
-  const data = YAML.parse(fs.readFileSync(fileURL, 'utf8'))
-  // 先检查是否存在 自定义配置
-  const curPath = join(configPath, pkg.name, `${__PATH_CONFIG_MAP[name]}.yaml`)
-  // 如果存在则读取自定义配置
-  if (fs.existsSync(curPath)) {
-    const curData = YAML.parse(fs.readFileSync(curPath, 'utf8'))
+  const data = YAML.parse(readFileSync(fileURL, 'utf8'))
+  const curData = await redis.get(key)
+  if (curData) {
+    const db = JSON.parse(curData)
     return {
       ...data,
-      ...curData
+      ...db
     }
   }
   return data

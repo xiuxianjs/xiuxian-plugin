@@ -34,7 +34,7 @@ export default onResponse(selects, async e => {
 
   const A_player = await data.getData('player', A_qq)
   const B_player = await data.getData('player', B_qq)
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '').trim()
 
   // 赠送灵石

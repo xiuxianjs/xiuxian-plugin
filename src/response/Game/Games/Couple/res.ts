@@ -34,7 +34,9 @@ interface CoupleConfig {
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  const cf = config.getConfig('xiuxian', 'xiuxian') as CoupleConfig | undefined
+  const cf = (await config.getConfig('xiuxian', 'xiuxian')) as
+    | CoupleConfig
+    | undefined
   if (!cf?.switch?.couple) return false
 
   const A = e.UserId

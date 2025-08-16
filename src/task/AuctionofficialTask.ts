@@ -11,7 +11,7 @@ import type {
 import { getConfig } from '@src/model'
 
 scheduleJob('0 0/1 * * * ?', async () => {
-  const set = getConfig('xiuxian', 'xiuxian')
+  const set = await getConfig('xiuxian', 'xiuxian')
   const wupinStr = await redis.get('xiuxian:AuctionofficialTask')
 
   if (!wupinStr) {

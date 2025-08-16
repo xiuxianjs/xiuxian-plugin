@@ -1,0 +1,12 @@
+@import './assets/styles/tailwindcss.css';
+
+// 所有元素禁用滚动条
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}

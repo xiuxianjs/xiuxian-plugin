@@ -13,6 +13,9 @@
     "dev": "npx lvy dev",
     "view": "npx lvy dev --jsxp",
     "build": "lvy build",
+    "bundle-install": "yarn --cwd frontend install",
+    "bundle-dev": "yarn --cwd frontend dev",
+    "bundle": "yarn --cwd frontend build",
     "eslint": "eslint src --fix",
     "format": "prettier --write .",
     "check-format": "git diff --exit-code",
@@ -22,9 +25,11 @@
     "lint:baseline": "eslint -f json src > eslint-baseline.json || true"
   },
   "dependencies": {
+    "@types/koa-router": "^7.4.8",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "jsxp": "^1.2.2",
+    "koa-bodyparser": "^4.4.1",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
     "node-schedule": "^2.1.1",
@@ -33,11 +38,12 @@
   "devDependencies": {
     "@alemonjs/db": "^0.0.11",
     "@eslint/js": "^9.18.0",
+    "@types/koa-bodyparser": "^4.3.12",
     "@types/lodash-es": "^4.17.12",
     "@types/md5": "^2.3.5",
     "@types/node": "^22.10.5",
     "@types/node-schedule": "^2.1.7",
-    "alemonjs": "^2.1.0-alpha.31",
+    "alemonjs": "^2.1.0-alpha.35",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.3",
@@ -47,5 +53,10 @@
     "sass": "^1.90.0",
     "tailwindcss": "3",
     "typescript-eslint": "^8.19.1"
+  },
+  "alemonjs": {
+    "web": {
+      "root": "dist"
+    }
   }
 }

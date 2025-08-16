@@ -1165,7 +1165,7 @@ export async function getStatemaxImage(
 export async function getAdminsetImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
-  const cf = getConfig('xiuxian', 'xiuxian')
+  const cf = await getConfig('xiuxian', 'xiuxian')
   const adminset = {
     //CD：分
     CDassociation: cf.CD.association,

@@ -81,7 +81,7 @@ export default onResponse(selects, async e => {
 
   const guildInfo = player.宗门
   const nowTime = Date.now()
-  const timeCfg = getConfig('xiuxian', 'xiuxian').CD.joinassociation // 分钟
+  const timeCfg = (await getConfig('xiuxian', 'xiuxian')).CD.joinassociation // 分钟
   const joinTuple = guildInfo.time || guildInfo.加入时间
   if (joinTuple && Array.isArray(joinTuple) && joinTuple.length >= 2) {
     const addTime = joinTuple[1] + 60000 * timeCfg

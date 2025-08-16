@@ -18,7 +18,7 @@ export default onResponse(selects, async e => {
   const start_time = action.end_time - Number(action.time)
   const now_time = Date.now()
   let time
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const y = cf.work.time //固定时间
   const x = cf.work.cycle //循环次数
 
@@ -90,7 +90,7 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const size = cf.work.size
   const lingshi = Math.floor(
     size * now_level_id * (1 + player.修炼效率提升) * 0.5

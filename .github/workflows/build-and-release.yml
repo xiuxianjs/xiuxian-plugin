@@ -36,22 +36,25 @@ jobs:
       - name: 安装依赖项
         run: |
           yarn install --ignore-engines
+          yarn bundle-install --ignore-engines # bundle
 
       - name: 打包
         run: |
           yarn build
-          mkdir -p dist
-          cp -rf ./lib dist/lib
-          cp -rf ./.puppeteerrc.cjs dist/.puppeteerrc.cjs
-          cp -rf ./package.json dist/package.json
-          cp -rf ./README.md dist/README.md
+          yarn bundle  # bundle
+          mkdir -p dist-release
+          cp -rf ./dist dist-release/dist # bundle
+          cp -rf ./lib dist-release/lib
+          cp -rf ./.puppeteerrc.cjs dist-release/.puppeteerrc.cjs
+          cp -rf ./package.json dist-release/package.json
+          cp -rf ./README.md dist-release/README.md
           # 检查 dist 目录是否存在且不为空
-          if [[ ! -d dist || -z $(ls -A dist) ]]; then
+          if [[ ! -d dist-release || -z $(ls -A dist-release) ]]; then
             echo "错误: 'dist' 目录不存在或为空，构建步骤可能失败。"
             exit 1
           fi
           # 转移产物
-          mv dist ../dist
+          mv dist-release ../dist-release
 
       - name: 推送 release
         run: |
@@ -74,8 +77,8 @@ jobs:
           }
 
           # 移动 dist 文件夹内容到根目录
-          mv ../dist/* ./ || {
-            echo "错误: 无法将 'dist' 目录中的文件移动到根目录，目录可能为空。"
+          mv ../dist-release/* ./ || {
+            echo "错误: 无法将 'dist-release' 目录中的文件移动到根目录，目录可能为空。"
             exit 1
           }
 

@@ -14,7 +14,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const gameswitch = cf?.switch?.Moneynumber
   if (gameswitch !== true) return false
 

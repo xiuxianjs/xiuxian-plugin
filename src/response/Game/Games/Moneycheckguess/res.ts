@@ -55,7 +55,7 @@ export default onResponse(selects, async e => {
     isWin = win
     touzi = dice
 
-    const cf = config.getConfig('xiuxian', 'xiuxian')
+    const cf = await config.getConfig('xiuxian', 'xiuxian')
     let x = cf.percentage.Moneynumber
     let y = 1
     const z = cf.size.Money * 10000

@@ -50,7 +50,7 @@ export default onResponse(selects, async e => {
   }
   const ass = assRaw
   const nowTime = Date.now()
-  const cfg = getConfig('xiuxian', 'xiuxian')
+  const cfg = await getConfig('xiuxian', 'xiuxian')
   const time = cfg.CD.association
   const lastMaintain = Number(ass.维护时间 || 0)
   const nextMaintainTs = lastMaintain + 60000 * time

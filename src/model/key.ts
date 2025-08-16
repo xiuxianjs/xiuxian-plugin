@@ -11,3 +11,12 @@ type ActionType = 'action' | 'xijie'
 export const getRedisKey = (user_id: string, action: ActionType) => {
   return baseKey + ':' + user_id + ':' + action
 }
+
+/**
+ *
+ * @param name
+ * @returns
+ */
+export const getRedisConfigKey = (name: string) => {
+  return baseKey + ':config:' + name
+}

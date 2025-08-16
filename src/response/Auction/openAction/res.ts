@@ -35,7 +35,7 @@ export default onResponse(selects, async e => {
   }
 
   // 尚未开启：检查时间窗口
-  const cfg = getConfig('xiuxian', 'xiuxian') as Partial<{
+  const cfg = (await getConfig('xiuxian', 'xiuxian')) as Partial<{
     openHour: number
     closeHour: number
   }>

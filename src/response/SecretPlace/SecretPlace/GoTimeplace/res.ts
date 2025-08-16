@@ -115,7 +115,9 @@ export default onResponse(selects, async e => {
   const priceToPay = Math.trunc(place.Price * discountFactor)
   if (priceToPay > 0) await addCoin(usr_qq, -priceToPay)
 
-  const cf = config.getConfig('xiuxian', 'xiuxian') || { CD: { timeplace: 10 } }
+  const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {
+    CD: { timeplace: 10 }
+  }
   const minutes = Number(cf?.CD?.timeplace) || 10
   const actionTime = minutes * 60_000
 

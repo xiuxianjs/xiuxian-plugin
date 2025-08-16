@@ -36,6 +36,23 @@ git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git 
 
 开发文档 https://alemonjs.com/
 
+```
+xiuxian-plugin/
+├── frontend/          # 前端React应用
+│   ├── src/
+│   │   ├── api/       # API接口
+│   │   ├── components/ # 通用组件
+│   │   ├── contexts/   # React Context
+│   │   ├── pages/      # 页面组件
+│   │   └── ...
+│   └── ...
+├── src/               # 后端源码
+│   ├── model/         # 数据模型
+│   ├── route/         # API路由
+│   └── ...
+└── ...
+```
+
 ```sh
 git clone --depth=10  https://github.com/xiuxianjs/xiuxian-plugin.git
 ```
@@ -60,6 +77,12 @@ yarn dev
 yarn view
 ```
 
+- 启动管理端
+
+```sh
+yarn bundle-dev
+```
+
 ## 运行配置
 
 > alemon.config.yaml
@@ -72,20 +95,6 @@ redis:
   password: ''
   db: '1'
 ```
-
-## 修仙配置
-
-如果自定义修仙配置 ？
-
-请 [点击打开配置文件](./src/config/xiuxian.yaml) 了解配置
-
-并在机器人目录下新建 `./config/alemonjs-xiuxian` 目录
-
-该目录下新建与之对应的配置文件
-
-即 `/config/alemonjs-xiuxian/xiuxian.yaml` 覆盖 `./src/config/xiuxian.yaml`
-
-> 若使用alemongo，其内部bot在work/resources/bots 目录，可借助于vscode或vscode的ssh编辑进行
 
 ## 使用
 
@@ -108,6 +117,14 @@ alemonjs-xiuxian:
 ```
 
 > 注意：开发模式下并不会发送数据
+
+## 修仙管理
+
+http://127.0.0.1:17117/apps/alemonjs-xiuxian/
+
+> 请注意端口，如果是本地开发模式，可直接访问 http://127.0.0.1:17117/app/
+
+默认账号密码 lemonade、123456
 
 ## 其他版本
 

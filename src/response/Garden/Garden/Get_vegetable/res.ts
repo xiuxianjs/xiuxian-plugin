@@ -51,7 +51,9 @@ export default onResponse(selects, async e => {
   }
 
   // 冷却
-  const cdMinutes = toInt(config.getConfig('xiuxian', 'xiuxian')?.CD?.garden)
+  const cdMinutes = toInt(
+    (await config.getConfig('xiuxian', 'xiuxian'))?.CD?.garden
+  )
   const cdMs = cdMinutes * 60000
   const now = Date.now()
   const lastKey = `xiuxian@1.3.0:${usr_qq}:last_garden_time`

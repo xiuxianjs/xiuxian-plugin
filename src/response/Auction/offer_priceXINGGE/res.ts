@@ -26,7 +26,8 @@ export default onResponse(selects, async e => {
   // 是否到拍卖时间
   const auction = await redis.get('xiuxian:AuctionofficialTask')
   if (!notUndAndNull(auction)) {
-    const { openHour, closeHour } = getConfig('xiuxian', 'xiuxian').Auction
+    const { openHour, closeHour } = (await getConfig('xiuxian', 'xiuxian'))
+      .Auction
     Send(Text(`不在拍卖时间，开启时间为每天${openHour}时~${closeHour}时`))
     return false
   }

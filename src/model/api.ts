@@ -2,34 +2,7 @@ import config from './Config'
 import data from './XiuxianData'
 import { getIoRedis } from '@alemonjs/db'
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
-import type {
-  AnyIncomingEvent,
-  NameListConfig,
-  MessageEnumsArray,
-  MessageInput
-} from '../types/model'
-
-/**
- * 校验事件是否通过白名单/黑名单限制
- * @param param0 包含事件对象
- */
-export const verc = ({
-  e
-}: {
-  e: AnyIncomingEvent & { group_id?: string | number }
-}): boolean => {
-  const { whitecrowd, blackid } = config.getConfig(
-    'parameter',
-    'xiuxian'
-  ) as NameListConfig
-  if (
-    Array.isArray(whitecrowd) &&
-    whitecrowd.indexOf(e.group_id as string | number) === -1
-  )
-    return false
-  if (Array.isArray(blackid) && blackid.indexOf(e.UserId) !== -1) return false
-  return true
-}
+import type { MessageEnumsArray, MessageInput } from '../types/model'
 
 export { data, config }
 

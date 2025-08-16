@@ -71,7 +71,7 @@ export async function Level_up(e, luck = false) {
     Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可突破`))
     return false
   }
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const Time = cf.CD.level_up
   const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)
@@ -241,7 +241,7 @@ export async function LevelMax_up(e, luck) {
     Send(Text(`你已突破至最高境界`))
     return false
   }
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const Time = cf.CD.level_up
   const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)

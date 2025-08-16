@@ -67,10 +67,10 @@ export default onResponse(selects, async e => {
 
   // 时间窗口校验（星阁开启时禁止）
   const nowDate = new Date()
-  const { openHour, closeHour } = config.getConfig(
+  const { openHour, closeHour } = (await config.getConfig(
     'xiuxian',
     'xiuxian'
-  ) as AuctionConfig
+  )) as AuctionConfig
   const openH = typeof openHour === 'number' ? openHour : 20
   const closeH = typeof closeHour === 'number' ? closeHour : 22
   const day0 = new Date(nowDate)
@@ -220,7 +220,10 @@ export default onResponse(selects, async e => {
     `xiuxian@1.3.0:${A}:last_dajie_time`
   )
   const last_dajie_time = Number(last_dajie_time_raw) || 0
-  const cfgAuction = config.getConfig('xiuxian', 'xiuxian') as AuctionConfig
+  const cfgAuction = (await config.getConfig(
+    'xiuxian',
+    'xiuxian'
+  )) as AuctionConfig
   const robCdMin = cfgAuction?.CD?.rob ?? 10
   const robTimeout = Math.floor(robCdMin * 60000)
   if (Date.now() < last_dajie_time + robTimeout) {

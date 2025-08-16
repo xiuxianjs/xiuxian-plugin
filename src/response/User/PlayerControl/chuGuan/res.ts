@@ -28,7 +28,7 @@ export default onResponse(selects, async e => {
   const now_time = Date.now()
   let time
 
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
 
   const y = cf.biguan.time //固定时间
   const x = cf.biguan.cycle //循环次数
@@ -103,7 +103,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     item => item.level_id == player.level_id
   ).level_id
   //闭关收益倍率计算 倍率*境界id*天赋*时间
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const size = cf.biguan.size
   //增加的修为
   const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1))

@@ -69,7 +69,7 @@ export default onResponse(selects, async e => {
   }
   const Price = weizhi.Price * dazhe
   await addCoin(usr_qq, -Price)
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.secretplace //时间（分钟）
   const action_time = 60000 * time //持续时间，单位毫秒
   const arr = await startAction(usr_qq, '历练', action_time, {

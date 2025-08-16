@@ -17,7 +17,7 @@ scheduleJob('0 0/1 * * * ?', async () => {
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
-  const cf = getConfig('xiuxian', 'xiuxian')
+  const cf = await getConfig('xiuxian', 'xiuxian')
   for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息（需累计变更）
     log_mag += '查询' + player_id + '是否有动作,'

@@ -76,7 +76,7 @@ export default onResponse(selects, async e => {
   const Price = weizhi.Price
   await addCoin(usr_qq, -Price)
   await addExp(usr_qq, -weizhi.experience)
-  const cf = config.getConfig('xiuxian', 'xiuxian')
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
   const time = cf.CD.forbiddenarea //时间（分钟）
   const action_time = 60000 * time //持续时间，单位毫秒
   const arr = await startAction(usr_qq, '禁地', action_time, {

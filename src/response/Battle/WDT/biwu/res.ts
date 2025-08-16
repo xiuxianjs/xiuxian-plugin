@@ -109,7 +109,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const cf = config.getConfig('xiuxian', 'xiuxian') || {}
+  const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {}
   const biwuCdMs = Math.floor(60000 * toInt(cf?.CD?.biwu, 5))
   const now = Date.now()
   const lastBiwuA = toInt(await redis.get(`xiuxian@1.3.0:${A}:last_biwu_time`))
