@@ -76,7 +76,7 @@ export default onResponse(selects, async e => {
 
   await writePlayer(usr_qq, player)
 
-  const cf = getConfig('xiuxian', 'xiuxian') as SignConfig | undefined
+  const cf = (await getConfig('xiuxian', 'xiuxian')) as SignConfig | undefined
   const ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0))
   const gift_xiuwei = newStreak * 3000
   if (ticketNum > 0) await addNajieThing(usr_qq, '秘境之匙', '道具', ticketNum)

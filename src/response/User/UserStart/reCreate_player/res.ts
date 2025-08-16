@@ -83,7 +83,7 @@ export default onResponse(selects, async e => {
   const lastKey = `xiuxian@1.3.0:${usr_qq}:last_reCreate_time`
   const lastRestartRaw = await redis.get(lastKey)
   const lastRestart = parseNum(lastRestartRaw)
-  const cf = getConfig('xiuxian', 'xiuxian') as Partial<{
+  const cf = (await getConfig('xiuxian', 'xiuxian')) as Partial<{
     CD?: { reborn?: number }
   }>
   const rebornMin = cf?.CD?.reborn ?? 60
