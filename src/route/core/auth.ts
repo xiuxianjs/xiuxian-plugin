@@ -1,4 +1,5 @@
 import { getIoRedis } from '@alemonjs/db'
+import { Context } from 'koa'
 
 const redis = getIoRedis()
 
@@ -271,4 +272,29 @@ export const initDefaultAdmin = async (): Promise<void> => {
   } catch (error) {
     logger.error('初始化默认管理员失败:', error)
   }
+}
+
+export const validateRole = async (ctx: Context, role: string) => {
+  // 验证管理员权限
+  const token = ctx.request.headers.authorization?.replace('Bearer ', '')
+  if (!token) {
+    ctx.status = 401
+    ctx.body = {
+      code: 401,
+      message: '需要登录',
+      data: null
+    }
+    return false
+  }
+  const user = await validateToken(token)
+  if (!user || user.role !== role) {
+    ctx.status = 403
+    ctx.body = {
+      code: 403,
+      message: '权限不足',
+      data: null
+    }
+    return false
+  }
+  return true
 }

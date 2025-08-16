@@ -65,14 +65,14 @@ export default onResponse(selects, async e => {
     Send(Text('玩家数据异常'))
     return false
   }
-  const record = player
+  const record = player as { [key: string]: any; 连续签到天数?: number }
   let currentStreak = 0
   const rawStreak = record['连续签到天数']
   if (typeof rawStreak === 'number' && Number.isFinite(rawStreak))
     currentStreak = rawStreak
   let newStreak = currentStreak === 7 || !continued ? 0 : currentStreak
   newStreak += 1
-  ;(record as { 连续签到天数: number }).连续签到天数 = newStreak
+  record.连续签到天数 = newStreak
 
   await writePlayer(usr_qq, player)
 

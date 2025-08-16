@@ -27,17 +27,10 @@ function formatRemain(ms: number): string {
   return `${m}分 ${s}秒`
 }
 
-interface CoupleConfig {
-  switch?: { couple?: boolean }
-  CD?: { couple?: number }
-}
-
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  const cf = (await config.getConfig('xiuxian', 'xiuxian')) as
-    | CoupleConfig
-    | undefined
-  if (!cf?.switch?.couple) return false
+  const cf = await config.getConfig('xiuxian', 'xiuxian')
+  if (!cf?.sw?.couple) return false
 
   const A = e.UserId
 

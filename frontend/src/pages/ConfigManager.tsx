@@ -21,7 +21,7 @@ export default function ConfigManager() {
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="relative z-10 p-6 h-full overflow-y-auto">
+      <div className="relative z-10  p-2 md:p-6 h-full overflow-y-auto">
         {/* 页面标题 */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-3">

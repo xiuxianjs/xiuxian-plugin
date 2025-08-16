@@ -16,7 +16,7 @@ export default function Profile() {
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="relative z-10 p-6 h-full overflow-y-auto">
+      <div className="relative z-10  p-2 md:p-6 h-full overflow-y-auto">
         {/* 标签页导航 */}
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
           <div className="flex space-x-1 mb-6">

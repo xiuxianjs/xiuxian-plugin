@@ -1,15 +1,34 @@
-import { ConfigKey, getConfig, setConfig } from '@src/model'
+import { ConfigKey, getConfig, setConfig, validateRole } from '@src/model'
 import { Context } from 'koa'
 import { parseJsonBody } from '@src/route/core/bodyParser'
 
 export const GET = async (ctx: Context) => {
-  const app = ctx.request.query.app as ConfigKey
-  const config = await getConfig('', app)
-  ctx.body = config
+  try {
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
+      return
+    }
+    const app = ctx.request.query.app as ConfigKey
+    const config = await getConfig('', app)
+    ctx.body = config
+  } catch (error) {
+    logger.warn('获取配置失败', error)
+    ctx.status = 500
+    ctx.body = {
+      code: 500,
+      message: '获取配置失败',
+      data: null
+    }
+  }
 }
 
 export const POST = async (ctx: Context) => {
   try {
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
+      return
+    }
+
     const body = await parseJsonBody(ctx)
     if (!body || Object.keys(body).length === 0) {
       ctx.status = 400
@@ -22,8 +41,8 @@ export const POST = async (ctx: Context) => {
     }
     const name = body.name as ConfigKey
     const data = body.data as Record<string, unknown>
-    const res = await setConfig(name, data)
-    if (!res) {
+    const setRes = await setConfig(name, data)
+    if (!setRes) {
       ctx.status = 500
       ctx.body = {
         code: 500,

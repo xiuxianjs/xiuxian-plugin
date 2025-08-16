@@ -146,7 +146,7 @@ export default function NajieManager() {
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="relative z-10 p-6 h-full overflow-y-auto">
+      <div className="relative z-10  p-2 md:p-6 h-full overflow-y-auto">
         {/* 页面标题和刷新按钮 */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">

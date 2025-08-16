@@ -1,5 +1,5 @@
 import { Context } from 'koa'
-import { validateToken } from '@src/route/core/auth'
+import { validateRole } from '@src/route/core/auth'
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from '@src/model/paths'
 import { readPlayer } from '@src/model/xiuxian_impl'
@@ -11,26 +11,8 @@ const redis = getIoRedis()
 // 获取排名数据
 export const GET = async (ctx: Context) => {
   try {
-    // 验证管理员权限
-    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      ctx.status = 401
-      ctx.body = {
-        code: 401,
-        message: '需要登录',
-        data: null
-      }
-      return
-    }
-
-    const user = await validateToken(token)
-    if (!user || user.role !== 'admin') {
-      ctx.status = 403
-      ctx.body = {
-        code: 403,
-        message: '权限不足',
-        data: null
-      }
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
       return
     }
 
@@ -285,26 +267,8 @@ export const GET = async (ctx: Context) => {
 // 获取排名统计信息
 export const POST = async (ctx: Context) => {
   try {
-    // 验证管理员权限
-    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      ctx.status = 401
-      ctx.body = {
-        code: 401,
-        message: '需要登录',
-        data: null
-      }
-      return
-    }
-
-    const user = await validateToken(token)
-    if (!user || user.role !== 'admin') {
-      ctx.status = 403
-      ctx.body = {
-        code: 403,
-        message: '权限不足',
-        data: null
-      }
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
       return
     }
 
@@ -419,26 +383,8 @@ export const POST = async (ctx: Context) => {
 // 手动触发排名计算
 export const PUT = async (ctx: Context) => {
   try {
-    // 验证管理员权限
-    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      ctx.status = 401
-      ctx.body = {
-        code: 401,
-        message: '需要登录',
-        data: null
-      }
-      return
-    }
-
-    const user = await validateToken(token)
-    if (!user || user.role !== 'admin') {
-      ctx.status = 403
-      ctx.body = {
-        code: 403,
-        message: '权限不足',
-        data: null
-      }
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
       return
     }
 

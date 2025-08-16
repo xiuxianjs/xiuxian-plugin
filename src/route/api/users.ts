@@ -3,32 +3,14 @@ import {
   createUser,
   getAllUsers,
   deleteUser,
-  validateToken
+  validateRole
 } from '@src/route/core/auth'
 import { parseJsonBody } from '@src/route/core/bodyParser'
 // 获取所有用户
 export const GET = async (ctx: Context) => {
   try {
-    // 验证管理员权限
-    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      ctx.status = 401
-      ctx.body = {
-        code: 401,
-        message: '需要登录',
-        data: null
-      }
-      return
-    }
-
-    const user = await validateToken(token)
-    if (!user || user.role !== 'admin') {
-      ctx.status = 403
-      ctx.body = {
-        code: 403,
-        message: '权限不足',
-        data: null
-      }
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
       return
     }
 
@@ -55,26 +37,8 @@ export const GET = async (ctx: Context) => {
 // 创建用户
 export const POST = async (ctx: Context) => {
   try {
-    // 验证管理员权限
-    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      ctx.status = 401
-      ctx.body = {
-        code: 401,
-        message: '需要登录',
-        data: null
-      }
-      return
-    }
-
-    const currentUser = await validateToken(token)
-    if (!currentUser || currentUser.role !== 'admin') {
-      ctx.status = 403
-      ctx.body = {
-        code: 403,
-        message: '权限不足',
-        data: null
-      }
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
       return
     }
 
@@ -131,26 +95,8 @@ export const POST = async (ctx: Context) => {
 // 删除用户
 export const DELETE = async (ctx: Context) => {
   try {
-    // 验证管理员权限
-    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      ctx.status = 401
-      ctx.body = {
-        code: 401,
-        message: '需要登录',
-        data: null
-      }
-      return
-    }
-
-    const currentUser = await validateToken(token)
-    if (!currentUser || currentUser.role !== 'admin') {
-      ctx.status = 403
-      ctx.body = {
-        code: 403,
-        message: '权限不足',
-        data: null
-      }
+    const res = await validateRole(ctx, 'admin')
+    if (!res) {
       return
     }
 

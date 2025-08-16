@@ -1192,10 +1192,10 @@ export async function getAdminsetImage(
     //出千控制
     sizeMoney: cf.size.Money,
     //开关
-    switchplay: cf.switch.play,
-    switchMoneynumber: cf.switch.play,
-    switchcouple: cf.switch.couple,
-    switchXiuianplay_key: cf.switch.Xiuianplay_key,
+    switchplay: cf.sw.play,
+    switchMoneynumber: cf.sw.play,
+    switchcouple: cf.sw.couple,
+    switchXiuianplay_key: cf.sw.Xiuianplay_key,
     //倍率
     biguansize: cf.biguan.size,
     biguantime: cf.biguan.time,

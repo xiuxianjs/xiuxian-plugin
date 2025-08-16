@@ -16,7 +16,7 @@ export const regular = /^(#|＃|\/)?怡红院$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = await config.getConfig('xiuxian', 'xiuxian')
-  const switchgame = cf.switch.play
+  const switchgame = cf.sw.play
   if (switchgame != true) {
     return false
   }

@@ -1,10 +1,10 @@
-import YAML from 'yaml'
-import { readFileSync } from 'fs'
-import { __PATH_CONFIG, __PATH_CONFIG_MAP } from './paths'
+import { __PATH_CONFIG } from './paths'
 import { getIoRedis } from '@alemonjs/db'
 import { getRedisConfigKey } from './key'
 
-export type ConfigKey = keyof typeof __PATH_CONFIG
+export type Data = typeof __PATH_CONFIG
+
+export type ConfigKey = keyof Data
 
 export const hasConfig = async (name: ConfigKey) => {
   const redis = getIoRedis()
@@ -31,11 +31,13 @@ export const setConfig = async (name: ConfigKey, data: any) => {
  * @param name
  * @returns
  */
-export async function getConfig(_app: string, name: ConfigKey) {
+export async function getConfig<T extends ConfigKey>(
+  _app: string,
+  name: T
+): Promise<Data[T]> {
   const redis = getIoRedis()
   const key = getRedisConfigKey(name)
-  const fileURL = __PATH_CONFIG[name]
-  const data = YAML.parse(readFileSync(fileURL, 'utf8'))
+  const data = __PATH_CONFIG[name]
   const curData = await redis.get(key)
   if (curData) {
     const db = JSON.parse(curData)

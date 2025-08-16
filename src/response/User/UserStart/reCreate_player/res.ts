@@ -261,7 +261,7 @@ async function Create_player(e) {
     addluckyNo: 0,
     师徒任务阶段: 0,
     师徒积分: 0
-  } as Player
+  }
   await writePlayer(usr_qq, new_player)
   const new_equipment = {
     武器: data.equipment_list.find(i => i.name === '烂铁匕首'),

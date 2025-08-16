@@ -1,9 +1,9 @@
-import Association from '@src/config/help/association.yaml'
-import help from '@src/config/help/base.yaml'
-import help2 from '@src/config/help/extensions.yaml'
-import set from '@src/config/help/admin.yaml'
-import shituhelp from '@src/config/help/professor.yaml'
-import xiuxian from '@src/config/xiuxian.yaml'
+import Association from '@src/config/help/association'
+import help from '@src/config/help/base'
+import help2 from '@src/config/help/extensions'
+import set from '@src/config/help/admin'
+import shituhelp from '@src/config/help/professor'
+import xiuxian from '@src/config/xiuxian'
 
 // 存档存放路径
 const __PATH = {
@@ -30,15 +30,6 @@ const __PATH = {
 }
 
 export { __PATH }
-
-export const __PATH_CONFIG_MAP = {
-  Association: '/help/association',
-  help: '/help/base',
-  help2: '/help/extensions',
-  set: '/help/admin',
-  shituhelp: '/help/professor',
-  xiuxian: '/xiuxian'
-}
 
 export const __PATH_CONFIG = {
   Association,
