@@ -166,12 +166,7 @@ export default function App() {
         </header>
 
         {/* 主内容区域 - 添加顶部边距避免被固定header遮挡 */}
-        <main className="flex-1 overflow-y-auto pt-20">
-          {
-            // react-router-dom 套入children
-            <Outlet />
-          }
-        </main>
+        <main className="flex-1 overflow-y-auto pt-20">{<Outlet />}</main>
       </div>
     </div>
   )

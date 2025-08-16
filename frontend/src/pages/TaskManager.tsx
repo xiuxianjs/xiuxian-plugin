@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
   Table,
-  Modal,
   message,
   Tag,
   Tooltip,
@@ -18,7 +17,6 @@ import {
   ReloadOutlined,
   CheckCircleOutlined,
   ExclamationCircleOutlined,
-  InfoCircleOutlined,
   SettingOutlined,
   SaveOutlined
 } from '@ant-design/icons'
@@ -26,7 +24,9 @@ import { useAuth } from '@/contexts/AuthContext'
 import {
   getTaskConfigAPI,
   updateTaskConfigAPI,
-  restartTasksAPI
+  restartTasksAPI,
+  getTaskStatusAPI,
+  taskControlAPI
 } from '@/api/auth'
 import type { ColumnsType } from 'antd/es/table'
 
@@ -42,72 +42,64 @@ interface TaskInfo {
 
 export default function TaskManager() {
   const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [tasks, setTasks] = useState<TaskInfo[]>([])
   const [taskConfig, setTaskConfig] = useState<{ [key: string]: string }>({})
   const [configDrawerVisible, setConfigDrawerVisible] = useState(false)
   const [configForm] = Form.useForm()
 
-  // 模拟任务数据
-  const mockTasks: TaskInfo[] = [
-    {
-      name: 'ActionTask',
-      description: '检测人物动作是否结束',
-      schedule: '0 0/1 * * * ?',
-      status: 'running',
-      lastRun: new Date().toISOString(),
-      nextRun: new Date(Date.now() + 60000).toISOString(),
-      type: 'game'
-    },
-    {
-      name: 'ActionPlusTask',
-      description: '检测沉迷是否结束',
-      schedule: '0 0/5 * * * ?',
-      status: 'running',
-      lastRun: new Date().toISOString(),
-      nextRun: new Date(Date.now() + 300000).toISOString(),
-      type: 'game'
-    },
-    {
-      name: 'GamesTask',
-      description: '游戏锁定状态检查',
-      schedule: '0 */5 * * * ?',
-      status: 'running',
-      lastRun: new Date().toISOString(),
-      nextRun: new Date(Date.now() + 300000).toISOString(),
-      type: 'system'
-    },
-    {
-      name: 'SaijiTask',
-      description: '赛季结算',
-      schedule: '0 0 0 ? * 1',
-      status: 'running',
-      lastRun: new Date().toISOString(),
-      nextRun: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      type: 'game'
-    },
-
-    {
-      name: 'TempTask',
-      description: '临时任务处理',
-      schedule: '20 0/5 * * * ?',
-      status: 'running',
-      lastRun: new Date().toISOString(),
-      nextRun: new Date(Date.now() + 300000).toISOString(),
-      type: 'system'
-    },
-    {
-      name: 'RankingTask',
-      description: '排名计算任务',
-      schedule: '0 */30 * * * ?',
-      status: 'running',
-      lastRun: new Date().toISOString(),
-      nextRun: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-      type: 'game'
+  // 根据实际配置生成任务数据
+  const generateTasksFromConfig = (
+    config: { [key: string]: string },
+    taskStatus?: {
+      [key: string]: { running: boolean; nextInvocation?: string }
     }
-  ]
+  ): TaskInfo[] => {
+    const taskDescriptions: {
+      [key: string]: {
+        description: string
+        type: 'system' | 'game' | 'maintenance'
+      }
+    } = {
+      ShopTask: { description: '商店刷新', type: 'maintenance' },
+      ExchangeTask: { description: '冲水堂清理', type: 'maintenance' },
+      BossTask: { description: 'BOSS开启', type: 'game' },
+      BossTask2: { description: 'BOSS开启2', type: 'game' },
+      AuctionofficialTask: { description: '拍卖任务', type: 'game' },
+      ForumTask: { description: '论坛任务', type: 'system' },
+      MojiTask: { description: '魔界任务', type: 'game' },
+      PlayerControlTask: { description: '玩家控制任务', type: 'system' },
+      SecretPlaceplusTask: { description: '秘境任务（plus）', type: 'game' },
+      OccupationTask: { description: '职业任务', type: 'game' },
+      MsgTask: { description: '消息任务', type: 'system' },
+      ShenjieTask: { description: '神界任务', type: 'game' },
+      ShopGradetask: { description: '商店等级任务', type: 'maintenance' },
+      Taopaotask: { description: '逃跑任务', type: 'game' },
+      SecretPlaceTask: { description: '秘境任务', type: 'game' },
+      TiandibangTask: { description: '天地榜任务', type: 'game' },
+      Xijietask: { description: '仙界任务', type: 'game' }
+    }
 
-  // 获取任务配置
+    return Object.entries(config).map(([name, schedule]) => {
+      const taskInfo = taskDescriptions[name] || {
+        description: name,
+        type: 'system' as const
+      }
+      const status = taskStatus?.[name]
+      return {
+        name,
+        description: taskInfo.description,
+        schedule,
+        status: status?.running ? 'running' : 'stopped',
+        lastRun: new Date().toISOString(),
+        nextRun:
+          status?.nextInvocation || new Date(Date.now() + 60000).toISOString(),
+        type: taskInfo.type
+      }
+    })
+  }
+
+  // 获取任务配置和状态
   const fetchTaskConfig = async () => {
     if (!user) return
 
@@ -118,11 +110,18 @@ export default function TaskManager() {
         return
       }
 
-      const result = await getTaskConfigAPI(token)
-      if (result.success && result.data) {
-        setTaskConfig(result.data)
-        // 更新任务数据以反映实际配置
-        updateTasksFromConfig(result.data)
+      const [configResult, statusResult] = await Promise.all([
+        getTaskConfigAPI(token),
+        getTaskStatusAPI(token)
+      ])
+
+      if (configResult.success && configResult.data) {
+        setTaskConfig(configResult.data)
+        // 更新任务数据以反映实际配置和状态
+        updateTasksFromConfig(
+          configResult.data,
+          statusResult.success ? statusResult.data : undefined
+        )
       }
     } catch (error) {
       console.error('获取任务配置失败:', error)
@@ -130,19 +129,17 @@ export default function TaskManager() {
   }
 
   // 根据配置更新任务数据
-  const updateTasksFromConfig = (config: { [key: string]: string }) => {
-    const updatedTasks = mockTasks.map(task => {
-      const configSchedule = config[task.name]
-      return {
-        ...task,
-        schedule: configSchedule || task.schedule
-      }
-    })
+  const updateTasksFromConfig = (
+    config: { [key: string]: string },
+    taskStatus?: {
+      [key: string]: { running: boolean; nextInvocation?: string }
+    }
+  ) => {
+    const updatedTasks = generateTasksFromConfig(config, taskStatus)
     setTasks(updatedTasks)
   }
 
   useEffect(() => {
-    setTasks(mockTasks)
     fetchTaskConfig()
   }, [user])
 
@@ -195,7 +192,7 @@ export default function TaskManager() {
   const formatCron = (cron: string) => {
     const parts = cron.split(' ')
     if (parts.length === 6) {
-      const [second, minute, hour, day, month, weekday] = parts
+      const [, minute, hour, , , weekday] = parts
       let description = ''
 
       if (minute === '0/1') description = '每分钟'
@@ -301,41 +298,92 @@ export default function TaskManager() {
   ]
 
   // 启动任务
-  const handleStartTask = (task: TaskInfo) => {
-    message.success(`任务 ${task.name} 已启动`)
-    setTasks(prev =>
-      prev.map(t =>
-        t.name === task.name ? { ...t, status: 'running' as const } : t
-      )
-    )
+  const handleStartTask = async (task: TaskInfo) => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      message.loading(`正在启动任务 ${task.name}...`, 0)
+      const result = await taskControlAPI(token, 'start', task.name)
+      message.destroy()
+
+      if (result.success && result.data?.success) {
+        message.success(`任务 ${task.name} 启动成功`)
+        // 重新获取任务状态
+        fetchTaskConfig()
+      } else {
+        message.error(result.message || `任务 ${task.name} 启动失败`)
+      }
+    } catch (error) {
+      message.destroy()
+      console.error('启动任务失败:', error)
+      message.error('启动任务失败')
+    }
   }
 
   // 停止任务
-  const handleStopTask = (task: TaskInfo) => {
-    message.warning(`任务 ${task.name} 已停止`)
-    setTasks(prev =>
-      prev.map(t =>
-        t.name === task.name ? { ...t, status: 'stopped' as const } : t
-      )
-    )
+  const handleStopTask = async (task: TaskInfo) => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      message.loading(`正在停止任务 ${task.name}...`, 0)
+      const result = await taskControlAPI(token, 'stop', task.name)
+      message.destroy()
+
+      if (result.success && result.data?.success) {
+        message.success(`任务 ${task.name} 停止成功`)
+        // 重新获取任务状态
+        fetchTaskConfig()
+      } else {
+        message.error(result.message || `任务 ${task.name} 停止失败`)
+      }
+    } catch (error) {
+      message.destroy()
+      console.error('停止任务失败:', error)
+      message.error('停止任务失败')
+    }
   }
 
-  // 重启任务
-  const handleRestartTask = (task: TaskInfo) => {
-    message.info(`任务 ${task.name} 正在重启...`)
-    setTasks(prev =>
-      prev.map(t =>
-        t.name === task.name ? { ...t, status: 'running' as const } : t
-      )
-    )
+  // 重启单个任务
+  const handleRestartTask = async (task: TaskInfo) => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      message.loading(`正在重启任务 ${task.name}...`, 0)
+      const result = await restartTasksAPI(token, task.name)
+      message.destroy()
+
+      if (result.success && result.data?.success) {
+        message.success(`任务 ${task.name} 重启成功`)
+        // 重新获取任务状态
+        fetchTaskConfig()
+      } else {
+        message.error(result.message || `任务 ${task.name} 重启失败`)
+      }
+    } catch (error) {
+      message.destroy()
+      console.error('重启任务失败:', error)
+      message.error('重启任务失败')
+    }
   }
 
-  // 手动执行排名计算
+  // 手动执行天地榜计算
   const handleManualRanking = () => {
-    message.loading('正在执行排名计算...', 0)
+    message.loading('正在执行天地榜计算...', 0)
     setTimeout(() => {
       message.destroy()
-      message.success('排名计算完成')
+      message.success('天地榜计算完成')
     }, 2000)
   }
 
@@ -361,6 +409,8 @@ export default function TaskManager() {
         setTaskConfig(values)
         updateTasksFromConfig(values)
         setConfigDrawerVisible(false)
+        // 重新获取任务状态
+        fetchTaskConfig()
       } else {
         message.error(result.message || '保存失败')
       }
@@ -370,7 +420,61 @@ export default function TaskManager() {
     }
   }
 
-  // 重启任务
+  // 启动所有任务
+  const handleStartAllTasks = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      message.loading('正在启动所有任务...', 0)
+      const result = await taskControlAPI(token, 'startAll')
+      message.destroy()
+
+      if (result.success && result.data?.success) {
+        message.success('所有任务启动成功')
+        // 重新获取配置
+        fetchTaskConfig()
+      } else {
+        message.error(result.message || '启动失败')
+      }
+    } catch (error) {
+      message.destroy()
+      console.error('启动任务失败:', error)
+      message.error('启动任务失败')
+    }
+  }
+
+  // 停止所有任务
+  const handleStopAllTasks = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      message.loading('正在停止所有任务...', 0)
+      const result = await taskControlAPI(token, 'stopAll')
+      message.destroy()
+
+      if (result.success && result.data?.success) {
+        message.success('所有任务停止成功')
+        // 重新获取配置
+        fetchTaskConfig()
+      } else {
+        message.error(result.message || '停止失败')
+      }
+    } catch (error) {
+      message.destroy()
+      console.error('停止任务失败:', error)
+      message.error('停止任务失败')
+    }
+  }
+
+  // 重启所有任务
   const handleRestartTasks = async () => {
     try {
       const token = localStorage.getItem('token')
@@ -379,12 +483,12 @@ export default function TaskManager() {
         return
       }
 
-      message.loading('正在重启任务...', 0)
+      message.loading('正在重启所有任务...', 0)
       const result = await restartTasksAPI(token)
       message.destroy()
 
-      if (result.success) {
-        message.success('任务重启成功')
+      if (result.success && result.data?.success) {
+        message.success('所有任务重启成功')
         // 重新获取配置
         fetchTaskConfig()
       } else {
@@ -408,7 +512,21 @@ export default function TaskManager() {
             onClick={handleManualRanking}
           >
             <ReloadOutlined />
-            手动执行排名计算
+            手动执行天地榜计算
+          </button>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            onClick={handleStartAllTasks}
+          >
+            <PlayCircleOutlined />
+            启动所有任务
+          </button>
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            onClick={handleStopAllTasks}
+          >
+            <PauseCircleOutlined />
+            停止所有任务
           </button>
           <button
             className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
@@ -422,7 +540,7 @@ export default function TaskManager() {
             onClick={handleRestartTasks}
           >
             <ReloadOutlined />
-            重启任务
+            重启所有任务
           </button>
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
@@ -507,39 +625,6 @@ export default function TaskManager() {
           pagination={false}
           scroll={{ x: 1200 }}
         />
-      </div>
-
-      {/* 说明信息 */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start">
-          <InfoCircleOutlined className="text-blue-500 text-lg mt-0.5 mr-2" />
-          <div>
-            <h4 className="text-blue-800 font-semibold mb-2">定时任务说明</h4>
-            <ul className="text-blue-700 text-sm space-y-1">
-              <li>
-                • <strong>ActionTask</strong>:
-                检测玩家动作状态，自动完成已结束的动作
-              </li>
-              <li>
-                • <strong>ActionPlusTask</strong>:
-                检测玩家沉迷状态，自动解除已过期的沉迷
-              </li>
-              <li>
-                • <strong>GamesTask</strong>:
-                检查游戏锁定状态，自动解除过期的锁定
-              </li>
-              <li>
-                • <strong>SaijiTask</strong>: 赛季结算，发放奖励并开启新赛季
-              </li>
-              <li>
-                • <strong>TempTask</strong>: 处理临时任务，清理过期数据
-              </li>
-              <li>
-                • <strong>RankingTask</strong>: 计算玩家和宗门排名，更新排行榜
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
 
       {/* 配置编辑抽屉 */}

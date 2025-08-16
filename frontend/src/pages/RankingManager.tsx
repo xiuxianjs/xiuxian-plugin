@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Modal, message, Tag, Tooltip, Tabs } from 'antd'
+import { Table, message } from 'antd'
 import {
   TrophyOutlined,
   CrownOutlined,
   FireOutlined,
   ReloadOutlined,
-  SearchOutlined,
   TeamOutlined,
   BankOutlined,
   StarOutlined

@@ -66,7 +66,8 @@ export const GET = async (ctx: Context) => {
 
         if (najieData) {
           try {
-            const najie = JSON.parse(decodeURIComponent(najieData))
+            // 先尝试解码URI
+            const najie = JSON.parse(najieData)
             const najieWithId = {
               userId,
               ...najie
@@ -87,7 +88,39 @@ export const GET = async (ctx: Context) => {
               }
             }
           } catch (error) {
-            console.error(`解析背包数据失败 ${userId}:`, error)
+            logger.error(`解析背包数据失败 ${userId}:`, error)
+
+            // 添加损坏的数据到正常列表，但内容为空，显示原始JSON
+            const corruptedNajie = {
+              userId,
+              灵石: 0,
+              装备: [],
+              丹药: [],
+              道具: [],
+              功法: [],
+              草药: [],
+              材料: [],
+              仙宠: [],
+              仙宠口粮: [],
+              数据状态: 'corrupted',
+              原始数据: najieData,
+              错误信息: error.message
+            }
+
+            // 应用搜索过滤
+            const matchesSearch = !search || userId.includes(search)
+
+            // 应用分类过滤（损坏数据默认匹配所有分类）
+            const matchesCategory = category === 'all' || true
+
+            if (matchesSearch && matchesCategory) {
+              total++
+              // 只添加当前页的数据
+              const startIndex = (page - 1) * pageSize
+              if (najieList.length < pageSize && total > startIndex) {
+                najieList.push(corruptedNajie)
+              }
+            }
           }
         }
       }
@@ -107,14 +140,34 @@ export const GET = async (ctx: Context) => {
 
         if (najieData) {
           try {
-            const najie = JSON.parse(decodeURIComponent(najieData))
+            // 先尝试解码URI
+            const najie = JSON.parse(najieData)
             const najieWithId = {
               userId,
               ...najie
             }
             najieList.push(najieWithId)
           } catch (error) {
-            console.error(`解析背包数据失败 ${userId}:`, error)
+            logger.error(`解析背包数据失败 ${userId}:`, error)
+
+            // 添加损坏的数据到正常列表，但内容为空，显示原始JSON
+            const corruptedNajie = {
+              userId,
+              灵石: 0,
+              装备: [],
+              丹药: [],
+              道具: [],
+              功法: [],
+              草药: [],
+              材料: [],
+              仙宠: [],
+              仙宠口粮: [],
+              数据状态: 'corrupted',
+              原始数据: najieData,
+              错误信息: error.message
+            }
+            najieList.push(corruptedNajie)
+            total++
           }
         }
       }
@@ -135,7 +188,7 @@ export const GET = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取背包列表错误:', error)
+    logger.error('获取背包列表错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
@@ -196,7 +249,7 @@ export const POST = async (ctx: Context) => {
       return
     }
 
-    const najie = JSON.parse(decodeURIComponent(najieData))
+    const najie = JSON.parse(najieData)
 
     ctx.status = 200
     ctx.body = {
@@ -208,7 +261,7 @@ export const POST = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取背包详情错误:', error)
+    logger.error('获取背包详情错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
@@ -286,7 +339,8 @@ export const PUT = async (ctx: Context) => {
 
         if (najieData) {
           try {
-            const najie = JSON.parse(decodeURIComponent(najieData))
+            // 先尝试解码URI
+            const najie = JSON.parse(najieData)
 
             // 应用搜索过滤
             const matchesSearch = !search || userId.includes(search)
@@ -304,7 +358,13 @@ export const PUT = async (ctx: Context) => {
               })
             }
           } catch (error) {
-            console.error(`解析背包数据失败 ${userId}:`, error)
+            logger.error(`解析背包数据失败 ${userId}:`, error)
+
+            // 损坏数据计入总数
+            const matchesSearch = !search || userId.includes(search)
+            if (matchesSearch) {
+              total++
+            }
           }
         }
       }
@@ -320,7 +380,8 @@ export const PUT = async (ctx: Context) => {
 
         if (najieData) {
           try {
-            const najie = JSON.parse(decodeURIComponent(najieData))
+            // 先尝试解码URI
+            const najie = JSON.parse(najieData)
 
             totalLingshi += najie.灵石 || 0
 
@@ -332,7 +393,9 @@ export const PUT = async (ctx: Context) => {
               }
             })
           } catch (error) {
-            console.error(`解析背包数据失败 ${userId}:`, error)
+            logger.error(`解析背包数据失败 ${userId}:`, error)
+            // 损坏数据计入总数
+            total++
           }
         }
       }
@@ -360,7 +423,7 @@ export const PUT = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取统计信息错误:', error)
+    logger.error('获取统计信息错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,

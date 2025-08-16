@@ -160,7 +160,14 @@ export const getGameUsersAPI = async (
   success: boolean
   data?: {
     list: any[]
+    corruptedList: any[]
     pagination: {
+      current: number
+      pageSize: number
+      total: number
+      totalPages: number
+    }
+    corruptedPagination: {
       current: number
       pageSize: number
       total: number
@@ -414,7 +421,14 @@ export const getNajieAPI = async (
   success: boolean
   data?: {
     list: any[]
+    corruptedList: any[]
     pagination: {
+      current: number
+      pageSize: number
+      total: number
+      totalPages: number
+    }
+    corruptedPagination: {
       current: number
       pageSize: number
       total: number
@@ -671,25 +685,31 @@ export const updateTaskConfigAPI = async (
   }
 }
 
-// 重启定时任务API
-export const restartTasksAPI = async (
+// 获取任务状态API
+export const getTaskStatusAPI = async (
   token: string
 ): Promise<{
   success: boolean
   data?: {
-    timestamp: string
+    [key: string]: {
+      running: boolean
+      nextInvocation?: string
+    }
   }
   message?: string
 }> => {
   try {
     const result = (await request({
       url: '/task-config',
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`
       }
     })) as unknown as ApiResponse<{
-      timestamp: string
+      [key: string]: {
+        running: boolean
+        nextInvocation?: string
+      }
     }>
 
     if (result.code === 200) {
@@ -704,11 +724,90 @@ export const restartTasksAPI = async (
       }
     }
   } catch (error) {
-    console.error('重启定时任务API错误:', error)
+    console.error('获取任务状态API错误:', error)
     return {
       success: false,
       message: '网络错误'
     }
+  }
+}
+
+// 任务控制API
+export const taskControlAPI = async (
+  token: string,
+  action: 'start' | 'stop' | 'restart' | 'startAll' | 'stopAll' | 'restartAll',
+  taskName?: string
+): Promise<{
+  success: boolean
+  data?: {
+    timestamp: string
+    success: boolean
+    [key: string]: unknown
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/task-config',
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: { action, ...(taskName && { taskName }) }
+    })) as unknown as ApiResponse<{
+      timestamp: string
+      success: boolean
+      [key: string]: unknown
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('任务控制API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 重启定时任务API (保持兼容性)
+export const restartTasksAPI = async (
+  token: string,
+  taskName?: string
+): Promise<{
+  success: boolean
+  data?: {
+    timestamp: string
+    taskName: string
+    success: boolean
+  }
+  message?: string
+}> => {
+  const result = await taskControlAPI(
+    token,
+    taskName ? 'restart' : 'restartAll',
+    taskName
+  )
+  return {
+    success: result.success,
+    message: result.message,
+    data: result.data
+      ? {
+          timestamp: result.data.timestamp,
+          taskName: (result.data.taskName as string) || taskName || 'all',
+          success: result.data.success
+        }
+      : undefined
   }
 }
 
@@ -763,6 +862,7 @@ export const getNajieStatsAPI = async (
   success: boolean
   data?: {
     total: number
+    corruptedTotal: number
     totalLingshi: number
     totalItems: number
     categoryStats: {

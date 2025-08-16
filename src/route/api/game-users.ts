@@ -66,7 +66,8 @@ export const GET = async (ctx: Context) => {
 
         if (playerData) {
           try {
-            const player = JSON.parse(decodeURIComponent(playerData))
+            // 先尝试解码URI
+            const player = JSON.parse(playerData)
             const playerWithId = {
               id: userId,
               ...player
@@ -75,7 +76,7 @@ export const GET = async (ctx: Context) => {
             // 应用搜索过滤
             const matchesSearch =
               !search ||
-              playerWithId.名号.toLowerCase().includes(search.toLowerCase()) ||
+              playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
               playerWithId.id.includes(search)
 
             if (matchesSearch) {
@@ -87,7 +88,76 @@ export const GET = async (ctx: Context) => {
               }
             }
           } catch (error) {
-            console.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error)
+
+            // 添加损坏的数据到正常列表，但内容为空，显示原始JSON
+            const corruptedPlayer = {
+              id: userId,
+              名号: `[数据损坏] ${userId}`,
+              sex: '',
+              宣言: '',
+              avatar: '',
+              level_id: 0,
+              Physique_id: 0,
+              race: 0,
+              修为: 0,
+              血气: 0,
+              灵石: 0,
+              灵根: null,
+              神石: 0,
+              favorability: 0,
+              breakthrough: false,
+              linggen: [],
+              linggenshow: 0,
+              学习的功法: [],
+              修炼效率提升: 0,
+              连续签到天数: 0,
+              攻击加成: 0,
+              防御加成: 0,
+              生命加成: 0,
+              power_place: 0,
+              当前血量: 0,
+              lunhui: 0,
+              lunhuiBH: 0,
+              轮回点: 0,
+              occupation: [],
+              occupation_level: 0,
+              镇妖塔层数: 0,
+              神魄段数: 0,
+              魔道值: 0,
+              仙宠: [],
+              练气皮肤: 0,
+              装备皮肤: 0,
+              幸运: 0,
+              addluckyNo: 0,
+              师徒任务阶段: 0,
+              师徒积分: 0,
+              攻击: 0,
+              防御: 0,
+              血量上限: 0,
+              暴击率: 0,
+              暴击伤害: 0,
+              数据状态: 'corrupted',
+              原始数据: playerData,
+              错误信息: error.message
+            }
+
+            // 应用搜索过滤
+            const matchesSearch =
+              !search ||
+              corruptedPlayer.名号
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              corruptedPlayer.id.includes(search)
+
+            if (matchesSearch) {
+              total++
+              // 只添加当前页的数据
+              const startIndex = (page - 1) * pageSize
+              if (players.length < pageSize && total > startIndex) {
+                players.push(corruptedPlayer)
+              }
+            }
           }
         }
       }
@@ -107,14 +177,69 @@ export const GET = async (ctx: Context) => {
 
         if (playerData) {
           try {
-            const player = JSON.parse(decodeURIComponent(playerData))
+            // 先尝试解码URI
+            const player = JSON.parse(playerData)
             const playerWithId = {
               id: userId,
               ...player
             }
             players.push(playerWithId)
           } catch (error) {
-            console.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error)
+
+            // 添加损坏的数据到正常列表，但内容为空，显示原始JSON
+            const corruptedPlayer = {
+              id: userId,
+              名号: `[数据损坏] ${userId}`,
+              sex: '',
+              宣言: '',
+              avatar: '',
+              level_id: 0,
+              Physique_id: 0,
+              race: 0,
+              修为: 0,
+              血气: 0,
+              灵石: 0,
+              灵根: null,
+              神石: 0,
+              favorability: 0,
+              breakthrough: false,
+              linggen: [],
+              linggenshow: 0,
+              学习的功法: [],
+              修炼效率提升: 0,
+              连续签到天数: 0,
+              攻击加成: 0,
+              防御加成: 0,
+              生命加成: 0,
+              power_place: 0,
+              当前血量: 0,
+              lunhui: 0,
+              lunhuiBH: 0,
+              轮回点: 0,
+              occupation: [],
+              occupation_level: 0,
+              镇妖塔层数: 0,
+              神魄段数: 0,
+              魔道值: 0,
+              仙宠: [],
+              练气皮肤: 0,
+              装备皮肤: 0,
+              幸运: 0,
+              addluckyNo: 0,
+              师徒任务阶段: 0,
+              师徒积分: 0,
+              攻击: 0,
+              防御: 0,
+              血量上限: 0,
+              暴击率: 0,
+              暴击伤害: 0,
+              数据状态: 'corrupted',
+              原始数据: playerData,
+              错误信息: error.message
+            }
+            players.push(corruptedPlayer)
+            total++
           }
         }
       }
@@ -135,7 +260,7 @@ export const GET = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取游戏用户列表错误:', error)
+    logger.error('获取游戏用户列表错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
@@ -196,7 +321,7 @@ export const POST = async (ctx: Context) => {
       return
     }
 
-    const player = JSON.parse(decodeURIComponent(playerData))
+    const player = JSON.parse(playerData)
 
     ctx.status = 200
     ctx.body = {
@@ -208,7 +333,7 @@ export const POST = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取游戏用户数据错误:', error)
+    logger.error('获取游戏用户数据错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
@@ -280,7 +405,8 @@ export const PUT = async (ctx: Context) => {
 
         if (playerData) {
           try {
-            const player = JSON.parse(decodeURIComponent(playerData))
+            // 先尝试解码URI
+            const player = JSON.parse(playerData)
             const playerWithId = {
               id: userId,
               ...player
@@ -289,7 +415,7 @@ export const PUT = async (ctx: Context) => {
             // 应用搜索过滤
             const matchesSearch =
               !search ||
-              playerWithId.名号.toLowerCase().includes(search.toLowerCase()) ||
+              playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
               playerWithId.id.includes(search)
 
             if (matchesSearch) {
@@ -310,7 +436,15 @@ export const PUT = async (ctx: Context) => {
               totalLunhui += playerWithId.lunhui || 0
             }
           } catch (error) {
-            console.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error)
+
+            // 损坏数据计入总数
+            const matchesSearch = !search || userId.includes(search)
+            if (matchesSearch) {
+              total++
+              // 损坏数据计入低境界统计
+              lowLevel++
+            }
           }
         }
       }
@@ -326,7 +460,8 @@ export const PUT = async (ctx: Context) => {
 
         if (playerData) {
           try {
-            const player = JSON.parse(decodeURIComponent(playerData))
+            // 先尝试解码URI
+            const player = JSON.parse(playerData)
             const playerWithId = {
               id: userId,
               ...player
@@ -346,7 +481,11 @@ export const PUT = async (ctx: Context) => {
             totalShenshi += playerWithId.神石 || 0
             totalLunhui += playerWithId.lunhui || 0
           } catch (error) {
-            console.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error)
+            // 损坏数据计入总数
+            total++
+            // 损坏数据计入低境界统计
+            lowLevel++
           }
         }
       }
@@ -378,7 +517,7 @@ export const PUT = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取统计信息错误:', error)
+    logger.error('获取统计信息错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,

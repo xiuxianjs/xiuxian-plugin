@@ -41,7 +41,7 @@ export async function existplayer(usr_qq: string): Promise<boolean> {
 export async function readPlayer(usr_qq: string): Promise<Player | null> {
   const player = await redis.get(`${__PATH.player_path}:${usr_qq}`)
   if (!player) return null
-  const playerData = JSON.parse(decodeURIComponent(player))
+  const playerData = JSON.parse(player)
   return playerData as Player
 }
 

@@ -65,7 +65,7 @@ export const GET = async (ctx: Context) => {
 
         if (associationData) {
           try {
-            const association = JSON.parse(decodeURIComponent(associationData))
+            const association = JSON.parse(associationData)
             const associationWithName = {
               name: associationName,
               ...association
@@ -88,7 +88,7 @@ export const GET = async (ctx: Context) => {
               }
             }
           } catch (error) {
-            console.error(`解析宗门数据失败 ${associationName}:`, error)
+            logger.error(`解析宗门数据失败 ${associationName}:`, error)
           }
         }
       }
@@ -108,14 +108,14 @@ export const GET = async (ctx: Context) => {
 
         if (associationData) {
           try {
-            const association = JSON.parse(decodeURIComponent(associationData))
+            const association = JSON.parse(associationData)
             const associationWithName = {
               name: associationName,
               ...association
             }
             associations.push(associationWithName)
           } catch (error) {
-            console.error(`解析宗门数据失败 ${associationName}:`, error)
+            logger.error(`解析宗门数据失败 ${associationName}:`, error)
           }
         }
       }
@@ -136,7 +136,7 @@ export const GET = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取宗门列表错误:', error)
+    logger.error('获取宗门列表错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
@@ -199,7 +199,7 @@ export const POST = async (ctx: Context) => {
       return
     }
 
-    const association = JSON.parse(decodeURIComponent(associationData))
+    const association = JSON.parse(associationData)
 
     ctx.status = 200
     ctx.body = {
@@ -211,7 +211,7 @@ export const POST = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取宗门详情错误:', error)
+    logger.error('获取宗门详情错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
@@ -282,7 +282,7 @@ export const PUT = async (ctx: Context) => {
 
         if (associationData) {
           try {
-            const association = JSON.parse(decodeURIComponent(associationData))
+            const association = JSON.parse(associationData)
             const associationWithName = {
               name: associationName,
               ...association
@@ -309,7 +309,7 @@ export const PUT = async (ctx: Context) => {
               }
             }
           } catch (error) {
-            console.error(`解析宗门数据失败 ${associationName}:`, error)
+            logger.error(`解析宗门数据失败 ${associationName}:`, error)
           }
         }
       }
@@ -325,7 +325,7 @@ export const PUT = async (ctx: Context) => {
 
         if (associationData) {
           try {
-            const association = JSON.parse(decodeURIComponent(associationData))
+            const association = JSON.parse(associationData)
             totalMembers += association.所有成员?.length || 0
             totalPower += association.power || 0
             totalLingshi += association.灵石池 || 0
@@ -335,7 +335,7 @@ export const PUT = async (ctx: Context) => {
               fanjieCount++
             }
           } catch (error) {
-            console.error(`解析宗门数据失败 ${associationName}:`, error)
+            logger.error(`解析宗门数据失败 ${associationName}:`, error)
           }
         }
       }
@@ -365,7 +365,7 @@ export const PUT = async (ctx: Context) => {
       }
     }
   } catch (error) {
-    console.error('获取统计信息错误:', error)
+    logger.error('获取统计信息错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,

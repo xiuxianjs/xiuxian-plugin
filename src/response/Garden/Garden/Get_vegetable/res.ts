@@ -70,7 +70,7 @@ export default onResponse(selects, async e => {
     Send(Text('请输入要拔苗助长的作物名称'))
     return false
   }
-  console.log(rawName)
+  logger.info(rawName)
 
   const crops = Array.isArray(garden.作物) ? garden.作物 : []
   const targetIndex = crops.findIndex(c => c?.name === rawName)

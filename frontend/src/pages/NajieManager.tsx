@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Modal, message, Tooltip } from 'antd'
+import { Table, Modal, message, Tooltip, Tag } from 'antd'
 import {
   EyeOutlined,
   ShoppingOutlined,
   BankOutlined,
   GiftOutlined,
   ReloadOutlined,
-  SearchOutlined
+  SearchOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
 import { getNajieAPI, getNajieStatsAPI } from '@/api/auth'
@@ -37,11 +38,18 @@ interface Najie {
   灵石: number
   灵石上限?: number
   等级?: number
+  // 损坏数据相关字段
+  数据状态?: string
+  原始数据?: string
+  错误信息?: string
 }
+
+// 移除CorruptedNajie接口，损坏数据将使用Najie接口
 
 export default function NajieManager() {
   const { user } = useAuth()
   const [najieList, setNajieList] = useState<Najie[]>([])
+  // const [corruptedNajieList, setCorruptedNajieList] = useState<CorruptedNajie[]>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [selectedNajie, setSelectedNajie] = useState<Najie | null>(null)
@@ -357,6 +365,10 @@ export default function NajieManager() {
           dataSource={najieList}
           rowKey="userId"
           loading={loading}
+          rowClassName={record => {
+            // 如果是损坏数据，添加黄色背景
+            return record.数据状态 === 'corrupted' ? 'bg-yellow-50' : ''
+          }}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
@@ -373,97 +385,120 @@ export default function NajieManager() {
 
       {/* 背包详情弹窗 */}
       <Modal
-        title="背包详情"
+        title={
+          selectedNajie?.数据状态 === 'corrupted' ? '损坏数据详情' : '背包详情'
+        }
         open={najieDetailVisible}
         onCancel={() => setNajieDetailVisible(false)}
         footer={null}
-        width={800}
+        width={selectedNajie?.数据状态 === 'corrupted' ? 1200 : 800}
       >
         {selectedNajie && (
           <div className="space-y-6">
-            {/* 基础信息 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                基础信息
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-600">用户ID</label>
-                  <p className="font-medium">{selectedNajie.userId}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">背包等级</label>
-                  <p className="font-medium">{selectedNajie.等级 || 1}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">总物品数</label>
-                  <p className="font-medium">{getTotalItems(selectedNajie)}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">当前灵石</label>
-                  <p className="font-medium text-green-600">
-                    {selectedNajie.灵石?.toLocaleString() || 0}
+            {/* 如果是损坏数据，显示原始JSON */}
+            {selectedNajie.数据状态 === 'corrupted' ? (
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-red-600">
+                  损坏数据 - 原始JSON内容
+                </h3>
+                <div className="bg-gray-100 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 mb-2">
+                    错误信息: {selectedNajie.错误信息}
                   </p>
+                  <pre className="text-xs text-gray-800 overflow-auto max-h-96">
+                    {selectedNajie.原始数据}
+                  </pre>
                 </div>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* 基础信息 */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                    基础信息
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-gray-600">用户ID</label>
+                      <p className="font-medium">{selectedNajie.userId}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">背包等级</label>
+                      <p className="font-medium">{selectedNajie.等级 || 1}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">总物品数</label>
+                      <p className="font-medium">
+                        {getTotalItems(selectedNajie)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">当前灵石</label>
+                      <p className="font-medium text-green-600">
+                        {selectedNajie.灵石?.toLocaleString() || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* 物品统计 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                物品统计
-              </h3>
-              <div className="grid grid-cols-4 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">装备</label>
-                  <p className="text-xl font-bold text-blue-600">
-                    {selectedNajie.装备?.length || 0}
-                  </p>
+                {/* 物品统计 */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                    物品统计
+                  </h3>
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">装备</label>
+                      <p className="text-xl font-bold text-blue-600">
+                        {selectedNajie.装备?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">丹药</label>
+                      <p className="text-xl font-bold text-green-600">
+                        {selectedNajie.丹药?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">道具</label>
+                      <p className="text-xl font-bold text-purple-600">
+                        {selectedNajie.道具?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">功法</label>
+                      <p className="text-xl font-bold text-orange-600">
+                        {selectedNajie.功法?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">草药</label>
+                      <p className="text-xl font-bold text-red-600">
+                        {selectedNajie.草药?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">材料</label>
+                      <p className="text-xl font-bold text-yellow-600">
+                        {selectedNajie.材料?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">仙宠</label>
+                      <p className="text-xl font-bold text-pink-600">
+                        {selectedNajie.仙宠?.length || 0}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">仙宠口粮</label>
+                      <p className="text-xl font-bold text-indigo-600">
+                        {selectedNajie.仙宠口粮?.length || 0}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">丹药</label>
-                  <p className="text-xl font-bold text-green-600">
-                    {selectedNajie.丹药?.length || 0}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">道具</label>
-                  <p className="text-xl font-bold text-purple-600">
-                    {selectedNajie.道具?.length || 0}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">功法</label>
-                  <p className="text-xl font-bold text-orange-600">
-                    {selectedNajie.功法?.length || 0}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">草药</label>
-                  <p className="text-xl font-bold text-red-600">
-                    {selectedNajie.草药?.length || 0}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">材料</label>
-                  <p className="text-xl font-bold text-yellow-600">
-                    {selectedNajie.材料?.length || 0}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">仙宠</label>
-                  <p className="text-xl font-bold text-pink-600">
-                    {selectedNajie.仙宠?.length || 0}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">仙宠口粮</label>
-                  <p className="text-xl font-bold text-indigo-600">
-                    {selectedNajie.仙宠口粮?.length || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         )}
       </Modal>

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Row, Col, Statistic, Table, Progress, Button, Space } from 'antd'
+import { Card, Row, Col, Statistic, Table, Progress, Button } from 'antd'
 import {
   UserOutlined,
   TeamOutlined,
   CrownOutlined,
   TrophyOutlined,
-  BankOutlined,
   ReloadOutlined,
   RiseOutlined,
   ClockCircleOutlined,
@@ -16,7 +15,8 @@ import {
   getGameUsersStatsAPI,
   getAssociationsStatsAPI,
   getNajieStatsAPI,
-  getRankingsStatsAPI
+  getRankingsStatsAPI,
+  getTaskStatusAPI
 } from '@/api/auth'
 import type { ColumnsType } from 'antd/es/table'
 
@@ -41,8 +41,8 @@ interface DashboardStats {
   }
   rankings: {
     lastUpdate: string
-    topAssociations: any[]
-    topPlayers: any[]
+    topAssociations: TopAssociation[]
+    topPlayers: TopPlayer[]
   }
   system: {
     uptime: string
@@ -73,7 +73,9 @@ export default function Dashboard() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [activeTab, setActiveTab] = useState('overview')
+  const [viewMode, setViewMode] = useState<
+    'all' | 'players' | 'associations' | 'tasks'
+  >('all')
 
   // 获取统计数据
   const fetchStats = async () => {
@@ -88,12 +90,13 @@ export default function Dashboard() {
       }
 
       // 并行获取所有统计数据
-      const [userStats, associationStats, najieStats, rankingStats] =
+      const [userStats, associationStats, najieStats, rankingStats, taskStats] =
         await Promise.all([
           getGameUsersStatsAPI(token),
           getAssociationsStatsAPI(token),
           getNajieStatsAPI(token),
-          getRankingsStatsAPI(token)
+          getRankingsStatsAPI(token),
+          getTaskStatusAPI(token)
         ])
 
       const dashboardStats: DashboardStats = {
@@ -141,7 +144,9 @@ export default function Dashboard() {
         system: {
           uptime: '7天 12小时 30分钟',
           lastBackup: new Date().toISOString(),
-          activeTasks: 7
+          activeTasks: taskStats.success
+            ? Object.keys(taskStats.data || {}).length
+            : 0
         }
       }
 
@@ -354,17 +359,54 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* 页面标题和刷新按钮 */}
+      {/* 页面标题、只看功能和刷新按钮 */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">数据看板</h1>
-        <Button
-          type="primary"
-          icon={<ReloadOutlined />}
-          onClick={fetchStats}
-          loading={loading}
-        >
-          刷新数据
-        </Button>
+        <div className="flex items-center space-x-4">
+          {/* 只看功能 */}
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">只看:</span>
+            <Button
+              type={viewMode === 'all' ? 'primary' : 'default'}
+              size="small"
+              onClick={() => setViewMode('all')}
+            >
+              全部
+            </Button>
+            <Button
+              type={viewMode === 'players' ? 'primary' : 'default'}
+              size="small"
+              icon={<UserOutlined />}
+              onClick={() => setViewMode('players')}
+            >
+              玩家
+            </Button>
+            <Button
+              type={viewMode === 'associations' ? 'primary' : 'default'}
+              size="small"
+              icon={<TeamOutlined />}
+              onClick={() => setViewMode('associations')}
+            >
+              宗门
+            </Button>
+            <Button
+              type={viewMode === 'tasks' ? 'primary' : 'default'}
+              size="small"
+              icon={<ClockCircleOutlined />}
+              onClick={() => setViewMode('tasks')}
+            >
+              任务
+            </Button>
+          </div>
+          <Button
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={fetchStats}
+            loading={loading}
+          >
+            刷新数据
+          </Button>
+        </div>
       </div>
 
       {stats && (
@@ -400,23 +442,7 @@ export default function Dashboard() {
             <Col xs={24} sm={12} lg={6}>
               <Card>
                 <Statistic
-                  title="总灵石"
-                  value={stats.najie.totalLingshi}
-                  prefix={<BankOutlined />}
-                  valueStyle={{ color: '#722ed1' }}
-                  formatter={value =>
-                    `${(Number(value || 0) / 10000).toFixed(1)}万`
-                  }
-                />
-                <div className="mt-2 text-sm text-gray-500">
-                  总物品: {(stats.najie.totalItems || 0).toLocaleString()}
-                </div>
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} lg={6}>
-              <Card>
-                <Statistic
-                  title="系统运行"
+                  title="定时任务总数"
                   value={stats.system.activeTasks}
                   prefix={<ClockCircleOutlined />}
                   valueStyle={{ color: '#fa8c16' }}
@@ -427,163 +453,225 @@ export default function Dashboard() {
                 </div>
               </Card>
             </Col>
-          </Row>
-
-          {/* 详细统计和排行榜 */}
-          <Row gutter={[16, 16]}>
-            {/* 境界分布 */}
-            <Col xs={24} lg={12}>
-              <Card title="境界分布 TOP10" className="h-full">
-                <div className="space-y-3">
-                  {levelDistributionData.map((item, index) => (
-                    <div
-                      key={item.level}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-sm font-medium text-gray-600 w-8">
-                          {index + 1}
-                        </span>
-                        <span className="text-sm">{item.name}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Progress
-                          percent={parseFloat(item.percentage)}
-                          size="small"
-                          showInfo={false}
-                          strokeColor="#1890ff"
-                        />
-                        <span className="text-sm text-gray-500 w-12 text-right">
-                          {item.count}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+            <Col xs={24} sm={12} lg={6}>
+              <Card>
+                <Statistic
+                  title="数据更新时间"
+                  value={new Date(stats.rankings.lastUpdate).toLocaleString(
+                    'zh-CN'
+                  )}
+                  prefix={<RiseOutlined />}
+                  valueStyle={{ color: '#722ed1', fontSize: '14px' }}
+                />
+                <div className="mt-2 text-sm text-gray-500">
+                  最后更新:{' '}
+                  {new Date(stats.rankings.lastUpdate).toLocaleString('zh-CN')}
                 </div>
               </Card>
             </Col>
-
-            {/* 物品分类统计 */}
-            <Col xs={24} lg={12}>
-              <Card title="物品分类统计" className="h-full">
-                <div className="space-y-3">
-                  {categoryData.map((item, index) => (
-                    <div
-                      key={item.category}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-sm font-medium text-gray-600 w-8">
-                          {index + 1}
-                        </span>
-                        <span className="text-sm">{item.category}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Progress
-                          percent={parseFloat(item.percentage)}
-                          size="small"
-                          showInfo={false}
-                          strokeColor="#52c41a"
-                        />
-                        <span className="text-sm text-gray-500 w-12 text-right">
-                          {(item.count || 0).toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </Col>
-
-            {/* 玩家排行榜 */}
-            <Col xs={24} lg={12}>
-              <Card
-                title={
-                  <div className="flex items-center space-x-2">
-                    <TrophyOutlined />
-                    <span>玩家排行榜 TOP10</span>
-                  </div>
-                }
-                className="h-full"
-              >
-                <Table
-                  columns={playerColumns}
-                  dataSource={stats.rankings.topPlayers.slice(0, 10)}
-                  rowKey="id"
-                  pagination={false}
-                  size="small"
-                  scroll={{ y: 300 }}
-                />
-              </Card>
-            </Col>
-
-            {/* 宗门排行榜 */}
-            <Col xs={24} lg={12}>
-              <Card
-                title={
-                  <div className="flex items-center space-x-2">
-                    <CrownOutlined />
-                    <span>宗门排行榜 TOP10</span>
-                  </div>
-                }
-                className="h-full"
-              >
-                <Table
-                  columns={associationColumns}
-                  dataSource={stats.rankings.topAssociations.slice(0, 10)}
-                  rowKey="id"
-                  pagination={false}
-                  size="small"
-                  scroll={{ y: 300 }}
-                />
-              </Card>
-            </Col>
           </Row>
 
-          {/* 系统状态 */}
-          <Row gutter={[16, 16]} className="mt-6">
-            <Col xs={24}>
-              <Card title="系统状态">
-                <Row gutter={[16, 16]}>
-                  <Col xs={24} sm={8}>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">
-                        <RiseOutlined />
+          {/* 详细统计和排行榜 - 根据只看模式显示 */}
+          {(viewMode === 'all' || viewMode === 'players') && (
+            <Row gutter={[16, 16]}>
+              {/* 境界分布 */}
+              <Col xs={24} lg={12}>
+                <Card title="境界分布 TOP10" className="h-full">
+                  <div className="space-y-3">
+                    {levelDistributionData.map((item, index) => (
+                      <div
+                        key={item.level}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <span className="text-sm font-medium text-gray-600 w-8">
+                            {index + 1}
+                          </span>
+                          <span className="text-sm">{item.name}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Progress
+                            percent={parseFloat(item.percentage)}
+                            size="small"
+                            showInfo={false}
+                            strokeColor="#1890ff"
+                          />
+                          <span className="text-sm text-gray-500 w-12 text-right">
+                            {item.count}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 mt-2">系统状态</div>
-                      <div className="text-lg font-semibold text-green-600">
-                        正常
-                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </Col>
+
+              {/* 玩家排行榜 */}
+              <Col xs={24} lg={12}>
+                <Card
+                  title={
+                    <div className="flex items-center space-x-2">
+                      <TrophyOutlined />
+                      <span>玩家排行榜 TOP10</span>
                     </div>
-                  </Col>
-                  <Col xs={24} sm={8}>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">
-                        <ClockCircleOutlined />
-                      </div>
-                      <div className="text-sm text-gray-600 mt-2">最后更新</div>
-                      <div className="text-sm font-semibold">
-                        {new Date(stats.rankings.lastUpdate).toLocaleString(
-                          'zh-CN'
-                        )}
-                      </div>
+                  }
+                  className="h-full"
+                >
+                  <Table
+                    columns={playerColumns}
+                    dataSource={stats.rankings.topPlayers.slice(0, 10)}
+                    rowKey="id"
+                    pagination={false}
+                    size="small"
+                    scroll={{ y: 300 }}
+                  />
+                </Card>
+              </Col>
+            </Row>
+          )}
+
+          {(viewMode === 'all' || viewMode === 'associations') && (
+            <Row gutter={[16, 16]}>
+              {/* 宗门排行榜 */}
+              <Col xs={24} lg={12}>
+                <Card
+                  title={
+                    <div className="flex items-center space-x-2">
+                      <CrownOutlined />
+                      <span>宗门排行榜 TOP10</span>
                     </div>
-                  </Col>
-                  <Col xs={24} sm={8}>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">
-                        <ExclamationCircleOutlined />
-                      </div>
-                      <div className="text-sm text-gray-600 mt-2">活跃任务</div>
-                      <div className="text-lg font-semibold text-purple-600">
-                        {stats.system.activeTasks} 个
-                      </div>
+                  }
+                  className="h-full"
+                >
+                  <Table
+                    columns={associationColumns}
+                    dataSource={stats.rankings.topAssociations.slice(0, 10)}
+                    rowKey="id"
+                    pagination={false}
+                    size="small"
+                    scroll={{ y: 300 }}
+                  />
+                </Card>
+              </Col>
+
+              {/* 宗门统计 */}
+              <Col xs={24} lg={12}>
+                <Card title="宗门统计" className="h-full">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">总宗门数</span>
+                      <span className="text-lg font-bold text-blue-600">
+                        {stats.associations.total}
+                      </span>
                     </div>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">总成员数</span>
+                      <span className="text-lg font-bold text-green-600">
+                        {stats.associations.totalMembers}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">总战力</span>
+                      <span className="text-lg font-bold text-purple-600">
+                        {stats.associations.totalPower.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">总灵石池</span>
+                      <span className="text-lg font-bold text-yellow-600">
+                        {stats.associations.totalLingshi.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+            </Row>
+          )}
+
+          {(viewMode === 'all' || viewMode === 'tasks') && (
+            <Row gutter={[16, 16]}>
+              {/* 系统状态 */}
+              <Col xs={24} lg={12}>
+                <Card title="系统状态">
+                  <Row gutter={[16, 16]}>
+                    <Col xs={24} sm={8}>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          <RiseOutlined />
+                        </div>
+                        <div className="text-sm text-gray-600 mt-2">
+                          系统状态
+                        </div>
+                        <div className="text-lg font-semibold text-green-600">
+                          正常
+                        </div>
+                      </div>
+                    </Col>
+                    <Col xs={24} sm={8}>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          <ClockCircleOutlined />
+                        </div>
+                        <div className="text-sm text-gray-600 mt-2">
+                          最后更新
+                        </div>
+                        <div className="text-sm font-semibold">
+                          {new Date(stats.rankings.lastUpdate).toLocaleString(
+                            'zh-CN'
+                          )}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col xs={24} sm={8}>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                          <ExclamationCircleOutlined />
+                        </div>
+                        <div className="text-sm text-gray-600 mt-2">
+                          活跃任务
+                        </div>
+                        <div className="text-lg font-semibold text-purple-600">
+                          {stats.system.activeTasks} 个
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+
+              {/* 物品分类统计 */}
+              <Col xs={24} lg={12}>
+                <Card title="物品分类统计" className="h-full">
+                  <div className="space-y-3">
+                    {categoryData.map((item, index) => (
+                      <div
+                        key={item.category}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <span className="text-sm font-medium text-gray-600 w-8">
+                            {index + 1}
+                          </span>
+                          <span className="text-sm">{item.category}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Progress
+                            percent={parseFloat(item.percentage)}
+                            size="small"
+                            showInfo={false}
+                            strokeColor="#52c41a"
+                          />
+                          <span className="text-sm text-gray-500 w-12 text-right">
+                            {(item.count || 0).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </Col>
+            </Row>
+          )}
         </>
       )}
 

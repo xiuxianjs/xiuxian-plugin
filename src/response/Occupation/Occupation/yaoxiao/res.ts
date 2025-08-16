@@ -17,7 +17,7 @@ export default onResponse(selects, async e => {
     Send(Text('玩家数据读取失败'))
     return false
   }
-  console.log(dy)
+  logger.info(dy)
 
   const parts: string[] = ['丹药效果:']
   if (dy.ped > 0)

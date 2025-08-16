@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Modal, message, Tag, Tooltip, Avatar } from 'antd'
+import { Table, Modal, message, Tag, Tooltip } from 'antd'
 import {
   EyeOutlined,
   TeamOutlined,
-  TrophyOutlined,
   FireOutlined,
   CrownOutlined,
   ReloadOutlined,
@@ -11,11 +10,7 @@ import {
   BankOutlined
 } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
-import {
-  getAssociationsAPI,
-  getAssociationAPI,
-  getAssociationsStatsAPI
-} from '@/api/auth'
+import { getAssociationsAPI, getAssociationsStatsAPI } from '@/api/auth'
 import type { ColumnsType } from 'antd/es/table'
 
 const pageSize = 10

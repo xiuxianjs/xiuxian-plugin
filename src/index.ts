@@ -1,7 +1,6 @@
 import { initPostlog } from './model/posthog'
 import { initDefaultAdmin } from './route/core/auth'
-import { startTask } from './task/index'
-import { startScheduledTasks } from './task/Scheduler'
+import { startAllTasks } from './task/index'
 
 export default defineChildren({
   onCreated() {
@@ -10,13 +9,9 @@ export default defineChildren({
     initPostlog()
     // 初始化默认管理员
     initDefaultAdmin()
-
     // 启动定时任务
-    startTask()
-
-    // 启动定时任务
-    startScheduledTasks().catch(error => {
-      console.error('启动定时任务失败:', error)
+    startAllTasks().catch(error => {
+      logger.error('启动定时任务失败:', error)
     })
   }
 })

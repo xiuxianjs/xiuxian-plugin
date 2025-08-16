@@ -7,7 +7,8 @@ import {
   FireOutlined,
   CrownOutlined,
   ReloadOutlined,
-  SearchOutlined
+  SearchOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
 import { getGameUsersAPI, getGameUsersStatsAPI } from '@/api/auth'
@@ -67,15 +68,23 @@ interface GameUser {
   血量上限: number
   暴击率: number
   暴击伤害: number
+  // 损坏数据相关字段
+  数据状态?: string
+  原始数据?: string
+  错误信息?: string
 }
+
+// 移除CorruptedUser接口，损坏数据将使用GameUser接口
 
 export default function UserManager() {
   const { user } = useAuth()
   const [gameUsers, setGameUsers] = useState<GameUser[]>([])
+  // const [corruptedUsers, setCorruptedUsers] = useState<CorruptedUser[]>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [selectedUser, setSelectedUser] = useState<GameUser | null>(null)
   const [userDetailVisible, setUserDetailVisible] = useState(false)
+  // const [activeTab, setActiveTab] = useState<'normal' | 'corrupted'>('normal')
 
   // 分页状态
   const [pagination, setPagination] = useState({
@@ -477,6 +486,10 @@ export default function UserManager() {
           dataSource={gameUsers}
           rowKey="id"
           loading={loading}
+          rowClassName={record => {
+            // 如果是损坏数据，添加黄色背景
+            return record.数据状态 === 'corrupted' ? 'bg-yellow-50' : ''
+          }}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
@@ -493,195 +506,218 @@ export default function UserManager() {
 
       {/* 用户详情弹窗 */}
       <Modal
-        title="用户详情"
+        title={
+          selectedUser?.数据状态 === 'corrupted' ? '损坏数据详情' : '用户详情'
+        }
         open={userDetailVisible}
         onCancel={() => setUserDetailVisible(false)}
         footer={null}
-        width={800}
+        width={selectedUser?.数据状态 === 'corrupted' ? 1200 : 800}
       >
         {selectedUser && (
           <div className="space-y-6">
-            {/* 基础信息 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                基础信息
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-600">用户ID</label>
-                  <p className="font-medium">{selectedUser.id}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">名号</label>
-                  <p className="font-medium">{selectedUser.名号}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">性别</label>
-                  <p className="font-medium">
-                    {getSexDisplay(selectedUser.sex)}
+            {/* 如果是损坏数据，显示原始JSON */}
+            {selectedUser.数据状态 === 'corrupted' ? (
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-red-600">
+                  损坏数据 - 原始JSON内容
+                </h3>
+                <div className="bg-gray-100 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 mb-2">
+                    错误信息: {selectedUser.错误信息}
                   </p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">境界</label>
-                  <p className="font-medium">
-                    {getLevelName(selectedUser.level_id)}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">灵根</label>
-                  <Tag color={getLinggenColor(selectedUser.灵根)}>
-                    {selectedUser.灵根?.name || '未知'}
-                  </Tag>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">修炼效率</label>
-                  <p className="font-medium">
-                    {((selectedUser.修炼效率提升 || 0) * 100).toFixed(2)}%
-                  </p>
-                </div>
-                <div className="col-span-2">
-                  <label className="text-sm text-gray-600">宣言</label>
-                  <p className="font-medium">
-                    {selectedUser.宣言 || '这个人很懒还没有写'}
-                  </p>
+                  <pre className="text-xs text-gray-800 overflow-auto max-h-96">
+                    {selectedUser.原始数据}
+                  </pre>
                 </div>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* 基础信息 */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                    基础信息
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-gray-600">用户ID</label>
+                      <p className="font-medium">{selectedUser.id}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">名号</label>
+                      <p className="font-medium">{selectedUser.名号}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">性别</label>
+                      <p className="font-medium">
+                        {getSexDisplay(selectedUser.sex)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">境界</label>
+                      <p className="font-medium">
+                        {getLevelName(selectedUser.level_id)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">灵根</label>
+                      <Tag color={getLinggenColor(selectedUser.灵根)}>
+                        {selectedUser.灵根?.name || '未知'}
+                      </Tag>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">修炼效率</label>
+                      <p className="font-medium">
+                        {((selectedUser.修炼效率提升 || 0) * 100).toFixed(2)}%
+                      </p>
+                    </div>
+                    <div className="col-span-2">
+                      <label className="text-sm text-gray-600">宣言</label>
+                      <p className="font-medium">
+                        {selectedUser.宣言 || '这个人很懒还没有写'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* 战斗属性 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                战斗属性
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">攻击力</label>
-                  <p className="text-xl font-bold text-blue-600">
-                    {(selectedUser.攻击 || 0).toLocaleString()}
-                  </p>
+                {/* 战斗属性 */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                    战斗属性
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">攻击力</label>
+                      <p className="text-xl font-bold text-blue-600">
+                        {(selectedUser.攻击 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">防御力</label>
+                      <p className="text-xl font-bold text-green-600">
+                        {(selectedUser.防御 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">当前血量</label>
+                      <p className="text-xl font-bold text-red-600">
+                        {(selectedUser.当前血量 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">血量上限</label>
+                      <p className="text-xl font-bold text-red-600">
+                        {(selectedUser.血量上限 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">暴击率</label>
+                      <p className="text-xl font-bold text-purple-600">
+                        {((selectedUser.暴击率 || 0) * 100).toFixed(2)}%
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">暴击伤害</label>
+                      <p className="text-xl font-bold text-purple-600">
+                        {selectedUser.暴击伤害}%
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">防御力</label>
-                  <p className="text-xl font-bold text-green-600">
-                    {(selectedUser.防御 || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">当前血量</label>
-                  <p className="text-xl font-bold text-red-600">
-                    {(selectedUser.当前血量 || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">血量上限</label>
-                  <p className="text-xl font-bold text-red-600">
-                    {(selectedUser.血量上限 || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">暴击率</label>
-                  <p className="text-xl font-bold text-purple-600">
-                    {((selectedUser.暴击率 || 0) * 100).toFixed(2)}%
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">暴击伤害</label>
-                  <p className="text-xl font-bold text-purple-600">
-                    {selectedUser.暴击伤害}%
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* 资源信息 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                资源信息
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">灵石</label>
-                  <p className="text-xl font-bold text-green-600">
-                    {(selectedUser.灵石 || 0).toLocaleString()}
-                  </p>
+                {/* 资源信息 */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                    资源信息
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">灵石</label>
+                      <p className="text-xl font-bold text-green-600">
+                        {(selectedUser.灵石 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">神石</label>
+                      <p className="text-xl font-bold text-yellow-600">
+                        {(selectedUser.神石 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">轮回点</label>
+                      <p className="text-xl font-bold text-purple-600">
+                        {selectedUser.轮回点}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">修为</label>
+                      <p className="text-xl font-bold text-blue-600">
+                        {(selectedUser.修为 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">血气</label>
+                      <p className="text-xl font-bold text-red-600">
+                        {(selectedUser.血气 || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">好感度</label>
+                      <p className="text-xl font-bold text-pink-600">
+                        {selectedUser.favorability}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">神石</label>
-                  <p className="text-xl font-bold text-yellow-600">
-                    {(selectedUser.神石 || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">轮回点</label>
-                  <p className="text-xl font-bold text-purple-600">
-                    {selectedUser.轮回点}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">修为</label>
-                  <p className="text-xl font-bold text-blue-600">
-                    {(selectedUser.修为 || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">血气</label>
-                  <p className="text-xl font-bold text-red-600">
-                    {(selectedUser.血气 || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">好感度</label>
-                  <p className="text-xl font-bold text-pink-600">
-                    {selectedUser.favorability}
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* 成就信息 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                成就信息
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">镇妖塔层数</label>
-                  <p className="text-xl font-bold text-orange-600">
-                    {selectedUser.镇妖塔层数}
-                  </p>
+                {/* 成就信息 */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                    成就信息
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">
+                        镇妖塔层数
+                      </label>
+                      <p className="text-xl font-bold text-orange-600">
+                        {selectedUser.镇妖塔层数}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">神魄段数</label>
+                      <p className="text-xl font-bold text-indigo-600">
+                        {selectedUser.神魄段数}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">魔道值</label>
+                      <p className="text-xl font-bold text-red-600">
+                        {selectedUser.魔道值}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">轮回次数</label>
+                      <p className="text-xl font-bold text-purple-600">
+                        {selectedUser.lunhui}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">连续签到</label>
+                      <p className="text-xl font-bold text-green-600">
+                        {selectedUser.连续签到天数}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="text-sm text-gray-600">幸运值</label>
+                      <p className="text-xl font-bold text-yellow-600">
+                        {selectedUser.幸运}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">神魄段数</label>
-                  <p className="text-xl font-bold text-indigo-600">
-                    {selectedUser.神魄段数}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">魔道值</label>
-                  <p className="text-xl font-bold text-red-600">
-                    {selectedUser.魔道值}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">轮回次数</label>
-                  <p className="text-xl font-bold text-purple-600">
-                    {selectedUser.lunhui}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">连续签到</label>
-                  <p className="text-xl font-bold text-green-600">
-                    {selectedUser.连续签到天数}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="text-sm text-gray-600">幸运值</label>
-                  <p className="text-xl font-bold text-yellow-600">
-                    {selectedUser.幸运}
-                  </p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         )}
       </Modal>
