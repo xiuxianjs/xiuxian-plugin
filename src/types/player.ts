@@ -101,6 +101,7 @@ export interface Najie {
   材料: NajieItem[]
   草药: NajieItem[]
   装备: NajieItem[]
+  仙宠口粮: NajieItem[]
   灵石: number
   灵石上限?: number
   等级?: number

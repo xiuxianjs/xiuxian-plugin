@@ -25,6 +25,12 @@ export async function updateBagThing(
 ): Promise<boolean> {
   const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return false
+
+  // 确保 thing_class 对应的数组存在
+  if (!Array.isArray(najie[thing_class])) {
+    najie[thing_class] = []
+  }
+
   if (thing_class == '装备' && (thing_pinji || thing_pinji == 0)) {
     for (const i of najie['装备']) {
       if (i.name == thing_name && i.pinji == thing_pinji) i.islockd = lock
@@ -84,6 +90,11 @@ export async function addNajieThing(
   if (x == 0) return
   const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
+
+  // 确保 thing_class 对应的数组存在
+  if (!Array.isArray(najie[thing_class])) {
+    najie[thing_class] = []
+  }
   if (thing_class == '装备') {
     if (!pinji && pinji != 0) pinji = Math.trunc(Math.random() * 6)
     const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2]
