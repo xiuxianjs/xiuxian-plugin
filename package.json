@@ -13,6 +13,9 @@
     "dev": "npx lvy dev",
     "view": "npx lvy dev --jsxp",
     "build": "lvy build",
+    "bundle-install": "yarn --cwd frontend install",
+    "bundle-dev": "yarn --cwd frontend dev",
+    "bundle": "yarn --cwd frontend build",
     "eslint": "eslint src --fix",
     "format": "prettier --write .",
     "check-format": "git diff --exit-code",
@@ -22,12 +25,19 @@
     "lint:baseline": "eslint -f json src > eslint-baseline.json || true"
   },
   "dependencies": {
+    "@types/koa-router": "^7.4.8",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "jsxp": "^1.2.2",
+    "koa-bodyparser": "^4.4.1",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
     "node-schedule": "^2.1.1",
     "posthog-node": "^5.7.0"
+  },
+  "alemonjs": {
+    "web": {
+      "root": "dist"
+    }
   }
 }
