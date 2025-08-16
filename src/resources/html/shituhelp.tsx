@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import bgURL from '@src/resources/img/shituhelp.jpg'
 import iconURL from '@src/resources/img/icon.png'
 import HTML from './HTML'
@@ -32,7 +33,10 @@ const ShituHelp = ({ version, helpData = [] }) => {
                     key={i}
                   >
                     <span
-                      className={`flex w-10 h-10 rounded bg-blue-100 items-center justify-center ${item.icon}`}
+                      className={classNames(
+                        'flex w-10 h-10 rounded bg-blue-100 items-center justify-center',
+                        item.icon
+                      )}
                     >
                       <img src={iconURL} alt="icon" className="w-8 h-8" />
                     </span>

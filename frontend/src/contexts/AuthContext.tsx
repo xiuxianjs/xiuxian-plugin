@@ -3,36 +3,14 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode
+  PropsWithChildren
 } from 'react'
 import { loginAPI, logoutAPI, verifyTokenAPI } from '@/api/auth'
-
-interface User {
-  id: string
-  username: string
-  role: string
-  createdAt: number
-  lastLoginAt?: number
-}
-
-interface AuthContextType {
-  user: User | null
-  isAuthenticated: boolean
-  login: (
-    username: string,
-    password: string
-  ) => Promise<{ success: boolean; message?: string }>
-  logout: () => void
-  loading: boolean
-}
+import { AuthContextType, User } from '@/types'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-interface AuthProviderProps {
-  children: ReactNode
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 

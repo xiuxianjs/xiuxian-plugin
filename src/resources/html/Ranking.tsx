@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import HTML from './HTML'
 import stateURL from '@src/resources/img/state.jpg'
 import user_stateURL from '@src/resources/img/user_state2.png'
@@ -178,7 +179,11 @@ const Ranking = ({
               return (
                 <div
                   key={index}
-                  className={`relative backdrop-blur-xl shadow-xl border-2 p-6 flex gap-6 items-center transition-all duration-500 rounded-2xl ${styles.container} ${styles.glow}`}
+                  className={classNames(
+                    'relative backdrop-blur-xl shadow-xl border-2 p-6 flex gap-6 items-center transition-all duration-500 rounded-2xl',
+                    styles.container,
+                    styles.glow
+                  )}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   {/* 内容区域 */}

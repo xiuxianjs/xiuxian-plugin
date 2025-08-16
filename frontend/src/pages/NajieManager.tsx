@@ -1,253 +1,136 @@
-import React, { useState, useEffect } from 'react'
-import { Table, Modal, message, Tooltip, Tag } from 'antd'
+import React from 'react'
+import { Table, Tooltip } from 'antd'
 import {
   EyeOutlined,
   ShoppingOutlined,
   BankOutlined,
   GiftOutlined,
   ReloadOutlined,
-  SearchOutlined,
-  ExclamationCircleOutlined
+  SearchOutlined
 } from '@ant-design/icons'
-import { useAuth } from '@/contexts/AuthContext'
-import { getNajieAPI, getNajieStatsAPI } from '@/api/auth'
 import type { ColumnsType } from 'antd/es/table'
-
-const pageSize = 10
-
-interface NajieItem {
-  name: string
-  grade?: string
-  pinji?: number
-  数量?: number
-  atk?: number
-  def?: number
-  HP?: number
-}
-
-interface Najie {
-  userId: string
-  装备: NajieItem[]
-  丹药: NajieItem[]
-  道具: NajieItem[]
-  功法: NajieItem[]
-  草药: NajieItem[]
-  材料: NajieItem[]
-  仙宠: NajieItem[]
-  仙宠口粮: NajieItem[]
-  灵石: number
-  灵石上限?: number
-  等级?: number
-  // 损坏数据相关字段
-  数据状态?: string
-  原始数据?: string
-  错误信息?: string
-}
-
-// 移除CorruptedNajie接口，损坏数据将使用Najie接口
+import { Najie } from '@/types'
+import NajieInfo from './modals/NajieInfo'
+import { useNajieManagerCode } from './NajieManager.code'
 
 export default function NajieManager() {
-  const { user } = useAuth()
-  const [najieList, setNajieList] = useState<Najie[]>([])
-  // const [corruptedNajieList, setCorruptedNajieList] = useState<CorruptedNajie[]>([])
-  const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  const [selectedNajie, setSelectedNajie] = useState<Najie | null>(null)
-  const [najieDetailVisible, setNajieDetailVisible] = useState(false)
-
-  // 分页状态
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: pageSize,
-    total: 0,
-    totalPages: 0
-  })
-
-  // 统计数据状态
-  const [stats, setStats] = useState({
-    total: 0,
-    totalLingshi: 0,
-    totalItems: 0,
-    categoryStats: {
-      装备: 0,
-      丹药: 0,
-      道具: 0,
-      功法: 0,
-      草药: 0,
-      材料: 0,
-      仙宠: 0,
-      仙宠口粮: 0
-    }
-  })
-
-  // 获取背包数据
-  const fetchNajie = async (page = 1, pSize = pageSize) => {
-    if (!user) return
-
-    setLoading(true)
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        message.error('未找到登录令牌')
-        return
-      }
-
-      const result = await getNajieAPI(token, {
-        page,
-        pageSize: pSize,
-        search: searchText
-      })
-
-      if (result.success && result.data) {
-        setNajieList(result.data.list)
-        setPagination(result.data.pagination)
-      } else {
-        message.error(result.message || '获取背包数据失败')
-      }
-    } catch (error) {
-      console.error('获取背包数据失败:', error)
-      message.error('获取背包数据失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // 获取统计数据
-  const fetchStats = async () => {
-    if (!user) return
-
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        message.error('未找到登录令牌')
-        return
-      }
-
-      const result = await getNajieStatsAPI(token, {
-        search: searchText
-      })
-
-      if (result.success && result.data) {
-        setStats(result.data)
-      }
-    } catch (error) {
-      console.error('获取统计数据失败:', error)
-    }
-  }
-
-  useEffect(() => {
-    fetchNajie(1, pageSize)
-    fetchStats()
-  }, [user])
-
-  // 处理搜索变化
-  const handleSearchAndFilter = () => {
-    fetchNajie(1, pagination.pageSize)
-    fetchStats()
-  }
-
-  // 处理分页变化
-  const handleTableChange = (page: number, pageSize: number) => {
-    fetchNajie(page, pageSize)
-  }
-
-  // 计算背包总物品数
-  const getTotalItems = (najie: Najie) => {
-    const categories = [
-      '装备',
-      '丹药',
-      '道具',
-      '功法',
-      '草药',
-      '材料',
-      '仙宠',
-      '仙宠口粮'
-    ] as const
-    return categories.reduce((total, cat) => {
-      return total + (Array.isArray(najie[cat]) ? najie[cat].length : 0)
-    }, 0)
-  }
+  const {
+    najieList,
+    loading,
+    searchText,
+    selectedNajie,
+    najieDetailVisible,
+    pagination,
+    stats,
+    fetchNajie,
+    handleSearchAndFilter,
+    handleTableChange,
+    getTotalItems,
+    setSearchText,
+    setSelectedNajie,
+    setNajieDetailVisible
+  } = useNajieManagerCode()
 
   // 表格列定义
   const columns: ColumnsType<Najie> = [
     {
-      title: '用户信息',
+      title: (
+        <div className="flex items-center gap-2 text-purple-400 font-bold">
+          <span>用户信息</span>
+        </div>
+      ),
       key: 'userInfo',
       width: 150,
       render: (_, record) => (
         <div>
-          <div style={{ fontWeight: 'bold' }}>用户ID: {record.userId}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>
+          <div className="font-bold text-white">用户ID: {record.userId}</div>
+          <div className="text-xs text-slate-400">
             背包等级: {record.等级 || 1}
           </div>
         </div>
       )
     },
     {
-      title: '灵石信息',
+      title: (
+        <div className="flex items-center gap-2 text-green-400 font-bold">
+          <span>灵石信息</span>
+        </div>
+      ),
       key: 'lingshi',
       width: 120,
       render: (_, record) => (
         <div>
-          <div style={{ fontSize: '12px', color: '#52c41a' }}>
+          <div className="text-xs text-green-500">
             当前: {record.灵石?.toLocaleString() || 0}
           </div>
-          <div style={{ fontSize: '12px', color: '#faad14' }}>
+          <div className="text-xs text-yellow-500">
             上限: {record.灵石上限?.toLocaleString() || 0}
           </div>
         </div>
       )
     },
     {
-      title: '物品统计',
+      title: (
+        <div className="flex items-center gap-2 text-blue-400 font-bold">
+          <span>物品统计</span>
+        </div>
+      ),
       key: 'items',
       width: 200,
       render: (_, record) => (
         <div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             总物品: {getTotalItems(record)}
           </div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             装备: {record.装备?.length || 0}
           </div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             丹药: {record.丹药?.length || 0}
           </div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             道具: {record.道具?.length || 0}
           </div>
         </div>
       )
     },
     {
-      title: '其他物品',
+      title: (
+        <div className="flex items-center gap-2 text-yellow-400 font-bold">
+          <span>其他物品</span>
+        </div>
+      ),
       key: 'otherItems',
       width: 150,
       render: (_, record) => (
         <div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             功法: {record.功法?.length || 0}
           </div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             草药: {record.草药?.length || 0}
           </div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             材料: {record.材料?.length || 0}
           </div>
-          <div style={{ fontSize: '12px' }}>
+          <div className="text-xs text-slate-300">
             仙宠: {record.仙宠?.length || 0}
           </div>
         </div>
       )
     },
     {
-      title: '操作',
+      title: (
+        <div className="flex items-center gap-2 text-cyan-400 font-bold">
+          <span>操作</span>
+        </div>
+      ),
       key: 'actions',
       width: 100,
       render: (_, record) => (
         <Tooltip title="查看详情">
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm flex items-center gap-1 transition-colors"
+            className="px-3 py-1 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-1"
             onClick={() => {
               setSelectedNajie(record)
               setNajieDetailVisible(true)
@@ -262,246 +145,158 @@ export default function NajieManager() {
   ]
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* 页面标题和刷新按钮 */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">背包管理</h1>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          onClick={() => fetchNajie(1, pagination.pageSize)}
-          disabled={loading}
-        >
-          <ReloadOutlined className={loading ? 'animate-spin' : ''} />
-          刷新数据
-        </button>
-      </div>
-
-      {/* 统计信息 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <ShoppingOutlined className="text-blue-600 text-xl" />
+    <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="relative z-10 p-6 h-full overflow-y-auto">
+        {/* 页面标题和刷新按钮 */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+              <ShoppingOutlined className="text-white text-xl" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">总背包数</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {(stats.total || 0).toLocaleString()}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">
+                背包管理
+              </h1>
+              <p className="text-slate-400 text-sm mt-1">
+                管理修仙界道友的背包物品
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <BankOutlined className="text-green-600 text-xl" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">总灵石</p>
-              <p className="text-2xl font-bold text-green-600">
-                {(stats.totalLingshi || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <GiftOutlined className="text-purple-600 text-xl" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">总物品数</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {(stats.totalItems || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <GiftOutlined className="text-orange-600 text-xl" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">装备总数</p>
-              <p className="text-2xl font-bold text-orange-600">
-                {(stats.categoryStats?.装备 || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 搜索栏 */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex gap-4">
-          <div className="flex-1 relative">
-            <SearchOutlined className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="搜索用户ID"
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={searchText}
-              onChange={e => setSearchText(e.target.value)}
-              onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
-            />
           </div>
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
-            onClick={handleSearchAndFilter}
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+            onClick={() => fetchNajie(1, pagination.pageSize)}
+            disabled={loading}
           >
-            搜索
+            <ReloadOutlined className={loading ? 'animate-spin' : ''} />
+            {loading ? '刷新中...' : '刷新数据'}
           </button>
         </div>
-      </div>
 
-      {/* 背包表格 */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <Table
-          columns={columns}
-          dataSource={najieList}
-          rowKey="userId"
-          loading={loading}
-          rowClassName={record => {
-            // 如果是损坏数据，添加黄色背景
-            return record.数据状态 === 'corrupted' ? 'bg-yellow-50' : ''
-          }}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-            onChange: handleTableChange
-          }}
-          scroll={{ x: 1200 }}
+        {/* 统计信息 */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">总背包数</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.total || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                <ShoppingOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">总灵石</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.totalLingshi || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+                <BankOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">总物品数</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.totalItems || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                <GiftOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">装备总数</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.categoryStats?.装备 || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <GiftOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 搜索栏 */}
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
+          <div className="flex gap-4">
+            <div className="flex-1 relative">
+              <SearchOutlined className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg" />
+              <input
+                type="text"
+                placeholder="搜索用户ID"
+                className="w-full pl-12 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
+              />
+            </div>
+            <button
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              onClick={handleSearchAndFilter}
+            >
+              搜索
+            </button>
+          </div>
+        </div>
+
+        {/* 背包表格 */}
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden">
+          <div className="p-6 border-b border-slate-700/50">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <ShoppingOutlined className="text-purple-400" />
+              背包列表
+            </h3>
+          </div>
+          <Table
+            columns={columns}
+            dataSource={najieList}
+            rowKey="userId"
+            loading={loading}
+            rowClassName={record => {
+              // 如果是损坏数据，添加黄色背景
+              return record.数据状态 === 'corrupted'
+                ? 'bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-l-4 border-yellow-400  bg-slate-700 hover:bg-slate-600'
+                : 'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600'
+            }}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+              onChange: handleTableChange,
+              className: 'p-6'
+            }}
+            scroll={{ x: 1200 }}
+            className="bg-transparent xiuxian-table"
+          />
+        </div>
+
+        {/* 背包详情弹窗 */}
+        <NajieInfo
+          najieDetailVisible={najieDetailVisible}
+          setNajieDetailVisible={setNajieDetailVisible}
+          selectedNajie={selectedNajie}
+          getTotalItems={getTotalItems}
         />
       </div>
-
-      {/* 背包详情弹窗 */}
-      <Modal
-        title={
-          selectedNajie?.数据状态 === 'corrupted' ? '损坏数据详情' : '背包详情'
-        }
-        open={najieDetailVisible}
-        onCancel={() => setNajieDetailVisible(false)}
-        footer={null}
-        width={selectedNajie?.数据状态 === 'corrupted' ? 1200 : 800}
-      >
-        {selectedNajie && (
-          <div className="space-y-6">
-            {/* 如果是损坏数据，显示原始JSON */}
-            {selectedNajie.数据状态 === 'corrupted' ? (
-              <div>
-                <h3 className="text-lg font-semibold mb-4 text-red-600">
-                  损坏数据 - 原始JSON内容
-                </h3>
-                <div className="bg-gray-100 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">
-                    错误信息: {selectedNajie.错误信息}
-                  </p>
-                  <pre className="text-xs text-gray-800 overflow-auto max-h-96">
-                    {selectedNajie.原始数据}
-                  </pre>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* 基础信息 */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                    基础信息
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm text-gray-600">用户ID</label>
-                      <p className="font-medium">{selectedNajie.userId}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">背包等级</label>
-                      <p className="font-medium">{selectedNajie.等级 || 1}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">总物品数</label>
-                      <p className="font-medium">
-                        {getTotalItems(selectedNajie)}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">当前灵石</label>
-                      <p className="font-medium text-green-600">
-                        {selectedNajie.灵石?.toLocaleString() || 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 物品统计 */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                    物品统计
-                  </h3>
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">装备</label>
-                      <p className="text-xl font-bold text-blue-600">
-                        {selectedNajie.装备?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">丹药</label>
-                      <p className="text-xl font-bold text-green-600">
-                        {selectedNajie.丹药?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">道具</label>
-                      <p className="text-xl font-bold text-purple-600">
-                        {selectedNajie.道具?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">功法</label>
-                      <p className="text-xl font-bold text-orange-600">
-                        {selectedNajie.功法?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">草药</label>
-                      <p className="text-xl font-bold text-red-600">
-                        {selectedNajie.草药?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">材料</label>
-                      <p className="text-xl font-bold text-yellow-600">
-                        {selectedNajie.材料?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">仙宠</label>
-                      <p className="text-xl font-bold text-pink-600">
-                        {selectedNajie.仙宠?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">仙宠口粮</label>
-                      <p className="text-xl font-bold text-indigo-600">
-                        {selectedNajie.仙宠口粮?.length || 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </Modal>
     </div>
   )
 }

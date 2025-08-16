@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  @apply p-0 m-0 h-full w-full flex flex-col;
+}
+
+*::-webkit-scrollbar {
+  @apply w-0 h-0;
+}
+
+// *::-webkit-scrollbar {
+//   width: 8px;
+//   height: 8px;
+// }
+
+// *::-webkit-scrollbar-track {
+//   background: rgba(15, 23, 42, 0.3);
+//   border-radius: 4px;
+// }
+
+// *::-webkit-scrollbar-thumb {
+//   background: rgba(139, 92, 246, 0.5);
+//   border-radius: 4px;
+
+//   &:hover {
+//     background: rgba(139, 92, 246, 0.7);
+//   }
+// }
+
+/* 响应式表格样式 */
+.responsive-table .ant-table-thead > tr > th,
+.responsive-table .ant-table-tbody > tr > td {
+  @apply px-2 sm:px-4 py-2 sm:py-3;
+}
+
+.responsive-table .ant-table-thead > tr > th {
+  @apply text-xs sm:text-sm font-medium;
+}
+
+.responsive-table .ant-table-tbody > tr > td {
+  @apply text-xs sm:text-sm;
+}
+
+/* 移动端表格优化 */
+@media (max-width: 640px) {
+  .responsive-table .ant-table-thead > tr > th,
+  .responsive-table .ant-table-tbody > tr > td {
+    @apply px-1 py-1;
+  }
+
+  .responsive-table .ant-table-thead > tr > th {
+    @apply text-xs;
+  }
+
+  .responsive-table .ant-table-tbody > tr > td {
+    @apply text-xs;
+  }
+}
+
+/* 卡片响应式优化 */
+.ant-card {
+  @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+.ant-card-head {
+  @apply border-b border-gray-200;
+}
+
+.ant-card-head-title {
+  @apply text-sm sm:text-base font-medium;
+}
+
+/* 统计卡片响应式 */
+.ant-statistic-title {
+  @apply text-xs sm:text-sm text-gray-600;
+}
+
+.ant-statistic-content {
+  @apply text-lg sm:text-xl lg:text-2xl;
+}
+
+/* 按钮响应式 */
+.ant-btn {
+  @apply text-xs sm:text-sm;
+}
+
+.ant-btn-sm {
+  @apply text-xs px-2 py-1;
+}
+
+.ant-btn-lg {
+  @apply text-sm sm:text-base px-4 py-2;
+}
+
+/* 进度条响应式 */
+.ant-progress {
+  @apply text-xs sm:text-sm;
+}
+
+/* 移动端触摸优化 */
+@media (max-width: 768px) {
+  /* 增加触摸目标大小 */
+  .ant-btn {
+    @apply min-h-10;
+  }
+
+  .ant-card {
+    @apply rounded-lg;
+  }
+
+  /* 移动端表格滚动优化 */
+  .ant-table-wrapper {
+    @apply overflow-x-auto;
+  }
+
+  .ant-table {
+    @apply min-w-full;
+  }
+}
+
+/* 平板端优化 */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .ant-card {
+    @apply rounded-xl;
+  }
+
+  .ant-statistic-content {
+    @apply text-xl;
+  }
+}
+
+/* 桌面端优化 */
+@media (min-width: 1024px) {
+  .ant-card {
+    @apply rounded-2xl;
+  }
+
+  .ant-statistic-content {
+    @apply text-2xl;
+  }
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .ant-card {
+    @apply bg-gray-800 border-gray-700;
+  }
+
+  .ant-card-head {
+    @apply border-gray-700;
+  }
+
+  .ant-table {
+    @apply bg-gray-800;
+  }
+
+  .ant-table-thead > tr > th {
+    @apply bg-gray-700 border-gray-600 text-gray-200;
+  }
+
+  .ant-table-tbody > tr > td {
+    @apply border-gray-600 text-gray-300;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    @apply bg-gray-700;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.xiuxian-model {
+  .ant-modal-header {
+    @apply bg-gray-800;
+  }
+
+  .ant-modal-title {
+    @apply text-white;
+  }
+
+  .ant-modal-content {
+    @apply bg-gray-800;
+  }
+}
+
+.xiuxian-table {
+  .ant-table-thead > tr > th {
+    @apply bg-gray-700 border-gray-600 text-gray-200;
+  }
+
+  .ant-table-cell-row-hover {
+    @apply bg-gray-600 !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    @apply border-gray-600 text-gray-300;
+  }
+
+  // 分页器
+  .ant-pagination {
+    @apply border-t border-gray-600 text-white;
+  }
+
+  .ant-pagination-item {
+    @apply text-gray-300;
+  }
+
+  .ant-pagination-item-active {
+    @apply text-white bg-gray-600;
+  }
+}

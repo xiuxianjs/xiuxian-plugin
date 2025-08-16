@@ -47,7 +47,7 @@ export const stopTask = (taskName: string) => {
     if (job) {
       job.cancel()
       TaskMap.delete(taskName)
-      logger.info(`任务 ${taskName} 已停止`)
+      logger.debug(`任务 ${taskName} 已停止`)
       return true
     }
     return false
@@ -69,7 +69,7 @@ export const stopAllTasks = () => {
     }
   }
   TaskMap.clear()
-  logger.info(`已停止所有任务: ${stoppedTasks.join(', ')}`)
+  logger.debug(`已停止所有任务: ${stoppedTasks.join(', ')}`)
   return stoppedTasks
 }
 
@@ -82,7 +82,7 @@ export const startSingleTask = async (taskName: string) => {
       return { success: false, message: `任务 ${taskName} 已经在运行中` }
     }
 
-    logger.info(`开始启动任务: ${taskName}`)
+    logger.debug(`开始启动任务: ${taskName}`)
 
     // 获取任务配置
     const taskConfig = (await getConfig('', 'xiuxian'))?.task
@@ -99,7 +99,7 @@ export const startSingleTask = async (taskName: string) => {
     const newJob = scheduleJob(taskConfig[taskName], taskFunction)
     TaskMap.set(taskName, newJob)
 
-    logger.info(`任务 ${taskName} 启动完成`)
+    logger.debug(`任务 ${taskName} 启动完成`)
     return { success: true, message: `任务 ${taskName} 启动成功` }
   } catch (error) {
     logger.error(`启动任务 ${taskName} 失败:`, error)
@@ -145,7 +145,7 @@ export const startAllTasks = async () => {
 // 重启指定任务
 export const restartTask = async (taskName: string) => {
   try {
-    logger.info(`开始重启任务: ${taskName}`)
+    logger.debug(`开始重启任务: ${taskName}`)
 
     // 停止指定任务
     stopTask(taskName)
@@ -162,7 +162,7 @@ export const restartTask = async (taskName: string) => {
 // 重启所有任务
 export const restartAllTasks = async () => {
   try {
-    logger.info('开始重启所有定时任务...')
+    logger.debug('开始重启所有定时任务...')
 
     // 停止所有任务
     stopAllTasks()

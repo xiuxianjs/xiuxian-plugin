@@ -1,13 +1,9 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Spin } from 'antd'
 import { useAuth } from '@/contexts/AuthContext'
 import { Navigate } from 'react-router-dom'
 
-interface ProtectedRouteProps {
-  children: React.ReactNode
-}
-
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children }: PropsWithChildren) {
   const { isAuthenticated, loading } = useAuth()
 
   if (loading) {

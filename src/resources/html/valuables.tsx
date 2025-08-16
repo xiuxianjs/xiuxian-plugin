@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import HTML from './HTML'
 
 // 楼层数据
@@ -56,14 +57,23 @@ const FloorSection = ({
 }) => (
   <div className="relative group">
     <div
-      className={`absolute inset-0 bg-gradient-to-r ${color.replace('400', '500')}/20 rounded-2xl blur-sm`}
+      className={classNames(
+        'absolute inset-0 bg-gradient-to-r rounded-2xl blur-sm',
+        `${color.replace('400', '500')}/20`
+      )}
     ></div>
     <div
-      className={`relative backdrop-blur-md bg-white/5 rounded-2xl border ${borderColor} p-6 hover:border-opacity-60 transition-all duration-300`}
+      className={classNames(
+        'relative backdrop-blur-md bg-white/5 rounded-2xl border p-6 hover:border-opacity-60 transition-all duration-300',
+        borderColor
+      )}
     >
       <div className="flex flex-col items-center gap-4">
         <div
-          className={`w-16 h-16 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center border border-white/20`}
+          className={classNames(
+            'w-16 h-16 bg-gradient-to-br rounded-xl flex items-center justify-center border border-white/20',
+            color
+          )}
         >
           <span className="text-3xl">{icon}</span>
         </div>

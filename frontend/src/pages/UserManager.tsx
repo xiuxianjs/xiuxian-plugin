@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { Table, Modal, message, Tag, Tooltip, Avatar } from 'antd'
+import React from 'react'
+import classNames from 'classnames'
+import { Table, Tag, Tooltip, Avatar } from 'antd'
 import {
   EyeOutlined,
   UserOutlined,
@@ -8,719 +9,391 @@ import {
   CrownOutlined,
   ReloadOutlined,
   SearchOutlined,
-  ExclamationCircleOutlined
+  StarOutlined,
+  HeartOutlined,
+  ThunderboltOutlined,
+  SafetyOutlined,
+  GoldOutlined
 } from '@ant-design/icons'
-import { useAuth } from '@/contexts/AuthContext'
-import { getGameUsersAPI, getGameUsersStatsAPI } from '@/api/auth'
 import type { ColumnsType } from 'antd/es/table'
-
-const pageSize = 10
-
-interface GameUser {
-  id: string
-  名号: string
-  sex: string
-  宣言: string
-  avatar: string
-  level_id: number
-  Physique_id: number
-  race: number
-  修为: number
-  血气: number
-  灵石: number
-  灵根: {
-    id: number
-    name: string
-    type: string
-    eff: number
-    法球倍率: number
-  }
-  神石: number
-  favorability: number
-  breakthrough: boolean
-  linggen: unknown[]
-  linggenshow: number
-  学习的功法: unknown[]
-  修炼效率提升: number
-  连续签到天数: number
-  攻击加成: number
-  防御加成: number
-  生命加成: number
-  power_place: number
-  当前血量: number
-  lunhui: number
-  lunhuiBH: number
-  轮回点: number
-  occupation: unknown[]
-  occupation_level: number
-  镇妖塔层数: number
-  神魄段数: number
-  魔道值: number
-  仙宠: unknown[]
-  练气皮肤: number
-  装备皮肤: number
-  幸运: number
-  addluckyNo: number
-  师徒任务阶段: number
-  师徒积分: number
-  攻击: number
-  防御: number
-  血量上限: number
-  暴击率: number
-  暴击伤害: number
-  // 损坏数据相关字段
-  数据状态?: string
-  原始数据?: string
-  错误信息?: string
-}
-
-// 移除CorruptedUser接口，损坏数据将使用GameUser接口
+import { GameUser } from '@/types'
+import UserInfo from './modals/UserInfo'
+import { useUserManagerCode } from './UserManager.code'
+import { levelNames } from '@/config'
 
 export default function UserManager() {
-  const { user } = useAuth()
-  const [gameUsers, setGameUsers] = useState<GameUser[]>([])
-  // const [corruptedUsers, setCorruptedUsers] = useState<CorruptedUser[]>([])
-  const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  const [selectedUser, setSelectedUser] = useState<GameUser | null>(null)
-  const [userDetailVisible, setUserDetailVisible] = useState(false)
-  // const [activeTab, setActiveTab] = useState<'normal' | 'corrupted'>('normal')
-
-  // 分页状态
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: pageSize,
-    total: 0,
-    totalPages: 0
-  })
-
-  // 统计数据状态
-  const [stats, setStats] = useState({
-    total: 0,
-    highLevel: 0,
-    mediumLevel: 0,
-    lowLevel: 0,
-    totalLingshi: 0,
-    totalShenshi: 0,
-    totalLunhui: 0
-  })
-
-  // 获取游戏用户数据
-  const fetchGameUsers = async (page = 1, pSize = pageSize) => {
-    if (!user) return
-
-    setLoading(true)
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        message.error('未找到登录令牌')
-        return
-      }
-
-      const result = await getGameUsersAPI(token, {
-        page,
-        pageSize: pSize,
-        search: searchText
-      })
-
-      if (result.success && result.data) {
-        setGameUsers(result.data.list)
-        setPagination(result.data.pagination)
-      } else {
-        message.error(result.message || '获取用户数据失败')
-      }
-    } catch (error) {
-      console.error('获取游戏用户数据失败:', error)
-      message.error('获取用户数据失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchGameUsers(1, 20)
-    fetchStats()
-  }, [user])
-
-  // 处理搜索和筛选变化
-  const handleSearchAndFilter = () => {
-    fetchGameUsers(1, pagination.pageSize)
-    fetchStats()
-  }
-
-  // 处理分页变化
-  const handleTableChange = (page: number, pageSize: number) => {
-    fetchGameUsers(page, pageSize)
-  }
-
-  // 获取境界名称
-  const getLevelName = (levelId: number) => {
-    const levelNames: { [key: number]: string } = {
-      1: '练气一层',
-      2: '练气二层',
-      3: '练气三层',
-      4: '练气四层',
-      5: '练气五层',
-      6: '练气六层',
-      7: '练气七层',
-      8: '练气八层',
-      9: '练气九层',
-      10: '练气十层',
-      11: '筑基初期',
-      12: '筑基中期',
-      13: '筑基后期',
-      14: '筑基大圆满',
-      15: '金丹初期',
-      16: '金丹中期',
-      17: '金丹后期',
-      18: '金丹大圆满',
-      19: '元婴初期',
-      20: '元婴中期',
-      21: '元婴后期',
-      22: '元婴大圆满',
-      23: '化神初期',
-      24: '化神中期',
-      25: '化神后期',
-      26: '化神大圆满',
-      27: '炼虚初期',
-      28: '炼虚中期',
-      29: '炼虚后期',
-      30: '炼虚大圆满',
-      31: '合体初期',
-      32: '合体中期',
-      33: '合体后期',
-      34: '合体大圆满',
-      35: '大乘初期',
-      36: '大乘中期',
-      37: '大乘后期',
-      38: '大乘大圆满',
-      39: '渡劫初期',
-      40: '渡劫中期',
-      41: '渡劫后期',
-      42: '渡劫大圆满',
-      43: '真仙',
-      44: '天仙',
-      45: '金仙',
-      46: '太乙金仙',
-      47: '大罗金仙',
-      48: '混元大罗金仙',
-      49: '圣人',
-      50: '天道圣人',
-      51: '大道圣人',
-      52: '混沌圣人',
-      53: '鸿蒙圣人',
-      54: '创世神',
-      55: '主宰',
-      56: '至尊',
-      57: '大帝',
-      58: '天帝',
-      59: '神帝',
-      60: '仙帝',
-      61: '圣帝',
-      62: '道帝',
-      63: '神王',
-      64: '凡人'
-    }
-    return levelNames[levelId] || `境界${levelId}`
-  }
-
-  // 获取性别显示
-  const getSexDisplay = (sex: string) => {
-    return sex === '0' ? '男' : sex === '1' ? '女' : '未知'
-  }
-
-  // 获取灵根颜色
-  const getLinggenColor = (linggen: unknown) => {
-    if (!linggen) return 'default'
-    const name = (linggen as { name?: string })?.name || ''
-    if (name.includes('混沌') || name.includes('天五') || name.includes('九转'))
-      return 'gold'
-    if (name.includes('五灵') || name.includes('九重')) return 'purple'
-    if (name.includes('三灵') || name.includes('双灵')) return 'blue'
-    return 'green'
-  }
+  const {
+    gameUsers,
+    loading,
+    searchText,
+    setSearchText,
+    setSelectedUser,
+    setUserDetailVisible,
+    stats,
+    pagination,
+    fetchGameUsers,
+    handleSearchAndFilter,
+    handleTableChange,
+    getSexDisplay,
+    getLinggenColor,
+    getLevelName,
+    userDetailVisible,
+    selectedUser
+  } = useUserManagerCode()
 
   // 表格列定义
   const columns: ColumnsType<GameUser> = [
     {
-      title: '用户信息',
+      title: (
+        <div className="flex items-center gap-2 text-purple-400 font-bold">
+          <UserOutlined className="text-lg" />
+          <span>修仙者信息</span>
+        </div>
+      ),
       key: 'userInfo',
-      width: 200,
+      width: 220,
       render: (_, record) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Avatar src={record.avatar} size={40} />
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{record.名号}</div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
+        <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-lg">
+          <div className="relative">
+            <Avatar
+              src={record.avatar}
+              size={48}
+              className="border-2 border-purple-500/50"
+            />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="font-bold text-white text-lg mb-1">
+              {record.名号}
+            </div>
+            <div className="text-xs text-slate-400 bg-slate-700/50 px-2 py-1 rounded-full inline-block">
               ID: {record.id}
             </div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
-              {getSexDisplay(record.sex)} | 轮回: {record.lunhui}
+            <div className="text-xs text-slate-300 mt-1">
+              <span className="inline-flex items-center gap-1">
+                <HeartOutlined className="text-pink-400" />
+                {getSexDisplay(record.sex)}
+              </span>
+              <span className="mx-2 text-slate-500">|</span>
+              <span className="inline-flex items-center gap-1">
+                <StarOutlined className="text-yellow-400" />
+                轮回: {record.lunhui}
+              </span>
             </div>
           </div>
         </div>
       )
     },
     {
-      title: '境界修为',
+      title: (
+        <div className="flex items-center gap-2 text-blue-400 font-bold">
+          <CrownOutlined className="text-lg" />
+          <span>境界修为</span>
+        </div>
+      ),
       key: 'level',
-      width: 150,
+      width: 160,
       render: (_, record) => (
-        <div>
-          <div style={{ fontWeight: 'bold', color: '#1890ff' }}>
-            {getLevelName(record.level_id)}
+        <div className="p-3 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-xl shadow-lg">
+          <div className="font-bold text-blue-400 text-lg mb-2">
+            {levelNames[record.level_id]}
           </div>
-          <div style={{ fontSize: '12px', color: '#666' }}>
-            修为: {(record.修为 || 0).toLocaleString()}
-          </div>
-          <div style={{ fontSize: '12px', color: '#666' }}>
-            血气: {(record.血气 || 0).toLocaleString()}
+          <div className="space-y-1">
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              修为: {(record.修为 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              血气: {(record.血气 || 0).toLocaleString()}
+            </div>
           </div>
         </div>
       )
     },
     {
-      title: '灵根',
+      title: (
+        <div className="flex items-center gap-2 text-green-400 font-bold">
+          <ThunderboltOutlined className="text-lg" />
+          <span>灵根资质</span>
+        </div>
+      ),
       key: 'linggen',
-      width: 120,
+      width: 130,
       render: (_, record) => (
-        <Tag color={getLinggenColor(record.灵根)}>
-          {record.灵根?.name || '未知'}
-        </Tag>
+        <div className="p-3 bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-xl shadow-lg">
+          <Tag
+            color={getLinggenColor(record.灵根)}
+            className="text-sm font-bold px-3 py-1 border-0"
+          >
+            {record.灵根?.name || '未知'}
+          </Tag>
+        </div>
       )
     },
     {
-      title: '战斗属性',
+      title: (
+        <div className="flex items-center gap-2 text-red-400 font-bold">
+          <SafetyOutlined className="text-lg" />
+          <span>战斗属性</span>
+        </div>
+      ),
       key: 'combat',
-      width: 150,
+      width: 160,
       render: (_, record) => (
-        <div>
-          <div style={{ fontSize: '12px' }}>
-            攻击: {(record.攻击 || 0).toLocaleString()}
-          </div>
-          <div style={{ fontSize: '12px' }}>
-            防御: {(record.防御 || 0).toLocaleString()}
-          </div>
-          <div style={{ fontSize: '12px' }}>
-            血量: {(record.当前血量 || 0).toLocaleString()}/
-            {(record.血量上限 || 0).toLocaleString()}
+        <div className="p-3 bg-gradient-to-br from-red-500/10 to-orange-500/10 backdrop-blur-xl border border-red-500/30 rounded-xl shadow-lg">
+          <div className="space-y-1">
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              攻击: {(record.攻击 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              防御: {(record.防御 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              血量: {(record.当前血量 || 0).toLocaleString()}/
+              {(record.血量上限 || 0).toLocaleString()}
+            </div>
           </div>
         </div>
       )
     },
     {
-      title: '资源',
+      title: (
+        <div className="flex items-center gap-2 text-yellow-400 font-bold">
+          <GoldOutlined className="text-lg" />
+          <span>修仙资源</span>
+        </div>
+      ),
       key: 'resources',
-      width: 120,
+      width: 140,
       render: (_, record) => (
-        <div>
-          <div style={{ fontSize: '12px', color: '#52c41a' }}>
-            灵石: {(record.灵石 || 0).toLocaleString()}
-          </div>
-          <div style={{ fontSize: '12px', color: '#faad14' }}>
-            神石: {(record.神石 || 0).toLocaleString()}
-          </div>
-          <div style={{ fontSize: '12px', color: '#722ed1' }}>
-            轮回点: {record.轮回点}
+        <div className="p-3 bg-gradient-to-br from-yellow-500/10 to-amber-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-xl shadow-lg">
+          <div className="space-y-1">
+            <div className="text-xs text-green-400 bg-slate-700/50 px-2 py-1 rounded-full font-medium">
+              灵石: {(record.灵石 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-yellow-400 bg-slate-700/50 px-2 py-1 rounded-full font-medium">
+              神石: {(record.神石 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-purple-400 bg-slate-700/50 px-2 py-1 rounded-full font-medium">
+              轮回点: {record.轮回点}
+            </div>
           </div>
         </div>
       )
     },
     {
-      title: '成就',
+      title: (
+        <div className="flex items-center gap-2 text-purple-400 font-bold">
+          <TrophyOutlined className="text-lg" />
+          <span>修仙成就</span>
+        </div>
+      ),
       key: 'achievements',
-      width: 120,
+      width: 140,
       render: (_, record) => (
-        <div>
-          <div style={{ fontSize: '12px' }}>镇妖塔: {record.镇妖塔层数}层</div>
-          <div style={{ fontSize: '12px' }}>神魄段: {record.神魄段数}段</div>
-          <div style={{ fontSize: '12px' }}>魔道值: {record.魔道值}</div>
+        <div className="p-3 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-lg">
+          <div className="space-y-1">
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              镇妖塔: {record.镇妖塔层数}层
+            </div>
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              神魄段: {record.神魄段数}段
+            </div>
+            <div className="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded-full">
+              魔道值: {record.魔道值}
+            </div>
+          </div>
         </div>
       )
     },
     {
-      title: '操作',
+      title: (
+        <div className="flex items-center gap-2 text-blue-400 font-bold">
+          <EyeOutlined className="text-lg" />
+          <span>操作</span>
+        </div>
+      ),
       key: 'actions',
       width: 100,
       render: (_, record) => (
-        <Tooltip title="查看详情">
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm flex items-center gap-1 transition-colors"
-            onClick={() => {
-              setSelectedUser(record)
-              setUserDetailVisible(true)
-            }}
-          >
-            <EyeOutlined />
-            查看
-          </button>
-        </Tooltip>
+        <div className="p-3">
+          <Tooltip title="查看修仙详情">
+            <button
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 text-sm flex items-center gap-2"
+              onClick={() => {
+                setSelectedUser(record)
+                setUserDetailVisible(true)
+              }}
+            >
+              <EyeOutlined />
+              查看
+            </button>
+          </Tooltip>
+        </div>
       )
     }
   ]
 
-  // 获取统计数据
-  const fetchStats = async () => {
-    if (!user) return
-
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        message.error('未找到登录令牌')
-        return
-      }
-
-      const result = await getGameUsersStatsAPI(token, {
-        search: searchText
-      })
-
-      if (result.success && result.data) {
-        setStats(result.data)
-      }
-    } catch (error) {
-      console.error('获取统计数据失败:', error)
-    }
-  }
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* 页面标题和刷新按钮 */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">游戏用户管理</h1>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          onClick={() => fetchGameUsers(1, pagination.pageSize)}
-          disabled={loading}
-        >
-          <ReloadOutlined className={loading ? 'animate-spin' : ''} />
-          刷新数据
-        </button>
-      </div>
-
-      {/* 统计信息 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <UserOutlined className="text-blue-600 text-xl" />
+    <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="relative z-10 p-2 md:p-6 h-full overflow-y-auto">
+        {/* 页面标题和刷新按钮 */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+              <CrownOutlined className="text-white text-xl" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">总用户数</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {(stats.total || 0).toLocaleString()}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">
+                用户管理
+              </h1>
+              <p className="text-slate-400 text-sm mt-1">
+                管理修仙界众位道友信息
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <CrownOutlined className="text-red-600 text-xl" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">高级用户</p>
-              <p className="text-2xl font-bold text-red-600">
-                {(stats.highLevel || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <TrophyOutlined className="text-green-600 text-xl" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">总灵石</p>
-              <p className="text-2xl font-bold text-green-600">
-                {(stats.totalLingshi || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <FireOutlined className="text-purple-600 text-xl" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">总轮回</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {(stats.totalLunhui || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 搜索栏 */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex gap-4">
-          <div className="flex-1 relative">
-            <SearchOutlined className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="搜索用户名或ID"
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={searchText}
-              onChange={e => setSearchText(e.target.value)}
-              onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
-            />
           </div>
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
-            onClick={handleSearchAndFilter}
+            className="p-2 md:px-6 md:py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-3"
+            onClick={() => fetchGameUsers(1, pagination.pageSize)}
+            disabled={loading}
           >
-            搜索
+            <ReloadOutlined
+              className={classNames('text-lg', { 'animate-spin': loading })}
+            />
+            {loading ? '刷新中...' : '刷新数据'}
           </button>
         </div>
-      </div>
 
-      {/* 用户表格 */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <Table
-          columns={columns}
-          dataSource={gameUsers}
-          rowKey="id"
-          loading={loading}
-          rowClassName={record => {
-            // 如果是损坏数据，添加黄色背景
-            return record.数据状态 === 'corrupted' ? 'bg-yellow-50' : ''
-          }}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-            onChange: handleTableChange
-          }}
-          scroll={{ x: 1200 }}
+        {/* 统计信息 */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">总修仙者</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.total || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                <UserOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">高阶修士</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.highLevel || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+                <CrownOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">总灵石</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.totalLingshi || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                <TrophyOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">总轮回</p>
+                <p className="text-white text-3xl font-bold mt-2">
+                  {(stats.totalLunhui || 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <FireOutlined className="text-white text-xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 搜索栏 */}
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
+          <div className="flex gap-4">
+            <div className="flex-1 relative">
+              <SearchOutlined className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg" />
+              <input
+                type="text"
+                placeholder="搜索修仙者名号或ID..."
+                className="w-full pl-12 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
+              />
+            </div>
+            <button
+              className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+              onClick={handleSearchAndFilter}
+            >
+              搜索
+            </button>
+          </div>
+        </div>
+
+        {/* 用户表格 */}
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden">
+          <div className="p-6 border-b border-slate-700/50">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <UserOutlined className="text-purple-400" />
+              修仙者列表
+            </h3>
+          </div>
+          <Table
+            columns={columns}
+            dataSource={gameUsers}
+            rowKey="id"
+            loading={loading}
+            rowClassName={record =>
+              classNames({
+                'bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-l-4 border-yellow-400 bg-slate-700 hover:bg-slate-600':
+                  record.数据状态 === 'corrupted',
+                'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600':
+                  record.数据状态 !== 'corrupted'
+              })
+            }
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+              onChange: handleTableChange,
+              className: 'p-6'
+            }}
+            scroll={{ x: 1200 }}
+            className={classNames('bg-transparent', 'xiuxian-table')}
+          />
+        </div>
+
+        {/* 用户详情弹窗 */}
+        <UserInfo
+          userDetailVisible={userDetailVisible}
+          setUserDetailVisible={setUserDetailVisible}
+          selectedUser={selectedUser}
+          getSexDisplay={getSexDisplay}
+          getLevelName={getLevelName}
+          getLinggenColor={getLinggenColor}
         />
       </div>
-
-      {/* 用户详情弹窗 */}
-      <Modal
-        title={
-          selectedUser?.数据状态 === 'corrupted' ? '损坏数据详情' : '用户详情'
-        }
-        open={userDetailVisible}
-        onCancel={() => setUserDetailVisible(false)}
-        footer={null}
-        width={selectedUser?.数据状态 === 'corrupted' ? 1200 : 800}
-      >
-        {selectedUser && (
-          <div className="space-y-6">
-            {/* 如果是损坏数据，显示原始JSON */}
-            {selectedUser.数据状态 === 'corrupted' ? (
-              <div>
-                <h3 className="text-lg font-semibold mb-4 text-red-600">
-                  损坏数据 - 原始JSON内容
-                </h3>
-                <div className="bg-gray-100 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">
-                    错误信息: {selectedUser.错误信息}
-                  </p>
-                  <pre className="text-xs text-gray-800 overflow-auto max-h-96">
-                    {selectedUser.原始数据}
-                  </pre>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* 基础信息 */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                    基础信息
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm text-gray-600">用户ID</label>
-                      <p className="font-medium">{selectedUser.id}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">名号</label>
-                      <p className="font-medium">{selectedUser.名号}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">性别</label>
-                      <p className="font-medium">
-                        {getSexDisplay(selectedUser.sex)}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">境界</label>
-                      <p className="font-medium">
-                        {getLevelName(selectedUser.level_id)}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">灵根</label>
-                      <Tag color={getLinggenColor(selectedUser.灵根)}>
-                        {selectedUser.灵根?.name || '未知'}
-                      </Tag>
-                    </div>
-                    <div>
-                      <label className="text-sm text-gray-600">修炼效率</label>
-                      <p className="font-medium">
-                        {((selectedUser.修炼效率提升 || 0) * 100).toFixed(2)}%
-                      </p>
-                    </div>
-                    <div className="col-span-2">
-                      <label className="text-sm text-gray-600">宣言</label>
-                      <p className="font-medium">
-                        {selectedUser.宣言 || '这个人很懒还没有写'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 战斗属性 */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                    战斗属性
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">攻击力</label>
-                      <p className="text-xl font-bold text-blue-600">
-                        {(selectedUser.攻击 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">防御力</label>
-                      <p className="text-xl font-bold text-green-600">
-                        {(selectedUser.防御 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">当前血量</label>
-                      <p className="text-xl font-bold text-red-600">
-                        {(selectedUser.当前血量 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">血量上限</label>
-                      <p className="text-xl font-bold text-red-600">
-                        {(selectedUser.血量上限 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">暴击率</label>
-                      <p className="text-xl font-bold text-purple-600">
-                        {((selectedUser.暴击率 || 0) * 100).toFixed(2)}%
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">暴击伤害</label>
-                      <p className="text-xl font-bold text-purple-600">
-                        {selectedUser.暴击伤害}%
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 资源信息 */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                    资源信息
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">灵石</label>
-                      <p className="text-xl font-bold text-green-600">
-                        {(selectedUser.灵石 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">神石</label>
-                      <p className="text-xl font-bold text-yellow-600">
-                        {(selectedUser.神石 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">轮回点</label>
-                      <p className="text-xl font-bold text-purple-600">
-                        {selectedUser.轮回点}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">修为</label>
-                      <p className="text-xl font-bold text-blue-600">
-                        {(selectedUser.修为 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">血气</label>
-                      <p className="text-xl font-bold text-red-600">
-                        {(selectedUser.血气 || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">好感度</label>
-                      <p className="text-xl font-bold text-pink-600">
-                        {selectedUser.favorability}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 成就信息 */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                    成就信息
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">
-                        镇妖塔层数
-                      </label>
-                      <p className="text-xl font-bold text-orange-600">
-                        {selectedUser.镇妖塔层数}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">神魄段数</label>
-                      <p className="text-xl font-bold text-indigo-600">
-                        {selectedUser.神魄段数}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">魔道值</label>
-                      <p className="text-xl font-bold text-red-600">
-                        {selectedUser.魔道值}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">轮回次数</label>
-                      <p className="text-xl font-bold text-purple-600">
-                        {selectedUser.lunhui}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">连续签到</label>
-                      <p className="text-xl font-bold text-green-600">
-                        {selectedUser.连续签到天数}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <label className="text-sm text-gray-600">幸运值</label>
-                      <p className="text-xl font-bold text-yellow-600">
-                        {selectedUser.幸运}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </Modal>
     </div>
   )
 }

@@ -26,6 +26,9 @@ export default defineConfig({
     }
   },
   build: {
+    sourcemap: NODE_ENV, // 仅开发环境生成 sourcemap
+    cssCodeSplit: true, // 开启 CSS 代码分割
+    emptyOutDir: true, // 自动清理 dist
     commonjsOptions: {
       transformMixedEsModules: true
     },
@@ -41,8 +44,22 @@ export default defineConfig({
     rollupOptions: {
       output: {
         dir: '../dist',
-        entryFileNames: `assets/index.js`,
-        assetFileNames: `assets/[name].[ext]`
+        entryFileNames: 'js/[name]-[hash].js',
+        chunkFileNames: 'js/[name]-[hash].js',
+        assetFileNames: ({ name }) => {
+          if (/\.(css)$/.test(name ?? '')) return 'css/[name]-[hash][extname]'
+          return 'assets/[name]-[hash][extname]'
+        },
+        manualChunks: {
+          'react-vendor': [
+            'react',
+            'react-dom',
+            'react-router-dom',
+            'react-router',
+            'react-redux',
+            'redux'
+          ]
+        }
       }
     }
   }

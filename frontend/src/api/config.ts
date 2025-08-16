@@ -1,11 +1,5 @@
+import { ApiResponse } from '@/types'
 import { request } from './index'
-
-// API响应类型
-interface ApiResponse<T = unknown> {
-  code: number
-  message: string
-  data: T
-}
 
 // 获取配置
 export const getConfig = async (app: string) => {
@@ -13,7 +7,7 @@ export const getConfig = async (app: string) => {
     const result = (await request({
       url: '/config',
       params: { app }
-    })) as unknown as ApiResponse
+    })) as ApiResponse
 
     return result
   } catch (error) {
@@ -32,7 +26,7 @@ export const saveConfig = async (app: string, data: unknown) => {
         app,
         data
       }
-    })) as unknown as ApiResponse
+    })) as ApiResponse
 
     return result
   } catch (error) {

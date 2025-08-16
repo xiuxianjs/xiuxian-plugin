@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import tuzhiURL from '@src/resources/img/fairyrealm.jpg'
 import HTML from './HTML'
 
@@ -140,10 +141,16 @@ const Tuzhi = ({ tuzhi_list }) => {
               </div>
               <div className="flex flex-col items-end">
                 <div
-                  className={`px-3 py-1 rounded-lg ${getSuccessRateBg(item.rate)} border border-blue-300/50 backdrop-blur-sm`}
+                  className={classNames(
+                    'px-3 py-1 rounded-lg border border-blue-300/50 backdrop-blur-sm',
+                    getSuccessRateBg(item.rate)
+                  )}
                 >
                   <span
-                    className={`text-lg font-bold ${getSuccessRateColor(item.rate)}`}
+                    className={classNames(
+                      'text-lg font-bold',
+                      getSuccessRateColor(item.rate)
+                    )}
                   >
                     {~~(item.rate * 100)}%
                   </span>

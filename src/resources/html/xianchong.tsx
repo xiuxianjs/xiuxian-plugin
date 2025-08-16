@@ -1,5 +1,6 @@
 import React from 'react'
 import HTML from './HTML'
+import classNames from 'classnames'
 
 const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
   return (
@@ -93,7 +94,10 @@ const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
                                 灵魂绑定
                               </span>
                               <span
-                                className={`font-medium ${item.灵魂绑定 === 0 ? 'text-red-300' : 'text-green-300'}`}
+                                className={classNames('font-medium', {
+                                  'text-red-300': item.灵魂绑定 === 0,
+                                  'text-green-300': item.灵魂绑定 === 1
+                                })}
                               >
                                 {item.灵魂绑定 === 0 ? '❌ 否' : '✅ 是'}
                               </span>
@@ -190,7 +194,10 @@ const XianChong = ({ nickname, XianChong_have, XianChong_need, Kouliang }) => {
                                 灵魂绑定
                               </span>
                               <span
-                                className={`font-medium ${item.灵魂绑定 === 0 ? 'text-red-300' : 'text-green-300'}`}
+                                className={classNames('font-medium', {
+                                  'text-red-300': item.灵魂绑定 === 0,
+                                  'text-green-300': item.灵魂绑定 === 1
+                                })}
                               >
                                 {item.灵魂绑定 === 0 ? '❌ 否' : '✅ 是'}
                               </span>

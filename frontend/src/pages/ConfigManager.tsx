@@ -1,480 +1,23 @@
-import React, { useState, useEffect } from 'react'
-import { getConfig, saveConfig } from '@/api/config'
-
-interface ConfigItem {
-  key: string
-  name: string
-  value: string | number | boolean | unknown[]
-  type: 'string' | 'number' | 'boolean' | 'json' | 'array'
-  description: string
-  category: string
-}
-
-interface ConfigCategory {
-  name: string
-  icon: string
-  items: ConfigItem[]
-}
+import React from 'react'
+import { configCategories } from '@/config'
+import classNames from 'classnames'
+import { useConfigManagerCode } from './ConfigManager.code'
 
 export default function ConfigManager() {
-  const [config, setConfig] = useState<Record<string, unknown> | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState('CD配置')
-  const [jsonConfig, setJsonConfig] = useState('')
-  const [message, setMessage] = useState<{
-    type: 'success' | 'error'
-    text: string
-  } | null>(null)
-
-  // 配置分类定义
-  const configCategories: ConfigCategory[] = [
-    {
-      name: 'CD配置',
-      icon: '⏱️',
-      items: [
-        {
-          key: 'CD.association',
-          name: '宗门维护CD',
-          value: 10080,
-          type: 'number',
-          description: '宗门维护冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.joinassociation',
-          name: '退宗CD',
-          value: 450,
-          type: 'number',
-          description: '退出宗门冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.associationbattle',
-          name: '宗门大战CD',
-          value: 1440,
-          type: 'number',
-          description: '宗门大战冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.rob',
-          name: '打劫CD',
-          value: 120,
-          type: 'number',
-          description: '打劫冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.gambling',
-          name: '金银坊CD',
-          value: 10,
-          type: 'number',
-          description: '金银坊冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.couple',
-          name: '双修CD',
-          value: 360,
-          type: 'number',
-          description: '双修冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.garden',
-          name: '药园CD',
-          value: 3,
-          type: 'number',
-          description: '药园操作冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.level_up',
-          name: '突破CD',
-          value: 3,
-          type: 'number',
-          description: '突破冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.secretplace',
-          name: '秘境CD',
-          value: 7,
-          type: 'number',
-          description: '秘境冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.timeplace',
-          name: '仙府CD',
-          value: 7,
-          type: 'number',
-          description: '仙府冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.forbiddenarea',
-          name: '禁地CD',
-          value: 7,
-          type: 'number',
-          description: '禁地冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.reborn',
-          name: '重生CD',
-          value: 360,
-          type: 'number',
-          description: '重生冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.transfer',
-          name: '转账CD',
-          value: 240,
-          type: 'number',
-          description: '转账冷却时间（分钟）',
-          category: 'cd'
-        },
-        {
-          key: 'CD.honbao',
-          name: '抢红包CD',
-          value: 1,
-          type: 'number',
-          description: '抢红包冷却时间（分钟）',
-          category: 'cd'
-        }
-      ]
-    },
-    {
-      name: '百分比配置',
-      icon: '📊',
-      items: [
-        {
-          key: 'percentage.cost',
-          name: '手续费',
-          value: 0.05,
-          type: 'number',
-          description: '交易手续费比例',
-          category: 'percentage'
-        },
-        {
-          key: 'percentage.Moneynumber',
-          name: '金银坊收益',
-          value: 1,
-          type: 'number',
-          description: '金银坊收益倍数',
-          category: 'percentage'
-        },
-        {
-          key: 'percentage.punishment',
-          name: '出千收益',
-          value: 0.5,
-          type: 'number',
-          description: '出千收益比例',
-          category: 'percentage'
-        }
-      ]
-    },
-    {
-      name: '数值配置',
-      icon: '🔢',
-      items: [
-        {
-          key: 'size.Money',
-          name: '出千控制',
-          value: 200,
-          type: 'number',
-          description: '出千控制金额（万）',
-          category: 'size'
-        }
-      ]
-    },
-    {
-      name: '开关配置',
-      icon: '🔘',
-      items: [
-        {
-          key: 'switch.play',
-          name: '怡红院开关',
-          value: true,
-          type: 'boolean',
-          description: '怡红院功能开关',
-          category: 'switch'
-        },
-        {
-          key: 'switch.Moneynumber',
-          name: '金银坊开关',
-          value: true,
-          type: 'boolean',
-          description: '金银坊功能开关',
-          category: 'switch'
-        },
-        {
-          key: 'switch.couple',
-          name: '双修开关',
-          value: true,
-          type: 'boolean',
-          description: '双修功能开关',
-          category: 'switch'
-        },
-        {
-          key: 'switch.Xiuianplay_key',
-          name: '怡红院卡图开关',
-          value: false,
-          type: 'boolean',
-          description: '怡红院卡图功能开关',
-          category: 'switch'
-        }
-      ]
-    },
-    {
-      name: '闭关配置',
-      icon: '🧘',
-      items: [
-        {
-          key: 'biguan.size',
-          name: '闭关倍率',
-          value: 10,
-          type: 'number',
-          description: '闭关收益倍率',
-          category: 'biguan'
-        },
-        {
-          key: 'biguan.time',
-          name: '闭关最低时间',
-          value: 30,
-          type: 'number',
-          description: '闭关最低时间（分钟）',
-          category: 'biguan'
-        },
-        {
-          key: 'biguan.cycle',
-          name: '闭关周期',
-          value: 24,
-          type: 'number',
-          description: '闭关周期（小时）',
-          category: 'biguan'
-        }
-      ]
-    },
-    {
-      name: '打工配置',
-      icon: '💼',
-      items: [
-        {
-          key: 'work.size',
-          name: '打工倍率',
-          value: 15,
-          type: 'number',
-          description: '打工收益倍率',
-          category: 'work'
-        },
-        {
-          key: 'work.time',
-          name: '打工最低时间',
-          value: 15,
-          type: 'number',
-          description: '打工最低时间（分钟）',
-          category: 'work'
-        },
-        {
-          key: 'work.cycle',
-          name: '打工周期',
-          value: 32,
-          type: 'number',
-          description: '打工周期（小时）',
-          category: 'work'
-        }
-      ]
-    },
-    {
-      name: '签到配置',
-      icon: '📅',
-      items: [
-        {
-          key: 'Sign.ticket',
-          name: '签到门票',
-          value: 1,
-          type: 'number',
-          description: '每日签到给的沉迷门票数量',
-          category: 'sign'
-        }
-      ]
-    },
-    {
-      name: '拍卖配置',
-      icon: '🏛️',
-      items: [
-        {
-          key: 'Auction.interval',
-          name: '间歇时间',
-          value: 3,
-          type: 'number',
-          description: '拍卖间歇时间（小时）',
-          category: 'auction'
-        },
-        {
-          key: 'Auction.openHour',
-          name: '星阁开启时间',
-          value: 19,
-          type: 'number',
-          description: '星阁开启时间（小时）',
-          category: 'auction'
-        },
-        {
-          key: 'Auction.closeHour',
-          name: '星阁关闭时间',
-          value: 20,
-          type: 'number',
-          description: '星阁关闭时间（小时）',
-          category: 'auction'
-        }
-      ]
-    },
-    {
-      name: '秘境配置',
-      icon: '🗺️',
-      items: [
-        {
-          key: 'SecretPlace.one',
-          name: '一级秘境出金概率',
-          value: 0.99,
-          type: 'number',
-          description: '一级秘境出金概率',
-          category: 'secretplace'
-        },
-        {
-          key: 'SecretPlace.two',
-          name: '二级秘境出金概率',
-          value: 0.6,
-          type: 'number',
-          description: '二级秘境出金概率',
-          category: 'secretplace'
-        },
-        {
-          key: 'SecretPlace.three',
-          name: '三级秘境出金概率',
-          value: 0.28,
-          type: 'number',
-          description: '三级秘境出金概率',
-          category: 'secretplace'
-        }
-      ]
-    },
-    {
-      name: '纳戒配置',
-      icon: '💍',
-      items: [
-        {
-          key: 'najie_num',
-          name: '纳戒存储量',
-          value: [
-            50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000
-          ],
-          type: 'array',
-          description: '各级纳戒存储量',
-          category: 'najie'
-        },
-        {
-          key: 'najie_price',
-          name: '纳戒升级消耗',
-          value: [0, 50000, 100000, 500000, 500000, 1000000, 3000000, 6000000],
-          type: 'array',
-          description: '各级纳戒升级消耗',
-          category: 'najie'
-        }
-      ]
-    },
-    {
-      name: '黑白名单',
-      icon: '📋',
-      items: [
-        {
-          key: 'whitecrowd',
-          name: '白名单群',
-          value: [767253997],
-          type: 'array',
-          description: '白名单群号列表',
-          category: 'list'
-        },
-        {
-          key: 'blackid',
-          name: '黑名单用户',
-          value: [123456],
-          type: 'array',
-          description: '黑名单用户ID列表',
-          category: 'list'
-        }
-      ]
-    }
-  ]
-
-  const loadConfig = async () => {
-    setLoading(true)
-    try {
-      const result = await getConfig('xiuxian')
-      if (result) {
-        const configData =
-          (result.data as Record<string, any>) ||
-          (result as unknown as Record<string, any>)
-        setConfig(configData)
-        setJsonConfig(JSON.stringify(configData, null, 2))
-      }
-    } catch (error) {
-      console.error('加载配置失败:', error)
-      setMessage({ type: 'error', text: '加载配置失败' })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSave = async (values: Record<string, any>) => {
-    setLoading(true)
-    try {
-      await saveConfig('xiuxian', values)
-      setMessage({ type: 'success', text: '配置保存成功' })
-      loadConfig()
-    } catch (error) {
-      console.error('保存配置失败:', error)
-      setMessage({ type: 'error', text: '保存配置失败' })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleConfigChange = (key: string, value: unknown) => {
-    if (!config) return
-
-    const keys = key.split('.')
-    const newConfig = { ...config }
-    let current = newConfig as Record<string, unknown>
-
-    for (let i = 0; i < keys.length - 1; i++) {
-      if (!current[keys[i]]) {
-        current[keys[i]] = {}
-      }
-      current = current[keys[i]] as Record<string, unknown>
-    }
-
-    current[keys[keys.length - 1]] = value
-    setConfig(newConfig)
-    setJsonConfig(JSON.stringify(newConfig, null, 2))
-  }
-
-  const getConfigValue = (key: string): unknown => {
-    if (!config) return undefined
-    const keys = key.split('.')
-    let value: unknown = config
-    for (const k of keys) {
-      value = (value as Record<string, unknown>)?.[k]
-    }
-    return value
-  }
-
-  useEffect(() => {
-    loadConfig()
-  }, [])
+  const {
+    config,
+    loading,
+    activeTab,
+    setActiveTab,
+    jsonConfig,
+    setJsonConfig,
+    message,
+    setMessage,
+    loadConfig,
+    handleSave,
+    handleConfigChange,
+    getConfigValue
+  } = useConfigManagerCode()
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -509,29 +52,30 @@ export default function ConfigManager() {
         {/* 消息提示 */}
         {message && (
           <div
-            className={`mb-6 rounded-xl p-4 ${
-              message.type === 'success'
-                ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30'
-                : 'bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30'
-            }`}
+            className={classNames('mb-6 rounded-xl p-4', {
+              'bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30':
+                message.type === 'success',
+              'bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30':
+                message.type === 'error'
+            })}
           >
             <div className="flex items-center space-x-3">
               <div
-                className={`w-3 h-3 rounded-full ${
-                  message.type === 'success' ? 'bg-green-400' : 'bg-red-400'
-                }`}
+                className={classNames('w-3 h-3 rounded-full', {
+                  'bg-green-400': message.type === 'success',
+                  'bg-red-400': message.type === 'error'
+                })}
               ></div>
               <div>
                 <h3
-                  className={`font-semibold ${
-                    message.type === 'success'
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
+                  className={classNames('font-semibold', {
+                    'text-green-400': message.type === 'success',
+                    'text-red-400': message.type === 'error'
+                  })}
                 >
                   {message.type === 'success' ? '成功' : '错误'}
                 </h3>
-                <p className="text-slate-300 text-sm">{message.text}</p>
+                <p className="text-slate-300 text-sm mt-1">{message.text}</p>
               </div>
             </div>
           </div>
@@ -608,11 +152,12 @@ export default function ConfigManager() {
               <button
                 key={category.name}
                 onClick={() => setActiveTab(category.name)}
-                className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                className={classNames(
+                  'px-4 py-2 rounded-lg transition-all duration-200',
                   activeTab === category.name
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
-                }`}
+                )}
               >
                 <span className="mr-2">{category.icon}</span>
                 {category.name}
@@ -620,11 +165,12 @@ export default function ConfigManager() {
             ))}
             <button
               onClick={() => setActiveTab('JSON编辑')}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              className={classNames(
+                'px-4 py-2 rounded-lg transition-all duration-200',
                 activeTab === 'JSON编辑'
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                   : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
-              }`}
+              )}
             >
               📄 JSON编辑
             </button>
@@ -652,7 +198,8 @@ export default function ConfigManager() {
                               {item.name}
                             </label>
                             <span
-                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              className={classNames(
+                                'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
                                 item.type === 'string'
                                   ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                                   : item.type === 'number'
@@ -660,7 +207,7 @@ export default function ConfigManager() {
                                     : item.type === 'boolean'
                                       ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
                                       : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                              }`}
+                              )}
                             >
                               {item.type.toUpperCase()}
                             </span>
@@ -674,16 +221,14 @@ export default function ConfigManager() {
                             <div className="flex items-center">
                               <input
                                 type="checkbox"
-                                checked={Boolean(getConfigValue(item.key))}
+                                checked={!!getConfigValue(item.key)}
                                 onChange={e =>
                                   handleConfigChange(item.key, e.target.checked)
                                 }
                                 className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
                               />
                               <span className="ml-2 text-slate-300 text-sm">
-                                {Boolean(getConfigValue(item.key))
-                                  ? '启用'
-                                  : '禁用'}
+                                {getConfigValue(item.key) ? '启用' : '禁用'}
                               </span>
                             </div>
                           ) : item.type === 'array' ? (
@@ -711,7 +256,7 @@ export default function ConfigManager() {
                           ) : (
                             <input
                               type={item.type === 'number' ? 'number' : 'text'}
-                              value={getConfigValue(item.key) || ''}
+                              value={String(getConfigValue(item.key) || '')}
                               onChange={e => {
                                 const value =
                                   item.type === 'number'

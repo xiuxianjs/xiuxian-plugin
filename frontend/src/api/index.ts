@@ -9,7 +9,7 @@ const instance = axios.create({
  * @param config
  * @returns
  */
-export const request = (config: AxiosRequestConfig): Promise<AxiosResponse> => {
+export const request = (config: AxiosRequestConfig): Promise<any> => {
   return new Promise<AxiosResponse>((resolve, reject) => {
     instance(config)
       .then(response => {

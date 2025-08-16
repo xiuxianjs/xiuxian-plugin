@@ -1,29 +1,5 @@
+import { ApiResponse, LoginRequest, LoginResponse } from '@/types'
 import { request } from './index'
-
-// API响应类型
-interface ApiResponse<T = unknown> {
-  code: number
-  message: string
-  data: T
-}
-
-export interface LoginRequest {
-  username: string
-  password: string
-}
-
-export interface LoginResponse {
-  success: boolean
-  message: string
-  user?: {
-    id: string
-    username: string
-    role: string
-    createdAt: number
-    lastLoginAt?: number
-  }
-  token?: string
-}
 
 // 登录API
 export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
@@ -32,7 +8,7 @@ export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
       url: '/auth',
       method: 'POST',
       data
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       user: LoginResponse['user']
       token: string
     }>
@@ -70,7 +46,7 @@ export const logoutAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse
+    })) as ApiResponse
 
     if (result.code === 200) {
       return { success: true }
@@ -95,7 +71,7 @@ export const verifyTokenAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{ user: LoginResponse['user'] }>
+    })) as ApiResponse<{ user: LoginResponse['user'] }>
 
     if (result.code === 200) {
       return {
@@ -126,7 +102,7 @@ export const getUsersAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<LoginResponse['user'][]>
+    })) as ApiResponse<LoginResponse['user'][]>
 
     if (result.code === 200) {
       return {
@@ -184,7 +160,7 @@ export const getGameUsersAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       list: any[]
       pagination: {
         current: number
@@ -231,7 +207,7 @@ export const getGameUserAPI = async (
         Authorization: `Bearer ${token}`
       },
       data: { userId }
-    })) as unknown as ApiResponse<any>
+    })) as ApiResponse<any>
 
     if (result.code === 200) {
       return {
@@ -280,7 +256,7 @@ export const getGameUsersStatsAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       total: number
       highLevel: number
       mediumLevel: number
@@ -339,7 +315,7 @@ export const getAssociationsAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       list: any[]
       pagination: {
         current: number
@@ -386,7 +362,7 @@ export const getAssociationAPI = async (
         Authorization: `Bearer ${token}`
       },
       data: { associationName }
-    })) as unknown as ApiResponse<any>
+    })) as ApiResponse<any>
 
     if (result.code === 200) {
       return {
@@ -445,7 +421,7 @@ export const getNajieAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       list: any[]
       pagination: {
         current: number
@@ -492,7 +468,7 @@ export const getNajieDetailAPI = async (
         Authorization: `Bearer ${token}`
       },
       data: { userId }
-    })) as unknown as ApiResponse<any>
+    })) as ApiResponse<any>
 
     if (result.code === 200) {
       return {
@@ -534,7 +510,7 @@ export const getRankingsAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<any[]>
+    })) as ApiResponse<any[]>
 
     if (result.code === 200) {
       return {
@@ -577,7 +553,7 @@ export const getRankingsStatsAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       lastUpdate: string
       associationCount: number
       playerCount: number
@@ -620,7 +596,7 @@ export const getTaskConfigAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{ [key: string]: string }>
+    })) as ApiResponse<{ [key: string]: string }>
 
     if (result.code === 200) {
       return {
@@ -661,7 +637,7 @@ export const updateTaskConfigAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       timestamp: string
     }>
 
@@ -705,7 +681,7 @@ export const getTaskStatusAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       [key: string]: {
         running: boolean
         nextInvocation?: string
@@ -754,7 +730,7 @@ export const taskControlAPI = async (
         Authorization: `Bearer ${token}`
       },
       data: { action, ...(taskName && { taskName }) }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       timestamp: string
       success: boolean
       [key: string]: unknown
@@ -828,7 +804,7 @@ export const triggerRankingCalculationAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       timestamp: string
     }>
 
@@ -852,6 +828,17 @@ export const triggerRankingCalculationAPI = async (
   }
 }
 
+type Bag = {
+  装备: number
+  丹药: number
+  道具: number
+  功法: number
+  草药: number
+  材料: number
+  仙宠: number
+  仙宠口粮: number
+}
+
 // 获取背包统计信息API
 export const getNajieStatsAPI = async (
   token: string,
@@ -865,16 +852,7 @@ export const getNajieStatsAPI = async (
     corruptedTotal: number
     totalLingshi: number
     totalItems: number
-    categoryStats: {
-      装备: number
-      丹药: number
-      道具: number
-      功法: number
-      草药: number
-      材料: number
-      仙宠: number
-      仙宠口粮: number
-    }
+    categoryStats: Bag
   }
   message?: string
 }> => {
@@ -886,20 +864,11 @@ export const getNajieStatsAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       total: number
       totalLingshi: number
       totalItems: number
-      categoryStats: {
-        装备: number
-        丹药: number
-        道具: number
-        功法: number
-        草药: number
-        材料: number
-        仙宠: number
-        仙宠口粮: number
-      }
+      categoryStats: Bag
     }>
 
     if (result.code === 200) {
@@ -948,7 +917,7 @@ export const getAssociationsStatsAPI = async (
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })) as unknown as ApiResponse<{
+    })) as ApiResponse<{
       total: number
       totalMembers: number
       totalPower: number
@@ -993,7 +962,7 @@ export const changePasswordAPI = async (
         Authorization: `Bearer ${token}`
       },
       data: passwordData
-    })) as unknown as ApiResponse
+    })) as ApiResponse
 
     if (result.code === 200) {
       return {

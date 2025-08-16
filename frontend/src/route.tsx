@@ -8,7 +8,7 @@ import UserManager from '@/pages/UserManager'
 import AssociationManager from '@/pages/AssociationManager'
 import NajieManager from '@/pages/NajieManager'
 import RankingManager from '@/pages/RankingManager'
-import TaskManager from '@/pages/TaskManager'
+import TaskManager from '@/pages/TaskManager/App'
 import Login from '@/pages/Login'
 import ProtectedRoute from '@/components/ProtectedRoute'
 

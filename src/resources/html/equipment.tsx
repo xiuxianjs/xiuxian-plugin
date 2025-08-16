@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import HTML from './HTML'
 
 // 装备项接口
@@ -99,17 +100,23 @@ const EquipmentCard: React.FC<{
     <article className="group relative">
       {/* 动态边框光效 */}
       <div
-        className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${quality.gradient} p-[2px] animate-pulse`}
+        className={classNames(
+          'absolute inset-0 rounded-2xl bg-gradient-to-r p-[2px] animate-pulse',
+          quality.gradient
+        )}
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       </div>
 
       {/* 主卡片内容 */}
       <div
-        className={`relative rounded-2xl p-6 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl 
-        border border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 
-        hover:scale-[1.02] hover:bg-gradient-to-br hover:from-white/10 hover:to-white/15
-        ${quality.glow} hover:shadow-lg`}
+        className={classNames(
+          'relative rounded-2xl p-6 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl',
+          'border border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500',
+          'hover:scale-[1.02] hover:bg-gradient-to-br hover:from-white/10 hover:to-white/15',
+          quality.glow,
+          'hover:shadow-lg'
+        )}
       >
         {/* 装饰性角落元素 */}
         <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-white/30 rounded-tr-lg"></div>
@@ -121,7 +128,10 @@ const EquipmentCard: React.FC<{
             {title}
           </h2>
           <div
-            className={`w-12 h-12 rounded-full bg-gradient-to-r ${quality.gradient} flex items-center justify-center shadow-lg`}
+            className={classNames(
+              'w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center shadow-lg',
+              quality.gradient
+            )}
           >
             <span className="text-2xl">{elementIcon}</span>
           </div>
@@ -134,7 +144,10 @@ const EquipmentCard: React.FC<{
               {equipment.name}
             </span>
             <span
-              className={`px-3 py-1 rounded-full bg-gradient-to-r ${quality.gradient} text-black font-black text-sm shadow-inner border border-white/30`}
+              className={classNames(
+                'px-3 py-1 rounded-full bg-gradient-to-r text-black font-black text-sm shadow-inner border border-white/30',
+                quality.gradient
+              )}
             >
               {quality.name}
             </span>

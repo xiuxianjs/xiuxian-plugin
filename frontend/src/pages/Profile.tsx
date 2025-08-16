@@ -1,77 +1,18 @@
-import React, { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
-import { changePasswordAPI } from '@/api/auth'
-
-interface PasswordForm {
-  currentPassword: string
-  newPassword: string
-  confirmPassword: string
-}
+import React from 'react'
+import { useProfileCode } from './Profile.code'
+import classNames from 'classnames'
 
 export default function Profile() {
-  const { user } = useAuth()
-  const token = localStorage.getItem('token') || ''
-  const [activeTab, setActiveTab] = useState('profile')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState<{
-    type: 'success' | 'error'
-    text: string
-  } | null>(null)
-  const [passwordForm, setPasswordForm] = useState<PasswordForm>({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  })
-
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // e.stopPropagation()
-    setLoading(true)
-    setMessage(null)
-
-    // 验证密码
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setMessage({ type: 'error', text: '新密码与确认密码不匹配' })
-      setLoading(false)
-      return
-    }
-
-    if (passwordForm.newPassword.length < 6) {
-      setMessage({ type: 'error', text: '新密码长度至少6位' })
-      setLoading(false)
-      return
-    }
-
-    try {
-      const result = await changePasswordAPI(token, {
-        currentPassword: passwordForm.currentPassword,
-        newPassword: passwordForm.newPassword
-      })
-
-      if (result.success) {
-        setMessage({ type: 'success', text: result.message })
-        setPasswordForm({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        })
-      } else {
-        setMessage({ type: 'error', text: result.message })
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: '密码修改失败，请重试' })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleInputChange =
-    (field: keyof PasswordForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPasswordForm(prev => ({
-        ...prev,
-        [field]: e.target.value
-      }))
-    }
+  const {
+    activeTab,
+    setActiveTab,
+    loading,
+    message,
+    passwordForm,
+    handlePasswordChange,
+    handleInputChange,
+    user
+  } = useProfileCode()
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -81,21 +22,23 @@ export default function Profile() {
           <div className="flex space-x-1 mb-6">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              className={classNames(
+                'px-4 py-2 rounded-lg transition-all duration-200',
                 activeTab === 'profile'
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                   : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
-              }`}
+              )}
             >
               👤 个人信息
             </button>
             <button
               onClick={() => setActiveTab('password')}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              className={classNames(
+                'px-4 py-2 rounded-lg transition-all duration-200',
                 activeTab === 'password'
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                   : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
-              }`}
+              )}
             >
               🔒 修改密码
             </button>
@@ -192,27 +135,30 @@ export default function Profile() {
                 {/* 消息提示 */}
                 {message && (
                   <div
-                    className={`mb-6 rounded-xl p-4 ${
+                    className={classNames(
+                      'mb-6 rounded-xl p-4',
                       message.type === 'success'
                         ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30'
                         : 'bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30'
-                    }`}
+                    )}
                   >
                     <div className="flex items-center space-x-3">
                       <div
-                        className={`w-3 h-3 rounded-full ${
+                        className={classNames(
+                          'w-3 h-3 rounded-full',
                           message.type === 'success'
                             ? 'bg-green-400'
                             : 'bg-red-400'
-                        }`}
+                        )}
                       ></div>
                       <div>
                         <h3
-                          className={`font-semibold ${
+                          className={classNames(
+                            'font-semibold',
                             message.type === 'success'
                               ? 'text-green-400'
                               : 'text-red-400'
-                          }`}
+                          )}
                         >
                           {message.type === 'success' ? '成功' : '错误'}
                         </h3>

@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import HTML from './HTML'
 
 /**
@@ -158,13 +159,17 @@ const CombatResult = ({
                 <div className="hidden md:flex items-center justify-center">
                   <div className="relative">
                     <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl ${
-                        result === 'A'
-                          ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
-                          : result === 'B'
-                            ? 'bg-gradient-to-br from-red-500 to-pink-500'
-                            : 'bg-gradient-to-br from-purple-500 to-pink-500'
-                      }`}
+                      className={classNames(
+                        'w-16 h-16 rounded-full flex items-center justify-center shadow-2xl',
+                        {
+                          'bg-gradient-to-br from-blue-500 to-cyan-500':
+                            result === 'A',
+                          'bg-gradient-to-br from-red-500 to-pink-500':
+                            result === 'B',
+                          'bg-gradient-to-br from-purple-500 to-pink-500':
+                            result === 'draw'
+                        }
+                      )}
                     >
                       <span className="text-white text-2xl font-bold">
                         {result === 'A'
@@ -175,13 +180,17 @@ const CombatResult = ({
                       </span>
                     </div>
                     <div
-                      className={`absolute inset-0 rounded-full blur-lg opacity-50 ${
-                        result === 'A'
-                          ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
-                          : result === 'B'
-                            ? 'bg-gradient-to-br from-red-500 to-pink-500'
-                            : 'bg-gradient-to-br from-purple-500 to-pink-500'
-                      }`}
+                      className={classNames(
+                        'absolute inset-0 rounded-full blur-lg opacity-50',
+                        {
+                          'bg-gradient-to-br from-blue-500 to-cyan-500':
+                            result === 'A',
+                          'bg-gradient-to-br from-red-500 to-pink-500':
+                            result === 'B',
+                          'bg-gradient-to-br from-purple-500 to-pink-500':
+                            result === 'draw'
+                        }
+                      )}
                     ></div>
                   </div>
                 </div>
