@@ -80,22 +80,13 @@ blackid:
   - 123456
 
 task:
-  # 检测人物动作是否结束定时任务
-  action_task: 0 0/1 * * * ?
-  # 检测沉迷是否结束定时任务
-  actionplus_task: 0 0/5 * * * ?
-  # 游戏锁定
-  GamesTask: 0 */5 * * * ?
-  # 赛季结算
-  saiji: 0 0 0 ? * 1
-  # 商店刷新
-  shop: 0 0 21 ? * 1,5
-  # 冲水堂清理
+  # 商店刷新 - 每周一、五21点执行
+  ShopTask: 0 0 21 ? * 1,5
+  # 冲水堂清理 - 每天20点59分执行
   ExchangeTask: 0 59 20 * * ?
-  # 临时任务处理
-  temp_task: 20 0/5 * * * ?
-  # BOSS开启
+  # BOSS开启 - 每天21点执行
   BossTask: 0 0 21 * * ?
+  # BOSS开启2 - 每天20点执行
   BossTask2: 0 0 20 * * ?
   # 拍卖任务
   AuctionofficialTask: 0 0/1 * * * ?
@@ -105,7 +96,7 @@ task:
   MojiTask: 0 0/5 * * * ?
   # 玩家控制任务
   PlayerControlTask: 0 0/1 * * * ?
-  # 秘境任务
+  # 秘境任务（plus）
   SecretPlaceplusTask: 0 0/5 * * * ?
   # 职业任务
   OccupationTask: 0 0/1 * * * ?
