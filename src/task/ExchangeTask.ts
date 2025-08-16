@@ -1,10 +1,9 @@
 import { readExchange, writeExchange } from '@src/model/trade'
 import type { ExchangeEntry } from '@src/types'
 import { addNajieThing } from '@src/model/najie'
-import { scheduleJob } from 'node-schedule'
 import { ExchangeRecord } from '@src/types'
 
-scheduleJob('0 0 4 * * ?', async () => {
+export const ExchangeTask = async () => {
   let Exchange: ExchangeRecord[] = []
   try {
     Exchange = await readExchange()
@@ -30,4 +29,4 @@ scheduleJob('0 0 4 * * ?', async () => {
     await writeExchange(list)
   }
   return false
-})
+}

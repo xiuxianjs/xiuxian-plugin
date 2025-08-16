@@ -4,6 +4,11 @@ import App from '@/pages/App'
 import Dashboard from '@/pages/Dashboard'
 import ConfigManager from '@/pages/ConfigManager'
 import Profile from '@/pages/Profile'
+import UserManager from '@/pages/UserManager'
+import AssociationManager from '@/pages/AssociationManager'
+import NajieManager from '@/pages/NajieManager'
+import RankingManager from '@/pages/RankingManager'
+import TaskManager from '@/pages/TaskManager'
 import Login from '@/pages/Login'
 import ProtectedRoute from '@/components/ProtectedRoute'
 
@@ -31,6 +36,26 @@ export default createHashRouter([
       {
         path: '/profile',
         element: <Profile />
+      },
+      {
+        path: '/users',
+        element: <UserManager />
+      },
+      {
+        path: '/associations',
+        element: <AssociationManager />
+      },
+      {
+        path: '/najie',
+        element: <NajieManager />
+      },
+      {
+        path: '/rankings',
+        element: <RankingManager />
+      },
+      {
+        path: '/tasks',
+        element: <TaskManager />
       }
     ]
   }

@@ -6,13 +6,12 @@ import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addExp, addExp2 } from '@src/model/economy'
 import { setFileValue } from '@src/model/cultivation'
 import { __PATH } from '@src/model/paths'
-import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ActionState } from '@src/types'
 import { getConfig } from '@src/model'
 
-scheduleJob('0 0/1 * * * ?', async () => {
+export const PlayerControlTask = async () => {
   //获取缓存中人物列表
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
@@ -271,4 +270,4 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
     }
   }
-})
+}

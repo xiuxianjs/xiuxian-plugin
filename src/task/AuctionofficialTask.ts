@@ -3,14 +3,13 @@ import { openAU } from '@src/model/trade'
 import { readPlayer } from '@src/model/xiuxian'
 import { addCoin } from '@src/model/economy'
 import { addNajieThing } from '@src/model/najie'
-import { scheduleJob } from 'node-schedule'
 import type {
   AuctionSession,
   CoreNajieCategory as NajieCategory
 } from '@src/types'
 import { getConfig } from '@src/model'
 
-scheduleJob('0 0/1 * * * ?', async () => {
+export const AuctionofficialTask = async () => {
   const set = await getConfig('xiuxian', 'xiuxian')
   const wupinStr = await redis.get('xiuxian:AuctionofficialTask')
 
@@ -86,4 +85,4 @@ scheduleJob('0 0/1 * * * ?', async () => {
   wupin.groupList.forEach(g => pushInfo(String(g), true, msg))
   await redis.del('xiuxian:AuctionofficialTask')
   return false
-})
+}

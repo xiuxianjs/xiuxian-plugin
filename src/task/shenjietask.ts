@@ -6,7 +6,6 @@ import { addNajieThing } from '@src/model/najie'
 import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
 import { __PATH } from '@src/model/paths'
-import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type {
@@ -24,7 +23,7 @@ function isNajieCategory(v): v is NajieCategory {
   )
 }
 
-scheduleJob('0 0/5 * * * ?', async () => {
+export const ShenjieTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
@@ -178,4 +177,4 @@ scheduleJob('0 0/5 * * * ?', async () => {
       }
     }
   }
-})
+}

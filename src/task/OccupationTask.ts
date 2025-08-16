@@ -1,4 +1,3 @@
-import { scheduleJob } from 'node-schedule'
 import { redis, data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { addExp4 } from '@src/model/xiuxian'
@@ -9,7 +8,7 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
 import type { Player, ActionState } from '@src/types'
 
-scheduleJob('0 0/1 * * * ?', async () => {
+export const OccupationTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
@@ -187,4 +186,4 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
     }
   }
-})
+}

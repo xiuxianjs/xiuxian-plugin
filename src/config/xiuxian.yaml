@@ -78,3 +78,48 @@ whitecrowd:
 #黑名单用户
 blackid:
   - 123456
+
+task:
+  # 检测人物动作是否结束定时任务
+  action_task: 0 0/1 * * * ?
+  # 检测沉迷是否结束定时任务
+  actionplus_task: 0 0/5 * * * ?
+  # 游戏锁定
+  GamesTask: 0 */5 * * * ?
+  # 赛季结算
+  saiji: 0 0 0 ? * 1
+  # 商店刷新
+  shop: 0 0 21 ? * 1,5
+  # 冲水堂清理
+  ExchangeTask: 0 59 20 * * ?
+  # 临时任务处理
+  temp_task: 20 0/5 * * * ?
+  # BOSS开启
+  BossTask: 0 0 21 * * ?
+  BossTask2: 0 0 20 * * ?
+  # 拍卖任务
+  AuctionofficialTask: 0 0/1 * * * ?
+  # 论坛任务
+  ForumTask: 0 0/1 * * * ?
+  # 魔界任务
+  MojiTask: 0 0/5 * * * ?
+  # 玩家控制任务
+  PlayerControlTask: 0 0/1 * * * ?
+  # 秘境任务
+  SecretPlaceplusTask: 0 0/5 * * * ?
+  # 职业任务
+  OccupationTask: 0 0/1 * * * ?
+  # 消息任务
+  MsgTask: 20 0/5 * * * ?
+  # 神界任务
+  ShenjieTask: 0 0/5 * * * ?
+  # 商店等级任务
+  ShopGradetask: 0 59 20 * * ?
+  # 逃跑任务
+  Taopaotask: 0 0/5 * * * ?
+  # 秘境任务
+  SecretPlaceTask: 0 0/1 * * * ?
+  # 天地榜任务
+  TiandibangTask: 0 0 0 ? * 1
+  # 仙界任务
+  Xijietask: 0 0/1 * * * ?

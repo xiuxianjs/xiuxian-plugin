@@ -1,5 +1,4 @@
 import { redis, data, pushInfo } from '@src/model/api'
-// 细粒度导入，避免通过 barrel 触发循环 re-export
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer, writePlayer } from '@src/model/xiuxian'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
@@ -8,13 +7,10 @@ import { readDanyao, writeDanyao } from '@src/model/danyao'
 import { addExp2, addExp, addHP } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
 import { __PATH } from '@src/model/paths'
-import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { Player, CoreNajieCategory as NajieCategory } from '@src/types'
 import { getConfig } from '@src/model'
-// import type { Player } from '@src/types/player'
-// import type { NajieCategory } from '@src/types/model'
 
 // === 本文件局部类型声明，避免 any ===
 interface SecretPlaceItem {
@@ -46,7 +42,8 @@ interface MonsterLike {
 
 // 兼容：将 readDanyao 返回的 DanyaoItem[] 映射为药效状态对象（旧逻辑使用）
 // mapDanyaoArrayToStatus 已迁移至 @src/utils/danyao 统一维护
-scheduleJob('0 0/5 * * * ?', async () => {
+
+export const SecretPlaceplusTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
@@ -300,4 +297,4 @@ scheduleJob('0 0/5 * * * ?', async () => {
       }
     }
   }
-})
+}

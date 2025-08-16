@@ -3,10 +3,9 @@ import { data, redis } from '@src/model/api'
 // 细粒度导入
 import { __PATH } from '@src/model/paths'
 import { readPlayer } from '@src/model/xiuxian'
-import { scheduleJob } from 'node-schedule'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
 
-scheduleJob('0 0 0 ? * 1', async () => {
+export const TiandibangTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   const temp: RankEntry[] = []
@@ -48,4 +47,4 @@ scheduleJob('0 0 0 ? * 1', async () => {
   }
   await Write_tiandibang(temp)
   return false
-})
+}

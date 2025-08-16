@@ -31,7 +31,7 @@ function isBlessPlace(v): v is BlessPlace {
 
 export default onResponse(selects, async e => {
   const [message] = useMessage(e)
-  const blessRaw = data.bless_list | undefined
+  const blessRaw = data.bless_list || undefined
   const blessList: BlessPlace[] = Array.isArray(blessRaw)
     ? blessRaw.filter(isBlessPlace)
     : []

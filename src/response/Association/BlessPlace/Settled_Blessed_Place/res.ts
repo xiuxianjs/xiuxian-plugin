@@ -60,7 +60,7 @@ export default onResponse(selects, async e => {
     Send(Text('请在指令后补充洞天名称'))
     return false
   }
-  const blessRaw = data.bless_list | undefined
+  const blessRaw = data.bless_list || undefined
   const dongTan = blessRaw?.find(
     i => isBlessPlace(i) && i.name === blessed_name
   ) as BlessPlace | undefined

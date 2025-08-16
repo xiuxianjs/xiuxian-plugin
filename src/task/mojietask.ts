@@ -1,5 +1,3 @@
-import { scheduleJob } from 'node-schedule'
-
 import { redis, data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
@@ -13,7 +11,8 @@ import type { ExploreActionState } from '@src/types'
 function isExploreAction(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'end_time' in a
 }
-scheduleJob('0 0/5 * * * ?', async () => {
+
+export const MojiTask = async () => {
   // 获取缓存中人物列表
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
@@ -214,4 +213,4 @@ scheduleJob('0 0/5 * * * ?', async () => {
       }
     }
   }
-})
+}

@@ -1,12 +1,11 @@
 import { pushInfo } from '@src/model/api'
 // 细粒度导入避免 barrel 循环
 import { readTemp, writeTemp } from '@src/model/temp'
-import { scheduleJob } from 'node-schedule'
 import { TempRecord as TempRecordLegacy } from '@src/types/model'
 import type { TempMessage } from '@src/types'
 import { screenshot } from '@src/image'
 
-scheduleJob('20 0/5 * * * ?', async () => {
+export const MsgTask = async () => {
   let temp: (TempMessage & TempRecordLegacy)[] = []
   try {
     temp = await readTemp()
@@ -36,4 +35,4 @@ scheduleJob('20 0/5 * * * ?', async () => {
     }
     await writeTemp([])
   }
-})
+}

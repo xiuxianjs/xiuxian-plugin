@@ -46,7 +46,7 @@ export default onResponse(selects, async e => {
     if (!this_ass.宗门驻地 || this_ass.宗门驻地 === 0) {
       this_ass_xiuxian = baseEff
     } else {
-      const dongTan = data.bless_list.find(
+      const dongTan = (data.bless_list || []).find(
         item => item.name === this_ass.宗门驻地
       )
       const addEff =

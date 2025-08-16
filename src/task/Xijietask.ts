@@ -4,11 +4,10 @@ import { zdBattle } from '@src/model/battle'
 import { addNajieThing } from '@src/model/najie'
 import { readShop, writeShop, existshop } from '@src/model/shop'
 import { __PATH } from '@src/model/paths'
-import { scheduleJob } from 'node-schedule'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { RaidActionState } from '@src/types'
 
-scheduleJob('0 0/1 * * * ?', async () => {
+export const Xijietask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
@@ -265,4 +264,4 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
     }
   }
-})
+}

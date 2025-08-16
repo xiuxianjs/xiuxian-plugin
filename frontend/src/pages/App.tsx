@@ -46,6 +46,31 @@ export default function App() {
                   path: '/'
                 },
                 {
+                  label: '用户管理',
+                  icon: '👥',
+                  path: '/users'
+                },
+                {
+                  label: '宗门管理',
+                  icon: '🏛️',
+                  path: '/associations'
+                },
+                {
+                  label: '背包管理',
+                  icon: '🎒',
+                  path: '/najie'
+                },
+                {
+                  label: '排名管理',
+                  icon: '🏆',
+                  path: '/rankings'
+                },
+                {
+                  label: '定时任务',
+                  icon: '⏰',
+                  path: '/tasks'
+                },
+                {
                   label: '系统配置',
                   icon: '⚙️',
                   path: '/config'

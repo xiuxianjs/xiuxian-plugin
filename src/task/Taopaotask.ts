@@ -4,7 +4,6 @@ import { Harm } from '@src/model/battle'
 import { readShop, writeShop } from '@src/model/shop'
 import { addNajieThing } from '@src/model/najie'
 import { __PATH } from '@src/model/paths'
-import { scheduleJob } from 'node-schedule'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
 import type {
@@ -36,8 +35,7 @@ interface ShopSlotLike {
   two?: any[]
   three?: any[]
 }
-
-scheduleJob('0 0/5 * * * ?', async () => {
+export const Taopaotask = async () => {
   //获取缓存中人物列表
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
@@ -209,4 +207,4 @@ scheduleJob('0 0/5 * * * ?', async () => {
       }
     }
   }
-})
+}

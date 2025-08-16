@@ -1,0 +1,389 @@
+import { Context } from 'koa'
+import { validateToken } from '@src/route/core/auth'
+import { parseJsonBody } from '@src/route/core/bodyParser'
+import { getIoRedis } from '@alemonjs/db'
+import { __PATH } from '@src/model/paths'
+
+const redis = getIoRedis()
+
+// 获取游戏用户数据（支持分页）
+export const GET = async (ctx: Context) => {
+  try {
+    // 验证管理员权限
+    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
+    if (!token) {
+      ctx.status = 401
+      ctx.body = {
+        code: 401,
+        message: '需要登录',
+        data: null
+      }
+      return
+    }
+
+    const user = await validateToken(token)
+    if (!user || user.role !== 'admin') {
+      ctx.status = 403
+      ctx.body = {
+        code: 403,
+        message: '权限不足',
+        data: null
+      }
+      return
+    }
+
+    // 获取分页参数
+    const page = parseInt(ctx.request.query.page as string) || 1
+    const pageSize = parseInt(ctx.request.query.pageSize as string) || 20
+    const search = (ctx.request.query.search as string) || ''
+
+    const players = []
+    let total = 0
+
+    // 使用SCAN命令分页获取keys，避免一次性获取所有keys
+    const scanPattern = `${__PATH.player_path}:*`
+    let cursor = 0
+    const allKeys = []
+
+    do {
+      const result = await redis.scan(
+        cursor,
+        'MATCH',
+        scanPattern,
+        'COUNT',
+        100
+      )
+      cursor = parseInt(result[0])
+      allKeys.push(...result[1])
+    } while (cursor !== 0)
+
+    // 如果需要搜索，需要先获取所有数据进行过滤
+    if (search) {
+      // 获取所有数据进行过滤
+      for (const key of allKeys) {
+        const userId = key.replace(`${__PATH.player_path}:`, '')
+        const playerData = await redis.get(key)
+
+        if (playerData) {
+          try {
+            const player = JSON.parse(decodeURIComponent(playerData))
+            const playerWithId = {
+              id: userId,
+              ...player
+            }
+
+            // 应用搜索过滤
+            const matchesSearch =
+              !search ||
+              playerWithId.名号.toLowerCase().includes(search.toLowerCase()) ||
+              playerWithId.id.includes(search)
+
+            if (matchesSearch) {
+              total++
+              // 只添加当前页的数据
+              const startIndex = (page - 1) * pageSize
+              if (players.length < pageSize && total > startIndex) {
+                players.push(playerWithId)
+              }
+            }
+          } catch (error) {
+            console.error(`解析玩家数据失败 ${userId}:`, error)
+          }
+        }
+      }
+    } else {
+      // 无搜索，直接分页获取数据
+      total = allKeys.length
+
+      // 计算分页范围
+      const startIndex = (page - 1) * pageSize
+      const endIndex = startIndex + pageSize
+      const paginatedKeys = allKeys.slice(startIndex, endIndex)
+
+      // 只获取当前页的数据
+      for (const key of paginatedKeys) {
+        const userId = key.replace(`${__PATH.player_path}:`, '')
+        const playerData = await redis.get(key)
+
+        if (playerData) {
+          try {
+            const player = JSON.parse(decodeURIComponent(playerData))
+            const playerWithId = {
+              id: userId,
+              ...player
+            }
+            players.push(playerWithId)
+          } catch (error) {
+            console.error(`解析玩家数据失败 ${userId}:`, error)
+          }
+        }
+      }
+    }
+
+    ctx.status = 200
+    ctx.body = {
+      code: 200,
+      message: '获取游戏用户列表成功',
+      data: {
+        list: players,
+        pagination: {
+          current: page,
+          pageSize: pageSize,
+          total: total,
+          totalPages: Math.ceil(total / pageSize)
+        }
+      }
+    }
+  } catch (error) {
+    console.error('获取游戏用户列表错误:', error)
+    ctx.status = 500
+    ctx.body = {
+      code: 500,
+      message: '服务器内部错误',
+      data: null
+    }
+  }
+}
+
+// 获取单个游戏用户数据
+export const POST = async (ctx: Context) => {
+  try {
+    // 验证管理员权限
+    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
+    if (!token) {
+      ctx.status = 401
+      ctx.body = {
+        code: 401,
+        message: '需要登录',
+        data: null
+      }
+      return
+    }
+
+    const user = await validateToken(token)
+    if (!user || user.role !== 'admin') {
+      ctx.status = 403
+      ctx.body = {
+        code: 403,
+        message: '权限不足',
+        data: null
+      }
+      return
+    }
+
+    const body = await parseJsonBody(ctx)
+    const { userId } = body as { userId?: string }
+
+    if (!userId) {
+      ctx.status = 400
+      ctx.body = {
+        code: 400,
+        message: '用户ID不能为空',
+        data: null
+      }
+      return
+    }
+
+    const playerData = await redis.get(`${__PATH.player_path}:${userId}`)
+
+    if (!playerData) {
+      ctx.status = 404
+      ctx.body = {
+        code: 404,
+        message: '用户不存在',
+        data: null
+      }
+      return
+    }
+
+    const player = JSON.parse(decodeURIComponent(playerData))
+
+    ctx.status = 200
+    ctx.body = {
+      code: 200,
+      message: '获取游戏用户数据成功',
+      data: {
+        id: userId,
+        ...player
+      }
+    }
+  } catch (error) {
+    console.error('获取游戏用户数据错误:', error)
+    ctx.status = 500
+    ctx.body = {
+      code: 500,
+      message: '服务器内部错误',
+      data: null
+    }
+  }
+}
+
+// 获取用户统计信息
+export const PUT = async (ctx: Context) => {
+  try {
+    // 验证管理员权限
+    const token = ctx.request.headers.authorization?.replace('Bearer ', '')
+    if (!token) {
+      ctx.status = 401
+      ctx.body = {
+        code: 401,
+        message: '需要登录',
+        data: null
+      }
+      return
+    }
+
+    const user = await validateToken(token)
+    if (!user || user.role !== 'admin') {
+      ctx.status = 403
+      ctx.body = {
+        code: 403,
+        message: '权限不足',
+        data: null
+      }
+      return
+    }
+
+    // 获取统计参数
+    const search = (ctx.request.query.search as string) || ''
+
+    // 使用SCAN命令获取所有keys
+    const scanPattern = `${__PATH.player_path}:*`
+    let cursor = 0
+    const allKeys = []
+
+    do {
+      const result = await redis.scan(
+        cursor,
+        'MATCH',
+        scanPattern,
+        'COUNT',
+        100
+      )
+      cursor = parseInt(result[0])
+      allKeys.push(...result[1])
+    } while (cursor !== 0)
+
+    let total = 0
+    let highLevel = 0
+    let mediumLevel = 0
+    let lowLevel = 0
+    let totalLingshi = 0
+    let totalShenshi = 0
+    let totalLunhui = 0
+
+    // 如果需要搜索，需要遍历所有数据
+    if (search) {
+      for (const key of allKeys) {
+        const userId = key.replace(`${__PATH.player_path}:`, '')
+        const playerData = await redis.get(key)
+
+        if (playerData) {
+          try {
+            const player = JSON.parse(decodeURIComponent(playerData))
+            const playerWithId = {
+              id: userId,
+              ...player
+            }
+
+            // 应用搜索过滤
+            const matchesSearch =
+              !search ||
+              playerWithId.名号.toLowerCase().includes(search.toLowerCase()) ||
+              playerWithId.id.includes(search)
+
+            if (matchesSearch) {
+              total++
+
+              // 统计境界分布
+              if (playerWithId.level_id > 30) {
+                highLevel++
+              } else if (playerWithId.level_id > 10) {
+                mediumLevel++
+              } else {
+                lowLevel++
+              }
+
+              // 统计资源
+              totalLingshi += playerWithId.灵石 || 0
+              totalShenshi += playerWithId.神石 || 0
+              totalLunhui += playerWithId.lunhui || 0
+            }
+          } catch (error) {
+            console.error(`解析玩家数据失败 ${userId}:`, error)
+          }
+        }
+      }
+    } else {
+      // 无搜索，直接统计总数
+      total = allKeys.length
+
+      // 获取部分数据进行资源统计（避免性能问题）
+      const sampleKeys = allKeys.slice(0, Math.min(100, allKeys.length))
+      for (const key of sampleKeys) {
+        const userId = key.replace(`${__PATH.player_path}:`, '')
+        const playerData = await redis.get(key)
+
+        if (playerData) {
+          try {
+            const player = JSON.parse(decodeURIComponent(playerData))
+            const playerWithId = {
+              id: userId,
+              ...player
+            }
+
+            // 统计境界分布
+            if (playerWithId.level_id > 30) {
+              highLevel++
+            } else if (playerWithId.level_id > 10) {
+              mediumLevel++
+            } else {
+              lowLevel++
+            }
+
+            // 统计资源
+            totalLingshi += playerWithId.灵石 || 0
+            totalShenshi += playerWithId.神石 || 0
+            totalLunhui += playerWithId.lunhui || 0
+          } catch (error) {
+            console.error(`解析玩家数据失败 ${userId}:`, error)
+          }
+        }
+      }
+
+      // 根据样本比例估算总数
+      if (sampleKeys.length > 0) {
+        const ratio = allKeys.length / sampleKeys.length
+        highLevel = Math.round(highLevel * ratio)
+        mediumLevel = Math.round(mediumLevel * ratio)
+        lowLevel = Math.round(lowLevel * ratio)
+        totalLingshi = Math.round(totalLingshi * ratio)
+        totalShenshi = Math.round(totalShenshi * ratio)
+        totalLunhui = Math.round(totalLunhui * ratio)
+      }
+    }
+
+    ctx.status = 200
+    ctx.body = {
+      code: 200,
+      message: '获取统计信息成功',
+      data: {
+        total,
+        highLevel,
+        mediumLevel,
+        lowLevel,
+        totalLingshi,
+        totalShenshi,
+        totalLunhui
+      }
+    }
+  } catch (error) {
+    console.error('获取统计信息错误:', error)
+    ctx.status = 500
+    ctx.body = {
+      code: 500,
+      message: '服务器内部错误',
+      data: null
+    }
+  }
+}

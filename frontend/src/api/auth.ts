@@ -148,6 +148,735 @@ export const getUsersAPI = async (
   }
 }
 
+// 获取游戏用户列表API（支持分页）
+export const getGameUsersAPI = async (
+  token: string,
+  params: {
+    page?: number
+    pageSize?: number
+    search?: string
+  } = {}
+): Promise<{
+  success: boolean
+  data?: {
+    list: any[]
+    pagination: {
+      current: number
+      pageSize: number
+      total: number
+      totalPages: number
+    }
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/game-users',
+      method: 'GET',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      list: any[]
+      pagination: {
+        current: number
+        pageSize: number
+        total: number
+        totalPages: number
+      }
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取游戏用户列表API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取单个游戏用户数据API
+export const getGameUserAPI = async (
+  token: string,
+  userId: string
+): Promise<{
+  success: boolean
+  user?: any
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/game-users',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: { userId }
+    })) as unknown as ApiResponse<any>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        user: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取游戏用户数据API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取游戏用户统计信息API
+export const getGameUsersStatsAPI = async (
+  token: string,
+  params: {
+    search?: string
+  } = {}
+): Promise<{
+  success: boolean
+  data?: {
+    total: number
+    highLevel: number
+    mediumLevel: number
+    lowLevel: number
+    totalLingshi: number
+    totalShenshi: number
+    totalLunhui: number
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/game-users',
+      method: 'PUT',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      total: number
+      highLevel: number
+      mediumLevel: number
+      lowLevel: number
+      totalLingshi: number
+      totalShenshi: number
+      totalLunhui: number
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取游戏用户统计信息API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取宗门列表API（支持分页）
+export const getAssociationsAPI = async (
+  token: string,
+  params: {
+    page?: number
+    pageSize?: number
+    search?: string
+  } = {}
+): Promise<{
+  success: boolean
+  data?: {
+    list: any[]
+    pagination: {
+      current: number
+      pageSize: number
+      total: number
+      totalPages: number
+    }
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/associations',
+      method: 'GET',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      list: any[]
+      pagination: {
+        current: number
+        pageSize: number
+        total: number
+        totalPages: number
+      }
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取宗门列表API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取单个宗门详情API
+export const getAssociationAPI = async (
+  token: string,
+  associationName: string
+): Promise<{
+  success: boolean
+  data?: any
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/associations',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: { associationName }
+    })) as unknown as ApiResponse<any>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取宗门详情API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取背包列表API（支持分页）
+export const getNajieAPI = async (
+  token: string,
+  params: {
+    page?: number
+    pageSize?: number
+    search?: string
+    category?: string
+  } = {}
+): Promise<{
+  success: boolean
+  data?: {
+    list: any[]
+    pagination: {
+      current: number
+      pageSize: number
+      total: number
+      totalPages: number
+    }
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/najie',
+      method: 'GET',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      list: any[]
+      pagination: {
+        current: number
+        pageSize: number
+        total: number
+        totalPages: number
+      }
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取背包列表API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取单个背包详情API
+export const getNajieDetailAPI = async (
+  token: string,
+  userId: string
+): Promise<{
+  success: boolean
+  data?: any
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/najie',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: { userId }
+    })) as unknown as ApiResponse<any>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取背包详情API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取排名数据API
+export const getRankingsAPI = async (
+  token: string,
+  params: {
+    type: string
+    limit?: number
+  }
+): Promise<{
+  success: boolean
+  data?: any[]
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/rankings',
+      method: 'GET',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<any[]>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取排名数据API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取排名统计信息API
+export const getRankingsStatsAPI = async (
+  token: string
+): Promise<{
+  success: boolean
+  data?: {
+    lastUpdate: string
+    associationCount: number
+    playerCount: number
+    topAssociations: any[]
+    topPlayers: any[]
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/rankings',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      lastUpdate: string
+      associationCount: number
+      playerCount: number
+      topAssociations: any[]
+      topPlayers: any[]
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取排名统计信息API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取定时任务配置API
+export const getTaskConfigAPI = async (
+  token: string
+): Promise<{
+  success: boolean
+  data?: { [key: string]: string }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/task-config',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{ [key: string]: string }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取定时任务配置API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 更新定时任务配置API
+export const updateTaskConfigAPI = async (
+  token: string,
+  taskConfig: { [key: string]: string }
+): Promise<{
+  success: boolean
+  data?: {
+    timestamp: string
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/task-config',
+      method: 'POST',
+      data: { taskConfig },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      timestamp: string
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('更新定时任务配置API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 重启定时任务API
+export const restartTasksAPI = async (
+  token: string
+): Promise<{
+  success: boolean
+  data?: {
+    timestamp: string
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/task-config',
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      timestamp: string
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('重启定时任务API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 触发排名计算API
+export const triggerRankingCalculationAPI = async (
+  token: string
+): Promise<{
+  success: boolean
+  data?: {
+    timestamp: string
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/rankings',
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      timestamp: string
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('触发排名计算API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取背包统计信息API
+export const getNajieStatsAPI = async (
+  token: string,
+  params: {
+    search?: string
+  } = {}
+): Promise<{
+  success: boolean
+  data?: {
+    total: number
+    totalLingshi: number
+    totalItems: number
+    categoryStats: {
+      装备: number
+      丹药: number
+      道具: number
+      功法: number
+      草药: number
+      材料: number
+      仙宠: number
+      仙宠口粮: number
+    }
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/najie',
+      method: 'PUT',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      total: number
+      totalLingshi: number
+      totalItems: number
+      categoryStats: {
+        装备: number
+        丹药: number
+        道具: number
+        功法: number
+        草药: number
+        材料: number
+        仙宠: number
+        仙宠口粮: number
+      }
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取背包统计信息API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
+// 获取宗门统计信息API
+export const getAssociationsStatsAPI = async (
+  token: string,
+  params: {
+    search?: string
+  } = {}
+): Promise<{
+  success: boolean
+  data?: {
+    total: number
+    totalMembers: number
+    totalPower: number
+    totalLingshi: number
+    xianjieCount: number
+    fanjieCount: number
+  }
+  message?: string
+}> => {
+  try {
+    const result = (await request({
+      url: '/associations',
+      method: 'PUT',
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })) as unknown as ApiResponse<{
+      total: number
+      totalMembers: number
+      totalPower: number
+      totalLingshi: number
+      xianjieCount: number
+      fanjieCount: number
+    }>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('获取宗门统计信息API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
 // 修改密码API
 export const changePasswordAPI = async (
   token: string,

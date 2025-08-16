@@ -1,8 +1,7 @@
 import { readForum, writeForum } from '@src/model/trade'
 import { addCoin } from '@src/model/economy'
-import { scheduleJob } from 'node-schedule'
 
-scheduleJob('0 0 4 * * ?', async () => {
+export const ForumTask = async () => {
   let Forum
   try {
     Forum = await readForum()
@@ -23,4 +22,4 @@ scheduleJob('0 0 4 * * ?', async () => {
   }
   await writeForum(Forum)
   return false
-})
+}

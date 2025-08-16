@@ -3,7 +3,6 @@ import help from '@src/config/help/base.yaml'
 import help2 from '@src/config/help/extensions.yaml'
 import set from '@src/config/help/admin.yaml'
 import shituhelp from '@src/config/help/professor.yaml'
-import task from '@src/config/task.yaml'
 import xiuxian from '@src/config/xiuxian.yaml'
 
 // 存档存放路径
@@ -38,7 +37,6 @@ export const __PATH_CONFIG_MAP = {
   help2: '/help/extensions',
   set: '/help/admin',
   shituhelp: '/help/professor',
-  task: '/task',
   xiuxian: '/xiuxian'
 }
 
@@ -48,6 +46,5 @@ export const __PATH_CONFIG = {
   help2,
   set,
   shituhelp,
-  task,
   xiuxian
 }

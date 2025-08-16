@@ -6,7 +6,6 @@ import { addNajieThing } from '@src/model/najie'
 import { readDanyao, writeDanyao } from '@src/model/danyao'
 import { addExp2, addExp, addHP } from '@src/model/economy'
 import { __PATH } from '@src/model/paths'
-import { scheduleJob } from 'node-schedule'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
@@ -34,7 +33,7 @@ function isNajieCategory(v): v is NajieCategory {
   )
 }
 
-scheduleJob('0 0/1 * * * ?', async () => {
+export const SecretPlaceTask = async () => {
   //获取缓存中人物列表
 
   const keys = await redis.keys(`${__PATH.player_path}:*`)
@@ -286,4 +285,4 @@ scheduleJob('0 0/1 * * * ?', async () => {
       }
     }
   }
-})
+}
