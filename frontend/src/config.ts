@@ -32,6 +32,11 @@ export const menuItems = [
     path: '/data-query'
   },
   {
+    label: '指令响应',
+    icon: '⚡',
+    path: '/commands'
+  },
+  {
     label: '定时任务',
     icon: '⏰',
     path: '/tasks'
