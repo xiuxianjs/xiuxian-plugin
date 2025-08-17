@@ -170,7 +170,7 @@ export const getDataList = async <T extends DataListKeys>(
 /**
  * 写入则是直接写进 redis
  */
-export const setDataList = async (key: keyof typeof DATA_LIST, data: any) => {
+export const setDataList = async (key: keyof typeof DATA_LIST, data) => {
   const redis = getIoRedis()
   try {
     await redis.set(key, JSON.stringify(data))

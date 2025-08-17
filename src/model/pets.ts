@@ -37,7 +37,6 @@ export async function addPet(
       初始加成?: number
       每级增加?: number
       加成?: number
-      [k: string]: any
     }
     const base = Array.isArray(data.xianchon)
       ? (data.xianchon as SourcePetLike[]).find(item => item.name == thing_name)

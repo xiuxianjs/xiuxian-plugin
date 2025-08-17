@@ -23,7 +23,6 @@ interface ForumOrder {
     name?: string
     class?: string
     出售价?: number
-    [k: string]: any
   }
   start_price?: number
   last_price?: number
@@ -36,7 +35,6 @@ interface ForumOrder {
   whole?: number
   name?: string
   class?: string
-  [k: string]: any
 }
 
 function toInt(v, d = 0) {

@@ -20,7 +20,6 @@ import { getRedisKey } from '@src/model/keys'
 interface PlayerActionState {
   action: string
   end_time: number
-  [k: string]: any
 }
 export const regular = /^(#|＃|\/)?登仙$/
 

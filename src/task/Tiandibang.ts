@@ -11,8 +11,8 @@ export const TiandibangTask = async () => {
   const temp: RankEntry[] = []
   let t: RankEntry | undefined
   for (let k = 0; k < playerList.length; k++) {
-    const this_qq_str = playerList[k]
-    const player = await readPlayer(this_qq_str)
+    const user_qq = playerList[k]
+    const player = await readPlayer(user_qq)
     const level_id = data.Level_list.find(
       item => item.level_id == player.level_id
     ).level_id
@@ -28,7 +28,7 @@ export const TiandibangTask = async () => {
       学习的功法: player.学习的功法,
       魔道值: player.魔道值,
       神石: player.神石,
-      qq: parseInt(this_qq_str, 10),
+      qq: user_qq,
       次数: 3,
       积分: 0
     }

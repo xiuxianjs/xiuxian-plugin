@@ -16,7 +16,6 @@ interface DanyaoItem {
 }
 
 const Danyao = ({
-  nickname,
   user_id,
   danyao_have = [],
   danyao2_have = [],

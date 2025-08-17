@@ -18,7 +18,6 @@ export const regular = /^(#|＃|\/)?讨伐目标.*$/
 interface ShangjingTask {
   arm: Array<{ 名号: string; 赏金: number; QQ: string | number }>
   end_time: number
-  [k: string]: any
 }
 interface ActionState {
   action: string

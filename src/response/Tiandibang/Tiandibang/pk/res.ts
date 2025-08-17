@@ -37,8 +37,8 @@ interface BattlePlayer {
     string,
     unknown
   >
+  血量上限: number
   法球倍率?: number
-  [k: string]: any
 }
 const toNum = (v, d = 0) =>
   typeof v === 'number' && !isNaN(v)

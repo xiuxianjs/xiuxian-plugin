@@ -97,7 +97,6 @@ export default onResponse(selects, async e => {
           武器?: { name?: string } | null
           护具?: { name?: string } | null
           法宝?: { name?: string } | null
-          [k: string]: any
         }
         const equ = (await readEquipment(qq)) as EquipSlots
         if (!najie || !equ) continue

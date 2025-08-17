@@ -10,7 +10,6 @@ export const regular = /^(#|＃|\/)?抢红包$/
 interface MentionUser {
   UserId: string
   IsBot?: boolean
-  [k: string]: any
 }
 
 function toInt(v, d = 0) {

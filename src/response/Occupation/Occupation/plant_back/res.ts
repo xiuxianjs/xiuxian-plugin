@@ -17,7 +17,6 @@ interface PlantAction {
   power_up?: number
   Place_action?: number
   group_id?
-  [k: string]: any
 }
 
 function calcEffectiveMinutes(

@@ -15,7 +15,6 @@ interface PlayerGuildInfo {
   职位: string
   加入时间?: [number, number]
   time?: [number, number]
-  [k: string]: any
 }
 
 function isPlayerGuildInfo(val): val is PlayerGuildInfo {
