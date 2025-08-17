@@ -140,6 +140,10 @@ export type DataList = typeof DATA_LIST
 
 export type DataListKeys = keyof typeof DATA_LIST
 
+export const hasDataList = (key: DataListKeys) => {
+  return !!DATA_LIST[key]
+}
+
 /**
  *
  * @param key

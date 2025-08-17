@@ -1,7 +1,8 @@
 import React from 'react'
-import { Table, Select, Input, Card, Tag, Space, Button, message } from 'antd'
-import { SearchOutlined, ReloadOutlined, EyeOutlined } from '@ant-design/icons'
+import { Table, Select, Input, Card, Space, Button } from 'antd'
+import { SearchOutlined, ReloadOutlined, EditOutlined } from '@ant-design/icons'
 import { useDataQueryCode } from './DataQuery.code'
+import DataEditModal from './modals/DataEditModal'
 
 const { Option } = Select
 const { Search } = Input
@@ -15,10 +16,15 @@ export default function DataQuery() {
     searchText,
     pagination,
     columns,
+    editModalVisible,
+    originalData,
     handleDataTypeChange,
     handleSearch,
     handleTableChange,
     handleRefresh,
+    handleEdit,
+    handleEditSuccess,
+    handleEditCancel,
     getDataTypeDisplayName
   } = useDataQueryCode()
 
@@ -31,15 +37,26 @@ export default function DataQuery() {
             <h1 className="text-3xl font-bold text-white mb-2">📊 数据查询</h1>
             <p className="text-slate-400">查询和浏览游戏中的各种数据列表</p>
           </div>
-          <Button
-            type="primary"
-            icon={<ReloadOutlined />}
-            onClick={handleRefresh}
-            loading={loading}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 border-0 hover:from-purple-600 hover:to-pink-600"
-          >
-            刷新数据
-          </Button>
+          <Space>
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={handleEdit}
+              disabled={!selectedDataType}
+              className="bg-gradient-to-r from-green-500 to-emerald-500 border-0 hover:from-green-600 hover:to-emerald-600"
+            >
+              编辑数据
+            </Button>
+            <Button
+              type="primary"
+              icon={<ReloadOutlined />}
+              onClick={handleRefresh}
+              loading={loading}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 border-0 hover:from-purple-600 hover:to-pink-600"
+            >
+              刷新数据
+            </Button>
+          </Space>
         </div>
 
         {/* 统计卡片 */}
@@ -63,7 +80,7 @@ export default function DataQuery() {
               <div>
                 <p className="text-slate-400 text-sm font-medium">当前数据</p>
                 <p className="text-white text-3xl font-bold mt-2">
-                  {dataList.length}
+                  {dataList?.length || 0}
                 </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -151,7 +168,7 @@ export default function DataQuery() {
           <Table
             columns={columns}
             dataSource={dataList}
-            rowKey={(record, index) => record.id || record.name || index}
+            rowKey={(record, index) => index?.toString() || '0'}
             loading={loading}
             rowClassName={() =>
               'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600'
@@ -171,6 +188,18 @@ export default function DataQuery() {
             className="bg-transparent xiuxian-table"
           />
         </Card>
+
+        {/* 数据编辑模态框 */}
+        <DataEditModal
+          visible={editModalVisible}
+          onCancel={handleEditCancel}
+          onSuccess={handleEditSuccess}
+          dataType={selectedDataType}
+          dataTypeName={
+            selectedDataType ? getDataTypeDisplayName(selectedDataType) : ''
+          }
+          originalData={originalData}
+        />
       </div>
     </div>
   )

@@ -58,13 +58,20 @@ const DATA_TYPE_MAP = {
   UpdateRecord: '更新记录'
 }
 
+// 定义数据项类型
+interface DataItem {
+  [key: string]: string | number | boolean | object
+}
+
 export const useDataQueryCode = () => {
   const { user } = useAuth()
   const [dataTypes] = useState(Object.keys(DATA_TYPE_MAP))
   const [selectedDataType, setSelectedDataType] = useState<string>('')
-  const [dataList, setDataList] = useState<any[]>([])
+  const [dataList, setDataList] = useState<DataItem[]>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [editModalVisible, setEditModalVisible] = useState(false)
+  const [originalData, setOriginalData] = useState<DataItem[]>([])
 
   // 分页状态
   const [pagination, setPagination] = useState({
@@ -91,40 +98,31 @@ export const useDataQueryCode = () => {
       const token = localStorage.getItem('token')
       if (!token) {
         message.error('未找到登录令牌')
+        setDataList([])
         return
       }
 
-      const result = await getDataListAPI(token, dataType)
+      const result = await getDataListAPI(token, dataType, {
+        page,
+        pageSize: pSize,
+        search: searchText
+      })
 
       if (result.success && result.data) {
-        let filteredData = result.data
-
-        // 如果有搜索文本，进行过滤
-        if (searchText) {
-          filteredData = result.data.filter((item: any) => {
-            return Object.values(item).some(value =>
-              String(value).toLowerCase().includes(searchText.toLowerCase())
-            )
-          })
-        }
-
-        // 分页处理
-        const startIndex = (page - 1) * pSize
-        const endIndex = startIndex + pSize
-        const paginatedData = filteredData.slice(startIndex, endIndex)
-
-        setDataList(paginatedData)
+        setDataList(result.data.list || [])
         setPagination({
-          current: page,
-          pageSize: pSize,
-          total: filteredData.length
+          current: result.data.pagination.current,
+          pageSize: result.data.pagination.pageSize,
+          total: result.data.pagination.total
         })
       } else {
         message.error(result.message || '获取数据失败')
+        setDataList([])
       }
     } catch (error) {
       console.error('获取数据失败:', error)
       message.error('获取数据失败')
+      setDataList([])
     } finally {
       setLoading(false)
     }
@@ -166,14 +164,42 @@ export const useDataQueryCode = () => {
   }
 
   // 查看详情
-  const handleViewDetail = (record: any) => {
+  const handleViewDetail = (record: { key: string; value: unknown }) => {
     console.log('查看详情:', record)
     // 这里可以添加查看详情的逻辑，比如打开弹窗显示详细信息
   }
 
+  // 处理编辑按钮点击
+  const handleEdit = () => {
+    if (!selectedDataType) {
+      message.warning('请先选择数据类型')
+      return
+    }
+    if (!dataList || dataList.length === 0) {
+      message.warning('当前没有可编辑的数据')
+      return
+    }
+    setOriginalData(dataList)
+    setEditModalVisible(true)
+  }
+
+  // 处理编辑成功
+  const handleEditSuccess = () => {
+    // 重新获取数据
+    if (selectedDataType) {
+      fetchDataList(selectedDataType, pagination.current, pagination.pageSize)
+    }
+  }
+
+  // 处理编辑取消
+  const handleEditCancel = () => {
+    setEditModalVisible(false)
+    setOriginalData([])
+  }
+
   // 动态生成表格列
   const columns = useMemo(() => {
-    if (!dataList.length) return []
+    if (!dataList || !dataList.length) return []
 
     const sampleItem = dataList[0]
     const keys = Object.keys(sampleItem)
@@ -184,7 +210,7 @@ export const useDataQueryCode = () => {
       key: key,
       width: 150,
       ellipsis: true,
-      render: (value: any) => {
+      render: (value: unknown) => {
         if (typeof value === 'object') {
           return (
             <span
@@ -229,11 +255,16 @@ export const useDataQueryCode = () => {
     searchText,
     pagination,
     columns,
+    editModalVisible,
+    originalData,
     handleDataTypeChange,
     handleSearch,
     handleTableChange,
     handleRefresh,
     handleViewDetail,
+    handleEdit,
+    handleEditSuccess,
+    handleEditCancel,
     getDataTypeDisplayName
   }
 }

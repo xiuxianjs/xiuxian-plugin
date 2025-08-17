@@ -457,8 +457,8 @@ export default function TaskManager() {
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="relative z-10  p-2 md:p-6 h-full overflow-y-auto">
         {/* 页面标题和操作按钮 */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col xl:flex-row justify-between items-center mb-6 gap-2">
+          <div className="flex flex-row items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
               <ClockCircleOutlined className="text-white text-xl" />
             </div>
@@ -467,7 +467,7 @@ export default function TaskManager() {
               <p className="text-slate-400 text-sm mt-1">系统定时任务和配置</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
               {
                 lable: '手动执行天地榜计算',
