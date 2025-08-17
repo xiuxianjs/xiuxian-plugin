@@ -5,6 +5,7 @@ import { existplayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { screenshot } from '@src/image'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?赏金榜$/
 
 export default onResponse(selects, async e => {
@@ -12,7 +13,8 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let action = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
+  // todo
+  let action = await redis.get(getRedisKey('1', 'shangjing'))
   action = await JSON.parse(action)
   if (action == null) {
     Send(Text('悬赏已经被抢空了')) //没人被悬赏
@@ -30,7 +32,8 @@ export default onResponse(selects, async e => {
     }
     if (count == 0) break
   }
-  await redis.set('xiuxian@1.3.0:' + 1 + ':shangjing', JSON.stringify(action))
+  // tudo
+  await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(action))
   const type = 1
   const msg_data = { msg: action, type }
 

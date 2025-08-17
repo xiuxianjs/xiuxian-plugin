@@ -4,6 +4,7 @@ import { getForumImage } from '@src/model/image'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
 import type { NajieCategory } from '@src/types/model'
+import { getRedisKey } from '@src/model/key'
 
 export const regular = /^(#|＃|\/)?聚宝堂(装备|丹药|功法|道具|草药|仙宠|材料)?$/
 
@@ -27,7 +28,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
 
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:forumShowCD`
+  const cdKey = getRedisKey(usr_qq, 'forumShowCD')
   const now = Date.now()
   const lastTs = toInt(await redis.get(cdKey))
   if (now < lastTs + CD_MS) {

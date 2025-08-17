@@ -14,6 +14,8 @@ import {
   WorldBossBattleInfo
 } from '../../boss'
 import { existplayer } from '@src/model'
+import { getRedisKey } from '@src/model/key'
+import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/settions'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?讨伐妖王$/
@@ -63,7 +65,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const now_Time = Date.now()
   const cdMs = 5 * 60000
-  const last_time_raw = await redis.get(`xiuxian@1.3.0:${usr_qq}BOSSCD`)
+  const last_time_raw = await redis.get(getRedisKey(usr_qq, 'BOSSCD'))
   const last_time = toInt(last_time_raw)
   if (now_Time < last_time + cdMs) {
     const remain = last_time + cdMs - now_Time
@@ -81,7 +83,7 @@ export default onResponse(selects, async e => {
     Send(Text('你在仙界吗'))
     return false
   }
-  const actionRaw = await redis.get(`xiuxian@1.3.0:${usr_qq}:action`)
+  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'))
   const action = parseJson<ActionState | null>(actionRaw, null)
   if (action && action.end_time && Date.now() <= action.end_time) {
     const remain = action.end_time - Date.now()
@@ -107,7 +109,7 @@ export default onResponse(selects, async e => {
   }
 
   const WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
-  const PlayerRecordStr = await redis.get('xiuxian@1.3.0Record')
+  const PlayerRecordStr = await redis.get(KEY_RECORD)
   const WorldBossStatus = parseJson<WorldBossStatusInfo | null>(
     WorldBossStatusStr,
     null
@@ -227,8 +229,8 @@ export default onResponse(selects, async e => {
   }
   await sleep(1000)
   PlayerRecordJSON.TotalDamage[Userid] += TotalDamage
-  await redis.set('xiuxian@1.3.0Record', JSON.stringify(PlayerRecordJSON))
-  await redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
+  await redis.set(KEY_RECORD, JSON.stringify(PlayerRecordJSON))
+  await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus))
 
   if (WorldBossStatus.Health <= 0) {
     Send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'))

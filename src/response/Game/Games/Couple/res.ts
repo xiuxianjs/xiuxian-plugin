@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { config, redis } from '@src/model/api'
@@ -67,8 +68,8 @@ export default onResponse(selects, async e => {
     const remain = last + cooldownMs - now
     return { last, remain }
   }
-  const keyA = `xiuxian@1.3.0:${A}:last_shuangxiu_time`
-  const keyB = `xiuxian@1.3.0:${B}:last_shuangxiu_time`
+  const keyA = getRedisKey(A, 'last_shuangxiu_time')
+  const keyB = getRedisKey(B, 'last_shuangxiu_time')
   if (cooldownMs > 0) {
     const [{ remain: remainA }, { remain: remainB }] = await Promise.all([
       checkAndGetRemain(A, keyA),
@@ -85,7 +86,7 @@ export default onResponse(selects, async e => {
   }
 
   // 对方是否拒绝状态（couple 标记不为 0）
-  const coupleFlag = toInt(await redis.get(`xiuxian@1.3.0:${B}:couple`))
+  const coupleFlag = toInt(await redis.get(getRedisKey(B, 'couple')))
   if (coupleFlag !== 0) {
     Send(Text('哎哟，你干嘛...'))
     return false

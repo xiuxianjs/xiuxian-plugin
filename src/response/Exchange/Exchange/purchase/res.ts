@@ -12,6 +12,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?选购.*$/
 
 export default onResponse(selects, async e => {
@@ -24,9 +25,7 @@ export default onResponse(selects, async e => {
   const time0 = 0.5 //分钟cd
   //获取当前时间
   const now_time = Date.now()
-  const Exchange_res = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':ExchangeCD'
-  )
+  const Exchange_res = await redis.get(getRedisKey(usr_qq, 'ExchangeCD'))
   const ExchangeCD = parseInt(Exchange_res)
   const transferTimeout = Math.floor(60000 * time0)
   if (now_time < ExchangeCD + transferTimeout) {
@@ -46,7 +45,7 @@ export default onResponse(selects, async e => {
     return false
   }
   //记录本次执行时间
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':ExchangeCD', now_time)
+  await redis.set(getRedisKey(usr_qq, 'ExchangeCD'), String(now_time))
   const player = await readPlayer(usr_qq)
   let Exchange = []
   try {

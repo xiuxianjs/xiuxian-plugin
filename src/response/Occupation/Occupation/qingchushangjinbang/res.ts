@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useSend } from 'alemonjs'
 
 import { existplayer } from '@src/model/index'
@@ -12,9 +13,9 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  let action = await redis.get('xiuxian@1.3.0:' + 1 + ':shangjing')
+  let action = await redis.get(getRedisKey('1', 'shangjing'))
   action = await JSON.parse(action)
   action = null
   Send(Text('清除完成'))
-  await redis.set('xiuxian@1.3.0:' + 1 + ':shangjing', JSON.stringify(action))
+  await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(action))
 })

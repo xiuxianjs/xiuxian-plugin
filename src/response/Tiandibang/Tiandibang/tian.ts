@@ -1,6 +1,7 @@
 import { screenshot } from '@src/image'
 import { redis, data } from '@src/model/api'
 import { __PATH, shijianc, readPlayer } from '@src/model/index'
+import { getRedisKey } from '@src/model/key'
 import type { Player, TalentInfo } from '@src/types'
 
 // 榜单条目类型（简化，只列出必需字段，允许附加动态属性）
@@ -42,7 +43,7 @@ export async function readTiandibang() {
 }
 
 export async function getLastbisai(usr_qq: string | number) {
-  const timeStr = await redis.get('xiuxian@1.3.0:' + usr_qq + ':lastbisai_time')
+  const timeStr = await redis.get(getRedisKey(String(usr_qq), 'lastbisai_time'))
   if (timeStr != null) {
     const details = await shijianc(parseInt(timeStr, 10))
     return details

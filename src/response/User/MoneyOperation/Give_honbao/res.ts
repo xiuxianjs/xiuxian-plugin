@@ -4,6 +4,7 @@ import { data, redis } from '@src/model/api'
 import { existplayer, Go, convert2integer, addCoin } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?发红包.*$/
 
 function toInt(v, d = 0) {
@@ -22,7 +23,8 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) return false
   if (!(await Go(e))) return false
 
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:giveHongbaoCD`
+  const cdKey = getRedisKey(usr_qq, 'giveHongbaoCD')
+
   const now = Date.now()
   const lastTs = toInt(await redis.get(cdKey))
   if (now < lastTs + CD_MS) {
@@ -77,14 +79,14 @@ export default onResponse(selects, async e => {
   }
 
   // 并发保护: 使用 setnx 类逻辑 (简化：先检查再写入)
-  const existing = await redis.get(`xiuxian@1.3.0:${usr_qq}:honbaoacount`)
+  const existing = await redis.get(getRedisKey(usr_qq, 'honbaoacount'))
   if (existing && Number(existing) > 0) {
     Send(Text('你已有未被抢完的红包，稍后再发'))
     return false
   }
 
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:honbao`, String(per))
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:honbaoacount`, String(count))
+  await redis.set(getRedisKey(usr_qq, 'honbao'), String(per))
+  await redis.set(getRedisKey(usr_qq, 'honbaoacount'), String(count))
   await addCoin(usr_qq, -total)
   await redis.set(cdKey, String(now))
 

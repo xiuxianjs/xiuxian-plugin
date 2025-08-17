@@ -9,6 +9,7 @@ import {
 import { Show_player } from '../user'
 import { selects } from '@src/response/index'
 import type { Player } from '@src/types'
+import { getRedisKey } from '@src/model/key'
 
 export const regular = /^(#|＃|\/)?(改名|设置道宣).*$/
 const regularCut = /^(#|＃|\/)?(改名|设置道宣)/
@@ -56,7 +57,7 @@ export default onResponse(selects, async e => {
 
     const now = Date.now()
     const today = (await shijianc(now)) as DateStruct
-    const lastKey = `xiuxian@1.3.0:${usr_qq}:last_setname_time`
+    const lastKey = getRedisKey(usr_qq, 'last_setname_time')
     const lastRaw = await redis.get(lastKey)
     const lastStruct = await getDayStruct(lastRaw)
     if (sameDay(today, lastStruct)) {
@@ -90,7 +91,7 @@ export default onResponse(selects, async e => {
 
   const now = Date.now()
   const today = (await shijianc(now)) as DateStruct
-  const lastKey = `xiuxian@1.3.0:${usr_qq}:last_setxuanyan_time`
+  const lastKey = getRedisKey(usr_qq, 'last_setxuanyan_time')
   const lastRaw = await redis.get(lastKey)
   const lastStruct = await getDayStruct(lastRaw)
   if (sameDay(today, lastStruct)) {

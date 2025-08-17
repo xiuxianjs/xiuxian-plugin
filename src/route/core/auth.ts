@@ -1,5 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 import { Context } from 'koa'
+import { KEY_SESSION_PREFIX, KEY_USER_PREFIX } from './config'
 
 const redis = getIoRedis()
 
@@ -23,10 +24,6 @@ export interface LoginResponse {
   user?: Omit<User, 'password'>
   token?: string
 }
-
-// Redis key 前缀
-const USER_PREFIX = 'alemonjs-xiuxian:auth:user:'
-const SESSION_PREFIX = 'alemonjs-xiuxian:auth:session:'
 
 // 生成用户ID
 const generateUserId = (): string => {
@@ -60,8 +57,8 @@ export const createUser = async (
     }
 
     // 存储到Redis
-    await redis.set(`${USER_PREFIX}${user.id}`, JSON.stringify(user))
-    await redis.set(`${USER_PREFIX}username:${username}`, user.id)
+    await redis.set(`${KEY_USER_PREFIX}${user.id}`, JSON.stringify(user))
+    await redis.set(`${KEY_USER_PREFIX}username:${username}`, user.id)
 
     return user
   } catch (error) {
@@ -75,12 +72,12 @@ export const getUserByUsername = async (
   username: string
 ): Promise<User | null> => {
   try {
-    const userId = await redis.get(`${USER_PREFIX}username:${username}`)
+    const userId = await redis.get(`${KEY_USER_PREFIX}username:${username}`)
     if (!userId) {
       return null
     }
 
-    const userData = await redis.get(`${USER_PREFIX}${userId}`)
+    const userData = await redis.get(`${KEY_USER_PREFIX}${userId}`)
     if (!userData) {
       return null
     }
@@ -95,7 +92,7 @@ export const getUserByUsername = async (
 // 根据ID获取用户
 export const getUserById = async (id: string): Promise<User | null> => {
   try {
-    const userData = await redis.get(`${USER_PREFIX}${id}`)
+    const userData = await redis.get(`${KEY_USER_PREFIX}${id}`)
     if (!userData) {
       return null
     }
@@ -133,7 +130,7 @@ export const validateLogin = async (
 
     // 更新最后登录时间
     user.lastLoginAt = Date.now()
-    await redis.set(`${USER_PREFIX}${user.id}`, JSON.stringify(user))
+    await redis.set(`${KEY_USER_PREFIX}${user.id}`, JSON.stringify(user))
 
     // 存储会话信息（24小时过期）
     const sessionData = {
@@ -143,7 +140,7 @@ export const validateLogin = async (
       createdAt: Date.now()
     }
     await redis.setex(
-      `${SESSION_PREFIX}${token}`,
+      `${KEY_SESSION_PREFIX}${token}`,
       86400,
       JSON.stringify(sessionData)
     )
@@ -168,7 +165,7 @@ export const validateLogin = async (
 // 验证token
 export const validateToken = async (token: string): Promise<User | null> => {
   try {
-    const sessionData = await redis.get(`${SESSION_PREFIX}${token}`)
+    const sessionData = await redis.get(`${KEY_SESSION_PREFIX}${token}`)
     if (!sessionData) {
       return null
     }
@@ -178,7 +175,7 @@ export const validateToken = async (token: string): Promise<User | null> => {
 
     if (!user) {
       // 删除无效的session
-      await redis.del(`${SESSION_PREFIX}${token}`)
+      await redis.del(`${KEY_SESSION_PREFIX}${token}`)
       return null
     }
 
@@ -192,7 +189,7 @@ export const validateToken = async (token: string): Promise<User | null> => {
 // 登出
 export const logout = async (token: string): Promise<boolean> => {
   try {
-    await redis.del(`${SESSION_PREFIX}${token}`)
+    await redis.del(`${KEY_SESSION_PREFIX}${token}`)
     return true
   } catch (error) {
     logger.error('登出失败:', error)
@@ -203,7 +200,7 @@ export const logout = async (token: string): Promise<boolean> => {
 // 获取所有用户
 export const getAllUsers = async (): Promise<User[]> => {
   try {
-    const keys = await redis.keys(`${USER_PREFIX}*`)
+    const keys = await redis.keys(`${KEY_USER_PREFIX}*`)
     const users: User[] = []
 
     for (const key of keys) {
@@ -234,7 +231,7 @@ export const setUserPassword = async (
       return false
     }
     user.password = password
-    await redis.set(`${USER_PREFIX}${userId}`, JSON.stringify(user))
+    await redis.set(`${KEY_USER_PREFIX}${userId}`, JSON.stringify(user))
     return true
   } catch (error) {
     logger.error('更新用户密码失败:', error)
@@ -251,8 +248,8 @@ export const deleteUser = async (userId: string): Promise<boolean> => {
     }
 
     // 删除用户数据
-    await redis.del(`${USER_PREFIX}${userId}`)
-    await redis.del(`${USER_PREFIX}username:${user.username}`)
+    await redis.del(`${KEY_USER_PREFIX}${userId}`)
+    await redis.del(`${KEY_USER_PREFIX}username:${user.username}`)
 
     return true
   } catch (error) {

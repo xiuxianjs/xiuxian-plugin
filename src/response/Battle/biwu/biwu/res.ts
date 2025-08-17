@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Image, Text, useMention, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle'
@@ -148,14 +149,8 @@ async function battle(e, num: number) {
   let cnt = 1
   let action_A: ActionState = { cnt, 技能: A_QQ[num].选择技能, use: -1 }
   let action_B: ActionState = { cnt, 技能: B_QQ[num].选择技能, use: -1 }
-  await redis.set(
-    `xiuxian@1.3.0:${A_QQ[num].QQ}:bisai`,
-    JSON.stringify(action_A)
-  )
-  await redis.set(
-    `xiuxian@1.3.0:${B_QQ[num].QQ}:bisai`,
-    JSON.stringify(action_B)
-  )
+  await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(action_A))
+  await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(action_B))
 
   const buff_A: BuffMap = {}
   const buff_B: BuffMap = {}
@@ -166,14 +161,14 @@ async function battle(e, num: number) {
     // A 回合展示
     const round_A = buildRoundMsg(action_A.技能, cnt)
     await redis.set(
-      `xiuxian@1.3.0:${A_QQ[num].QQ}:bisai`,
+      getRedisKey(A_QQ[num].QQ, 'bisai'),
       JSON.stringify(action_A)
     )
     pushInfo(A_QQ[num].QQ, false, round_A)
     // B 回合展示
     const round_B = buildRoundMsg(action_B.技能, cnt)
     await redis.set(
-      `xiuxian@1.3.0:${B_QQ[num].QQ}:bisai`,
+      getRedisKey(B_QQ[num].QQ, 'bisai'),
       JSON.stringify(action_B)
     )
     pushInfo(B_QQ[num].QQ, false, round_B)
@@ -181,10 +176,10 @@ async function battle(e, num: number) {
 
     // 读取操作
     action_A = JSON.parse(
-      (await redis.get(`xiuxian@1.3.0:${A_QQ[num].QQ}:bisai`)) || '{}'
+      (await redis.get(getRedisKey(A_QQ[num].QQ, 'bisai'))) || '{}'
     )
     action_B = JSON.parse(
-      (await redis.get(`xiuxian@1.3.0:${B_QQ[num].QQ}:bisai`)) || '{}'
+      (await redis.get(getRedisKey(B_QQ[num].QQ, 'bisai'))) || '{}'
     )
     // 清空上次技能 cd
     if (action_A.技能 && action_A.技能[action_A.use])
@@ -474,11 +469,11 @@ async function battle(e, num: number) {
     action_A.use = -1
     action_B.use = -1
     await redis.set(
-      `xiuxian@1.3.0:${A_QQ[num].QQ}:bisai`,
+      getRedisKey(A_QQ[num].QQ, 'bisai'),
       JSON.stringify(action_A)
     )
     await redis.set(
-      `xiuxian@1.3.0:${B_QQ[num].QQ}:bisai`,
+      getRedisKey(B_QQ[num].QQ, 'bisai'),
       JSON.stringify(action_B)
     )
 
@@ -524,7 +519,7 @@ async function battle(e, num: number) {
   const bQQ = B_QQ[num].QQ
   A_QQ[num].QQ = null as string
   B_QQ[num].QQ = null as string
-  await redis.set(`xiuxian@1.3.0:${aQQ}:bisai`, '')
-  await redis.set(`xiuxian@1.3.0:${bQQ}:bisai`, '')
+  await redis.set(getRedisKey(aQQ, 'bisai'), '')
+  await redis.set(getRedisKey(bQQ, 'bisai'), '')
   return false
 }

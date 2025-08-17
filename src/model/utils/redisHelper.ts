@@ -1,4 +1,5 @@
 import { redis } from '../../model/api'
+import { getRedisKey } from '../key'
 import type { RedisScalar } from '../../types/model'
 
 // 通用获取：保留字符串或 null
@@ -39,9 +40,9 @@ export async function incrBy(key: string, delta = 1): Promise<number> {
   return next
 }
 
-// 构建玩家 key
+// 构建玩家 key（兼容旧用法，推荐直接用 getRedisKey）
 export function userKey(userId: string | number, suffix: string) {
-  return `xiuxian@1.3.0:${userId}:${suffix}`
+  return getRedisKey(String(userId), suffix)
 }
 
 // 读取带时间戳并返回 number

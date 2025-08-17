@@ -6,6 +6,7 @@ import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?宗门俸禄$/
 
 interface DateParts {
@@ -92,7 +93,7 @@ export default onResponse(selects, async e => {
   }
   ass.灵石池 = pool - gift_lingshi
   player.灵石 += gift_lingshi
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:lastsign_Asso_time`, nowTime)
+  await redis.set(getRedisKey(usr_qq, 'lastsign_Asso_time'), nowTime)
   await data.setData('player', usr_qq, serializePlayer(player))
   await data.setAssociation(ass.宗门名称, ass)
   Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`))

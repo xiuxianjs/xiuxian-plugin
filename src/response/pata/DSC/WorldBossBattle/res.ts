@@ -4,6 +4,7 @@ import { data, redis } from '@src/model/api'
 import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?炼神魄$/
 
 export default onResponse(selects, async e => {
@@ -45,7 +46,7 @@ export default onResponse(selects, async e => {
   // CD（默认 2 分钟）
   const CD_MIN = 2
   const now = Date.now()
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:dsc_cd`
+  const cdKey = getRedisKey(String(usr_qq), 'dsc_cd')
   const lastRaw = await redis.get(cdKey)
   const lastNum = Number(lastRaw)
   const cdMs = CD_MIN * 60 * 1000

@@ -9,6 +9,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?悬赏.*$/
 
 export default onResponse(selects, async e => {
@@ -57,7 +58,8 @@ export default onResponse(selects, async e => {
   }
 
   const bountyRecord = { 名号: player_B.名号, QQ: targetQQ, 赏金: money }
-  const actionKey = 'xiuxian@1.3.0:1:shangjing'
+  // todo
+  const actionKey = getRedisKey('1', 'shangjing')
   const raw = await redis.get(actionKey)
   let list: Array<{ 名号: string; QQ: string; 赏金: number }> = []
   if (raw) {

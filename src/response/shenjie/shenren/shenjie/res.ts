@@ -53,9 +53,7 @@ function isDayChanged(a: DayInfo | null, b: DayInfo | null): boolean {
 
 const LS_COST = 2_200_000
 const DURATION_MINUTES = 30
-const ACTION_KEY = (id: string) => `xiuxian@1.3.0:${id}:action`
-const LAST_DAGONG_KEY = (id: string) => `xiuxian@1.3.0:${id}:lastdagong_time`
-const GAME_ACTION_KEY = (id: string) => `xiuxian@1.3.0:${id}:game_action`
+import { getRedisKey } from '@src/model/key'
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
@@ -63,14 +61,14 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) return false
 
   // 全局娱乐占用状态
-  const gameActionRaw = await redis.get(GAME_ACTION_KEY(usr_qq))
+  const gameActionRaw = await redis.get(getRedisKey(usr_qq, 'game_action'))
   if (toInt(gameActionRaw) === 1) {
     Send(Text('修仙：游戏进行中...'))
     return false
   }
 
   // 当前动作占用
-  const actionRaw = await redis.get(ACTION_KEY(usr_qq))
+  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'))
   const actionObj = parseJSON<ActionState>(actionRaw)
   if (actionObj && toInt(actionObj.end_time) > Date.now()) {
     const remain = actionObj.end_time - Date.now()
@@ -85,14 +83,14 @@ export default onResponse(selects, async e => {
 
   const now = Date.now()
   const today = (await shijianc(now)) as DayInfo
-  const lastTimeRaw = await redis.get(LAST_DAGONG_KEY(usr_qq))
+  const lastTimeRaw = await redis.get(getRedisKey(usr_qq, 'lastdagong_time'))
   const lastDay = lastTimeRaw
     ? ((await shijianc(toInt(lastTimeRaw))) as DayInfo)
     : null
 
   // 每日刷新神界次数：逻辑修正为任一日期字段变化即刷新
   if (isDayChanged(today, lastDay)) {
-    await redis.set(LAST_DAGONG_KEY(usr_qq), now)
+    await redis.set(getRedisKey(usr_qq, 'lastdagong_time'), now)
     let n = 1
     const ln = player.灵根?.name
     if (ln === '二转轮回体') n = 2
@@ -122,7 +120,7 @@ export default onResponse(selects, async e => {
 
   player.灵石 = toInt(player.灵石) - LS_COST
   const todayRef = (await shijianc(now)) as DayInfo // 重新拿一次防止 race（可选）
-  const lastDayRefRaw = await redis.get(LAST_DAGONG_KEY(usr_qq))
+  const lastDayRefRaw = await redis.get(getRedisKey(usr_qq, 'lastdagong_time'))
   const lastDayRef = lastDayRefRaw
     ? ((await shijianc(toInt(lastDayRefRaw))) as DayInfo)
     : null
@@ -150,7 +148,7 @@ export default onResponse(selects, async e => {
     cishu: '5'
   }
   if (e.name === 'message.create') newAction.group_id = e.ChannelId
-  await redis.set(ACTION_KEY(usr_qq), JSON.stringify(newAction))
+  await redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(newAction))
   Send(Text(`开始进入神界, ${DURATION_MINUTES}分钟后归来!`))
   return false
 })

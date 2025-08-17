@@ -15,6 +15,8 @@ import { addHP, addCoin } from '@src/model/economy'
 
 import { selects } from '@src/response/index'
 import { existplayer } from '@src/model'
+import { getRedisKey } from '@src/model/key'
+import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/settions'
 export const regular = /^(#|＃|\/)?讨伐金角大王$/
 
 interface PlayerRecordData {
@@ -60,7 +62,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const now = Date.now()
   const fightCdMs = 5 * 60000
-  const lastTimeRaw = await redis.get(`xiuxian@1.3.0:${usr_qq}BOSSCD`)
+  const lastTimeRaw = await redis.get(getRedisKey(usr_qq, 'BOSSCD'))
   const lastTime = toInt(lastTimeRaw)
   if (now < lastTime + fightCdMs) {
     const remain = lastTime + fightCdMs - now
@@ -85,7 +87,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const actionRaw = await redis.get(`xiuxian@1.3.0:${usr_qq}:action`)
+  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'))
   const action = parseJson<ActionState | null>(actionRaw, null)
   if (action && action.end_time && Date.now() <= action.end_time) {
     const remain = action.end_time - Date.now()
@@ -110,8 +112,8 @@ export default onResponse(selects, async e => {
     }
   }
 
-  const statusStr = await redis.get('Xiuxian:WorldBossStatus2')
-  const recordStr = await redis.get('xiuxian@1.3.0Record2')
+  const statusStr = await redis.get(KEY_WORLD_BOOS_STATUS_TWO)
+  const recordStr = await redis.get(KEY_RECORD_TWO)
   const WorldBossStatus = parseJson<WorldBossStatusInfo | null>(statusStr, null)
   if (!WorldBossStatus) {
     Send(Text('状态数据缺失, 请联系管理员重新开启!'))
@@ -234,8 +236,8 @@ export default onResponse(selects, async e => {
 
   await sleep(1000)
   PlayerRecordJSON.TotalDamage[userIdx] += dealt
-  await redis.set('xiuxian@1.3.0Record2', JSON.stringify(PlayerRecordJSON))
-  await redis.set('Xiuxian:WorldBossStatus2', JSON.stringify(WorldBossStatus))
+  await redis.set(KEY_RECORD_TWO, JSON.stringify(PlayerRecordJSON))
+  await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus))
 
   if (WorldBossStatus.Health <= 0) {
     Send(Text('金角大王被击杀！玩家们可以根据贡献获得奖励！'))
@@ -250,7 +252,7 @@ export default onResponse(selects, async e => {
     logger.info(`[金角大王] 结算:${usr_qq}增加奖励500000`)
 
     WorldBossStatus.KilledTime = Date.now()
-    await redis.set('Xiuxian:WorldBossStatus2', JSON.stringify(WorldBossStatus))
+    await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus))
 
     const PlayerList = await SortPlayer(PlayerRecordJSON)
     Send(

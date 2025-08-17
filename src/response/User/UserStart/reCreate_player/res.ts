@@ -19,6 +19,7 @@ import fs from 'fs'
 import { selects } from '@src/response/index'
 import { Show_player } from '../user'
 import type { Player, AssociationDetailData } from '@src/types'
+import { getRedisKey } from '@src/model/key'
 
 export const regular = /^(#|＃|\/)?再入仙途$/
 
@@ -56,7 +57,8 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) {
     return false
   }
-  const rebornKey = `xiuxian@1.3.0:${usr_qq}:reCreate_acount`
+  const rebornKey = getRedisKey(usr_qq, 'reCreate_acount')
+
   let acountRaw = await redis.get(rebornKey)
   if (!acountRaw) {
     await redis.set(rebornKey, '1')
@@ -80,7 +82,7 @@ export default onResponse(selects, async e => {
   if (!(await Go(e))) return false
 
   const nowTime = Date.now()
-  const lastKey = `xiuxian@1.3.0:${usr_qq}:last_reCreate_time`
+  const lastKey = getRedisKey(usr_qq, 'last_reCreate_time')
   const lastRestartRaw = await redis.get(lastKey)
   const lastRestart = parseNum(lastRestartRaw)
   const cf = (await getConfig('xiuxian', 'xiuxian')) as Partial<{
@@ -178,7 +180,7 @@ export default onResponse(selects, async e => {
         }
       }
 
-      await redis.del(`xiuxian@1.3.0:${usr_qq}:last_dajie_time`)
+      await redis.del(getRedisKey(usr_qq, 'last_dajie_time'))
       await redis.set(lastKey, String(Date.now()))
       await redis.set(rebornKey, String(acountVal))
 

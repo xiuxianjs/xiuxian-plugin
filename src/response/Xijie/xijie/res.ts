@@ -21,6 +21,7 @@ import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/index'
 import { setDataByUserId } from '@src/model/Redis'
 import type { Player } from '@src/types'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?洗劫.*$/
 
 interface ShopItemLite {
@@ -60,9 +61,7 @@ export default onResponse(selects, async e => {
   }
 
   const now_time = Date.now()
-  const lastxijie_raw = await redis.get(
-    `xiuxian@1.3.0:${usr_qq}:lastxijie_time`
-  )
+  const lastxijie_raw = await redis.get(getRedisKey(usr_qq, 'lastxijie_time'))
   const lastxijie_time = lastxijie_raw ? parseInt(lastxijie_raw, 10) : 0
   const cdMs = 120 * 60 * 1000 // 120 分钟
   if (now_time < lastxijie_time + cdMs) {

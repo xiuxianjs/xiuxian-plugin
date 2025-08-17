@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
@@ -51,7 +52,8 @@ export default onResponse(selects, async e => {
 
   const now = Date.now()
   const cdMs = Math.floor(0.5 * 60000)
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:ExchangeCD`
+  const cdKey = getRedisKey(usr_qq, 'ExchangeCD')
+
   const lastTs = toInt(await redis.get(cdKey))
   if (now < lastTs + cdMs) {
     const remain = lastTs + cdMs - now
@@ -114,7 +116,7 @@ export default onResponse(selects, async e => {
 
   rawList.splice(idx, 1)
   await writeExchange(rawList as RawExchangeRecord[])
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:Exchange`, '0')
+  await redis.set(getRedisKey(usr_qq, 'Exchange'), '0')
 
   const player = await readPlayer(usr_qq)
   Send(Text(`${player?.名号 || usr_qq}下架${thingName}成功！`))

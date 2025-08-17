@@ -5,6 +5,7 @@ import { existplayer, sleep } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
 import { selects } from '@src/response/index'
+import { KEY_RECORD_TWO } from '@src/model/settions'
 export const regular = /^(#|＃|\/)?金角大王贡献榜$/
 
 interface WorldBossStatus {
@@ -39,7 +40,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const PlayerRecord = parseJson<PlayerRecordData>(
-    await redis.get('xiuxian@1.3.0Record2')
+    await redis.get(KEY_RECORD_TWO)
   )
   const WorldBossStatusStr = parseJson<WorldBossStatus>(
     await redis.get('Xiuxian:WorldBossStatus2')

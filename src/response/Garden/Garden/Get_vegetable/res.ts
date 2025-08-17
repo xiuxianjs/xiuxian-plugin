@@ -5,6 +5,7 @@ import { addNajieThing } from '@src/model/index'
 import type { AssociationData } from '@src/types/domain'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?拔苗助长.*$/
 
 // 数值安全转换
@@ -56,7 +57,7 @@ export default onResponse(selects, async e => {
   )
   const cdMs = cdMinutes * 60000
   const now = Date.now()
-  const lastKey = `xiuxian@1.3.0:${usr_qq}:last_garden_time`
+  const lastKey = getRedisKey(usr_qq, 'last_garden_time')
   const lastTime = toInt(await redis.get(lastKey))
   const remain = lastTime + cdMs - now
   if (cdMs > 0 && remain > 0) {

@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useSend } from 'alemonjs'
 
 import { pushInfo, redis } from '@src/model/api'
@@ -38,7 +39,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) return false
 
   const actionState = parseJson<ActionState>(
-    await redis.get(`xiuxian@1.3.0:${usr_qq}:action`)
+    await redis.get(getRedisKey(usr_qq, 'action'))
   )
   if (actionState) {
     const now = Date.now()
@@ -52,7 +53,7 @@ export default onResponse(selects, async e => {
   }
 
   const pool = parseJson<AssassinationTarget[]>(
-    await redis.get('xiuxian@1.3.0:1:shangjing')
+    await redis.get(getRedisKey('1', 'shangjing'))
   )
   if (!pool || pool.length === 0) {
     Send(Text('暂无刺杀目标'))
@@ -80,7 +81,7 @@ export default onResponse(selects, async e => {
   }
 
   const targetAction = parseJson<ActionState>(
-    await redis.get(`xiuxian@1.3.0:${qq}:action`)
+    await redis.get(getRedisKey(String(qq), 'action'))
   )
   if (targetAction) {
     const now = Date.now()
@@ -151,7 +152,7 @@ export default onResponse(selects, async e => {
     await writePlayer(usr_qq, player)
     broadcast = `【全服公告】${player_B.名号}被${player.名号}悄无声息的刺杀了`
     pool.splice(idx, 1)
-    await redis.set('xiuxian@1.3.0:1:shangjing', JSON.stringify(pool))
+    await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(pool))
   } else if (msg.includes(B_win)) {
     player.当前血量 = 0
     await writePlayer(usr_qq, player)

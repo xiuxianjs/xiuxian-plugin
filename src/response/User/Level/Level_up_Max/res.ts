@@ -14,6 +14,7 @@ import {
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
+import { getRedisKey } from '@src/model/key'
 
 // 玩家行动状态（统一抽象）
 interface PlayerActionState {
@@ -32,9 +33,7 @@ export default onResponse(selects, async e => {
   //不开放私聊
 
   //获取游戏状态
-  const game_action_raw = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action_raw = await redis.get(getRedisKey(usr_qq, 'game_action'))
   const game_action = game_action_raw == null ? 0 : Number(game_action_raw)
   //防止继续其他娱乐行为
   if (game_action == 1) {

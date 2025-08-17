@@ -14,6 +14,7 @@ import {
 
 import { selects } from '@src/response/index'
 import type { NajieCategory, ForumRecord } from '@src/types/model'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?接取.*$/
 
 interface ForumOrder {
@@ -54,7 +55,7 @@ export default onResponse(selects, async e => {
   if (!(await Go(e))) return false
 
   // 冷却
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:ForumCD`
+  const cdKey = getRedisKey(usr_qq, 'ForumCD')
   const now = Date.now()
   const last = toInt(await redis.get(cdKey), 0)
   if (now < last + CD_MS) {

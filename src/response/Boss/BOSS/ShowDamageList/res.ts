@@ -3,6 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { existplayer, sleep } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
+import { KEY_RECORD } from '@src/model/settions'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?妖王贡献榜$/
@@ -38,9 +39,7 @@ export default onResponse(selects, async e => {
     Send(Text('妖王未开启！'))
     return false
   }
-  const PlayerRecord = parseJson<PlayerRecordData>(
-    await redis.get('xiuxian@1.3.0Record')
-  )
+  const PlayerRecord = parseJson<PlayerRecordData>(await redis.get(KEY_RECORD))
   const WorldBossStatusStr = parseJson<WorldBossStatus>(
     await redis.get('Xiuxian:WorldBossStatus')
   )

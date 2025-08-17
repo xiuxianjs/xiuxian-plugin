@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
+import { getRedisKey } from '@src/model/key'
 import {
   Go,
   readPlayer,
@@ -100,7 +101,7 @@ export default onResponse(selects, async e => {
     Place_address: weizhi,
     XF: ass.power
   }
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:action`, JSON.stringify(arr))
+  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr))
   Send(
     Text(
       `开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`

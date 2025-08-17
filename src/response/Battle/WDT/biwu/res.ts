@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { redis, data, config } from '@src/model/api'
@@ -40,7 +41,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(A))) return false
 
   // 猜大小占用检查
-  const last_game_timeA = await redis.get(`xiuxian@1.3.0:${A}:last_game_time`)
+  const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'))
   if (toInt(last_game_timeA) === 0) {
     Send(Text('猜大小正在进行哦!'))
     return false
@@ -75,7 +76,7 @@ export default onResponse(selects, async e => {
 
   // 忙碌状态检查
   const A_action = parseJson<ActionState | null>(
-    await redis.get(`xiuxian@1.3.0:${A}:action`),
+    await redis.get(getRedisKey(A, 'action')),
     null
   )
   if (A_action && A_action.end_time && Date.now() <= A_action.end_time) {
@@ -87,7 +88,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const B_action = parseJson<ActionState | null>(
-    await redis.get(`xiuxian@1.3.0:${B}:action`),
+    await redis.get(getRedisKey(B, 'action')),
     null
   )
   if (B_action && B_action.end_time && Date.now() <= B_action.end_time) {
@@ -103,7 +104,7 @@ export default onResponse(selects, async e => {
   }
 
   // 猜大小状态检查 (对方)
-  const last_game_timeB = await redis.get(`xiuxian@1.3.0:${B}:last_game_time`)
+  const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'))
   if (toInt(last_game_timeB) === 0) {
     Send(Text('对方猜大小正在进行哦，等他结束再来比武吧!'))
     return false
@@ -112,7 +113,7 @@ export default onResponse(selects, async e => {
   const cf = await config.getConfig('xiuxian', 'xiuxian')
   const biwuCdMs = Math.floor(60000 * toInt(cf?.CD?.biwu, 5))
   const now = Date.now()
-  const lastBiwuA = toInt(await redis.get(`xiuxian@1.3.0:${A}:last_biwu_time`))
+  const lastBiwuA = toInt(await redis.get(getRedisKey(A, 'last_biwu_time')))
   if (now < lastBiwuA + biwuCdMs) {
     Send(
       Text(`比武正在CD中，剩余cd:  ${formatRemain(lastBiwuA + biwuCdMs - now)}`)
@@ -128,7 +129,7 @@ export default onResponse(selects, async e => {
       Send(Text(`比武冷却:  ${formatRemain(lastA + coupleMs - now)}`))
       return false
     }
-    const lastB = toInt(await redis.get(`xiuxian@1.3.0:${B}:last_biwu_time`))
+    const lastB = toInt(await redis.get(getRedisKey(B, 'last_biwu_time')))
     if (now < lastB + coupleMs) {
       Send(Text(`对方比武冷却:  ${formatRemain(lastB + coupleMs - now)}`))
       return false
@@ -147,8 +148,8 @@ export default onResponse(selects, async e => {
   }
 
   // 记录开始时间
-  await redis.set(`xiuxian@1.3.0:${A}:last_biwu_time`, String(now))
-  await redis.set(`xiuxian@1.3.0:${B}:last_biwu_time`, String(now))
+  await redis.set(getRedisKey(A, 'last_biwu_time'), String(now))
+  await redis.set(getRedisKey(B, 'last_biwu_time'), String(now))
 
   const final_msg: string[] = []
   final_msg.push(`${A_player.名号}向${B_player.名号}发起了比武！`)

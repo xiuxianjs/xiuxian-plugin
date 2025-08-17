@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useSend } from 'alemonjs'
 import { redis, data, config } from '@src/model/api'
 import {
@@ -16,9 +17,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const now_time = Date.now()
   const ifexistplay = await existplayer(usr_qq)
-  const game_action = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'))
   if (!ifexistplay || !game_action) return false
   if (isNaN(game.yazhu[usr_qq])) return false
   if (!game.game_key_user[usr_qq]) {
@@ -154,8 +153,8 @@ export default onResponse(selects, async e => {
   }
 
   // 清理与结束相关逻辑
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':last_game_time', now_time)
-  await redis.del('xiuxian@1.3.0:' + usr_qq + ':game_action')
+  await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time)
+  await redis.del(getRedisKey(usr_qq, 'game_action'))
   game.yazhu[usr_qq] = 0
   clearTimeout(game.game_time[usr_qq])
   return false

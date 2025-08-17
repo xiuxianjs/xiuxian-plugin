@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
+import { getRedisKey } from '@src/model/key'
 import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
@@ -78,7 +79,7 @@ export default onResponse(selects, async e => {
 
   const CD_MIN = 2
   const now = Date.now()
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:zyt_cd`
+  const cdKey = getRedisKey(String(usr_qq), 'zyt_cd')
   const last_time_raw = await redis.get(cdKey)
   const lastNum = Number(last_time_raw)
   const cdMs = CD_MIN * 60 * 1000

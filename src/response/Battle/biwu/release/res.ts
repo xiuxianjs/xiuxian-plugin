@@ -3,11 +3,12 @@ import { Text, useSend } from 'alemonjs'
 import { redis, data } from '@src/model/api'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?释放技能.*$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
-  const action_res = await redis.get('xiuxian@1.3.0:' + e.UserId + ':bisai')
+  const action_res = await redis.get(getRedisKey(e.UserId, 'bisai'))
   const action = await JSON.parse(action_res)
   if (!action) return false
   const msg = e.MessageText.replace(/^(#|＃|\/)?释放技能/, '')
@@ -23,9 +24,6 @@ export default onResponse(selects, async e => {
     }
   }
   action.use = jineng
-  await redis.set(
-    'xiuxian@1.3.0:' + e.UserId + ':bisai',
-    JSON.stringify(action)
-  )
+  await redis.set(getRedisKey(e.UserId, 'bisai'), JSON.stringify(action))
   Send(Text(`选择成功,下回合释放技能:${action.技能[jineng].name}`))
 })

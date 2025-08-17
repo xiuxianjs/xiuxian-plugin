@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useSend } from 'alemonjs'
 
 import { pushInfo, redis } from '@src/model/api'
@@ -38,7 +39,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) return false
 
   const actionState = parseJson<ActionState>(
-    await redis.get('xiuxian@1.3.0:' + usr_qq + ':action')
+    await redis.get(getRedisKey(usr_qq, 'action'))
   )
   if (actionState) {
     const now_time = Date.now()
@@ -59,7 +60,7 @@ export default onResponse(selects, async e => {
   }
 
   const task = parseJson<ShangjingTask>(
-    await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
+    await redis.get(getRedisKey(usr_qq, 'shangjing'))
   )
   if (!task) {
     Send(Text('还没有接取到悬赏,请查看后再来吧'))
@@ -153,10 +154,7 @@ export default onResponse(selects, async e => {
     last_msg = '你惩戒了仙路窃贼,获得了部分灵石'
   }
   task.arm.splice(num, 1)
-  await redis.set(
-    'xiuxian@1.3.0:' + usr_qq + ':shangjing',
-    JSON.stringify(task)
-  )
+  await redis.set(getRedisKey(usr_qq, 'shangjing'), JSON.stringify(task))
   if (
     last_msg === '你惩戒了仙路窃贼,获得了部分灵石' ||
     last_msg.endsWith('反杀了你,只获得了部分辛苦钱')

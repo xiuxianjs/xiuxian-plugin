@@ -5,6 +5,7 @@ import { existplayer, addNajieThing } from '@src/model/index'
 import type { NajieCategory } from '@src/types/model'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?活动兑换.*$/
 
 // 兑换码结构类型
@@ -62,7 +63,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const key = `xiuxian@1.3.0:${usr_qq}:duihuan`
+  const key = getRedisKey(usr_qq, 'duihuan')
   const usedList = parseJson<string[]>(await redis.get(key)) || []
   if (usedList.includes(codeInput)) {
     Send(Text('你已经兑换过该兑换码了'))

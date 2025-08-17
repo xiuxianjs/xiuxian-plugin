@@ -4,6 +4,7 @@ import { data, redis, config } from '@src/model/api'
 import { existplayer, addCoin } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?抢红包$/
 
 interface MentionUser {
@@ -26,7 +27,7 @@ export default onResponse(selects, async e => {
   const player = await data.getData('player', usr_qq)
 
   const now = Date.now()
-  const lastKey = `xiuxian@1.3.0:${usr_qq}:last_getbung_time`
+  const lastKey = getRedisKey(usr_qq, 'last_getbung_time')
   const lastStr = await redis.get(lastKey)
   const lastTime = toInt(lastStr)
   const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {}
@@ -54,7 +55,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(honbao_qq))) return false
 
   // 剩余红包数量
-  const countKey = `xiuxian@1.3.0:${honbao_qq}:honbaoacount`
+  const countKey = getRedisKey(honbao_qq, 'honbaoacount')
   const countStr = await redis.get(countKey)
   let count = toInt(countStr)
   if (count <= 0) {
@@ -63,7 +64,7 @@ export default onResponse(selects, async e => {
   }
 
   // 单个红包金额
-  const valueKey = `xiuxian@1.3.0:${honbao_qq}:honbao`
+  const valueKey = getRedisKey(honbao_qq, 'honbao')
   const valStr = await redis.get(valueKey)
   const lingshi = toInt(valStr)
   if (lingshi <= 0) {

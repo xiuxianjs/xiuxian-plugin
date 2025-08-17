@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
@@ -35,9 +36,7 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  const last_game_timeA = await redis.get(
-    'xiuxian@1.3.0:' + A + ':last_game_time'
-  )
+  const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'))
   if (+last_game_timeA == 0) {
     Send(Text(`猜大小正在进行哦，结束了再来吧!`))
     return false
@@ -71,9 +70,7 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  const last_game_timeB = await redis.get(
-    'xiuxian@1.3.0:' + B + ':last_game_time'
-  )
+  const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'))
   if (+last_game_timeB == 0) {
     Send(Text(`对方猜大小正在进行哦，等他结束再找他吧!`))
     return false

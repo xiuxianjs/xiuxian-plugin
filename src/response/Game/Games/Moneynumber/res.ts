@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useSend } from 'alemonjs'
 import { config, redis } from '@src/model/api'
 import { Go, existplayer, readPlayer } from '@src/model/index'
@@ -39,8 +40,8 @@ export default onResponse(selects, async e => {
   // 灵石不足处理，清理游戏状态
   if (playerCoin < BASE_COST) {
     const now_time = Date.now()
-    await redis.set(`xiuxian@1.3.0:${usr_qq}:last_game_time`, now_time)
-    await redis.del(`xiuxian@1.3.0:${usr_qq}:game_action`)
+    await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time)
+    await redis.del(getRedisKey(usr_qq, 'game_action'))
     game.yazhu[usr_qq] = 0
     if (game.game_time[usr_qq]) clearTimeout(game.game_time[usr_qq])
     Send(Text('媚娘：钱不够也想玩？'))
@@ -49,7 +50,7 @@ export default onResponse(selects, async e => {
 
   const now_time = Date.now()
   const last_game_time_raw = await redis.get(
-    `xiuxian@1.3.0:${usr_qq}:last_game_time`
+    getRedisKey(usr_qq, 'last_game_time')
   )
   let last_game_time = Number(last_game_time_raw)
   if (!Number.isFinite(last_game_time)) last_game_time = 0
@@ -63,15 +64,15 @@ export default onResponse(selects, async e => {
   }
 
   // 记录本次时间
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:last_game_time`, now_time)
+  await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time)
 
-  const game_action = await redis.get(`xiuxian@1.3.0:${usr_qq}:game_action`)
+  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'))
   if (Number(game_action) === 1) {
     Send(Text('媚娘：猜大小正在进行哦!'))
     return false
   }
 
   Send(Text('媚娘：发送[#投入+数字]或[#梭哈]'))
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:game_action`, 1)
+  await redis.set(getRedisKey(usr_qq, 'game_action'), 1)
   return false
 })

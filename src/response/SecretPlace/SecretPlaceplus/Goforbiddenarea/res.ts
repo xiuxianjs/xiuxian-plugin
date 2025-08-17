@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
+import { getRedisKey } from '@src/model/key'
 import { startAction } from '@src/response/actionHelper'
 import {
   Go,
@@ -109,6 +110,6 @@ export default onResponse(selects, async e => {
     Place_address: weizhi,
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   })
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':action', JSON.stringify(arr))
+  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr))
   Send(Text('正在前往' + weizhi.name + ',' + time + '分钟后归来!'))
 })

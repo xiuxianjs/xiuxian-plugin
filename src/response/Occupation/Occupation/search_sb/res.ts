@@ -4,6 +4,7 @@ import { existplayer, readPlayer, __PATH } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { screenshot } from '@src/image'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?悬赏目标$/
 
 export default onResponse(selects, async e => {
@@ -17,8 +18,8 @@ export default onResponse(selects, async e => {
     return false
   }
   let msg = []
-  let action = await redis.get('xiuxian@1.3.0:' + usr_qq + ':shangjing')
-  action = await JSON.parse(action)
+  const db = await redis.get(getRedisKey(usr_qq, 'shangjing'))
+  const action = await JSON.parse(db)
   const type = 0
   if (action != null) {
     if (action.end_time > Date.now()) {
@@ -76,7 +77,7 @@ export default onResponse(selects, async e => {
     arm: msg,
     end_time: Date.now() + 60000 * 60 * 20 //结束时间
   }
-  await redis.set('xiuxian@1.3.0:' + usr_qq + ':shangjing', JSON.stringify(arr))
+  await redis.set(getRedisKey(usr_qq, 'shangjing'), JSON.stringify(arr))
   const msg_data = { msg, type }
   const img = await screenshot('msg', e.UserId, msg_data)
   if (Buffer.isBuffer(img)) {

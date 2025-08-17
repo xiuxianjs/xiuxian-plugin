@@ -13,6 +13,7 @@ import {
 import { selects } from '@src/response/index'
 import { parseUnitNumber } from '@src/model/utils/utilsx'
 import type { NajieCategory } from '@src/types'
+import { getRedisKey } from '@src/model/key'
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
 export const regular =
@@ -53,7 +54,7 @@ export default onResponse(selects, async e => {
     }
     const nowTime = Date.now()
     const lastgetbungStr = await redis.get(
-      `xiuxian@1.3.0:${A_qq}:last_getbung_time`
+      getRedisKey(A_qq, 'last_getbung_time')
     )
     const lastgetbung_time = lastgetbungStr ? parseInt(lastgetbungStr, 10) : 0
     const transferTimeout = Math.floor(cf.CD.transfer * 60000)
@@ -71,7 +72,7 @@ export default onResponse(selects, async e => {
     await addCoin(A_qq, -lastlingshi)
     await addCoin(B_qq, lingshi)
     Send(Text(`${B_player.名号} 获得了由 ${A_player.名号}赠送的${lingshi}灵石`))
-    await redis.set(`xiuxian@1.3.0:${A_qq}:last_getbung_time`, nowTime)
+    await redis.set(getRedisKey(A_qq, 'last_getbung_time'), String(nowTime))
     return
   }
 

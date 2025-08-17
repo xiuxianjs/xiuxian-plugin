@@ -46,7 +46,7 @@ const toNum = (v, d = 0) =>
     : typeof v === 'string' && !isNaN(+v)
       ? +v
       : d
-const RD_KEY = (qq: string, k: string) => `xiuxian@1.3.0:${qq}:${k}`
+import { getRedisKey } from '@src/model/key'
 const randomScale = () => 0.8 + 0.4 * Math.random()
 function buildBattlePlayer(
   src: RankEntry,
@@ -102,7 +102,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   //获取游戏状态
-  const game_action = await redis.get(RD_KEY(usr_qq, 'game_action'))
+  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'))
   //防止继续其他娱乐行为
   if (+game_action == 1) {
     Send(Text('修仙：游戏进行中...'))
@@ -110,7 +110,7 @@ export default onResponse(selects, async e => {
   }
   //查询redis中的人物动作
   let action: ActionState | null = null
-  const actionStr = await redis.get(RD_KEY(usr_qq, 'action'))
+  const actionStr = await redis.get(getRedisKey(usr_qq, 'action'))
   if (actionStr) {
     try {
       action = JSON.parse(actionStr)
@@ -148,7 +148,7 @@ export default onResponse(selects, async e => {
   const Today = await shijianc(nowTime)
   const lastbisai_time = await getLastbisai(usr_qq) //获得上次签到日期
   if (!lastbisai_time) {
-    await redis.set(RD_KEY(usr_qq, 'lastbisai_time'), nowTime) //redis设置签到时间
+    await redis.set(getRedisKey(usr_qq, 'lastbisai_time'), nowTime) //redis设置签到时间
     tiandibang[x].次数 = 3
   }
   if (
@@ -157,7 +157,7 @@ export default onResponse(selects, async e => {
       Today.M != lastbisai_time.M ||
       Today.D != lastbisai_time.D)
   ) {
-    await redis.set(RD_KEY(usr_qq, 'lastbisai_time'), nowTime) //redis设置签到时间
+    await redis.set(getRedisKey(usr_qq, 'lastbisai_time'), nowTime) //redis设置签到时间
     tiandibang[x].次数 = 3
   }
   if (

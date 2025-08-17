@@ -15,6 +15,7 @@ import type { TalentInfo, Player } from '@src/types/player'
 import type { AssociationData } from '@src/types/domain'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?轮回$/
 
 // === 配置：各转轮回灵根与提示 ===
@@ -91,7 +92,7 @@ const REBIRTH_MAP: Record<number, RebirthConfigMeta> = {
   }
 }
 
-const KEY_LH = (id: string) => `xiuxian@1.3.0:${id}:lunhui`
+const KEY_LH = (id: string) => getRedisKey(id, 'lunhui')
 
 function buildTalent(cfg: RebirthConfigMeta): TalentInfo {
   return { name: cfg.name, type: '转生', eff: cfg.eff, 法球倍率: cfg.ratio }

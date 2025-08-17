@@ -3,6 +3,7 @@ import { getPlayerAction } from '@src/model/index'
 import { mine_jiesuan } from '../../api'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?结束采矿$/
 
 interface PlayerAction {
@@ -110,6 +111,6 @@ export default onResponse(selects, async e => {
     minutes * 60000 // 记录原始或推导时长
   delete action.group_id
 
-  await redis.set(`xiuxian@1.3.0:${e.UserId}:action`, JSON.stringify(action))
+  redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action))
   return false
 })

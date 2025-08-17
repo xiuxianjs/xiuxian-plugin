@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
+import { getRedisKey } from '@src/model/key'
 import {
   Go,
   readPlayer,
@@ -139,7 +140,7 @@ export default onResponse(selects, async e => {
   if (e.name === 'message.create') actionRecord.group_id = e.ChannelId
 
   await redis.set(
-    `xiuxian@1.3.0:${usr_qq}:action`,
+    getRedisKey(String(usr_qq), 'action'),
     JSON.stringify(actionRecord)
   )
   await addExp(usr_qq, -MIN_REQ_EXP)

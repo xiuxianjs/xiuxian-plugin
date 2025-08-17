@@ -9,6 +9,7 @@ import { addCoin } from '@src/model/economy'
 import type { Player, AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?沉迷宗门秘境.*$/
 
 interface PlayerGuildRef {
@@ -112,7 +113,7 @@ export default onResponse(selects, async e => {
     Place_address: weizhi,
     XF: ass.power
   }
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:action`, JSON.stringify(arr))
+  redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(arr))
   Send(
     Text(
       `开始沉迷探索 ${didian} 宗门秘境 * ${i} 次，共耗时 ${time} 分钟 (消耗${Price}灵石，上缴宗门${guildGain}灵石)`

@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Image, Text, useMention, useSend } from 'alemonjs'
 
 import { config, data, redis } from '@src/model/api'
@@ -87,7 +88,7 @@ export default onResponse(selects, async e => {
   if (!(await existplayer(A))) return false
 
   // 游戏状态判断（猜大小占用）
-  const last_game_timeA = await redis.get(`xiuxian@1.3.0:${A}:last_game_time`)
+  const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'))
   if (last_game_timeA && Number(last_game_timeA) === 0) {
     Send(Text('猜大小正在进行哦!'))
     return false
@@ -186,7 +187,7 @@ export default onResponse(selects, async e => {
   }
 
   // 被动方小游戏占用
-  const last_game_timeB = await redis.get(`xiuxian@1.3.0:${B}:last_game_time`)
+  const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'))
   if (last_game_timeB && Number(last_game_timeB) === 0) {
     Send(Text('对方猜大小正在进行哦，等他赚够了再打劫也不迟!'))
     return false
@@ -196,7 +197,7 @@ export default onResponse(selects, async e => {
   let isBbusy = false
   let B_action: ActionState | null = null
   try {
-    const B_action_res = await redis.get(`xiuxian@1.3.0:${B}:action`)
+    const B_action_res = await redis.get(getRedisKey(B, 'action'))
     if (B_action_res) {
       B_action = JSON.parse(B_action_res)
       if (B_action && Date.now() <= Number(B_action.end_time)) {
@@ -216,9 +217,7 @@ export default onResponse(selects, async e => {
   }
 
   // 打劫 CD
-  const last_dajie_time_raw = await redis.get(
-    `xiuxian@1.3.0:${A}:last_dajie_time`
-  )
+  const last_dajie_time_raw = await redis.get(getRedisKey(A, 'last_dajie_time'))
   const last_dajie_time = Number(last_dajie_time_raw) || 0
   const cfgAuction = (await config.getConfig(
     'xiuxian',
@@ -258,7 +257,7 @@ export default onResponse(selects, async e => {
   } else {
     final_msg.push(`${A_player.名号}向${B_player.名号}发起了打劫。`)
   }
-  await redis.set(`xiuxian@1.3.0:${A}:last_dajie_time`, String(Date.now()))
+  await redis.set(getRedisKey(A, 'last_dajie_time'), String(Date.now()))
 
   const faA = extractFaQiu(A_player.灵根)
   if (faA !== undefined) (A_player as PlayerWithFaQiu).法球倍率 = faA
@@ -339,11 +338,11 @@ export default onResponse(selects, async e => {
       // 关禁闭逻辑
       const action_time2 = 60000 * 60
       try {
-        const actRaw = await redis.get(`xiuxian@1.3.0:${A}:action`)
+        const actRaw = await redis.get(getRedisKey(A, 'action'))
         const act = actRaw ? JSON.parse(actRaw) : { action: '禁闭' }
         act.action = '禁闭'
         act.end_time = Date.now() + action_time2
-        await redis.set(`xiuxian@1.3.0:${A}:action`, JSON.stringify(act))
+        await redis.set(getRedisKey(A, 'action'), JSON.stringify(act))
       } catch {
         /* ignore */
       }

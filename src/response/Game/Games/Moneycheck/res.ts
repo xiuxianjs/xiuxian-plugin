@@ -1,3 +1,4 @@
+import { getRedisKey } from '@src/model/key'
 import { Text, useMessage } from 'alemonjs'
 
 import { redis } from '@src/model/api'
@@ -17,9 +18,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   //得到此人的状态
   //判断是否是投入用户
-  const game_action = await redis.get(
-    'xiuxian@1.3.0:' + usr_qq + ':game_action'
-  )
+  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'))
 
   if (!ifexistplay || !game_action) {
     //不是就返回
@@ -61,9 +60,9 @@ export default onResponse(selects, async e => {
     } else {
       //直接清除，并记录
       //重新记录本次时间
-      await redis.set('xiuxian@1.3.0:' + usr_qq + ':last_game_time', now_time) //存入缓存
+      await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time) //存入缓存
       //清除游戏状态
-      await redis.del('xiuxian@1.3.0:' + usr_qq + ':game_action')
+      await redis.del(getRedisKey(usr_qq, 'game_action'))
       //清除未投入判断
       //清除金额
       game.yazhu[usr_qq] = 0

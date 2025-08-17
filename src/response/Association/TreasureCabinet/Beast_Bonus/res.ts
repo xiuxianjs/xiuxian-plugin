@@ -5,6 +5,7 @@ import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
 import type { AssociationDetailData, Player } from '@src/types'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?神兽赐福$/
 
 interface PlayerGuildRef {
@@ -88,7 +89,7 @@ export default onResponse(selects, async e => {
     }
   }
 
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:getLastsign_Bonus`, String(nowTime))
+  await redis.set(getRedisKey(usr_qq, 'getLastsign_Bonus'), String(nowTime))
 
   const random = Math.random()
   if (random <= 0.7) {
@@ -138,7 +139,7 @@ export default onResponse(selects, async e => {
 })
 
 async function getLastsign_Bonus(usr_qq: string): Promise<DateParts | null> {
-  const time = await redis.get(`xiuxian@1.3.0:${usr_qq}:getLastsign_Bonus`)
+  const time = await redis.get(getRedisKey(usr_qq, 'getLastsign_Bonus'))
   if (time) {
     const parts = await shijianc(parseInt(time, 10))
     if (isDateParts(parts)) return parts

@@ -3,6 +3,7 @@ import { getPlayerAction } from '@src/model/index'
 import { plant_jiesuan } from '../../api'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?结束采药$/
 
 interface PlantAction {
@@ -67,6 +68,6 @@ export default onResponse(selects, async e => {
   next.Place_action = 1
   next.end_time = Date.now()
   delete next.group_id
-  await redis.set(`xiuxian@1.3.0:${e.UserId}:action`, JSON.stringify(next))
+  await redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(next))
   return false
 })

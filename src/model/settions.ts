@@ -1,6 +1,7 @@
 import { NajieCategory } from '@src/types'
 import { __PATH } from './paths'
 import { createRequire } from 'module'
+import { getRedisKey } from './key'
 
 // 概率常量保持与原文件一致
 export const 体质概率 = 0.2
@@ -21,7 +22,7 @@ export const filePathMap = {
 }
 
 // 资金池 Redis Key
-export const GAME_KEY = 'xiuxian@1.3.0:system:money_game'
+export const GAME_KEY = getRedisKey('system', 'money_game')
 
 const require = createRequire(import.meta.url)
 
@@ -31,6 +32,12 @@ export const pkg = require('../../package.json') as {
 }
 
 export const baseKey = 'xiuxian@1.3.0'
+
+export const KEY_WORLD_BOOS_STATUS = 'Xiuxian:WorldBossStatus'
+export const KEY_RECORD = 'xiuxian@1.3.0Record'
+
+export const KEY_WORLD_BOOS_STATUS_TWO = 'Xiuxian:WorldBossStatus2'
+export const KEY_RECORD_TWO = 'xiuxian@1.3.0Record2'
 
 export const NAJIE_CATEGORIES: readonly NajieCategory[] = [
   '装备',

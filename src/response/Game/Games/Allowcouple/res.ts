@@ -4,6 +4,7 @@ import { redis } from '@src/model/api'
 import { readPlayer, existplayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?允许双修$/
 
 export default onResponse(selects, async e => {
@@ -17,7 +18,7 @@ export default onResponse(selects, async e => {
     Send(Text('玩家数据读取失败'))
     return false
   }
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:couple`, 0)
+  redis.set(getRedisKey(usr_qq, 'couple'), 0)
   Send(Text(`${player.名号}开启了允许模式`))
   return false
 })

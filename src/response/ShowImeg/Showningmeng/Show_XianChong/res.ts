@@ -4,6 +4,7 @@ import { selects } from '@src/response/index'
 import { getXianChongImage } from '@src/model/image'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
+import { getRedisKey } from '@src/model/key'
 
 export const regular = /^(#|＃|\/)?仙宠楼$/
 
@@ -18,7 +19,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
 
-  const cdKey = `xiuxian@1.3.0:${usr_qq}:petShowCD`
+  const cdKey = getRedisKey(usr_qq, 'petShowCD')
   const now = Date.now()
   const last = toInt(await redis.get(cdKey))
   if (now < last + CD_MS) {

@@ -13,6 +13,7 @@ import {
 
 import { selects } from '@src/response/index'
 import type { Player } from '@src/types'
+import { getRedisKey } from '@src/model/key'
 export const regular = /^(#|＃|\/)?修仙签到$/
 
 interface LastSignStruct {
@@ -58,7 +59,7 @@ export default onResponse(selects, async e => {
     isLastSignStruct(yesterdayStruct) &&
     isSameDay(yesterdayStruct, lastSignStruct)
 
-  await redis.set(`xiuxian@1.3.0:${usr_qq}:lastsign_time`, String(nowTime))
+  await redis.set(getRedisKey(usr_qq, 'lastsign_time'), String(nowTime))
 
   const player = (await data.getData('player', usr_qq)) as Player | null
   if (!player) {
