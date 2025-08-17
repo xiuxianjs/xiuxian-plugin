@@ -10,6 +10,7 @@
     "./package": "./package.json"
   },
   "scripts": {
+    "app": "node index.js",
     "dev": "npx lvy dev",
     "view": "npx lvy dev --jsxp",
     "build": "lvy build",
