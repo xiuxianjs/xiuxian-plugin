@@ -1,5 +1,4 @@
 import {
-  DATA_LIST,
   DataListKeys,
   getDataList,
   hasDataList,
@@ -221,7 +220,7 @@ export const PATCH = async (ctx: Context) => {
     }
 
     // 验证数据类型是否存在
-    if (!DATA_LIST[name]) {
+    if (!hasDataList(name)) {
       ctx.status = 404
       ctx.body = {
         code: 404,
@@ -232,7 +231,7 @@ export const PATCH = async (ctx: Context) => {
     }
 
     // 获取当前数据
-    const currentData = DATA_LIST[name]
+    const currentData = await getDataList(name)
 
     // 分块处理更新
     const chunks = []
