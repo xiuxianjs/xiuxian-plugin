@@ -41,7 +41,8 @@ export function createPlayerRepository(
       // 处理升级逻辑
       while (true) {
         const expRow = occupationTable.find(row => row.id === occLevel)
-        if (!expRow || expRow.experience > occExp) break
+        const nextRow = occupationTable.find(row => row.id === occLevel + 1)
+        if (!expRow || !nextRow || expRow.experience > occExp) break
 
         occExp = occExp - expRow.experience
         occLevel = occLevel + 1
