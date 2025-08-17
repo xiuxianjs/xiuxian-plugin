@@ -175,74 +175,71 @@ export const setDataList = async (key: keyof typeof DATA_LIST, data: any) => {
   }
 }
 
-// DataList 原始直接挂载各 JSON；这里加上显式类型，保持与 XiuxianDataShape 对应
-export class DataListx {
-  player: string = __PATH.player_path
-  equipment: string = __PATH.equipment_path
-  najie: string = __PATH.najie_path
-  lib: string = __PATH.lib_path
-  association: string = __PATH.association
-  occupation: string = __PATH.occupation
-  lib_path: string = __PATH.lib_path
-  Timelimit: string = __PATH.Timelimit
-  Level: string = __PATH.Level
-  Occupation: string = __PATH.occupation
+export default {
+  player: __PATH.player_path,
+  equipment: __PATH.equipment_path,
+  najie: __PATH.najie_path,
+  lib: __PATH.lib_path,
+  association: __PATH.association,
+  occupation: __PATH.occupation,
+  lib_path: __PATH.lib_path,
+  Timelimit: __PATH.Timelimit,
+  Level: __PATH.Level,
+  Occupation: __PATH.occupation,
 
   /**
    * list 读取优化
    */
 
-  talent_list: TalentItem[] = 灵根列表 as TalentItem[]
-  monster_list: MonsterItem[] = 怪物列表 as MonsterItem[]
-  commodities_list: CommodityItem[] = 商品列表 as CommodityItem[]
-  Level_list: LevelStageItem[] = 练气境界 as LevelStageItem[]
-  shitujifen: ScoreShopItem[] = 积分商城 as ScoreShopItem[]
-  LevelMax_list: PhysiqueStageItem[] = 炼体境界 as PhysiqueStageItem[]
-  equipment_list: EquipmentItem[] = 装备列表 as EquipmentItem[]
-  danyao_list: DanyaoFullItem[] = 丹药列表 as DanyaoFullItem[]
-  newdanyao_list: DanyaoFullItem[] = 炼丹师丹药 as DanyaoFullItem[]
-  daoju_list: CommodityItem[] = 道具列表 as CommodityItem[]
-  gongfa_list: GongfaItem[] = 功法列表 as GongfaItem[]
-  caoyao_list: CommodityItem[] = 草药列表 as CommodityItem[]
-  didian_list: PlaceItem[] = 地点列表 as PlaceItem[]
-  bless_list: PlaceItem[] = 洞天福地 as PlaceItem[]
-  guildSecrets_list: SecretAreaItem[] = 宗门秘境 as SecretAreaItem[]
-  forbiddenarea_list: SecretAreaItem[] = 禁地列表 as SecretAreaItem[]
-  Fairyrealm_list: PlaceItem[] = 仙境列表 as PlaceItem[]
-  timeplace_list: PlaceItem[] = 限定仙府 as PlaceItem[]
-  timegongfa_list: GongfaItem[] = 限定功法 as GongfaItem[]
-  timeequipmen_list: LimitedEquipItem[] = 限定装备 as LimitedEquipItem[]
-  timedanyao_list: DanyaoFullItem[] = 限定丹药 as DanyaoFullItem[]
-  occupation_list: OccupationItem[] = 职业列表 as OccupationItem[]
-  occupation_exp_list = experience as Array<{
+  talent_list: 灵根列表 as TalentItem[],
+  monster_list: 怪物列表 as MonsterItem[],
+  commodities_list: 商品列表 as CommodityItem[],
+  Level_list: 练气境界 as LevelStageItem[],
+  shitujifen: 积分商城 as ScoreShopItem[],
+  LevelMax_list: 炼体境界 as PhysiqueStageItem[],
+  equipment_list: 装备列表 as EquipmentItem[],
+  danyao_list: 丹药列表 as DanyaoFullItem[],
+  newdanyao_list: 炼丹师丹药 as DanyaoFullItem[],
+  daoju_list: 道具列表 as CommodityItem[],
+  gongfa_list: 功法列表 as GongfaItem[],
+  caoyao_list: 草药列表 as CommodityItem[],
+  didian_list: 地点列表 as PlaceItem[],
+  bless_list: 洞天福地 as PlaceItem[],
+  guildSecrets_list: 宗门秘境 as SecretAreaItem[],
+  forbiddenarea_list: 禁地列表 as SecretAreaItem[],
+  Fairyrealm_list: 仙境列表 as PlaceItem[],
+  timeplace_list: 限定仙府 as PlaceItem[],
+  timegongfa_list: 限定功法 as GongfaItem[],
+  timeequipmen_list: 限定装备 as LimitedEquipItem[],
+  timedanyao_list: 限定丹药 as DanyaoFullItem[],
+  occupation_list: 职业列表 as OccupationItem[],
+  occupation_exp_list: experience as Array<{
     id: number
     name: string
     experience: number
     rate: number
-  }>
-  danfang_list: DanfangItem[] = 炼丹配方 as DanfangItem[]
-  tuzhi_list: EquipmentTuzhiItem[] = 装备图纸 as EquipmentTuzhiItem[]
+  }>,
+  danfang_list: 炼丹配方 as DanfangItem[],
+  tuzhi_list: 装备图纸 as EquipmentTuzhiItem[],
 
-  npc_list: NPCGroupItem[] = npc列表 as NPCGroupItem[]
-  shop_list: ShopItem[] = shop列表 as ShopItem[]
+  npc_list: npc列表 as NPCGroupItem[],
+  shop_list: shop列表 as ShopItem[],
 
-  bapin: BapinItem[] = 八品 as BapinItem[]
-  xingge: AuctionItem[] = 星阁拍卖行列表 as AuctionItem[]
-  tianditang: HallItem[] = 天地堂 as HallItem[]
-  changzhuxianchon: PermanentPetItem[] = 常驻仙宠 as PermanentPetItem[]
-  xianchon: PetItem[] = 仙宠列表 as PetItem[]
-  xianchonkouliang: PetFoodItem[] = 仙宠口粮列表 as PetFoodItem[]
+  bapin: 八品 as BapinItem[],
+  xingge: 星阁拍卖行列表 as AuctionItem[],
+  tianditang: 天地堂 as HallItem[],
+  changzhuxianchon: 常驻仙宠 as PermanentPetItem[],
+  xianchon: 仙宠列表 as PetItem[],
+  xianchonkouliang: 仙宠口粮列表 as PetFoodItem[],
 
-  qinlong: RealmShopGroupItem[] = 青龙 as RealmShopGroupItem[]
-  qilin: RealmShopGroupItem[] = 麒麟 as RealmShopGroupItem[]
-  xuanwu: RealmShopGroupItem[] = 玄武朱雀白虎 as RealmShopGroupItem[]
-  mojie: RealmShopGroupItem[] = 魔界列表 as RealmShopGroupItem[]
+  qinlong: 青龙 as RealmShopGroupItem[],
+  qilin: 麒麟 as RealmShopGroupItem[],
+  xuanwu: 玄武朱雀白虎 as RealmShopGroupItem[],
+  mojie: 魔界列表 as RealmShopGroupItem[],
   /**
    * 技能列表 (待处理)
    */
-  jineng1: SkillItem[] = 技能列表1 as SkillItem[]
-  jineng2: SkillItem[] = 技能列表2 as SkillItem[]
-  jineng: SkillItem[] = 技能列表 as SkillItem[]
+  jineng1: 技能列表1 as SkillItem[],
+  jineng2: 技能列表2 as SkillItem[],
+  jineng: 技能列表 as SkillItem[]
 }
-
-export default new DataListx()

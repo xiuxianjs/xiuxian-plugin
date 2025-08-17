@@ -224,8 +224,7 @@ const advancedHelpConfig: HelpGroup[] = [
         desc: '查看各类榜单'
       },
       { icon: 'help-icon_17', title: '#魔道榜', desc: '谁是大魔头' },
-      { icon: 'help-icon_17', title: '#神兵榜', desc: '玩家顶级装备排行' },
-      { icon: 'help-icon_17', title: '#修仙世界', desc: '查看玩家数量' }
+      { icon: 'help-icon_17', title: '#神兵榜', desc: '玩家顶级装备排行' }
     ]
   }
 ]
