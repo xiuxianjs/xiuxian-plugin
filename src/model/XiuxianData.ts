@@ -1,44 +1,32 @@
 import { __PATH } from './keys.js'
 import Association from './Association.js'
 import DataControl from './DataControl.js'
-import { DataListx } from './DataList.js'
+import DataListx from './DataList.js'
 
 /**
  * 废弃
- * @deprecated Use `new DataList()` instead
+ * @deprecated
  */
-class XiuxianData extends DataListx {
-  constructor() {
-    super()
-  }
+export default {
+  ...DataListx,
   /**
-   * 废弃
-   * @deprecated Use DataControl.existData instead
+   * @deprecated
    */
-  existData = DataControl.existData
+  existData: DataControl.existData,
   /**
-   * 废弃
-   * @deprecated Use DataControl.getData instead
+   * @deprecated
    */
-  getData = DataControl.getData
+  getData: DataControl.getData,
   /**
-   * 废弃
-   * @deprecated Use DataControl.setData instead
+   * @deprecated
    */
-  setData = DataControl.setData
+  setData: DataControl.setData,
   /**
-   * 废弃
-   * @deprecated Use Association.getAssociation instead
+   * @deprecated
    */
-  getAssociation = Association.getAssociation
+  getAssociation: Association.getAssociation,
   /**
-   * 废弃
-   * @deprecated Use Association.setAssociation instead
+   * @deprecated
    */
-  setAssociation = Association.setAssociation
+  setAssociation: Association.setAssociation
 }
-/**
- * 废弃
- * @deprecated Use `new DataList()` instead
- */
-export default new XiuxianData()
