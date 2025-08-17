@@ -88,6 +88,62 @@ import type {
 } from '../types/data_extra'
 import { __PATH } from './paths.js'
 
+export const DATA_LIST = {
+  // 使用英文名
+  Talent: 灵根列表,
+  Monster: 怪物列表,
+  Commodity: 商品列表,
+  Level1: 练气境界,
+  ScoreShop: 积分商城,
+  Level2: 炼体境界,
+  Equipment: 装备列表,
+  Danyao: 丹药列表,
+  NewDanyao: 炼丹师丹药,
+  Daoju: 道具列表,
+  Gongfa: 功法列表,
+  Caoyao: 草药列表,
+  Didian: 地点列表,
+  Bless: 洞天福地,
+  GuildSecrets: 宗门秘境,
+  ForbiddenArea: 禁地列表,
+  FairyRealm: 仙境列表,
+  TimePlace: 限定仙府,
+  TimeGongfa: 限定功法,
+  TimeEquipment: 限定装备,
+  TimeDanyao: 限定丹药,
+  Occupation: 职业列表,
+  experience,
+  Danfang: 炼丹配方,
+  Tuzhi: 装备图纸,
+  Bapin: 八品,
+  Xingge: 星阁拍卖行列表,
+  Tianditang: 天地堂,
+  Changzhuxianchon: 常驻仙宠,
+  Xianchon: 仙宠列表,
+  Xianchonkouliang: 仙宠口粮列表,
+  NPC: npc列表,
+  Shop: shop列表,
+  Qinglong: 青龙,
+  Qilin: 麒麟,
+  Xuanwu: 玄武朱雀白虎,
+  Mojie: 魔界列表,
+  ExchangeItem: 兑换列表,
+  Shenjie: 神界列表,
+  Jineng1: 技能列表1,
+  Jineng2: 技能列表2,
+  Qianghua: 强化列表,
+  Duanzhaocailiao: 锻造材料,
+  Duanzhaowuqi: 锻造武器,
+  Duanzhaohuju: 锻造护具,
+  Duanzhaobaowu: 锻造宝物,
+  Yincang: 隐藏灵根,
+  Zalei: 锻造杂类,
+  Jineng: 技能列表,
+  UpdateRecord: updateRecord
+}
+
+export type DataListType = keyof typeof DATA_LIST
+
 // DataList 原始直接挂载各 JSON；这里加上显式类型，保持与 XiuxianDataShape 对应
 export class DataList implements XiuxianDataShape {
   player: string = __PATH.player_path

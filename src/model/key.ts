@@ -1,4 +1,4 @@
-import { baseKey } from './settions'
+import { baseKey } from './constants'
 
 type ActionType =
   | 'action'
@@ -50,10 +50,13 @@ export const getRedisKey = (user_id: string, action: ActionType) => {
 }
 
 /**
- *
  * @param name
  * @returns
  */
 export const getRedisConfigKey = (name: string) => {
   return baseKey + ':config:' + name
+}
+
+export const getRedisSystemKey = (name: string) => {
+  return baseKey + ':system:' + name
 }

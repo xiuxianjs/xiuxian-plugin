@@ -16,7 +16,7 @@ import { addHP, addCoin } from '@src/model/economy'
 import { selects } from '@src/response/index'
 import { existplayer } from '@src/model'
 import { getRedisKey } from '@src/model/key'
-import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/settions'
+import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?讨伐金角大王$/
 
 interface PlayerRecordData {

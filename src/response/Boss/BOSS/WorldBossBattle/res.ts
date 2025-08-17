@@ -15,7 +15,7 @@ import {
 } from '../../boss'
 import { existplayer } from '@src/model'
 import { getRedisKey } from '@src/model/key'
-import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/settions'
+import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?讨伐妖王$/

@@ -1,5 +1,5 @@
 import { ApiResponse, LoginRequest, LoginResponse } from '@/types'
-import { request } from './index'
+import { authRequest, request } from './index'
 
 // 登录API
 export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
@@ -40,12 +40,9 @@ export const logoutAPI = async (
   token: string
 ): Promise<{ success: boolean }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/logout',
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'POST'
     })) as ApiResponse
 
     if (result.code === 200) {
@@ -64,13 +61,10 @@ export const verifyTokenAPI = async (
   token: string
 ): Promise<{ valid: boolean; user?: LoginResponse['user'] }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/auth',
       method: 'GET',
-      params: { token },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params: { token }
     })) as ApiResponse<{ user: LoginResponse['user'] }>
 
     if (result.code === 200) {
@@ -87,6 +81,42 @@ export const verifyTokenAPI = async (
   }
 }
 
+// 获取数据列表API
+export const getDataListAPI = async (
+  token: string,
+  dataType: string
+): Promise<{
+  success: boolean
+  data?: any[]
+  message?: string
+}> => {
+  try {
+    const result = (await authRequest({
+      url: '/data-list',
+      method: 'GET',
+      params: { name: dataType }
+    })) as ApiResponse<any[]>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message || '获取数据失败'
+      }
+    }
+  } catch (error) {
+    console.error('获取数据列表API错误:', error)
+    return {
+      success: false,
+      message: '获取数据失败'
+    }
+  }
+}
+
 // 获取用户列表API
 export const getUsersAPI = async (
   token: string
@@ -96,12 +126,9 @@ export const getUsersAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/users',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'GET'
     })) as ApiResponse<LoginResponse['user'][]>
 
     if (result.code === 200) {
@@ -153,13 +180,10 @@ export const getGameUsersAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/game-users',
       method: 'GET',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<{
       list: any[]
       pagination: {
@@ -200,12 +224,9 @@ export const getGameUserAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/game-users',
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       data: { userId }
     })) as ApiResponse<any>
 
@@ -249,13 +270,10 @@ export const getGameUsersStatsAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/game-users',
       method: 'PUT',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<{
       total: number
       highLevel: number
@@ -308,13 +326,10 @@ export const getAssociationsAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/associations',
       method: 'GET',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<{
       list: any[]
       pagination: {
@@ -355,12 +370,9 @@ export const getAssociationAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/associations',
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       data: { associationName }
     })) as ApiResponse<any>
 
@@ -414,13 +426,10 @@ export const getNajieAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/najie',
       method: 'GET',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<{
       list: any[]
       pagination: {
@@ -461,12 +470,9 @@ export const getNajieDetailAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/najie',
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       data: { userId }
     })) as ApiResponse<any>
 
@@ -503,13 +509,10 @@ export const getRankingsAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/rankings',
       method: 'GET',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<any[]>
 
     if (result.code === 200) {
@@ -547,12 +550,9 @@ export const getRankingsStatsAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/rankings',
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'POST'
     })) as ApiResponse<{
       lastUpdate: string
       associationCount: number
@@ -590,12 +590,9 @@ export const getTaskConfigAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/task-config',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'GET'
     })) as ApiResponse<{ [key: string]: string }>
 
     if (result.code === 200) {
@@ -630,13 +627,10 @@ export const updateTaskConfigAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/task-config',
       method: 'POST',
-      data: { taskConfig },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      data: { taskConfig }
     })) as ApiResponse<{
       timestamp: string
     }>
@@ -675,12 +669,9 @@ export const getTaskStatusAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/task-config',
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'PATCH'
     })) as ApiResponse<{
       [key: string]: {
         running: boolean
@@ -723,12 +714,9 @@ export const taskControlAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/task-config',
       method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       data: { action, ...(taskName && { taskName }) }
     })) as ApiResponse<{
       timestamp: string
@@ -798,12 +786,9 @@ export const triggerRankingCalculationAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/rankings',
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'PUT'
     })) as ApiResponse<{
       timestamp: string
     }>
@@ -857,13 +842,10 @@ export const getNajieStatsAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/najie',
       method: 'PUT',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<{
       total: number
       totalLingshi: number
@@ -910,13 +892,10 @@ export const getAssociationsStatsAPI = async (
   message?: string
 }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/associations',
       method: 'PUT',
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params
     })) as ApiResponse<{
       total: number
       totalMembers: number
@@ -955,12 +934,9 @@ export const changePasswordAPI = async (
   }
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/change-password',
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       data: passwordData
     })) as ApiResponse
 

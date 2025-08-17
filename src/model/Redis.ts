@@ -1,6 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 import type { ActionType } from '../types/model'
-import { baseKey } from './settions'
+import { getRedisKey } from './key'
 
 /**
  * @param user_id
@@ -9,7 +9,7 @@ import { baseKey } from './settions'
  */
 export const getDataByUserId = async (user_id: string, action: ActionType) => {
   const redis = getIoRedis()
-  return await redis.get(baseKey + ':' + user_id + ':' + action)
+  return await redis.get(getRedisKey(user_id, action))
 }
 
 export const setDataByUserId = async <
@@ -24,5 +24,5 @@ export const setDataByUserId = async <
     typeof value === 'string' || typeof value === 'number'
       ? String(value)
       : JSON.stringify(value)
-  return await redis.set(baseKey + ':' + user_id + ':' + action, payload)
+  return await redis.set(getRedisKey(user_id, action), payload)
 }

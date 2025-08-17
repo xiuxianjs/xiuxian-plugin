@@ -20,3 +20,21 @@ export const request = (config: AxiosRequestConfig): Promise<any> => {
       })
   })
 }
+
+export const authRequest = (config: AxiosRequestConfig): Promise<any> => {
+  const savedToken = localStorage.getItem('token')
+  return new Promise<AxiosResponse>((resolve, reject) => {
+    instance({
+      headers: {
+        Authorization: `Bearer ${savedToken}`
+      },
+      ...config
+    })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}

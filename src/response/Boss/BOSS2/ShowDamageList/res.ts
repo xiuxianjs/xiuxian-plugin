@@ -5,7 +5,7 @@ import { existplayer, sleep } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
 import { selects } from '@src/response/index'
-import { KEY_RECORD_TWO } from '@src/model/settions'
+import { KEY_RECORD_TWO } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?金角大王贡献榜$/
 
 interface WorldBossStatus {

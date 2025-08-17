@@ -27,6 +27,11 @@ export const menuItems = [
     path: '/rankings'
   },
   {
+    label: '数据查询',
+    icon: '📊',
+    path: '/data-query'
+  },
+  {
     label: '定时任务',
     icon: '⏰',
     path: '/tasks'

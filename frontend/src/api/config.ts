@@ -1,10 +1,10 @@
 import { ApiResponse } from '@/types'
-import { request } from './index'
+import { authRequest } from './index'
 
 // 获取配置
 export const getConfig = async (app: string) => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/config',
       params: { app }
     })) as ApiResponse
@@ -19,7 +19,7 @@ export const getConfig = async (app: string) => {
 // 保存配置
 export const saveConfig = async (app: string, data: unknown) => {
   try {
-    const result = (await request({
+    const result = (await authRequest({
       url: '/config',
       method: 'POST',
       data: {

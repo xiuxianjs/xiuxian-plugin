@@ -8,6 +8,7 @@ import UserManager from '@/pages/UserManager'
 import AssociationManager from '@/pages/AssociationManager'
 import NajieManager from '@/pages/NajieManager'
 import RankingManager from '@/pages/RankingManager'
+import DataQuery from '@/pages/DataQuery'
 import TaskManager from '@/pages/TaskManager/App'
 import Login from '@/pages/Login'
 import ProtectedRoute from '@/components/ProtectedRoute'
@@ -52,6 +53,10 @@ export default createHashRouter([
       {
         path: '/rankings',
         element: <RankingManager />
+      },
+      {
+        path: '/data-query',
+        element: <DataQuery />
       },
       {
         path: '/tasks',

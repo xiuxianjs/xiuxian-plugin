@@ -389,7 +389,7 @@ export default function Dashboard() {
                   <Table
                     columns={associationColumns}
                     dataSource={stats.rankings.topAssociations.slice(0, 10)}
-                    rowKey="id"
+                    rowKey="name"
                     pagination={false}
                     size="small"
                     scroll={{ x: 400, y: 300 }}

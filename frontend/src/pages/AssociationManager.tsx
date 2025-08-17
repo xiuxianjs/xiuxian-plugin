@@ -363,7 +363,7 @@ export default function AssociationManager() {
           <Table
             columns={columns}
             dataSource={associations}
-            rowKey="name"
+            rowKey="宗门名称"
             loading={loading}
             pagination={{
               current: pagination.current,

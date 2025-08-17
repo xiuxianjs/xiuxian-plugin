@@ -1,17 +1,6 @@
 import { Context } from 'koa'
 import { validateRole, validateToken } from '@src/route/core/auth'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as yaml from 'js-yaml'
 import { getConfig, setConfig } from '@src/model'
-
-// 定义配置类型
-interface XiuxianConfig {
-  task?: {
-    [key: string]: string
-  }
-  [key: string]: unknown
-}
 
 // 获取定时任务配置
 export const GET = async (ctx: Context) => {
@@ -21,13 +10,9 @@ export const GET = async (ctx: Context) => {
       return
     }
 
-    // 读取配置文件
-    const configPath = path.join(process.cwd(), 'src/config/xiuxian.yaml')
-    const configContent = fs.readFileSync(configPath, 'utf8')
-    const config = yaml.load(configContent) as XiuxianConfig
-
-    // 获取任务配置
-    const taskConfig = config.task || {}
+    // 从 TypeScript 配置文件中读取数据
+    const config = await getConfig('', 'xiuxian')
+    const taskConfig = config?.task || {}
 
     ctx.status = 200
     ctx.body = {
