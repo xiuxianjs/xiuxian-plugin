@@ -91,6 +91,8 @@ export const OccupationTask = async () => {
         await addExp4(player_id, exp)
         // 状态复位
         const arr = { ...action }
+        // 设为已结算
+        arr.is_jiesuan = 1
         arr.plant = 1
         arr.shutup = 1
         arr.working = 1

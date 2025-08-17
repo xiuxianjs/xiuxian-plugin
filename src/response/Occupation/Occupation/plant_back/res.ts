@@ -10,12 +10,7 @@ interface PlantAction {
   action: string
   time: number
   end_time: number
-  plant?: {
-    name: string
-    start: number
-    duration: number
-    [k: string]: any
-  }
+  plant: number | string
   is_jiesuan?: number
   shutup?: number
   working?: number
@@ -44,9 +39,11 @@ function calcEffectiveMinutes(
 }
 
 export default onResponse(selects, async e => {
-  const raw = (await getPlayerAction(e.UserId)) as PlantAction | null
+  const raw = (await getPlayerAction(e.UserId)) as unknown as PlantAction | null
   if (!raw) return false
   if (raw.action === '空闲') return false
+
+  if (raw.plant === '1') return false
 
   // 若已结算（通过自定义 is_jiesuan 标志）直接返回
   if (raw.is_jiesuan === 1) return false
@@ -61,7 +58,7 @@ export default onResponse(selects, async e => {
 
   const next: PlantAction = { ...raw }
   next.is_jiesuan = 1
-  next.plant = 1 as PlantAction['plant']
+  next.plant = 1
   next.shutup = 1
   next.working = 1
   next.power_up = 1
