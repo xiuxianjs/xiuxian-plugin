@@ -34,7 +34,9 @@
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
     "node-schedule": "^2.1.1",
-    "posthog-node": "^5.7.0"
+    "posthog-node": "^5.7.0",
+    "sharp": "^0.34.3",
+    "svg-captcha": "^1.4.0"
   },
   "alemonjs": {
     "web": {
