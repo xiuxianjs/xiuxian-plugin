@@ -527,65 +527,6 @@ export default function TaskManager() {
           </div>
         </div>
 
-        {/* 统计信息 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">总任务数</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {tasks.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <ClockCircleOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">运行中</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {tasks.filter(t => t.status === 'running').length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <CheckCircleOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl border border-red-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">已停止</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {tasks.filter(t => t.status === 'stopped').length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <PauseCircleOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">错误</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {tasks.filter(t => t.status === 'error').length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <ExclamationCircleOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* 任务表格 */}
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden">
           <div className="p-6 border-b border-slate-700/50">

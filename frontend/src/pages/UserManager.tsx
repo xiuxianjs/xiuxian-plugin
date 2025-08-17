@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { Table, Tag, Tooltip, Avatar } from 'antd'
 import {
   EyeOutlined,
+  EditOutlined,
   UserOutlined,
   TrophyOutlined,
   FireOutlined,
@@ -18,6 +19,7 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 import { GameUser } from '@/types'
 import UserInfo from './modals/UserInfo'
+import UserEditModal from './modals/UserEditModal'
 import { useUserManagerCode } from './UserManager.code'
 import { levelNames } from '@/config'
 
@@ -29,15 +31,20 @@ export default function UserManager() {
     setSearchText,
     setSelectedUser,
     setUserDetailVisible,
+    setUserEditVisible,
     stats,
     pagination,
     fetchGameUsers,
     handleSearchAndFilter,
     handleTableChange,
+    handleEditUser,
+    handleSaveUser,
     getSexDisplay,
     getLinggenColor,
     getLevelName,
     userDetailVisible,
+    userEditVisible,
+    editLoading,
     selectedUser
   } = useUserManagerCode()
 
@@ -215,12 +222,12 @@ export default function UserManager() {
         </div>
       ),
       key: 'actions',
-      width: 100,
+      width: 150,
       render: (_, record) => (
-        <div className="p-3">
+        <div className="p-3 space-y-2">
           <Tooltip title="查看修仙详情">
             <button
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 text-sm flex items-center gap-2"
+              className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 text-sm flex items-center gap-2"
               onClick={() => {
                 setSelectedUser(record)
                 setUserDetailVisible(true)
@@ -228,6 +235,15 @@ export default function UserManager() {
             >
               <EyeOutlined />
               查看
+            </button>
+          </Tooltip>
+          <Tooltip title="编辑用户信息">
+            <button
+              className="w-full px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 text-sm flex items-center gap-2"
+              onClick={() => handleEditUser(record)}
+            >
+              <EditOutlined />
+              编辑
             </button>
           </Tooltip>
         </div>
@@ -391,6 +407,17 @@ export default function UserManager() {
           selectedUser={selectedUser}
           getSexDisplay={getSexDisplay}
           getLevelName={getLevelName}
+          getLinggenColor={getLinggenColor}
+        />
+
+        {/* 用户编辑弹窗 */}
+        <UserEditModal
+          visible={userEditVisible}
+          onCancel={() => setUserEditVisible(false)}
+          onSave={handleSaveUser}
+          user={selectedUser}
+          loading={editLoading}
+          getSexDisplay={getSexDisplay}
           getLinggenColor={getLinggenColor}
         />
       </div>

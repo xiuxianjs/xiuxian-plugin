@@ -366,6 +366,42 @@ export const getGameUserAPI = async (
   }
 }
 
+// 更新游戏用户数据API
+export const updateGameUserAPI = async (
+  token: string,
+  user: any
+): Promise<{
+  success: boolean
+  data?: any
+  message?: string
+}> => {
+  try {
+    const result = (await authRequest({
+      url: '/game-users-update',
+      method: 'PUT',
+      data: user
+    })) as ApiResponse<any>
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        data: result.data
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message
+      }
+    }
+  } catch (error) {
+    console.error('更新游戏用户数据API错误:', error)
+    return {
+      success: false,
+      message: '网络错误'
+    }
+  }
+}
+
 // 获取游戏用户统计信息API
 export const getGameUsersStatsAPI = async (
   token: string,
@@ -1155,6 +1191,41 @@ export const updateCommandStatusAPI = async (
     return {
       success: false,
       message: '更新指令状态失败'
+    }
+  }
+}
+
+export const updateNajieAPI = async (
+  token: string,
+  najieData: {
+    id: string
+    name: string
+    description: string
+  }
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    const result = (await authRequest({
+      url: '/najie',
+      method: 'PUT',
+      data: najieData
+    })) as ApiResponse
+
+    if (result.code === 200) {
+      return {
+        success: true,
+        message: result.message || '纳戒信息更新成功'
+      }
+    } else {
+      return {
+        success: false,
+        message: result.message || '纳戒信息更新失败'
+      }
+    }
+  } catch (error) {
+    console.error('更新纳戒信息API错误:', error)
+    return {
+      success: false,
+      message: '更新纳戒信息失败'
     }
   }
 }

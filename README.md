@@ -10,6 +10,8 @@ https://github.com/lemonade-lab/alemongo
 
 ## 安装
 
+> 安装后使用 `/修仙帮助` 唤醒
+
 ### alemongo
 
 地址
@@ -29,6 +31,16 @@ release
 ```sh
 git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git ./packages/xiuxian-plugin
 ```
+
+### Redis
+
+将以默认配置连接本地redis，如需调整，
+
+请阅读@alemonjs/db配置连接,
+
+https://www.npmjs.com/package/@alemonjs/db
+
+> 机器人全部使用redis存储，请务必启动redis持久化存储
 
 ### 开发
 
@@ -83,24 +95,13 @@ yarn view
 yarn bundle-dev
 ```
 
-## 运行配置
+## 修仙管理
 
-> alemon.config.yaml
+http://127.0.0.1:17117/apps/alemonjs-xiuxian/
 
-```yaml
-login: 'onebot'
-redis:
-  host: 'localhost'
-  port: '6379'
-  password: ''
-  db: '1'
-```
+> 请注意端口，如果是本地开发模式，可直接访问 http://127.0.0.1:17117/app/
 
-## 使用
-
-> 唤醒 `/修仙帮助`
-
-> 机器人全部使用redis存储，请务必启动redis持久化存储
+默认账号密码 lemonade、123456
 
 ## 埋点
 
@@ -117,14 +118,6 @@ alemonjs-xiuxian:
 ```
 
 > 注意：开发模式下并不会发送数据
-
-## 修仙管理
-
-http://127.0.0.1:17117/apps/alemonjs-xiuxian/
-
-> 请注意端口，如果是本地开发模式，可直接访问 http://127.0.0.1:17117/app/
-
-默认账号密码 lemonade、123456
 
 ## 其他版本
 

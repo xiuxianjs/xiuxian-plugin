@@ -19,7 +19,8 @@ export interface ActionRecord {
   cishu?: number
   group_id?: string
   // 位置/秘境等扩展信息
-  Place_address?
+  Place_address?: string
+  is_jiesuan?: number
   // 允许额外字段（保持兼容），使用 unknown 再在使用点断言
 }
 

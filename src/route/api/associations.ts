@@ -2,7 +2,7 @@ import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
 import { parseJsonBody } from '@src/route/core/bodyParser'
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keys } from '@src/model/keys'
 
 const redis = getIoRedis()
 
@@ -149,9 +149,7 @@ export const POST = async (ctx: Context) => {
       return
     }
 
-    const associationData = await redis.get(
-      `${__PATH.association}:${associationName}`
-    )
+    const associationData = await redis.get(keys.association(associationName))
 
     if (!associationData) {
       ctx.status = 404

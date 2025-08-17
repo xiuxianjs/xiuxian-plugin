@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Row, Col, Statistic, Table, Progress } from 'antd'
+import { Card, Row, Col, Statistic, Table } from 'antd'
 import {
   UserOutlined,
   TeamOutlined,
@@ -18,8 +18,7 @@ import { useDashboardCode } from './Dashboard.code'
 import classNames from 'classnames'
 
 export default function Dashboard() {
-  const { stats, loading, fetchStats, levelDistributionData, categoryData } =
-    useDashboardCode()
+  const { stats, loading, fetchStats } = useDashboardCode()
 
   // 玩家排行榜列配置
   const playerColumns: ColumnsType<TopPlayer> = [
@@ -298,52 +297,8 @@ export default function Dashboard() {
               </Col>
             </Row>
 
-            {/* 境界分布和玩家排行榜 */}
-            <Row gutter={[16, 16]} className="mb-6">
-              {/* 境界分布 */}
-              <Col xs={24} lg={12}>
-                <Card
-                  title={
-                    <span className="text-xl font-bold text-white flex items-center gap-2">
-                      <CrownOutlined className="text-purple-400" />
-                      境界分布 TOP10
-                    </span>
-                  }
-                  className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg h-full"
-                >
-                  <div className="space-y-3">
-                    {levelDistributionData.map((item, index) => (
-                      <div
-                        key={item.level}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-                          <span className="text-xs sm:text-sm font-medium text-slate-400 w-6 sm:w-8 flex-shrink-0">
-                            {index + 1}
-                          </span>
-                          <span className="text-xs sm:text-sm truncate text-white">
-                            {item.name}
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2 flex-shrink-0">
-                          <div className="w-16 sm:w-20">
-                            <Progress
-                              percent={parseFloat(item.percentage)}
-                              size="small"
-                              showInfo={false}
-                              strokeColor="#8b5cf6"
-                            />
-                          </div>
-                          <span className="text-xs sm:text-sm text-slate-400 w-8 sm:w-12 text-right">
-                            {item.count}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </Col>
-
+            {/* 排行榜区域 */}
+            <Row gutter={[16, 16]}>
               {/* 玩家排行榜 */}
               <Col xs={24} lg={12}>
                 <Card
@@ -369,10 +324,7 @@ export default function Dashboard() {
                   />
                 </Card>
               </Col>
-            </Row>
 
-            {/* 宗门排行榜和物品分类 */}
-            <Row gutter={[16, 16]}>
               {/* 宗门排行榜 */}
               <Col xs={24} lg={12}>
                 <Card
@@ -396,50 +348,6 @@ export default function Dashboard() {
                     rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
                     className="bg-transparent xiuxian-table"
                   />
-                </Card>
-              </Col>
-
-              {/* 物品分类统计 */}
-              <Col xs={24} lg={12}>
-                <Card
-                  title={
-                    <span className="text-xl font-bold text-white flex items-center gap-2">
-                      <TrophyOutlined className="text-green-400" />
-                      物品分类统计
-                    </span>
-                  }
-                  className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg h-full"
-                >
-                  <div className="space-y-3">
-                    {categoryData.map((item, index) => (
-                      <div
-                        key={item.category}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-                          <span className="text-xs sm:text-sm font-medium text-slate-400 w-6 sm:w-8 flex-shrink-0">
-                            {index + 1}
-                          </span>
-                          <span className="text-xs sm:text-sm truncate text-white">
-                            {item.category}
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2 flex-shrink-0">
-                          <div className="w-16 sm:w-20">
-                            <Progress
-                              percent={parseFloat(item.percentage)}
-                              size="small"
-                              showInfo={false}
-                              strokeColor="#10b981"
-                            />
-                          </div>
-                          <span className="text-xs sm:text-sm text-slate-400 w-8 sm:w-12 text-right">
-                            {item.count}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </Card>
               </Col>
             </Row>

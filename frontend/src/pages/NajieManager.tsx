@@ -2,15 +2,15 @@ import React from 'react'
 import { Table, Tooltip } from 'antd'
 import {
   EyeOutlined,
+  EditOutlined,
   ShoppingOutlined,
-  BankOutlined,
-  GiftOutlined,
   ReloadOutlined,
   SearchOutlined
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { Najie } from '@/types'
 import NajieInfo from './modals/NajieInfo'
+import NajieEditModal from './modals/NajieEditModal'
 import { useNajieManagerCode } from './NajieManager.code'
 
 export default function NajieManager() {
@@ -20,15 +20,19 @@ export default function NajieManager() {
     searchText,
     selectedNajie,
     najieDetailVisible,
+    najieEditVisible,
+    editLoading,
     pagination,
-    stats,
     fetchNajie,
     handleSearchAndFilter,
     handleTableChange,
+    handleEditNajie,
+    handleSaveNajie,
     getTotalItems,
     setSearchText,
     setSelectedNajie,
-    setNajieDetailVisible
+    setNajieDetailVisible,
+    setNajieEditVisible
   } = useNajieManagerCode()
 
   // 表格列定义
@@ -126,20 +130,31 @@ export default function NajieManager() {
         </div>
       ),
       key: 'actions',
-      width: 100,
+      width: 150,
       render: (_, record) => (
-        <Tooltip title="查看详情">
-          <button
-            className="px-3 py-1 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-1"
-            onClick={() => {
-              setSelectedNajie(record)
-              setNajieDetailVisible(true)
-            }}
-          >
-            <EyeOutlined />
-            查看
-          </button>
-        </Tooltip>
+        <div className="flex gap-2">
+          <Tooltip title="查看详情">
+            <button
+              className="px-3 py-1 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-1"
+              onClick={() => {
+                setSelectedNajie(record)
+                setNajieDetailVisible(true)
+              }}
+            >
+              <EyeOutlined />
+              查看
+            </button>
+          </Tooltip>
+          <Tooltip title="编辑背包">
+            <button
+              className="px-3 py-1 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-1"
+              onClick={() => handleEditNajie(record)}
+            >
+              <EditOutlined />
+              编辑
+            </button>
+          </Tooltip>
+        </div>
       )
     }
   ]
@@ -170,65 +185,6 @@ export default function NajieManager() {
             <ReloadOutlined className={loading ? 'animate-spin' : ''} />
             {loading ? '刷新中...' : '刷新数据'}
           </button>
-        </div>
-
-        {/* 统计信息 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">总背包数</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {(stats.total || 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <ShoppingOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">总灵石</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {(stats.totalLingshi || 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <BankOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">总物品数</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {(stats.totalItems || 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <GiftOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">装备总数</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {(stats.categoryStats?.装备 || 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <GiftOutlined className="text-white text-xl" />
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* 搜索栏 */}
@@ -295,6 +251,15 @@ export default function NajieManager() {
           setNajieDetailVisible={setNajieDetailVisible}
           selectedNajie={selectedNajie}
           getTotalItems={getTotalItems}
+        />
+
+        {/* 背包编辑弹窗 */}
+        <NajieEditModal
+          visible={najieEditVisible}
+          onCancel={() => setNajieEditVisible(false)}
+          onSave={handleSaveNajie}
+          najie={selectedNajie}
+          loading={editLoading}
         />
       </div>
     </div>

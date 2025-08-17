@@ -32,7 +32,7 @@ const UserInfo = ({
       open={userDetailVisible}
       onCancel={() => setUserDetailVisible(false)}
       footer={null}
-      className="xiuxian-model"
+      className="xiuxian-modal"
       closeIcon={<CloseOutlined className="text-white" />}
       width={selectedUser?.数据状态 === 'corrupted' ? 1200 : 800}
     >

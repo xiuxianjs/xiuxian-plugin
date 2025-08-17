@@ -283,6 +283,7 @@ export default function DataEditModal({
       onCancel={onCancel}
       width="95%"
       style={{ top: 20 }}
+      className="xiuxian-modal"
       footer={[
         <Button key="cancel" onClick={onCancel} icon={<CloseOutlined />}>
           取消

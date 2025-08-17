@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import {
   getGameUsersStatsAPI,
@@ -8,7 +8,6 @@ import {
   getTaskStatusAPI
 } from '@/api/auth'
 import { DashboardStats } from '@/types'
-import { levelNames } from '@/config'
 
 export const useDashboardCode = () => {
   const { user } = useAuth()
@@ -41,8 +40,7 @@ export const useDashboardCode = () => {
         users: {
           total: userStats.success ? userStats.data?.total || 0 : 0,
           active: userStats.success ? userStats.data?.total || 0 : 0,
-          newToday: 0,
-          levelDistribution: {}
+          newToday: 0
         },
         associations: {
           total: associationStats.success
@@ -63,10 +61,7 @@ export const useDashboardCode = () => {
           totalLingshi: najieStats.success
             ? najieStats.data?.totalLingshi || 0
             : 0,
-          totalItems: najieStats.success ? najieStats.data?.totalItems || 0 : 0,
-          categoryStats: najieStats.success
-            ? najieStats.data?.categoryStats || {}
-            : {}
+          totalItems: najieStats.success ? najieStats.data?.totalItems || 0 : 0
         },
         rankings: {
           lastUpdate: rankingStats.success
@@ -100,39 +95,9 @@ export const useDashboardCode = () => {
     fetchStats()
   }, [user])
 
-  const getLevelName = (level: number): string => {
-    return levelNames[level] || `${level}`
-  }
-
-  // 境界分布数据
-  const levelDistributionData = stats?.users.levelDistribution
-    ? Object.entries(stats.users.levelDistribution)
-        .map(([level, count]) => ({
-          level: parseInt(level),
-          name: getLevelName(parseInt(level)),
-          count,
-          percentage: ((count / (stats.users.total || 1)) * 100).toFixed(1)
-        }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 10)
-    : []
-
-  // 物品分类数据
-  const categoryData = stats?.najie.categoryStats
-    ? Object.entries(stats.najie.categoryStats)
-        .map(([category, count]) => ({
-          category,
-          count,
-          percentage: ((count / (stats.najie.totalItems || 1)) * 100).toFixed(1)
-        }))
-        .sort((a, b) => b.count - a.count)
-    : []
-
   return {
     loading,
     stats,
-    levelDistributionData,
-    categoryData,
     fetchStats
   }
 }

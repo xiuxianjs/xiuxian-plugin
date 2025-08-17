@@ -2,6 +2,7 @@ import React from 'react'
 import { configCategories } from '@/config'
 import classNames from 'classnames'
 import { useConfigManagerCode } from './ConfigManager.code'
+import { Modal } from 'antd'
 
 export default function ConfigManager() {
   const {
@@ -16,7 +17,9 @@ export default function ConfigManager() {
     loadConfig,
     handleSave,
     handleConfigChange,
-    getConfigValue
+    getConfigValue,
+    open,
+    setOpen
   } = useConfigManagerCode()
 
   return (
@@ -24,7 +27,7 @@ export default function ConfigManager() {
       <div className="relative z-10  p-2 md:p-6 h-full overflow-y-auto">
         {/* 页面标题 */}
         <div className="flex justify-between items-center mb-6">
-          <div className="flex space-x-3">
+          <div>
             <button
               onClick={loadConfig}
               disabled={loading}
@@ -34,19 +37,32 @@ export default function ConfigManager() {
               {loading ? '刷新中...' : '刷新配置'}
             </button>
           </div>
-          {/* 保存按钮 */}
-          {activeTab !== 'JSON编辑' && (
-            <div className="flex justify-center">
+          <div className="flex space-x-3">
+            <div>
               <button
-                onClick={() => config && handleSave(config)}
-                disabled={loading || !config}
-                className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => {
+                  setOpen(true)
+                }}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
               >
-                <span className="mr-2">💾</span>
-                {loading ? '保存中...' : '保存所有配置'}
+                <span className="mr-2">🔄</span>
+                JSON编辑
               </button>
             </div>
-          )}
+            {/* 保存按钮 */}
+            {activeTab !== 'JSON编辑' && (
+              <div className="flex justify-center">
+                <button
+                  onClick={() => config && handleSave(config)}
+                  disabled={loading || !config}
+                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="mr-2">💾</span>
+                  {loading ? '保存中...' : '保存配置'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* 消息提示 */}
@@ -81,70 +97,6 @@ export default function ConfigManager() {
           </div>
         )}
 
-        {/* 配置统计 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">配置分类</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {configCategories.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">📁</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">配置项</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {configCategories.reduce(
-                    (total, cat) => total + cat.items.length,
-                    0
-                  )}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">⚙️</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">CD配置</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {configCategories.find(cat => cat.name === 'CD配置')?.items
-                    .length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">⏱️</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">开关配置</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {configCategories.find(cat => cat.name === '开关配置')?.items
-                    .length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">🔘</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* 标签页导航 */}
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
           <div className="flex flex-wrap gap-2 mb-6">
@@ -163,21 +115,10 @@ export default function ConfigManager() {
                 {category.name}
               </button>
             ))}
-            <button
-              onClick={() => setActiveTab('JSON编辑')}
-              className={classNames(
-                'px-4 py-2 rounded-lg transition-all duration-200',
-                activeTab === 'JSON编辑'
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                  : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
-              )}
-            >
-              📄 JSON编辑
-            </button>
           </div>
 
           {/* 配置内容 */}
-          {activeTab !== 'JSON编辑' && (
+          {
             <div className="space-y-6">
               {configCategories
                 .filter(category => category.name === activeTab)
@@ -274,56 +215,39 @@ export default function ConfigManager() {
                   </div>
                 ))}
             </div>
-          )}
-
-          {/* JSON编辑 */}
-          {activeTab === 'JSON编辑' && (
-            <div>
-              <div className="mb-4">
-                <div className="flex justify-between py-2">
-                  <div>
-                    <label className="block text-slate-300 text-xl font-medium mb-2">
-                      JSON配置
-                    </label>
-                  </div>
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => {
-                        try {
-                          const parsed = JSON.parse(jsonConfig)
-                          handleSave(parsed)
-                        } catch (error) {
-                          console.error(error)
-                          setMessage({ type: 'error', text: 'JSON格式错误' })
-                        }
-                      }}
-                      disabled={loading}
-                      className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
-                    >
-                      <span className="mr-2">💾</span>
-                      {loading ? '保存中...' : '保存配置'}
-                    </button>
-                    <button
-                      onClick={loadConfig}
-                      disabled={loading}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
-                    >
-                      <span className="mr-2">🔄</span>
-                      重新加载
-                    </button>
-                  </div>
-                </div>
-                <textarea
-                  value={jsonConfig}
-                  onChange={e => setJsonConfig(e.target.value)}
-                  className="w-full h-96 p-4 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200 font-mono text-sm"
-                  placeholder="请输入JSON格式的配置..."
-                />
-              </div>
-            </div>
-          )}
+          }
         </div>
       </div>
+
+      <Modal
+        className="xiuxian-modal"
+        title="JSON配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        onOk={() => {
+          try {
+            const parsed = JSON.parse(jsonConfig)
+            handleSave(parsed)
+            setOpen(false)
+          } catch (error) {
+            console.error(error)
+            setMessage({ type: 'error', text: 'JSON格式错误' })
+          }
+        }}
+        cancelText="取消"
+        okText="确定"
+      >
+        <div>
+          <div className="mb-4">
+            <textarea
+              value={jsonConfig}
+              onChange={e => setJsonConfig(e.target.value)}
+              className="w-full h-96 p-4 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200 font-mono text-sm"
+              placeholder="请输入JSON格式的配置..."
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -2,10 +2,9 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { stopAction, readAction } from '@src/response/actionHelper'
 import { userKey } from '@src/model/utils/redisHelper'
-
 import { selects } from '@src/response/index'
-export const regular = /^(#|＃|\/)?解除所有$/
 import { __PATH } from '@src/model/index'
+export const regular = /^(#|＃|\/)?解除所有$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return
