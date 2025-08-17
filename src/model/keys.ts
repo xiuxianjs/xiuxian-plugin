@@ -32,7 +32,11 @@ const __PATH = {
   // 所有充值记录
   currency_log: 'data:alemonjs-xiuxian:currency_log',
   // 充值记录索引。根据索引生成。
-  currency_index: 'data:alemonjs-xiuxian:currency_index'
+  currency_index: 'data:alemonjs-xiuxian:currency_index',
+  // 验证码
+  captcha: 'data:alemonjs-xiuxian:captcha',
+  // 禁言
+  mute: 'data:alemonjs-xiuxian:mute'
 }
 
 export { __PATH }
@@ -110,7 +114,9 @@ export const keys = {
   autoBackup: (id: string) => `${__PATH.auto_backup}:${id}`,
   playerCurrency: (id: string) => `${__PATH.player_currency}:${id}`,
   currencyLog: (id: string) => `${__PATH.currency_log}:${id}`,
-  currencyIndex: () => `${__PATH.currency_index}`
+  currencyIndex: () => `${__PATH.currency_index}`,
+  captcha: (id: string) => `${__PATH.captcha}:${id}`,
+  mute: (id: string) => `${__PATH.mute}:${id}`
 }
 
 export type RedisKeyGenerator = typeof keys
