@@ -2,7 +2,7 @@ import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
 import { parseJsonBody } from '@src/route/core/bodyParser'
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 
 const redis = getIoRedis()
 

@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '../paths.js'
+import { __PATH } from '../keys.js'
 
 export function safeParse<T>(s: string | null | undefined, fallback: T): T {
   if (!s) return fallback

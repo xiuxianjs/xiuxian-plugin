@@ -1,6 +1,6 @@
 // 丹药存取逻辑抽离
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { readAll } from './duanzaofu.js'
 import { DanyaoStatus } from '@src/types/player.js'
 import { keys } from './keys.js'

@@ -4,7 +4,7 @@ import { data, pushInfo, redis } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 import {
   readAction,
   isActionRunning,
@@ -18,7 +18,7 @@ import {
   KEY_WORLD_BOOS_STATUS,
   KEY_WORLD_BOOS_STATUS_TWO
 } from '@src/model/settions'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 
 export const WorldBossBattleInfo = {

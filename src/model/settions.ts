@@ -1,5 +1,5 @@
 import { NajieCategory } from '@src/types'
-import { __PATH } from './paths'
+import { __PATH } from './keys'
 import { createRequire } from 'module'
 import {
   GAME_KEY,

@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/model/api'
 import { existplayer, addCoin } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?抢红包$/
 
 interface MentionUser {

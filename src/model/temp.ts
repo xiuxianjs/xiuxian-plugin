@@ -1,6 +1,6 @@
 // 临时数据存取逻辑抽离
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { safeParse } from './utils/safe.js'
 import type { TempRecord } from '../types/model'
 import { keys } from './keys.js'

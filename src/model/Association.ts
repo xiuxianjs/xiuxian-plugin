@@ -1,12 +1,12 @@
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from './paths'
+import { __PATH } from './keys'
 import type { AssociationData } from '@src/types'
 import { keys } from './keys'
 
 /**
  * 获取宗门数据
  * @param file_name  宗门名称
- * @deprecated
+ * @deprecated 请使用 redis + keys
  */
 async function getAssociation(
   file_name: string

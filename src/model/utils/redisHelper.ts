@@ -1,5 +1,5 @@
 import { redis } from '../../model/api'
-import { getRedisKey } from '../key'
+import { getRedisKey } from '../keys'
 import type { ActionType, RedisScalar } from '../../types/model'
 
 // 通用获取：保留字符串或 null

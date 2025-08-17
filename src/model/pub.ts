@@ -1,4 +1,4 @@
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import type { Player } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'
 import type { CustomRecord } from '../types/model'

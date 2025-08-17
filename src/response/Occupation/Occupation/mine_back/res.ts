@@ -3,7 +3,7 @@ import { getPlayerAction } from '@src/model/index'
 import { mine_jiesuan } from '../../api'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?结束采矿$/
 
 interface PlayerAction {

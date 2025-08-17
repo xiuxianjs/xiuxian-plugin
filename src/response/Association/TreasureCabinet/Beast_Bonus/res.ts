@@ -5,7 +5,7 @@ import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
 import type { AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { existDataByPath, readDataByPath } from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?神兽赐福$/
 

@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 import { getRandomFromARR, notUndAndNull } from '@src/model/common'
 import { playerEfficiency } from '@src/model/efficiency'
 import { data, redis } from '@src/model/api'

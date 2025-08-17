@@ -1,4 +1,4 @@
-import { __PATH } from './paths'
+import { __PATH } from './keys.js'
 import Association from './Association.js'
 import DataControl from './DataControl.js'
 import { DataListx } from './DataList.js'

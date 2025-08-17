@@ -3,7 +3,7 @@ import { notUndAndNull } from '@src/model/common'
 import { Harm } from '@src/model/battle'
 import { readShop, writeShop } from '@src/model/shop'
 import { addNajieThing } from '@src/model/najie'
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
 import type {

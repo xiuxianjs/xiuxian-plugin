@@ -1,4 +1,4 @@
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { Text, useMention, useSend } from 'alemonjs'
 
 import { redis, data, config } from '@src/model/api'

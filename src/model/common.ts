@@ -4,7 +4,7 @@ import { safeParse } from './utils/safe.js'
 import type { LastSignTime, PlayerActionData } from '../types/model'
 import { convert2integer } from './utils/number.js'
 import { getIoRedis } from '@alemonjs/db'
-import { getRedisKey } from './key.js'
+import { getRedisKey, keysAction } from './keys.js'
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length)
@@ -85,7 +85,11 @@ export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
 export function isNotBlank(value): boolean {
   return !(value === null || value === undefined || value === '')
 }
-
+/**
+ * todo
+ * @param e
+ * @returns
+ */
 export async function Go(e): Promise<boolean | 0> {
   const usr_qq = e.UserId
   const Send = useSend(e)
@@ -93,7 +97,7 @@ export async function Go(e): Promise<boolean | 0> {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return 0
   const redis = getIoRedis()
-  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'))
+  const game_action = await redis.get(keysAction.gameAction(usr_qq))
   if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return 0

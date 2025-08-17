@@ -1,7 +1,7 @@
 import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian_impl'
 import Association from '@src/model/Association'
 import { data } from '@src/model/api'

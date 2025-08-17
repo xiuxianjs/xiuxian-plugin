@@ -1,5 +1,5 @@
 import data from './XiuxianData.js'
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import type { Player, Equipment, Najie } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'
 import { createPlayerRepository } from './repository/playerRepository.js'

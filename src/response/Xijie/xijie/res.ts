@@ -21,7 +21,7 @@ import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/index'
 import { setDataByUserId } from '@src/model/Redis'
 import type { Player } from '@src/types'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?洗劫.*$/
 
 interface ShopItemLite {

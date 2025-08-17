@@ -1,5 +1,5 @@
 /* 商店相关函数抽离 */
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { safeParse } from './utils/safe.js'
 import { getIoRedis } from '@alemonjs/db'
 import type { ShopThing, ShopData } from '../types/model'

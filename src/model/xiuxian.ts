@@ -1,4 +1,4 @@
-export { __PATH } from './paths.js'
+export { __PATH } from './keys.js'
 export { readIt } from './duanzaofu.js'
 export { writeIt, writePlayer } from './pub.js'
 export type { Player, Equipment, Najie } from '../types/player.js'

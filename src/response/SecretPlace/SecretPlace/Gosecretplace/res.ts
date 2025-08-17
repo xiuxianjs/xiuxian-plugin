@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { startAction } from '@src/response/actionHelper'
 import {
   Go,

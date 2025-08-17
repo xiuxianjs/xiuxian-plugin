@@ -13,7 +13,7 @@ import {
 
 import { selects } from '@src/response/index'
 import type { Player } from '@src/types'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?修仙签到$/
 
 interface LastSignStruct {

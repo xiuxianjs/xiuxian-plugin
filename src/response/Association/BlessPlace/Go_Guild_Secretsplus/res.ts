@@ -9,7 +9,7 @@ import { addCoin } from '@src/model/economy'
 import type { Player, AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?沉迷宗门秘境.*$/
 
 interface PlayerGuildRef {

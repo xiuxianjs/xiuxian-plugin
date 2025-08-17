@@ -5,7 +5,7 @@ import { addNajieThing } from '@src/model/index'
 import type { AssociationData } from '@src/types/domain'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?拔苗助长.*$/
 
 // 数值安全转换

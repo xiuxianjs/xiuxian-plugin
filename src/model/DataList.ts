@@ -79,7 +79,7 @@ import type {
   PermanentPetItem,
   SkillItem
 } from '../types/data_extra'
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { getIoRedis } from '@alemonjs/db'
 
 export const DATA_LIST = {

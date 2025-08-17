@@ -5,7 +5,7 @@ import { existplayer, addNajieThing } from '@src/model/index'
 import type { NajieCategory } from '@src/types/model'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?活动兑换.*$/
 

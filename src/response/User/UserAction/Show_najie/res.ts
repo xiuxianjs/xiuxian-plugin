@@ -5,7 +5,7 @@ import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
 import { selects } from '@src/response/index'
 import { getNajieImage } from '@src/model/image'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?我的纳戒$/
 
 function toInt(v, d = 0) {

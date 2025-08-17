@@ -19,7 +19,7 @@ import fs from 'fs'
 import { selects } from '@src/response/index'
 import { Show_player } from '../user'
 import type { Player, AssociationDetailData } from '@src/types'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 export const regular = /^(#|＃|\/)?再入仙途$/
 

@@ -14,7 +14,7 @@ import {
   WorldBossBattleInfo
 } from '../../boss'
 import { existplayer } from '@src/model'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import {
   KEY_AUCTION_GROUP_LIST,
   KEY_RECORD,

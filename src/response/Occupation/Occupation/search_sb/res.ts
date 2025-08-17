@@ -4,7 +4,7 @@ import { existplayer, readPlayer, __PATH } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 import { screenshot } from '@src/image'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?悬赏目标$/
 
 export default onResponse(selects, async e => {

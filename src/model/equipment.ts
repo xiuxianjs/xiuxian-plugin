@@ -1,4 +1,4 @@
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { writePlayer } from './pub.js'
 import type { Player, Equipment } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'

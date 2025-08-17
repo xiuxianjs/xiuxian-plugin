@@ -6,7 +6,7 @@ import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?宗门俸禄$/
 
 interface DateParts {

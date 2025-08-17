@@ -15,7 +15,7 @@ import { addHP, addCoin } from '@src/model/economy'
 
 import { selects } from '@src/response/index'
 import { existplayer } from '@src/model'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import {
   KEY_AUCTION_GROUP_LIST,
   KEY_RECORD_TWO,

@@ -1,4 +1,4 @@
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { Text, useSend } from 'alemonjs'
 
 import { existplayer } from '@src/model/index'

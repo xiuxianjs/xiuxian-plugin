@@ -1,6 +1,6 @@
-import { __PATH_CONFIG } from './paths'
+import { __PATH_CONFIG } from './keys'
 import { getIoRedis } from '@alemonjs/db'
-import { getRedisConfigKey } from './key'
+import { getRedisConfigKey } from './keys'
 
 export type Data = typeof __PATH_CONFIG
 

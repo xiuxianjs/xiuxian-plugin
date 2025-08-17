@@ -14,7 +14,7 @@ import {
 
 import { selects } from '@src/response/index'
 import { getDataByUserId } from '@src/model/Redis'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 // 玩家行动状态（统一抽象）
 interface PlayerActionState {

@@ -14,7 +14,7 @@ import {
 
 import { selects } from '@src/response/index'
 import type { NajieCategory, ForumRecord } from '@src/types/model'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?接取.*$/
 
 interface ForumOrder {

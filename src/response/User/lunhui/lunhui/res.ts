@@ -15,7 +15,7 @@ import type { TalentInfo, Player } from '@src/types/player'
 import type { AssociationData } from '@src/types/domain'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?轮回$/
 
 // === 配置：各转轮回灵根与提示 ===

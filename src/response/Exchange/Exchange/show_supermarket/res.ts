@@ -5,7 +5,7 @@ import { getSupermarketImage } from '@src/model/image'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
 import type { NajieCategory } from '@src/types/model'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 export const regular = /^(#|＃|\/)?冲水堂(装备|丹药|功法|道具|草药|仙宠|材料)?$/
 

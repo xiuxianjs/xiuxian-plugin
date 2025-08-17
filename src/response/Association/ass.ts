@@ -1,6 +1,6 @@
 import { redis } from '@src/model/api'
 import { shijianc } from '@src/model/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 /**
  * 判断宗门是否需要维护

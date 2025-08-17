@@ -1,7 +1,7 @@
 import { screenshot } from '@src/image'
 import { redis, data } from '@src/model/api'
 import { __PATH, shijianc, readPlayer } from '@src/model/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import type { Player, TalentInfo } from '@src/types'
 
 // 榜单条目类型（简化，只列出必需字段，允许附加动态属性）

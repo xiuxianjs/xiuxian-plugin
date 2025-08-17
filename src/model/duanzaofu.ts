@@ -1,6 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { writePlayer } from './pub.js'
 import { safeParse } from './utils/safe.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'

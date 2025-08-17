@@ -5,7 +5,7 @@ import { writePlayer } from '@src/model/xiuxian'
 import { addNajieThing } from '@src/model/najie'
 import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type {

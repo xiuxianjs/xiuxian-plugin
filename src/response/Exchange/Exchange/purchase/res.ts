@@ -12,7 +12,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?选购.*$/
 
 export default onResponse(selects, async e => {

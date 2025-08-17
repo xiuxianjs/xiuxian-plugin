@@ -9,7 +9,7 @@ import {
 import { Show_player } from '../user'
 import { selects } from '@src/response/index'
 import type { Player } from '@src/types'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 export const regular = /^(#|＃|\/)?(改名|设置道宣).*$/
 const regularCut = /^(#|＃|\/)?(改名|设置道宣)/

@@ -9,7 +9,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?悬赏.*$/
 

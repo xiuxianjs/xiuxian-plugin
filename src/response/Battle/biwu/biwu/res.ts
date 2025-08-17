@@ -1,4 +1,4 @@
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 import { Image, Text, useMention, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle'

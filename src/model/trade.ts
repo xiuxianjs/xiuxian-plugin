@@ -1,5 +1,5 @@
 /* 交易/拍卖相关函数抽离 */
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import { getIoRedis } from '@alemonjs/db'
 import { safeParse } from './utils/safe.js'
 import type { AuctionItem } from '../types/data_extra'

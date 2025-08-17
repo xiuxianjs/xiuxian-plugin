@@ -4,7 +4,7 @@ import { selects } from '@src/response/index'
 import { getXianChongImage } from '@src/model/image'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 export const regular = /^(#|＃|\/)?仙宠楼$/
 

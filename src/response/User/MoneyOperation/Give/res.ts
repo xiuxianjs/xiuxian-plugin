@@ -13,7 +13,7 @@ import {
 import { selects } from '@src/response/index'
 import { parseUnitNumber } from '@src/model/utils/utilsx'
 import type { NajieCategory } from '@src/types'
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
 export const regular =

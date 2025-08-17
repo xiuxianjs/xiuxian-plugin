@@ -46,7 +46,7 @@ const toNum = (v, d = 0) =>
     : typeof v === 'string' && !isNaN(+v)
       ? +v
       : d
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 const randomScale = () => 0.8 + 0.4 * Math.random()
 function buildBattlePlayer(
   src: RankEntry,

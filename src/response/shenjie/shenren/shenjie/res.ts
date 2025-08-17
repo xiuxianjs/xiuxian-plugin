@@ -53,7 +53,7 @@ function isDayChanged(a: DayInfo | null, b: DayInfo | null): boolean {
 
 const LS_COST = 2_200_000
 const DURATION_MINUTES = 30
-import { getRedisKey } from '@src/model/key'
+import { getRedisKey } from '@src/model/keys'
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)

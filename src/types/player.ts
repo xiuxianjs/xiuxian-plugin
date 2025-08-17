@@ -39,7 +39,7 @@ export interface Player {
   宣言?: string
   灵根: TalentInfo
   隐藏灵根?: TalentInfo
-  仙宠: XianchongInfo | XianchongInfo[]
+  仙宠: XianchongInfo
   学习的功法: any[]
   修炼效率提升: number
   宗门?: string | { 宗门名称: string; 职位: string }

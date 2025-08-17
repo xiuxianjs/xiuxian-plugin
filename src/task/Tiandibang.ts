@@ -1,7 +1,7 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
 import { data, redis } from '@src/model/api'
 // 细粒度导入
-import { __PATH } from '@src/model/paths'
+import { __PATH } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
 

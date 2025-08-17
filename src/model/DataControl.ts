@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from './paths.js'
+import { __PATH } from './keys.js'
 import type { JSONData, FilePathType } from '../types/model'
 import { filePathMap } from './settions.js'
 
