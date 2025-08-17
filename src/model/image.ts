@@ -708,9 +708,9 @@ export async function getPlayerImage(
     const data = {
       occupation_exp_list: await getDataList('experience')
     }
-    occupation_level_name = data.occupation_exp_list.find(
-      item => item.id == occupation_level
-    ).name
+    occupation_level_name =
+      data.occupation_exp_list.find(item => item.id == occupation_level)
+        ?.name || '无'
     occupation_exp = player.occupation_exp
     occupation_need_exp = data.occupation_exp_list.find(
       item => item.id == occupation_level
