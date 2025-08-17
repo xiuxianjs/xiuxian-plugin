@@ -19,6 +19,7 @@ import {
   KEY_WORLD_BOOS_STATUS_TWO
 } from '@src/model/settions'
 import { getRedisKey } from '@src/model/key'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 
 export const WorldBossBattleInfo = {
   CD: {},
@@ -59,7 +60,7 @@ export async function InitWorldBoss() {
   await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus))
   await redis.set(KEY_RECORD, JSON.stringify(PlayerRecord))
   const msg = '【全服公告】妖王已经苏醒,击杀者额外获得100w灵石'
-  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+  const redisGlKey = KEY_AUCTION_GROUP_LIST
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
     await pushInfo(group, true, msg)
@@ -91,7 +92,7 @@ export async function InitWorldBoss2() {
   await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus))
   await redis.set(KEY_RECORD_TWO, JSON.stringify(PlayerRecord))
   const msg = '【全服公告】金角大王已经苏醒,击杀者额外获得50w灵石'
-  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+  const redisGlKey = KEY_AUCTION_GROUP_LIST
   const groupList = await redis.smembers(redisGlKey)
   for (const group_id of groupList) {
     await pushInfo(group_id, true, msg)
@@ -370,7 +371,7 @@ export async function WorldBossBattle(e) {
         '【全服公告】' +
         player.名号 +
         '亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！'
-      const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+      const redisGlKey = KEY_AUCTION_GROUP_LIST
       const groupList = await redis.smembers(redisGlKey)
       for (const group of groupList) {
         await pushInfo(group, true, msg2)

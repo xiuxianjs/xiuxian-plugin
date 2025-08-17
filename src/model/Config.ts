@@ -6,6 +6,11 @@ export type Data = typeof __PATH_CONFIG
 
 export type ConfigKey = keyof Data
 
+/**
+ *
+ * @param name
+ * @returns
+ */
 export const hasConfig = async (name: ConfigKey) => {
   const redis = getIoRedis()
   const key = getRedisConfigKey(name)
@@ -13,6 +18,12 @@ export const hasConfig = async (name: ConfigKey) => {
   return e > 0
 }
 
+/**
+ *
+ * @param name
+ * @param data
+ * @returns
+ */
 export const setConfig = async (name: ConfigKey, data: any) => {
   try {
     const redis = getIoRedis()

@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
-
 import { selects } from '@src/response/index'
 import { biwuPlayer } from '../biwu'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?选择技能.*$/
 
 export default onResponse(selects, async e => {
@@ -13,6 +12,11 @@ export default onResponse(selects, async e => {
   const jineng_name = e.MessageText.replace(/^(#|＃|\/)?选择技能/, '')
   let code = jineng_name.split(',')
   const msg = []
+
+  const data = {
+    jineng: await getDataList('Jineng')
+  }
+
   if (A_QQ.some(item => item.QQ == e.UserId)) {
     for (const j of A_QQ) {
       if (j.QQ == e.UserId) {

@@ -1,13 +1,13 @@
 import { __PATH } from './paths'
 import Association from './Association.js'
 import DataControl from './DataControl.js'
-import { DataList } from './DataList.js'
+import { DataListx } from './DataList.js'
 
 /**
  * 废弃
  * @deprecated Use `new DataList()` instead
  */
-class XiuxianData extends DataList {
+class XiuxianData extends DataListx {
   constructor() {
     super()
   }

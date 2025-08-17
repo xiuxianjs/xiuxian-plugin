@@ -1,5 +1,3 @@
-// 修行/渡劫/物品查询等逻辑抽离
-import data from './XiuxianData.js'
 import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs'
 import type { Player, TalentInfo } from '../types/player.js'
 import { writePlayer, writeIt } from './pub.js'
@@ -15,6 +13,10 @@ import {
   天灵根概率,
   圣体概率
 } from './settions.js'
+
+import { getIoRedis } from '@alemonjs/db'
+import { keys } from './keys.js'
+import { getDataList } from './DataList.js'
 
 export async function dujie(user_qq: string): Promise<number> {
   const player: Player | null = await readPlayer(user_qq)
@@ -104,6 +106,9 @@ export async function getAllExp(usr_qq: string) {
   const player = await readPlayer(usr_qq)
   let sum_exp = 0
   if (!notUndAndNull(player?.level_id)) return
+  const data = {
+    Level_list: await getDataList('Level1')
+  }
   const now_level_id = data.Level_list.find(
     item => item.level_id == player.level_id
   ).level_id
@@ -126,6 +131,9 @@ export function getRandomRes(P: number) {
 
 export async function getRandomTalent(): Promise<TalentInfo> {
   let talent
+  const data = {
+    talent_list: await getDataList('Talent')
+  }
   if (getRandomRes(体质概率)) {
     talent = data.talent_list.filter(item => item.type == '体质')
   } else if (getRandomRes(伪灵根概率 / (1 - 体质概率))) {
@@ -153,24 +161,20 @@ export async function setFileValue(
   num: number,
   type: string
 ): Promise<void> {
-  const user_data = await data.getData('player', user_qq)
-  if (user_data === 'error' || Array.isArray(user_data)) return
-  const player = user_data as Player
+  const str = await getIoRedis().get(keys.player(user_qq))
+  if (!str) return
+  const player = JSON.parse(str)
+  if (!player) return
   const current_raw = player[type]
   const current_num = typeof current_raw === 'number' ? current_raw : 0
   let new_num = current_num + num
   if (type == '当前血量' && new_num > player.血量上限) new_num = player.血量上限
   player[type] = new_num
-  // DataControl.setData 在 XiuxianData 上被继承；使用可选链防御
-  const maybe = data as {
-    setData?: (k: string, id: string, v) => void
-  }
-  if (typeof maybe.setData === 'function') {
-    maybe.setData('player', user_qq, player)
-  }
+  await getIoRedis().set(keys.player(user_qq), JSON.stringify(player))
 }
 
 export type FoundThing = { name: string; [k: string]: any }
+
 export async function foundthing(
   thing_name: string
 ): Promise<FoundThing | false> {
@@ -188,6 +192,20 @@ export async function foundthing(
     'xianchonkouliang',
     'duanzhaocailiao'
   ] as const
+  const data = {
+    equipment_list: await getDataList('Equipment'),
+    danyao_list: await getDataList('Danyao'),
+    daoju_list: await getDataList('Daoju'),
+    gongfa_list: await getDataList('Gongfa'),
+    caoyao_list: await getDataList('Caoyao'),
+    timegongfa_list: await getDataList('TimeGongfa'),
+    timeequipmen_list: await getDataList('TimeEquipment'),
+    timedanyao_list: await getDataList('TimeDanyao'),
+    newdanyao_list: await getDataList('NewDanyao'),
+    xianchon: await getDataList('Xianchon'),
+    xianchonkouliang: await getDataList('Xianchonkouliang'),
+    duanzhaocailiao: await getDataList('Duanzhaocailiao')
+  }
   const hasName = (obj): obj is FoundThing =>
     typeof obj === 'object' && obj !== null && 'name' in obj
   for (const key of primaryGroups) {

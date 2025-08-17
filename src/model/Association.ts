@@ -1,6 +1,7 @@
 import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths'
 import type { AssociationData } from '@src/types'
+import { keys } from './keys'
 
 /**
  * 获取宗门数据
@@ -11,7 +12,7 @@ async function getAssociation(
   file_name: string
 ): Promise<AssociationData | 'error'> {
   const redis = getIoRedis()
-  const data = await redis.get(`${__PATH.association}:${file_name}`)
+  const data = await redis.get(keys.association(file_name))
   if (!data) {
     // 如果没有数据，返回空对象
     return 'error'
@@ -35,7 +36,7 @@ async function setAssociation(
   data: AssociationData
 ): Promise<void> {
   const redis = getIoRedis()
-  await redis.set(`${__PATH.association}:${file_name}`, JSON.stringify(data))
+  await redis.set(keys.association(file_name), JSON.stringify(data))
   return
 }
 

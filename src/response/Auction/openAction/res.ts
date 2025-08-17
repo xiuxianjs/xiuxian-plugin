@@ -3,6 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { getConfig, openAU, readPlayer } from '@src/model/index'
 import type { ExchangeRecord } from '@src/types'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启星阁体系$/
@@ -18,7 +19,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+  const redisGlKey = KEY_AUCTION_GROUP_LIST
   const channelId = String(e.ChannelId)
 
   // 已存在开启记录 -> 直接加入

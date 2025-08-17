@@ -8,10 +8,11 @@ import type {
   CoreNajieCategory as NajieCategory
 } from '@src/types'
 import { getConfig } from '@src/model'
+import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants'
 
 export const AuctionofficialTask = async () => {
   const set = await getConfig('xiuxian', 'xiuxian')
-  const wupinStr = await redis.get('xiuxian:AuctionofficialTask')
+  const wupinStr = await redis.get(KEY_AUCTION_OFFICIAL_TASK)
 
   if (!wupinStr) {
     // 未在拍卖中 -> 判断时间窗口
@@ -83,6 +84,6 @@ export const AuctionofficialTask = async () => {
     msg = `拍卖结束，${player.名号}最终拍得该物品！`
   }
   wupin.groupList.forEach(g => pushInfo(String(g), true, msg))
-  await redis.del('xiuxian:AuctionofficialTask')
+  await redis.del(KEY_AUCTION_OFFICIAL_TASK)
   return false
 }

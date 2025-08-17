@@ -3,17 +3,18 @@ import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
 import type { QinmiduRecord } from '../types/model'
-
-const redis = getIoRedis()
+import { keys } from './keys.js'
 
 export async function readQinmidu(): Promise<QinmiduRecord[]> {
-  const qinmidu = await redis.get(`${__PATH.qinmidu}:qinmidu`)
+  const redis = getIoRedis()
+  const qinmidu = await redis.get(keys.qinmidu('qinmidu'))
   if (!qinmidu) return []
   return safeParse(qinmidu, [])
 }
 
 export async function writeQinmidu(qinmidu: QinmiduRecord[]) {
-  await redis.set(`${__PATH.qinmidu}:qinmidu`, JSON.stringify(qinmidu))
+  const redis = getIoRedis()
+  await redis.set(keys.qinmidu('qinmidu'), JSON.stringify(qinmidu))
 }
 
 export async function fstaddQinmidu(A: string, B: string) {

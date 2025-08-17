@@ -1,9 +1,10 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data } from '@src/model/api'
+import { redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
 import { getRedisKey } from '@src/model/key'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?释放技能.*$/
 
 export default onResponse(selects, async e => {
@@ -15,6 +16,9 @@ export default onResponse(selects, async e => {
   const jineng = Number(msg) - 1
   if (!action.技能[jineng]) return false
   else {
+    const data = {
+      jineng: await getDataList('Jineng')
+    }
     if (
       action.技能[jineng].cd <
       data.jineng.find(item => item.name == action.技能[jineng].name).cd

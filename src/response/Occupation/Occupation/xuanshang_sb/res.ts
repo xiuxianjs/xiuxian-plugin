@@ -10,6 +10,7 @@ import {
 
 import { selects } from '@src/response/index'
 import { getRedisKey } from '@src/model/key'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?悬赏.*$/
 
 export default onResponse(selects, async e => {
@@ -79,7 +80,7 @@ export default onResponse(selects, async e => {
 
   Send(Text('悬赏成功!'))
   const msg = `【全服公告】${player_B.名号}被悬赏了${money}灵石`
-  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+  const redisGlKey = KEY_AUCTION_GROUP_LIST
   const groupList = await redis.smembers(redisGlKey)
   for (const group of groupList) {
     pushInfo(group, true, msg)

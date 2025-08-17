@@ -10,3 +10,7 @@ export const KEY_RECORD = 'xiuxian@1.3.0Record'
 
 export const KEY_WORLD_BOOS_STATUS_TWO = 'Xiuxian:WorldBossStatus2'
 export const KEY_RECORD_TWO = 'xiuxian@1.3.0Record2'
+
+export const KEY_AUCTION_GROUP_LIST = 'xiuxian:AuctionofficialTask_GroupList'
+
+export const KEY_AUCTION_OFFICIAL_TASK = 'xiuxian:AuctionofficialTask'

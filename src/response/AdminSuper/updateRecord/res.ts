@@ -1,14 +1,15 @@
 import { Text, useSend, Image } from 'alemonjs'
 import { screenshot } from '@src/image/index.js'
-import { data } from '@src/model/api'
 import { selects } from '@src/response/index'
+import { getDataList } from '@src/model/DataList'
 
 export const regular = /^(#|＃|\/)?更新日志$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
+  const data = await getDataList('UpdateRecord')
   const image = await screenshot('updateRecord', e.UserId, {
-    Record: data.updateRecord
+    Record: data
   })
   if (Buffer.isBuffer(image)) {
     Send(Image(image))

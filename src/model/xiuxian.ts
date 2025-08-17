@@ -1,6 +1,3 @@
-// 该文件已被精简：所有实现迁移至 xiuxian_impl.ts，仅保留统一导入与转发导出，避免外部引用变更。
-// 如需修改逻辑，请前往同目录下的 xiuxian_impl.ts。
-
 export { __PATH } from './paths.js'
 export { readIt } from './duanzaofu.js'
 export { writeIt, writePlayer } from './pub.js'
@@ -83,7 +80,7 @@ export {
   existplayer,
   readPlayer,
   readNajie,
-  Write_najie,
+  writeNajie,
   addExp4,
   addConFaByUser,
   addBagCoin

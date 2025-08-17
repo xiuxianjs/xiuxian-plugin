@@ -16,7 +16,11 @@ import { addHP, addCoin } from '@src/model/economy'
 import { selects } from '@src/response/index'
 import { existplayer } from '@src/model'
 import { getRedisKey } from '@src/model/key'
-import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants'
+import {
+  KEY_AUCTION_GROUP_LIST,
+  KEY_RECORD_TWO,
+  KEY_WORLD_BOOS_STATUS_TWO
+} from '@src/model/constants'
 export const regular = /^(#|＃|\/)?讨伐金角大王$/
 
 interface PlayerRecordData {
@@ -243,7 +247,7 @@ export default onResponse(selects, async e => {
     Send(Text('金角大王被击杀！玩家们可以根据贡献获得奖励！'))
     await sleep(1000)
     const killMsg = `【全服公告】${player.名号}亲手结果了金角大王的性命,为民除害,额外获得500000灵石奖励！`
-    const glKey = 'xiuxian:AuctionofficialTask_GroupList'
+    const glKey = KEY_AUCTION_GROUP_LIST
     const groups = await redis.smembers(glKey)
     for (const g of groups) {
       await pushInfo(g, true, killMsg)

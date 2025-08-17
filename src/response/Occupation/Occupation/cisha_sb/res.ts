@@ -12,6 +12,7 @@ import {
 
 import { selects } from '@src/response/index'
 import type { BattleEntity } from '@src/types/model'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?刺杀目标.*$/
 
 interface ActionState {
@@ -162,7 +163,7 @@ export default onResponse(selects, async e => {
   else Send(Text(msg.join('\n')))
 
   if (broadcast) {
-    const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+    const redisGlKey = KEY_AUCTION_GROUP_LIST
     const groupList = await redis.smembers(redisGlKey)
     for (const group of groupList) pushInfo(group, true, broadcast)
   }

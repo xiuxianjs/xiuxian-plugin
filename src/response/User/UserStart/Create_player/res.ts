@@ -6,7 +6,7 @@ import {
   getRandomTalent,
   writePlayer,
   writeEquipment,
-  Write_najie,
+  writeNajie,
   addHP,
   writeDanyao
 } from '@src/model/index'
@@ -99,7 +99,7 @@ export default onResponse(selects, async e => {
     法宝: pickEquip('廉价炮仗')
   }
   await writeEquipment(usr_qq, new_equipment)
-  const new_najie: Parameters<typeof Write_najie>[1] = {
+  const new_najie: Parameters<typeof writeNajie>[1] = {
     等级: 1,
     灵石上限: 5000,
     灵石: 0,
@@ -114,7 +114,7 @@ export default onResponse(selects, async e => {
     护具: null,
     法宝: null
   }
-  await Write_najie(usr_qq, new_najie)
+  await writeNajie(usr_qq, new_najie)
   await addHP(usr_qq, 999999)
   const danyaoInit = {
     biguan: 0,

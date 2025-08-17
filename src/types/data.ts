@@ -122,7 +122,6 @@ import type {
   StrengthenItem,
   ForgingEquipItem,
   HiddenTalentItem,
-  UpdateRecordItem,
   NPCGroupItem,
   ShopItem,
   ExchangeItem,
@@ -190,9 +189,6 @@ export interface XiuxianDataShape {
   yincang: HiddenTalentItem[]
   zalei: ForgingEquipItem[]
   jineng: SkillItem[]
-  updateRecord: UpdateRecordItem[] | UpdateRecordItemLite[]
-  // 兜底索引
-  [k: string]: any
 }
 
 export type DataAccessor = XiuxianDataShape & { [k: string]: any }

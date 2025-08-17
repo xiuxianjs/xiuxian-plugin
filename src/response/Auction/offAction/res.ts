@@ -2,6 +2,10 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 
 import { selects } from '@src/response/index'
+import {
+  KEY_AUCTION_GROUP_LIST,
+  KEY_AUCTION_OFFICIAL_TASK
+} from '@src/model/constants'
 export const regular = /^(#|＃|\/)?关闭星阁体系$/
 
 export default onResponse(selects, async e => {
@@ -11,13 +15,10 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
-  await redis.del('xiuxian:AuctionofficialTask')
+  const redisGlKey = KEY_AUCTION_GROUP_LIST
+  await redis.del(KEY_AUCTION_OFFICIAL_TASK)
   await redis.del(redisGlKey)
-  // await redis.set(
-  //   'xiuxian:AuctionofficialTaskENDTIME',
-  //   JSON.stringify(1145141919181145)
-  // );
+
   Send(Text('星阁体系已关闭！'))
   return false
 })

@@ -1,8 +1,10 @@
 // 通用玩家状态与工具函数抽离
 import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs'
-import { getDataByUserId } from './Redis.js'
 import { safeParse } from './utils/safe.js'
 import type { LastSignTime, PlayerActionData } from '../types/model'
+import { convert2integer } from './utils/number.js'
+import { getIoRedis } from '@alemonjs/db'
+import { getRedisKey } from './key.js'
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length)
@@ -42,7 +44,8 @@ export async function shijianc(time: number) {
 export async function getLastsign(
   usr_qq: string
 ): Promise<LastSignTime | false> {
-  const time = (await getDataByUserId(usr_qq, 'lastsign_time')) as string | null
+  const redis = getIoRedis()
+  const time = await redis.get(getRedisKey(usr_qq, 'lastsign_time'))
   if (time != null) return await shijianc(parseInt(time))
   return false
 }
@@ -50,7 +53,8 @@ export async function getLastsign(
 export async function getPlayerAction(
   usr_qq: string
 ): Promise<PlayerActionData> {
-  const raw = (await getDataByUserId(usr_qq, 'action')) as string | null
+  const redis = getIoRedis()
+  const raw = await redis.get(getRedisKey(usr_qq, 'action'))
   const parsed = safeParse(raw, null) as Partial<PlayerActionData> | null
   if (parsed) {
     return {
@@ -88,15 +92,13 @@ export async function Go(e): Promise<boolean | 0> {
   const { existplayer } = await import('./xiuxian.js')
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return 0
-  const game_action = (await getDataByUserId(usr_qq, 'game_action')) as
-    | string
-    | number
-    | null
-  if (game_action === 1 || game_action === '1') {
+  const redis = getIoRedis()
+  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'))
+  if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'))
     return 0
   }
-  const actionRaw = (await getDataByUserId(usr_qq, 'action')) as string | null
+  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'))
   const action = safeParse(actionRaw, null) as PlayerActionData | null
   if (action) {
     const action_end_time = action.end_time ?? 0
@@ -111,7 +113,6 @@ export async function Go(e): Promise<boolean | 0> {
   return true
 }
 
-import { convert2integer } from './utils/number.js'
 export { convert2integer } // 供按需具名导入使用
 
 export default {

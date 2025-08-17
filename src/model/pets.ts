@@ -1,5 +1,5 @@
 import data from './XiuxianData.js'
-import { Write_najie, readNajie } from './xiuxian_impl.js'
+import { writeNajie, readNajie } from './xiuxian_impl.js'
 import { notUndAndNull } from './common.js'
 import type { Najie } from '../types/player.js'
 import type { OwnedPetItem, PetList } from '../types/model'
@@ -14,7 +14,6 @@ export async function addPet(
   if (x === 0) return
   const najie: Najie | null = await readNajie(usr_qq)
   if (!najie) return
-  // Najie.仙宠 原结构为 NajieItem[]（无“数量”“islockd”等字段），需要转换
   const rawList = Array.isArray(najie.仙宠) ? najie.仙宠 : []
   const petList: PetList = rawList.map(r => {
     const base: Partial<OwnedPetItem> = r as OwnedPetItem
@@ -66,7 +65,7 @@ export async function addPet(
     target.数量 = x
     target.加成 = target.等级 * target.每级增加
     target.islockd = 0
-    await Write_najie(usr_qq, najie)
+    await writeNajie(usr_qq, najie)
     return
   }
   if (!trr) return
@@ -80,7 +79,7 @@ export async function addPet(
     )
     ;(najie as Najie).仙宠 = next
   }
-  await Write_najie(usr_qq, najie)
+  await writeNajie(usr_qq, najie)
 }
 
 export default { addPet }

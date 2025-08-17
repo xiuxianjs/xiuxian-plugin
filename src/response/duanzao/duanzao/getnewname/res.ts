@@ -7,7 +7,7 @@ import {
   readItTyped,
   writeIt,
   readNajie,
-  Write_najie
+  writeNajie
 } from '@src/model/index'
 // 移除无效的外部类型导入，自定义最小结构
 interface CustomEquipRecord {
@@ -127,7 +127,7 @@ export default onResponse(selects, async e => {
     author_name: user_qq
   })
 
-  await Write_najie(user_qq, najie)
+  await writeNajie(user_qq, najie)
   // 写回记录（转为通用结构数组）
   await writeIt(records.map(r => ({ ...r })))
 

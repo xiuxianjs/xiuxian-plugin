@@ -1,4 +1,3 @@
-import data from './XiuxianData.js'
 import { __PATH } from './paths.js'
 import { writePlayer } from './pub.js'
 import type { Player, Equipment } from '../types/player.js'
@@ -6,11 +5,12 @@ import { getIoRedis } from '@alemonjs/db'
 import { readPlayer } from './xiuxian_impl.js'
 import { addHP } from './economy.js'
 import { safeParse } from './utils/safe.js'
-
-const redis = getIoRedis()
+import { keys } from './keys.js'
+import { getDataList } from './DataList.js'
 
 export async function readEquipment(usr_qq: string): Promise<Equipment | null> {
-  const equipment = await redis.get(`${__PATH.equipment_path}:${usr_qq}`)
+  const redis = getIoRedis()
+  const equipment = await redis.get(keys.equipment(usr_qq))
   if (!equipment) return null
   return safeParse<Equipment | null>(equipment, null)
 }
@@ -21,6 +21,10 @@ export async function writeEquipment(
 ): Promise<void> {
   const player: Player | null = await readPlayer(usr_qq)
   if (!player) return
+  const data = {
+    Level_list: await getDataList('Level1'),
+    LevelMax_list: await getDataList('Level2')
+  }
   const levelInfo = data.Level_list.find(
     item => item.level_id == player.level_id
   )
@@ -62,10 +66,8 @@ export async function writeEquipment(
   if (player.仙宠.type == '暴伤') player.暴击伤害 += player.仙宠.加成
   await writePlayer(usr_qq, player)
   await addHP(usr_qq, 0)
-  await redis.set(
-    `${__PATH.equipment_path}:${usr_qq}`,
-    JSON.stringify(equipment)
-  )
+  const redis = getIoRedis()
+  await redis.set(keys.equipment(usr_qq), JSON.stringify(equipment))
 }
 
 export default { readEquipment, writeEquipment }

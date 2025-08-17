@@ -12,6 +12,7 @@ import type {
 } from '@src/types'
 import { Mention, DataMention } from 'alemonjs'
 import { NAJIE_CATEGORIES } from '@src/model/settions'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 
 function isNajieCategory(v): v is NajieCategory {
   return (
@@ -167,7 +168,7 @@ export const Taopaotask = async () => {
             arr.action = '天牢'
             arr.xijie = 1 //关闭洗劫
             arr.end_time = Date.now() + action_time
-            const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+            const redisGlKey = KEY_AUCTION_GROUP_LIST
             const groupList = await redis.smembers(redisGlKey)
             const notice = `【全服公告】${A_player.名号}被${B_player.名号}抓进了地牢,希望大家遵纪守法,引以为戒`
             for (const gid of groupList) pushInfo(gid, true, notice)

@@ -21,7 +21,7 @@ export interface AuctionThing {
   pinji?: string | number
   [k: string]: any
 }
-/** 拍卖运行期缓存结构（Redis: xiuxian:AuctionofficialTask） */
+/** 拍卖运行期缓存结构（Redis: KEY_AUCTION_OFFICIAL_TASK） */
 export interface AuctionSession {
   thing: AuctionThing // 拍卖物品
   amount: number // 数量

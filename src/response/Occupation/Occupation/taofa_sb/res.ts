@@ -12,6 +12,7 @@ import {
 
 import { selects } from '@src/response/index'
 import type { BattleEntity } from '@src/types/model'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?讨伐目标.*$/
 
 interface ShangjingTask {
@@ -161,7 +162,7 @@ export default onResponse(selects, async e => {
   ) {
     Send(Text(last_msg))
   } else if (last_msg) {
-    const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+    const redisGlKey = KEY_AUCTION_GROUP_LIST
     const groupList = await redis.smembers(redisGlKey)
     for (const group of groupList) pushInfo(group, true, last_msg)
   }

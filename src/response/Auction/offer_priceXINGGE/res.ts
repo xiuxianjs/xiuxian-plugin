@@ -9,6 +9,10 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import {
+  KEY_AUCTION_GROUP_LIST,
+  KEY_AUCTION_OFFICIAL_TASK
+} from '@src/model/constants'
 export const regular = /^(#|＃|\/)?星阁出价.*$/
 
 export default onResponse(selects, async e => {
@@ -21,10 +25,10 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   // 此群是否开启星阁体系
-  const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+  const redisGlKey = KEY_AUCTION_GROUP_LIST
   if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) return false
   // 是否到拍卖时间
-  const auction = await redis.get('xiuxian:AuctionofficialTask')
+  const auction = await redis.get(KEY_AUCTION_OFFICIAL_TASK)
   if (!notUndAndNull(auction)) {
     const { openHour, closeHour } = (await getConfig('xiuxian', 'xiuxian'))
       .Auction
@@ -70,5 +74,5 @@ export default onResponse(selects, async e => {
   auctionData.last_price = new_price
   auctionData.last_offer_player = usr_qq
   auctionData.last_offer_price = Date.now() // NOTE: Big SB
-  await redis.set('xiuxian:AuctionofficialTask', JSON.stringify(auctionData))
+  await redis.set(KEY_AUCTION_OFFICIAL_TASK, JSON.stringify(auctionData))
 })

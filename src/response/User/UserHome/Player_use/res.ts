@@ -7,7 +7,6 @@ import {
   useSubscribe
 } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import { convert2integer } from '@src/model/common'
 import { foundthing, getRandomTalent } from '@src/model/cultivation'
 import {
@@ -30,6 +29,7 @@ import { selects } from '@src/response/index'
 import { getQquipmentImage } from '@src/model/image'
 import type { NajieCategory } from '@src/types/model'
 import type { TalentInfo } from '@src/types/player'
+import { getDataList } from '@src/model/DataList'
 
 // 优化：仅匹配指令 + 至少一个非空字符
 export const regular = /^(#|＃|\/)?(装备|消耗|服用|学习)\s*\S+/
@@ -528,6 +528,9 @@ export default onResponse(selects, async e => {
         )
       )
       return
+    }
+    const data = {
+      qianghua: await getDataList('Qianghua')
     }
     const qh = data.qianghua.find(
       item => item.name == (thing_exist as { name?: string }).name

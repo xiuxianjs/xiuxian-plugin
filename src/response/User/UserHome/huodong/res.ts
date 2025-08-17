@@ -6,6 +6,7 @@ import type { NajieCategory } from '@src/types/model'
 
 import { selects } from '@src/response/index'
 import { getRedisKey } from '@src/model/key'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?活动兑换.*$/
 
 // 兑换码结构类型
@@ -56,6 +57,9 @@ export default onResponse(selects, async e => {
     return false
   }
 
+  const data = {
+    duihuan: await getDataList('ExchangeItem')
+  }
   const list = (data.duihuan || []) as ExchangeCode[]
   const codeObj = list.find(c => c.name === codeInput)
   if (!codeObj) {

@@ -1,6 +1,6 @@
 import { redis } from '../../model/api'
 import { getRedisKey } from '../key'
-import type { RedisScalar } from '../../types/model'
+import type { ActionType, RedisScalar } from '../../types/model'
 
 // 通用获取：保留字符串或 null
 export async function getString(key: string): Promise<RedisScalar> {
@@ -41,19 +41,22 @@ export async function incrBy(key: string, delta = 1): Promise<number> {
 }
 
 // 构建玩家 key（兼容旧用法，推荐直接用 getRedisKey）
-export function userKey(userId: string | number, suffix: string) {
+export function userKey(userId: string | number, suffix: ActionType) {
   return getRedisKey(String(userId), suffix)
 }
 
 // 读取带时间戳并返回 number
-export async function getTimestamp(userId: string | number, suffix: string) {
+export async function getTimestamp(
+  userId: string | number,
+  suffix: ActionType
+) {
   return getNumber(userKey(userId, suffix))
 }
 
 // 设置当前时间戳
 export async function setTimestamp(
   userId: string | number,
-  suffix: string,
+  suffix: ActionType,
   ts: number = Date.now()
 ) {
   await redis.set(userKey(userId, suffix), String(ts))

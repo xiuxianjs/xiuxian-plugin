@@ -1,4 +1,4 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
 import { writePlayer } from '@src/model/xiuxian'
@@ -16,6 +16,7 @@ import type {
 } from '@src/types'
 import { safeParse } from '@src/model/utils/safe'
 import { NAJIE_CATEGORIES } from '@src/model/settions'
+import { getDataList } from '@src/model/DataList'
 
 function isNajieCategory(v): v is NajieCategory {
   return (
@@ -59,6 +60,9 @@ export const ShenjieTask = async () => {
         let t2 = 1
         let last_msg = ''
         let fyd_msg = ''
+        const data = {
+          shenjie: await getDataList('Shenjie')
+        }
         const place = data.shenjie?.[0] as ShenjiePlace | undefined
         if (!place) continue
         if (random1 <= x) {

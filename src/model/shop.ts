@@ -3,15 +3,16 @@ import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
 import { getIoRedis } from '@alemonjs/db'
 import type { ShopThing, ShopData } from '../types/model'
-
-const redis = getIoRedis()
+import { keys } from './keys.js'
 
 export async function writeShop(shop: ShopData) {
-  await redis.set(`${__PATH.shop}:shop`, JSON.stringify(shop))
+  const redis = getIoRedis()
+  await redis.set(keys.shop('shop'), JSON.stringify(shop))
 }
 
 export async function readShop(): Promise<ShopData> {
-  const shop = await redis.get(`${__PATH.shop}:shop`)
+  const redis = getIoRedis()
+  const shop = await redis.get(keys.shop('shop'))
   if (!shop) return []
   return safeParse<ShopData>(shop, [])
 }

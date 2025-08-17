@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data } from '@src/model/api'
-import { existplayer, Write_najie } from '@src/model/index'
+import { existplayer, writeNajie } from '@src/model/index'
 
 import { selects } from '@src/response/index'
 export const regular = /^(#|＃|\/)?一键解锁(.*)$/
@@ -46,6 +46,6 @@ export default onResponse(selects, async e => {
       l.islockd = 0
     }
   }
-  await Write_najie(usr_qq, najie)
+  await writeNajie(usr_qq, najie)
   Send(Text(`一键解锁完成`))
 })

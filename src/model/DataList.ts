@@ -49,7 +49,6 @@ import 锻造杂类 from '../resources/data/item/锻造杂类.json'
 import 技能列表 from '../resources/data/item/技能列表.json'
 import updateRecord from '../resources/data/updateRecord.json'
 import type {
-  XiuxianDataShape,
   TalentItem,
   LevelStageItem,
   PhysiqueStageItem,
@@ -57,23 +56,17 @@ import type {
   GongfaItem,
   EquipmentTuzhiItem,
   PetItem,
-  PetFoodItem,
-  ForgingMaterial
+  PetFoodItem
 } from '../types/data'
 import type {
   MonsterItem,
   PlaceItem,
   SecretAreaItem,
   AuctionItem,
-  StrengthenItem,
-  ForgingEquipItem,
-  HiddenTalentItem,
-  UpdateRecordItem,
   EquipmentItem,
   DanyaoFullItem,
   NPCGroupItem,
   ShopItem,
-  ExchangeItem,
   RealmShopGroupItem
 } from '../types/data_extra'
 import type {
@@ -87,6 +80,7 @@ import type {
   SkillItem
 } from '../types/data_extra'
 import { __PATH } from './paths.js'
+import { getIoRedis } from '@alemonjs/db'
 
 export const DATA_LIST = {
   // 使用英文名
@@ -142,10 +136,47 @@ export const DATA_LIST = {
   UpdateRecord: updateRecord
 }
 
-export type DataListType = keyof typeof DATA_LIST
+export type DataList = typeof DATA_LIST
+
+export type DataListKeys = keyof typeof DATA_LIST
+
+/**
+ *
+ * @param key
+ * @returns
+ */
+export const getDataList = async <T extends DataListKeys>(
+  key: T
+): Promise<DataList[T]> => {
+  const redis = getIoRedis()
+  // 先判断 redis 有无，没有则读本地的
+  const size = await redis.exists(key)
+  if (size > 0) {
+    try {
+      const redisData = await redis.get(key)
+      return JSON.parse(redisData)
+    } catch (error) {
+      logger.warn(`Failed to parse redis data for key ${key}: ${error}`)
+      return DATA_LIST[key]
+    }
+  }
+  return DATA_LIST[key]
+}
+
+/**
+ * 写入则是直接写进 redis
+ */
+export const setDataList = async (key: keyof typeof DATA_LIST, data: any) => {
+  const redis = getIoRedis()
+  try {
+    await redis.set(key, JSON.stringify(data))
+  } catch (error) {
+    logger.error(`Failed to set redis data for key ${key}: ${error}`)
+  }
+}
 
 // DataList 原始直接挂载各 JSON；这里加上显式类型，保持与 XiuxianDataShape 对应
-export class DataList implements XiuxianDataShape {
+export class DataListx {
   player: string = __PATH.player_path
   equipment: string = __PATH.equipment_path
   najie: string = __PATH.najie_path
@@ -156,6 +187,11 @@ export class DataList implements XiuxianDataShape {
   Timelimit: string = __PATH.Timelimit
   Level: string = __PATH.Level
   Occupation: string = __PATH.occupation
+
+  /**
+   * list 读取优化
+   */
+
   talent_list: TalentItem[] = 灵根列表 as TalentItem[]
   monster_list: MonsterItem[] = 怪物列表 as MonsterItem[]
   commodities_list: CommodityItem[] = 商品列表 as CommodityItem[]
@@ -186,31 +222,27 @@ export class DataList implements XiuxianDataShape {
   }>
   danfang_list: DanfangItem[] = 炼丹配方 as DanfangItem[]
   tuzhi_list: EquipmentTuzhiItem[] = 装备图纸 as EquipmentTuzhiItem[]
+
+  npc_list: NPCGroupItem[] = npc列表 as NPCGroupItem[]
+  shop_list: ShopItem[] = shop列表 as ShopItem[]
+
   bapin: BapinItem[] = 八品 as BapinItem[]
   xingge: AuctionItem[] = 星阁拍卖行列表 as AuctionItem[]
   tianditang: HallItem[] = 天地堂 as HallItem[]
   changzhuxianchon: PermanentPetItem[] = 常驻仙宠 as PermanentPetItem[]
   xianchon: PetItem[] = 仙宠列表 as PetItem[]
   xianchonkouliang: PetFoodItem[] = 仙宠口粮列表 as PetFoodItem[]
-  npc_list: NPCGroupItem[] = npc列表 as NPCGroupItem[]
-  shop_list: ShopItem[] = shop列表 as ShopItem[]
+
   qinlong: RealmShopGroupItem[] = 青龙 as RealmShopGroupItem[]
   qilin: RealmShopGroupItem[] = 麒麟 as RealmShopGroupItem[]
   xuanwu: RealmShopGroupItem[] = 玄武朱雀白虎 as RealmShopGroupItem[]
   mojie: RealmShopGroupItem[] = 魔界列表 as RealmShopGroupItem[]
-  duihuan: ExchangeItem[] = 兑换列表 as ExchangeItem[]
-  shenjie: RealmShopGroupItem[] = 神界列表 as RealmShopGroupItem[]
+  /**
+   * 技能列表 (待处理)
+   */
   jineng1: SkillItem[] = 技能列表1 as SkillItem[]
   jineng2: SkillItem[] = 技能列表2 as SkillItem[]
-  qianghua: StrengthenItem[] = 强化列表 as StrengthenItem[]
-  duanzhaocailiao: ForgingMaterial[] = 锻造材料 as ForgingMaterial[]
-  duanzhaowuqi: ForgingEquipItem[] = 锻造武器 as ForgingEquipItem[]
-  duanzhaohuju: ForgingEquipItem[] = 锻造护具 as ForgingEquipItem[]
-  duanzhaobaowu: ForgingEquipItem[] = 锻造宝物 as ForgingEquipItem[]
-  yincang: HiddenTalentItem[] = 隐藏灵根 as HiddenTalentItem[]
-  zalei: ForgingEquipItem[] = 锻造杂类 as ForgingEquipItem[]
   jineng: SkillItem[] = 技能列表 as SkillItem[]
-  updateRecord: UpdateRecordItem[] = updateRecord as UpdateRecordItem[]
 }
 
-export default new DataList()
+export default new DataListx()

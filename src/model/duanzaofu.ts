@@ -1,15 +1,13 @@
+import { getIoRedis } from '@alemonjs/db'
+
 import { __PATH } from './paths.js'
-import data from './XiuxianData.js'
 import { writePlayer } from './pub.js'
 import { safeParse } from './utils/safe.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
 import DataList from './DataList.js'
-import { getIoRedis } from '@alemonjs/db'
-// 新增：集中导入已抽取的锻造资源映射常量与可读 key 类型
 import { LIB_MAP, LibHumanReadable } from '../types/model.js'
 import type { CustomRecord } from '../types/model.js'
-
-// 已集中：移除本文件内部的高级 DataList 泛型推断，保持简单实现避免类型错误
+import { keys } from './keys.js'
 
 export async function settripod(qq: string): Promise<string> {
   let tripod1: Tripod[] = []
@@ -35,7 +33,12 @@ export async function settripod(qq: string): Promise<string> {
     await writeDuanlu(tripod1)
   }
   //增加锻造天赋
-  const playerData = await data.getData('player', qq)
+  const redis = getIoRedis()
+  const data = await redis.get(keys.player(qq))
+  if (!data) {
+    return '玩家数据获取失败'
+  }
+  const playerData = JSON.parse(data)
   if (!playerData || Array.isArray(playerData)) {
     return '玩家数据获取失败'
   }

@@ -4,18 +4,15 @@ import { redis } from '@src/model/api'
 import { existplayer, notUndAndNull, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?星阁拍卖行$/
 
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-
-  //固定写法
-  //判断是否为匿名创建存档
-  //有无存档
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const res = await redis.get('xiuxian:AuctionofficialTask')
+  const res = await redis.get(KEY_AUCTION_OFFICIAL_TASK)
   if (!notUndAndNull(res)) {
     Send(Text('目前没有拍卖正在进行'))
     return false

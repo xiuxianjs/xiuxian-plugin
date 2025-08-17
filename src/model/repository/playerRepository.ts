@@ -1,6 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 import type { Player } from '../../types/player.js'
-import { keys } from './keys.js'
+import { keys } from '../keys.js'
 import type { PlayerRepository, OccupationExpRow } from '../../types/model'
 
 const redis = getIoRedis()

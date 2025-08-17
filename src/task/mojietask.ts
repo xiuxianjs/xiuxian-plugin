@@ -1,4 +1,4 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
@@ -7,6 +7,7 @@ import { readTemp, writeTemp } from '@src/model/temp'
 import { __PATH } from '@src/model/paths'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ExploreActionState } from '@src/types'
+import { getDataList } from '@src/model/DataList'
 
 function isExploreAction(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'end_time' in a
@@ -74,6 +75,11 @@ export const MojiTask = async () => {
           let t2: number
           let last_msg = ''
           let fyd_msg = ''
+
+          const data = {
+            mojie: await getDataList('Mojie')
+          }
+
           if (random1 <= x) {
             if (random2 <= y) {
               if (random3 <= z) {

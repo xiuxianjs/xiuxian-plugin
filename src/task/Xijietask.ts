@@ -6,6 +6,7 @@ import { readShop, writeShop, existshop } from '@src/model/shop'
 import { __PATH } from '@src/model/paths'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { RaidActionState } from '@src/types'
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 
 export const Xijietask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
@@ -169,7 +170,7 @@ export const Xijietask = async () => {
             arr.action = '禁闭'
             arr.xijie = 1 //关闭洗劫
             arr.end_time = Date.now() + action_time
-            const redisGlKey = 'xiuxian:AuctionofficialTask_GroupList'
+            const redisGlKey = KEY_AUCTION_GROUP_LIST
             const groupList = await redis.smembers(redisGlKey)
             const xx =
               '【全服公告】' +

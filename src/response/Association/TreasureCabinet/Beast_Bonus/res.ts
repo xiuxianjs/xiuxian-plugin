@@ -2,10 +2,11 @@ import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
 import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
-import type { AssociationDetailData, Player } from '@src/types'
+import type { AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/index'
 import { getRedisKey } from '@src/model/key'
+import { existDataByPath, readDataByPath } from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?神兽赐福$/
 
 interface PlayerGuildRef {
@@ -54,8 +55,9 @@ function toNamedList(arr): NamedClassItem[] {
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const exi = await existDataByPath('player_path', '', usr_qq)
+  if (!exi) return false
+  const player = await readDataByPath('player_path', '', usr_qq)
   if (
     !player ||
     !notUndAndNull(player.宗门) ||
@@ -98,6 +100,18 @@ export default onResponse(selects, async e => {
   }
 
   const beast = ass.宗门神兽
+
+  // const data = {
+  //   qilin: await getDataList('qilin'),
+  //   qinlong: await getDataList('qinlong'),
+  //   xuanwu: await getDataList('xuanwu'),
+  //   zhuque: await getDataList('zhuque'),
+  //   baihu: await getDataList('baihu'),
+  //   danyao_list: await getDataList('danyao_list'),
+  //   gongfa_list: await getDataList('gongfa_list'),
+  //   equipment_list: await getDataList('equipment_list')
+  // }
+
   const highProbLists: Record<string, NamedClassItem[]> = {
     麒麟: toNamedList(data.qilin),
     青龙: toNamedList(data.qinlong),

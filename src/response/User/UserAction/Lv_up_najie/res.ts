@@ -6,7 +6,7 @@ import {
   readNajie,
   readPlayer,
   addCoin,
-  Write_najie
+  writeNajie
 } from '@src/model/index'
 import { config } from '@src/model/api'
 
@@ -39,7 +39,7 @@ export default onResponse(selects, async e => {
   await addCoin(usr_qq, -najie_price[najie.等级])
   najie.灵石上限 = najie_num[najie.等级]
   najie.等级 += 1
-  await Write_najie(usr_qq, najie)
+  await writeNajie(usr_qq, najie)
   Send(
     Text(
       `你的纳戒升级成功,花了${

@@ -12,6 +12,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/index'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?出售\S+(?:\*\S+){0,2}$/
 
 // 辅助
@@ -136,6 +137,11 @@ export default onResponse(selects, async e => {
 
   // 价格计算：基础出售价 * 数量；若在杂类中且是装备需按背包装备条目出售价
   let price = toInt(thingDef['出售价']) * amount
+
+  const data = {
+    zalei: await getDataList('Zalei')
+  }
+
   if (data.zalei.find(it => it.name === thingName.replace(/[0-9]+/g, ''))) {
     // 在 najie 中查找对应品级的装备
     const sel = (najie.装备 || []).find(

@@ -4,8 +4,8 @@ import type { Player, Equipment, Najie } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'
 import { createPlayerRepository } from './repository/playerRepository.js'
 import { createNajieRepository } from './repository/najieRepository.js'
+import { keys } from './keys.js'
 
-const redis = getIoRedis()
 const playerRepo = createPlayerRepository(() => data.occupation_exp_list)
 const najieRepo = createNajieRepository()
 
@@ -13,7 +13,9 @@ const najieRepo = createNajieRepository()
 export async function getPlayerDataSafe(
   usr_qq: string
 ): Promise<Player | null> {
-  const playerData = await data.getData('player', usr_qq)
+  const dataStr = await getIoRedis().get(keys.player(usr_qq))
+  if (!dataStr) return null
+  const playerData = JSON.parse(dataStr)
   if (!playerData || Array.isArray(playerData)) {
     return null
   }
@@ -33,13 +35,15 @@ export async function getEquipmentDataSafe(
 
 // 检查存档是否存在，存在返回 true
 export async function existplayer(usr_qq: string): Promise<boolean> {
+  const redis = getIoRedis()
   const res = await redis.exists(`${__PATH.player_path}:${usr_qq}`)
   return res === 1
 }
 
 // 读取存档信息，返回成一个 JavaScript 对象
 export async function readPlayer(usr_qq: string): Promise<Player | null> {
-  const player = await redis.get(`${__PATH.player_path}:${usr_qq}`)
+  const redis = getIoRedis()
+  const player = await redis.get(keys.player(usr_qq))
   if (!player) return null
   const playerData = JSON.parse(player)
   return playerData as Player
@@ -47,14 +51,16 @@ export async function readPlayer(usr_qq: string): Promise<Player | null> {
 
 // 读取纳戒信息
 export async function readNajie(usr_qq: string): Promise<Najie | null> {
-  const raw = await redis.get(`${__PATH.najie_path}:${usr_qq}`)
+  const redis = getIoRedis()
+  const raw = await redis.get(keys.najie(usr_qq))
   if (!raw) return null
   return JSON.parse(raw) as Najie
 }
 
 // 写入纳戒信息
-export async function Write_najie(usr_qq: string, najie: Najie): Promise<void> {
-  await redis.set(`${__PATH.najie_path}:${usr_qq}`, JSON.stringify(najie))
+export async function writeNajie(usr_qq: string, najie: Najie): Promise<void> {
+  const redis = getIoRedis()
+  await redis.set(keys.najie(usr_qq), JSON.stringify(najie))
 }
 
 export async function addExp4(usr_qq: string, exp = 0) {

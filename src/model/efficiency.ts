@@ -5,7 +5,8 @@ import type { GongfaItem } from '../types/model'
 import DataList from './DataList.js'
 import { readDanyao } from './danyao.js'
 import { notUndAndNull } from './common.js'
-import Association from './Association.js'
+import { getIoRedis } from '@alemonjs/db'
+import { keys } from './keys.js'
 
 export async function playerEfficiency(userId: string): Promise<null> {
   //这里有问题
@@ -20,7 +21,10 @@ export async function playerEfficiency(userId: string): Promise<null> {
     //是否存在宗门信息
     Assoc_efficiency = 0 //不存在，宗门效率为0
   } else {
-    ass = await Association.getAssociation(player.宗门['宗门名称']) //修仙对应宗门信息
+    const redis = getIoRedis()
+    const data = await redis.get(keys.association(player.宗门['宗门名称']))
+    if (!data) return
+    ass = data
     if (ass.宗门驻地 == 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05
     } else {

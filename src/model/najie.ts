@@ -1,5 +1,4 @@
-import data from './XiuxianData.js'
-import { Write_najie, readNajie } from './xiuxian_impl.js'
+import { writeNajie, readNajie } from './xiuxian_impl.js'
 import * as _ from 'lodash-es'
 import type {
   Najie,
@@ -13,6 +12,7 @@ import type {
   XianchongSource,
   NajieCategory
 } from '../types/model'
+import { getDataList } from './DataList.js'
 
 // 类型已集中到 src/types/model.ts
 
@@ -40,7 +40,7 @@ export async function updateBagThing(
       if (i.name == thing_name) i.islockd = lock
     }
   }
-  await Write_najie(usr_qq, najie)
+  await writeNajie(usr_qq, najie)
   return true
 }
 
@@ -100,17 +100,16 @@ export async function addNajieThing(
     const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2]
     if (x > 0) {
       if (typeof name != 'object') {
-        const list = [
-          'equipment_list',
-          'timeequipmen_list',
-          'duanzhaowuqi',
-          'duanzhaohuju',
-          'duanzhaobaowu'
-        ]
-        for (const i of list) {
-          const arr = data[i]
-          if (!Array.isArray(arr)) continue
-          const thing = (arr as NajieItem[]).find(item => item.name == name)
+        const data = []
+        data[0] = await getDataList('Equipment')
+        data[1] = await getDataList('TimeEquipment')
+        data[2] = await getDataList('Duanzhaowuqi')
+        data[3] = await getDataList('Duanzhaohuju')
+        data[4] = await getDataList('Duanzhaobaowu')
+
+        for (const i of data) {
+          if (!Array.isArray(i)) continue
+          const thing = (i as NajieItem[]).find(item => item.name == name)
           if (thing) {
             const equ = _.cloneDeep(thing) as EquipmentLike
             equ.pinji = pinji
@@ -120,7 +119,7 @@ export async function addNajieThing(
             equ.数量 = x
             equ.islockd = 0
             najie[thing_class].push(equ)
-            await Write_najie(usr_qq, najie)
+            await writeNajie(usr_qq, najie)
             return
           }
         }
@@ -129,7 +128,7 @@ export async function addNajieThing(
         ;(name as NajieItem).数量 = x
         ;(name as NajieItem).islockd = 0
         najie[thing_class].push(name as NajieItem)
-        await Write_najie(usr_qq, najie)
+        await writeNajie(usr_qq, najie)
         return
       }
     }
@@ -139,11 +138,14 @@ export async function addNajieThing(
     )
     if (fb) fb.数量 = (fb.数量 || 0) + x
     najie.装备 = najie.装备.filter(item => (item.数量 || 0) > 0)
-    await Write_najie(usr_qq, najie)
+    await writeNajie(usr_qq, najie)
     return
   } else if (thing_class == '仙宠') {
     if (x > 0) {
       if (typeof name != 'object') {
+        const data = {
+          xianchon: await getDataList('Xianchon')
+        }
         let thing = data.xianchon.find(
           (item: XianchongSource) => item.name == name
         )
@@ -157,14 +159,14 @@ export async function addNajieThing(
             name: thing.name
           }
           najie[thing_class].push(copied)
-          await Write_najie(usr_qq, najie)
+          await writeNajie(usr_qq, najie)
           return
         }
       } else {
         ;(name as NajieItem).数量 = x
         ;(name as NajieItem).islockd = 0
         najie[thing_class].push(name as NajieItem)
-        await Write_najie(usr_qq, najie)
+        await writeNajie(usr_qq, najie)
         return
       }
     }
@@ -173,27 +175,25 @@ export async function addNajieThing(
     )
     if (fb) fb.数量 = (fb.数量 || 0) + x
     najie.仙宠 = najie.仙宠.filter(item => (item.数量 || 0) > 0)
-    await Write_najie(usr_qq, najie)
+    await writeNajie(usr_qq, najie)
     return
   }
   const exist = await existNajieThing(usr_qq, name as string, thing_class)
   if (x > 0 && !exist) {
     let thing: NajieItem | undefined
-    const list = [
-      'danyao_list',
-      'newdanyao_list',
-      'timedanyao_list',
-      'daoju_list',
-      'gongfa_list',
-      'timegongfa_list',
-      'caoyao_list',
-      'xianchonkouliang',
-      'duanzhaocailiao'
-    ]
-    for (const i of list) {
-      const arr = data[i]
-      if (!Array.isArray(arr)) continue
-      thing = (arr as NajieItem[]).find(item => item.name == name)
+    const data = []
+    data[0] = await getDataList('Danyao')
+    data[1] = await getDataList('NewDanyao')
+    data[2] = await getDataList('TimeDanyao')
+    data[3] = await getDataList('Daoju')
+    data[4] = await getDataList('Gongfa')
+    data[5] = await getDataList('TimeGongfa')
+    data[6] = await getDataList('Caoyao')
+    data[7] = await getDataList('Xianchonkouliang')
+    data[8] = await getDataList('Duanzhaocailiao')
+    for (const i of data) {
+      if (!Array.isArray(i)) continue
+      thing = (i as NajieItem[]).find(item => item.name == name)
       if (thing) {
         najie[thing_class].push(thing)
         const fb = najie[thing_class].find(item => item.name == name)
@@ -201,7 +201,7 @@ export async function addNajieThing(
           fb.数量 = x
           fb.islockd = 0
         }
-        await Write_najie(usr_qq, najie)
+        await writeNajie(usr_qq, najie)
         return
       }
     }
@@ -209,7 +209,7 @@ export async function addNajieThing(
   const fb = najie[thing_class].find(item => item.name == name)
   if (fb) fb.数量 = (fb.数量 || 0) + x
   najie[thing_class] = najie[thing_class].filter(item => (item.数量 || 0) > 0)
-  await Write_najie(usr_qq, najie)
+  await writeNajie(usr_qq, najie)
 }
 
 export async function insteadEquipment(

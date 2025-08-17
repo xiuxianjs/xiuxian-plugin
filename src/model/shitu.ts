@@ -3,14 +3,15 @@ import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './paths.js'
 import { safeParse } from './utils/safe.js'
 import type { ShituRecord } from '../types/model'
-
-const redis = getIoRedis()
+import { keys } from './keys.js'
 
 export async function writeShitu(list: ShituRecord[]) {
-  await redis.set(`${__PATH.shitu}:shitu`, JSON.stringify(list))
+  const redis = getIoRedis()
+  await redis.set(keys.shitu('shitu'), JSON.stringify(list))
 }
 export async function readShitu(): Promise<ShituRecord[]> {
-  const shitu = await redis.get(`${__PATH.shitu}:shitu`)
+  const redis = getIoRedis()
+  const shitu = await redis.get(keys.shitu('shitu'))
   if (!shitu) return []
   return safeParse(shitu, [])
 }

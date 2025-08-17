@@ -6,9 +6,6 @@ import type { MessageEnumsArray, MessageInput } from '../types/model'
 
 export { data, config }
 
-/**
- *
- */
 export const redis = getIoRedis()
 
 /**

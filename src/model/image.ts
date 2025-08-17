@@ -1,4 +1,4 @@
-import data from './XiuxianData.js'
+// import data from './XiuxianData.js'
 import { useSend, Text, EventsMessageCreateEnum, Image } from 'alemonjs'
 import { screenshot } from '@src/image/index.js'
 import type { Player, Equipment, Najie, StrandResult } from '../types/player.js'
@@ -25,9 +25,9 @@ import { readExchange, writeExchange, readForum, writeForum } from './trade.js'
 import { GetPower, bigNumberTransform } from './utils/number.js'
 import { readQinmidu, writeQinmidu } from './qinmidu.js'
 import { getConfig } from './Config.js'
-
-// ==== 类型辅助声明（已迁移至 src/types/model.ts） ====
-// 原地定义已移除：ScreenshotResult, NamedItem, ExchangeEntry, ForumEntry, PlayerStatus, SendFn, AssociationInfo
+import { getIoRedis } from '@alemonjs/db'
+import { keys } from './keys.js'
+import { getDataList } from './DataList.js'
 
 function isAssociationInfo(v): v is AssociationInfo {
   return (
@@ -50,7 +50,8 @@ export async function getSupermarketImage(
   thing_class?: string
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -83,7 +84,8 @@ export async function getForumImage(
   thing_class?: string
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -114,9 +116,13 @@ export async function getdanfangImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
+  }
+  const data = {
+    danfang_list: await getDataList('Danfang')
   }
 
   const danfang_list = data.danfang_list
@@ -133,12 +139,14 @@ export async function getTuzhiImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
 
-  const tuzhi_list = data.tuzhi_list
+  const tuzhi_list = await getDataList('Tuzhi')
 
   const tuzhi_data = {
     user_id: usr_qq,
@@ -157,11 +165,12 @@ export async function getNingmenghomeImage(
   thing_type?: string
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  let commodities_list = data.commodities_list
+  let commodities_list = await getDataList('Commodity')
   if (thing_type != '') {
     if (
       thing_type == '装备' ||
@@ -202,7 +211,8 @@ export async function getValuablesImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -248,11 +258,13 @@ export async function getXianChongImage(
 ): Promise<ScreenshotResult> {
   let i: number
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  const playerData = await data.getData('player', usr_qq)
+  const data = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(data)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
@@ -262,8 +274,8 @@ export async function getXianChongImage(
   const XianChong_have: NamedItem[] = []
   const XianChong_need: NamedItem[] = []
   const Kouliang: NamedItem[] = []
-  const XianChong_list = data.xianchon
-  const Kouliang_list = data.xianchonkouliang
+  const XianChong_list = await getDataList('Xianchon')
+  const Kouliang_list = await getDataList('Xianchonkouliang')
   for (i = 0; i < XianChong_list.length; i++) {
     if (najie.仙宠.find(item => item.name == XianChong_list[i].name)) {
       XianChong_have.push(XianChong_list[i])
@@ -293,11 +305,14 @@ export async function getDaojuImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  //
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  const playerData = await data.getData('player', usr_qq)
+  const data = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(data)
   if (!playerData || Array.isArray(playerData)) {
     return
   }
@@ -306,7 +321,8 @@ export async function getDaojuImage(
   if (!najie) return
   const daoju_have: NamedItem[] = []
   const daoju_need: NamedItem[] = []
-  for (const i of data.daoju_list) {
+  const daoju_list = await getDataList('Daoju')
+  for (const i of daoju_list) {
     if (najie.道具.find(item => item.name == i.name)) {
       daoju_have.push(i)
     } else {
@@ -331,7 +347,8 @@ export async function getWuqiImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -350,6 +367,13 @@ export async function getWuqiImage(
     'duanzhaohuju',
     'duanzhaobaowu'
   ]
+  const data = {
+    equipment_list: await getDataList('Equipment'),
+    timeequipmen_list: await getDataList('TimeEquipment'),
+    duanzhaowuqi: await getDataList('Duanzhaowuqi'),
+    duanzhaohuju: await getDataList('Duanzhaohuju'),
+    duanzhaobaowu: await getDataList('Duanzhaobaowu')
+  }
   for (const i of wuqi_list) {
     const arr = data[i]
     if (!Array.isArray(arr)) continue
@@ -390,7 +414,9 @@ export async function getDanyaoImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -401,6 +427,13 @@ export async function getDanyaoImage(
   const danyao_have: NamedItem[] = []
   const danyao_need: NamedItem[] = []
   const danyao = ['danyao_list', 'timedanyao_list', 'newdanyao_list']
+
+  const data = {
+    danyao_list: await getDataList('Danyao'),
+    timedanyao_list: await getDataList('TimeDanyao'),
+    newdanyao_list: await getDataList('NewDanyao')
+  }
+
   for (const i of danyao) {
     const arr = data[i]
     if (!Array.isArray(arr)) continue
@@ -432,7 +465,9 @@ export async function getGongfaImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -448,6 +483,10 @@ export async function getGongfaImage(
   const gongfa_have: NamedItem[] = []
   const gongfa_need: NamedItem[] = []
   const gongfa = ['gongfa_list', 'timegongfa_list']
+  const data = {
+    gongfa_list: await getDataList('Gongfa'),
+    timegongfa_list: await getDataList('TimeGongfa')
+  }
   for (const i of gongfa) {
     const arr = data[i]
     if (!Array.isArray(arr)) continue
@@ -504,6 +543,9 @@ export async function getPowerImage(
   } else {
     this_association = player.宗门
   }
+  const data = {
+    LevelMax_list: await getDataList('Level2')
+  }
   //境界名字需要查找境界名
   const levelMax = data.LevelMax_list.find(
     item => item.level_id == player.Physique_id
@@ -541,7 +583,9 @@ export async function getPlayerImage(
   let 护具评级
   let 武器评级
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -619,6 +663,10 @@ export async function getPlayerImage(
     kxjs[count] = `${num[count].toFixed(2)} x 10`
     count++
   }
+  const data = {
+    Level_list: await getDataList('Level1'),
+    LevelMax_list: await getDataList('Level2')
+  }
   //境界名字需要查找境界名
   const level = data.Level_list.find(
     item => item.level_id == player.level_id
@@ -656,6 +704,10 @@ export async function getPlayerImage(
     occupation_need_exp = 1
   } else {
     occupation_level = player.occupation_level
+
+    const data = {
+      occupation_exp_list: await getDataList('experience')
+    }
     occupation_level_name = data.occupation_exp_list.find(
       item => item.id == occupation_level
     ).name
@@ -845,7 +897,9 @@ export async function getAssociationImage(
   const usr_qq = e.UserId
   const Send: SendFn = useSend(e) as SendFn
   //无存档
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
@@ -863,23 +917,21 @@ export async function getAssociationImage(
   //有加入宗门
   const zongmenName =
     typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称
-  const assRaw = await data.getAssociation(zongmenName)
-  if (assRaw === 'error' || Array.isArray(assRaw)) {
+  // const assRaw = await data.getAssociation(zongmenName)
+  const str = await getIoRedis().get(keys.association(zongmenName || ''))
+  if (!str) {
     Send(Text('宗门数据获取失败'))
     return
   }
+  const assRaw = JSON.parse(str)
   if (!isAssociationInfo(assRaw)) {
     Send(Text('宗门数据结构异常'))
     return
   }
   const ass = assRaw
   //寻找
-  const mainqqData = await data.getData('player', String(ass.宗主))
-  if (mainqqData === 'error' || Array.isArray(mainqqData)) {
-    Send(Text('宗主数据获取失败'))
-    return
-  }
-  const mainqq = mainqqData as Player
+  const mainqqData = await getIoRedis().get(keys.player(String(ass.宗主)))
+  const mainqq = JSON.parse(mainqqData || '{}')
   //仙宗
   const xian = ass.power
   let weizhi
@@ -889,6 +941,9 @@ export async function getAssociationImage(
     weizhi = '仙界'
   }
   //门槛
+  const data = {
+    Level_list: await getDataList('Level1')
+  }
   const level = data.Level_list.find(
     item => item.level_id === ass.最低加入境界
   ).level
@@ -896,36 +951,36 @@ export async function getAssociationImage(
   const fuzong = []
   for (item in ass.副宗主 || {}) {
     const qq = ass.副宗主[item]
-    const pData = await data.getData('player', qq)
-    const name =
-      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    const str = await getIoRedis().get(keys.player(qq))
+    const pData = JSON.parse(str || '{}')
+    const name = pData?.名号 || '未知'
     fuzong[item] = `道号：${name}QQ：${qq}`
   }
   //长老
   const zhanglao = []
   for (item in ass.长老 || {}) {
     const qq = ass.长老[item]
-    const pData = await data.getData('player', qq)
-    const name =
-      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    const str = await getIoRedis().get(keys.player(qq))
+    const pData = JSON.parse(str || '{}')
+    const name = pData?.名号 || '未知'
     zhanglao[item] = `道号：${name}QQ：${qq}`
   }
   //内门弟子
   const neimen = []
   for (item in ass.内门弟子 || {}) {
     const qq = ass.内门弟子[item]
-    const pData = await data.getData('player', qq)
-    const name =
-      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    const str = await getIoRedis().get(keys.player(qq))
+    const pData = JSON.parse(str || '{}')
+    const name = pData?.名号 || '未知'
     neimen[item] = `道号：${name}QQ：${qq}`
   }
   //外门弟子
   const waimen = []
   for (item in ass.外门弟子 || {}) {
     const qq = ass.外门弟子[item]
-    const pData = await data.getData('player', qq)
-    const name =
-      (pData && !Array.isArray(pData) && (pData as Player).名号) || '未知'
+    const str = await getIoRedis().get(keys.player(qq))
+    const pData = JSON.parse(str || '{}')
+    const name = pData?.名号 || '未知'
     waimen[item] = `道号：${name}QQ：${qq}`
   }
   let state = '需要维护'
@@ -936,9 +991,8 @@ export async function getAssociationImage(
   }
   //计算修炼效率
   let xiulian
-  const dongTan = await (data.bless_list || []).find(
-    item => item.name == ass.宗门驻地
-  )
+  const bless_list = await getDataList('Bless')
+  const dongTan = (bless_list || []).find(item => item.name == ass.宗门驻地)
   if (ass.宗门驻地 == 0) {
     xiulian = Number(ass.宗门等级) * 0.05 * 100
   } else {
@@ -981,14 +1035,21 @@ export async function getQquipmentImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const playerData = await data.getData('player', usr_qq)
-  const ifexistplay = await data.existData('player', usr_qq)
-  if (!ifexistplay || !playerData || Array.isArray(playerData)) {
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
+  if (!ifexistplay) {
     return
   }
+  const dataStr = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(dataStr || '{}')
   const player = playerData as Player
   const bao = Math.trunc(Math.floor(player.暴击率 * 100))
-  const equipmentData = await data.getData('equipment', usr_qq)
+  const ifexistplayEquipment = (await redis.exists(keys.equipment(usr_qq))) > 0
+  if (!ifexistplayEquipment) {
+    return
+  }
+  const equipmentDataStr = await redis.get(keys.equipment(usr_qq))
+  const equipmentData = JSON.parse(equipmentDataStr || '{}')
   if (equipmentData === 'error' || Array.isArray(equipmentData)) {
     return
   }
@@ -1017,11 +1078,14 @@ export async function getNajieImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  const playerData = await data.getData('player', usr_qq)
+  const dataStr = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(dataStr || '{}')
   if (!playerData || Array.isArray(playerData)) {
     return
   }
@@ -1065,24 +1129,28 @@ export async function getStateImage(
   all_level: boolean
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  const playerData = await data.getData('player', usr_qq)
+  const dataStr = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(dataStr || '{}')
   if (!playerData || Array.isArray(playerData)) {
     return
   }
   const player = playerData as Player
   const Level_id = player.level_id
-  let Level_list = data.Level_list
+  const LevelList = await getDataList('Level1')
+  let Level_list = LevelList
   //循环删除表信息
   if (!all_level) {
     for (let i = 1; i <= 60; i++) {
       if (i > Level_id - 6 && i < Level_id + 6) {
         continue
       }
-      Level_list = await Level_list.filter(item => item.level_id != i)
+      Level_list = Level_list.filter(item => item.level_id != i)
     }
   }
   const state_data = {
@@ -1097,24 +1165,28 @@ export async function getStatezhiyeImage(
   all_level: boolean
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  const playerData = await data.getData('player', usr_qq)
+  const dataStr = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(dataStr || '{}')
   if (!playerData || Array.isArray(playerData)) {
     return
   }
   const player = playerData as Player
   const Level_id = player.occupation_level || 0
-  let Level_list = data.occupation_exp_list
+  const LevelList = await getDataList('experience')
+  let Level_list = LevelList
   //循环删除表信息
   if (!all_level) {
     for (let i = 0; i <= 60; i++) {
       if (i > Level_id - 6 && i < Level_id + 6) {
         continue
       }
-      Level_list = await Level_list.filter(item => item.id != i)
+      Level_list = Level_list.filter(item => item.id != i)
     }
   }
   const state_data = {
@@ -1133,24 +1205,28 @@ export async function getStatemaxImage(
   all_level: boolean
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+
+  const redis = getIoRedis()
+  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
   if (!ifexistplay) {
     return
   }
-  const playerData = await data.getData('player', usr_qq)
+  const dataStr = await redis.get(keys.player(usr_qq))
+  const playerData = JSON.parse(dataStr || '{}')
   if (!playerData || Array.isArray(playerData)) {
     return
   }
   const player = playerData as Player
   const Level_id = player.Physique_id
-  let LevelMax_list = data.LevelMax_list
+  const LevelMaxList = await getDataList('Level2')
+  let LevelMax_list = LevelMaxList
   //循环删除表信息
   if (!all_level) {
     for (let i = 1; i <= 60; i++) {
       if (i > Level_id - 6 && i < Level_id + 6) {
         continue
       }
-      LevelMax_list = await LevelMax_list.filter(item => item.level_id != i)
+      LevelMax_list = LevelMax_list.filter(item => item.level_id != i)
     }
   }
   const statemax_data = {
@@ -1220,9 +1296,10 @@ export async function getRankingPowerImage(
   thisplayer: Player
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-  const level = data.Level_list.find(
+  const Level_List = await getDataList('Level1')
+  const level = Level_List.find(
     item => item.level_id == thisplayer.level_id
-  ).level
+  )?.level
   const ranking_power_data = {
     user_id: usr_qq,
     mdz: thisplayer.魔道值,

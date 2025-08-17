@@ -1,4 +1,3 @@
-import data from './XiuxianData.js'
 import { notUndAndNull } from './common.js'
 import { readEquipment } from './equipment.js'
 import * as _ from 'lodash-es'
@@ -9,6 +8,7 @@ import type {
   Skill,
   EquipmentSlots
 } from '../types/model'
+import { getDataList } from './DataList.js'
 
 /**
  * 进行自动战斗计算
@@ -62,6 +62,12 @@ export async function zdBattle(
   let B_xue = 0
   let t: Player
   const msg: string[] = []
+
+  const data = {
+    jineng1: await getDataList('Jineng1'),
+    jineng2: await getDataList('Jineng2')
+  }
+
   const jineng1: Skill[] = data.jineng1 as Skill[]
   const jineng2: Skill[] = data.jineng2 as Skill[]
   const wuxing = ['金', '木', '土', '水', '火'] as const

@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db'
-import { keys } from './keys.js'
+import { keys } from '../keys.js'
 import type { Najie } from '../../types/player.js'
 import type { NajieRepository } from '../../types/model'
 
