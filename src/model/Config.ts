@@ -1,6 +1,7 @@
 import { __PATH_CONFIG } from './keys'
 import { getIoRedis } from '@alemonjs/db'
 import { getRedisConfigKey } from './keys'
+import { getConfigValue } from 'alemonjs'
 
 export type Data = typeof __PATH_CONFIG
 
@@ -58,6 +59,16 @@ export async function getConfig<T extends ConfigKey>(
     }
   }
   return data
+}
+
+/**
+ *
+ * @returns
+ */
+export const getAppCofig = () => {
+  const values = getConfigValue() || {}
+  const value = values['alemonjs-xiuxian'] || {}
+  return value
 }
 
 export default {
