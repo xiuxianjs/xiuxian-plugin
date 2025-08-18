@@ -1,23 +1,22 @@
-import { Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { existplayer, sleep } from '@src/model/index'
+import { existplayer, sortBy } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
 import { selects } from '@src/response/index'
 import { KEY_RECORD_TWO } from '@src/model/constants'
+import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?金角大王贡献榜$/
 
 interface WorldBossStatus {
   Reward?: number
   Health?: number
-  [k: string]: any
 }
 interface PlayerRecordData {
   QQ: Array<string | number>
   TotalDamage: number[]
   Name: string[]
-  [k: string]: any
 }
 function parseJson<T>(raw: string | null): T | null {
   if (!raw) return null
@@ -63,22 +62,32 @@ export default onResponse(selects, async e => {
   if (TotalDamage <= 0) TotalDamage = 1
   const rewardBase = WorldBossStatusStr?.Reward || 0
   const bossDead = (WorldBossStatusStr?.Health || 0) === 0
-  const msg: string[] = ['****金角大王周本贡献排行榜****']
   let CurrentQQ: number | undefined
+
+  const temp = []
+
   for (let i = 0; i < PlayerList.length && i < 20; i++) {
     const idx = PlayerList[i]
     const dmg = PlayerRecord.TotalDamage[idx] || 0
     let Reward = Math.trunc((dmg / TotalDamage) * rewardBase)
     if (Reward < 200000) Reward = 200000
-    msg.push(
-      `第${i + 1}名:\n名号:${PlayerRecord.Name[idx]}\n总伤害:${dmg}\n${
-        bossDead ? '已得到灵石' : '预计得到灵石'
-      }:${Reward}`
-    )
+
+    temp[i] = {
+      power: dmg,
+      qq: PlayerRecord.QQ[idx],
+      name: PlayerRecord.Name[idx],
+      sub: [
+        {
+          label: bossDead ? '已得到灵石' : '预计得到灵石',
+          value: Reward
+        }
+      ],
+      level_id: 0
+    }
+
     if (PlayerRecord.QQ[idx] == e.UserId) CurrentQQ = i + 1
   }
-  Send(Text(msg.join('\n')))
-  await sleep(1000)
+
   if (CurrentQQ) {
     const idx = PlayerList[CurrentQQ - 1]
     Send(
@@ -89,5 +98,24 @@ export default onResponse(selects, async e => {
       )
     )
   }
-  return false
+
+  //根据力量排序
+  temp.sort(sortBy('power'))
+
+  //取前10名
+  const top = temp.slice(0, 10)
+  const image = await screenshot('immortal_genius', user_qq, {
+    allplayer: top,
+    title: '金角大王贡献榜',
+    label: '伤害'
+  })
+
+  if (Buffer.isBuffer(image)) {
+    Send(Image(image))
+    return
+  }
+
+  Send(Text('图片生产失败'))
+
+  return
 })

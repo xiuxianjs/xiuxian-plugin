@@ -4,7 +4,7 @@ import { readPlayer } from '@src/model/xiuxian'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keys as dataKeys } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ExploreActionState } from '@src/types'
 import { getDataList } from '@src/model/DataList'
@@ -131,7 +131,8 @@ export const MojiTask = async () => {
               player.幸运 -= player.addluckyNo
               player.addluckyNo = 0
             }
-            await data.setData('player', player_id, player)
+            // await data.setData('player', player_id, player)
+            await redis.set(dataKeys.player(player_id), JSON.stringify(player))
           }
           //默认结算装备数
           const now_level_id = player.level_id

@@ -19,7 +19,6 @@ export const regular = /^(#|＃|\/)?探索仙府$/
 interface Timeplace {
   name: string
   Price: number
-  [k: string]: any
 }
 
 const FAIL_PRICE = 50_000

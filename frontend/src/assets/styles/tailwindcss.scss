@@ -32,31 +32,32 @@ body,
 // }
 
 /* 响应式表格样式 */
-.responsive-table .ant-table-thead > tr > th,
-.responsive-table .ant-table-tbody > tr > td {
+.responsive-table .ant-table-thead>tr>th,
+.responsive-table .ant-table-tbody>tr>td {
   @apply px-2 sm:px-4 py-2 sm:py-3;
 }
 
-.responsive-table .ant-table-thead > tr > th {
+.responsive-table .ant-table-thead>tr>th {
   @apply text-xs sm:text-sm font-medium;
 }
 
-.responsive-table .ant-table-tbody > tr > td {
+.responsive-table .ant-table-tbody>tr>td {
   @apply text-xs sm:text-sm;
 }
 
 /* 移动端表格优化 */
 @media (max-width: 640px) {
-  .responsive-table .ant-table-thead > tr > th,
-  .responsive-table .ant-table-tbody > tr > td {
+
+  .responsive-table .ant-table-thead>tr>th,
+  .responsive-table .ant-table-tbody>tr>td {
     @apply px-1 py-1;
   }
 
-  .responsive-table .ant-table-thead > tr > th {
+  .responsive-table .ant-table-thead>tr>th {
     @apply text-xs;
   }
 
-  .responsive-table .ant-table-tbody > tr > td {
+  .responsive-table .ant-table-tbody>tr>td {
     @apply text-xs;
   }
 }
@@ -103,6 +104,7 @@ body,
 
 /* 移动端触摸优化 */
 @media (max-width: 768px) {
+
   /* 增加触摸目标大小 */
   .ant-btn {
     @apply min-h-10;
@@ -158,15 +160,15 @@ body,
     @apply bg-gray-800;
   }
 
-  .ant-table-thead > tr > th {
+  .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
-  .ant-table-tbody > tr > td {
+  .ant-table-tbody>tr>td {
     @apply border-gray-600 text-gray-300;
   }
 
-  .ant-table-tbody > tr:hover > td {
+  .ant-table-tbody>tr:hover>td {
     @apply bg-gray-700;
   }
 }
@@ -184,7 +186,7 @@ body,
   }
 }
 
-.xiuxian-model {
+.xiuxian-modal {
   .ant-modal-header {
     @apply bg-gray-800;
   }
@@ -199,7 +201,7 @@ body,
 }
 
 .xiuxian-table {
-  .ant-table-thead > tr > th {
+  .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
@@ -207,7 +209,7 @@ body,
     @apply bg-gray-600 !important;
   }
 
-  .ant-table-tbody > tr > td {
+  .ant-table-tbody>tr>td {
     @apply border-gray-600 text-gray-300;
   }
 
@@ -222,5 +224,92 @@ body,
 
   .ant-pagination-item-active {
     @apply text-white bg-gray-600;
+  }
+}
+
+/* Tabs组件暗色主题样式 */
+.xiuxian-tabs {
+  .ant-tabs-nav {
+    @apply bg-gray-800 border-b border-gray-600;
+  }
+
+  .ant-tabs-tab {
+    @apply text-gray-300 border-gray-600;
+  }
+
+  .ant-tabs-tab:hover {
+    @apply text-purple-300 border-purple-500;
+  }
+
+  .ant-tabs-tab-active {
+    @apply text-white border-purple-500 bg-gray-700 !important;
+  }
+
+  .ant-tabs-tab-btn {
+    @apply text-gray-300;
+  }
+
+  .ant-tabs-tab-active .ant-tabs-tab-btn {
+    @apply text-white !important;
+  }
+
+  .ant-tabs-tab-active .ant-tabs-tab-btn:hover {
+    @apply text-white !important;
+  }
+
+  .ant-tabs-content-holder {
+    @apply bg-gray-800;
+  }
+
+  .ant-tabs-tabpane {
+    @apply bg-gray-800;
+  }
+
+  // 强制覆盖默认的白色背景
+  .ant-tabs-tab.ant-tabs-tab-active {
+    @apply bg-gray-700 !important;
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    @apply text-white !important;
+  }
+}
+
+/* Select组件暗色主题样式 */
+.ant-select {
+  &.ant-select-focused .ant-select-selector {
+    @apply border-purple-500 !important;
+  }
+
+  .ant-select-selector {
+    @apply bg-slate-700/50 border-slate-600 text-white !important;
+  }
+
+  .ant-select-selection-item {
+    @apply text-white !important;
+  }
+
+  .ant-select-selection-placeholder {
+    @apply text-slate-400 !important;
+  }
+
+  .ant-select-arrow {
+    @apply text-slate-400 !important;
+  }
+}
+
+.ant-select-dropdown {
+  @apply bg-slate-700 border-slate-600 !important;
+}
+
+.ant-select-item {
+  @apply text-slate-300 hover:bg-slate-600 !important;
+
+  &.ant-select-item-option-selected {
+    @apply bg-purple-500/20 text-purple-300 !important;
+  }
+
+  &.ant-select-item-option-active {
+    @apply bg-slate-600 !important;
   }
 }

@@ -14,6 +14,16 @@ const Immortal = ({ allplayer = [], title = '', label = '战力' }) => {
             <div className="font-semibold text-[22px] text-black rounded-5xl">
               {label}: {item.power}
             </div>
+            {item?.sub
+              ? item.sub.map((subItem, subIndex) => (
+                  <div
+                    key={subIndex}
+                    className="font-semibold text-[22px] text-black rounded-5xl"
+                  >
+                    {subItem.label}: {subItem.value}
+                  </div>
+                ))
+              : null}
             <div className="font-semibold text-[22px] text-black rounded-5xl">
               QQ: {item.qq}
             </div>

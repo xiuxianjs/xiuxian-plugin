@@ -163,7 +163,7 @@ async function exitAssociationIfNeed(
   // 宗主：处理解散或继任
   const ass3Raw = await data.getAssociation(guild.宗门名称)
   if (!isAssociation(ass3Raw)) return
-  const ass3 = ass3Raw as AssociationData & { [k: string]: any }
+  const ass3 = ass3Raw as AssociationData & {}
   if (!Array.isArray(ass3.所有成员)) ass3.所有成员 = []
   if ((ass3.所有成员 as string[]).length < 2) {
     await redis.del(`${data.association}:${guild.宗门名称}`)
@@ -212,7 +212,7 @@ async function exitAssociationIfNeed(
 const FAIL_PROB = 1 / 9
 
 // 辅助扩展类型与工具函数（放置在文件顶部下方，集中管理）
-type PlayerEx = Player & { [k: string]: any }
+type PlayerEx = Player & {}
 const numVal = (v, d = 0) =>
   typeof v === 'number' && !isNaN(v)
     ? v

@@ -26,7 +26,17 @@ const __PATH = {
   temp_path: 'data:alemonjs-xiuxian:temp',
   custom: 'data:alemonjs-xiuxian:custom',
   auto_backup: 'data:alemonjs-xiuxian:auto_backup',
-  occupation: 'data:alemonjs-xiuxian:occupation'
+  occupation: 'data:alemonjs-xiuxian:occupation',
+  // 用户货币数据
+  player_currency: 'data:alemonjs-xiuxian:currency',
+  // 所有充值记录
+  currency_log: 'data:alemonjs-xiuxian:currency_log',
+  // 充值记录索引。根据索引生成。
+  currency_index: 'data:alemonjs-xiuxian:currency_index',
+  // 验证码
+  captcha: 'data:alemonjs-xiuxian:captcha',
+  // 禁言
+  mute: 'data:alemonjs-xiuxian:mute'
 }
 
 export { __PATH }
@@ -101,7 +111,12 @@ export const keys = {
   duanlu: (id: string) => `${__PATH.duanlu}:${id}`,
   temp: (id: string) => `${__PATH.temp_path}:${id}`,
   custom: (id: string) => `${__PATH.custom}:${id}`,
-  autoBackup: (id: string) => `${__PATH.auto_backup}:${id}`
+  autoBackup: (id: string) => `${__PATH.auto_backup}:${id}`,
+  playerCurrency: (id: string) => `${__PATH.player_currency}:${id}`,
+  currencyLog: (id: string) => `${__PATH.currency_log}:${id}`,
+  currencyIndex: () => `${__PATH.currency_index}`,
+  captcha: (id: string) => `${__PATH.captcha}:${id}`,
+  mute: (id: string) => `${__PATH.mute}:${id}`
 }
 
 export type RedisKeyGenerator = typeof keys

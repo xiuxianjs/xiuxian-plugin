@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { message } from 'antd'
 import { useAuth } from '@/contexts/AuthContext'
-import { getNajieAPI, getNajieStatsAPI } from '@/api/auth'
+import { getNajieAPI, getNajieStatsAPI, updateNajieAPI } from '@/api/auth'
 import { Najie } from '@/types'
 import { pageSize } from '@/config'
 
@@ -12,6 +12,8 @@ export const useNajieManagerCode = () => {
   const [searchText, setSearchText] = useState('')
   const [selectedNajie, setSelectedNajie] = useState<Najie | null>(null)
   const [najieDetailVisible, setNajieDetailVisible] = useState(false)
+  const [najieEditVisible, setNajieEditVisible] = useState(false)
+  const [editLoading, setEditLoading] = useState(false)
 
   // 分页状态
   const [pagination, setPagination] = useState({
@@ -126,21 +128,60 @@ export const useNajieManagerCode = () => {
     }, 0)
   }
 
+  // 处理编辑背包
+  const handleEditNajie = (najie: Najie) => {
+    setSelectedNajie(najie)
+    setNajieEditVisible(true)
+  }
+
+  // 保存编辑的背包
+  const handleSaveNajie = async (updatedNajie: Najie) => {
+    setEditLoading(true)
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      const result = await updateNajieAPI(token, updatedNajie)
+      if (result.success) {
+        message.success('背包更新成功')
+        setNajieEditVisible(false)
+        // 刷新数据
+        fetchNajie(pagination.current, pagination.pageSize)
+        fetchStats()
+      } else {
+        message.error(result.message || '背包更新失败')
+      }
+    } catch (error) {
+      console.error('背包更新失败:', error)
+      message.error('背包更新失败')
+    } finally {
+      setEditLoading(false)
+    }
+  }
+
   return {
     najieList,
     loading,
     searchText,
     selectedNajie,
     najieDetailVisible,
+    najieEditVisible,
+    editLoading,
     pagination,
     stats,
     fetchNajie,
     fetchStats,
     handleSearchAndFilter,
     handleTableChange,
+    handleEditNajie,
+    handleSaveNajie,
     getTotalItems,
     setSearchText,
     setSelectedNajie,
-    setNajieDetailVisible
+    setNajieDetailVisible,
+    setNajieEditVisible
   }
 }

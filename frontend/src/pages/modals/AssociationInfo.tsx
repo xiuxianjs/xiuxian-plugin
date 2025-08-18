@@ -28,7 +28,7 @@ const AssociationInfo = ({
       footer={null}
       closeIcon={<CloseOutlined className="text-white" />}
       width={800}
-      className="xiuxian-model"
+      className="xiuxian-modal"
     >
       {selectedAssociation && (
         <div className="space-y-6">

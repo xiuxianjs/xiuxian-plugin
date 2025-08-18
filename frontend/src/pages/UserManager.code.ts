@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
 import { message } from 'antd'
 import { useAuth } from '@/contexts/AuthContext'
-import { getGameUsersAPI, getGameUsersStatsAPI } from '@/api/auth'
+import {
+  getGameUsersAPI,
+  getGameUsersStatsAPI,
+  updateGameUserAPI
+} from '@/api/auth'
 import { GameUser } from '@/types'
 import { levelNames, pageSize } from '@/config'
 
@@ -12,6 +16,8 @@ export const useUserManagerCode = () => {
   const [searchText, setSearchText] = useState('')
   const [selectedUser, setSelectedUser] = useState<GameUser | null>(null)
   const [userDetailVisible, setUserDetailVisible] = useState(false)
+  const [userEditVisible, setUserEditVisible] = useState(false)
+  const [editLoading, setEditLoading] = useState(false)
 
   // 分页状态
   const [pagination, setPagination] = useState({
@@ -124,12 +130,48 @@ export const useUserManagerCode = () => {
     }
   }
 
+  // 处理编辑用户
+  const handleEditUser = (user: GameUser) => {
+    setSelectedUser(user)
+    setUserEditVisible(true)
+  }
+
+  // 保存编辑的用户
+  const handleSaveUser = async (updatedUser: GameUser) => {
+    setEditLoading(true)
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        message.error('未找到登录令牌')
+        return
+      }
+
+      const result = await updateGameUserAPI(token, updatedUser)
+      if (result.success) {
+        message.success('用户更新成功')
+        setUserEditVisible(false)
+        // 刷新数据
+        fetchGameUsers(pagination.current, pagination.pageSize)
+        fetchStats()
+      } else {
+        message.error(result.message || '用户更新失败')
+      }
+    } catch (error) {
+      console.error('用户更新失败:', error)
+      message.error('用户更新失败')
+    } finally {
+      setEditLoading(false)
+    }
+  }
+
   return {
     gameUsers,
     loading,
     searchText,
     selectedUser,
     userDetailVisible,
+    userEditVisible,
+    editLoading,
     pagination,
     stats,
     getLevelName,
@@ -137,10 +179,13 @@ export const useUserManagerCode = () => {
     getLinggenColor,
     handleSearchAndFilter,
     handleTableChange,
+    handleEditUser,
+    handleSaveUser,
     fetchGameUsers,
     fetchStats,
     setSearchText,
     setSelectedUser,
-    setUserDetailVisible
+    setUserDetailVisible,
+    setUserEditVisible
   }
 }

@@ -6,6 +6,7 @@ export const useConfigManagerCode = () => {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('CD配置')
   const [jsonConfig, setJsonConfig] = useState('')
+  const [open, setOpen] = useState(false)
   const [message, setMessage] = useState<{
     type: 'success' | 'error'
     text: string
@@ -89,6 +90,8 @@ export const useConfigManagerCode = () => {
     loadConfig,
     handleSave,
     handleConfigChange,
-    getConfigValue
+    getConfigValue,
+    open,
+    setOpen
   }
 }

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { existplayer, addNajieThing } from '@src/model/index'
 import type { NajieCategory } from '@src/types/model'
 

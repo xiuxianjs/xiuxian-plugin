@@ -24,7 +24,7 @@ export const hasConfig = async (name: ConfigKey) => {
  * @param data
  * @returns
  */
-export const setConfig = async (name: ConfigKey, data: any) => {
+export const setConfig = async (name: ConfigKey, data) => {
   try {
     const redis = getIoRedis()
     const key = getRedisConfigKey(name)

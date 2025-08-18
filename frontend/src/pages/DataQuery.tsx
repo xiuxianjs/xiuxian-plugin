@@ -59,65 +59,6 @@ export default function DataQuery() {
           </Space>
         </div>
 
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">数据类型</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {dataTypes.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">📁</span>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">当前数据</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {dataList?.length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">📊</span>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">装备数据</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {dataTypes.filter(type => type.includes('Equipment')).length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">⚔️</span>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 rounded-2xl shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm font-medium">丹药数据</p>
-                <p className="text-white text-3xl font-bold mt-2">
-                  {dataTypes.filter(type => type.includes('Danyao')).length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">💊</span>
-              </div>
-            </div>
-          </Card>
-        </div>
-
         {/* 查询控制区域 */}
         <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-center">

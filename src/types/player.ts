@@ -55,7 +55,6 @@ export interface Player {
   addluckyNo?: number
   幸运?: number
   魔道值?: number
-  [key: string]: any // 添加索引签名以兼容动态属性
 }
 
 export interface Equipment {

@@ -20,7 +20,6 @@ export interface TiandibangRow {
   qq: string
   次数: number
   积分: number
-  [k: string]: any
 }
 
 export async function Write_tiandibang(wupin: TiandibangRow[]) {

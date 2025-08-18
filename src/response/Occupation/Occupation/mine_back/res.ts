@@ -20,7 +20,6 @@ interface PlayerAction {
   power_up?: number
   Place_action?: number
   group_id?: string
-  [k: string]: any
 }
 
 const BLOCK_MINUTES = 30 // 满 30 分钟结算一个周期

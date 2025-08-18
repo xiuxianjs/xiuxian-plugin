@@ -12,8 +12,6 @@ export const OccupationTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {
-    // let log_mag = '' // 查询当前人物动作日志信息
-    // log_mag += '查询' + player_id + '是否有动作,'
     // 得到动作
     const actionRaw = await getDataByUserId(player_id, 'action')
     const action = safeParse<ActionState | null>(actionRaw, null)

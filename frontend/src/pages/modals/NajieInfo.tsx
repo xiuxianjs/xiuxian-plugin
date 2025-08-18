@@ -29,7 +29,7 @@ const NajieInfo = ({
       onCancel={() => setNajieDetailVisible(false)}
       footer={null}
       closeIcon={<CloseOutlined className="text-white" />}
-      className="xiuxian-model"
+      className="xiuxian-modal"
       width={selectedNajie?.数据状态 === 'corrupted' ? 1200 : 800}
     >
       {selectedNajie && (

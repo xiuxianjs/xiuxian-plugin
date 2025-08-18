@@ -64,7 +64,7 @@ export async function writeNajie(usr_qq: string, najie: Najie): Promise<void> {
 }
 
 export async function addExp4(usr_qq: string, exp = 0) {
-  if (exp === 0) return
+  if (exp === 0 || isNaN(exp)) return
   await playerRepo.addOccupationExp(usr_qq, exp)
 }
 

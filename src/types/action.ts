@@ -20,15 +20,14 @@ export interface ActionPlayerLite {
   防御: number
   当前血量: number
   暴击率?: number
-  灵根?: { 法球倍率?: number; [k: string]: any }
-  仙宠?: { type?: string; [k: string]: any }
+  灵根?: { 法球倍率?: number }
+  仙宠?: { type?: string }
   level_id?: number
   Physique_id?: number
   幸运?: number
   addluckyNo?: number
   islucky?: number
   血量上限?: number
-  [k: string]: any
 }
 
 export interface ActionState {
@@ -48,7 +47,6 @@ export interface ActionState {
   xijie?: string | number
   A_player?: ActionPlayerLite
   thing?: PlaceThing[]
-  [k: string]: any
 }
 
 export interface SecretPlacePlusItem {

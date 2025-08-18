@@ -2,7 +2,7 @@ import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
 import { parseJsonBody } from '@src/route/core/bodyParser'
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keys } from '@src/model/keys'
 
 const redis = getIoRedis()
 
@@ -14,11 +14,12 @@ export const GET = async (ctx: Context) => {
       return
     }
 
-    // 获取分页参数
+    // 获取参数
     const page = parseInt(ctx.request.query.page as string) || 1
     const pageSize = parseInt(ctx.request.query.pageSize as string) || 20
     const search = (ctx.request.query.search as string) || ''
     const category = (ctx.request.query.category as string) || 'all'
+    const stats = ctx.request.query.stats === 'true'
 
     const najieList = []
     let total = 0
@@ -155,6 +156,64 @@ export const GET = async (ctx: Context) => {
       }
     }
 
+    // 如果是统计请求，返回统计信息
+    if (stats) {
+      let totalLingshi = 0
+      let totalItems = 0
+      const categoryStats = {
+        装备: 0,
+        丹药: 0,
+        道具: 0,
+        功法: 0,
+        草药: 0,
+        材料: 0,
+        仙宠: 0,
+        仙宠口粮: 0
+      }
+
+      // 遍历所有数据计算统计信息
+      for (const key of allKeys) {
+        const userId = key.replace(`${__PATH.najie_path}:`, '')
+        const najieData = await redis.get(key)
+
+        if (najieData) {
+          try {
+            const najie = JSON.parse(najieData)
+
+            // 应用搜索过滤
+            const matchesSearch = !search || userId.includes(search)
+
+            if (matchesSearch) {
+              totalLingshi += najie.灵石 || 0
+
+              // 统计各类物品数量
+              Object.keys(categoryStats).forEach(cat => {
+                if (Array.isArray(najie[cat])) {
+                  categoryStats[cat] += najie[cat].length
+                  totalItems += najie[cat].length
+                }
+              })
+            }
+          } catch (error) {
+            logger.error(`解析背包数据失败 ${userId}:`, error)
+          }
+        }
+      }
+
+      ctx.status = 200
+      ctx.body = {
+        code: 200,
+        message: '获取统计信息成功',
+        data: {
+          total,
+          totalLingshi,
+          totalItems,
+          categoryStats
+        }
+      }
+      return
+    }
+
     ctx.status = 200
     ctx.body = {
       code: 200,
@@ -201,7 +260,7 @@ export const POST = async (ctx: Context) => {
       return
     }
 
-    const najieData = await redis.get(`${__PATH.najie_path}:${userId}`)
+    const najieData = await redis.get(keys.najie(userId))
 
     if (!najieData) {
       ctx.status = 404
@@ -235,7 +294,7 @@ export const POST = async (ctx: Context) => {
   }
 }
 
-// 获取背包统计信息
+// 更新背包数据
 export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin')
@@ -243,133 +302,64 @@ export const PUT = async (ctx: Context) => {
       return
     }
 
-    // 获取统计参数
-    const search = (ctx.request.query.search as string) || ''
-
-    // 使用SCAN命令获取所有背包keys
-    const scanPattern = `${__PATH.najie_path}:*`
-    let cursor = 0
-    const allKeys = []
-
-    do {
-      const result = await redis.scan(
-        cursor,
-        'MATCH',
-        scanPattern,
-        'COUNT',
-        100
-      )
-      cursor = parseInt(result[0])
-      allKeys.push(...result[1])
-    } while (cursor !== 0)
-
-    let total = 0
-    let totalLingshi = 0
-    let totalItems = 0
-    const categoryStats = {
-      装备: 0,
-      丹药: 0,
-      道具: 0,
-      功法: 0,
-      草药: 0,
-      材料: 0,
-      仙宠: 0,
-      仙宠口粮: 0
+    const body = await parseJsonBody(ctx)
+    const {
+      userId,
+      灵石,
+      灵石上限,
+      等级,
+      装备,
+      丹药,
+      道具,
+      功法,
+      草药,
+      材料,
+      仙宠,
+      仙宠口粮
+    } = body as {
+      userId: string
+      [key: string]: unknown
     }
 
-    // 如果需要搜索，需要遍历所有数据
-    if (search) {
-      for (const key of allKeys) {
-        const userId = key.replace(`${__PATH.najie_path}:`, '')
-        const najieData = await redis.get(key)
-
-        if (najieData) {
-          try {
-            // 先尝试解码URI
-            const najie = JSON.parse(najieData)
-
-            // 应用搜索过滤
-            const matchesSearch = !search || userId.includes(search)
-
-            if (matchesSearch) {
-              total++
-              totalLingshi += najie.灵石 || 0
-
-              // 统计各类物品数量
-              Object.keys(categoryStats).forEach(cat => {
-                if (Array.isArray(najie[cat])) {
-                  categoryStats[cat] += najie[cat].length
-                  totalItems += najie[cat].length
-                }
-              })
-            }
-          } catch (error) {
-            logger.error(`解析背包数据失败 ${userId}:`, error)
-
-            // 损坏数据计入总数
-            const matchesSearch = !search || userId.includes(search)
-            if (matchesSearch) {
-              total++
-            }
-          }
-        }
+    if (!userId) {
+      ctx.status = 400
+      ctx.body = {
+        code: 400,
+        message: '用户ID不能为空',
+        data: null
       }
-    } else {
-      // 无搜索，直接统计总数
-      total = allKeys.length
-
-      // 获取部分数据进行资源统计（避免性能问题）
-      const sampleKeys = allKeys.slice(0, Math.min(50, allKeys.length))
-      for (const key of sampleKeys) {
-        const userId = key.replace(`${__PATH.najie_path}:`, '')
-        const najieData = await redis.get(key)
-
-        if (najieData) {
-          try {
-            // 先尝试解码URI
-            const najie = JSON.parse(najieData)
-
-            totalLingshi += najie.灵石 || 0
-
-            // 统计各类物品数量
-            Object.keys(categoryStats).forEach(cat => {
-              if (Array.isArray(najie[cat])) {
-                categoryStats[cat] += najie[cat].length
-                totalItems += najie[cat].length
-              }
-            })
-          } catch (error) {
-            logger.error(`解析背包数据失败 ${userId}:`, error)
-            // 损坏数据计入总数
-            total++
-          }
-        }
-      }
-
-      // 根据样本比例估算总数
-      if (sampleKeys.length > 0) {
-        const ratio = allKeys.length / sampleKeys.length
-        totalLingshi = Math.round(totalLingshi * ratio)
-        totalItems = Math.round(totalItems * ratio)
-        Object.keys(categoryStats).forEach(cat => {
-          categoryStats[cat] = Math.round(categoryStats[cat] * ratio)
-        })
-      }
+      return
     }
+
+    // 构建背包数据
+    const najieData = {
+      灵石: 灵石 || 0,
+      灵石上限: 灵石上限 || 0,
+      等级: 等级 || 1,
+      装备: Array.isArray(装备) ? 装备 : [],
+      丹药: Array.isArray(丹药) ? 丹药 : [],
+      道具: Array.isArray(道具) ? 道具 : [],
+      功法: Array.isArray(功法) ? 功法 : [],
+      草药: Array.isArray(草药) ? 草药 : [],
+      材料: Array.isArray(材料) ? 材料 : [],
+      仙宠: Array.isArray(仙宠) ? 仙宠 : [],
+      仙宠口粮: Array.isArray(仙宠口粮) ? 仙宠口粮 : []
+    }
+
+    // 保存到Redis
+    await redis.set(keys.najie(userId), JSON.stringify(najieData))
 
     ctx.status = 200
     ctx.body = {
       code: 200,
-      message: '获取统计信息成功',
+      message: '背包更新成功',
       data: {
-        total,
-        totalLingshi,
-        totalItems,
-        categoryStats
+        userId,
+        ...najieData
       }
     }
   } catch (error) {
-    logger.error('获取统计信息错误:', error)
+    logger.error('更新背包数据错误:', error)
     ctx.status = 500
     ctx.body = {
       code: 500,
