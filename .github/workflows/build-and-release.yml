@@ -4,11 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号 (例: 0.0.1)'
-        required: true
-      message:
-        description: '发布信息'
-        required: true
+        description: '版本号(自增)'
+        required: false
 
 permissions:
   contents: write
@@ -21,6 +18,8 @@ jobs:
     steps:
       - name: 结账代码
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 获取完整 tag 历史
 
       - name: 检查分支
         if: github.ref != 'refs/heads/main'
@@ -37,6 +36,29 @@ jobs:
         run: |
           yarn install --ignore-engines
           yarn bundle-install --ignore-engines # bundle
+
+      - name: 自动获取/自增版本号
+        id: versioning
+        run: |
+          # 如果用户输入 version，则直接用
+          if [[ -n "${{ github.event.inputs.version }}" ]]; then
+            VERSION="v${{ github.event.inputs.version }}"
+          else
+            # 自动获取最新 tag
+            LATEST_TAG=$(git tag --sort=-v:refname | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | head -n 1)
+            if [ -z "$LATEST_TAG" ]; then
+              VERSION="v0.0.1"
+            else
+              VERSION_NUM=${LATEST_TAG#v}
+              MAJOR=$(echo $VERSION_NUM | cut -d. -f1)
+              MINOR=$(echo $VERSION_NUM | cut -d. -f2)
+              PATCH=$(echo $VERSION_NUM | cut -d. -f3)
+              PATCH=$((PATCH + 1))
+              VERSION="v$MAJOR.$MINOR.$PATCH"
+            fi
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "本次发布版本号: $VERSION"
 
       - name: 打包
         run: |
@@ -82,18 +104,29 @@ jobs:
             exit 1
           }
 
-          # 去除 package.json 中的 devDependencies
+          # 去除 package.json 中一些字段
           jq 'del(.devDependencies)' package.json > package.json.tmp && mv package.json.tmp package.json
+          jq 'del(.workspaces)' package.json > package.json.tmp && mv package.json.tmp package.json
+          jq 'del(.private)' package.json > package.json.tmp && mv package.json.tmp package.json
+          jq 'del(.scripts)' package.json > package.json.tmp && mv package.json.tmp package.json
 
           # 开始产出
           git config --local user.email "ningmengchongshui@gmail.com"
           git config --local user.name "ningmengchongshui"
           git config --local push.autoSetupRemote true
           git add -A
-          git commit -m "${{github.event.inputs.version}} ${{ github.event.inputs.message }}"
+          git commit -m "${{ steps.versioning.outputs.version }}"
           git push origin $DEPLOY_BRANCH || {
             echo "错误：推送失败，请检查..."
             exit 1
           }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 打 tag 并推送
+        run: |
+          TAG="${{ steps.versioning.outputs.version }}"
+          git tag -f $TAG
+          git push origin $TAG --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
