@@ -9,7 +9,7 @@ import {
   addPet
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/
 
 export default onResponse(selects, async e => {

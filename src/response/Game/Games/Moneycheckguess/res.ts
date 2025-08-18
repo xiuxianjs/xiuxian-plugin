@@ -7,7 +7,7 @@ import {
   notUndAndNull,
   addCoin
 } from '@src/model/index'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { openMoneySystem } from '@src/model/money'
 import { game } from '../game'
 

@@ -9,7 +9,7 @@ import {
 import { stopActionWithSuffix } from '@src/response/actionHelper'
 import { setValue, userKey } from '@src/model/utils/redisHelper'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清空锻炉/
 
 export default onResponse(selects, async e => {

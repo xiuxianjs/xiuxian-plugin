@@ -17,7 +17,7 @@ import {
 } from '@src/response/actionHelper'
 import { setValue, userKey } from '@src/model/utils/redisHelper'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开始炼制/
 
 export default onResponse(selects, async e => {

@@ -8,7 +8,7 @@ import {
   addCoin
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?取消[1-9]d*/
 
 export default onResponse(selects, async e => {

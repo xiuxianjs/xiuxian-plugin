@@ -19,7 +19,7 @@ interface CustomEquipRecord {
   author_name?: string
 }
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?赋名.*$/
 
 function toStr(v): string {

@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门列表$/
 import { __PATH } from '@src/model/index'
 import { screenshot } from '@src/image'

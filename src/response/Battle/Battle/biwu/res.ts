@@ -3,7 +3,7 @@ import { Image, Text, useMention, useSend } from 'alemonjs'
 import { existplayer, readPlayer, zdBattle } from '@src/model/index'
 import type { Player } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?以武会友$/
 

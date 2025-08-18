@@ -1,6 +1,6 @@
 import { Image, useSend, Text } from 'alemonjs'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getXianChongImage } from '@src/model/image'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'

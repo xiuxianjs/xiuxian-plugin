@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 // 直接 redis.get 改为 helper
 import { existplayer, readPlayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { setDataByUserId } from '@src/model/Redis'
 import { getString, userKey } from '@src/model/utils/redisHelper'
 import {

@@ -16,7 +16,7 @@ import {
   TiandibangRow
 } from '../tian'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?比试$/
 

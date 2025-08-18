@@ -11,7 +11,7 @@ import {
 } from '@src/model/qinmidu'
 import { existplayer } from '@src/model/xiuxian_impl'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 // 修复多余 ^ 导致匹配失败
 export const regular = /^(#|＃|\/)?双修$/
 

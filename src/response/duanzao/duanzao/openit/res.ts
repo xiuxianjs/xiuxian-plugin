@@ -15,7 +15,7 @@ import {
   addExp4
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import {
   readActionWithSuffix,
   isActionRunning,

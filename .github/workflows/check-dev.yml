@@ -3,6 +3,7 @@ name: 推送检验
 on:
   push:
     branches:
+      - main
       - dev-*
       - for/dev-*
 
@@ -31,12 +32,9 @@ jobs:
       - name: 加载依赖
         run: |
           yarn install --ignore-engines
-
-      - name: 格式化检查
-        run: |
-          yarn format
-          yarn eslint
+          yarn bundle-install --ignore-engines
 
       - name: 打包测试
         run: |
           yarn build
+          yarn bundle

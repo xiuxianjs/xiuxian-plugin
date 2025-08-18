@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/index'
 import type { Player, AssociationDetailData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?召唤神兽$/
 
 interface PlayerGuildRef {

@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import type { Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?设置性别.*$/
 
 type Gender = '男' | '女'

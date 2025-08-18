@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/index'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^任命.*/
 const 副宗主人数上限 = [1, 1, 1, 1, 2, 2, 3, 3]
 const 长老人数上限 = [1, 2, 3, 4, 5, 7, 8, 9]

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { Go, existplayer, readPlayer, writePlayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?转换副职$/
 
 export default onResponse(selects, async e => {

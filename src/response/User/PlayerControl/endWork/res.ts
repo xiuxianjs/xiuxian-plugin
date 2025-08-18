@@ -2,7 +2,7 @@ import { config, data, pushInfo } from '@src/model/api'
 import { getPlayerAction, notUndAndNull, setFileValue } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { Mention, DataMention } from 'alemonjs'
 import type { ActionState } from '@src/types'
 export const regular = /^(#|＃|\/)?降妖归来$/

@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { readDanyao, readPlayer, existplayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?我的药效$/
 
 export default onResponse(selects, async e => {

@@ -16,7 +16,7 @@ import {
   getConfig
 } from '@src/model/index'
 import fs from 'fs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { Show_player } from '../user'
 import type { Player, AssociationDetailData } from '@src/types'
 import { getRedisKey } from '@src/model/keys'

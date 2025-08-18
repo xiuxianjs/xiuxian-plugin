@@ -3,7 +3,7 @@ import { Text, useMessage, useSubscribe } from 'alemonjs'
 import { data } from '@src/model/api'
 import { existplayer, addNajieThing, addCoin, sleep } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
 

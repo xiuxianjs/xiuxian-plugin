@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import { __PATH, existplayer, findQinmidu, sleep } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { redis } from '@src/model/api'
 export const regular = /^(#|＃|\/)?查询亲密度$/
 

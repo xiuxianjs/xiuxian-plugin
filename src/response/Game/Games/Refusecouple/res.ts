@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { readPlayer, existplayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?拒绝双修$/
 

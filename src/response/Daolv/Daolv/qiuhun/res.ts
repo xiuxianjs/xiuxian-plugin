@@ -16,7 +16,7 @@ import {
 } from '@src/model/index'
 import { chaoshi, Daolv } from '../daolv'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^(结为道侣)$/
 
 export default onResponse(selects, async e => {

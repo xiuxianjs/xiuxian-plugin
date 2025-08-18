@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getStatezhiyeImage } from '@src/model/image'
 import { existplayer } from '@src/model'
 export const regular = /^(#|＃|\/)?职业等级$/

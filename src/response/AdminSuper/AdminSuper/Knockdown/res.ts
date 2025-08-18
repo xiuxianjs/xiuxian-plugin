@@ -2,7 +2,7 @@ import { Text, useSend, useMention } from 'alemonjs'
 
 import { existplayer, readPlayer, writePlayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|\/)打落凡间.*$/
 
 export default onResponse(selects, async e => {

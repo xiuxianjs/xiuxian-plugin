@@ -26,11 +26,9 @@
     "lint:baseline": "eslint -f json src > eslint-baseline.json || true"
   },
   "dependencies": {
-    "@types/koa-router": "^7.4.8",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "jsxp": "^1.2.2",
-    "koa-bodyparser": "^4.4.1",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
     "node-schedule": "^2.1.1",
@@ -40,6 +38,7 @@
   },
   "devDependencies": {
     "@alemonjs/db": "^0.0.11",
+    "@types/koa-router": "^7.4.8",
     "@alemonjs/onebot": "^2.1.0-alpha.8",
     "@eslint/js": "^9.18.0",
     "@types/koa-bodyparser": "^4.3.12",

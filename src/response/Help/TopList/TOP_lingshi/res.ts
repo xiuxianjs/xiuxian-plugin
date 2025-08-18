@@ -7,7 +7,7 @@ import {
   sleep,
   readPlayer
 } from '@src/model/index'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRankingMoneyImage } from '@src/model/image'
 
 export const regular = /^(#|＃|\/)?灵榜$/

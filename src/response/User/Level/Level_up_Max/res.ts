@@ -12,7 +12,7 @@ import {
   getRandomFromARR
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getDataByUserId } from '@src/model/Redis'
 import { getRedisKey } from '@src/model/keys'
 

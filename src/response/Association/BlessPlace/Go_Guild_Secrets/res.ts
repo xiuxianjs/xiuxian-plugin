@@ -11,7 +11,7 @@ import {
 } from '@src/model/index'
 import type { Player, AssociationDetailData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
 
 interface PlayerGuildRef {

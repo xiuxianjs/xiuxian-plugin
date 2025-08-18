@@ -11,7 +11,7 @@ import {
   addExp4
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?炼制.*(\*[0-9]*)?$/
 
 // 类型声明（最小必要字段）

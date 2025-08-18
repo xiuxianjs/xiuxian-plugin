@@ -3,7 +3,7 @@ import { Text, useMessage, useSubscribe } from 'alemonjs'
 import { data } from '@src/model/api'
 import { notUndAndNull, setFileValue, timestampToTime } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开宗立派$/
 
 export default onResponse(selects, async e => {

@@ -4,7 +4,7 @@ import { data, redis } from '@src/model/api'
 import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
 import type { AssociationDetailData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 import { existDataByPath, readDataByPath } from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?神兽赐福$/

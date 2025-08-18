@@ -8,7 +8,7 @@ import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addCoin } from '@src/model/economy'
 import type { Player, AssociationDetailData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?沉迷宗门秘境.*$/
 

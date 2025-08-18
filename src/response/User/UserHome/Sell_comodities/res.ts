@@ -10,7 +10,7 @@ import {
   addCoin
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?出售\S+(?:\*\S+){0,2}$/
 

@@ -9,7 +9,7 @@ import { existNajieThing } from '@src/model/najie'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
 import type { Player } from '@src/types/player'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?比武$/
 
 interface ActionState {

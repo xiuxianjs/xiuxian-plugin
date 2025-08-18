@@ -2,7 +2,7 @@ import { Text, Image, useSend } from 'alemonjs'
 import type { EventsMessageCreateEnum } from 'alemonjs'
 
 import { existplayer } from '@src/model/index'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getPlayerImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?我(的练气)?$/
 

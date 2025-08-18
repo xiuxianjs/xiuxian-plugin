@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
 import type { AssociationData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?药园*$/
 
 interface GardenCrop {

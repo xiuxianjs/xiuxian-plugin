@@ -1,19 +1,13 @@
 import { Image, useSend } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getConfig } from '@src/model/Config'
 import { screenshot } from '@src/image'
-import { COMMAND_NAME, postLogCommand } from '@src/model/posthog'
+
+import mw from '@src/response/mw'
+
 export const regular = /^(#|＃|\/)??(修仙|仙侠)?帮助(\d+)?$/
 
-export default onResponse(selects, async e => {
-  postLogCommand({
-    id: e.UserId,
-    value: e.MessageText,
-    name: COMMAND_NAME.HELP,
-    ext: {
-      username: e.UserName
-    }
-  })
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const helpData = await getConfig('help', 'help')
 
@@ -38,3 +32,5 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

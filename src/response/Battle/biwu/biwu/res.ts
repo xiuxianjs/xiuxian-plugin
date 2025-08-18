@@ -6,7 +6,7 @@ import { sleep } from '@src/model/common'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
 import { data, pushInfo, redis } from '@src/model/api'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { biwuPlayer } from '../biwu'
 import { screenshot } from '@src/image'
 

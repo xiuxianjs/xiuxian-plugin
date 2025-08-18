@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?我的贡献$/
 
 export default onResponse(selects, async e => {

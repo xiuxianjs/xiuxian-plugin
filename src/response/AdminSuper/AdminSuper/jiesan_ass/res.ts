@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import { __PATH, writePlayer } from '@src/model/index'
 import { data } from '@src/model/api'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { redis } from '@src/model/api'
 import type { AssociationDetailData, PlayerData, Player } from '@src/types'
 

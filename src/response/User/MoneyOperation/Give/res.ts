@@ -10,7 +10,7 @@ import {
   addNajieThing
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { parseUnitNumber } from '@src/model/utils/utilsx'
 import type { NajieCategory } from '@src/types'
 import { getRedisKey } from '@src/model/keys'

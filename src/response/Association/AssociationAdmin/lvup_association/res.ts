@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { notUndAndNull, playerEfficiency } from '@src/model/index'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 

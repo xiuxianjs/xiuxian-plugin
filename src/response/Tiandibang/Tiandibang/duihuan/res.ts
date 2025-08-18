@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { existplayer, addNajieThing } from '@src/model/index'
 import { readTiandibang, Write_tiandibang, TiandibangRow } from '../tian'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?积分兑换(.*)$/
 

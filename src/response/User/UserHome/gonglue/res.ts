@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?修仙攻略$/
 
 export default onResponse(selects, async e => {

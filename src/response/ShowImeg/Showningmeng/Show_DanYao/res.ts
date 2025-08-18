@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getDanyaoImage } from '@src/model/image'
 
 export const regular = /^(#|＃|\/)?丹药楼$/

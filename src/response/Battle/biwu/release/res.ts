@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?释放技能.*$/

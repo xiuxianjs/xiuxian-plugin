@@ -18,7 +18,7 @@ interface CustomEquipRecord {
   author_name?: string
 }
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?神兵榜$/
 

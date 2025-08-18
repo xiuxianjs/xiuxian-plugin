@@ -25,7 +25,7 @@ import {
 } from '@src/model/xiuxian_impl'
 import { readDanyao, writeDanyao, readAll } from '@src/model/danyao'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getQquipmentImage } from '@src/model/image'
 import type { NajieCategory } from '@src/types/model'
 import type { TalentInfo } from '@src/types/player'

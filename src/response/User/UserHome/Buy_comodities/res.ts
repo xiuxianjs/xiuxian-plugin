@@ -11,7 +11,7 @@ import {
 import { data } from '@src/model/api'
 import type { NajieCategory } from '@src/types/model'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?购买((.*)|(.*)*(.*))$/
 
 interface Commodity {

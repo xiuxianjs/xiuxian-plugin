@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { BossIsAlive } from '../../boss'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { KEY_RECORD_TWO } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?关闭金角大王$/
 

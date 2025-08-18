@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getConfig } from '@src/model'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?修仙扩展(\d+)?$/

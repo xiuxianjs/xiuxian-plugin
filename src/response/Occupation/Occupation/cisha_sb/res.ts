@@ -10,7 +10,7 @@ import {
   writePlayer
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { BattleEntity } from '@src/types/model'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?刺杀目标.*$/

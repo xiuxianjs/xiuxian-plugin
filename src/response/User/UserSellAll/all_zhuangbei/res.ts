@@ -8,7 +8,7 @@ import {
   insteadEquipment
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getQquipmentImage } from '@src/model/image'
 import DataList from '@src/model/DataList'
 import { EquipmentLike } from '@src/types/model'

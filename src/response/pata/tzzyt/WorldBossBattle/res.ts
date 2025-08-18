@@ -4,7 +4,7 @@ import { data, redis } from '@src/model/api'
 import { getRedisKey } from '@src/model/keys'
 import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?挑战镇妖塔$/
 
 interface EquipSlot {

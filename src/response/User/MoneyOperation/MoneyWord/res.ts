@@ -7,7 +7,7 @@ import {
   addCoin
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?交税\s*\d+$/
 
 function toInt(v, d = 0) {

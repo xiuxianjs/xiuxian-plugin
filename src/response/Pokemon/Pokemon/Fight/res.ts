@@ -6,7 +6,7 @@ import { addPet } from '@src/model/pets'
 import { readNajie, writePlayer } from '@src/model/xiuxian_impl'
 import type { Player, NajieItem, XianchongInfo } from '@src/types/player'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?出战仙宠.*$/
 
 interface PetDef {

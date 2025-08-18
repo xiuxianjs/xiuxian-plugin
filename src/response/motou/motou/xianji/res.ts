@@ -9,7 +9,7 @@ import {
 } from '@src/model/index'
 import { NajieCategory } from '@src/types/model'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?献祭魔石$/
 
 interface PrizeItem {

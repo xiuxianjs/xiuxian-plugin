@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs'
 import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { redis } from '@src/model/api'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?神魄榜$/

@@ -4,7 +4,7 @@ import { dujie, LevelTask } from '@src/model/cultivation'
 import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl'
 import { data } from '@src/model/api'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?渡劫$/
 let dj = 0 // 同时仅允许一个玩家进行渡劫（简单内存锁）
 

@@ -1,6 +1,6 @@
 import { data } from '@src/model/api'
 import { Goweizhi } from '@src/model/image'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { existplayer } from '@src/model/index'
 import type { NamedItem } from '@src/types/model'
 

@@ -9,7 +9,7 @@ import {
   addExp4
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?打造.*(\*[0-9]*)?$/
 
 interface TuzhiMaterial {

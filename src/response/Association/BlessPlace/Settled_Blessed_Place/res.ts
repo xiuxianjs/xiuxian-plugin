@@ -3,7 +3,7 @@ import { data, redis } from '@src/model/api'
 import { __PATH, notUndAndNull, readPlayer } from '@src/model/index'
 import type { Player, AssociationDetailData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?入驻洞天.*$/
 
 interface PlayerGuildRef {

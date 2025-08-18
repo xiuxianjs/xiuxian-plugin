@@ -1,6 +1,6 @@
 import { InitWorldBoss2 } from '../../boss'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开启金角大王$/
 
 export default onResponse(selects, async e => {

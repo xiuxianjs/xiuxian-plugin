@@ -11,7 +11,7 @@ import {
 } from '@src/response/actionHelper'
 import { setValue, userKey, getString } from '@src/model/utils/redisHelper'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/
 
 export default onResponse(selects, async e => {

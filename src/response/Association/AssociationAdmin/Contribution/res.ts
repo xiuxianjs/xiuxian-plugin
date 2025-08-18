@@ -1,5 +1,5 @@
 import { Text, useMessage } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { readPlayer } from '@src/model'
 import Association from '@src/model/Association'
 

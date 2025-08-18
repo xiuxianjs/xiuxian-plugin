@@ -8,7 +8,7 @@ import {
   addNajieThing
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import DataList from '@src/model/DataList'
 import { PetItem } from '@src/types'
 export const regular = /^(#|＃|\/)?喂给仙宠.*$/

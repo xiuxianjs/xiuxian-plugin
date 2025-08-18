@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { notUndAndNull, convert2integer } from '@src/model/index'
 
 import type { AssociationDetailData } from '@src/types/domain'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?维护护宗大阵.*$/
 
 export default onResponse(selects, async e => {

@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { Go } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?修仙状态$/
 
 export default onResponse(selects, async e => {

@@ -2,7 +2,7 @@ import { getRedisKey } from '@src/model/keys'
 import { Text, useSend } from 'alemonjs'
 import { config, redis } from '@src/model/api'
 import { Go, existplayer, readPlayer } from '@src/model/index'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { game } from '../game'
 
 export const regular = /^(#|＃|\/)?金银坊$/

@@ -9,7 +9,7 @@ import {
   addNajieThing
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 // 允许：#发 灵石*100 | #发 修为*5000 | #发 血气*300 | #发 剑*优*1
 export const regular = /^(#|＃|\/)?发\S+(?:\*\S+){1,2}$/
 

@@ -4,7 +4,7 @@ import { Text, useSend } from 'alemonjs'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清空赏金榜$/
 
 export default onResponse(selects, async e => {

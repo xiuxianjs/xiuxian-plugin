@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getAssociationImage } from '@src/model/image'
 import { existplayer } from '@src/model'
 export const regular = /^(#|＃|\/)?我的宗门$/

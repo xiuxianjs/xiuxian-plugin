@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
 import { existplayer, Go, convert2integer, addCoin } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?发红包.*$/
 

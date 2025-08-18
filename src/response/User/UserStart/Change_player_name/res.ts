@@ -7,7 +7,7 @@ import {
   writePlayer
 } from '@src/model/index'
 import { Show_player } from '../user'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { Player } from '@src/types'
 import { getRedisKey } from '@src/model/keys'
 

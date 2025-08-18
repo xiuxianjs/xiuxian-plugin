@@ -4,7 +4,7 @@ import { redis } from '@src/model/api'
 import { existplayer, sortBy } from '@src/model/index'
 import { BossIsAlive, SortPlayer } from '../../boss'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { KEY_RECORD_TWO } from '@src/model/constants'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?金角大王贡献榜$/

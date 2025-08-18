@@ -4,7 +4,7 @@ import { foundthing } from '@src/model/cultivation'
 import { updateBagThing } from '@src/model/najie'
 import { existplayer, readNajie } from '@src/model/xiuxian_impl'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?(锁定|解锁).*$/
 
 interface BagPet {

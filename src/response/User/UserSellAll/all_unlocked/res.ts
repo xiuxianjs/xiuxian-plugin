@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
 import { existplayer, writeNajie } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?一键解锁(.*)$/
 
 export default onResponse(selects, async e => {

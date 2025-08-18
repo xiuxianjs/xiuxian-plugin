@@ -10,7 +10,7 @@ import {
 } from '@src/model/index'
 import { config } from '@src/model/api'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?升级纳戒$/
 
 export default onResponse(selects, async e => {

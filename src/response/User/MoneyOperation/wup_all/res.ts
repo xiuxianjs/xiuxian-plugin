@@ -7,7 +7,7 @@ import {
   foundthing,
   addNajieThing
 } from '@src/model/index'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { redis } from '@src/model/api'
 import type { NajieCategory } from '@src/types/model'
 

@@ -5,7 +5,7 @@ import { playerEfficiency } from '@src/model/efficiency'
 import { data, redis } from '@src/model/api'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getConfig } from '@src/model'
 export const regular = /^(#|＃|\/)?退出宗门$/
 

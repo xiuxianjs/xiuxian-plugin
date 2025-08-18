@@ -13,7 +13,7 @@ import {
 } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { DataMention, Mention } from 'alemonjs'
 export const regular = /^(#|＃|\/)?出关$/
 

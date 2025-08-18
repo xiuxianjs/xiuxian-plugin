@@ -10,7 +10,7 @@ import {
   normalizeBiguanMinutes
 } from '@src/response/actionHelper'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/
 

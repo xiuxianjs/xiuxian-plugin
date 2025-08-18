@@ -10,7 +10,7 @@ import {
 } from '@src/response/actionHelper'
 import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?堕入魔界$/
 
 export default onResponse(selects, async e => {

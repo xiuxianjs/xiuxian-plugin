@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { existplayer, notUndAndNull, readPlayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?星阁拍卖行$/
 

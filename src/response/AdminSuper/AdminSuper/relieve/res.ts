@@ -5,7 +5,7 @@ import { existplayer } from '@src/model/index'
 import { readAction, stopAction } from '@src/response/actionHelper'
 import { userKey } from '@src/model/utils/redisHelper'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?解封.*$/
 
 export default onResponse(selects, async e => {

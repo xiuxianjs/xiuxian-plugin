@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { getConfig, notUndAndNull, shijianc } from '@src/model/index'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/
 
 interface PlayerGuildRef {

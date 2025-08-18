@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?报名比赛/
 
 export default onResponse(selects, async e => {

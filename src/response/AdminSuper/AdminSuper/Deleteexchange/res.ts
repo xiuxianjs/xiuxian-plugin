@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { readExchange, writeExchange } from '@src/model/trade'
 import { addNajieThing } from '@src/model/najie'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清除冲水堂$/
 
 export default onResponse(selects, async e => {

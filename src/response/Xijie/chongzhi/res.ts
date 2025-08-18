@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { readShop, writeShop } from '@src/model/index'
 import type { ShopData } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?重置.*$/
 
 export default onResponse(selects, async e => {

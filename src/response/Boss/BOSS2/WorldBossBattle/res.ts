@@ -13,7 +13,7 @@ import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { existplayer } from '@src/model'
 import { getRedisKey } from '@src/model/keys'
 import {

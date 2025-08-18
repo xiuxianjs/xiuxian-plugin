@@ -17,7 +17,7 @@ import {
 } from '@src/model/index'
 import { found, chaoshi, Daolv } from '../daolv'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^(断绝姻缘)$/
 
 export default onResponse(selects, async e => {

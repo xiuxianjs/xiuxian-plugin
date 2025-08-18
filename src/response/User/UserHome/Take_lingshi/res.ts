@@ -10,7 +10,7 @@ import {
   addCoin
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?(存|取)灵石(.*)$/
 
 export default onResponse(selects, async e => {

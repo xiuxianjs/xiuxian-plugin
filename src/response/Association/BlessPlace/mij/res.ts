@@ -1,6 +1,6 @@
 import { data } from '@src/model/api'
 import { Goweizhi } from '@src/model/image'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { NamedItem } from '@src/types'
 
 export const regular = /^(#|＃|\/)?宗门秘境$/

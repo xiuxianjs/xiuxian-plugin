@@ -4,7 +4,7 @@ import { __PATH } from '@src/model/keys'
 import { notUndAndNull } from '@src/model/common'
 import { sortBy, getAllExp } from '@src/model/cultivation'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRankingPowerImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?天榜$/
 export default onResponse(selects, async e => {

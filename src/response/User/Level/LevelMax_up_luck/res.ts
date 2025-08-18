@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { existNajieThing, existplayer } from '@src/model/index'
 import { LevelMax_up } from '../level'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?幸运破体$/
 
 export default onResponse(selects, async e => {

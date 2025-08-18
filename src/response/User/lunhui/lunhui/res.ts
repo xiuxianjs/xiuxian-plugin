@@ -14,7 +14,7 @@ import {
 import type { TalentInfo, Player } from '@src/types/player'
 import type { AssociationData } from '@src/types/domain'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?轮回$/
 

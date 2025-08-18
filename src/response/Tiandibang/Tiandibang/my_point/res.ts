@@ -3,7 +3,7 @@ import { Image, Text, useSend } from 'alemonjs'
 import { existplayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?天地榜$/
 

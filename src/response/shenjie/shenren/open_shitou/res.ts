@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { addNajieThing, existNajieThing, existplayer } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?敲开闪闪发光的石头$/
 
 export default onResponse(selects, async e => {

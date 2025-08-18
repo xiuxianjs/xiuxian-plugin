@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
 import { existplayer, settripod } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?炼器师能力评测/
 
 export default onResponse(selects, async e => {

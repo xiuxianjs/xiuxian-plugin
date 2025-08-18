@@ -2,7 +2,7 @@ import { exec } from 'child_process'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { Text, useSend } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
 const mdDir = join(currentDir, '../../../../../')

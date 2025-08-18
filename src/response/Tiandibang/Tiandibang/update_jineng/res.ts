@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { TalentInfo } from '@src/types'
 export const regular = /^(#|＃|\/)?更新属性$/
 

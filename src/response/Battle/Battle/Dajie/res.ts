@@ -37,7 +37,7 @@ interface PlayerWithFaQiu extends Player {
   法球倍率?: number
 }
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getDataByUserId } from '@src/model/Redis'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?打劫$/

@@ -1,6 +1,6 @@
 import { Text, useMessage, Image } from 'alemonjs'
 import { data, redis } from '@src/model/api'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { __PATH } from '@src/model/index'
 import { screenshot } from '@src/image'
 import type { AssociationDetailData } from '@src/types'

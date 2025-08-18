@@ -9,7 +9,7 @@ import { existplayer, readNajie, readPlayer } from '@src/model/xiuxian_impl'
 import type { NajieItem, Najie } from '@src/types/player'
 import type { NajieCategory, ExchangeRecord } from '@src/types/model'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?上架.*$/
 
 interface EquipLike {

@@ -1,5 +1,5 @@
 import { Image, useSend, Text } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getForumImage } from '@src/model/image'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'

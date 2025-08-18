@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { biwuPlayer } from '../biwu'
 import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?选择技能.*$/

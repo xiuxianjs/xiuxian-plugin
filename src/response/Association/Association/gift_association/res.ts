@@ -5,7 +5,7 @@ import { notUndAndNull, shijianc } from '@src/model/index'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?宗门俸禄$/
 

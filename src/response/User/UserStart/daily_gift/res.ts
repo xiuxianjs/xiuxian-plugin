@@ -11,7 +11,7 @@ import {
   getConfig
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import type { Player } from '@src/types'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?修仙签到$/

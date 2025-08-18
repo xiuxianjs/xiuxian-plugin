@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getNingmenghomeImage } from '@src/model/image'
 
 export const regular =

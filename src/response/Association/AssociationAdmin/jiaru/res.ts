@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
 import type { PlayerData } from '@src/types/domain'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?设置门槛.*$/
 
 export default onResponse(selects, async e => {

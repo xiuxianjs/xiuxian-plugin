@@ -12,7 +12,7 @@ import {
   addCoin
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?镇守仙境.*$/
 
 export default onResponse(selects, async e => {

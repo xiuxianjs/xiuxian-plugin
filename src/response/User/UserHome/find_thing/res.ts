@@ -8,7 +8,7 @@ import {
   existplayer
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?哪里有(.*)$/
 
 // 物品结构与地点结构(最小必要字段)定义

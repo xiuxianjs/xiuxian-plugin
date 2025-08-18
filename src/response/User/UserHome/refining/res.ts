@@ -7,7 +7,7 @@ import {
   addNajieThing
 } from '@src/model/index'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?打磨\S+\*\S+$/
 
 const PINJI_MAP: Record<string, number> = {

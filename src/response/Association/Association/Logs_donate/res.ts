@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import type { AssociationDetailData, Player } from '@src/types'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门捐献记录$/
 
 interface ExtAss extends Omit<AssociationDetailData, '宗门名称'> {

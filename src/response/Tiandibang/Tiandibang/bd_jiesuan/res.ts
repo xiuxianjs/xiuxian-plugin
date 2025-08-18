@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs'
 
 import { readTiandibang, Write_tiandibang, re_bangdang } from '../tian'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清空积分/
 
 export default onResponse(selects, async e => {

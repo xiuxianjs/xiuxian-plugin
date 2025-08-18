@@ -1,6 +1,6 @@
 import { Text, useSend, Image } from 'alemonjs'
 import { screenshot } from '@src/image/index.js'
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 import { getDataList } from '@src/model/DataList'
 
 export const regular = /^(#|＃|\/)?更新日志$/

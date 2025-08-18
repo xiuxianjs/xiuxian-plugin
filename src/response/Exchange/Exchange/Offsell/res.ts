@@ -14,7 +14,7 @@ import type {
   NajieCategory
 } from '@src/types/model'
 
-import { selects } from '@src/response/index'
+import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?下架[1-9]\d*$/
 
 interface LegacyRecord {
