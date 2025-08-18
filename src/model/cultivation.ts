@@ -190,7 +190,8 @@ export async function foundthing(
     'newdanyao_list',
     'xianchon',
     'xianchonkouliang',
-    'duanzhaocailiao'
+    'duanzhaocailiao',
+    'zalei'
   ] as const
   const data = {
     equipment_list: await getDataList('Equipment'),
@@ -204,7 +205,8 @@ export async function foundthing(
     newdanyao_list: await getDataList('NewDanyao'),
     xianchon: await getDataList('Xianchon'),
     xianchonkouliang: await getDataList('Xianchonkouliang'),
-    duanzhaocailiao: await getDataList('Duanzhaocailiao')
+    duanzhaocailiao: await getDataList('Duanzhaocailiao'),
+    zalei: await getDataList('Zalei')
   }
   const hasName = (obj): obj is FoundThing =>
     typeof obj === 'object' && obj !== null && 'name' in obj

@@ -35,11 +35,6 @@ export default onResponse(selects, async e => {
     )
     return false
   }
-  const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'))
-  if (+last_game_timeA == 0) {
-    Send(Text(`猜大小正在进行哦，结束了再求婚吧!`))
-    return false
-  }
 
   const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
   if (!Mentions || Mentions.length === 0) {

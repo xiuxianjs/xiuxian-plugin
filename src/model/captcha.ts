@@ -3,25 +3,17 @@ import svgCaptcha from 'svg-captcha'
 import sharp from 'sharp'
 import { keys } from './keys'
 
-export async function generateCaptcha(
-  userId: string,
-  expiresSec = 60 * 60 * 6
-) {
+export async function generateCaptcha() {
   const captcha = svgCaptcha.create({
-    size: 4, // 字符数
-    noise: 2, // 干扰线
+    size: 4,
+    noise: 2,
     color: true,
     background: '#ccddff'
   })
-  const redis = getIoRedis()
-  // 存储验证码答案
-  await redis.set(
-    keys.captcha(userId),
-    captcha.text.toLowerCase(),
-    'EX',
-    expiresSec
-  )
-  return captcha.data // svg 图片内容（SVG字符串）
+  return {
+    svg: captcha.data,
+    text: captcha.text
+  }
 }
 
 export async function svgToPngBuffer(svgString: string): Promise<Buffer> {
