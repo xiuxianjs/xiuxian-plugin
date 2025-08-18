@@ -14,7 +14,7 @@ const replyCount: Record<string, number> = {}
 // 验证码尝试次数缓存
 const captchaTries: Record<string, number> = {}
 
-const MAX_CAPTCHA_TRIES = 10
+const MAX_CAPTCHA_TRIES = 6
 
 const selects = onSelects(['message.create', 'private.message.create'])
 
@@ -32,7 +32,7 @@ export default onMiddleware(selects, async (event, next) => {
   const muteTime = await redis.get(keys.mute(userId))
   if (muteTime) {
     const count = replyCount[userId] || 0
-    if (count < 3) {
+    if (count < 2) {
       message.send(
         format(
           Text(

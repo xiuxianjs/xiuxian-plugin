@@ -1,7 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { clearCaptchaRecords } from '@src/scripts/clear-captcha'
-import { getIoRedis } from '@alemonjs/db'
-import { baseKey } from '@src/model/constants'
+import { clearCaptchaRecords } from '@src/model/clear-captcha'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?清理验证码(.*)?$/
@@ -24,14 +22,6 @@ export default onResponse(selects, async event => {
       // 清理所有用户
       await clearCaptchaRecords()
       Send(Text('已清理所有用户的验证码记录'))
-    }
-
-    // 额外清理验证码通过标记
-    const redis = getIoRedis()
-    const passedKeys = await redis.keys(`${baseKey}:captcha_passed:*`)
-    if (passedKeys.length > 0) {
-      await redis.del(...passedKeys)
-      Send(Text(`额外清理了 ${passedKeys.length} 个验证码通过标记`))
     }
   } catch (error) {
     logger.error('清理验证码失败:', error)

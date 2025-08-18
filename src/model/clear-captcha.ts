@@ -73,16 +73,4 @@ async function clearAllCaptchaRecords(redis: any) {
   }
 }
 
-// 如果直接运行此脚本
-if (require.main === module) {
-  const userId = process.argv[2] // 可以从命令行参数获取用户ID
-  clearCaptchaRecords(userId)
-    .then(() => {
-      console.log('清理完成')
-      process.exit(0)
-    })
-    .catch(error => {
-      console.error('清理失败:', error)
-      process.exit(1)
-    })
-}
+// 注意：此文件仅作为模块导出，如需直接运行请使用 scripts/clear-captcha-standalone.js
