@@ -52,15 +52,31 @@ export default onMiddleware(selects, async (event, next) => {
     if (!text) {
       // 重新生成验证码图片
       const captcha = await generateCaptcha(userId)
-      message.send(format(Image(Buffer.from(captcha, 'utf8'))))
+      const img = await svgToPngBuffer(captcha)
+      message.send(format(Image(img)))
       return
     }
     const success = await verifyCaptcha(userId, text)
     if (success) {
       message.send(format(Text('验证码正确，欢迎继续操作！')))
-      redis.del(keys.captcha(userId))
-      redis.del(keys.mute(userId))
+      // 清理验证码相关数据
+      await redis.del(keys.captcha(userId))
+      await redis.del(keys.mute(userId))
       captchaTries[userId] = 0
+      // 重置操作计数为较低值，避免立即再次触发验证码
+      const now = dayjs()
+      const hourKey = `${baseKey}:op:${userId}:${now.format('YYYYMMDDHH')}`
+      await redis.set(hourKey, '30', 'EX', 60 * 60 * 4) // 设置为30次，避免立即触发
+
+      // 清理前几个小时的操作记录，避免连续游玩检测触发
+      for (let i = 1; i <= 3; i++) {
+        const checkHour = now.subtract(i, 'hour').format('YYYYMMDDHH')
+        const pastHourKey = `${baseKey}:op:${userId}:${checkHour}`
+        await redis.del(pastHourKey)
+      }
+
+      // 设置验证码通过标记，避免短时间内重复触发
+      await redis.set(`${baseKey}:captcha_passed:${userId}`, '1', 'EX', 300) // 5分钟内不再触发验证码
       next()
       return
     } else {
@@ -93,20 +109,26 @@ export default onMiddleware(selects, async (event, next) => {
     await redis.expire(hourKey, 60 * 60 * 4) // 4小时后过期
   }
   const hour = now.hour()
-  const hourLimit = isNight(hour) ? 60 : 90
+  const hourLimit = isNight(hour) ? 90 : 120
 
   // 3.1 超过阈值，触发验证码
   if (opCount >= hourLimit) {
-    const captcha = await generateCaptcha(userId)
-    const img = await svgToPngBuffer(captcha)
-    message.send(format(Image(img)))
-    return
+    // 检查是否刚通过验证码
+    const captchaPassed = await redis.exists(
+      `${baseKey}:captcha_passed:${userId}`
+    )
+    if (!captchaPassed) {
+      const captcha = await generateCaptcha(userId)
+      const img = await svgToPngBuffer(captcha)
+      message.send(format(Image(img)))
+      return
+    }
   }
 
   // 4. 检查连续游玩时长——连续3小时都有操作
-  // 拿最近3个小时
+  // 拿最近3个小时，但排除当前小时（因为刚重置过）
   let allActive = true
-  for (let i = 0; i < 3; i++) {
+  for (let i = 1; i <= 3; i++) {
     const checkHour = now.subtract(i, 'hour').format('YYYYMMDDHH')
     const key = `${baseKey}:op:${userId}:${checkHour}`
     const count = await redis.get(key)
@@ -116,10 +138,16 @@ export default onMiddleware(selects, async (event, next) => {
     }
   }
   if (allActive) {
-    const captcha = await generateCaptcha(userId)
-    const img = await svgToPngBuffer(captcha)
-    message.send(format(Image(img)))
-    return
+    // 检查是否刚通过验证码
+    const captchaPassed = await redis.exists(
+      `${baseKey}:captcha_passed:${userId}`
+    )
+    if (!captchaPassed) {
+      const captcha = await generateCaptcha(userId)
+      const img = await svgToPngBuffer(captcha)
+      message.send(format(Image(img)))
+      return
+    }
   }
 
   // 5. 正常放行
