@@ -91,11 +91,14 @@ export default onResponse(selects, async e => {
     }
   }
 
-  const thing_exist = await foundthing(thing_name)
+  // 真正的装备名称去掉thing_name后的数字
+  const realThingName = thing_name.replace(/\d+$/, '')
+  const thing_exist = await foundthing(realThingName)
   if (!thing_exist) {
     message.send(format(Text(`你在瞎说啥呢?哪来的【${thing_name}】?`)))
     return
   }
+
   const thingClass = thing_exist.class as string | undefined
   // 品级解析（修复 0 被视为 falsy 问题）
   const pinji = parsePinji(code[1])
