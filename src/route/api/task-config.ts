@@ -1,7 +1,16 @@
 import { Context } from 'koa'
 import { validateRole, validateToken } from '@src/route/core/auth'
 import { getConfig, setConfig } from '@src/model'
-
+import { parseJsonBody } from '../core/bodyParser'
+import {
+  startSingleTask,
+  stopTask,
+  restartTask,
+  startAllTasks,
+  stopAllTasks,
+  restartAllTasks
+} from '@src/task/index'
+import { TaskMap } from '@src/model/task'
 // 获取定时任务配置
 export const GET = async (ctx: Context) => {
   try {
@@ -39,7 +48,8 @@ export const POST = async (ctx: Context) => {
       return
     }
 
-    const { taskConfig } = ctx.request.body as {
+    const body = await parseJsonBody(ctx)
+    const { taskConfig } = body as {
       taskConfig: { [key: string]: string }
     }
 
@@ -88,7 +98,6 @@ export const PATCH = async (ctx: Context) => {
     }
 
     // 获取任务状态
-    const { TaskMap } = await import('@src/model/task')
     const taskStatus: {
       [key: string]: { running: boolean; nextInvocation?: Date }
     } = {}
@@ -143,7 +152,9 @@ export const PUT = async (ctx: Context) => {
       return
     }
 
-    const { action, taskName } = ctx.request.body as {
+    const body = await parseJsonBody(ctx)
+
+    const { action, taskName } = body as {
       action:
         | 'start'
         | 'stop'
@@ -153,16 +164,6 @@ export const PUT = async (ctx: Context) => {
         | 'restartAll'
       taskName?: string
     }
-
-    // 导入任务控制函数
-    const {
-      startSingleTask,
-      stopTask,
-      restartTask,
-      startAllTasks,
-      stopAllTasks,
-      restartAllTasks
-    } = await import('@src/task/index')
 
     let success = false
     let message = ''
