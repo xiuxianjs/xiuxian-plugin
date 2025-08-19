@@ -6,6 +6,7 @@ import {
 } from '@src/model/DataList'
 import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
+import { parseJsonBody } from '../core/bodyParser'
 
 /**
  * 查询数据列表
@@ -106,7 +107,8 @@ export const PUT = async (ctx: Context) => {
       return
     }
 
-    const { name, data, batchMode } = ctx.request.body as {
+    const body = await parseJsonBody(ctx)
+    const { name, data, batchMode } = body as {
       name: DataListKeys
       data: Record<string, unknown>[]
       batchMode?: boolean
@@ -189,11 +191,12 @@ export const PATCH = async (ctx: Context) => {
       return
     }
 
+    const body = await parseJsonBody(ctx)
     const {
       name,
       updates,
       chunkSize = 100
-    } = ctx.request.body as {
+    } = body as {
       name: DataListKeys
       updates: Array<{ index: number; data: Record<string, unknown> }>
       chunkSize?: number

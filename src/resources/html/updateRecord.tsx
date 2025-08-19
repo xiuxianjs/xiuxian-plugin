@@ -25,9 +25,6 @@ export default ({ Record }) => {
                 </h1>
               </div>
             </div>
-            <div className="mt-4 text-teal-200 text-sm">
-              🌟 记录修仙路上的每一次进步 🌟
-            </div>
           </div>
 
           {/* 更新记录区域 */}
@@ -68,15 +65,6 @@ export default ({ Record }) => {
 
                           {/* 内容区域 */}
                           <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-3">
-                              <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-lg flex items-center justify-center">
-                                <span className="text-sm">📝</span>
-                              </div>
-                              <h3 className="text-lg font-semibold text-white">
-                                更新记录
-                              </h3>
-                            </div>
-
                             <div className="bg-gradient-to-r from-teal-500/10 to-cyan-500/10 rounded-xl p-4 border border-teal-400/20">
                               <p className="text-base text-gray-200 leading-relaxed">
                                 {item.text}
@@ -107,15 +95,6 @@ export default ({ Record }) => {
                       </div>
                       <span className="text-sm text-teal-200">
                         共 {Record.length} 条更新记录
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-                        <span className="text-xs">👥</span>
-                      </div>
-                      <span className="text-sm text-purple-200">
-                        {new Set(Record.map(item => item.user.name)).size}{' '}
-                        位修仙者
                       </span>
                     </div>
                   </div>
