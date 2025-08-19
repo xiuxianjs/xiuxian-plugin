@@ -1,4 +1,4 @@
-import { InitWorldBoss2 } from '../../boss'
+import { InitWorldBoss2 } from '../../../../model/boss'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开启金角大王$/

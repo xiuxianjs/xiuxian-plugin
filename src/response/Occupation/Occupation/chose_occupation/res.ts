@@ -8,7 +8,8 @@ import {
   notUndAndNull,
   existNajieThing,
   addNajieThing,
-  writePlayer
+  writePlayer,
+  keys
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
@@ -85,7 +86,7 @@ export default onResponse(selects, async e => {
     职业经验: Number(player.occupation_exp) || 0,
     职业等级: Number(player.occupation_level) || 1
   }
-  await redis.set(`xiuxian:player:${usr_qq}:fuzhi`, JSON.stringify(fuzhi))
+  await redis.set(keys.fuzhi(usr_qq), JSON.stringify(fuzhi))
   player.occupation = occupation
   player.occupation_level = 1
   player.occupation_exp = 0

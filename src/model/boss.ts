@@ -146,7 +146,7 @@ export async function LookUpWorldBossStatus(e: EventsMessageCreateEnum) {
   if (!(await existplayer(user_qq))) return false
 
   if (await Boss2IsAlive()) {
-    const statusStr = await redis.get('Xiuxian:WorldBossStatus2')
+    const statusStr = await redis.get(KEY_WORLD_BOOS_STATUS_TWO)
     if (statusStr) {
       const status = JSON.parse(statusStr) as {
         KilledTime: number
@@ -380,7 +380,7 @@ export async function WorldBossBattle(e) {
       logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
       WorldBossStatus.KilledTime = Date.now()
-      redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
+      redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus))
       const PlayerList = await SortPlayer(PlayerRecordJSON)
       send(
         Text(

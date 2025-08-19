@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { BossIsAlive } from '../../boss'
+import { BossIsAlive } from '../../../../model/boss'
 import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants'
 
 export const selects = onSelects(['message.create'])

@@ -1,8 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../boss'
+import {
+  Boss2IsAlive,
+  InitWorldBoss,
+  LookUpWorldBossStatus
+} from '../../../../model/boss'
 import { existplayer } from '@src/model'
+import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?金角大王状态$/
@@ -37,7 +42,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const statusStr = await redis.get('Xiuxian:WorldBossStatus2')
+  const statusStr = await redis.get(KEY_WORLD_BOOS_STATUS_TWO)
   const status = parseJson<WorldBossStatusInfo | null>(statusStr, null)
   if (!status) {
     Send(Text('状态数据缺失，请联系管理员重新开启！'))

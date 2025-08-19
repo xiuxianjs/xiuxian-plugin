@@ -12,7 +12,7 @@ import {
   SortPlayer,
   WorldBossBattle,
   WorldBossBattleInfo
-} from '../../boss'
+} from '../../../../model/boss'
 import { existplayer } from '@src/model'
 import { getRedisKey } from '@src/model/keys'
 import {
@@ -112,7 +112,7 @@ export default onResponse(selects, async e => {
     }
   }
 
-  const WorldBossStatusStr = await redis.get('Xiuxian:WorldBossStatus')
+  const WorldBossStatusStr = await redis.get(KEY_WORLD_BOOS_STATUS)
   const PlayerRecordStr = await redis.get(KEY_RECORD)
   const WorldBossStatus = parseJson<WorldBossStatusInfo | null>(
     WorldBossStatusStr,
@@ -249,7 +249,7 @@ export default onResponse(selects, async e => {
     logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`)
 
     WorldBossStatus.KilledTime = Date.now()
-    await redis.set('Xiuxian:WorldBossStatus', JSON.stringify(WorldBossStatus))
+    await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus))
 
     const PlayerList = await SortPlayer(PlayerRecordJSON)
     Send(

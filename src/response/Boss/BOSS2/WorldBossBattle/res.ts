@@ -7,7 +7,7 @@ import {
   SortPlayer,
   WorldBossBattle,
   WorldBossBattleInfo
-} from '../../boss'
+} from '../../../../model/boss'
 import { redis, data, pushInfo } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'

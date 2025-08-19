@@ -2,10 +2,10 @@ import { Image, Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 import { existplayer, sortBy } from '@src/model/index'
-import { BossIsAlive, SortPlayer } from '../../boss'
+import { BossIsAlive, SortPlayer } from '../../../../model/boss'
 
 import { selects } from '@src/response/mw'
-import { KEY_RECORD_TWO } from '@src/model/constants'
+import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?金角大王贡献榜$/
 
@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
     await redis.get(KEY_RECORD_TWO)
   )
   const WorldBossStatusStr = parseJson<WorldBossStatus>(
-    await redis.get('Xiuxian:WorldBossStatus2')
+    await redis.get(KEY_WORLD_BOOS_STATUS_TWO)
   )
   if (!PlayerRecord || !Array.isArray(PlayerRecord.Name)) {
     Send(Text('还没人挑战过金角大王'))

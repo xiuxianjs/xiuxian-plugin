@@ -2,8 +2,8 @@ import { Image, Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
 import { existplayer } from '@src/model/index'
-import { BossIsAlive, SortPlayer } from '../../boss'
-import { KEY_RECORD } from '@src/model/constants'
+import { BossIsAlive, SortPlayer } from '../../../../model/boss'
+import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants'
 import { screenshot } from '@src/image'
 
 export const selects = onSelects(['message.create'])
@@ -40,7 +40,7 @@ export default onResponse(selects, async e => {
   }
   const PlayerRecord = parseJson<PlayerRecordData>(await redis.get(KEY_RECORD))
   const WorldBossStatusStr = parseJson<WorldBossStatus>(
-    await redis.get('Xiuxian:WorldBossStatus')
+    await redis.get(KEY_WORLD_BOOS_STATUS)
   )
   if (!PlayerRecord || !Array.isArray(PlayerRecord.Name)) {
     Send(Text('还没人挑战过妖王'))

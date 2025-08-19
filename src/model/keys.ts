@@ -36,7 +36,9 @@ const __PATH = {
   // 验证码
   captcha: 'data:alemonjs-xiuxian:captcha',
   // 禁言
-  mute: 'data:alemonjs-xiuxian:mute'
+  mute: 'data:alemonjs-xiuxian:mute',
+  // 副职
+  fuzhi: `xiuxian:player`
 }
 
 export { __PATH }
@@ -116,7 +118,8 @@ export const keys = {
   currencyLog: (id: string) => `${__PATH.currency_log}:${id}`,
   currencyIndex: () => `${__PATH.currency_index}`,
   captcha: (id: string) => `${__PATH.captcha}:${id}`,
-  mute: (id: string) => `${__PATH.mute}:${id}`
+  mute: (id: string) => `${__PATH.mute}:${id}`,
+  fuzhi: (id: string) => `${__PATH.fuzhi}:${id}`
 }
 
 export type RedisKeyGenerator = typeof keys

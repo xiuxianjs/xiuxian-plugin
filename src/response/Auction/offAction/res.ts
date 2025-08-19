@@ -15,9 +15,8 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const redisGlKey = KEY_AUCTION_GROUP_LIST
   await redis.del(KEY_AUCTION_OFFICIAL_TASK)
-  await redis.del(redisGlKey)
+  await redis.del(KEY_AUCTION_GROUP_LIST)
 
   Send(Text('星阁体系已关闭！'))
   return false

@@ -1,4 +1,4 @@
-import { InitWorldBoss2 } from '@src/response/Boss/boss.ts'
+import { InitWorldBoss2 } from '@src/model/boss'
 
 export const BOSS2 = async () => {
   InitWorldBoss2()

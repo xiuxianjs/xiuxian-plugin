@@ -1,4 +1,4 @@
-import { InitWorldBoss } from '../../boss'
+import { InitWorldBoss } from '../../../../model/boss'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启妖王$/
