@@ -10,11 +10,9 @@
     "./package": "./package.json"
   },
   "dependencies": {
-    "@types/koa-router": "^7.4.8",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "jsxp": "^1.2.2",
-    "koa-bodyparser": "^4.4.1",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
     "node-schedule": "^2.1.1",
