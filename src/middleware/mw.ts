@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db'
-import { keys } from '@src/model'
+import { getAppCofig, keys } from '@src/model'
 import {
   generateCaptcha,
   svgToPngBuffer,
@@ -31,6 +31,12 @@ const op = (userId: string) =>
   `${baseKey}:op:${userId}:${dayjs().format('YYYYMMDDHH')}`
 
 export default onMiddleware(selects, async (event, next) => {
+  const values = getAppCofig()
+  if (values?.close_captcha) {
+    next()
+    return
+  }
+
   const userId = event.UserId
   const redis = getIoRedis()
   // 仅有存档才校验

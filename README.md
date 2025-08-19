@@ -119,6 +119,16 @@ alemonjs-xiuxian:
 
 > 注意：开发模式下并不会发送数据
 
+## 核心配置
+
+```yaml
+alemonjs-xiuxian:
+  # 关闭验证码
+  close_captcha: true
+  # 不启动 task
+  task: false
+```
+
 ## 其他版本
 
 | Project          | Status | Description            |

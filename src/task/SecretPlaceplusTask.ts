@@ -40,9 +40,20 @@ interface MonsterLike {
   暴击率: number
 }
 
-// 兼容：将 readDanyao 返回的 DanyaoItem[] 映射为药效状态对象（旧逻辑使用）
-// mapDanyaoArrayToStatus 已迁移至 @src/utils/danyao 统一维护
-
+/**
+ * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于闭关（shutup == '0'）或降妖（working == '0'）状态。
+对于闭关：
+判断是否到达结算时间（提前2分钟）。
+计算修为、血气等收益，处理炼丹师丹药、特殊道具加成，以及顿悟/走火入魔等随机事件。
+更新玩家属性、道具、经验，并推送结算消息。
+结算后关闭相关状态。
+对于降妖：
+判断是否到达结算时间（提前2分钟）。
+计算灵石、血气等收益，处理各种随机事件（如额外收益、损失等）。
+更新玩家属性、灵石，并推送结算消息。
+结算后关闭相关状态。
+兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
+ */
 export const SecretPlaceplusTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))

@@ -13,6 +13,12 @@ function isExploreAction(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'end_time' in a
 }
 
+/**
+ * 遍历所有玩家，检查每个玩家的当前动作（如探索、魔劫等）。
+ * 判断动作是否为“魔劫”相关，并根据动作状态和时间进行结算处理。
+ * 结算时会处理经验、物品发放、状态变更等，并通过推送消息通知玩家或群组。
+ * 该任务确保玩家的“魔劫”或探索等行为能在到达指定时间后自动结算和反馈。
+ */
 export const MojiTask = async () => {
   // 获取缓存中人物列表
   const keys = await redis.keys(`${__PATH.player_path}:*`)

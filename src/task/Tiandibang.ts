@@ -5,6 +5,14 @@ import { __PATH } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
 
+/**
+ * 遍历所有玩家，读取玩家的属性（如名号、境界、攻击、防御、血量、暴击率、灵根、功法、魔道值、神石等）。
+构建排行榜条目（RankEntry），将所有玩家信息收集到一个数组中。
+对排行榜条目按积分字段进行排序（积分高的排前）。
+调用 Write_tiandibang 方法，将排行榜数据写入存储或展示。
+总结：生成“天帝榜”排行榜，展示玩家的综合实力排名，实现排行榜的自动刷新和维护。
+ * @returns 
+ */
 export const TiandibangTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))

@@ -8,6 +8,13 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
 import type { Player, ActionState } from '@src/types'
 
+/**
+ * 遍历所有玩家，检查每个玩家的当前动作（如闭关、采集等）。
+判断动作是否为闭关（plant === '0'），并在动作结束后进行结算：
+计算并发放经验值。
+根据玩家等级和职业等级，计算采集草药的数量并发放到纳戒。
+通过推送消息通知玩家或群组结算结果。
+ */
 export const OccupationTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))

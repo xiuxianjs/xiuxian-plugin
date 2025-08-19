@@ -316,7 +316,13 @@ export default function UserManager() {
               <div>
                 <p className="text-slate-400 text-sm font-medium">总灵石</p>
                 <p className="text-white text-3xl font-bold mt-2">
-                  {(stats.totalLingshi || 0).toLocaleString()}
+                  {
+                    // 转为科学计数法
+                    (Number(stats.totalLingshi) || 0).toLocaleString('en-US', {
+                      notation: 'compact',
+                      maximumFractionDigits: 2
+                    })
+                  }
                 </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">

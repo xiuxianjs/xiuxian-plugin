@@ -16,26 +16,31 @@ import type {
 } from '@src/types'
 import { writePlayer } from '@src/model/xiuxian'
 import { getConfig } from '@src/model'
-// NajieCategory 断言工具
-const NAJIE_CATEGORIES: readonly NajieCategory[] = [
-  '装备',
-  '丹药',
-  '道具',
-  '功法',
-  '草药',
-  '材料',
-  '仙宠',
-  '仙宠口粮'
-] as const
+import { NAJIE_CATEGORIES } from '@src/model/settions'
+
+/**
+ *
+ * @param v
+ * @returns
+ */
 function isNajieCategory(v): v is NajieCategory {
   return (
     typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v)
   )
 }
 
+/**
+ * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于秘境探索状态（Place_action == '0'）。
+对于处于秘境探索状态且到达结算时间的玩家：
+随机生成探索地点和怪物，进行战斗模拟（zdBattle）。
+根据战斗结果，计算并发放奖励（如修为、气血、装备、道具等），并处理幸运、仙宠等特殊加成。
+处理特殊事件（如获得稀有物品、特殊掉落等）。
+更新玩家属性、背包、经验、血量等，并推送结算消息。
+结算后关闭相关状态。
+兼容多种奖励类型和探索地点，支持多样化的探索体验。
+ * @returns 
+ */
 export const SecretPlaceTask = async () => {
-  //获取缓存中人物列表
-
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   for (const player_id of playerList) {

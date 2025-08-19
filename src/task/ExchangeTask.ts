@@ -3,6 +3,12 @@ import type { ExchangeEntry } from '@src/types'
 import { addNajieThing } from '@src/model/najie'
 import { ExchangeRecord } from '@src/types'
 
+/**
+ * 读取兑换记录（ExchangeRecord），并兼容旧格式的数据。
+ * 检查每条兑换记录的时间，如果已超过3天，则将物品发放到用户纳戒（背包），并从兑换记录中移除该条记录。
+ * 最后将更新后的兑换记录写回存储。
+ * @returns
+ */
 export const ExchangeTask = async () => {
   let Exchange: ExchangeRecord[] = []
   try {

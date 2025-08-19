@@ -8,6 +8,17 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { RaidActionState } from '@src/types'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 
+/**
+ * 获取所有玩家，逐个检查其当前动作（action）。
+若玩家处于秘境探索状态且到达结算时间：
+随机生成探索地点和怪物，调用 zdBattle 进行战斗模拟。
+根据战斗胜负，计算并发放奖励（如修为、气血、装备、道具等），并处理幸运、仙宠等特殊加成。
+处理特殊事件（如获得稀有物品、特殊掉落等）。
+更新玩家属性、背包、经验、血量等，并推送结算消息（支持私聊或群聊）。
+结算后关闭所有相关状态（如 Place_action、shutup、working 等），并写回玩家数据。
+兼容多种奖励类型和探索地点，支持多样化的探索体验。
+简言之，该任务脚本实现了“秘境探索”玩法的自动结算，包括战斗、奖励、特殊事件和状态管理，是游戏自动化和奖励分发的关键逻辑之一。
+ */
 export const Xijietask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))

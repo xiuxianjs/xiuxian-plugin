@@ -24,6 +24,15 @@ function isNajieCategory(v): v is NajieCategory {
   )
 }
 
+/**
+ * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于神界探索等特殊状态（如 action.mojie === '-1'）。
+对于处于神界探索状态且到达结算时间的玩家：
+随机生成奖励物品、数量、类型等，支持多种奖励类型（如装备、丹药、道具等）。
+计算并发放修为、气血、物品等奖励，处理特殊事件和加成。
+更新玩家属性、背包、经验等，并推送结算消息。
+结算后关闭相关状态。
+兼容多种奖励类型和探索地点，支持丰富的探索体验。
+ */
 export const ShenjieTask = async () => {
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))

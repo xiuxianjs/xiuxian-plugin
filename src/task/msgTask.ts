@@ -5,6 +5,12 @@ import { TempRecord as TempRecordLegacy } from '@src/types/model'
 import type { TempMessage } from '@src/types'
 import { screenshot } from '@src/image'
 
+/**
+ * 读取临时消息（temp）列表，按群分组整理消息。
+ * 对每个群，将该群的所有临时消息合并，生成截图图片。
+ * 通过 pushInfo 方法将截图推送到对应群。
+ * 推送完成后，清空临时消息记录。
+ */
 export const MsgTask = async () => {
   let temp: (TempMessage & TempRecordLegacy)[] = []
   try {

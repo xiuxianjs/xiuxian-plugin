@@ -11,9 +11,22 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ActionState } from '@src/types'
 import { getConfig } from '@src/model'
 
+/**
+ * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于闭关或降妖状态。
+对于闭关（shutup == '0'）：
+判断是否到达结算时间（提前2分钟结算）。
+计算修为、血气等收益，处理特殊道具和炼丹师加成，处理顿悟/走火入魔等随机事件。
+更新玩家属性、道具、经验，并推送结算消息。
+结算后关闭相关状态。
+对于降妖（working == '0'）：
+判断是否到达结算时间（提前2分钟结算）。
+计算灵石、血气等收益，处理随机事件（如额外收益、损失等）。
+更新玩家属性、灵石，并推送结算消息。
+结算后关闭相关状态。
+兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
+ * @returns 
+ */
 export const PlayerControlTask = async () => {
-  //获取缓存中人物列表
-
   const keys = await redis.keys(`${__PATH.player_path}:*`)
   const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
   const cf = await getConfig('xiuxian', 'xiuxian')
