@@ -96,14 +96,15 @@ export async function mine_jiesuan(
   // 基础经验
   const exp = time * 10
   const occFactor = calcOccupationFactor(player.occupation_level)
-  // 使用 occupation_factor 代替原先不存在的 rate 字段，构造一个 0~1.5 的动态倍率
-  const rate = occFactor * 1.5
+  // 旧代码*10, 这里统一
+  const rate = occFactor * 10
+  // 基础矿石量：1.8 ~ 2.2 之间的随机数 * 时间
   const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * time)
   const ext = `你是采矿师，获得采矿经验${exp}，额外获得矿石${Math.floor(
     rate * 100
   )}%,`
   // 普通矿石量：4 * (rate + 1) * 基础 * 等级缩放
-  const end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
+  let end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
   // 锻造材料数量：按时间 & rate 缩放
   const num = Math.floor(((rate / 12) * time) / 30)
   const A = [
@@ -131,6 +132,8 @@ export async function mine_jiesuan(
     '蓝色妖丹'
   ]
   const xuanze = Math.trunc(Math.random() * A.length)
+  end_amount *= player.level_id / 40
+  end_amount = Math.floor(end_amount)
   await addNajieThing(usr_qq, '庚金', '材料', end_amount)
   await addNajieThing(usr_qq, '玄土', '材料', end_amount)
   await addNajieThing(usr_qq, A[xuanze], '材料', num)

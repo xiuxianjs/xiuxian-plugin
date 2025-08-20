@@ -7,6 +7,7 @@ import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
 import type { Player, ActionState } from '@src/types'
+import { mine_jiesuan } from '@src/response/Occupation/api'
 
 /**
  * 遍历所有玩家，检查每个玩家的当前动作（如闭关、采集等）。
@@ -128,53 +129,56 @@ export const OccupationTask = async () => {
             ? parseInt(action.time)
             : Number(action.time)
         const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60
-        const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * timeMin)
-        const occRow = data.occupation_exp_list.find(
-          (o: { id: number; name: string; experience: number }) =>
-            o.id == player.occupation_level
-        )
-        // 原代码使用 occRow.rate，不存在该字段，改为基于 experience 推导一个倍率（示例：experience / 1000）
-        const rateBase = occRow ? occRow.experience / 1000 : 0
-        const rate = rateBase * 10
-        const exp = timeMin * 10
-        const ext = `你是采矿师，获得采矿经验${exp}，额外获得矿石${Math.floor(rate * 100)}%，`
-        let end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
-        const num = Math.floor(((rate / 12) * timeMin) / 30)
-        const A = [
-          '金色石胚',
-          '棕色石胚',
-          '绿色石胚',
-          '红色石胚',
-          '蓝色石胚',
-          '金色石料',
-          '棕色石料',
-          '绿色石料',
-          '红色石料',
-          '蓝色石料'
-        ] as const
-        const B = [
-          '金色妖石',
-          '棕色妖石',
-          '绿色妖石',
-          '红色妖石',
-          '蓝色妖石',
-          '金色妖丹',
-          '棕色妖丹',
-          '绿色妖丹',
-          '红色妖丹',
-          '蓝色妖丹'
-        ] as const
-        const xuanze = Math.trunc(Math.random() * A.length)
-        end_amount = Math.floor(end_amount * (player.level_id / 40))
-        await addNajieThing(player_id, '庚金', '材料', end_amount)
-        await addNajieThing(player_id, '玄土', '材料', end_amount)
-        await addNajieThing(player_id, A[xuanze], '材料', num)
-        await addNajieThing(player_id, B[xuanze], '材料', Math.trunc(num / 48))
-        await addExp4(player_id, exp)
-        msg.push(
-          `\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`
-        )
-        msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
+
+        await mine_jiesuan(player_id, timeMin, push_address)
+
+        // const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * timeMin)
+        // const occRow = data.occupation_exp_list.find(
+        //   (o: { id: number; name: string; experience: number }) =>
+        //     o.id == player.occupation_level
+        // )
+        // // 原代码使用 occRow.rate，不存在该字段，改为基于 experience 推导一个倍率（示例：experience / 1000）
+        // const rateBase = occRow ? occRow.experience / 1000 : 0
+        // const rate = rateBase * 10
+        // const exp = timeMin * 10
+        // const ext = `你是采矿师，获得采矿经验${exp}，额外获得矿石${Math.floor(rate * 100)}%，`
+        // let end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
+        // const num = Math.floor(((rate / 12) * timeMin) / 30)
+        // const A = [
+        //   '金色石胚',
+        //   '棕色石胚',
+        //   '绿色石胚',
+        //   '红色石胚',
+        //   '蓝色石胚',
+        //   '金色石料',
+        //   '棕色石料',
+        //   '绿色石料',
+        //   '红色石料',
+        //   '蓝色石料'
+        // ] as const
+        // const B = [
+        //   '金色妖石',
+        //   '棕色妖石',
+        //   '绿色妖石',
+        //   '红色妖石',
+        //   '蓝色妖石',
+        //   '金色妖丹',
+        //   '棕色妖丹',
+        //   '绿色妖丹',
+        //   '红色妖丹',
+        //   '蓝色妖丹'
+        // ] as const
+        // const xuanze = Math.trunc(Math.random() * A.length)
+        // end_amount = Math.floor(end_amount * (player.level_id / 40))
+        // await addNajieThing(player_id, '庚金', '材料', end_amount)
+        // await addNajieThing(player_id, '玄土', '材料', end_amount)
+        // await addNajieThing(player_id, A[xuanze], '材料', num)
+        // await addNajieThing(player_id, B[xuanze], '材料', Math.trunc(num / 48))
+        // await addExp4(player_id, exp)
+        // msg.push(
+        //   `\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`
+        // )
+        // msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
         // 状态复位
         const arr = { ...action }
         arr.mine = 1
@@ -185,11 +189,11 @@ export const OccupationTask = async () => {
         arr.Place_actionplus = 1
         delete (arr as Partial<ActionState>).group_id
         await setDataByUserId(player_id, 'action', JSON.stringify(arr))
-        if (is_group && push_address) {
-          await pushInfo(push_address, is_group, msg)
-        } else {
-          await pushInfo(player_id, is_group, msg)
-        }
+        // if (is_group && push_address) {
+        //   await pushInfo(push_address, is_group, msg)
+        // } else {
+        //   await pushInfo(player_id, is_group, msg)
+        // }
       }
     }
   }
