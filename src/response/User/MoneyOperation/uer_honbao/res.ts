@@ -53,11 +53,14 @@ export default onResponse(selects, async e => {
   }
   if (!(await existplayer(honbao_qq))) return false
 
-  // 剩余红包数量
+  // 使用原子操作检查并扣减红包数量
   const countKey = getRedisKey(honbao_qq, 'honbaoacount')
-  const countStr = await redis.get(countKey)
-  let count = toInt(countStr)
-  if (count <= 0) {
+  const remainingCount = await redis.decr(countKey)
+  
+  // 如果扣减后小于0，说明红包已经被抢完
+  if (remainingCount < 0) {
+    // 恢复计数器（因为我们多扣了一次）
+    await redis.incr(countKey)
     Send(Text('他的红包被光啦！'))
     return false
   }
@@ -68,16 +71,12 @@ export default onResponse(selects, async e => {
   const lingshi = toInt(valStr)
   if (lingshi <= 0) {
     Send(Text('这个红包里居然是空的...'))
-    // 仍然扣一次次数防刷
-    count--
-    await redis.set(countKey, count)
+    // 设置CD时间（防刷机制）
     await redis.set(lastKey, now)
     return false
   }
 
-  // 结算
-  count--
-  await redis.set(countKey, count)
+  // 结算：增加用户灵石并设置CD
   await addCoin(usr_qq, lingshi)
   await redis.set(lastKey, now)
 
