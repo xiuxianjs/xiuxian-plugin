@@ -119,7 +119,7 @@ export const keys = {
   currencyIndex: () => `${__PATH.currency_index}`,
   captcha: (id: string) => `${__PATH.captcha}:${id}`,
   mute: (id: string) => `${__PATH.mute}:${id}`,
-  fuzhi: (id: string) => `${__PATH.fuzhi}:${id}`
+  fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
 }
 
 export type RedisKeyGenerator = typeof keys
