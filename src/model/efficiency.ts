@@ -22,9 +22,13 @@ export async function playerEfficiency(userId: string): Promise<null> {
     Assoc_efficiency = 0 //不存在，宗门效率为0
   } else {
     const redis = getIoRedis()
+
     const data = await redis.get(keys.association(player.宗门['宗门名称']))
     if (!data) return
     ass = data
+    if (typeof data == 'string') {
+      ass = JSON.parse(data)
+    }
     if (ass.宗门驻地 == 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05
     } else {
@@ -38,6 +42,7 @@ export async function playerEfficiency(userId: string): Promise<null> {
       }
     }
   }
+
   linggen_efficiency = player.灵根.eff //灵根修炼速率
   label1: for (const i in player.学习的功法) {
     //存在功法，遍历功法加成
@@ -60,7 +65,6 @@ export async function playerEfficiency(userId: string): Promise<null> {
   }
   const dy = await readDanyao(usr_qq)
   const bgdan = dy.biguanxl || 0
-
   player.修炼效率提升 =
     linggen_efficiency +
     Assoc_efficiency +
