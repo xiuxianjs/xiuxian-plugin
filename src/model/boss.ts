@@ -4,7 +4,7 @@ import { data, pushInfo, redis } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import {
   readAction,
   isActionRunning,
@@ -101,8 +101,7 @@ export async function InitWorldBoss2() {
 }
 //获取玩家平均实力和化神以上人数
 export async function GetAverageDamage() {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   const temp = []
   let TotalPlayer = 0
   for (const player_id of playerList) {

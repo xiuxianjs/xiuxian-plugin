@@ -1,9 +1,9 @@
 import { Image, Text, useSend } from 'alemonjs'
-import { data, redis } from '@src/model/api'
+import { data } from '@src/model/api'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门列表$/
-import { __PATH } from '@src/model/index'
+import { __PATH, keysByPath } from '@src/model/index'
 import { screenshot } from '@src/image'
 import type { AssociationDetailData } from '@src/types'
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
@@ -28,8 +28,7 @@ export default onResponse(selects, async e => {
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
   if (!ifexistplay) return
-  const keys = await redis.keys(`${__PATH.association}:*`)
-  const assList = keys.map(key => key.replace(`${__PATH.association}:`, ''))
+  const assList = await keysByPath(__PATH.association)
   const temp: Array<Record<string, unknown>> = []
   if (assList.length === 0) {
     Send(Text('暂时没有宗门数据'))

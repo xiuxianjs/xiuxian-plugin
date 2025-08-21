@@ -1,7 +1,7 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-import { data, redis } from '@src/model/api'
+import { data } from '@src/model/api'
 // 细粒度导入
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
 
@@ -14,8 +14,7 @@ import type { TiandibangRankEntry as RankEntry } from '@src/types'
  * @returns 
  */
 export const TiandibangTask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   const temp: RankEntry[] = []
   let t: RankEntry | undefined
   for (let k = 0; k < playerList.length; k++) {

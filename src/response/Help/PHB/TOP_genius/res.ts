@@ -1,9 +1,14 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
+import {
+  __PATH,
+  existplayer,
+  keysByPath,
+  readPlayer,
+  sortBy
+} from '@src/model/index'
 
 import { selects } from '@src/response/mw'
-import { redis } from '@src/model/api'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?强化榜$/
 
@@ -13,8 +18,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
 
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   //数组
   const temp = []
 

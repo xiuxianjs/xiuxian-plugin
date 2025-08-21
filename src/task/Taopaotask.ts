@@ -3,7 +3,7 @@ import { notUndAndNull } from '@src/model/common'
 import { Harm } from '@src/model/battle'
 import { readShop, writeShop } from '@src/model/shop'
 import { addNajieThing } from '@src/model/najie'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
 import type {
@@ -46,9 +46,7 @@ interface ShopSlotLike {
  */
 export const Taopaotask = async () => {
   //获取缓存中人物列表
-
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'

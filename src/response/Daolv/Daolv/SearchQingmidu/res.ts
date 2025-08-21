@@ -1,8 +1,13 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, existplayer, findQinmidu, sleep } from '@src/model/index'
+import {
+  __PATH,
+  existplayer,
+  findQinmidu,
+  keysByPath,
+  sleep
+} from '@src/model/index'
 
 import { selects } from '@src/response/mw'
-import { redis } from '@src/model/api'
 export const regular = /^(#|＃|\/)?查询亲密度$/
 
 export default onResponse(selects, async e => {
@@ -19,8 +24,7 @@ export default onResponse(selects, async e => {
   msg.push(`\n-----qq----- -亲密度-`)
   //遍历所有人的qq
 
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
 
   for (let i = 0; i < playerList.length; i++) {
     const B = playerList[i]

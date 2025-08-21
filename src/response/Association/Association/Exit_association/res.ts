@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keys } from '@src/model/keys'
 import { getRandomFromARR, notUndAndNull } from '@src/model/common'
 import { playerEfficiency } from '@src/model/efficiency'
 import { data, redis } from '@src/model/api'
@@ -110,7 +110,7 @@ export default onResponse(selects, async e => {
   } else {
     ass.所有成员 = ensureStringArray(ass.所有成员)
     if (ass.所有成员.length < 2) {
-      await redis.del(`${__PATH.association}:${guildInfo.宗门名称}`)
+      await redis.del(keys.association(guildInfo.宗门名称))
       delete (player as Player & { 宗门? }).宗门
       await data.setData('player', usr_qq, serializePlayer(player))
       await playerEfficiency(usr_qq)

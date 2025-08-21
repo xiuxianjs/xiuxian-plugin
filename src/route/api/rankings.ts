@@ -1,12 +1,9 @@
 import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
-import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian_impl'
 import Association from '@src/model/Association'
 import { data } from '@src/model/api'
-
-const redis = getIoRedis()
 
 // 获取排名数据
 export const GET = async (ctx: Context) => {
@@ -40,10 +37,7 @@ export const GET = async (ctx: Context) => {
     switch (type) {
       case 'ASSOCIATION_POWER': {
         // 宗门综合实力排名
-        const keys = await redis.keys(`${__PATH.association}:*`)
-        const associationList = keys.map(key =>
-          key.replace(`${__PATH.association}:`, '')
-        )
+        const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
           const ass = await Association.getAssociation(assName)
@@ -78,10 +72,7 @@ export const GET = async (ctx: Context) => {
 
       case 'ASSOCIATION_MEMBERS': {
         // 宗门成员数排名
-        const keys = await redis.keys(`${__PATH.association}:*`)
-        const associationList = keys.map(key =>
-          key.replace(`${__PATH.association}:`, '')
-        )
+        const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
           const ass = await Association.getAssociation(assName)
@@ -103,10 +94,7 @@ export const GET = async (ctx: Context) => {
 
       case 'ASSOCIATION_LINGSHI': {
         // 宗门灵石池排名
-        const keys = await redis.keys(`${__PATH.association}:*`)
-        const associationList = keys.map(key =>
-          key.replace(`${__PATH.association}:`, '')
-        )
+        const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
           const ass = await Association.getAssociation(assName)
@@ -128,10 +116,7 @@ export const GET = async (ctx: Context) => {
 
       case 'ASSOCIATION_LEVEL': {
         // 宗门等级排名
-        const keys = await redis.keys(`${__PATH.association}:*`)
-        const associationList = keys.map(key =>
-          key.replace(`${__PATH.association}:`, '')
-        )
+        const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
           const ass = await Association.getAssociation(assName)
@@ -153,10 +138,7 @@ export const GET = async (ctx: Context) => {
 
       case 'PLAYER_LEVEL': {
         // 玩家境界排名
-        const keys = await redis.keys(`${__PATH.player_path}:*`)
-        const playerList = keys.map(key =>
-          key.replace(`${__PATH.player_path}:`, '')
-        )
+        const playerList = await keysByPath(__PATH.player_path)
 
         for (const qq of playerList) {
           const player = await readPlayer(qq)
@@ -180,11 +162,7 @@ export const GET = async (ctx: Context) => {
 
       case 'PLAYER_ATTACK': {
         // 玩家攻击力排名
-        const keys = await redis.keys(`${__PATH.player_path}:*`)
-        const playerList = keys.map(key =>
-          key.replace(`${__PATH.player_path}:`, '')
-        )
-
+        const playerList = await keysByPath(__PATH.player_path)
         for (const qq of playerList) {
           const player = await readPlayer(qq)
           if (player) {
@@ -205,10 +183,7 @@ export const GET = async (ctx: Context) => {
 
       case 'PLAYER_DEFENSE': {
         // 玩家防御力排名
-        const keys = await redis.keys(`${__PATH.player_path}:*`)
-        const playerList = keys.map(key =>
-          key.replace(`${__PATH.player_path}:`, '')
-        )
+        const playerList = await keysByPath(__PATH.player_path)
 
         for (const qq of playerList) {
           const player = await readPlayer(qq)
@@ -273,8 +248,8 @@ export const POST = async (ctx: Context) => {
     }
 
     // 获取统计数据
-    const playerKeys = await redis.keys(`${__PATH.player_path}:*`)
-    const associationKeys = await redis.keys(`${__PATH.association}:*`)
+    const playerKeys = await keysByPath(__PATH.player_path)
+    const associationKeys = await keysByPath(__PATH.association)
 
     const playerCount = playerKeys.length
     const associationCount = associationKeys.length
@@ -288,8 +263,7 @@ export const POST = async (ctx: Context) => {
       extra?: Record<string, unknown>
     }> = []
 
-    for (const key of playerKeys) {
-      const qq = key.replace(`${__PATH.player_path}:`, '')
+    for (const qq of playerKeys) {
       const player = await readPlayer(qq)
       if (player) {
         topPlayers.push({
@@ -321,8 +295,7 @@ export const POST = async (ctx: Context) => {
       extra?: Record<string, unknown>
     }> = []
 
-    for (const key of associationKeys) {
-      const assName = key.replace(`${__PATH.association}:`, '')
+    for (const assName of associationKeys) {
       const ass = await Association.getAssociation(assName)
       if (ass && ass !== 'error') {
         const power = ass.power || 0

@@ -1,11 +1,12 @@
 import { Image, useSend } from 'alemonjs'
-import { data, redis } from '@src/model/api'
+import { data } from '@src/model/api'
 import {
   existplayer,
   __PATH,
   sortBy,
   sleep,
-  readPlayer
+  readPlayer,
+  keysByPath
 } from '@src/model/index'
 import { selects } from '@src/response/mw'
 import { getRankingMoneyImage } from '@src/model/image'
@@ -17,8 +18,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   // 计算排名
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
 
   const temp = []
   for (let i = 0; i < playerList.length; i++) {

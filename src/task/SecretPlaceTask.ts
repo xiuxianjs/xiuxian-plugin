@@ -1,11 +1,11 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
 import { zdBattle } from '@src/model/battle'
 import { addNajieThing } from '@src/model/najie'
 import { readDanyao, writeDanyao } from '@src/model/danyao'
 import { addExp2, addExp, addHP } from '@src/model/economy'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
@@ -41,8 +41,7 @@ function isNajieCategory(v): v is NajieCategory {
  * @returns 
  */
 export const SecretPlaceTask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'

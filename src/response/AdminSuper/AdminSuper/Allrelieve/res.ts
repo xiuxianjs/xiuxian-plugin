@@ -3,14 +3,13 @@ import { redis } from '@src/model/api'
 import { stopAction, readAction } from '@src/response/actionHelper'
 import { userKey } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
-import { __PATH } from '@src/model/index'
+import { __PATH, keysByPath } from '@src/model/index'
 export const regular = /^(#|＃|\/)?解除所有$/
 export default onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return
   Send(Text('开始行动！'))
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     //清除游戏状态
     await redis.del(userKey(player_id, 'game_action'))

@@ -1,4 +1,4 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer, writePlayer } from '@src/model/xiuxian'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
@@ -6,7 +6,7 @@ import { zdBattle } from '@src/model/battle'
 import { readDanyao, writeDanyao } from '@src/model/danyao'
 import { addExp2, addExp, addHP } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { Player, CoreNajieCategory as NajieCategory } from '@src/types'
@@ -55,8 +55,7 @@ interface MonsterLike {
 兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
  */
 export const SecretPlaceplusTask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     const raw = await getDataByUserId(player_id, 'action')
     let action: ActionLike | null = null

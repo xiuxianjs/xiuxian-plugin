@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '../keys.js'
+import { __PATH, keys } from '../keys.js'
 
 export function safeParse<T>(s: string | null | undefined, fallback: T): T {
   if (!s) return fallback
@@ -14,7 +14,7 @@ export function safeParse<T>(s: string | null | undefined, fallback: T): T {
 export class PlayerRepo {
   private redis = getIoRedis()
   async getRaw(id: string) {
-    return this.redis.get(`${__PATH.player_path}:${id}`)
+    return this.redis.get(keys.player(id))
   }
   async getObject<T>(id: string): Promise<T | null> {
     const raw = await this.getRaw(id)
@@ -22,7 +22,7 @@ export class PlayerRepo {
     return safeParse<T | null>(raw, null)
   }
   async setObject<T extends object | unknown>(id: string, obj: T) {
-    await this.redis.set(`${__PATH.player_path}:${id}`, JSON.stringify(obj))
+    await this.redis.set(keys.player(id), JSON.stringify(obj))
   }
   // 原子数值增减（字符串化 JSON 方式，不拆字段；若需高并发可改 hash 结构）
   async atomicAdjust(

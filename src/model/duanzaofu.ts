@@ -1,6 +1,6 @@
 import { getIoRedis } from '@alemonjs/db'
 
-import { __PATH } from './keys.js'
+import { __PATH, keysByPath } from './keys.js'
 import { writePlayer } from './pub.js'
 import { safeParse } from './utils/safe.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
@@ -90,7 +90,7 @@ export async function readMytripod(qq: string): Promise<Tripod | undefined> {
 }
 export async function readTripod(): Promise<Tripod[]> {
   const redis = getIoRedis()
-  const data = await redis.get(`${__PATH.duanlu}:duanlu`)
+  const data = await redis.get(keys.duanlu('duanlu'))
   if (!data) {
     return []
   }
@@ -99,7 +99,7 @@ export async function readTripod(): Promise<Tripod[]> {
 
 export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
   const redis = getIoRedis()
-  redis.set(`${__PATH.duanlu}:duanlu`, JSON.stringify(duanlu, null, '\t'))
+  redis.set(keys.duanlu('duanlu'), JSON.stringify(duanlu, null, '\t'))
   return
 }
 //数量矫正, 违规数量改成1
@@ -241,7 +241,7 @@ export async function restraint(
 
 export async function readIt(): Promise<unknown> {
   const redis = getIoRedis()
-  const custom = await redis.get(`${__PATH.custom}:custom`)
+  const custom = await redis.get(keys.custom('custom'))
   if (!custom) {
     //如果没有自定义数据，返回空对象
     return []
@@ -252,7 +252,7 @@ export async function readIt(): Promise<unknown> {
 
 export async function readItTyped(): Promise<CustomRecord[]> {
   const redis = getIoRedis()
-  const custom = await redis.get(`${__PATH.custom}:custom`)
+  const custom = await redis.get(keys.custom('custom'))
   if (!custom) return []
   const raw = safeParse<unknown>(custom, [])
   if (!Array.isArray(raw)) return []
@@ -260,9 +260,7 @@ export async function readItTyped(): Promise<CustomRecord[]> {
 }
 
 export async function alluser(): Promise<string[]> {
-  const redis = getIoRedis()
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const B = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const B = await keysByPath(__PATH.player_path)
   if (B.length == 0) {
     return []
   }

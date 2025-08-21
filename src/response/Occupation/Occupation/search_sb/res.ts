@@ -4,7 +4,7 @@ import { existplayer, readPlayer, __PATH } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keysByPath } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?悬赏目标$/
 
 export default onResponse(selects, async e => {
@@ -26,14 +26,17 @@ export default onResponse(selects, async e => {
       msg = action.arm
       const msg_data = { msg, type }
       const img = await screenshot('msg', e.UserId, msg_data)
-      Send(Image(img))
+      if (Buffer.isBuffer(img)) {
+        Send(Image(img))
+        return
+      }
+      Send(Text('图片生产失败'))
       return false
     }
   }
   const mubiao = []
   let i = 0
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const this_qq of playerList) {
     const players = await readPlayer(this_qq)
     if (players.魔道值 > 999 && this_qq != usr_qq) {

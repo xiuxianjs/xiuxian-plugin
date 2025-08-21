@@ -3,7 +3,7 @@ import { notUndAndNull } from '@src/model/common'
 import { zdBattle } from '@src/model/battle'
 import { addNajieThing } from '@src/model/najie'
 import { readShop, writeShop, existshop } from '@src/model/shop'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { RaidActionState } from '@src/types'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
@@ -20,8 +20,7 @@ import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 简言之，该任务脚本实现了“秘境探索”玩法的自动结算，包括战斗、奖励、特殊事件和状态管理，是游戏自动化和奖励分发的关键逻辑之一。
  */
 export const Xijietask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息
     log_mag = log_mag + '查询' + player_id + '是否有动作,'

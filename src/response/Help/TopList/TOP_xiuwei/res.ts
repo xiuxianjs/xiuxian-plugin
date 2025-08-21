@@ -1,6 +1,6 @@
 import { Text, useSend, Image } from 'alemonjs'
-import { data, redis } from '@src/model/api'
-import { __PATH } from '@src/model/keys'
+import { data } from '@src/model/api'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { notUndAndNull } from '@src/model/common'
 import { sortBy, getAllExp } from '@src/model/cultivation'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
@@ -13,8 +13,7 @@ export default onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
   // 计算当前用户排名
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   let File_length = playerList.length
   const temp = []
   for (const this_qq of playerList) {

@@ -1,7 +1,7 @@
 import { screenshot } from '@src/image'
 import { redis, data } from '@src/model/api'
 import { __PATH, shijianc, readPlayer } from '@src/model/index'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys, keysByPath } from '@src/model/keys'
 import type { Player, TalentInfo } from '@src/types'
 
 // 榜单条目类型（简化，只列出必需字段，允许附加动态属性）
@@ -24,14 +24,14 @@ export interface TiandibangRow {
 
 export async function Write_tiandibang(wupin: TiandibangRow[]) {
   await redis.set(
-    `${__PATH.tiandibang}:tiandibang`,
+    keys.tiandibang('tiandibang'),
     JSON.stringify(wupin, null, '\t')
   )
   return false
 }
 
 export async function readTiandibang() {
-  const tiandibang = await redis.get(`${__PATH.tiandibang}:tiandibang`)
+  const tiandibang = await redis.get(keys.tiandibang('tiandibang'))
   if (!tiandibang) {
     //如果没有天鼎数据，返回空数组
     return []
@@ -65,8 +65,7 @@ export async function get_tianditang_img(e, jifen) {
 }
 
 export async function re_bangdang() {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   const temp: TiandibangRow[] = []
   for (let k = 0; k < playerList.length; k++) {
     const thisQqStr = playerList[k]!

@@ -53,6 +53,7 @@ export const __PATH_CONFIG = {
 }
 
 import { baseKey } from './constants'
+import { getIoRedis } from '@alemonjs/db'
 
 export type ActionType =
   | 'action'
@@ -122,36 +123,6 @@ export const keys = {
   fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
 }
 
-export type RedisKeyGenerator = typeof keys
-
-/**
- * @param user_id
- * @param action
- * @returns
- * @deprecated
- */
-export const getRedisKey = (user_id: string, action: ActionType) => {
-  return baseKey + ':' + user_id + ':' + action
-}
-
-/**
- * @deprecated
- * @param name
- * @returns
- */
-export const getRedisConfigKey = (name: string) => {
-  return baseKey + ':config:' + name
-}
-
-/**
- * @deprecated
- * @param name
- * @returns
- */
-export const getRedisSystemKey = (name: string) => {
-  return baseKey + ':system:' + name
-}
-
 export const keysAction = {
   action: (id: string) => `${baseKey}:action:${id}`,
   xijie: (id: string) => `${baseKey}:xijie:${id}`,
@@ -191,4 +162,44 @@ export const keysAction = {
   bossCD: (id: string) => `${baseKey}:BOSSCD:${id}`,
   system: (id: string) => `${baseKey}:system:${id}`,
   config: (id: string) => `${baseKey}:config:${id}`
+}
+
+export type RedisKeyGenerator = typeof keys
+
+/**
+ * @param user_id
+ * @param action
+ * @returns
+ * @deprecated
+ */
+export const getRedisKey = (user_id: string, action: ActionType) => {
+  return baseKey + ':' + user_id + ':' + action
+}
+
+/**
+ * @deprecated
+ * @param name
+ * @returns
+ */
+export const getRedisConfigKey = (name: string) => {
+  return keysAction.config(name)
+}
+
+/**
+ * @deprecated
+ * @param name
+ * @returns
+ */
+export const getRedisSystemKey = (name: string) => {
+  return keysAction.system(name)
+}
+
+/**
+ * @param path
+ * @returns
+ */
+export const keysByPath = async path => {
+  const redis = getIoRedis()
+  const keys = await redis.keys(`${path}:*`)
+  return keys.map(key => key.replace(`${path}:`, ''))
 }

@@ -2,7 +2,7 @@ import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
 import { parseJsonBody } from '@src/route/core/bodyParser'
 import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keys } from '@src/model/keys'
 
 const redis = getIoRedis()
 
@@ -38,11 +38,8 @@ export const PUT = async (ctx: Context) => {
       return
     }
 
-    // 获取用户key
-    const userKey = `${__PATH.player_path}:${id}`
-
     // 检查用户是否存在
-    const existingData = await redis.get(userKey)
+    const existingData = await redis.get(keys.player(String(id)))
     if (!existingData) {
       ctx.status = 404
       ctx.body = {
@@ -74,7 +71,7 @@ export const PUT = async (ctx: Context) => {
     }
 
     // 保存更新后的数据
-    await redis.set(userKey, JSON.stringify(updatedUser))
+    await redis.set(keys.player(String(id)), JSON.stringify(updatedUser))
 
     ctx.status = 200
     ctx.body = {

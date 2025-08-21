@@ -1,8 +1,13 @@
 import { Image, useSend, Text } from 'alemonjs'
-import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
+import {
+  __PATH,
+  existplayer,
+  keysByPath,
+  readPlayer,
+  sortBy
+} from '@src/model/index'
 import { screenshot } from '@src/image/index.js'
 import { selects } from '@src/response/mw'
-import { redis } from '@src/model/api'
 export const regular = /^(#|＃|\/)?至尊榜$/
 
 export default onResponse(selects, async e => {
@@ -12,8 +17,7 @@ export default onResponse(selects, async e => {
   //数组
   const temp = []
 
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
 
   for (const file of playerList) {
     //(攻击+防御+生命*0.5)*暴击率=理论战力

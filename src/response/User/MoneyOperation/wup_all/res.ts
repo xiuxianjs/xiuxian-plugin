@@ -5,10 +5,10 @@ import {
   addExp,
   addExp2,
   foundthing,
-  addNajieThing
+  addNajieThing,
+  keysByPath
 } from '@src/model/index'
 import { selects } from '@src/response/mw'
-import { redis } from '@src/model/api'
 import type { NajieCategory } from '@src/types/model'
 
 // 支持更广格式：#全体发灵石*100  / #全体发修为*500 / #全体发血气*200
@@ -36,8 +36,7 @@ export default onResponse(selects, async e => {
   if (!e.IsMaster) return false
 
   // 解析玩家列表
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   const playerCount = playerList.length
   if (playerCount === 0) {
     Send(Text('暂无玩家存档，发放取消'))

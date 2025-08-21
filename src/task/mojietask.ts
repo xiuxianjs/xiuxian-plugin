@@ -4,7 +4,7 @@ import { readPlayer } from '@src/model/xiuxian'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
-import { __PATH, keys as dataKeys } from '@src/model/keys'
+import { __PATH, keys as dataKeys, keysByPath } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ExploreActionState } from '@src/types'
 import { getDataList } from '@src/model/DataList'
@@ -21,8 +21,7 @@ function isExploreAction(a): a is ExploreActionState {
  */
 export const MojiTask = async () => {
   // 获取缓存中人物列表
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     // 查询当前人物动作（日志变量已移除以减 lint 噪声）
     // 得到动作

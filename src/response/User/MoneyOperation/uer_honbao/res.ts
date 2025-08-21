@@ -56,7 +56,7 @@ export default onResponse(selects, async e => {
   // 使用原子操作检查并扣减红包数量
   const countKey = getRedisKey(honbao_qq, 'honbaoacount')
   const remainingCount = await redis.decr(countKey)
-  
+
   // 如果扣减后小于0，说明红包已经被抢完
   if (remainingCount < 0) {
     // 恢复计数器（因为我们多扣了一次）

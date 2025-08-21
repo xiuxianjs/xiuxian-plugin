@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
-import { data, redis } from '@src/model/api'
-import { __PATH, notUndAndNull, readPlayer } from '@src/model/index'
+import { data } from '@src/model/api'
+import { __PATH, keysByPath, notUndAndNull, readPlayer } from '@src/model/index'
 import type { Player, AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/mw'
@@ -74,8 +74,7 @@ export default onResponse(selects, async e => {
   }
 
   // 查询所有宗门，判断洞天是否被占据
-  const keys = await redis.keys(`${__PATH.association}:*`)
-  const guildNames = keys.map(k => k.replace(`${__PATH.association}:`, ''))
+  const guildNames = await keysByPath(__PATH.association)
   const assListRaw = await Promise.all(
     guildNames.map(n => data.getAssociation(n))
   )

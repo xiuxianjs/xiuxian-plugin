@@ -1,11 +1,11 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { data, pushInfo } from '@src/model/api'
 // 直接从具体模块导入，避免经由 barrel 产生的 re-export 循环
 import { notUndAndNull } from '@src/model/common'
 import { readDanyao, writeDanyao } from '@src/model/danyao'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addExp, addExp2 } from '@src/model/economy'
 import { setFileValue } from '@src/model/cultivation'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ActionState } from '@src/types'
@@ -27,8 +27,7 @@ import { getConfig } from '@src/model'
  * @returns 
  */
 export const PlayerControlTask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   const cf = await getConfig('xiuxian', 'xiuxian')
   for (const player_id of playerList) {
     let log_mag = '' //查询当前人物动作日志信息（需累计变更）

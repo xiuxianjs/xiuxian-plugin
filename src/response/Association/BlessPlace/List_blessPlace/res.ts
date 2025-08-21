@@ -1,7 +1,7 @@
 import { Text, useMessage, Image } from 'alemonjs'
-import { data, redis } from '@src/model/api'
+import { data } from '@src/model/api'
 import { selects } from '@src/response/mw'
-import { __PATH } from '@src/model/index'
+import { __PATH, keysByPath } from '@src/model/index'
 import { screenshot } from '@src/image'
 import type { AssociationDetailData } from '@src/types'
 
@@ -40,8 +40,7 @@ export default onResponse(selects, async e => {
     return false
   }
 
-  const keys = await redis.keys(`${__PATH.association}:*`)
-  const guildNames = keys.map(k => k.replace(`${__PATH.association}:`, ''))
+  const guildNames = await keysByPath(__PATH.association)
   const assListRaw = await Promise.all(
     guildNames.map(n => data.getAssociation(n))
   )

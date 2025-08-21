@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, writePlayer } from '@src/model/index'
+import { __PATH, keys, writePlayer } from '@src/model/index'
 import { data } from '@src/model/api'
 import { selects } from '@src/response/mw'
 import { redis } from '@src/model/api'
@@ -15,7 +15,7 @@ export default onResponse(selects, async e => {
       Send(Text('请输入要解散的宗门名称'))
       return false
     }
-    const assRaw = await redis.get(`${__PATH.association}:${didian}`)
+    const assRaw = await redis.get(keys.association(didian))
     if (!assRaw) {
       Send(Text('该宗门不存在'))
       return false
@@ -45,7 +45,7 @@ export default onResponse(selects, async e => {
         await writePlayer(qq, rest as Player)
       }
     }
-    await redis.del(`${__PATH.association}:${didian}`)
+    await redis.del(keys.association(didian))
     Send(Text('解散成功!'))
     return false
   }

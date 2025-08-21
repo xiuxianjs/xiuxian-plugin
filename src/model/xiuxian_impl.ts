@@ -36,7 +36,7 @@ export async function getEquipmentDataSafe(
 // 检查存档是否存在，存在返回 true
 export async function existplayer(usr_qq: string): Promise<boolean> {
   const redis = getIoRedis()
-  const res = await redis.exists(`${__PATH.player_path}:${usr_qq}`)
+  const res = await redis.exists(keys.player(usr_qq))
   return res === 1
 }
 

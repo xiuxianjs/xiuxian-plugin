@@ -1,11 +1,11 @@
-import { redis, pushInfo } from '@src/model/api'
+import { pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
 import { writePlayer } from '@src/model/xiuxian'
 import { addNajieThing } from '@src/model/najie'
 import { addExp2, addExp } from '@src/model/economy'
 import { readTemp, writeTemp } from '@src/model/temp'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type {
@@ -34,8 +34,7 @@ function isNajieCategory(v): v is NajieCategory {
 兼容多种奖励类型和探索地点，支持丰富的探索体验。
  */
 export const ShenjieTask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     const actionRaw = await getDataByUserId(player_id, 'action')
     const action = safeParse<ActionState | null>(actionRaw, null)

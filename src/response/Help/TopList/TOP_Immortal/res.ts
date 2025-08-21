@@ -1,9 +1,14 @@
 import { Image, Text, useSend } from 'alemonjs'
 
-import { __PATH, existplayer, readPlayer, sortBy } from '@src/model/index'
+import {
+  __PATH,
+  existplayer,
+  keysByPath,
+  readPlayer,
+  sortBy
+} from '@src/model/index'
 
 import { selects } from '@src/response/mw'
-import { redis } from '@src/model/api'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?封神榜$/
 
@@ -16,8 +21,7 @@ export default onResponse(selects, async e => {
   //数组
   const temp = []
 
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   let i = 0
   for (const player_id of playerList) {
     //(攻击+防御*0.8+生命*0.5)*暴击率=理论战力

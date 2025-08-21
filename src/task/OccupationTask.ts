@@ -1,8 +1,8 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { data, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { addExp4 } from '@src/model/xiuxian'
 import { addNajieThing } from '@src/model/najie'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keysByPath } from '@src/model/keys'
 import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
@@ -17,8 +17,7 @@ import { mine_jiesuan } from '@src/response/Occupation/api'
 通过推送消息通知玩家或群组结算结果。
  */
 export const OccupationTask = async () => {
-  const keys = await redis.keys(`${__PATH.player_path}:*`)
-  const playerList = keys.map(key => key.replace(`${__PATH.player_path}:`, ''))
+  const playerList = await keysByPath(__PATH.player_path)
   for (const player_id of playerList) {
     // 得到动作
     const actionRaw = await getDataByUserId(player_id, 'action')
