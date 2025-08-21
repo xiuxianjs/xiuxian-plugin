@@ -24,7 +24,8 @@ export default onResponse(selects, async e => {
   if (!ifexistplay) return false
 
   const player = await readPlayer(usr_qq)
-  const actionStr = await redis.get(keys.fuzhi(usr_qq)) //副职
+  // 获取副职
+  const actionStr = await redis.get(keys.fuzhi(usr_qq))
   if (!actionStr) {
     Send(Text(`您还没有副职哦`))
     return false
