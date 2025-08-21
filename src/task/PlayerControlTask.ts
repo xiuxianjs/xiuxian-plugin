@@ -30,8 +30,6 @@ export const PlayerControlTask = async () => {
   const playerList = await keysByPath(__PATH.player_path)
   const cf = await getConfig('xiuxian', 'xiuxian')
   for (const player_id of playerList) {
-    let log_mag = '' //查询当前人物动作日志信息（需累计变更）
-    log_mag += '查询' + player_id + '是否有动作,'
     //得到动作
     const actionRaw = await getDataByUserId(player_id, 'action')
     let action: ActionState | null = null
@@ -62,7 +60,6 @@ export const PlayerControlTask = async () => {
         //时间过了
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
-          log_mag += '当前人物未结算，结算状态'
           const player = await data.getData('player', player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
@@ -204,7 +201,6 @@ export const PlayerControlTask = async () => {
         //时间过了
         if (now_time > end_time) {
           //现在大于结算时间，即为结算
-          log_mag = log_mag + '当前人物未结算，结算状态'
           const player = await data.getData('player', player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
@@ -272,7 +268,6 @@ export const PlayerControlTask = async () => {
           delete arr.group_id //结算完去除group_id
           await setDataByUserId(player_id, 'action', JSON.stringify(arr))
           msg.push('\n降妖得到' + get_lingshi + '灵石')
-          log_mag += '收入' + get_lingshi
           if (is_group) {
             await pushInfo(push_address, is_group, msg)
           } else {

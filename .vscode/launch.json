@@ -2,20 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "gui",
+      "name": "testone",
       "type": "node",
       "request": "launch",
-      "runtimeArgs": ["dev", "--login", "gui"],
-      "runtimeExecutable": "yarn",
-      "cwd": "${workspaceFolder}",
-      "skipFiles": ["<node_internals>/**"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "qq-bot",
-      "type": "node",
-      "request": "launch",
-      "runtimeArgs": ["dev", "--login", "qq-bot"],
+      "runtimeArgs": ["dev"],
       "runtimeExecutable": "yarn",
       "cwd": "${workspaceFolder}",
       "skipFiles": ["<node_internals>/**"],

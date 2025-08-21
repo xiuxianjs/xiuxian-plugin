@@ -6,8 +6,7 @@ import { playerRepo } from './utils/safe.js'
 export async function addCoin(userId: string, delta: number) {
   delta = Math.trunc(delta)
   if (!delta) return
-  const val = await playerRepo.atomicAdjust(userId, '灵石', delta)
-  return val ?? (await readPlayer(userId))?.灵石
+  await playerRepo.atomicAdjust(userId, '灵石', delta)
 }
 
 export async function addHP(userId: string, delta: number) {
@@ -26,22 +25,19 @@ export async function addHP(userId: string, delta: number) {
 export async function addExp(userId: string, delta: number) {
   delta = Math.trunc(delta)
   if (!delta) return
-  const val = await playerRepo.atomicAdjust(userId, '修为', delta)
-  return val ?? (await readPlayer(userId))?.修为
+  await playerRepo.atomicAdjust(userId, '修为', delta)
 }
 
 export async function addExp2(userId: string, delta: number) {
   delta = Math.trunc(delta)
   if (!delta) return
-  const val = await playerRepo.atomicAdjust(userId, '血气', delta)
-  return val ?? (await readPlayer(userId))?.血气
+  await playerRepo.atomicAdjust(userId, '血气', delta)
 }
 
 export async function addExp3(userId: string, delta: number) {
   delta = Math.trunc(delta)
   if (!delta) return
-  const val = await playerRepo.atomicAdjust(userId, '魔道值', delta)
-  return val ?? (await readPlayer(userId))?.魔道值
+  await playerRepo.atomicAdjust(userId, '魔道值', delta)
 }
 
 export default { addCoin, addHP, addExp, addExp2, addExp3 }

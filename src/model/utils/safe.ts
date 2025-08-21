@@ -10,7 +10,6 @@ export function safeParse<T>(s: string | null | undefined, fallback: T): T {
   }
 }
 
-// 简易 Player Repository (保持字段命名兼容，不改动原结构)
 export class PlayerRepo {
   private redis = getIoRedis()
   async getRaw(id: string) {
@@ -24,7 +23,6 @@ export class PlayerRepo {
   async setObject<T extends object | unknown>(id: string, obj: T) {
     await this.redis.set(keys.player(id), JSON.stringify(obj))
   }
-  // 原子数值增减（字符串化 JSON 方式，不拆字段；若需高并发可改 hash 结构）
   async atomicAdjust(
     id: string,
     field: string,
@@ -32,11 +30,9 @@ export class PlayerRepo {
   ): Promise<number | null> {
     if (!delta) return null
 
-    // 传统的读取-修改-写入方式
     const obj = await this.getObject<Record<string, unknown>>(id)
     if (!obj) return null
 
-    // 若 obj 是数组，直接返回 null，避免数组被当作对象处理
     if (Array.isArray(obj)) return null
 
     const current = Number(obj[field] || 0)

@@ -41,7 +41,6 @@ export const OccupationTask = async () => {
     if (action.plant === '0') {
       const end_time = action.end_time - 60000 * 2 // 提前 2 分钟
       if (now_time > end_time) {
-        // log_mag += '当前人物未结算，结算状态' // 移除未使用日志累积
         const playerRaw = await data.getData('player', player_id)
         if (!playerRaw || Array.isArray(playerRaw)) {
           // 数据异常，跳过
@@ -118,7 +117,6 @@ export const OccupationTask = async () => {
     if (action.mine === '0') {
       const end_time = action.end_time - 60000 * 2
       if (now_time > end_time) {
-        // log_mag += '当前人物未结算，结算状态' // 移除未使用日志累积
         const playerRaw = await data.getData('player', player_id)
         if (!playerRaw || Array.isArray(playerRaw)) continue
         const player = playerRaw as Player
