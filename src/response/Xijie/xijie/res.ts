@@ -159,6 +159,7 @@ export default onResponse(selects, async e => {
     xijie: '0',
     plant: '1',
     mine: '1',
+    group_id: e.name === 'message.create' ? e.ChannelId : undefined,
     Place_address: target,
     A_player
   })
