@@ -45,8 +45,13 @@ export async function readPlayer(usr_qq: string): Promise<Player | null> {
   const redis = getIoRedis()
   const player = await redis.get(keys.player(usr_qq))
   if (!player) return null
-  const playerData = JSON.parse(player)
-  return playerData as Player
+  try {
+    const playerData = JSON.parse(player)
+    return playerData as Player
+  } catch (error) {
+    logger.warn('Error parsing player data:', error)
+    return null
+  }
 }
 
 // 读取纳戒信息
