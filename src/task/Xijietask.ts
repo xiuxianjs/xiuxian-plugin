@@ -7,6 +7,7 @@ import { __PATH, keysByPath } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { RaidActionState } from '@src/types'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
+import { screenshot } from '@src/image'
 
 /**
  * 获取所有玩家，逐个检查其当前动作（action）。
@@ -139,8 +140,44 @@ export const Xijietask = async () => {
           }
           const msgg = Data_battle.msg
           logger.info(msgg)
+
           const A_win = `${A_player.名号}击败了${B_player.名号}`
           const B_win = `${B_player.名号}击败了${A_player.名号}`
+
+          try {
+            const playerA = {
+              id: player_id,
+              name: A_battle?.名号,
+              avatar: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${player_id}`,
+              power: A_battle?.战力 || 0,
+              hp: A_battle?.当前血量 || 0,
+              maxHp: A_battle?.血量上限 || 0
+            }
+            const playerB = {
+              id: '1715713638',
+              name: B_player?.名号,
+              avatar: `https://q1.qlogo.cn/g?b=qq&s=0&nk=1715713638`,
+              power: B_player?.战力 || 0,
+              hp: B_player?.当前血量 || 0,
+              maxHp: B_player?.血量上限 || 0
+            }
+            const img = await screenshot('CombatResult', player_id, {
+              msg: msgg,
+              playerA: playerA,
+              playerB: playerB,
+              result: msgg.includes(A_win)
+                ? 'A'
+                : msgg.includes(B_win)
+                  ? 'B'
+                  : 'draw'
+            })
+            if (Buffer.isBuffer(img)) {
+              pushInfo(push_address, is_group, img)
+            }
+          } catch (error) {
+            logger.error(error)
+          }
+
           const arr = action
           // 后续阶段会重新以 const 定义 time / action_time
           if (msgg.find(item => item == A_win)) {

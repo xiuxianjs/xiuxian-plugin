@@ -22,15 +22,17 @@ export async function pushInfo(
   isGroup: boolean,
   msg: MessageInput
 ) {
-  let message: MessageEnumsArray
+  let message: MessageEnumsArray = []
   if (typeof msg == 'string') message = format(Text(msg)) as MessageEnumsArray
   else if (Buffer.isBuffer(msg))
     message = format(Image(msg)) as MessageEnumsArray
-  else {
+  else if (Array.isArray(msg)) {
     const list = msg.map(item => (typeof item == 'string' ? Text(item) : item))
     message = format(...list) as MessageEnumsArray
   }
-
+  if (message.length === 0) {
+    return
+  }
   if (isGroup) {
     // 向指定频道发送消息 。SpaceId 从消息中获得，注意这可能不是 ChannelId
     sendToChannel(String(guild_id), message)

@@ -486,7 +486,7 @@ async function battle(e, num: number) {
     B_player.暴击率 = B_init.暴击率
   }
 
-  const img = await screenshot('CombatResult', ``, {
+  const img = await screenshot('CombatResult', A_QQ[num].QQ, {
     msg: history.flat(),
     playerA: {
       id: A_QQ[num].QQ,

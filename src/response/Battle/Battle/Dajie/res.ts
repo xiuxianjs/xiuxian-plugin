@@ -280,7 +280,7 @@ export default onResponse(selects, async e => {
   const A_win = `${A_player.名号}击败了${B_player.名号}`
   const B_win = `${B_player.名号}击败了${A_player.名号}`
 
-  const img = await screenshot('CombatResult', ``, {
+  const img = await screenshot('CombatResult', A, {
     msg: final_msg,
     playerA: {
       id: A,
