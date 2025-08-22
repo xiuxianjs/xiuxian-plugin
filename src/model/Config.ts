@@ -1,6 +1,5 @@
-import { __PATH_CONFIG } from './keys'
+import { __PATH_CONFIG, keysAction } from './keys'
 import { getIoRedis } from '@alemonjs/db'
-import { getRedisConfigKey } from './keys'
 import { getConfigValue } from 'alemonjs'
 
 export type Data = typeof __PATH_CONFIG
@@ -14,9 +13,8 @@ export type ConfigKey = keyof Data
  */
 export const hasConfig = async (name: ConfigKey) => {
   const redis = getIoRedis()
-  const key = getRedisConfigKey(name)
-  const e = await redis.exists(key)
-  return e > 0
+  const exists = await redis.exists(keysAction.config(name))
+  return exists > 0
 }
 
 /**
@@ -27,9 +25,9 @@ export const hasConfig = async (name: ConfigKey) => {
  */
 export const setConfig = async (name: ConfigKey, data) => {
   try {
+    console.log(`Setting config for ${name}:`, data)
     const redis = getIoRedis()
-    const key = getRedisConfigKey(name)
-    await redis.set(key, JSON.stringify(data))
+    await redis.set(keysAction.config(name), JSON.stringify(data))
     return true
   } catch (error) {
     logger.error(error)
@@ -48,9 +46,8 @@ export async function getConfig<T extends ConfigKey>(
   name: T
 ): Promise<Data[T]> {
   const redis = getIoRedis()
-  const key = getRedisConfigKey(name)
   const data = __PATH_CONFIG[name]
-  const curData = await redis.get(key)
+  const curData = await redis.get(keysAction.config(name))
   if (curData) {
     const db = JSON.parse(curData)
     return {

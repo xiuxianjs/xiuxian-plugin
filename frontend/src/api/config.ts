@@ -23,7 +23,7 @@ export const saveConfig = async (app: string, data: unknown) => {
       url: '/config',
       method: 'POST',
       data: {
-        app,
+        name: app,
         data
       }
     })) as ApiResponse

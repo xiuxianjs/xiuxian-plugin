@@ -8,7 +8,8 @@ import {
   Tabs,
   Card,
   Row,
-  Col
+  Col,
+  message
 } from 'antd'
 import { DeleteOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons'
 import { Najie, NajieItem } from '@/types'
@@ -47,6 +48,8 @@ export default function NajieEditModal({
   const [form] = Form.useForm()
   const [editingNajie, setEditingNajie] = useState<Najie | null>(null)
 
+  const [inputValue, setInputValue] = useState<string>('')
+
   useEffect(() => {
     if (visible && najie) {
       setEditingNajie({ ...najie })
@@ -78,10 +81,24 @@ export default function NajieEditModal({
   }
 
   const addItem = (category: string) => {
+    // 如果输入框为空，则不添加
+    if (!inputValue) return
+
     if (!editingNajie) return
 
+    if (
+      (editingNajie[category as keyof Najie] as NajieItem[]).some(
+        item => item.name === inputValue
+      )
+    ) {
+      message.error('已存在该物品')
+      return
+    }
+
+    console.log('添加物品到分类:', category)
+
     const newItem: NajieItem = {
-      name: '',
+      name: inputValue,
       grade: '',
       pinji: 1,
       数量: 1
@@ -298,14 +315,21 @@ export default function NajieEditModal({
                   <h3 className="text-lg font-bold text-white">
                     {category.label}
                   </h3>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => addItem(category.key)}
-                    className="bg-gradient-to-r from-green-500 to-emerald-500 border-0"
-                  >
-                    添加物品
-                  </Button>
+                  <div className="flex gap-6">
+                    <Input
+                      value={inputValue}
+                      onChange={e => setInputValue(e.target.value)}
+                      className=" max-w-40 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500"
+                    />
+                    <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={() => addItem(category.key)}
+                      className="bg-gradient-to-r from-green-500 to-emerald-500 border-0"
+                    >
+                      添加物品
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

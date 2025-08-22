@@ -13,7 +13,6 @@ export default function ConfigManager() {
     jsonConfig,
     setJsonConfig,
     message,
-    setMessage,
     loadConfig,
     handleSave,
     handleConfigChange,
@@ -64,38 +63,6 @@ export default function ConfigManager() {
             )}
           </div>
         </div>
-
-        {/* 消息提示 */}
-        {message && (
-          <div
-            className={classNames('mb-6 rounded-xl p-4', {
-              'bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30':
-                message.type === 'success',
-              'bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30':
-                message.type === 'error'
-            })}
-          >
-            <div className="flex items-center space-x-3">
-              <div
-                className={classNames('w-3 h-3 rounded-full', {
-                  'bg-green-400': message.type === 'success',
-                  'bg-red-400': message.type === 'error'
-                })}
-              ></div>
-              <div>
-                <h3
-                  className={classNames('font-semibold', {
-                    'text-green-400': message.type === 'success',
-                    'text-red-400': message.type === 'error'
-                  })}
-                >
-                  {message.type === 'success' ? '成功' : '错误'}
-                </h3>
-                <p className="text-slate-300 text-sm mt-1">{message.text}</p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* 标签页导航 */}
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
@@ -231,7 +198,7 @@ export default function ConfigManager() {
             setOpen(false)
           } catch (error) {
             console.error(error)
-            setMessage({ type: 'error', text: 'JSON格式错误' })
+            message.error('JSON格式错误')
           }
         }}
         cancelText="取消"

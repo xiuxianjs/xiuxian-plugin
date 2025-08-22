@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { message } from 'antd'
 import { useAuth } from '@/contexts/AuthContext'
-import { getNajieAPI, getNajieStatsAPI, updateNajieAPI } from '@/api/auth'
+import { getNajieAPI, updateNajieAPI } from '@/api/auth'
 import { Najie } from '@/types'
 import { pageSize } from '@/config'
 
@@ -23,23 +23,6 @@ export const useNajieManagerCode = () => {
     totalPages: 0
   })
 
-  // 统计数据状态
-  const [stats, setStats] = useState({
-    total: 0,
-    totalLingshi: 0,
-    totalItems: 0,
-    categoryStats: {
-      装备: 0,
-      丹药: 0,
-      道具: 0,
-      功法: 0,
-      草药: 0,
-      材料: 0,
-      仙宠: 0,
-      仙宠口粮: 0
-    }
-  })
-
   // 获取背包数据
   const fetchNajie = async (page = 1, pSize = pageSize) => {
     if (!user) return
@@ -51,6 +34,8 @@ export const useNajieManagerCode = () => {
         message.error('未找到登录令牌')
         return
       }
+
+      console.log('Fetching najie data with token:', token)
 
       const result = await getNajieAPI(token, {
         page,
@@ -72,38 +57,13 @@ export const useNajieManagerCode = () => {
     }
   }
 
-  // 获取统计数据
-  const fetchStats = async () => {
-    if (!user) return
-
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        message.error('未找到登录令牌')
-        return
-      }
-
-      const result = await getNajieStatsAPI(token, {
-        search: searchText
-      })
-
-      if (result.success && result.data) {
-        setStats(result.data)
-      }
-    } catch (error) {
-      console.error('获取统计数据失败:', error)
-    }
-  }
-
   useEffect(() => {
     fetchNajie(1, pageSize)
-    fetchStats()
   }, [user])
 
   // 处理搜索变化
   const handleSearchAndFilter = () => {
     fetchNajie(1, pagination.pageSize)
-    fetchStats()
   }
 
   // 处理分页变化
@@ -144,13 +104,14 @@ export const useNajieManagerCode = () => {
         return
       }
 
+      console.log('Saving najie data with token:', token, updatedNajie)
+
       const result = await updateNajieAPI(token, updatedNajie)
       if (result.success) {
         message.success('背包更新成功')
         setNajieEditVisible(false)
         // 刷新数据
         fetchNajie(pagination.current, pagination.pageSize)
-        fetchStats()
       } else {
         message.error(result.message || '背包更新失败')
       }
@@ -171,9 +132,7 @@ export const useNajieManagerCode = () => {
     najieEditVisible,
     editLoading,
     pagination,
-    stats,
     fetchNajie,
-    fetchStats,
     handleSearchAndFilter,
     handleTableChange,
     handleEditNajie,

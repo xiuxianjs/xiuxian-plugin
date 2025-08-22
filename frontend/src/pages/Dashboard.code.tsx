@@ -3,7 +3,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import {
   getGameUsersStatsAPI,
   getAssociationsStatsAPI,
-  getNajieStatsAPI,
   getRankingsStatsAPI,
   getTaskStatusAPI
 } from '@/api/auth'
@@ -27,11 +26,10 @@ export const useDashboardCode = () => {
       }
 
       // 并行获取所有统计数据
-      const [userStats, associationStats, najieStats, rankingStats, taskStats] =
+      const [userStats, associationStats, rankingStats, taskStats] =
         await Promise.all([
           getGameUsersStatsAPI(token),
           getAssociationsStatsAPI(token),
-          getNajieStatsAPI(token),
           getRankingsStatsAPI(token),
           getTaskStatusAPI(token)
         ])
@@ -55,13 +53,6 @@ export const useDashboardCode = () => {
           totalLingshi: associationStats.success
             ? associationStats.data?.totalLingshi || 0
             : 0
-        },
-        najie: {
-          total: najieStats.success ? najieStats.data?.total || 0 : 0,
-          totalLingshi: najieStats.success
-            ? najieStats.data?.totalLingshi || 0
-            : 0,
-          totalItems: najieStats.success ? najieStats.data?.totalItems || 0 : 0
         },
         rankings: {
           lastUpdate: rankingStats.success

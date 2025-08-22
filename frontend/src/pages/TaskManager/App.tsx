@@ -5,8 +5,6 @@ import {
   PlayCircleOutlined,
   PauseCircleOutlined,
   ReloadOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
   SettingOutlined
 } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
@@ -36,6 +34,28 @@ const getTypeTag = (type: string) => {
     default:
       return <Tag color="default">其他</Tag>
   }
+}
+
+const taskNames: {
+  [key: string]: string
+} = {
+  ShopTask: '商店刷新',
+  ExchangeTask: '冲水堂清理',
+  BossTask: 'BOSS开启',
+  BossTask2: 'BOSS开启2',
+  AuctionofficialTask: '拍卖任务',
+  ForumTask: '论坛任务',
+  MojiTask: '魔界任务',
+  PlayerControlTask: '玩家控制任务',
+  SecretPlaceplusTask: '秘境任务（plus）',
+  OccupationTask: '职业任务',
+  MsgTask: '消息任务',
+  ShenjieTask: '神界任务',
+  ShopGradetask: '商店等级任务',
+  Taopaotask: '逃跑任务',
+  SecretPlaceTask: '秘境任务',
+  TiandibangTask: '天地榜任务',
+  Xijietask: '仙界任务'
 }
 
 export default function TaskManager() {
@@ -141,7 +161,7 @@ export default function TaskManager() {
       render: (_, record) => (
         <div>
           <div className="font-bold text-white">{record.name}</div>
-          <div className="text-xs text-slate-400">{record.description}</div>
+          <div className="text-xs text-slate-400">{taskNames[record.name]}</div>
         </div>
       )
     },

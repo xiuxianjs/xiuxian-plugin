@@ -965,66 +965,6 @@ export const triggerRankingCalculationAPI = async (
   }
 }
 
-type Bag = {
-  装备: number
-  丹药: number
-  道具: number
-  功法: number
-  草药: number
-  材料: number
-  仙宠: number
-  仙宠口粮: number
-}
-
-// 获取背包统计信息API
-export const getNajieStatsAPI = async (
-  token: string,
-  params: {
-    search?: string
-  } = {}
-): Promise<{
-  success: boolean
-  data?: {
-    total: number
-    corruptedTotal: number
-    totalLingshi: number
-    totalItems: number
-    categoryStats: Bag
-  }
-  message?: string
-}> => {
-  try {
-    const result = (await authRequest({
-      url: '/najie',
-      method: 'PUT',
-      params
-    })) as ApiResponse<{
-      total: number
-      totalLingshi: number
-      totalItems: number
-      categoryStats: Bag
-    }>
-
-    if (result.code === 200) {
-      return {
-        success: true,
-        data: result.data
-      }
-    } else {
-      return {
-        success: false,
-        message: result.message
-      }
-    }
-  } catch (error) {
-    console.error('获取背包统计信息API错误:', error)
-    return {
-      success: false,
-      message: '网络错误'
-    }
-  }
-}
-
 // 获取宗门统计信息API
 export const getAssociationsStatsAPI = async (
   token: string,

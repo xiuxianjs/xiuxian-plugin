@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getConfig, saveConfig } from '@/api/config'
+import { message } from 'antd'
 
 export const useConfigManagerCode = () => {
   const [config, setConfig] = useState<Record<string, unknown> | null>(null)
@@ -7,10 +8,6 @@ export const useConfigManagerCode = () => {
   const [activeTab, setActiveTab] = useState('CD配置')
   const [jsonConfig, setJsonConfig] = useState('')
   const [open, setOpen] = useState(false)
-  const [message, setMessage] = useState<{
-    type: 'success' | 'error'
-    text: string
-  } | null>(null)
 
   const loadConfig = async () => {
     setLoading(true)
@@ -25,7 +22,7 @@ export const useConfigManagerCode = () => {
       }
     } catch (error) {
       console.error('加载配置失败:', error)
-      setMessage({ type: 'error', text: '加载配置失败' })
+      message.error('加载配置失败')
     } finally {
       setLoading(false)
     }
@@ -35,11 +32,10 @@ export const useConfigManagerCode = () => {
     setLoading(true)
     try {
       await saveConfig('xiuxian', values)
-      setMessage({ type: 'success', text: '配置保存成功' })
+      message.success('配置保存成功')
       loadConfig()
     } catch (error) {
       console.error('保存配置失败:', error)
-      setMessage({ type: 'error', text: '保存配置失败' })
     } finally {
       setLoading(false)
     }
@@ -86,7 +82,6 @@ export const useConfigManagerCode = () => {
     jsonConfig,
     setJsonConfig,
     message,
-    setMessage,
     loadConfig,
     handleSave,
     handleConfigChange,
