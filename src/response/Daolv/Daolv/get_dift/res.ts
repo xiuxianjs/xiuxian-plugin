@@ -42,7 +42,7 @@ export default onResponse(selects, async e => {
     return false
   }
   const pd = await findQinmidu(A, B)
-  if (pd == false) {
+  if (pd === false) {
     await fstaddQinmidu(A, B)
   } else if (pd == 0) {
     Send(Text(`对方已有道侣`))

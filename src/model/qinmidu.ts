@@ -89,6 +89,22 @@ export async function findQinmidu(A: string, B: string) {
   else return list[i].亲密度
 }
 
+// 查询道侣亲密度
+export async function findDaolvQinmidu(A: string) {
+  let list: QinmiduRecord[] = []
+  try {
+    list = await readQinmidu()
+  } catch {
+    await writeQinmidu([])
+  }
+  for (let i = 0; i < list.length; i++) {
+    if ((list[i].QQ_A == A || list[i].QQ_B == A) && list[i].婚姻 != 0) {
+      return list[i].亲密度
+    }
+  }
+  return 0
+}
+
 // 查询 A 的婚姻；有则返回对方 QQ，无则空字符串
 export async function existHunyin(A: string) {
   let list: QinmiduRecord[] = []

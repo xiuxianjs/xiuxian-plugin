@@ -10,7 +10,8 @@ import {
   existHunyin,
   findQinmidu,
   addQinmidu,
-  addCoin
+  addCoin,
+  findDaolvQinmidu
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
@@ -50,7 +51,7 @@ export default onResponse(selects, async e => {
       Send(Text(`还请少侠找到道侣之后再来探索吧`))
       return false
     }
-    const qinmidu = await findQinmidu(usr_qq, exist_B)
+    const qinmidu = await findDaolvQinmidu(usr_qq)
     if (typeof qinmidu === 'number' && qinmidu < 550) {
       Send(Text('少侠还是先和道侣再联络联络感情吧'))
       return false
