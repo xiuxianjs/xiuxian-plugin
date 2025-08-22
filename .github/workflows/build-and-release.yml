@@ -109,6 +109,7 @@ jobs:
           jq 'del(.workspaces)' package.json > package.json.tmp && mv package.json.tmp package.json
           jq 'del(.private)' package.json > package.json.tmp && mv package.json.tmp package.json
           jq 'del(.scripts)' package.json > package.json.tmp && mv package.json.tmp package.json
+          jq --arg version "${{ steps.versioning.outputs.version }}" '.version = ($version | sub("^v";""))' package.json > package.json.tmp && mv package.json.tmp package.json
 
           # 开始产出
           git config --local user.email "ningmengchongshui@gmail.com"
