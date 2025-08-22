@@ -68,14 +68,14 @@ export default onResponse(selects, async e => {
         Send(Text('未开始锻造或未达到最短锻造时间'))
         return false
       }
-      if (isActionRunning(action)) {
-        Send(
-          Text(
-            `正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`
-          )
-        )
-        return false
-      }
+      // if (isActionRunning(action)) {
+      //   Send(
+      //     Text(
+      //       `正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`
+      //     )
+      //   )
+      //   return false
+      // }
 
       //判断属性九维值
       let cailiao
