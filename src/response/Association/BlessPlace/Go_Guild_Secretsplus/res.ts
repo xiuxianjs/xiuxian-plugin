@@ -111,7 +111,8 @@ export default onResponse(selects, async e => {
     power_up: '1',
     cishu: 10 * i,
     Place_address: weizhi,
-    XF: ass.power
+    XF: ass.power,
+    group_id: e.name == 'message.create' ? e.ChannelId : undefined
   }
   redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(arr))
   Send(
