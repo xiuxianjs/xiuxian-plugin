@@ -10,6 +10,7 @@ import { ExchangeRecord } from '@src/types'
  * @returns
  */
 export const ExchangeTask = async () => {
+  console.log('ExchangeTask')
   let Exchange: ExchangeRecord[] = []
   try {
     Exchange = await readExchange()
@@ -26,7 +27,7 @@ export const ExchangeTask = async () => {
       const time = (now_time - rec.now_time) / 24 / 60 / 60 / 1000
       if (time < 3) break
       const usr_qq = rec.qq as string
-      const nm = rec.name as ExchangeEntry['name']
+      const nm = rec.thing as ExchangeEntry['name']
       const quanity = rec.aconut as number
       await addNajieThing(usr_qq, nm.name, nm.class, quanity, Number(nm.pinji))
       list.splice(i, 1)

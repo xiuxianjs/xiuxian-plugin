@@ -84,7 +84,7 @@ export default onResponse(selects, async e => {
     if (thing_class == '装备' || thing_class == '仙宠') {
       await addNajieThing(
         usr_qq,
-        Exchange[x].name,
+        Exchange[x].thing.name,
         thing_class,
         n,
         Exchange[x].pinji2

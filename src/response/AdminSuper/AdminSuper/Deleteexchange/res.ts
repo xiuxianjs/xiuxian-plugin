@@ -21,10 +21,10 @@ export default onResponse(selects, async e => {
 
     for (const i of Exchange) {
       const usr_qq = i.qq
-      let thing = i.name.name
+      let thing = i.thing.name
       const quanity = i.aconut
-      if (i.name.class == '装备' || i.name.class == '仙宠') thing = i.name
-      await addNajieThing(usr_qq, thing, i.name.class, quanity, i.name.pinji)
+      if (i.thing.class == '装备' || i.thing.class == '仙宠') thing = i.thing
+      await addNajieThing(usr_qq, thing, i.thing.class, quanity, i.thing.pinji)
     }
     await writeExchange([])
     Send(Text('清除完成！'))
