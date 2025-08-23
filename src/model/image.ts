@@ -28,6 +28,7 @@ import { getConfig } from './Config.js'
 import { getIoRedis } from '@alemonjs/db'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 function isAssociationInfo(v): v is AssociationInfo {
   return (
@@ -875,7 +876,7 @@ export async function getPlayerImage(
     武器评级: 武器评级,
     护具评级: 护具评级,
     法宝评级: 法宝评级,
-    avatar: player.avatar || `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
+    avatar: getAvatar(usr_qq)
   }
   return await screenshot('player', e.UserId, player_data)
 }

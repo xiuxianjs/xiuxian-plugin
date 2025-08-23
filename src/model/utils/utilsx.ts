@@ -26,3 +26,7 @@ export function parseUnitNumber(input: string): number {
       return n
   }
 }
+
+export const getAvatar = (usr_qq: string | number) => {
+  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
+}

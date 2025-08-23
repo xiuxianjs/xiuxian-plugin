@@ -1,6 +1,6 @@
 import { getRedisKey } from '@src/model/keys'
 import { Image, Text, useMention, useSend } from 'alemonjs'
-
+import { getAvatar } from '@src/model/utils/utilsx.js'
 import { config, data, redis } from '@src/model/api'
 import {
   existplayer,
@@ -52,10 +52,6 @@ function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
   const v = lg.法球倍率
   return typeof v === 'number' ? v : undefined
-}
-
-const getAvatar = (usr_qq: string) => {
-  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
 }
 
 export default onResponse(selects, async e => {
