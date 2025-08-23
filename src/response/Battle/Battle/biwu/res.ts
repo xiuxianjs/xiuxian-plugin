@@ -3,6 +3,7 @@ import { existplayer, readPlayer, zdBattle } from '@src/model/index'
 import type { Player } from '@src/types'
 import { getAvatar } from '@src/model/utils/utilsx.js'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?以武会友$/
 
@@ -17,7 +18,7 @@ function extractFaQiu(lg): number | undefined {
   return typeof v === 'number' ? v : undefined
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const A = e.UserId
   if (!(await existplayer(A))) return false
@@ -113,3 +114,5 @@ export default onResponse(selects, async e => {
   }
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

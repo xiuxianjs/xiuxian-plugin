@@ -5,6 +5,7 @@ import { notUndAndNull } from '@src/model/common'
 import type { AssociationDetailData, Player } from '@src/types'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门捐献记录$/
 
 interface ExtAss extends Omit<AssociationDetailData, '宗门名称'> {
@@ -23,7 +24,7 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -69,3 +70,5 @@ export default onResponse(selects, async e => {
   await Send(Text(msg.join('\n')))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

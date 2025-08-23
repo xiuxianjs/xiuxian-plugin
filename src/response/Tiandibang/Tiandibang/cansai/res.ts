@@ -5,9 +5,10 @@ import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?报名比赛/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -50,3 +51,5 @@ export default onResponse(selects, async e => {
     return
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

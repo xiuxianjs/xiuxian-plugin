@@ -12,6 +12,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?炼制.*(\*[0-9]*)?$/
 
 // 类型声明（最小必要字段）
@@ -39,7 +40,7 @@ function toInt(v, d = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -144,3 +145,4 @@ export default onResponse(selects, async e => {
   Send(Text(resultMsg))
   return false
 })
+export default onResponse(selects, [mw.current, res.current])

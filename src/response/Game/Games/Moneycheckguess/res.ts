@@ -8,11 +8,12 @@ import {
   addCoin
 } from '@src/model/index'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { openMoneySystem } from '@src/model/money'
 import { game } from '../game'
 
 export const regular = /^(#|＃|\/)?((大|小)|([1-6]))$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const now_time = Date.now()
@@ -159,3 +160,5 @@ export default onResponse(selects, async e => {
   clearTimeout(game.game_time[usr_qq])
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

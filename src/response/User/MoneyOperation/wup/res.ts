@@ -10,6 +10,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 // 允许：#发 灵石*100 | #发 修为*5000 | #发 血气*300 | #发 剑*优*1
 export const regular = /^(#|＃|\/)?发\S+(?:\*\S+){1,2}$/
 
@@ -34,7 +35,7 @@ function parsePinji(raw: string | undefined): number | undefined {
   return undefined
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
 
@@ -121,3 +122,4 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+export default onResponse(selects, [mw.current, res.current])

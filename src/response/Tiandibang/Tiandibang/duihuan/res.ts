@@ -5,6 +5,7 @@ import { existplayer, addNajieThing } from '@src/model/index'
 import { readTiandibang, Write_tiandibang, TiandibangRow } from '../tian'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?积分兑换(.*)$/
 
@@ -14,7 +15,7 @@ interface TianditangItem {
   积分: number
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const user_qq = e.UserId //用户qq
@@ -75,3 +76,5 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

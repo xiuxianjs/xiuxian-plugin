@@ -5,10 +5,11 @@ import { redis } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?((梭哈)|(投入\d+))$/
 import { game } from '../game'
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const [message] = useMessage(e)
 
   const usr_qq = e.UserId
@@ -73,3 +74,5 @@ export default onResponse(selects, async e => {
     }
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

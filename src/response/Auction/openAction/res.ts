@@ -4,6 +4,7 @@ import { redis } from '@src/model/api'
 import { getConfig, openAU, readPlayer } from '@src/model/index'
 import type { ExchangeRecord } from '@src/types'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
+import mw from '@src/response/mw'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启星阁体系$/
@@ -12,7 +13,7 @@ function isExchangeRecord(v): v is ExchangeRecord {
   return !!v && typeof v === 'object' && 'thing' in v && 'start_price' in v
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) {
     Send(Text('只有主人可以开启'))
@@ -79,3 +80,5 @@ export default onResponse(selects, async e => {
   Send(Text('星阁体系在本群开启！'))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

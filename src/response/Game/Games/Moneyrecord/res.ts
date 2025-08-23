@@ -3,10 +3,11 @@ import { Image, useSend, Text } from 'alemonjs'
 import { data } from '@src/model/api'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?金银坊记录$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const qq = e.UserId
 
@@ -44,3 +45,5 @@ export default onResponse(selects, async e => {
   Send(Image(img))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

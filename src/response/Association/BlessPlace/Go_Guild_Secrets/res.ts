@@ -12,6 +12,7 @@ import {
 import type { Player, AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/
 
 interface PlayerGuildRef {
@@ -30,7 +31,7 @@ function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const flag = await Go(e)
@@ -109,3 +110,4 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+export default onResponse(selects, [mw.current, res.current])

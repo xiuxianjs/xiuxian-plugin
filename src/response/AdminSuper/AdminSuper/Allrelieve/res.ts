@@ -3,9 +3,10 @@ import { redis } from '@src/model/api'
 import { stopAction, readAction } from '@src/response/actionHelper'
 import { userKey } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { __PATH, keysByPath } from '@src/model/index'
 export const regular = /^(#|＃|\/)?解除所有$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return
   Send(Text('开始行动！'))
@@ -27,3 +28,5 @@ export default onResponse(selects, async e => {
   }
   Send(Text('行动结束！'))
 })
+
+export default onResponse(selects, [mw.current, res.current])

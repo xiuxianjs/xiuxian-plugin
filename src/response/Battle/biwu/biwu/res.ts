@@ -7,6 +7,7 @@ import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
 import { data, pushInfo, redis } from '@src/model/api'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { biwuPlayer } from '../biwu'
 import { screenshot } from '@src/image'
 
@@ -37,7 +38,7 @@ interface BuffMap {
 }
 
 function getSkill(name: string): SkillCfg | undefined {
-  return data.jineng.find((s: Record<string, unknown>) => s.name === name) as
+  return data.jineng.find((s): s is SkillCfg => s.name === name) as
     | SkillCfg
     | undefined
 }
@@ -91,7 +92,7 @@ const BASE_SKILLS = [
   '诛仙三剑'
 ]
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   const A_QQ = biwuPlayer.A_QQ
@@ -122,6 +123,8 @@ export default onResponse(selects, async e => {
   await battle(e, A_QQ.length - 1)
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])
 
 async function battle(e, num: number) {
   const evt = e as Parameters<typeof useSend>[0]

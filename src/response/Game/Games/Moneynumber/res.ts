@@ -3,10 +3,11 @@ import { Text, useSend } from 'alemonjs'
 import { config, redis } from '@src/model/api'
 import { Go, existplayer, readPlayer } from '@src/model/index'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { game } from '../game'
 
 export const regular = /^(#|＃|\/)?金银坊$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const usr_qq = e.UserId
@@ -76,3 +77,5 @@ export default onResponse(selects, async e => {
   await redis.set(getRedisKey(usr_qq, 'game_action'), 1)
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

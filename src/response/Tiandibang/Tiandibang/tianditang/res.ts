@@ -4,9 +4,10 @@ import { existplayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang, get_tianditang_img } from '../tian'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?天地堂/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -34,3 +35,5 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])
