@@ -12,7 +12,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //有无存档
@@ -58,3 +58,5 @@ export default onResponse(selects, async e => {
   await addPet(usr_qq, data.changzhuxianchon[tianluoRandom].name, 1)
   Send(Text('恭喜获得' + data.changzhuxianchon[tianluoRandom].name))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

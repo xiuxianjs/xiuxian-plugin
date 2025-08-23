@@ -7,7 +7,7 @@ import { selects } from '@src/response/mw'
 import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?关闭金角大王$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (e.IsMaster) {
     if (await BossIsAlive()) {
@@ -19,3 +19,5 @@ export default onResponse(selects, async e => {
     }
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

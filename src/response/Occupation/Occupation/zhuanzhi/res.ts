@@ -11,7 +11,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?猎户转.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
@@ -31,3 +31,5 @@ export default onResponse(selects, async e => {
   await writePlayer(usr_qq, player)
   Send(Text(`恭喜${player.名号}转职为[${occupation}]`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

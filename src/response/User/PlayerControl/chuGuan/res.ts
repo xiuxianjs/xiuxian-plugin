@@ -17,7 +17,7 @@ import { selects } from '@src/response/mw'
 import { DataMention, Mention } from 'alemonjs'
 export const regular = /^(#|＃|\/)?出关$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const action = await getPlayerAction(e.UserId)
   if (!action) return
   if (action.shutup == 1) return
@@ -222,3 +222,5 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   // 写回：当前闭关不修改原始丹药数组结构（mapDanyaoArrayToStatus 仅用于结算显示），故此处不调用 writeDanyao 覆写
   return false
 }
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

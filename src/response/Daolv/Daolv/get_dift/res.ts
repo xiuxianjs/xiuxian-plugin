@@ -12,7 +12,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^赠予百合花篮$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
   if (!Mentions || Mentions.length === 0) {
@@ -53,3 +53,5 @@ export default onResponse(selects, async e => {
   await addNajieThing(A, '百合花篮', '道具', -1)
   Send(Text(`你们的亲密度增加了60`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

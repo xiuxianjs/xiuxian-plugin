@@ -35,7 +35,7 @@ const MoneyCheck = ({
         </h1>
 
         <div className="text-lg text-blue-800 font-semibold tracking-wide select-none">
-          QQ：{user_qq}
+          账号：{user_qq}
         </div>
 
         <div className="w-full grid grid-cols-2 gap-6 text-blue-900 font-semibold text-xl">

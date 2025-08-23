@@ -7,15 +7,12 @@ export const regular = /^(#|＃|\/)?师徒帮助(\d+)?$/
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const helpData = await getConfig('help', 'shituhelp')
-  // data 是一个数组。需要默认按每3组进行分页。
-  // 即可 第一页是 0,1,2 第二页是 3,4,5。注意要处理边界情况。
   const page = e.MessageText.match(/(\d+)/)?.[1]
     ? parseInt(e.MessageText.match(/(\d+)/)?.[1] || '1')
     : 1
-  const pageSize = 3
+  const pageSize = 2
   const total = Math.ceil(helpData.length / pageSize)
-
-  const data = helpData.slice((page - 1) * 3, page * 3)
+  const data = helpData.slice((page - 1) * pageSize, page * pageSize)
   const img = await screenshot(
     'help',
     `shituhelp-${page}`,

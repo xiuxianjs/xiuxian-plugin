@@ -175,7 +175,7 @@ const PlayerCopy = ({
                     />
                   </div>
                   {/* QQ标识 */}
-                  <div className="text-sm text-gray-600">QQ: {user_id}</div>
+                  <div className="text-sm text-gray-600">账号: {user_id}</div>
                 </div>
 
                 {/* 道号信息 */}

@@ -5,7 +5,7 @@ import { existplayer } from '@src/model/index'
 import type { NamedItem } from '@src/types/model'
 
 export const regular = /^(#|＃|\/)?秘境$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
   const weizhi = (data.didian_list || []) as NamedItem[]
@@ -14,3 +14,5 @@ export default onResponse(selects, async e => {
   await Goweizhi(pubEvent, weizhi)
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

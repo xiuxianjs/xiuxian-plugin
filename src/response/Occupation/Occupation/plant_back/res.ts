@@ -37,7 +37,7 @@ function calcEffectiveMinutes(
   return full * slot
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const raw = (await getPlayerAction(e.UserId)) as unknown as PlantAction | null
   if (!raw) return false
   if (raw.action === '空闲') return false
@@ -67,3 +67,5 @@ export default onResponse(selects, async e => {
   await redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(next))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

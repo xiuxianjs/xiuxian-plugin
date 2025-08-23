@@ -123,7 +123,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                       </div>
                       <div className="flex items-center space-x-2 text-sky-100/90">
                         <span className="text-cyan-300">✉</span>
-                        <span>QQ：</span>
+                        <span>账号：</span>
                         <span className="font-semibold text-cyan-200">
                           {item.qq}
                         </span>

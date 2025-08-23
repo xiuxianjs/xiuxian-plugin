@@ -25,7 +25,7 @@ const Immortal = ({ allplayer = [], title = '', label = '战力' }) => {
                 ))
               : null}
             <div className="font-semibold text-[22px] text-black rounded-5xl">
-              QQ: {item.qq}
+              账号: {item.qq}
             </div>
           </div>
         </>

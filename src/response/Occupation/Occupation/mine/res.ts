@@ -14,7 +14,7 @@ import { setValue, userKey, getString } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId //用户qq
   if (!(await existplayer(usr_qq))) return false
@@ -64,3 +64,5 @@ export default onResponse(selects, async e => {
   await setValue(userKey(usr_qq, 'action'), arr)
   Send(Text(`现在开始采矿${time}分钟`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

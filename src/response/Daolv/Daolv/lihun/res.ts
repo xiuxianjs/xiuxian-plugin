@@ -20,7 +20,7 @@ import { found, chaoshi, Daolv } from '../daolv'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^(断绝姻缘)$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const A = e.UserId
   const ifexistplay_A = await existplayer(A)
@@ -105,3 +105,5 @@ export default onResponse(selects, async e => {
   Send(Text(msg.join('')))
   chaoshi(e)
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

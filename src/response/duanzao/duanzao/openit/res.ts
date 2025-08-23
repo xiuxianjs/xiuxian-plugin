@@ -18,15 +18,12 @@ import {
 import { selects } from '@src/response/mw'
 import {
   readActionWithSuffix,
-  isActionRunning,
-  remainingMs,
-  formatRemaining,
   stopActionWithSuffix
 } from '@src/response/actionHelper'
 import { userKey, setValue } from '@src/model/utils/redisHelper'
 export const regular = /^(#|＃|\/)?开炉/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId
   //有无存档
@@ -249,3 +246,5 @@ export default onResponse(selects, async e => {
     }
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

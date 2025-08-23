@@ -949,7 +949,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    fuzong[item] = `道号：${name}QQ：${qq}`
+    fuzong[item] = `道号：${name}账号：${qq}`
   }
   //长老
   const zhanglao = []
@@ -958,7 +958,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    zhanglao[item] = `道号：${name}QQ：${qq}`
+    zhanglao[item] = `道号：${name}账号：${qq}`
   }
   //内门弟子
   const neimen = []
@@ -967,7 +967,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    neimen[item] = `道号：${name}QQ：${qq}`
+    neimen[item] = `道号：${name}账号：${qq}`
   }
   //外门弟子
   const waimen = []
@@ -976,7 +976,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    waimen[item] = `道号：${name}QQ：${qq}`
+    waimen[item] = `道号：${name}账号：${qq}`
   }
   let state = '需要维护'
   const now = new Date()

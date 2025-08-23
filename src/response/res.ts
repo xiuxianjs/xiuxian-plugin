@@ -8,44 +8,23 @@ import {
 import { baseKey } from '@src/model/constants'
 import { Image, Mention, Text, useMessage } from 'alemonjs'
 import dayjs from 'dayjs'
+import { selects } from './mw'
+import { captchaTries, MAX_CAPTCHA_TRIES, op, replyCount } from './config'
 
-// 回复次数缓存（内存，防止频繁提醒）
-const replyCount: Record<string, number> = {}
+export const regular = /^[a-zA-Z0-9]{1,9}$/
 
-// 验证码尝试次数缓存（内存，防止暴力尝试）
-const captchaTries: Record<string, number> = {}
-
-const MAX_CAPTCHA_TRIES = 6 // 最大验证码尝试次数
-const MIN_COUNT = 90 // 夜间阈值
-const MAX_COUNT = 120 // 白天阈值
-
-const selects = onSelects(['message.create', 'private.message.create'])
-
-// 判断是否为夜晚（23:00~06:59）
-function isNight(hour: number) {
-  return hour >= 23 || hour < 7
-}
-
-// 操作计数 Redis key
-const op = (userId: string) =>
-  `${baseKey}:op:${userId}:${dayjs().format('YYYYMMDDHH')}`
-
-export default onMiddleware(selects, async (event, next) => {
+export default onResponse(selects, async event => {
   const values = getAppCofig()
   if (values?.close_captcha) {
-    next()
-    return
+    return true
   }
-
   const userId = event.UserId
   const redis = getIoRedis()
   // 仅有存档才校验
   const exist = await redis.exists(keys.player(userId))
   if (exist === 0) {
-    next()
-    return
+    return true
   }
-
   const [message] = useMessage(event)
   const now = dayjs()
 
@@ -97,8 +76,7 @@ export default onMiddleware(selects, async (event, next) => {
       // 验证码通过豁免 1 小时
       await redis.setex(`${baseKey}:captcha_passed:${userId}`, 60 * 60, '1')
 
-      next()
-      return
+      return true
     } else {
       captchaTries[userId] = (captchaTries[userId] || 0) + 1
       if (captchaTries[userId] >= MAX_CAPTCHA_TRIES) {
@@ -121,44 +99,6 @@ export default onMiddleware(selects, async (event, next) => {
     return
   }
 
-  // 3. 检查近3小时操作数
-  let count = 0
-  for (let i = 1; i <= 3; i++) {
-    const checkHour = now.subtract(i, 'hour').format('YYYYMMDDHH')
-    const key = `${baseKey}:op:${userId}:${checkHour}`
-    const c = await redis.get(key)
-    if (c && parseInt(c) >= 10) {
-      count += parseInt(c)
-    }
-  }
-
-  const hour = now.hour()
-  const countLimit = isNight(hour) ? MIN_COUNT : MAX_COUNT
-
-  // 连续3小时活跃过多，需风控
-  if (count > countLimit) {
-    // 检查是否刚通过验证码
-    const captchaPassed = await redis.exists(
-      `${baseKey}:captcha_passed:${userId}`
-    )
-    if (!captchaPassed) {
-      const { svg, text } = await generateCaptcha()
-      await redis.setex(keys.captcha(userId), 60 * 60 * 6, text.toLowerCase())
-      const img = await svgToPngBuffer(svg)
-      message.send(format(Image(img), Mention(userId)))
-      return
-    }
-  }
-
-  // 4. 操作计数自增，首次操作设置4小时过期
-  const hourKey = `${baseKey}:op:${userId}:${now.format('YYYYMMDDHH')}`
-  const opCount = await redis.incr(hourKey)
-  if (opCount === 1) {
-    await redis.expire(hourKey, 60 * 60 * 4)
-  }
-
-  logger.debug(`用户 ${userId} 当前操作次数: ${opCount}`)
-
-  // 正常放行
-  next()
+  // 不需要过验证码，但触发验证码批评。进行忽略
+  return
 })

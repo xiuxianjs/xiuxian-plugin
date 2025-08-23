@@ -29,7 +29,7 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await Go(e))) return false
@@ -154,3 +154,5 @@ export default onResponse(selects, async e => {
   Send(Text(baseMsg))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

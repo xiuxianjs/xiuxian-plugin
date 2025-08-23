@@ -29,7 +29,7 @@ function isBlessPlace(v): v is BlessPlace {
   )
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const [message] = useMessage(e)
   const blessRaw = data.bless_list || undefined
   const blessList: BlessPlace[] = Array.isArray(blessRaw)
@@ -74,3 +74,5 @@ export default onResponse(selects, async e => {
   }
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

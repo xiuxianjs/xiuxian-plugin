@@ -57,7 +57,7 @@ const thingType = (obj): string | undefined =>
     ? (obj as { type?: string }).type
     : undefined
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const usr_qq = e.UserId
   const [message] = useMessage(e)
   if (!(await existplayer(usr_qq))) return
@@ -566,3 +566,5 @@ export default onResponse(selects, async e => {
     }
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

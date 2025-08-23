@@ -5,7 +5,7 @@ import { readDanyao, readPlayer, existplayer } from '@src/model/index'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?我的药效$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) {
@@ -39,3 +39,5 @@ export default onResponse(selects, async e => {
   Send(Text(parts.join('\n')))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

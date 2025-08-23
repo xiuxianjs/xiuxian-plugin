@@ -15,7 +15,7 @@ import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?选购.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //全局状态判断
@@ -107,3 +107,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

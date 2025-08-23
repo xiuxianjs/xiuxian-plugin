@@ -17,7 +17,7 @@ function toInt(v, d = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : d
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -85,3 +85,5 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

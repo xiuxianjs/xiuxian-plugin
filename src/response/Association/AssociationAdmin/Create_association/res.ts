@@ -3,10 +3,10 @@ import { Text, useMessage, useSubscribe } from 'alemonjs'
 import { data } from '@src/model/api'
 import { notUndAndNull, setFileValue, timestampToTime } from '@src/model/index'
 
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开宗立派$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const usr_qq = e.UserId
   const [message] = useMessage(e)
   const ifexistplay = await data.existData('player', usr_qq)
@@ -145,3 +145,5 @@ async function new_Association(name, holder_qq, e) {
   data.setAssociation(name, Association)
   return
 }
+
+export default onResponse(selects, [mw.current, res.current])

@@ -11,7 +11,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?参悟神石$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -41,3 +41,5 @@ export default onResponse(selects, async e => {
   Send(Text('获得了' + wuping.name))
   await addNajieThing(usr_qq, wuping.name, wuping.class, 1)
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

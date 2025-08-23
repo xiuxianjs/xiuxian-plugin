@@ -17,7 +17,7 @@ const ALL_TYPES = [
   '仙宠口粮'
 ]
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const A_qq = e.UserId
   if (!(await existplayer(A_qq))) return false
@@ -81,3 +81,5 @@ export default onResponse(selects, async e => {
   if (nothingToSend.length) msg += `无可赠送：${nothingToSend.join('、')}`
   Send(Text(msg.trim() || '一键赠送完成'))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

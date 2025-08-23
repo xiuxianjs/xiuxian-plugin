@@ -174,7 +174,8 @@ export async function setFileValue(
 }
 
 export type FoundThing = {
-  [x: string]: string name: string 
+  [x: string]: string
+  name: string
 }
 
 export async function foundthing(

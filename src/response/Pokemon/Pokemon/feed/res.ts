@@ -13,7 +13,7 @@ import DataList from '@src/model/DataList'
 import { PetItem } from '@src/types'
 export const regular = /^(#|＃|\/)?喂给仙宠.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //用户不存在
@@ -93,3 +93,5 @@ export default onResponse(selects, async e => {
   await data.setData('player', usr_qq, player)
   Send(Text(`喂养成功，仙宠的等级增加了${jiachen},当前为${player.仙宠.等级}`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

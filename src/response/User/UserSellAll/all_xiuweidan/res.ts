@@ -29,7 +29,7 @@ function normalizeCategory(v): Parameters<typeof existNajieThing>[2] {
   return String(v) as Parameters<typeof existNajieThing>[2]
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -62,3 +62,5 @@ export default onResponse(selects, async e => {
   Send(Text(`服用成功，修为增加${totalExp}`))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

@@ -49,7 +49,7 @@ const CACHE_KEY_TIME = 'xiuxian:bestfileCD'
 const CACHE_KEY_LIST = 'xiuxian:bestfileList'
 const CACHE_EXPIRE_MS = 30 * 60 * 1000
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId
   const ifexistplay_A = await existplayer(user_qq)
@@ -169,3 +169,5 @@ export default onResponse(selects, async e => {
   }
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

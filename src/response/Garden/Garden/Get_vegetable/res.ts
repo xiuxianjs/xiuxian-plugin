@@ -29,7 +29,7 @@ interface GardenCrop {
   start_time?: number
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await data.existData('player', usr_qq))) return false
@@ -123,3 +123,5 @@ export default onResponse(selects, async e => {
   await Promise.all([redis.set(matureKey, nextMature), redis.set(lastKey, now)])
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

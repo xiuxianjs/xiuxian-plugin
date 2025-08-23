@@ -46,7 +46,7 @@ function isAppointment(v: string): v is Appointment {
   return (VALID_APPOINT as readonly string[]).includes(v)
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const mentionAPI = useMention(e)[0]
@@ -148,3 +148,6 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

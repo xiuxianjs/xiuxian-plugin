@@ -246,7 +246,7 @@ const Supermarket = ({ Exchange_list }) => {
                                 <span className="text-xs">👤</span>
                               </div>
                               <span className="text-sm text-gray-200">
-                                QQ：{item.qq}
+                                账号：{item.qq}
                               </span>
                             </div>
                           </div>

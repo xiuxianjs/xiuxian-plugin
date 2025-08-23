@@ -6,7 +6,7 @@ import { existNajieThing, addNajieThing, writePlayer } from '@src/model/index'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?进阶仙宠$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -49,3 +49,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

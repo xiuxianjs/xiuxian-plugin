@@ -7,7 +7,7 @@ import { redis } from '@src/model/api'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清空赏金榜$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   const usr_qq = e.UserId
@@ -19,3 +19,5 @@ export default onResponse(selects, async e => {
   Send(Text('清除完成'))
   await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(action))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

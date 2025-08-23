@@ -26,7 +26,7 @@ function parsePinji(raw: string | undefined): number | undefined {
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -85,3 +85,5 @@ export default onResponse(selects, async e => {
   Send(Text(`打磨成功！${thingName} 品级 ${parts[1]} -> ${pinjiInput + 1}`))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

@@ -4,7 +4,7 @@ import { selects } from '@src/response/mw'
 import { getAdminsetImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?修仙设置$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   const img = await getAdminsetImage(e)
@@ -12,3 +12,5 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

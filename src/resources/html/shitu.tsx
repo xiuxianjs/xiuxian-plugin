@@ -37,7 +37,7 @@ const Shitu = ({
                 rootClassName="w-60 h-60"
                 className="w-40 h-40"
               />
-              <div className="text-sm text-gray-700">QQ:{user_id}</div>
+              <div className="text-sm text-gray-700">账号：{user_id}</div>
             </div>
             <div className="flex-1 flex flex-col gap-2">
               <div className="text-base text-blue-800 font-bold">

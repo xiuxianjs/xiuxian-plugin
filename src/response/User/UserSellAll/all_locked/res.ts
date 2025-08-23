@@ -6,7 +6,7 @@ import { existplayer, writeNajie } from '@src/model/index'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?一键锁定(.*)$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //有无存档
@@ -49,3 +49,5 @@ export default onResponse(selects, async e => {
   await writeNajie(usr_qq, najie)
   Send(Text(`一键锁定完成`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

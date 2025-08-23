@@ -11,7 +11,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?供奉奇怪的石头$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
   const usr_qq = e.UserId
@@ -60,3 +60,5 @@ export default onResponse(selects, async e => {
   data.setData('player', usr_qq, player)
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

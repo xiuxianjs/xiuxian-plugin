@@ -12,7 +12,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?转换副职$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   // 校验当前是否可进行操作
@@ -57,3 +57,5 @@ export default onResponse(selects, async e => {
     )
   )
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

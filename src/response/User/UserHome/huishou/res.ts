@@ -12,7 +12,7 @@ import { selects } from '@src/response/mw'
 import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?回收.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
   const usr_qq = e.UserId
@@ -66,3 +66,5 @@ export default onResponse(selects, async e => {
   await addCoin(usr_qq, lingshi)
   Send(Text(`回收成功,获得${lingshi}灵石`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

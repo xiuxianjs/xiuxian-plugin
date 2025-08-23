@@ -46,7 +46,7 @@ function normalizeCategory(c: string | undefined): NajieCategory {
   return CATEGORY_SET.has(c as NajieCategory) ? (c as NajieCategory) : '道具'
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -93,3 +93,5 @@ export default onResponse(selects, async e => {
   Send(Text('恭喜获得:' + msg.join('')))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

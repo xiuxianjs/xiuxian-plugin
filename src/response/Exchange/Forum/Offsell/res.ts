@@ -11,7 +11,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?取消[1-9]d*/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
   const usr_qq = e.UserId
@@ -50,3 +50,5 @@ export default onResponse(selects, async e => {
   Forum.splice(x, 1)
   await writeForum(Forum)
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

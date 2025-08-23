@@ -30,7 +30,7 @@ function formatNum(n) {
   return Number.isFinite(v) ? v.toLocaleString('zh-CN') : '0'
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const user_qq = e.UserId //用户qq
@@ -65,3 +65,5 @@ export default onResponse(selects, async e => {
   Send(Text(reply))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

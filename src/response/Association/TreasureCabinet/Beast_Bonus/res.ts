@@ -52,7 +52,7 @@ function toNamedList(arr): NamedClassItem[] {
     .filter(v => v !== undefined) as NamedClassItem[]
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const exi = await existDataByPath('player_path', '', usr_qq)
@@ -160,3 +160,5 @@ async function getLastsign_Bonus(usr_qq: string): Promise<DateParts | null> {
   }
   return null
 }
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

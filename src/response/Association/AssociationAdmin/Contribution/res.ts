@@ -1,11 +1,11 @@
 import { Text, useMessage } from 'alemonjs'
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 import { readPlayer } from '@src/model'
 import Association from '@src/model/Association'
 
 export const regular = /^(#|＃|\/)?查看宗门贡献$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const [message] = useMessage(e)
   const player = await readPlayer(e.UserId)
   if (!player) {
@@ -42,3 +42,5 @@ export default onResponse(selects, async e => {
   const msg = list.map(item => `${item.name} : ${item.contribution}`).join('\n')
   message.send(format(Text('名号     宗门贡献\n' + msg)))
 })
+
+export default onResponse(selects, [mw.current, res.current])

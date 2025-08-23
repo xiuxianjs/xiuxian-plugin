@@ -4,10 +4,10 @@ import { data } from '@src/model/api'
 import { readShop, writeShop } from '@src/model/index'
 import type { ShopData } from '@src/types'
 
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?重置.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
 
@@ -36,3 +36,5 @@ export default onResponse(selects, async e => {
   Send(Text(`重置成功: ${didian}`))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])
