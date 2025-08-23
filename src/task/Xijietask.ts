@@ -8,6 +8,7 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { RaidActionState } from '@src/types'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 import { screenshot } from '@src/image'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 /**
  * 获取所有玩家，逐个检查其当前动作（action）。
@@ -148,7 +149,7 @@ export const Xijietask = async () => {
             const playerA = {
               id: player_id,
               name: A_battle?.名号,
-              avatar: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${player_id}`,
+              avatar: getAvatar(player_id),
               power: A_battle?.战力 || 0,
               hp: A_battle?.当前血量 || 0,
               maxHp: A_battle?.血量上限 || 0
@@ -156,7 +157,7 @@ export const Xijietask = async () => {
             const playerB = {
               id: '1715713638',
               name: B_player?.名号,
-              avatar: `https://q1.qlogo.cn/g?b=qq&s=0&nk=1715713638`,
+              avatar: getAvatar('1715713638'),
               power: B_player?.战力 || 0,
               hp: B_player?.当前血量 || 0,
               maxHp: B_player?.血量上限 || 0

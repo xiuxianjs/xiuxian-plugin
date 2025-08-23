@@ -1,8 +1,7 @@
 import { Image, Text, useMention, useSend } from 'alemonjs'
-
 import { existplayer, readPlayer, zdBattle } from '@src/model/index'
 import type { Player } from '@src/types'
-
+import { getAvatar } from '@src/model/utils/utilsx.js'
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
@@ -17,10 +16,6 @@ function extractFaQiu(lg): number | undefined {
   const o = lg
   const v = o.法球倍率
   return typeof v === 'number' ? v : undefined
-}
-
-const getAvatar = (usr_qq: string) => {
-  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
 }
 
 const res = onResponse(selects, async e => {

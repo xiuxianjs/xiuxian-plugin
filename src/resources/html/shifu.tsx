@@ -2,6 +2,7 @@ import React from 'react'
 import HTML from './HTML'
 import playerURL from '@src/resources/img/player.jpg'
 import { Avatar } from './Avatar'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 const Shifu = ({
   user_id,
@@ -31,7 +32,7 @@ const Shifu = ({
         <div className="flex flex-row items-center gap-6 mb-6">
           <div className="flex flex-col items-center">
             <Avatar
-              src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+              src={getAvatar(user_id)}
               rootClassName="w-60 h-60"
               className="w-40 h-40"
             />

@@ -3,6 +3,7 @@ import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import HTML from './HTML'
 import { Avatar } from './Avatar'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 type NajieProps = {
   user_id: string | number
@@ -155,7 +156,7 @@ const Najie = ({
                       <div className="absolute inset-0 bg-white/30 rounded-full blur-lg"></div>
                       <div className="absolute inset-0 bg-white/20 rounded-full blur-md"></div>
                       <Avatar
-                        src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+                        src={getAvatar(user_id)}
                         rootClassName="w-60 h-60"
                         className="w-32 h-32 rounded-full border-4 border-white/50 relative z-10 backdrop-blur-sm"
                       />

@@ -1,6 +1,7 @@
 import React from 'react'
 import HTML from './HTML'
 import celestialSectsURL from '@src/resources/img/fairyrealm.jpg'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 interface ZongMengItem {
   宗名: string
@@ -117,7 +118,7 @@ const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
                     <span className="text-xs text-sky-300/80">宗主法谕</span>
                     <div className="flex items-center gap-2">
                       <img
-                        src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${item.宗主}`}
+                        src={getAvatar(item.宗主)}
                         alt="宗主头像"
                         className="w-6 h-6 rounded-full border border-amber-300/50"
                       />
