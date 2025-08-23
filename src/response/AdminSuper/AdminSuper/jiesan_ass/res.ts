@@ -2,11 +2,12 @@ import { Text, useSend } from 'alemonjs'
 import { __PATH, keys, writePlayer } from '@src/model/index'
 import { data } from '@src/model/api'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { redis } from '@src/model/api'
 import type { AssociationDetailData, PlayerData, Player } from '@src/types'
 
 export const regular = /^(#|＃|\/)?解散宗门.*$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   {
     if (!e.IsMaster) return false
@@ -50,3 +51,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

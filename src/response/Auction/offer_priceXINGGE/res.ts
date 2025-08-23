@@ -9,13 +9,14 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import {
   KEY_AUCTION_GROUP_LIST,
   KEY_AUCTION_OFFICIAL_TASK
 } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?星阁出价.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
 
@@ -76,3 +77,5 @@ export default onResponse(selects, async e => {
   auctionData.last_offer_price = Date.now() // NOTE: Big SB
   await redis.set(KEY_AUCTION_OFFICIAL_TASK, JSON.stringify(auctionData))
 })
+
+export default onResponse(selects, [mw.current, res.current])

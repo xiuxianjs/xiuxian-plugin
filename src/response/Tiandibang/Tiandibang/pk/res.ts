@@ -17,6 +17,7 @@ import {
 } from '../tian'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?比试$/
 
@@ -27,6 +28,7 @@ interface ActionState {
   end_time: number
 }
 interface BattlePlayer {
+  [x: string]: any
   名号: string
   攻击: number
   防御: number
@@ -96,7 +98,7 @@ function settleWin(
   return lingshi
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
@@ -307,3 +309,5 @@ export default onResponse(selects, async e => {
   tiandibang.sort((a, b) => b.积分 - a.积分)
   await Write_tiandibang(tiandibang as TiandibangRow[])
 })
+
+export default onResponse(selects, [mw.current, res.current])

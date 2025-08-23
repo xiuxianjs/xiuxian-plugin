@@ -12,6 +12,7 @@ import {
 import { existplayer } from '@src/model/xiuxian_impl'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 // 修复多余 ^ 导致匹配失败
 export const regular = /^(#|＃|\/)?双修$/
 
@@ -28,7 +29,7 @@ function formatRemain(ms: number): string {
   return `${m}分 ${s}秒`
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = await config.getConfig('xiuxian', 'xiuxian')
   if (!cf?.sw?.couple) return false
@@ -160,3 +161,5 @@ export default onResponse(selects, async e => {
   Send(Text(`${scenario.text}${gain}修为,亲密度增加了${scenario.intimacy}点`))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

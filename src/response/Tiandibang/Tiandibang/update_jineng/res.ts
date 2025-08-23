@@ -3,10 +3,11 @@ import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import type { TalentInfo } from '@src/types'
 export const regular = /^(#|＃|\/)?更新属性$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
 
@@ -85,3 +86,5 @@ export default onResponse(selects, async e => {
   ]
   Send(Text(msg.join('')))
 })
+
+export default onResponse(selects, [mw.current, res.current])

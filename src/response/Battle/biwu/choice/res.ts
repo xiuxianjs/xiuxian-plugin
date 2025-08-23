@@ -1,11 +1,12 @@
 import { Text, useSend } from 'alemonjs'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { biwuPlayer } from '../biwu'
 import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?选择技能.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const A_QQ = biwuPlayer.A_QQ
   const B_QQ = biwuPlayer.B_QQ
   const Send = useSend(e)
@@ -55,3 +56,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

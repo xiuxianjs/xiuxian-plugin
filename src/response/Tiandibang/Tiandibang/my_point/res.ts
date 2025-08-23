@@ -4,10 +4,11 @@ import { existplayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?天地榜$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -48,3 +49,4 @@ export default onResponse(selects, async e => {
   // 图片生成失败，仅提示错误
   Send(Text('图片生产失败'))
 })
+export default onResponse(selects, [mw.current, res.current])

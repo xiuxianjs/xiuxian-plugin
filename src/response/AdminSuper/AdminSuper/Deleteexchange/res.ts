@@ -4,9 +4,10 @@ import { readExchange, writeExchange } from '@src/model/trade'
 import { addNajieThing } from '@src/model/najie'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清除冲水堂$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   {
     if (!e.IsMaster) return false
@@ -31,3 +32,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

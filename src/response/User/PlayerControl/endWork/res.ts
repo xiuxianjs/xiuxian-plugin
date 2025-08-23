@@ -3,14 +3,15 @@ import { getPlayerAction, notUndAndNull, setFileValue } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { Mention, DataMention } from 'alemonjs'
 import type { ActionState } from '@src/types'
 export const regular = /^(#|＃|\/)?降妖归来$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const rawAction = await getPlayerAction(e.UserId)
   if (!rawAction) return
-  const action: ActionState = rawAction as ActionState
+  const action: ActionState = rawAction as unknown as ActionState
   if (action.action == '空闲') return
   if (action.working == 1) return false
   //结算
@@ -71,6 +72,7 @@ export default onResponse(selects, async e => {
   await setDataByUserId(e.UserId, 'action', JSON.stringify(arr))
   await setDataByUserId(e.UserId, 'game_action', 0)
 })
+export default onResponse(selects, [mw.current, res.current])
 
 /**
  * 降妖结算

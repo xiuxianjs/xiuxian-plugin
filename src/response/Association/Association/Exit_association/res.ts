@@ -6,6 +6,7 @@ import { data, redis } from '@src/model/api'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { getConfig } from '@src/model'
 export const regular = /^(#|＃|\/)?退出宗门$/
 
@@ -68,7 +69,7 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   return result
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -157,3 +158,5 @@ export default onResponse(selects, async e => {
   player.favorability = 0
   await data.setData('player', usr_qq, serializePlayer(player))
 })
+
+export default onResponse(selects, [mw.current, res.current])

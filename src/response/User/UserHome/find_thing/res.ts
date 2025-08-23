@@ -9,6 +9,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?哪里有(.*)$/
 
 // 物品结构与地点结构(最小必要字段)定义
@@ -39,7 +40,7 @@ function normalizeName(raw: string): string {
   return raw.trim()
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
 
@@ -119,3 +120,4 @@ export default onResponse(selects, async e => {
   Send(Text(resultMsg))
   return false
 })
+export default onResponse(selects, [mw.current, res.current])

@@ -1,9 +1,10 @@
 import { Image, useSend } from 'alemonjs'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 import { getConfig } from '@src/model'
 export const regular = /^(#|＃|\/)?师徒帮助(\d+)?$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const helpData = await getConfig('help', 'shituhelp')
   // data 是一个数组。需要默认按每3组进行分页。
@@ -30,3 +31,4 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+export default onResponse(selects, [mw.current, res.current])
