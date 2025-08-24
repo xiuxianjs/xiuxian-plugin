@@ -4,7 +4,7 @@ import { data, pushInfo, redis } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
-import { __PATH, keysByPath } from '@src/model/keys'
+import { __PATH, keys, keysByPath } from '@src/model/keys'
 import {
   readAction,
   isActionRunning,
@@ -104,14 +104,27 @@ export async function GetAverageDamage() {
   const playerList = await keysByPath(__PATH.player_path)
   const temp = []
   let TotalPlayer = 0
-  for (const player_id of playerList) {
-    const player = await data.getData('player', player_id)
-    if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
-      temp[TotalPlayer] = parseInt(player.攻击)
-      logger.info(`[金角大王] ${player_id}玩家攻击:${temp[TotalPlayer]}`)
-      TotalPlayer++
-    }
-  }
+
+  await Promise.all(
+    playerList.map(async p => {
+      const exs = await redis.exists(keys.player(p))
+      if (exs == 0) return
+      const data = await redis.get(keys.player(p))
+      if (!data) return
+      let player = null
+      try {
+        player = JSON.parse(data)
+      } catch {
+        //
+        return
+      }
+      if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
+        temp[TotalPlayer] = parseInt(player.攻击)
+        logger.debug(`[金角大王] ${p}玩家攻击:${temp[TotalPlayer]}`)
+        TotalPlayer++
+      }
+    })
+  )
 
   //排序
   temp.sort(function (a, b) {
