@@ -13,7 +13,7 @@ import { getRedisKey } from '@src/model/keys'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?悬赏.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const usr_qq = e.UserId
@@ -87,3 +87,5 @@ export default onResponse(selects, async e => {
   }
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

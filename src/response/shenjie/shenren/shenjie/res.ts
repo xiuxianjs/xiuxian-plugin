@@ -54,7 +54,7 @@ const LS_COST = 2_200_000
 const DURATION_MINUTES = 30
 import { getRedisKey } from '@src/model/keys'
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -152,4 +152,5 @@ export default onResponse(selects, async e => {
   return false
 })
 
-// 原辅助函数已整合逻辑，旧 getLastdagong 已移除。
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

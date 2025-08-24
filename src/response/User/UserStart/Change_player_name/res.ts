@@ -38,7 +38,7 @@ function isMessageEvent(ev): ev is Parameters<typeof Show_player>[0] {
   return !!ev && typeof ev === 'object' && 'MessageText' in ev
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -110,3 +110,5 @@ export default onResponse(selects, async e => {
   if (isMessageEvent(e)) Show_player(e)
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

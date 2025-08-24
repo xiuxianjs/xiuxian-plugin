@@ -18,7 +18,9 @@ const RankingPower = ({
       user_id={user_id}
       messages={
         <>
-          <div className="text-lg font-bold  tracking-wide">QQ: {user_id}</div>
+          <div className="text-lg font-bold  tracking-wide">
+            账号: {user_id}
+          </div>
           <div className="text-xl ">道号: {nickname}</div>
           <div className="text-xl ">境界: {level}</div>
           <div className="text-xl ">修为: {exp}</div>

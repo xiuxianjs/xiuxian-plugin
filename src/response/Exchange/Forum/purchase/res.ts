@@ -13,6 +13,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import type { NajieCategory, ForumRecord } from '@src/types/model'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?接取.*$/
@@ -46,7 +47,7 @@ const CD_MS = CD_MINUTES * 60_000
 const MAX_QTY = 1_000_000_000
 const MAX_PRICE_SUM = 1e15
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
 
@@ -191,3 +192,4 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+export default onResponse(selects, [mw.current, res.current])

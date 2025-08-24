@@ -1,10 +1,11 @@
 import { Image, Text, useSend } from 'alemonjs'
 import { generateCaptcha, svgToPngBuffer } from '@src/model/captcha'
+import mw from '@src/response/mw'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?测试验证码$/
 
-export default onResponse(selects, async event => {
+const res = onResponse(selects, async event => {
   if (!event.IsMaster) {
     return
   }
@@ -22,3 +23,5 @@ export default onResponse(selects, async event => {
     Send(Text('测试验证码失败，请检查日志'))
   }
 })
+
+export default onResponse(selects, [mw.current, res.current])

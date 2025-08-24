@@ -17,7 +17,7 @@ const MAX_PACKETS = 200
 const MAX_TOTAL = 5_000_000_000 // 发放总额上限，防数据溢出
 const CD_MS = 30 * 1000 // 30 秒发红包冷却
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -93,3 +93,5 @@ export default onResponse(selects, async e => {
   Send(Text(`【全服公告】${player.名号}发了${count}个${per}灵石的红包！`))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

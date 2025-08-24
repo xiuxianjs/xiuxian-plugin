@@ -40,7 +40,7 @@ function calcCanName(item: {
   return false
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId
   if (!(await existplayer(user_qq))) return false
@@ -134,3 +134,5 @@ export default onResponse(selects, async e => {
   Send(Text(`附名成功,您的${thing_name}更名为${new_name}`))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

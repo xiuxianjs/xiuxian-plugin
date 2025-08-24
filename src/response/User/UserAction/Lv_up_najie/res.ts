@@ -13,7 +13,7 @@ import { config } from '@src/model/api'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?升级纳戒$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const flag = await Go(e)
   if (!flag) return false
@@ -48,3 +48,5 @@ export default onResponse(selects, async e => {
     )
   )
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

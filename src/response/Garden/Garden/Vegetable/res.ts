@@ -50,7 +50,7 @@ function fmtRemain(ms: number) {
   return `${d}天${h}小时${m}分钟`
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await data.existData('player', usr_qq))) return false
@@ -141,3 +141,5 @@ async function createGarden(
     await redis.set(`xiuxian:${association_name}${c.name}`, matureAt)
   }
 }
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

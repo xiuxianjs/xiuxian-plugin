@@ -6,7 +6,7 @@ import { setValue, userKey } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?全体清空锻炉/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (!e.IsMaster) return false
   await writeDuanlu([])
@@ -17,3 +17,5 @@ export default onResponse(selects, async e => {
   }
   Send(Text('清除完成'))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

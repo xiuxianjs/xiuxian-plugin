@@ -100,7 +100,7 @@ const sectHelpConfig: HelpGroup[] = [
       },
       {
         icon: 'help-icon_58',
-        title: '#逐出+QQ',
+        title: '#逐出+账号',
         desc: '只有宗主、副宗主和长老可以噢'
       }
     ]

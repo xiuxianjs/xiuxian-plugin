@@ -9,6 +9,7 @@ import {
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?加入宗门.*$/
 
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
@@ -37,7 +38,7 @@ interface PlayerGuildEntry {
   time?: [string, number]
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -128,3 +129,5 @@ export default onResponse(selects, async e => {
   await data.setAssociation(association_name, ass)
   Send(Text(`恭喜你成功加入${association_name}`))
 })
+
+export default onResponse(selects, [mw.current, res.current])

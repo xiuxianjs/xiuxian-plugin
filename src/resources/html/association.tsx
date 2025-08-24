@@ -3,6 +3,7 @@ import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
 import HTML from './HTML'
 import { Avatar } from './Avatar'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 interface AssociationData {
   宗门名称?: string
@@ -93,12 +94,12 @@ const Association: React.FC<AssociationProps> = ({
         <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
           <div className="flex flex-col items-center gap-4">
             <Avatar
-              src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+              src={getAvatar(user_id)}
               rootClassName="w-60 h-60"
               className="w-40 h-40"
             />
             <div className="px-5 py-1.5 rounded-2xl bg-black/40 text-white backdrop-blur  text-lg font-semibold shadow">
-              QQ: {user_id}
+              账号: {user_id}
             </div>
           </div>
           <div className="flex-1 flex w-full rounded-2xl bg-white/5 p-2 pt-5 pb-5  ring-white/10 backdrop-blur-md  shadow-card">

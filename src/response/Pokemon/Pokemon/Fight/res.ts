@@ -50,7 +50,7 @@ function getPlayerPetLevel(
   return 1
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await data.existData('player', usr_qq))) return false
@@ -140,3 +140,5 @@ export default onResponse(selects, async e => {
   Send(Text('成功出战' + newPet.name))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

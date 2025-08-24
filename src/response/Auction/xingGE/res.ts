@@ -4,10 +4,11 @@ import { redis } from '@src/model/api'
 import { existplayer, notUndAndNull, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants'
 export const regular = /^(#|＃|\/)?星阁拍卖行$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
@@ -28,3 +29,5 @@ export default onResponse(selects, async e => {
   }
   await Send(Text(msg))
 })
+
+export default onResponse(selects, [mw.current, res.current])

@@ -1,11 +1,12 @@
 import { Image, useSend } from 'alemonjs'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { getStatezhiyeImage } from '@src/model/image'
 import { existplayer } from '@src/model'
 export const regular = /^(#|＃|\/)?职业等级$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const usr_qq = e.UserId
@@ -16,3 +17,4 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+export default onResponse(selects, [mw.current, res.current])

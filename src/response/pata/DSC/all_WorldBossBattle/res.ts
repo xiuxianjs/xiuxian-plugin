@@ -6,7 +6,7 @@ import { existplayer, Harm, ifbaoji } from '@src/model/index'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?一键炼神魄$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   let xueqi = 0
@@ -109,3 +109,5 @@ export default onResponse(selects, async e => {
   )
   data.setData('player', usr_qq, player)
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

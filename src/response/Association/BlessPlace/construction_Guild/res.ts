@@ -32,7 +32,7 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   return r
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await data.existData('player', usr_qq))) return false
@@ -82,3 +82,6 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

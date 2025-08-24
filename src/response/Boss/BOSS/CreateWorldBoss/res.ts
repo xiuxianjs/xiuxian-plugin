@@ -3,9 +3,11 @@ import { InitWorldBoss } from '../../../../model/boss'
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?开启妖王$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   if (!e || e.IsMaster) {
     await InitWorldBoss()
     return false
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

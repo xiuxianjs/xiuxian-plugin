@@ -20,7 +20,7 @@ import { setValue, userKey } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开始炼制/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId
   if (!(await existplayer(user_qq))) return false
@@ -76,3 +76,5 @@ export default onResponse(selects, async e => {
     }
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

@@ -10,6 +10,7 @@ import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
 import type { Player } from '@src/types/player'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?比武$/
 
 interface ActionState {
@@ -35,7 +36,7 @@ function formatRemain(ms: number) {
   return `${m}分${s}秒`
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const A = e.UserId
   if (!(await existplayer(A))) return false
@@ -220,3 +221,5 @@ export default onResponse(selects, async e => {
   Send(Text(final_msg.join('')))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

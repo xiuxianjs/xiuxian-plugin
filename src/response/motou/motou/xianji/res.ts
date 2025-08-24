@@ -17,7 +17,7 @@ interface PrizeItem {
   class?: string
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const usr_qq = e.UserId
@@ -71,3 +71,5 @@ export default onResponse(selects, async e => {
   await addNajieThing(usr_qq, name, cls, 1)
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

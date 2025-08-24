@@ -4,6 +4,7 @@ import type { EventsMessageCreateEnum } from 'alemonjs'
 import { existplayer } from '@src/model/index'
 import { redis } from '@src/model/api'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { getNajieImage } from '@src/model/image'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?我的纳戒$/
@@ -15,11 +16,10 @@ function toInt(v, d = 0) {
 
 const CD_MS = 10 * 1000 // 10秒冷却，避免频繁截图占用资源
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
-
   // 冷却判断
   const cdKey = getRedisKey(usr_qq, 'showNajieCD')
   const lastTs = toInt(await redis.get(cdKey))
@@ -45,3 +45,5 @@ export default onResponse(selects, async e => {
   Send(Text('图片加载失败'))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

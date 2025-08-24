@@ -12,7 +12,7 @@ import { setValue, userKey } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?清空锻炉/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const user_qq = e.UserId //用户qq
   //有无存档
@@ -38,3 +38,5 @@ export default onResponse(selects, async e => {
     }
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

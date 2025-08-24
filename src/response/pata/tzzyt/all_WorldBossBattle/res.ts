@@ -6,7 +6,7 @@ import { existplayer, Harm, ifbaoji } from '@src/model/index'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?一键挑战镇妖塔$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
@@ -146,3 +146,5 @@ export default onResponse(selects, async e => {
   Send(Text(`\n恭喜你获得灵石${lingshi},本次通过${cengshu}层,失去部分灵石`))
   data.setData('player', usr_qq, player)
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

@@ -11,9 +11,10 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?怡红院$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const cf = await config.getConfig('xiuxian', 'xiuxian')
   const switchgame = cf.sw.play
@@ -94,3 +95,4 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+export default onResponse(selects, [mw.current, res.current])

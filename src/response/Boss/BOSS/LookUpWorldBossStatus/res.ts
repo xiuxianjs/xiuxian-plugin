@@ -11,7 +11,7 @@ import { KEY_WORLD_BOOS_STATUS } from '@src/model/constants'
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?妖王状态$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (await BossIsAlive()) {
     const WorldBossStatusStr = await redis.get(KEY_WORLD_BOOS_STATUS)
@@ -31,3 +31,5 @@ export default onResponse(selects, async e => {
     }
   } else Send(Text('妖王未开启！'))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

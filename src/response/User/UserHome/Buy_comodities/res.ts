@@ -27,7 +27,7 @@ function toInt(v, d = 0) {
 const PRICE_RATE = 1.2
 const MAX_QTY = 9999
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -95,3 +95,5 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

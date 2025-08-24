@@ -8,6 +8,7 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?交税\s*\d+$/
 
 function toInt(v, d = 0) {
@@ -17,7 +18,7 @@ function toInt(v, d = 0) {
 const MIN_TAX = 1
 const MAX_TAX = 1_000_000_000_000 // 上限避免异常输入
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -54,3 +55,4 @@ export default onResponse(selects, async e => {
   Send(Text(`成功交税 ${amount} 灵石，剩余 ${lingshi - amount}`))
   return false
 })
+export default onResponse(selects, [mw.current, res.current])

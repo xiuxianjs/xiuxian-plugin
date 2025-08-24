@@ -17,11 +17,11 @@ import {
   existshop
 } from '@src/model/index'
 
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?探查.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -104,3 +104,5 @@ export default onResponse(selects, async e => {
   }
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

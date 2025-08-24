@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import HTML from './HTML'
 import stateURL from '@src/resources/img/state.jpg'
 import user_stateURL from '@src/resources/img/user_state2.png'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 const Ranking = ({
   user_id,
@@ -92,7 +93,7 @@ const Ranking = ({
             <div className="relative w-44 h-44 rounded-full overflow-hidden shadow-2xl border-4 border-gradient-to-r from-blue-400 to-indigo-300">
               <img
                 className="w-full h-full object-cover"
-                src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+                src={getAvatar(user_id)}
                 alt="用户头像"
               />
               {/* 头像光晕效果 */}

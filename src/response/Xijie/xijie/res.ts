@@ -18,7 +18,7 @@ import {
 } from '@src/response/actionHelper'
 import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 import { setDataByUserId } from '@src/model/Redis'
 import type { Player } from '@src/types'
 import { getRedisKey } from '@src/model/keys'
@@ -38,7 +38,7 @@ const num = (v, d = 0) => {
   return Number.isFinite(n) ? n : d
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -169,3 +169,5 @@ export default onResponse(selects, async e => {
   Send(Text(msg))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

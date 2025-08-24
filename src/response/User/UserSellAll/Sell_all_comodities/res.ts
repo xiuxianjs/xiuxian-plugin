@@ -7,7 +7,7 @@ import { selects } from '@src/response/mw'
 import type { NajieCategory } from '@src/types/model'
 export const regular = /^(#|＃|\/)?一键出售(.*)$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const [message] = useMessage(e)
   const usr_qq = e.UserId
   //有无存档
@@ -163,3 +163,5 @@ export default onResponse(selects, async e => {
     1000 * 60 * 1
   )
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

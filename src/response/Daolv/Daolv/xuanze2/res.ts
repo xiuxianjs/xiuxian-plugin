@@ -6,7 +6,7 @@ import { Daolv, found } from '../daolv'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^(我同意|我拒绝)$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   if (e.UserId != Daolv.user_B) return false
   if (Daolv.x == 2) {
@@ -29,3 +29,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

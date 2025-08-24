@@ -6,7 +6,7 @@ import type { PlayerData } from '@src/types/domain'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?设置门槛.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const player = (await data.getData('player', usr_qq)) as PlayerData | null
@@ -52,3 +52,6 @@ export default onResponse(selects, async e => {
   Send(Text('已成功设置宗门门槛，当前门槛:' + jiar))
   return false
 })
+
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

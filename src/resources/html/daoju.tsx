@@ -2,7 +2,7 @@ import React from 'react'
 import HTML from './HTML'
 import playerURL from '@src/resources/img/player.jpg'
 import playerFooterURL from '@src/resources/img/player_footer.png'
-import { getAvatar } from './core'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 import { Avatar } from './Avatar'
 
 interface DaojuItem {

@@ -227,7 +227,7 @@ const Player = ({
               {/* QQ */}
               <div className="flex items-center gap-2 bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-2 border border-white/20">
                 <span className=" text-sm">💬</span>
-                <span className="font-medium">QQ：{user_id}</span>
+                <span className="font-medium">账号：{user_id}</span>
               </div>
 
               {/* 性别 */}

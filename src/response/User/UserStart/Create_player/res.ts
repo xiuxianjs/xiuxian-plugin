@@ -32,7 +32,7 @@ function pickEquip(name: string) {
   return data.equipment_list.find(i => i.name === name) || null
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (await existplayer(usr_qq)) {
@@ -137,3 +137,6 @@ export default onResponse(selects, async e => {
   Send(Text('图片加载失败'))
   return false
 })
+
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

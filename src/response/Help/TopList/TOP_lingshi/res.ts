@@ -12,7 +12,7 @@ import { selects } from '@src/response/mw'
 import { getRankingMoneyImage } from '@src/model/image'
 
 export const regular = /^(#|＃|\/)?灵榜$/
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await existplayer(usr_qq)
@@ -51,3 +51,5 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

@@ -24,7 +24,7 @@ interface FuzhiData {
   职业等级: number
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const flag = await Go(e)
@@ -96,3 +96,5 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

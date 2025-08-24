@@ -13,7 +13,7 @@ import { getString, userKey, setValue } from '@src/model/utils/redisHelper'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?堕入魔界$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -65,3 +65,5 @@ export default onResponse(selects, async e => {
   await setValue(userKey(usr_qq, 'action'), arr)
   Send(Text(`开始进入魔界,${time}分钟后归来!`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

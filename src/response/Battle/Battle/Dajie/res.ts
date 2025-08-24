@@ -1,6 +1,6 @@
 import { getRedisKey } from '@src/model/keys'
 import { Image, Text, useMention, useSend } from 'alemonjs'
-
+import { getAvatar } from '@src/model/utils/utilsx.js'
 import { config, data, redis } from '@src/model/api'
 import {
   existplayer,
@@ -38,6 +38,7 @@ interface PlayerWithFaQiu extends Player {
 }
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { getDataByUserId } from '@src/model/Redis'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?打劫$/
@@ -54,11 +55,7 @@ function extractFaQiu(lg): number | undefined {
   return typeof v === 'number' ? v : undefined
 }
 
-const getAvatar = (usr_qq: string) => {
-  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
-}
-
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const user_qq = e.UserId //用户qq
@@ -369,3 +366,5 @@ export default onResponse(selects, async e => {
 
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

@@ -5,7 +5,7 @@ import { getGongfaImage } from '@src/model/image'
 import { existplayer } from '@src/model'
 export const regular = /^(#|＃|\/)?功法楼$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const usr_qq = e.UserId
@@ -16,3 +16,5 @@ export default onResponse(selects, async e => {
     Send(Image(img))
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

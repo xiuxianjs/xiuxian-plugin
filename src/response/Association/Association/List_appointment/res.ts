@@ -6,6 +6,7 @@ export const regular = /^(#|＃|\/)?宗门列表$/
 import { __PATH, keysByPath } from '@src/model/index'
 import { screenshot } from '@src/image'
 import type { AssociationDetailData } from '@src/types'
+import mw from '@src/response/mw'
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
 
 interface ExtendedAss extends AssociationDetailData {
@@ -23,7 +24,7 @@ function isExtendedAss(v): v is ExtendedAss {
   return !!v && typeof v === 'object' && 'power' in v
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -98,3 +99,4 @@ export default onResponse(selects, async e => {
     Send(Text('生成宗门列表图片失败'))
   }
 })
+export default onResponse(selects, [mw.current, res.current])

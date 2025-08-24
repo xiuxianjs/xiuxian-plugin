@@ -10,7 +10,7 @@ import { screenshot } from '@src/image/index.js'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?至尊榜$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -60,3 +60,5 @@ export default onResponse(selects, async e => {
   Send(Text('图片生产失败'))
 })
 // #至尊榜
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

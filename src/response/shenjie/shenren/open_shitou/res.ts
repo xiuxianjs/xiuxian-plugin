@@ -5,7 +5,7 @@ import { addNajieThing, existNajieThing, existplayer } from '@src/model/index'
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?敲开闪闪发光的石头$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //查看存档
@@ -27,3 +27,5 @@ export default onResponse(selects, async e => {
   Send(Text('你打开了石头,获得了' + thing + 'x2'))
   await addNajieThing(usr_qq, thing, '道具', 2)
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

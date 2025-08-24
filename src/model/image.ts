@@ -28,6 +28,7 @@ import { getConfig } from './Config.js'
 import { getIoRedis } from '@alemonjs/db'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 function isAssociationInfo(v): v is AssociationInfo {
   return (
@@ -875,7 +876,7 @@ export async function getPlayerImage(
     武器评级: 武器评级,
     护具评级: 护具评级,
     法宝评级: 法宝评级,
-    avatar: player.avatar || `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`
+    avatar: getAvatar(usr_qq)
   }
   return await screenshot('player', e.UserId, player_data)
 }
@@ -948,7 +949,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    fuzong[item] = `道号：${name}QQ：${qq}`
+    fuzong[item] = `道号：${name}账号：${qq}`
   }
   //长老
   const zhanglao = []
@@ -957,7 +958,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    zhanglao[item] = `道号：${name}QQ：${qq}`
+    zhanglao[item] = `道号：${name}账号：${qq}`
   }
   //内门弟子
   const neimen = []
@@ -966,7 +967,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    neimen[item] = `道号：${name}QQ：${qq}`
+    neimen[item] = `道号：${name}账号：${qq}`
   }
   //外门弟子
   const waimen = []
@@ -975,7 +976,7 @@ export async function getAssociationImage(
     const str = await getIoRedis().get(keys.player(qq))
     const pData = JSON.parse(str || '{}')
     const name = pData?.名号 || '未知'
-    waimen[item] = `道号：${name}QQ：${qq}`
+    waimen[item] = `道号：${name}账号：${qq}`
   }
   let state = '需要维护'
   const now = new Date()

@@ -19,7 +19,7 @@ import { getRedisKey } from '@src/model/keys'
 export const regular =
   /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9fa5]+)?(\*\d+(k|w|e)?)?/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const A_qq = e.UserId
   if (!(await existplayer(A_qq))) return false
@@ -177,3 +177,5 @@ export default onResponse(selects, async e => {
     )
   )
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

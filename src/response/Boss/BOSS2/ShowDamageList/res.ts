@@ -27,7 +27,7 @@ function parseJson<T>(raw: string | null): T | null {
   }
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
 
   const user_qq = e.UserId //用户qq
@@ -119,3 +119,5 @@ export default onResponse(selects, async e => {
 
   return
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

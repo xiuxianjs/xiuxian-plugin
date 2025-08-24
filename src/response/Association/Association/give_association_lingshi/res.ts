@@ -5,6 +5,7 @@ import { data } from '@src/model/api'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门(上交|上缴|捐赠)灵石\d+$/
 const 宗门灵石池上限 = [
   2000000, 5000000, 8000000, 11000000, 15000000, 20000000, 25000000, 30000000
@@ -28,7 +29,7 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   return r
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -88,3 +89,5 @@ export default onResponse(selects, async e => {
   )
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

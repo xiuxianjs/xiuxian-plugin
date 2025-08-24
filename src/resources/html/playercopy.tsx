@@ -1,6 +1,7 @@
 import React from 'react'
 import HTML from './HTML'
 import { Avatar } from './Avatar'
+import { getAvatar } from '@src/model/utils/utilsx.js'
 
 const PlayerCopy = ({
   user_id,
@@ -168,13 +169,13 @@ const PlayerCopy = ({
                 <div className="relative">
                   <div className="inset-0 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 rounded-full p-1 shadow-2xl">
                     <Avatar
-                      src={`https://q1.qlogo.cn/g?b=qq&s=0&nk=${user_id}`}
+                      src={getAvatar(user_id)}
                       rootClassName="w-32 sm:w-40 h-32 sm:h-40 rounded-full ring-4 ring-white/80"
                       className="w-24 sm:w-32 h-24 sm:h-32 rounded-full"
                     />
                   </div>
                   {/* QQ标识 */}
-                  <div className="text-sm text-gray-600">QQ: {user_id}</div>
+                  <div className="text-sm text-gray-600">账号: {user_id}</div>
                 </div>
 
                 {/* 道号信息 */}

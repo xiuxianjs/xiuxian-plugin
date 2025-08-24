@@ -23,7 +23,7 @@ interface PlayerActionState {
 }
 export const regular = /^(#|＃|\/)?登仙$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //有无账号
@@ -183,3 +183,5 @@ export default onResponse(selects, async e => {
     return false
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

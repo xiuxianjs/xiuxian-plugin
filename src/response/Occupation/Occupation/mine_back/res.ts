@@ -80,7 +80,7 @@ function calcEffectiveMinutes(act: PlayerAction, now: number): number {
   return blocks * BLOCK_MINUTES
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const raw = await getPlayerAction(e.UserId)
   const action = normalizeAction(raw)
   if (action.action === '空闲') return false
@@ -113,3 +113,5 @@ export default onResponse(selects, async e => {
   redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

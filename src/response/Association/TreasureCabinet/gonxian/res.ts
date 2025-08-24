@@ -3,10 +3,10 @@ import { Text, useSend } from 'alemonjs'
 import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/index'
 
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?我的贡献$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //用户不存在
@@ -34,3 +34,5 @@ export default onResponse(selects, async e => {
     )
   )
 })
+
+export default onResponse(selects, [mw.current, res.current])

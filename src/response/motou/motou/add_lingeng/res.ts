@@ -113,7 +113,7 @@ const Res = onResponse(selects, async (e, next) => {
     next()
   }
 })
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return
@@ -162,3 +162,5 @@ export default onResponse(selects, async e => {
     Send(Text('灵根突破失败'))
   }
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

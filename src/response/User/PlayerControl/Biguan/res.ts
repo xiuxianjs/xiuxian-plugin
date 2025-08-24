@@ -14,7 +14,7 @@ import { selects } from '@src/response/mw'
 import { setDataByUserId } from '@src/model/Redis'
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -61,3 +61,5 @@ export default onResponse(selects, async e => {
   if (mirror) await setDataByUserId(usr_qq, 'action', JSON.stringify(mirror))
   Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

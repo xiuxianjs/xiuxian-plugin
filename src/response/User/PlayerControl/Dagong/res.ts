@@ -16,7 +16,7 @@ import {
 } from '@src/response/actionHelper'
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId //用户qq
   //有无存档
@@ -66,3 +66,5 @@ export default onResponse(selects, async e => {
   await setDataByUserId(usr_qq, 'action', JSON.stringify(arr))
   Send(Text(`现在开始降妖${time}分钟`))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

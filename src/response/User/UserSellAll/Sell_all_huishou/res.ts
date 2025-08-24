@@ -46,7 +46,7 @@ function normPinji(v): Parameters<typeof addNajieThing>[4] {
   return v as Parameters<typeof addNajieThing>[4]
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -119,3 +119,5 @@ export default onResponse(selects, async e => {
   Send(Text(`回收成功，出售 ${soldCount} 件物品，获得 ${total} 灵石`))
   return false
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

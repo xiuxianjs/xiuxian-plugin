@@ -6,6 +6,7 @@ import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?宗门俸禄$/
 
@@ -34,7 +35,7 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   return r
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const ifexistplay = await data.existData('player', usr_qq)
@@ -99,3 +100,5 @@ export default onResponse(selects, async e => {
   Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

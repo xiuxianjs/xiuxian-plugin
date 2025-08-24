@@ -1,10 +1,11 @@
 import { Text, useMessage, Image } from 'alemonjs'
 import { data } from '@src/model/api'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?禁地$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const [message] = useMessage(e)
   const image = await screenshot('jindi', e.UserId, {
     didian_list: data.forbiddenarea_list
@@ -15,3 +16,4 @@ export default onResponse(selects, async e => {
   }
   message.send(format(Image(image)))
 })
+export default onResponse(selects, [mw.current, res.current])

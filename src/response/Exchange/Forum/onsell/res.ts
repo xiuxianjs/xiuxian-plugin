@@ -11,9 +11,10 @@ import {
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
 export const regular = /^(#|＃|\/)?发布.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   //固定写法
   const usr_qq = e.UserId
@@ -68,3 +69,4 @@ export default onResponse(selects, async e => {
   await writeForum(Forum)
   Send(Text('发布成功！'))
 })
+export default onResponse(selects, [mw.current, res.current])

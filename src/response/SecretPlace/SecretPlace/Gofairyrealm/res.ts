@@ -15,7 +15,7 @@ import {
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?镇守仙境.*$/
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   const flag = await Go(e)
@@ -89,3 +89,5 @@ export default onResponse(selects, async e => {
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr))
   Send(Text('开始镇守' + didian + ',' + time + '分钟后归来!'))
 })
+import mw from '@src/response/mw'
+export default onResponse(selects, [mw.current, res.current])

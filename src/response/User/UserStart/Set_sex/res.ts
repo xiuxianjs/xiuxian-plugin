@@ -4,7 +4,7 @@ import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import type { Player, JSONValue } from '@src/types'
 
-import { selects } from '@src/response/mw'
+import mw, { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?设置性别.*$/
 
 type Gender = '男' | '女'
@@ -23,7 +23,7 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   return r
 }
 
-export default onResponse(selects, async e => {
+const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
@@ -44,3 +44,5 @@ export default onResponse(selects, async e => {
   Send(Text(`${player.名号}的性别已成功设置为 ${gender}。`))
   return false
 })
+
+export default onResponse(selects, [mw.current, res.current])

@@ -173,7 +173,10 @@ export async function setFileValue(
   await getIoRedis().set(keys.player(user_qq), JSON.stringify(player))
 }
 
-export type FoundThing = { name: string }
+export type FoundThing = {
+  [x: string]: string
+  name: string
+}
 
 export async function foundthing(
   thing_name: string
