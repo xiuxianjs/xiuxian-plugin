@@ -1,4 +1,4 @@
-import { ConfigCategory } from './types'
+import { ConfigCategory } from './types/types'
 
 export const menuItems = [
   {
@@ -25,6 +25,11 @@ export const menuItems = [
     label: '排名管理',
     icon: '🏆',
     path: '/rankings'
+  },
+  {
+    label: '货币管理',
+    icon: '💰',
+    path: '/currency'
   },
   {
     label: '数据查询',

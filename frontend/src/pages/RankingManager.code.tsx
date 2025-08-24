@@ -7,7 +7,7 @@ import {
   getRankingsStatsAPI,
   triggerRankingCalculationAPI
 } from '@/api/auth'
-import { RankingItem, RankingStats } from '@/types'
+import { RankingItem, RankingStats } from '@/types/types'
 
 import {
   TrophyOutlined,

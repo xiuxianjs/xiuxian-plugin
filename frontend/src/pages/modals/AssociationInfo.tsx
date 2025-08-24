@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Tag } from 'antd'
-import { Association } from '@/types'
+import { Association } from '@/types/types'
 import { CloseOutlined } from '@ant-design/icons'
 
 const AssociationInfo = ({

@@ -17,7 +17,7 @@ import {
   GoldOutlined,
   CrownOutlined
 } from '@ant-design/icons'
-import { GameUser } from '@/types'
+import { GameUser } from '@/types/types'
 import { levelNames } from '@/config'
 
 const { Option } = Select

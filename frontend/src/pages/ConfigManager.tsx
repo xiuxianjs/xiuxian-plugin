@@ -42,7 +42,7 @@ export default function ConfigManager() {
                 onClick={() => {
                   setOpen(true)
                 }}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
+                className="px-2 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-md hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
               >
                 <span className="mr-2">🔄</span>
                 JSON编辑
@@ -50,16 +50,14 @@ export default function ConfigManager() {
             </div>
             {/* 保存按钮 */}
             {activeTab !== 'JSON编辑' && (
-              <div className="flex justify-center">
-                <button
-                  onClick={() => config && handleSave(config)}
-                  disabled={loading || !config}
-                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="mr-2">💾</span>
-                  {loading ? '保存中...' : '保存配置'}
-                </button>
-              </div>
+              <button
+                onClick={() => config && handleSave(config)}
+                disabled={loading || !config}
+                className="px-2 py-1  rounded-md bg-gradient-to-r from-purple-500 to-pink-500 text-white  hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="mr-2">💾</span>
+                {loading ? '保存中...' : '保存配置'}
+              </button>
             )}
           </div>
         </div>

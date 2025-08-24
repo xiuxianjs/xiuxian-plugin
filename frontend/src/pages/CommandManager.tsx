@@ -26,9 +26,7 @@ export default function CommandManager() {
         {/* 页面标题 */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              ⚡ 响应体开关
-            </h1>
+            <h1 className="text-3xl font-bold text-white mb-2">⚡ 指令开关</h1>
             <p className="text-slate-300">管理和控制修仙插件的各种响应体功能</p>
           </div>
           <div className="flex gap-2">

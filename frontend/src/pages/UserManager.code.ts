@@ -6,7 +6,7 @@ import {
   getGameUsersStatsAPI,
   updateGameUserAPI
 } from '@/api/auth'
-import { GameUser } from '@/types'
+import { GameUser } from '@/types/types'
 import { levelNames, pageSize } from '@/config'
 
 export const useUserManagerCode = () => {

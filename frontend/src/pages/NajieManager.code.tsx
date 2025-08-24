@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { message } from 'antd'
 import { useAuth } from '@/contexts/AuthContext'
 import { getNajieAPI, updateNajieAPI } from '@/api/auth'
-import { Najie } from '@/types'
+import { Najie } from '@/types/types'
 import { pageSize } from '@/config'
 
 export const useNajieManagerCode = () => {

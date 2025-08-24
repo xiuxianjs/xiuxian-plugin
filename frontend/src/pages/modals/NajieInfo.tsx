@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'antd'
-import { Najie } from '@/types'
+import { Najie } from '@/types/types'
 import { CloseOutlined } from '@ant-design/icons'
 
 const NajieInfo = ({

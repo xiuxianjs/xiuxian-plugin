@@ -16,8 +16,8 @@ import {
   taskControlAPI
 } from '@/api/auth'
 import type { ColumnsType } from 'antd/es/table'
-import { TaskInfo } from '@/types'
-import TaskConfig from '../Drawers/TaskConfig'
+import { TaskInfo } from '@/types/types'
+import TaskConfig from './TaskConfig'
 import StatusTag from './StatusTag'
 import formatCron from './config'
 import classNames from 'classnames'
@@ -350,15 +350,6 @@ export default function TaskManager() {
     }
   }
 
-  // 手动执行天地榜计算
-  const handleManualRanking = () => {
-    message.loading('正在执行天地榜计算...', 0)
-    setTimeout(() => {
-      message.destroy()
-      message.success('天地榜计算完成')
-    }, 2000)
-  }
-
   // 打开配置编辑抽屉
   const handleOpenConfig = () => {
     configForm.setFieldsValue(taskConfig)
@@ -489,13 +480,6 @@ export default function TaskManager() {
           </div>
           <div className="flex flex-wrap gap-2">
             {[
-              {
-                lable: '手动执行天地榜计算',
-                icon: <ReloadOutlined />,
-                className:
-                  'px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
-                onClick: handleManualRanking
-              },
               {
                 lable: '启动所有任务',
                 icon: <PlayCircleOutlined />,

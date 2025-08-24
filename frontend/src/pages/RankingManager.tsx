@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons'
 
 import type { ColumnsType } from 'antd/es/table'
-import { RankingItem } from '@/types'
+import { RankingItem } from '@/types/types'
 import classNames from 'classnames'
 import { levelNames } from '@/config'
 import { rankingTypes, useRankingManagerCode } from './RankingManager.code'
@@ -181,14 +181,14 @@ export default function RankingManager() {
           </div>
           <div className="flex gap-2">
             <button
-              className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+              className="px-2 py-1  rounded-md bg-gradient-to-r from-green-500 to-emerald-500 text-white  hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
               onClick={handleTriggerCalculation}
             >
               <ReloadOutlined />
               重新计算排名
             </button>
             <button
-              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+              className="px-2 py-1  rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
               onClick={() => {
                 fetchRankingStats()
                 fetchRankingData(selectedRankingType, rankingLimit)

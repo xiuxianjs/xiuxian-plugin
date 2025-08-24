@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getConfig, saveConfig } from '@/api/config'
+import { getConfig, saveConfig } from '@/api/auth/config'
 import { message } from 'antd'
 
 export const useConfigManagerCode = () => {

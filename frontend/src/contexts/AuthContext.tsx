@@ -6,7 +6,7 @@ import React, {
   PropsWithChildren
 } from 'react'
 import { loginAPI, logoutAPI, verifyTokenAPI } from '@/api/auth'
-import { AuthContextType, User } from '@/types'
+import { AuthContextType, User } from '@/types/types'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 

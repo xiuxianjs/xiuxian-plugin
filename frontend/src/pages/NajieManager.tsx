@@ -8,7 +8,7 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { Najie } from '@/types'
+import { Najie } from '@/types/types'
 import NajieInfo from './modals/NajieInfo'
 import NajieEditModal from './modals/NajieEditModal'
 import { useNajieManagerCode } from './NajieManager.code'
@@ -178,7 +178,7 @@ export default function NajieManager() {
             </div>
           </div>
           <button
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+            className="px-2 py-1  rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white   hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
             onClick={() => fetchNajie(1, pagination.pageSize)}
             disabled={loading}
           >

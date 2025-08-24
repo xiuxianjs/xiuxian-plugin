@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { changePasswordAPI } from '@/api/auth'
-import { PasswordForm } from '@/types'
+import { PasswordForm } from '@/types/types'
 
 export const useProfileCode = () => {
   const { user } = useAuth()

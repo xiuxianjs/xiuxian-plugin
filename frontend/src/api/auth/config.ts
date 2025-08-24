@@ -1,5 +1,5 @@
-import { ApiResponse } from '@/types'
-import { authRequest } from './index'
+import { ApiResponse } from '@/types/types'
+import { authRequest } from '../base'
 
 // 获取配置
 export const getConfig = async (app: string) => {

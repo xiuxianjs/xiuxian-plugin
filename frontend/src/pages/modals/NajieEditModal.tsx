@@ -12,7 +12,7 @@ import {
   message
 } from 'antd'
 import { DeleteOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons'
-import { Najie, NajieItem } from '@/types'
+import { Najie, NajieItem } from '@/types/types'
 
 interface NajieEditModalProps {
   visible: boolean

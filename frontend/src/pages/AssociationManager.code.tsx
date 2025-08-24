@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { useAuth } from '@/contexts/AuthContext'
 import { getAssociationsAPI, getAssociationsStatsAPI } from '@/api/auth'
 import { AssociationManagerPageSize, levelNames } from '@/config'
-import { Association } from '@/types'
+import { Association } from '@/types/types'
 
 export const useAssociationManagerCode = () => {
   const { user } = useAuth()

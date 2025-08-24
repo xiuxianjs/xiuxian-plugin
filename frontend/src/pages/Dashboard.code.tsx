@@ -6,7 +6,7 @@ import {
   getRankingsStatsAPI,
   getTaskStatusAPI
 } from '@/api/auth'
-import { DashboardStats } from '@/types'
+import { DashboardStats } from '@/types/types'
 
 export const useDashboardCode = () => {
   const { user } = useAuth()

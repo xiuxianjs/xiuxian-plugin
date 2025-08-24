@@ -11,7 +11,7 @@ import {
   UserOutlined
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { Association } from '@/types'
+import { Association } from '@/types/types'
 import AssociationInfo from './modals/AssociationInfo'
 import { useAssociationManagerCode } from './AssociationManager.code'
 
@@ -230,7 +230,7 @@ export default function AssociationManager() {
             </div>
           </div>
           <button
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+            className="px-2 py-1  rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white  hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
             onClick={() => fetchAssociations(1, pagination.pageSize)}
             disabled={loading}
           >

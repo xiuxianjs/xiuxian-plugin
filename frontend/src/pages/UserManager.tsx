@@ -17,7 +17,7 @@ import {
   GoldOutlined
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { GameUser } from '@/types'
+import { GameUser } from '@/types/types'
 import UserInfo from './modals/UserInfo'
 import UserEditModal from './modals/UserEditModal'
 import { useUserManagerCode } from './UserManager.code'
@@ -270,7 +270,7 @@ export default function UserManager() {
             </div>
           </div>
           <button
-            className="p-2 md:px-6 md:py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-3"
+            className="px-2 py-1  rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white   hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-3"
             onClick={() => fetchGameUsers(1, pagination.pageSize)}
             disabled={loading}
           >

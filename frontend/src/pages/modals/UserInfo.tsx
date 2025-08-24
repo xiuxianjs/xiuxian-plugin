@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Tag } from 'antd'
-import { GameUser } from '@/types'
+import { GameUser } from '@/types/types'
 import { CloseOutlined } from '@ant-design/icons'
 
 const UserInfo = ({

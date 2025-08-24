@@ -12,51 +12,33 @@ body,
   @apply w-0 h-0;
 }
 
-// *::-webkit-scrollbar {
-//   width: 8px;
-//   height: 8px;
-// }
-
-// *::-webkit-scrollbar-track {
-//   background: rgba(15, 23, 42, 0.3);
-//   border-radius: 4px;
-// }
-
-// *::-webkit-scrollbar-thumb {
-//   background: rgba(139, 92, 246, 0.5);
-//   border-radius: 4px;
-
-//   &:hover {
-//     background: rgba(139, 92, 246, 0.7);
-//   }
-// }
-
 /* 响应式表格样式 */
-.responsive-table .ant-table-thead > tr > th,
-.responsive-table .ant-table-tbody > tr > td {
+.responsive-table .ant-table-thead>tr>th,
+.responsive-table .ant-table-tbody>tr>td {
   @apply px-2 sm:px-4 py-2 sm:py-3;
 }
 
-.responsive-table .ant-table-thead > tr > th {
+.responsive-table .ant-table-thead>tr>th {
   @apply text-xs sm:text-sm font-medium;
 }
 
-.responsive-table .ant-table-tbody > tr > td {
+.responsive-table .ant-table-tbody>tr>td {
   @apply text-xs sm:text-sm;
 }
 
 /* 移动端表格优化 */
 @media (max-width: 640px) {
-  .responsive-table .ant-table-thead > tr > th,
-  .responsive-table .ant-table-tbody > tr > td {
+
+  .responsive-table .ant-table-thead>tr>th,
+  .responsive-table .ant-table-tbody>tr>td {
     @apply px-1 py-1;
   }
 
-  .responsive-table .ant-table-thead > tr > th {
+  .responsive-table .ant-table-thead>tr>th {
     @apply text-xs;
   }
 
-  .responsive-table .ant-table-tbody > tr > td {
+  .responsive-table .ant-table-tbody>tr>td {
     @apply text-xs;
   }
 }
@@ -103,6 +85,7 @@ body,
 
 /* 移动端触摸优化 */
 @media (max-width: 768px) {
+
   /* 增加触摸目标大小 */
   .ant-btn {
     @apply min-h-10;
@@ -158,15 +141,15 @@ body,
     @apply bg-gray-800;
   }
 
-  .ant-table-thead > tr > th {
+  .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
-  .ant-table-tbody > tr > td {
+  .ant-table-tbody>tr>td {
     @apply border-gray-600 text-gray-300;
   }
 
-  .ant-table-tbody > tr:hover > td {
+  .ant-table-tbody>tr:hover>td {
     @apply bg-gray-700;
   }
 }
@@ -199,7 +182,7 @@ body,
 }
 
 .xiuxian-table {
-  .ant-table-thead > tr > th {
+  .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
@@ -207,7 +190,7 @@ body,
     @apply bg-gray-600 !important;
   }
 
-  .ant-table-tbody > tr > td {
+  .ant-table-tbody>tr>td {
     @apply border-gray-600 text-gray-300;
   }
 
