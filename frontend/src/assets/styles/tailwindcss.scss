@@ -12,51 +12,33 @@ body,
   @apply w-0 h-0;
 }
 
-// *::-webkit-scrollbar {
-//   width: 8px;
-//   height: 8px;
-// }
-
-// *::-webkit-scrollbar-track {
-//   background: rgba(15, 23, 42, 0.3);
-//   border-radius: 4px;
-// }
-
-// *::-webkit-scrollbar-thumb {
-//   background: rgba(139, 92, 246, 0.5);
-//   border-radius: 4px;
-
-//   &:hover {
-//     background: rgba(139, 92, 246, 0.7);
-//   }
-// }
-
 /* 响应式表格样式 */
-.responsive-table .ant-table-thead > tr > th,
-.responsive-table .ant-table-tbody > tr > td {
+.responsive-table .ant-table-thead>tr>th,
+.responsive-table .ant-table-tbody>tr>td {
   @apply px-2 sm:px-4 py-2 sm:py-3;
 }
 
-.responsive-table .ant-table-thead > tr > th {
+.responsive-table .ant-table-thead>tr>th {
   @apply text-xs sm:text-sm font-medium;
 }
 
-.responsive-table .ant-table-tbody > tr > td {
+.responsive-table .ant-table-tbody>tr>td {
   @apply text-xs sm:text-sm;
 }
 
 /* 移动端表格优化 */
 @media (max-width: 640px) {
-  .responsive-table .ant-table-thead > tr > th,
-  .responsive-table .ant-table-tbody > tr > td {
+
+  .responsive-table .ant-table-thead>tr>th,
+  .responsive-table .ant-table-tbody>tr>td {
     @apply px-1 py-1;
   }
 
-  .responsive-table .ant-table-thead > tr > th {
+  .responsive-table .ant-table-thead>tr>th {
     @apply text-xs;
   }
 
-  .responsive-table .ant-table-tbody > tr > td {
+  .responsive-table .ant-table-tbody>tr>td {
     @apply text-xs;
   }
 }
@@ -103,6 +85,7 @@ body,
 
 /* 移动端触摸优化 */
 @media (max-width: 768px) {
+
   /* 增加触摸目标大小 */
   .ant-btn {
     @apply min-h-10;
@@ -158,15 +141,15 @@ body,
     @apply bg-gray-800;
   }
 
-  .ant-table-thead > tr > th {
+  .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
-  .ant-table-tbody > tr > td {
+  .ant-table-tbody>tr>td {
     @apply border-gray-600 text-gray-300;
   }
 
-  .ant-table-tbody > tr:hover > td {
+  .ant-table-tbody>tr:hover>td {
     @apply bg-gray-700;
   }
 }
@@ -199,16 +182,58 @@ body,
 }
 
 .xiuxian-table {
-  .ant-table-thead > tr > th {
+
+  // 表格整体背景
+  .ant-table {
+    @apply bg-gray-800;
+  }
+
+  // 表格容器背景
+  .ant-table-container {
+    @apply bg-gray-800;
+  }
+
+  // 表格头部
+  .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
+  // 表格主体背景
+  .ant-table-tbody {
+    @apply bg-gray-800;
+  }
+
+  // 表格行背景
+  .ant-table-tbody>tr {
+    @apply bg-gray-800;
+  }
+
+  // 表格行悬停效果
+  .ant-table-tbody>tr:hover>td {
+    @apply bg-gray-700 !important;
+  }
+
   .ant-table-cell-row-hover {
+    @apply bg-gray-700 !important;
+  }
+
+  // 表格行选中状态
+  .ant-table-tbody>tr.ant-table-row-selected>td {
+    @apply bg-gray-700 !important;
+  }
+
+  .ant-table-tbody>tr.ant-table-row-selected:hover>td {
     @apply bg-gray-600 !important;
   }
 
-  .ant-table-tbody > tr > td {
-    @apply border-gray-600 text-gray-300;
+  // 表格单元格选中状态
+  .ant-table-cell-row-selected {
+    @apply bg-gray-700 !important;
+  }
+
+  // 表格单元格
+  .ant-table-tbody>tr>td {
+    @apply border-gray-600 text-gray-300 bg-gray-800;
   }
 
   // 分页器
@@ -309,5 +334,126 @@ body,
 
   &.ant-select-item-option-active {
     @apply bg-slate-600 !important;
+  }
+}
+
+/* Input组件暗色主题样式 */
+.ant-input {
+  @apply bg-slate-700/50 border-slate-600 text-white !important;
+
+  &:hover {
+    @apply border-slate-500 !important;
+  }
+
+  &:focus {
+    @apply border-purple-500 shadow-purple-500/20 !important;
+  }
+
+  &::placeholder {
+    @apply text-slate-400 !important;
+  }
+}
+
+.ant-input-search {
+  .ant-input-search-button {
+    @apply bg-slate-600 border-slate-500 text-white !important;
+
+    &:hover {
+      @apply bg-slate-500 border-slate-400 !important;
+    }
+  }
+}
+
+/* Input.Group组件暗色主题样式 */
+.ant-input-group {
+  .ant-input-group-addon {
+    @apply bg-slate-600 border-slate-500 text-slate-300 !important;
+  }
+}
+
+/* TextArea组件暗色主题样式 */
+.ant-input-textarea {
+  .ant-input {
+    @apply bg-slate-700/50 border-slate-600 text-white !important;
+  }
+}
+
+/* 全局Input样式类 */
+.xiuxian-input {
+  @apply bg-slate-700/50 border-slate-600 text-white !important;
+
+  &:hover {
+    @apply border-slate-500 !important;
+  }
+
+  &:focus {
+    @apply border-purple-500 shadow-purple-500/20 !important;
+  }
+
+  &::placeholder {
+    @apply text-slate-400 !important;
+  }
+}
+
+/* Select组件全局样式类 */
+.xiuxian-select {
+  .ant-select-selector {
+    @apply bg-slate-700/50 border-slate-600 text-white !important;
+  }
+
+  .ant-select-selection-item {
+    @apply text-white !important;
+  }
+
+  .ant-select-selection-placeholder {
+    @apply text-slate-400 !important;
+  }
+}
+
+/* InputNumber组件暗色主题样式 */
+.ant-input-number {
+  @apply bg-slate-700/50 border-slate-600 text-white !important;
+
+  &:hover {
+    @apply border-slate-500 !important;
+  }
+
+  &:focus {
+    @apply border-purple-500 shadow-purple-500/20 !important;
+  }
+
+  .ant-input-number-input {
+    @apply text-white !important;
+  }
+
+  .ant-input-number-handler-wrap {
+    @apply bg-slate-600 border-slate-500 !important;
+  }
+
+  .ant-input-number-handler {
+    @apply text-slate-300 hover:text-white hover:bg-slate-500 !important;
+  }
+}
+
+/* Modal组件暗色主题样式 */
+.xiuxian-modal {
+  .ant-modal-header {
+    @apply bg-slate-800 border-slate-700 !important;
+  }
+
+  .ant-modal-title {
+    @apply text-white !important;
+  }
+
+  .ant-modal-content {
+    @apply bg-slate-800 border-slate-700 !important;
+  }
+
+  .ant-modal-body {
+    @apply bg-slate-800 text-white !important;
+  }
+
+  .ant-modal-footer {
+    @apply bg-slate-800 border-slate-700 !important;
   }
 }

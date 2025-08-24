@@ -1,8 +1,7 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-
+import { data, redis } from '@src/model/api'
 // 细粒度导入
-import { __PATH, keysByPath } from '@src/model/keys'
-import { readPlayer } from '@src/model/xiuxian'
+import { __PATH, keys, keysByPath } from '@src/model/keys'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
 import { getDataList } from '@src/model/DataList'
 
@@ -18,33 +17,55 @@ export const TiandibangTask = async () => {
   const playerList = await keysByPath(__PATH.player_path)
   const temp: RankEntry[] = []
   let t: RankEntry | undefined
-  for (let k = 0; k < playerList.length; k++) {
-    const user_qq = playerList[k]
-    const player = await readPlayer(user_qq)
-    if (!player) {
-      continue
-    }
-    const LevelList = await getDataList('Level1')
-    const level_id = LevelList.find(
-      item => item.level_id == player.level_id
-    ).level_id
-    temp[k] = {
-      名号: player.名号,
-      境界: level_id,
-      攻击: player.攻击,
-      防御: player.防御,
-      当前血量: player.血量上限,
-      暴击率: player.暴击率,
-      灵根: player.灵根,
-      法球倍率: player.灵根.法球倍率,
-      学习的功法: player.学习的功法,
-      魔道值: player.魔道值,
-      神石: player.神石,
-      qq: user_qq,
-      次数: 3,
-      积分: 0
-    }
-  }
+  await Promise.all(
+    playerList.map(async user_qq => {
+      const is = await redis.exists(keys.player(user_qq))
+      if (!is) {
+        return
+      }
+      const res = await redis.get(keys.player(user_qq))
+      if (!res) {
+        return
+      }
+      let player: any
+      try {
+        player = JSON.parse(res)
+        //
+      } catch (e) {
+        logger.warn('Failed to parse player data', e)
+        return
+      }
+      try {
+        player = JSON.parse(res)
+      } catch (e) {
+        logger.warn('Failed to parse player data', e)
+        return
+      }
+      const level = data.Level_list.find(
+        item => item.level_id == player.level_id
+      )
+      if (!level) {
+        return
+      }
+      const level_id = level?.level_id
+      temp[k] = {
+        名号: player.名号,
+        境界: level_id,
+        攻击: player.攻击,
+        防御: player.防御,
+        当前血量: player.血量上限,
+        暴击率: player.暴击率,
+        灵根: player.灵根,
+        法球倍率: player.灵根.法球倍率,
+        学习的功法: player.学习的功法,
+        魔道值: player.魔道值,
+        神石: player.神石,
+        qq: user_qq,
+        次数: 3,
+        积分: 0
+      }
+    })
+  )
   for (let i = 0; i < playerList.length - 1; i++) {
     let count = 0
     for (let j = 0; j < playerList.length - i - 1; j++) {

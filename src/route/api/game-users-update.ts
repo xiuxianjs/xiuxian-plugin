@@ -55,6 +55,7 @@ export const PUT = async (ctx: Context) => {
     try {
       existingUser = JSON.parse(existingData)
     } catch (error) {
+      logger.error('更新用户数据错误:', error)
       ctx.status = 500
       ctx.body = {
         code: 500,

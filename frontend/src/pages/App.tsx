@@ -58,7 +58,7 @@ export default function App() {
           </div>
 
           {/* 导航菜单 */}
-          <nav className="mt-6 px-3 flex-1 overflow-y-auto">
+          <nav className="px-3 py-2 flex-1 overflow-y-auto max-h-[calc(100vh-5rem)]">
             {menuItems.map(item => (
               <button
                 key={item.path}
@@ -165,7 +165,7 @@ export default function App() {
         </header>
 
         {/* 主内容区域 - 添加顶部边距避免被固定header遮挡 */}
-        <main className="flex-1 overflow-y-auto pt-20  px-2  sm:px-6 lg:px-8">
+        <main className="flex-1 overflow-y-auto pt-20">
           <Outlet />
         </main>
       </div>

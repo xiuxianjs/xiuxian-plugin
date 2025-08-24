@@ -1,18 +1,26 @@
-import React from 'react'
+import React, { lazy } from 'react'
 import { createHashRouter } from 'react-router-dom'
-import App from '@/pages/App'
-import Dashboard from '@/pages/Dashboard'
-import ConfigManager from '@/pages/ConfigManager'
-import Profile from '@/pages/Profile'
-import UserManager from '@/pages/UserManager'
-import AssociationManager from '@/pages/AssociationManager'
-import NajieManager from '@/pages/NajieManager'
-import RankingManager from '@/pages/RankingManager'
-import DataQuery from '@/pages/DataQuery'
-import CommandManager from '@/pages/CommandManager'
-import TaskManager from '@/pages/TaskManager/App'
-import Login from '@/pages/Login'
-import ProtectedRoute from '@/components/ProtectedRoute'
+const CurrencyManager = lazy(() => import('@/pages/CurrencyManager/App'))
+const ProtectedRoute = lazy(() => import('@/components/ProtectedRoute'))
+const Login = lazy(() => import('@/pages/Login'))
+const TaskManager = lazy(() => import('@/pages/TaskManager/App'))
+const CommandManager = lazy(
+  () => import('@/pages/CommandManager/CommandManager')
+)
+const DataQuery = lazy(() => import('@/pages/DataQuery/DataQuery'))
+const AssociationManager = lazy(
+  () => import('@/pages/AssociationManager/AssociationManager')
+)
+const NajieManager = lazy(() => import('@/pages/NajieManager/NajieManager'))
+const RankingManager = lazy(
+  () => import('@/pages/RankingManager/RankingManager')
+)
+const UserManager = lazy(() => import('@/pages/UserManager/UserManager'))
+const Profile = lazy(() => import('@/pages/Profile/Profile'))
+const ConfigManager = lazy(() => import('@/pages/ConfigManager/ConfigManager'))
+const MuteManager = lazy(() => import('@/pages/MuteManager/MuteManager'))
+const Dashboard = lazy(() => import('@/pages/Dashboard/Dashboard'))
+const App = lazy(() => import('@/pages/App'))
 
 export default createHashRouter([
   {
@@ -56,6 +64,10 @@ export default createHashRouter([
         element: <RankingManager />
       },
       {
+        path: '/currency',
+        element: <CurrencyManager />
+      },
+      {
         path: '/data-query',
         element: <DataQuery />
       },
@@ -66,6 +78,10 @@ export default createHashRouter([
       {
         path: '/tasks',
         element: <TaskManager />
+      },
+      {
+        path: '/mute',
+        element: <MuteManager />
       }
     ]
   }

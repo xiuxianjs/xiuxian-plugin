@@ -51,17 +51,13 @@ export const GET = async (ctx: Context) => {
       }
       return
     }
-
-    let filteredData = data
-
-    // 搜索过滤
-    if (search) {
-      filteredData = data.filter((item: Record<string, unknown>) => {
-        return Object.values(item).some(value =>
-          String(value).toLowerCase().includes(search.toLowerCase())
-        )
-      })
-    }
+    const filteredData = search
+      ? data.filter(item => {
+          return Object.values(item).some(value =>
+            String(value).toLowerCase().includes(search.toLowerCase())
+          )
+        })
+      : data
 
     // 分页处理
     const currentPage = parseInt(page || '1')
