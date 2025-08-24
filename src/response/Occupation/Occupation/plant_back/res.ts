@@ -1,6 +1,6 @@
 import { redis } from '@src/model/api'
 import { getPlayerAction } from '@src/model/index'
-import { plant_jiesuan } from '../../api'
+import { plant_jiesuan, calcEffectiveMinutes } from '../../api'
 
 import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
@@ -16,26 +16,10 @@ interface PlantAction {
   working?: number
   power_up?: number
   Place_action?: number
-  group_id?
+  group_id?: string
 }
 
-function calcEffectiveMinutes(
-  start: number,
-  end: number,
-  now: number,
-  slot = 15,
-  maxSlots = 48
-) {
-  let minutes: number
-  if (end > now) {
-    minutes = Math.floor((now - start) / 60000)
-  } else {
-    minutes = Math.floor((end - start) / 60000)
-  }
-  if (minutes < slot) return 0
-  const full = Math.min(Math.floor(minutes / slot), maxSlots)
-  return full * slot
-}
+
 
 const res = onResponse(selects, async e => {
   const raw = (await getPlayerAction(e.UserId)) as unknown as PlantAction | null
