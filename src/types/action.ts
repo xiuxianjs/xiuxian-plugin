@@ -47,6 +47,7 @@ export interface ActionState {
   xijie?: string | number
   A_player?: ActionPlayerLite
   thing?: PlaceThing[]
+  is_jiesuan?: number
 }
 
 export interface SecretPlacePlusItem {

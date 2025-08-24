@@ -14,6 +14,33 @@ function toNum(v, d = 0) {
   return Number.isFinite(n) ? n : d
 }
 
+/**
+ * 计算有效采药时间（按时间槽计算）
+ * @param start 开始时间
+ * @param end 结束时间
+ * @param now 当前时间
+ * @param slot 时间槽（默认15分钟）
+ * @param maxSlots 最大时间槽数（默认48个，即720分钟）
+ * @returns 有效时间（分钟）
+ */
+export function calcEffectiveMinutes(
+  start: number,
+  end: number,
+  now: number,
+  slot = 15,
+  maxSlots = 48
+) {
+  let minutes: number
+  if (end > now) {
+    minutes = Math.floor((now - start) / 60000)
+  } else {
+    minutes = Math.floor((end - start) / 60000)
+  }
+  if (minutes < slot) return 0
+  const full = Math.min(Math.floor(minutes / slot), maxSlots)
+  return full * slot
+}
+
 // 计算职业系数（使用经验表 experience 做近似归一化）
 function calcOccupationFactor(occupation_level: number): number {
   const row = data.occupation_exp_list.find(r => r.id === occupation_level)

@@ -1,13 +1,14 @@
-import { data, pushInfo } from '@src/model/api'
+import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
-import { addExp4 } from '@src/model/xiuxian'
-import { addNajieThing } from '@src/model/najie'
 import { __PATH, keysByPath } from '@src/model/keys'
-import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
-import type { Player, ActionState } from '@src/types'
-import { mine_jiesuan } from '@src/response/Occupation/api'
+import type { ActionState, Player } from '@src/types'
+import {
+  mine_jiesuan,
+  plant_jiesuan,
+  calcEffectiveMinutes
+} from '@src/response/Occupation/api'
 
 /**
  * 遍历所有玩家，检查每个玩家的当前动作（如闭关、采集等）。
@@ -26,14 +27,10 @@ export const OccupationTask = async () => {
     if (!action) continue
 
     let push_address: string | undefined // 消息推送地址
-    let is_group = false // 是否推送到群
     if ('group_id' in action && notUndAndNull(action.group_id)) {
-      is_group = true
       push_address = action.group_id as string
     }
 
-    // 最后发送的消息
-    const msg: Array<DataMention | string> = [Mention(player_id)]
     // 动作结束时间（预处理提前量）
     const now_time = Date.now()
 
@@ -41,58 +38,17 @@ export const OccupationTask = async () => {
     if (action.plant === '0') {
       const end_time = action.end_time - 60000 * 2 // 提前 2 分钟
       if (now_time > end_time) {
-        const playerRaw = await data.getData('player', player_id)
-        if (!playerRaw || Array.isArray(playerRaw)) {
-          // 数据异常，跳过
-          continue
-        }
-        const player = playerRaw as Player
-        const rawTime =
-          typeof action.time === 'string'
-            ? parseInt(action.time)
-            : Number(action.time)
-        const timeMin = (isNaN(rawTime) ? 0 : rawTime) / 1000 / 60
-        const exp = timeMin * 10
-        await addExp4(player_id, exp)
-        // 采集草药数量基准
-        const k = player.level_id < 22 ? 0.5 : 1
-        let sum = (timeMin / 480) * (player.occupation_level * 2 + 12) * k
-        if (player.level_id >= 36) {
-          sum = (timeMin / 480) * (player.occupation_level * 3 + 11)
-        }
-        const names: readonly string[] = [
-          '万年凝血草',
-          '万年何首乌',
-          '万年血精草',
-          '万年甜甜花',
-          '万年清心草',
-          '古神藤',
-          '万年太玄果',
-          '炼骨花',
-          '魔蕴花',
-          '万年清灵草',
-          '万年天魂菊',
-          '仙蕴花',
-          '仙缘草',
-          '太玄仙草'
-        ] as const
-        const sum2 = [0.2, 0.3, 0.2, 0.2, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        const sum3 = [
-          0.17, 0.22, 0.17, 0.17, 0.17, 0.024, 0.024, 0.024, 0.024, 0.024,
-          0.024, 0.024, 0.012, 0.011
-        ]
-        msg.push(`\n恭喜你获得了经验${exp},草药:`)
-        let newsum = sum3.map(item => item * sum)
-        if (player.level_id < 36) {
-          newsum = sum2.map(item => item * sum)
-        }
-        for (let i = 0; i < newsum.length; i++) {
-          if (newsum[i] < 1) continue
-          const count = Math.floor(newsum[i])
-          msg.push(`\n${names[i]}${count}个`)
-          await addNajieThing(player_id, names[i], '草药', count)
-        }
-        await addExp4(player_id, exp)
+        // 若已结算，跳过
+        if (action.is_jiesuan === 1) continue
+
+        // 计算开始时间和有效时间（使用统一的时间槽计算逻辑）
+        const start_time = action.end_time - Number(action.time)
+        const now = Date.now()
+        const timeMin = calcEffectiveMinutes(start_time, action.end_time, now)
+
+        // 使用统一的采药结算函数
+        await plant_jiesuan(player_id, timeMin, push_address)
+
         // 状态复位
         const arr = { ...action }
         // 设为已结算
@@ -105,11 +61,6 @@ export const OccupationTask = async () => {
         arr.Place_actionplus = 1
         delete (arr as Partial<ActionState>).group_id
         await setDataByUserId(player_id, 'action', JSON.stringify(arr))
-        if (is_group && push_address) {
-          await pushInfo(push_address, is_group, msg)
-        } else {
-          await pushInfo(player_id, is_group, msg)
-        }
       }
     }
 
