@@ -164,9 +164,9 @@ const Player = ({
 
   const PetsReander = Array.isArray(player.仙宠) ? (
     player.仙宠.map((pet, index) => <Pets key={index} value={pet} />)
-  ) : (
+  ) : player?.仙宠?.name ? (
     <Pets value={player.仙宠} />
-  )
+  ) : null
 
   return (
     <HTML
@@ -181,6 +181,7 @@ const Player = ({
         `
       }}
     >
+      <div className="h-3"></div>
       <div>
         {/* 上 */}
         <div className="m-5 mx-auto flex flex-nowrap rounded-5xl z-999 bg-[radial-gradient(at_top_left,#ffffff10,#d7edea10)] border-t border-[#ffcc80] border-l border-[#ffcc80] border-r border-[#bb8020] border-b border-[#bb8020] backdrop-blur-sm w-[740px] pb-6">
@@ -628,6 +629,7 @@ const Player = ({
           </div>
         </div>
       </div>
+      <div className="h-3"></div>
     </HTML>
   )
 }
