@@ -1,13 +1,22 @@
 import React from 'react'
 import { useLoginCode } from './Login.code'
 
+// 导入UI组件库
+import {
+  XiuxianLoginCard,
+  XiuxianAlert,
+  XiuxianInputWithIcon,
+  XiuxianDivider
+} from '@/components/ui'
+
 export default function Login() {
   const { loading, error, handleSubmit } = useLoginCode()
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* 登录卡片 */}
-        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 sm:p-8 shadow-2xl">
+        <XiuxianLoginCard>
           <div className="text-center mb-6">
             <h2 className="text-white text-xl sm:text-2xl font-semibold mb-2">
               管理员登录
@@ -19,19 +28,7 @@ export default function Login() {
 
           {/* 错误提示 */}
           {error && (
-            <div className="mb-6 bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-xl p-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-3 h-3 bg-red-400 rounded-full flex-shrink-0 mt-1"></div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-red-400 font-semibold text-sm sm:text-base">
-                    登录失败
-                  </h3>
-                  <p className="text-slate-300 text-xs sm:text-sm mt-1">
-                    {error}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <XiuxianAlert type="error" title="登录失败" message={error} />
           )}
 
           {/* 登录表单 */}
@@ -40,38 +37,28 @@ export default function Login() {
               <label className="block text-slate-300 text-sm font-medium mb-2">
                 用户名
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-slate-400 text-lg">👤</span>
-                </div>
-                <input
-                  name="username"
-                  type="text"
-                  required
-                  minLength={3}
-                  className="w-full pl-10 pr-4 py-3 sm:py-3 xiuxian-input rounded-xl text-sm sm:text-base"
-                  placeholder="请输入管理员用户名"
-                />
-              </div>
+              <XiuxianInputWithIcon
+                icon="👤"
+                type="text"
+                name="username"
+                placeholder="请输入管理员用户名"
+                required
+                minLength={3}
+              />
             </div>
 
             <div>
               <label className="block text-slate-300 text-sm font-medium mb-2">
                 密码
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-slate-400 text-lg">🔒</span>
-                </div>
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  minLength={6}
-                  className="w-full pl-10 pr-4 py-3 sm:py-3 xiuxian-input rounded-xl text-sm sm:text-base"
-                  placeholder="请输入密码"
-                />
-              </div>
+              <XiuxianInputWithIcon
+                icon="🔒"
+                type="password"
+                name="password"
+                placeholder="请输入密码"
+                required
+                minLength={6}
+              />
             </div>
 
             <button
@@ -94,18 +81,7 @@ export default function Login() {
           </form>
 
           {/* 分割线 */}
-          <div className="my-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-700/50"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-slate-800/50 text-slate-400">
-                  系统信息
-                </span>
-              </div>
-            </div>
-          </div>
+          <XiuxianDivider text="系统信息" />
 
           {/* 系统信息 */}
           <div className="text-center space-y-2">
@@ -118,7 +94,7 @@ export default function Login() {
               <span className="text-white">lemonade-lab</span>
             </div>
           </div>
-        </div>
+        </XiuxianLoginCard>
 
         {/* 底部信息 */}
         <div className="text-center mt-6">
@@ -128,19 +104,12 @@ export default function Login() {
         </div>
 
         {/* 安全提示 */}
-        <div className="mt-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4">
-          <div className="flex items-start space-x-3">
-            <div className="w-3 h-3 bg-blue-400 rounded-full flex-shrink-0 mt-1"></div>
-            <div className="min-w-0 flex-1">
-              <h3 className="text-blue-400 font-semibold text-sm sm:text-base">
-                安全提醒
-              </h3>
-              <p className="text-slate-300 text-xs sm:text-sm mt-1">
-                请确保在安全的环境下登录，不要在公共场所保存密码。
-              </p>
-            </div>
-          </div>
-        </div>
+        <XiuxianAlert
+          type="info"
+          title="安全提醒"
+          message="请确保在安全的环境下登录，不要在公共场所保存密码。"
+          className="mt-4"
+        />
       </div>
     </div>
   )

@@ -13,7 +13,7 @@ export const TaskConfig = ({
   setConfigDrawerVisible: (visible: boolean) => void
   configForm: FormInstance<Record<string, string>>
   taskConfig: Record<string, string>
-  handleSaveConfig: () => void
+  handleSaveConfig: (values: { [key: string]: string }) => void
 }) => {
   return (
     <Drawer
@@ -44,7 +44,14 @@ export const TaskConfig = ({
       extra={
         <button
           className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
-          onClick={handleSaveConfig}
+          onClick={async () => {
+            try {
+              const values = await configForm.validateFields()
+              handleSaveConfig(values)
+            } catch (error) {
+              console.error('表单验证失败:', error)
+            }
+          }}
         >
           <SaveOutlined />
           保存配置

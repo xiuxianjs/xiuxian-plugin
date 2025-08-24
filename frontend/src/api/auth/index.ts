@@ -21,3 +21,9 @@ export * from './tasks'
 
 // 指令管理相关API
 export * from './commands'
+
+// 货币管理相关API
+export * from './currency'
+
+// 配置管理相关API
+export * from './config'

@@ -9,9 +9,11 @@ import {
   Space,
   Card,
   Typography,
-  Pagination,
   Select
 } from 'antd'
+
+// 导入UI组件库
+import { XiuxianPagination } from '@/components/ui'
 import {
   EditOutlined,
   SaveOutlined,
@@ -382,16 +384,16 @@ export default function DataEditModal({
               <Option value={50}>50条</Option>
             </Select>
           </div>
-          <Pagination
+          <XiuxianPagination
             current={currentPage}
             pageSize={pageSize}
             total={editingData.length}
             showSizeChanger={false}
-            showQuickJumper
-            showTotal={(total, range) =>
+            showQuickJumper={true}
+            showTotal={(total: number, range: [number, number]) =>
               `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
             }
-            onChange={setCurrentPage}
+            onChange={page => setCurrentPage(page)}
           />
         </div>
 
@@ -457,16 +459,16 @@ export default function DataEditModal({
 
         {/* 底部分页 */}
         <div className="mt-4 flex justify-center">
-          <Pagination
+          <XiuxianPagination
             current={currentPage}
             pageSize={pageSize}
             total={editingData.length}
             showSizeChanger={false}
-            showQuickJumper
-            showTotal={(total, range) =>
+            showQuickJumper={true}
+            showTotal={(total: number, range: [number, number]) =>
               `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
             }
-            onChange={setCurrentPage}
+            onChange={page => setCurrentPage(page)}
           />
         </div>
       </div>

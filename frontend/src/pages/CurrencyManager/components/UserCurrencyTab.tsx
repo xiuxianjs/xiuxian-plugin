@@ -1,9 +1,7 @@
 import React from 'react'
-import { Table, Button, Input, Tag, Space, Badge } from 'antd'
+import { Tag, Badge, Input } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import {
-  PlusOutlined,
-  EyeOutlined,
   DollarOutlined,
   CalendarOutlined,
   CrownOutlined,
@@ -11,6 +9,9 @@ import {
 } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import type { CurrencyUser } from '@/types/CurrencyManager'
+
+// 导入UI组件库
+import { XiuxianTableWithPagination } from '@/components/ui'
 
 interface UserCurrencyTabProps {
   users: CurrencyUser[]
@@ -142,10 +143,16 @@ export default function UserCurrencyTab({
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex-1 min-w-0">
           <Input.Search
-            placeholder="搜索用户ID"
-            allowClear
-            className="xiuxian-input"
-            onSearch={setSearchText}
+            placeholder="输入关键词搜索..."
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            onSearch={() => {}}
+            size="large"
+            onKeyPress={e =>
+              e.key === 'Enter' &&
+              setSearchText((e.target as HTMLInputElement).value)
+            }
+            className="w-full xiuxian-input"
           />
         </div>
         <div className="text-slate-400 text-sm">
@@ -153,19 +160,20 @@ export default function UserCurrencyTab({
         </div>
       </div>
 
-      <Table
+      <XiuxianTableWithPagination
         columns={columns}
         dataSource={filteredUsers}
         loading={loading}
         rowKey="id"
         pagination={{
+          current: 1,
           pageSize: 20,
+          total: filteredUsers.length,
           showSizeChanger: true,
           showQuickJumper: true,
           showTotal: total => `共 ${total} 条记录`
         }}
         rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-        className="xiuxian-table"
       />
     </div>
   )

@@ -5,6 +5,9 @@ import { EyeOutlined, GiftOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import type { RechargeRecord } from '@/types/CurrencyManager'
 
+// 导入UI组件库
+import { XiuxianTableWithPagination, XiuxianSearchBar } from '@/components/ui'
+
 const { Option } = Select
 
 interface RechargeRecordsTabProps {
@@ -25,7 +28,7 @@ export default function RechargeRecordsTab({
   // 根据档位获取金额
   const getAmountByTier = (tier: string): number => {
     if (!config) return 0
-    
+
     // 检查月卡
     if (tier === config.monthCardConfig?.SMALL?.name) {
       return config.monthCardConfig.SMALL.price
@@ -33,7 +36,7 @@ export default function RechargeRecordsTab({
     if (tier === config.monthCardConfig?.BIG?.name) {
       return config.monthCardConfig.BIG.price
     }
-    
+
     // 检查充值档位
     const tierData = config.rechargeTiers?.find((t: any) => t.name === tier)
     return tierData?.amount || 0
@@ -205,9 +208,14 @@ export default function RechargeRecordsTab({
         <div className="flex-1 min-w-0">
           <Input.Search
             placeholder="搜索用户ID或记录ID"
-            allowClear
-            className="xiuxian-input"
-            onSearch={setSearchText}
+            className="w-full xiuxian-input"
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            onSearch={() => {}}
+            onKeyPress={e =>
+              e.key === 'Enter' &&
+              setSearchText((e.target as HTMLInputElement).value)
+            }
           />
         </div>
         <Select
@@ -239,19 +247,20 @@ export default function RechargeRecordsTab({
         </div>
       </div>
 
-      <Table
+      <XiuxianTableWithPagination
         columns={columns}
         dataSource={filteredRecords}
         loading={loading}
         rowKey="id"
         pagination={{
+          current: 1,
           pageSize: 20,
+          total: filteredRecords.length,
           showSizeChanger: true,
           showQuickJumper: true,
           showTotal: total => `共 ${total} 条记录`
         }}
         rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-        className="xiuxian-table"
       />
     </div>
   )

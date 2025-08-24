@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Modal,
-  Form,
-  Input,
-  Select,
-  Card,
-  Tag,
-  Divider,
-  Radio,
-  Space
-} from 'antd'
+import { Modal, Form, Input, Select, Card, Tag, Divider } from 'antd'
 import { DollarOutlined, GiftOutlined, CrownOutlined } from '@ant-design/icons'
 import type { FormInstance } from 'antd/es/form'
 import type { CurrencyUser, RechargeFormValues } from '@/types/CurrencyManager'
+
+// 导入UI组件库
+import { XiuxianRadioGroup } from '@/components/ui'
 
 const { Option } = Select
 
@@ -113,20 +106,19 @@ export default function RechargeModal({
       rules={[{ required: true, message: '请输入或选择用户ID' }]}
     >
       <div className="space-y-3">
-        <Radio.Group
+        <XiuxianRadioGroup
           value={inputMode}
-          onChange={e => handleInputModeChange(e.target.value)}
+          onChange={value =>
+            handleInputModeChange(value as 'select' | 'manual')
+          }
+          options={[
+            { value: 'select', label: '从列表选择' },
+            { value: 'manual', label: '手动输入' }
+          ]}
+          variant="button"
+          size="small"
           className="mb-3"
-        >
-          <Space>
-            <Radio.Button value="select" className="text-slate-300">
-              从列表选择
-            </Radio.Button>
-            <Radio.Button value="manual" className="text-slate-300">
-              手动输入
-            </Radio.Button>
-          </Space>
-        </Radio.Group>
+        />
 
         {inputMode === 'select' ? (
           <Select
