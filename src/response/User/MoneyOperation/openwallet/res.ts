@@ -38,7 +38,7 @@ export default onResponse(selects, async e => {
   const random4 = Math.random()
   let m = ''
   let lingshi = 0
-  //查找秘境
+  // 获得灵石
   if (random1 < x) {
     if (random2 < y) {
       if (random3 < z) {

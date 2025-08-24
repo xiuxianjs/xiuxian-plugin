@@ -16,6 +16,15 @@ import { getDataList } from './DataList.js'
 
 // 类型已集中到 src/types/model.ts
 
+/**
+ * 更新纳戒物品
+ * @param usr_qq 玩家QQ
+ * @param thing_name 物品名称
+ * @param thing_class 物品类型
+ * @param thing_pinji 物品等级
+ * @param lock 物品是否锁定
+ * @returns
+ */
 export async function updateBagThing(
   usr_qq: string,
   thing_name: string,
@@ -80,6 +89,15 @@ export async function existNajieThing(
   return false
 }
 
+/**
+ * 添加物品到Najie
+ * @param usr_qq 玩家QQ
+ * @param name 物品名称
+ * @param thing_class 物品类型
+ * @param x 物品数量
+ * @param pinji 物品等级
+ * @returns
+ */
 export async function addNajieThing(
   usr_qq: string,
   name: string | EquipmentLike | XianchongLike,
@@ -106,6 +124,7 @@ export async function addNajieThing(
         data[2] = await getDataList('Duanzhaowuqi')
         data[3] = await getDataList('Duanzhaohuju')
         data[4] = await getDataList('Duanzhaobaowu')
+        data[5] = await getDataList('Xuanwu')
 
         for (const i of data) {
           if (!Array.isArray(i)) continue

@@ -62,7 +62,11 @@ export async function readNajie(usr_qq: string): Promise<Najie | null> {
   return JSON.parse(raw) as Najie
 }
 
-// 写入纳戒信息
+/**
+ * 写入纳戒信息
+ * @param usr_qq 玩家QQ
+ * @param najie 纳戒信息
+ */
 export async function writeNajie(usr_qq: string, najie: Najie): Promise<void> {
   const redis = getIoRedis()
   await redis.set(keys.najie(usr_qq), JSON.stringify(najie))
