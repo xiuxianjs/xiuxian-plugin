@@ -100,11 +100,12 @@ const res = onResponse(selects, async e => {
   const A = e.UserId
   if (!(await existplayer(A))) return false
 
-  const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
-  if (!Mentions || Mentions.length === 0) return false
-  const User = Mentions.find(item => !item.IsBot)
-  if (!User) return false
-  const B = User.UserId
+  const [mention] = useMention(e)
+  const res = await mention.findOne()
+  const target = res?.data
+  if (!target || res.code !== 2000) return false
+
+  const B = target.UserId
   if (A === B) return false
   if (!(await existplayer(B))) {
     Send(Text('修仙者不可对凡人出手!'))

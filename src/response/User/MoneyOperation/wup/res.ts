@@ -42,11 +42,11 @@ const res = onResponse(selects, async e => {
   // 解析 @ 目标
   let targetQQ: string | undefined
   try {
-    const mention = useMention(e)[0]
-    const res = await mention.find({ IsBot: false })
-    const list = res?.data || []
-    const user = list.find(i => !i.IsBot)
-    if (user) targetQQ = user.UserId
+    const [mention] = useMention(e)
+    const res = await mention.findOne()
+    const target = res?.data
+    if (!target || res.code !== 2000) return false
+    if (target) targetQQ = target.UserId
   } catch {
     // ignore
   }

@@ -1,16 +1,11 @@
 import { Image, Text, useMention, useSend } from 'alemonjs'
-import { existplayer, readPlayer, zdBattle } from '@src/model/index'
+import { existplayer, keys, redis, zdBattle } from '@src/model/index'
 import type { Player } from '@src/types'
 import { getAvatar } from '@src/model/utils/utilsx.js'
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { screenshot } from '@src/image'
 export const regular = /^(#|＃|\/)?以武会友$/
-
-function isPlayer(v): v is Player {
-  return !!v && typeof v === 'object' && '名号' in v && '血量上限' in v
-}
-
 function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') return undefined
   const o = lg
@@ -22,37 +17,40 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const A = e.UserId
   if (!(await existplayer(A))) return false
-
-  const mentionsApi = useMention(e)[0]
-  const Mentions = (await mentionsApi.find({ IsBot: false })).data
-  if (!Mentions || Mentions.length === 0) return false
-  const target = Mentions.find(item => !item.IsBot)
-  if (!target) return false
+  const [mention] = useMention(e)
+  const res = await mention.findOne()
+  const target = res?.data
+  if (!target || res.code !== 2000) return false
   const B = target.UserId
 
   if (A === B) {
     Send(Text('你还跟自己修炼上了是不是?'))
     return false
   }
-  if (!(await existplayer(B))) {
+  const ext = await redis.exists(keys.player(A))
+  if (ext < 1) {
     Send(Text('修仙者不可对凡人出手!'))
     return false
   }
-
+  const dataA = await redis.get(keys.player(A))
+  if (!dataA) {
+    Send(Text('你的数据不存在'))
+    return
+  }
+  const dataB = await redis.get(keys.player(B))
+  if (!dataB) {
+    Send(Text('对方数据不存在'))
+    return
+  }
   let A_player: Player
   let B_player: Player
   try {
-    A_player = await readPlayer(A)
-    B_player = await readPlayer(B)
+    A_player = JSON.parse(dataA)
+    B_player = JSON.parse(dataB)
   } catch (_err) {
-    Send(Text('读取玩家数据失败'))
-    return false
+    Send(Text('数据解析错误'))
+    return
   }
-  if (!isPlayer(A_player) || !isPlayer(B_player)) {
-    Send(Text('玩家数据异常'))
-    return false
-  }
-
   // 复制（避免副作用）
   const a = { ...A_player }
   const b = { ...B_player }

@@ -49,11 +49,13 @@ const res = onResponse(selects, async e => {
   }
 
   // 目标 @
+
   const [mention] = useMention(e)
-  const found = await mention.find({ IsBot: false })
-  const user = found?.data?.find(u => !u.IsBot)
-  if (!user) return false
-  const B = user.UserId
+  const res = await mention.findOne()
+  const target = res?.data
+  if (!target || res.code !== 2000) return false
+
+  const B = target.UserId
   if (A === B) {
     Send(Text('咋的，自娱自乐？'))
     return false
