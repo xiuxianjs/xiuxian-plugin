@@ -47,6 +47,11 @@ export const menuItems = [
     path: '/tasks'
   },
   {
+    label: '禁言管理',
+    icon: '🔇',
+    path: '/mute'
+  },
+  {
     label: '系统配置',
     icon: '⚙️',
     path: '/config'

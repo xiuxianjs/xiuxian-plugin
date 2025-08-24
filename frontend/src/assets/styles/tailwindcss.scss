@@ -182,16 +182,58 @@ body,
 }
 
 .xiuxian-table {
+
+  // 表格整体背景
+  .ant-table {
+    @apply bg-gray-800;
+  }
+
+  // 表格容器背景
+  .ant-table-container {
+    @apply bg-gray-800;
+  }
+
+  // 表格头部
   .ant-table-thead>tr>th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
+  // 表格主体背景
+  .ant-table-tbody {
+    @apply bg-gray-800;
+  }
+
+  // 表格行背景
+  .ant-table-tbody>tr {
+    @apply bg-gray-800;
+  }
+
+  // 表格行悬停效果
+  .ant-table-tbody>tr:hover>td {
+    @apply bg-gray-700 !important;
+  }
+
   .ant-table-cell-row-hover {
+    @apply bg-gray-700 !important;
+  }
+
+  // 表格行选中状态
+  .ant-table-tbody>tr.ant-table-row-selected>td {
+    @apply bg-gray-700 !important;
+  }
+
+  .ant-table-tbody>tr.ant-table-row-selected:hover>td {
     @apply bg-gray-600 !important;
   }
 
+  // 表格单元格选中状态
+  .ant-table-cell-row-selected {
+    @apply bg-gray-700 !important;
+  }
+
+  // 表格单元格
   .ant-table-tbody>tr>td {
-    @apply border-gray-600 text-gray-300;
+    @apply border-gray-600 text-gray-300 bg-gray-800;
   }
 
   // 分页器

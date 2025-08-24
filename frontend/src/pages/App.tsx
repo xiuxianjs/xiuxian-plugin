@@ -58,7 +58,7 @@ export default function App() {
           </div>
 
           {/* 导航菜单 */}
-          <nav className="mt-6 px-3 flex-1 overflow-y-auto">
+          <nav className="px-3 py-2 flex-1 overflow-y-auto max-h-[calc(100vh-5rem)]">
             {menuItems.map(item => (
               <button
                 key={item.path}
