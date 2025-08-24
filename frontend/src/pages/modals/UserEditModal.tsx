@@ -147,10 +147,7 @@ export default function UserEditModal({
                           name="id"
                           rules={[{ required: true, message: '请输入用户ID' }]}
                         >
-                          <Input
-                            className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500"
-                            disabled
-                          />
+                          <Input className="xiuxian-input" disabled />
                         </Form.Item>
                       </Col>
                       <Col span={8}>
@@ -159,7 +156,7 @@ export default function UserEditModal({
                           name="名号"
                           rules={[{ required: true, message: '请输入名号' }]}
                         >
-                          <Input className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500" />
+                          <Input className="xiuxian-input" />
                         </Form.Item>
                       </Col>
                       <Col span={8}>
@@ -167,12 +164,7 @@ export default function UserEditModal({
                           label={<span className="text-slate-200">性别</span>}
                           name="sex"
                         >
-                          <Select
-                            className="bg-slate-700/50 border-slate-600 text-white"
-                            dropdownStyle={{
-                              backgroundColor: 'rgb(51, 65, 85)'
-                            }}
-                          >
+                          <Select className="xiuxian-select">
                             <Option value="男">男</Option>
                             <Option value="女">女</Option>
                           </Select>
@@ -183,12 +175,7 @@ export default function UserEditModal({
                           label={<span className="text-slate-200">境界</span>}
                           name="level_id"
                         >
-                          <Select
-                            className="bg-slate-700/50 border-slate-600 text-white"
-                            dropdownStyle={{
-                              backgroundColor: 'rgb(51, 65, 85)'
-                            }}
-                          >
+                          <Select className="xiuxian-select">
                             {Object.entries(levelNames).map(([id, name]) => (
                               <Option key={id} value={parseInt(id)}>
                                 {name}
@@ -202,10 +189,7 @@ export default function UserEditModal({
                           label={<span className="text-slate-200">宣言</span>}
                           name="宣言"
                         >
-                          <Input.TextArea
-                            rows={2}
-                            className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500"
-                          />
+                          <Input.TextArea rows={2} className="xiuxian-input" />
                         </Form.Item>
                       </Col>
                     </Row>

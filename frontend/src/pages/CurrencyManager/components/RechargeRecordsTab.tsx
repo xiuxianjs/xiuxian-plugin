@@ -10,15 +10,34 @@ const { Option } = Select
 interface RechargeRecordsTabProps {
   records: RechargeRecord[]
   loading: boolean
+  config?: any // 配置信息
 }
 
 export default function RechargeRecordsTab({
   records,
-  loading
+  loading,
+  config
 }: RechargeRecordsTabProps) {
   const [searchText, setSearchText] = React.useState('')
   const [statusFilter, setStatusFilter] = React.useState<string>('')
   const [typeFilter, setTypeFilter] = React.useState<string>('')
+
+  // 根据档位获取金额
+  const getAmountByTier = (tier: string): number => {
+    if (!config) return 0
+    
+    // 检查月卡
+    if (tier === config.monthCardConfig?.SMALL?.name) {
+      return config.monthCardConfig.SMALL.price
+    }
+    if (tier === config.monthCardConfig?.BIG?.name) {
+      return config.monthCardConfig.BIG.price
+    }
+    
+    // 检查充值档位
+    const tierData = config.rechargeTiers?.find((t: any) => t.name === tier)
+    return tierData?.amount || 0
+  }
 
   const columns: ColumnsType<RechargeRecord> = [
     {
@@ -59,24 +78,27 @@ export default function RechargeRecordsTab({
     },
     {
       title: '充值金额',
-      dataIndex: 'amount',
+      dataIndex: 'tier',
       key: 'amount',
       width: 120,
-      render: (amount, record) => (
-        <div className="space-y-1">
-          <div className="font-bold text-green-400">¥{amount}</div>
-          {record.currency_gained > 0 && (
-            <div className="text-xs text-yellow-400">
-              获得金币: {record.currency_gained.toLocaleString()}
-            </div>
-          )}
-          {record.month_card_days > 0 && (
-            <div className="text-xs text-blue-400">
-              月卡天数: {record.month_card_days}天
-            </div>
-          )}
-        </div>
-      )
+      render: (tier, record) => {
+        const amount = getAmountByTier(tier)
+        return (
+          <div className="space-y-1">
+            <div className="font-bold text-green-400">¥{amount}</div>
+            {record.currency_gained > 0 && (
+              <div className="text-xs text-yellow-400">
+                获得金币: {record.currency_gained.toLocaleString()}
+              </div>
+            )}
+            {record.month_card_days > 0 && (
+              <div className="text-xs text-blue-400">
+                月卡天数: {record.month_card_days}天
+              </div>
+            )}
+          </div>
+        )
+      }
     },
     {
       title: '支付状态',
@@ -98,11 +120,8 @@ export default function RechargeRecordsTab({
             <span className="text-slate-300 ml-1">{record.payment_method}</span>
           </div>
           {record.transaction_id && (
-            <div>
-              <span className="text-slate-400">交易号:</span>
-              <div className="text-slate-300 font-mono">
-                {record.transaction_id}
-              </div>
+            <div className="font-mono text-slate-400">
+              {record.transaction_id.slice(0, 8)}...
             </div>
           )}
         </div>

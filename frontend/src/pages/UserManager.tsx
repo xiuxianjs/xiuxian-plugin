@@ -354,7 +354,7 @@ export default function UserManager() {
               <input
                 type="text"
                 placeholder="搜索修仙者名号或ID..."
-                className="w-full pl-12 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+                className="w-full pl-12 pr-4 py-3 xiuxian-input rounded-lg"
                 value={searchText}
                 onChange={e => setSearchText(e.target.value)}
                 onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}

@@ -5,6 +5,26 @@ import type {
 } from '@/types/CurrencyManager'
 import { authRequest } from '../base'
 
+// 获取配置信息
+export const fetchConfigAPI = async (): Promise<{
+  success: boolean
+  data?: any
+  message?: string
+}> => {
+  try {
+    const result = await authRequest({
+      url: '/currency/config',
+      method: 'GET'
+    })
+    if (result.code === 200) {
+      return { success: true, data: result.data }
+    }
+    return { success: false, message: result.message || '获取配置信息失败' }
+  } catch (_e) {
+    return { success: false, message: '获取配置信息失败' }
+  }
+}
+
 // 获取用户货币信息
 export const fetchUsersAPI = async (): Promise<{
   success: boolean
@@ -69,9 +89,9 @@ export const fetchStatsAPI = async (): Promise<{
 export const createRechargeRecordAPI = async (params: {
   action: string
   userId: string
-  amount?: number
   tier?: string
   paymentMethod?: string
+  remark?: string
 }): Promise<{ success: boolean; data?: { id: string }; message?: string }> => {
   try {
     const result = await authRequest({

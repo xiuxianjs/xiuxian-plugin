@@ -18,7 +18,6 @@ export interface RechargeRecord {
   id: string
   user_id: string
   type: string
-  amount: number
   tier: string
   currency_gained: number
   month_card_days: number
@@ -50,6 +49,45 @@ export interface RechargeFormValues {
   userId: string
   type: string
   tier?: string
-  amount?: number
   remark?: string
+}
+
+// 配置相关类型
+export interface CurrencyConfig {
+  RMB_TO_CURRENCY_RATE: number
+  FIRST_RECHARGE_BONUS_RATE: number
+  TRANSACTION_EXPIRE_TIME: number
+  DEFAULT_PAGE_LIMIT: number
+}
+
+export interface RechargeTier {
+  key: string
+  amount: number
+  name: string
+  currencyGained: number
+  firstRechargeBonus: number
+}
+
+export interface MonthCardConfig {
+  price: number
+  days: number
+  name: string
+  currencyGained: number
+  firstRechargeBonus: number
+}
+
+export interface CurrencyConfigData {
+  currencyConfig: CurrencyConfig
+  rechargeTiers: RechargeTier[]
+  monthCardConfig: {
+    SMALL: MonthCardConfig
+    BIG: MonthCardConfig
+  }
+  rechargeTypes: Record<string, string>
+  paymentStatuses: Record<string, string>
+  utils: {
+    getAmountByTier: (tier: string) => number | null
+    calculateCurrencyGained: (amount: number) => number
+    calculateFirstRechargeBonus: (amount: number) => number
+  }
 }

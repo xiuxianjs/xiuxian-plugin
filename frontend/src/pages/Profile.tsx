@@ -182,7 +182,7 @@ export default function Profile() {
                         value={passwordForm.currentPassword}
                         onChange={handleInputChange('currentPassword')}
                         required
-                        className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
+                        className="w-full pl-10 pr-4 py-3 xiuxian-input rounded-xl"
                         placeholder="请输入当前密码"
                       />
                     </div>
@@ -202,7 +202,7 @@ export default function Profile() {
                         onChange={handleInputChange('newPassword')}
                         required
                         minLength={6}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
+                        className="w-full pl-10 pr-4 py-3 xiuxian-input rounded-xl"
                         placeholder="请输入新密码（至少6位）"
                       />
                     </div>
@@ -221,7 +221,7 @@ export default function Profile() {
                         value={passwordForm.confirmPassword}
                         onChange={handleInputChange('confirmPassword')}
                         required
-                        className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
+                        className="w-full pl-10 pr-4 py-3 xiuxian-input rounded-xl"
                         placeholder="请再次输入新密码"
                       />
                     </div>

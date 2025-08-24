@@ -5,7 +5,10 @@ import {
   rechargeUserCurrency,
   rechargeUserSmallMonthCard,
   rechargeUserBigMonthCard,
-  completeRechargePayment
+  completeRechargePayment,
+  getAmountByTier,
+  calculateCurrencyGained,
+  MONTH_CARD_CONFIG
 } from '@src/model/currency'
 
 // 创建充值记录
@@ -20,7 +23,6 @@ export const POST = async (ctx: Context) => {
     const {
       action,
       userId,
-      amount,
       tier,
       paymentMethod = 'admin',
       ipAddress = '',
@@ -28,7 +30,6 @@ export const POST = async (ctx: Context) => {
     } = body as {
       action: string
       userId?: string
-      amount?: number
       tier?: string
       paymentMethod?: string
       ipAddress?: string
@@ -37,30 +38,46 @@ export const POST = async (ctx: Context) => {
 
     switch (action) {
       case 'recharge-currency': {
-        if (!userId || !amount || !tier) {
+        if (!userId || !tier) {
           ctx.status = 400
           ctx.body = {
             code: 400,
-            message: '用户ID、充值金额和档位不能为空',
+            message: '用户ID和充值档位不能为空',
             data: null
           }
           return
         }
 
-        const currencyRecord = await rechargeUserCurrency(
-          userId,
-          amount,
-          tier,
-          paymentMethod,
-          ipAddress,
-          deviceInfo
-        )
+        // 验证档位是否有效
+        try {
+          const amount = getAmountByTier(tier)
+          const currencyGained = calculateCurrencyGained(amount)
 
-        ctx.status = 201
-        ctx.body = {
-          code: 201,
-          message: '创建金币充值记录成功',
-          data: currencyRecord
+          const currencyRecord = await rechargeUserCurrency(
+            userId,
+            tier,
+            paymentMethod,
+            ipAddress,
+            deviceInfo
+          )
+
+          ctx.status = 201
+          ctx.body = {
+            code: 201,
+            message: '创建金币充值记录成功',
+            data: {
+              ...currencyRecord,
+              amount,
+              currencyGained
+            }
+          }
+        } catch (_error) {
+          ctx.status = 400
+          ctx.body = {
+            code: 400,
+            message: `无效的充值档位: ${tier}`,
+            data: null
+          }
         }
         break
       }
@@ -87,7 +104,11 @@ export const POST = async (ctx: Context) => {
         ctx.body = {
           code: 201,
           message: '创建小月卡充值记录成功',
-          data: smallMonthCardRecord
+          data: {
+            ...smallMonthCardRecord,
+            amount: MONTH_CARD_CONFIG.SMALL.price,
+            days: MONTH_CARD_CONFIG.SMALL.days
+          }
         }
         break
       }
@@ -114,7 +135,11 @@ export const POST = async (ctx: Context) => {
         ctx.body = {
           code: 201,
           message: '创建大月卡充值记录成功',
-          data: bigMonthCardRecord
+          data: {
+            ...bigMonthCardRecord,
+            amount: MONTH_CARD_CONFIG.BIG.price,
+            days: MONTH_CARD_CONFIG.BIG.days
+          }
         }
         break
       }

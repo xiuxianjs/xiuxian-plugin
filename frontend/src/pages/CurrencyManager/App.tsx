@@ -14,6 +14,7 @@ export default function CurrencyManager() {
     users,
     records,
     stats,
+    config,
     selectedTab,
     rechargeModalVisible,
     selectedUser,
@@ -24,6 +25,7 @@ export default function CurrencyManager() {
     fetchUsers,
     fetchRecords,
     fetchStats,
+    fetchConfig,
     handleRechargeOk
   } = useCurrencyManager()
 
@@ -67,6 +69,7 @@ export default function CurrencyManager() {
                 fetchUsers()
                 fetchRecords()
                 fetchStats()
+                fetchConfig()
               }}
             >
               <ReloadOutlined />
@@ -112,7 +115,11 @@ export default function CurrencyManager() {
 
             {/* 充值记录管理 */}
             {selectedTab === 'records' && (
-              <RechargeRecordsTab records={records} loading={loading} />
+              <RechargeRecordsTab
+                records={records}
+                loading={loading}
+                config={config}
+              />
             )}
 
             {/* 统计分析 */}
@@ -124,6 +131,8 @@ export default function CurrencyManager() {
         <RechargeModal
           visible={rechargeModalVisible}
           user={selectedUser}
+          config={config}
+          users={users}
           onCancel={() => {
             setRechargeModalVisible(false)
             setSelectedUser(null)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Tag, Tooltip, Card, Input, Col, Statistic, Row } from 'antd'
+import { Table, Tag, Tooltip, Input, Col, Row } from 'antd'
 import {
   EyeOutlined,
   TeamOutlined,
@@ -53,12 +53,16 @@ export default function AssociationManager() {
               {record.宗门名称}
             </div>
             <div className="text-slate-300 text-sm mb-1">
-              <CrownOutlined className="mr-1" />
-              等级: {record.宗门等级}
+              <CrownOutlined className="mr-1 text-purple-400" />
+              等级:{' '}
+              <span className="text-purple-400 font-medium">
+                {record.宗门等级}
+              </span>
             </div>
             <div className="text-slate-300 text-sm">
-              <UserOutlined className="mr-1" />
-              宗主: {record.宗主}
+              <UserOutlined className="mr-1 text-blue-400" />
+              宗主:{' '}
+              <span className="text-blue-400 font-medium">{record.宗主}</span>
             </div>
           </div>
         </div>
@@ -104,20 +108,20 @@ export default function AssociationManager() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-slate-300 text-sm">总成员</span>
-              <span className="text-white font-semibold">
-                {record.所有成员?.length || 0}
+              <span className="text-white font-bold">
+                {(record.所有成员?.length || 0).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-300 text-sm">副宗主</span>
-              <span className="text-purple-400 font-semibold">
-                {record.副宗主?.length || 0}
+              <span className="text-purple-400 font-bold">
+                {(record.副宗主?.length || 0).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-300 text-sm">长老</span>
-              <span className="text-green-400 font-semibold">
-                {record.长老?.length || 0}
+              <span className="text-green-400 font-bold">
+                {(record.长老?.length || 0).toLocaleString()}
               </span>
             </div>
           </div>
@@ -137,19 +141,19 @@ export default function AssociationManager() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-slate-300 text-sm">灵石池</span>
-              <span className="text-green-400 font-semibold text-sm">
+              <span className="text-green-400 font-bold text-sm">
                 {(record.灵石池 || 0).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-300 text-sm">大阵血量</span>
-              <span className="text-yellow-400 font-semibold text-sm">
+              <span className="text-yellow-400 font-bold text-sm">
                 {(record.大阵血量 || 0).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-300 text-sm">最低境界</span>
-              <span className="text-purple-400 font-semibold text-sm">
+              <span className="text-purple-400 font-bold text-sm">
                 {getLevelName(record.最低加入境界)}
               </span>
             </div>
@@ -170,13 +174,13 @@ export default function AssociationManager() {
           <div className="space-y-2">
             <div className="text-center">
               <div className="text-slate-300 text-sm mb-1">驻地</div>
-              <div className="text-white font-semibold text-sm">
+              <div className="text-white font-bold text-sm">
                 {record.宗门驻地 || '无驻地'}
               </div>
             </div>
             <div className="text-center">
               <div className="text-slate-300 text-sm mb-1">神兽</div>
-              <div className="text-pink-400 font-semibold text-sm">
+              <div className="text-pink-400 font-bold text-sm">
                 {record.宗门神兽 || '无'}
               </div>
             </div>
@@ -215,7 +219,7 @@ export default function AssociationManager() {
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="relative z-10  p-2 md:p-6 h-full overflow-y-auto">
         {/* 页面标题和操作按钮 */}
-        <div className="flex flex-col sm:flex-row  gap-2  justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 justify-between items-center mb-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
               <TeamOutlined className="text-white text-xl" />
@@ -229,114 +233,92 @@ export default function AssociationManager() {
               </p>
             </div>
           </div>
-          <button
-            className="px-2 py-1  rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white  hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
-            onClick={() => fetchAssociations(1, pagination.pageSize)}
-            disabled={loading}
-          >
-            <ReloadOutlined className={loading ? 'animate-spin' : ''} />
-            {loading ? '刷新中...' : '刷新数据'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="px-2 py-1 rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+              onClick={() => fetchAssociations(1, pagination.pageSize)}
+              disabled={loading}
+            >
+              <ReloadOutlined className={loading ? 'animate-spin' : ''} />
+              {loading ? '刷新中...' : '刷新数据'}
+            </button>
+          </div>
         </div>
-        {/* 统计信息 */}
-        <Row gutter={[24, 24]} className="mb-8">
-          <Col xs={24} sm={12} lg={6}>
-            <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200">
-              <Statistic
-                title={<span className="text-slate-300">总宗门数</span>}
-                value={stats.total || 0}
-                valueStyle={{
-                  color: '#60a5fa',
-                  fontSize: '2rem',
-                  fontWeight: 'bold'
-                }}
-                prefix={<TeamOutlined className="text-blue-400" />}
-                suffix={
-                  <div className="text-slate-400 text-sm">
-                    <div>仙界: {stats.xianjieCount || 0}</div>
-                    <div>凡界: {stats.fanjieCount || 0}</div>
-                  </div>
-                }
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200">
-              <Statistic
-                title={<span className="text-slate-300">仙界宗门</span>}
-                value={stats.xianjieCount || 0}
-                valueStyle={{
-                  color: '#a855f7',
-                  fontSize: '2rem',
-                  fontWeight: 'bold'
-                }}
-                prefix={<CrownOutlined className="text-purple-400" />}
-                suffix={
-                  <div className="text-slate-400 text-sm">
-                    <div>
-                      占比:{' '}
-                      {stats.total
-                        ? Math.round((stats.xianjieCount / stats.total) * 100)
-                        : 0}
-                      %
-                    </div>
-                  </div>
-                }
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200">
-              <Statistic
-                title={<span className="text-slate-300">总灵石池</span>}
-                value={stats.totalLingshi || 0}
-                valueStyle={{
-                  color: '#10b981',
-                  fontSize: '2rem',
-                  fontWeight: 'bold'
-                }}
-                prefix={<BankOutlined className="text-green-400" />}
-                suffix={
-                  <div className="text-slate-400 text-sm">
-                    <div>
-                      平均:{' '}
-                      {stats.total
-                        ? Math.round(stats.totalLingshi / stats.total)
-                        : 0}
-                    </div>
-                  </div>
-                }
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/10 backdrop-blur-xl border border-orange-500/30 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200">
-              <Statistic
-                title={<span className="text-slate-300">总成员数</span>}
-                value={stats.totalMembers || 0}
-                valueStyle={{
-                  color: '#f97316',
-                  fontSize: '2rem',
-                  fontWeight: 'bold'
-                }}
-                prefix={<FireOutlined className="text-orange-400" />}
-                suffix={
-                  <div className="text-slate-400 text-sm">
-                    <div>
-                      平均:{' '}
-                      {stats.total
-                        ? Math.round(stats.totalMembers / stats.total)
-                        : 0}
-                    </div>
-                  </div>
-                }
-              />
-            </Card>
-          </Col>
-        </Row>
+        {/* 统计卡片 */}
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <TeamOutlined className="text-purple-400" />
+            宗门统计
+          </h3>
+          <Row gutter={16}>
+            <Col span={6}>
+              <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4">
+                <div className="text-sm text-slate-400 mb-2">总宗门数</div>
+                <div className="text-2xl font-bold text-blue-400 flex items-center gap-2">
+                  <TeamOutlined />
+                  {(stats.total || 0).toLocaleString()}
+                </div>
+                <div className="text-xs text-slate-400 mt-1">
+                  仙界: {stats.xianjieCount || 0} | 凡界:{' '}
+                  {stats.fanjieCount || 0}
+                </div>
+              </div>
+            </Col>
+            <Col span={6}>
+              <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4">
+                <div className="text-sm text-slate-400 mb-2">仙界宗门</div>
+                <div className="text-2xl font-bold text-purple-400 flex items-center gap-2">
+                  <CrownOutlined />
+                  {(stats.xianjieCount || 0).toLocaleString()}
+                </div>
+                <div className="text-xs text-slate-400 mt-1">
+                  占比:{' '}
+                  {stats.total
+                    ? Math.round((stats.xianjieCount / stats.total) * 100)
+                    : 0}
+                  %
+                </div>
+              </div>
+            </Col>
+            <Col span={6}>
+              <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl p-4">
+                <div className="text-sm text-slate-400 mb-2">总灵石池</div>
+                <div className="text-2xl font-bold text-green-400 flex items-center gap-2">
+                  <BankOutlined />
+                  {(stats.totalLingshi || 0).toLocaleString()}
+                </div>
+                <div className="text-xs text-slate-400 mt-1">
+                  平均:{' '}
+                  {stats.total
+                    ? Math.round(stats.totalLingshi / stats.total)
+                    : 0}
+                </div>
+              </div>
+            </Col>
+            <Col span={6}>
+              <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-xl p-4">
+                <div className="text-sm text-slate-400 mb-2">总成员数</div>
+                <div className="text-2xl font-bold text-orange-400 flex items-center gap-2">
+                  <FireOutlined />
+                  {(stats.totalMembers || 0).toLocaleString()}
+                </div>
+                <div className="text-xs text-slate-400 mt-1">
+                  平均:{' '}
+                  {stats.total
+                    ? Math.round(stats.totalMembers / stats.total)
+                    : 0}
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </div>
 
         {/* 搜索栏 */}
-        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg mb-6">
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <SearchOutlined className="text-purple-400" />
+            搜索宗门
+          </h3>
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1 relative">
               <SearchOutlined className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg" />
@@ -346,7 +328,7 @@ export default function AssociationManager() {
                 value={searchText}
                 onChange={e => setSearchText(e.target.value)}
                 onPressEnter={handleSearchAndFilter}
-                className=" focus:bg-slate-500 hover:bg-slate-600 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 rounded-xl pl-12 h-12 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20"
+                className="xiuxian-input focus:bg-slate-500 hover:bg-slate-600 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 rounded-xl pl-12 h-12 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20"
               />
             </div>
             <button
@@ -357,30 +339,38 @@ export default function AssociationManager() {
               搜索
             </button>
           </div>
-        </Card>
+        </div>
         {/* 宗门表格 */}
-        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden">
-          <Table
-            columns={columns}
-            dataSource={associations}
-            rowKey="宗门名称"
-            loading={loading}
-            pagination={{
-              current: pagination.current,
-              pageSize: pagination.pageSize,
-              total: pagination.total,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-              onChange: handleTableChange,
-              className: 'p-6'
-            }}
-            scroll={{ x: 1200 }}
-            rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-            className="bg-transparent xiuxian-table"
-          />
-        </Card>
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden">
+          <div className="p-6 border-b border-slate-700/50">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <TeamOutlined className="text-purple-400" />
+              宗门列表
+            </h3>
+          </div>
+
+          <div className="p-6">
+            <Table
+              columns={columns}
+              dataSource={associations}
+              rowKey="宗门名称"
+              loading={loading}
+              pagination={{
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
+                  `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+                onChange: handleTableChange
+              }}
+              scroll={{ x: 1200 }}
+              rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
+              className="xiuxian-table"
+            />
+          </div>
+        </div>
 
         {/* 宗门详情弹窗 */}
         <AssociationInfo

@@ -154,7 +154,7 @@ export default function ConfigManager() {
                                     // 忽略JSON解析错误
                                   }
                                 }}
-                                className="w-full p-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+                                className="w-full p-2 xiuxian-input text-xs font-mono rounded-lg"
                                 rows={3}
                                 placeholder="请输入JSON数组格式"
                               />
@@ -170,7 +170,7 @@ export default function ConfigManager() {
                                     : e.target.value
                                 handleConfigChange(item.key, value)
                               }}
-                              className="w-full p-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+                              className="w-full p-2 xiuxian-input rounded-lg"
                               placeholder={`请输入${item.name}`}
                             />
                           )}
@@ -207,7 +207,7 @@ export default function ConfigManager() {
             <textarea
               value={jsonConfig}
               onChange={e => setJsonConfig(e.target.value)}
-              className="w-full h-96 p-4 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200 font-mono text-sm"
+              className="w-full h-96 p-4 xiuxian-input rounded-xl font-mono text-sm"
               placeholder="请输入JSON格式的配置..."
             />
           </div>

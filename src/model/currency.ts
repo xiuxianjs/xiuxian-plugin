@@ -1,5 +1,16 @@
 import { getIoRedis } from '@alemonjs/db'
-import { keys } from './keys'
+
+// 货币转换配置
+export const CURRENCY_CONFIG = {
+  // 人民币转金币倍率
+  RMB_TO_CURRENCY_RATE: 10,
+  // 首充奖励倍率
+  FIRST_RECHARGE_BONUS_RATE: 0.5,
+  // 交易记录过期时间（秒）
+  TRANSACTION_EXPIRE_TIME: 86400,
+  // 分页默认限制
+  DEFAULT_PAGE_LIMIT: 100
+} as const
 
 // 充值档位配置
 export const RECHARGE_TIERS = {
@@ -17,6 +28,76 @@ export const MONTH_CARD_CONFIG = {
   BIG: { price: 58, days: 30, name: '大月卡' }
 } as const
 
+// Redis Key 管理
+export const REDIS_KEYS = {
+  // 用户货币数据
+  PLAYER_CURRENCY: (userId: string) =>
+    `data:alemonjs-xiuxian:player_currency:${userId}`,
+  // 充值记录
+  CURRENCY_LOG: (recordId: string) =>
+    `data:alemonjs-xiuxian:currency_log:${recordId}`,
+  // 充值记录索引
+  CURRENCY_INDEX: () => `data:alemonjs-xiuxian:currency_index`,
+  // 交易号记录
+  TRANSACTION: (transactionId: string) =>
+    `data:alemonjs-xiuxian:transaction:${transactionId}`,
+  // 全局充值统计
+  GLOBAL_STATS: () => `data:alemonjs-xiuxian:global_recharge_stats`,
+  // 用户货币数据模式匹配
+  PLAYER_CURRENCY_PATTERN: () => `data:alemonjs-xiuxian:player_currency:*`
+} as const
+
+// ==================== 类型定义 ====================
+
+// 用户货币信息类型定义
+export interface UserCurrencyData {
+  id: string
+  currency: number
+  big_month_card_days: number
+  small_month_card_days: number
+  is_first_recharge: boolean
+  first_recharge_time: number
+  total_recharge_amount: number
+  total_recharge_count: number
+  last_recharge_time: number
+  recharge_record_ids: string[]
+  created_at: number
+  updated_at: number
+}
+
+// 充值记录类型定义（移除重复的amount字段，使用tier来获取金额）
+export interface RechargeRecord {
+  id: string
+  user_id: string
+  type: RechargeType
+  tier: string // 使用档位名称，通过配置获取金额
+  currency_gained: number
+  month_card_days: number
+  month_card_type: string
+  payment_status: PaymentStatus
+  payment_method: string
+  transaction_id: string
+  created_at: number
+  paid_at: number
+  remark: string
+  ip_address: string
+  device_info: string
+  is_first_recharge: boolean
+  first_recharge_bonus: number
+}
+
+// 全局充值统计类型定义
+export interface GlobalRechargeStats {
+  total_amount: number
+  total_count: number
+  today_amount: number
+  today_count: number
+  month_amount: number
+  month_count: number
+  first_recharge_users: number
+  updated_at: number
+}
+
 // 充值类型枚举
 export enum RechargeType {
   CURRENCY = 'currency', // 金币充值
@@ -33,8 +114,48 @@ export enum PaymentStatus {
   REFUNDED = 'refunded' // 已退款
 }
 
+// ==================== 工具函数 ====================
+
+/**
+ * 根据档位名称获取充值金额
+ */
+export const getAmountByTier = (tier: string): number => {
+  // 检查是否是月卡
+  if (tier === MONTH_CARD_CONFIG.SMALL.name) {
+    return MONTH_CARD_CONFIG.SMALL.price
+  }
+  if (tier === MONTH_CARD_CONFIG.BIG.name) {
+    return MONTH_CARD_CONFIG.BIG.price
+  }
+
+  // 检查充值档位
+  for (const tierConfig of Object.values(RECHARGE_TIERS)) {
+    if (tierConfig.name === tier) {
+      return tierConfig.amount
+    }
+  }
+
+  throw new Error(`Unknown tier: ${tier}`)
+}
+
+/**
+ * 根据金额计算获得的金币数量
+ */
+export const calculateCurrencyGained = (amount: number): number => {
+  return Math.floor(amount * CURRENCY_CONFIG.RMB_TO_CURRENCY_RATE)
+}
+
+/**
+ * 计算首充奖励
+ */
+export const calculateFirstRechargeBonus = (amount: number): number => {
+  return Math.floor(amount * CURRENCY_CONFIG.FIRST_RECHARGE_BONUS_RATE)
+}
+
+// ==================== 初始化数据 ====================
+
 // 用户货币信息初始化
-const initUserCurrencyData = {
+const initUserCurrencyData: UserCurrencyData = {
   // 用户id
   id: '',
   // 金币余额
@@ -62,15 +183,13 @@ const initUserCurrencyData = {
 }
 
 // 充值记录初始化
-const initRechargeRecord = {
+const initRechargeRecord: RechargeRecord = {
   // 记录ID
   id: '',
   // 用户ID
   user_id: '',
   // 充值类型
   type: RechargeType.CURRENCY,
-  // 充值金额（元）
-  amount: 0,
   // 充值档位
   tier: '',
   // 获得的金币数量
@@ -102,7 +221,7 @@ const initRechargeRecord = {
 }
 
 // 全局充值统计
-const initGlobalRechargeStats = {
+const initGlobalRechargeStats: GlobalRechargeStats = {
   // 总充值金额
   total_amount: 0,
   // 总充值次数
@@ -122,18 +241,18 @@ const initGlobalRechargeStats = {
 }
 
 /**
- * 获取下一个充值记录ID
+ * 获取下一个充值记录ID（使用原子操作避免并发问题）
  */
 export const getNextRechargeRecordId = async (): Promise<string> => {
   try {
     const redis = getIoRedis()
-    const currentId = await redis.get(keys.currencyIndex())
-    const nextId = currentId ? parseInt(currentId) + 1 : 1
-    await redis.set(keys.currencyIndex(), nextId.toString())
+    // 使用原子操作递增ID
+    const nextId = await redis.incr(REDIS_KEYS.CURRENCY_INDEX())
     return nextId.toString()
   } catch (error) {
     logger.warn('Error getting next recharge record ID:', error)
-    return Date.now().toString()
+    // 降级方案：使用时间戳+随机数
+    return `${Date.now()}_${Math.floor(Math.random() * 1000)}`
   }
 }
 
@@ -142,10 +261,17 @@ export const getNextRechargeRecordId = async (): Promise<string> => {
  * @param userId 用户ID
  * @returns 用户充值信息
  */
-export const findUserRechargeInfo = async (userId: string) => {
+export const findUserRechargeInfo = async (
+  userId: string
+): Promise<UserCurrencyData> => {
+  // 输入验证
+  if (!userId || typeof userId !== 'string') {
+    throw new Error('Invalid user ID')
+  }
+
   try {
     const redis = getIoRedis()
-    const data = await redis.get(keys.playerCurrency(userId))
+    const data = await redis.get(REDIS_KEYS.PLAYER_CURRENCY(userId))
     const userInfo = data ? JSON.parse(data) : initUserCurrencyData
 
     return {
@@ -172,8 +298,7 @@ export const createRechargeRecord = async (
   userId: string,
   rechargeData: {
     type: RechargeType
-    amount: number
-    tier?: string
+    tier: string
     currency_gained?: number
     month_card_days?: number
     month_card_type?: string
@@ -182,7 +307,18 @@ export const createRechargeRecord = async (
     device_info?: string
     remark?: string
   }
-) => {
+): Promise<RechargeRecord> => {
+  // 输入验证
+  if (!userId || typeof userId !== 'string') {
+    throw new Error('Invalid user ID')
+  }
+  if (!rechargeData.tier || typeof rechargeData.tier !== 'string') {
+    throw new Error('Invalid tier')
+  }
+  if (!Object.values(RechargeType).includes(rechargeData.type)) {
+    throw new Error('Invalid recharge type')
+  }
+
   try {
     const redis = getIoRedis()
     const recordId = await getNextRechargeRecordId()
@@ -191,13 +327,15 @@ export const createRechargeRecord = async (
     const userInfo = await findUserRechargeInfo(userId)
     const isFirstRecharge = userInfo.is_first_recharge
 
-    const record = {
+    // 根据档位获取金额
+    const amount = getAmountByTier(rechargeData.tier)
+
+    const record: RechargeRecord = {
       ...initRechargeRecord,
       id: recordId,
       user_id: userId,
       type: rechargeData.type,
-      amount: rechargeData.amount,
-      tier: rechargeData.tier || '',
+      tier: rechargeData.tier,
       currency_gained: rechargeData.currency_gained || 0,
       month_card_days: rechargeData.month_card_days || 0,
       month_card_type: rechargeData.month_card_type || '',
@@ -207,17 +345,20 @@ export const createRechargeRecord = async (
       remark: rechargeData.remark || '',
       is_first_recharge: isFirstRecharge,
       first_recharge_bonus: isFirstRecharge
-        ? Math.floor(rechargeData.amount * 0.5)
+        ? calculateFirstRechargeBonus(amount)
         : 0,
       created_at: Date.now()
     }
 
     // 保存充值记录
-    await redis.set(keys.currencyLog(recordId), JSON.stringify(record))
+    await redis.set(REDIS_KEYS.CURRENCY_LOG(recordId), JSON.stringify(record))
 
     // 更新用户充值记录ID列表
     userInfo.recharge_record_ids.push(recordId)
-    await redis.set(keys.playerCurrency(userId), JSON.stringify(userInfo))
+    await redis.set(
+      REDIS_KEYS.PLAYER_CURRENCY(userId),
+      JSON.stringify(userInfo)
+    )
 
     return record
   } catch (error) {
@@ -237,18 +378,32 @@ export const completeRechargePayment = async (
   recordId: string,
   transactionId: string,
   paymentMethod: string = 'unknown'
-) => {
+): Promise<RechargeRecord> => {
+  // 输入验证
+  if (!recordId || typeof recordId !== 'string') {
+    throw new Error('Invalid record ID')
+  }
+  if (!transactionId || typeof transactionId !== 'string') {
+    throw new Error('Invalid transaction ID')
+  }
+
   try {
     const redis = getIoRedis()
 
     // 获取充值记录
-    const recordData = await redis.get(keys.currencyLog(recordId))
+    const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId))
     if (!recordData) {
       throw new Error('Recharge record not found')
     }
 
-    const record = JSON.parse(recordData)
+    const record: RechargeRecord = JSON.parse(recordData)
     const userId = record.user_id
+
+    // 检查是否已经支付成功
+    if (record.payment_status === PaymentStatus.SUCCESS) {
+      logger.warn('Recharge record already completed:', recordId)
+      return record
+    }
 
     // 更新充值记录状态
     record.payment_status = PaymentStatus.SUCCESS
@@ -256,7 +411,7 @@ export const completeRechargePayment = async (
     record.payment_method = paymentMethod
     record.paid_at = Date.now()
 
-    await redis.set(keys.currencyLog(recordId), JSON.stringify(record))
+    await redis.set(REDIS_KEYS.CURRENCY_LOG(recordId), JSON.stringify(record))
 
     // 更新用户信息
     const userInfo = await findUserRechargeInfo(userId)
@@ -267,8 +422,11 @@ export const completeRechargePayment = async (
       userInfo.first_recharge_time = Date.now()
     }
 
+    // 根据档位获取金额
+    const amount = getAmountByTier(record.tier)
+
     // 更新充值统计
-    userInfo.total_recharge_amount += record.amount
+    userInfo.total_recharge_amount += amount
     userInfo.total_recharge_count += 1
     userInfo.last_recharge_time = Date.now()
     userInfo.updated_at = Date.now()
@@ -303,10 +461,13 @@ export const completeRechargePayment = async (
         break
     }
 
-    await redis.set(keys.playerCurrency(userId), JSON.stringify(userInfo))
+    await redis.set(
+      REDIS_KEYS.PLAYER_CURRENCY(userId),
+      JSON.stringify(userInfo)
+    )
 
     // 更新全局统计
-    await updateGlobalRechargeStats(record.amount, record.is_first_recharge)
+    await updateGlobalRechargeStats(amount, record.is_first_recharge)
 
     return record
   } catch (error) {
@@ -318,7 +479,6 @@ export const completeRechargePayment = async (
 /**
  * 充值用户金币
  * @param userId 用户ID
- * @param amount 充值金额（元）
  * @param tier 充值档位
  * @param paymentMethod 支付方式
  * @param ipAddress IP地址
@@ -327,20 +487,20 @@ export const completeRechargePayment = async (
  */
 export const rechargeUserCurrency = async (
   userId: string,
-  amount: number,
   tier: string,
   paymentMethod: string = 'unknown',
   ipAddress: string = '',
   deviceInfo: string = ''
 ) => {
   try {
-    // 计算获得的金币数量（这里可以根据实际比例调整）
-    const currencyGained = Math.floor(amount * 10) // 1元 = 10金币
+    // 根据档位获取金额
+    const amount = getAmountByTier(tier)
+    // 计算获得的金币数量
+    const currencyGained = calculateCurrencyGained(amount)
 
     // 创建充值记录
     const record = await createRechargeRecord(userId, {
       type: RechargeType.CURRENCY,
-      amount,
       tier,
       currency_gained: currencyGained,
       payment_method: paymentMethod,
@@ -370,12 +530,11 @@ export const rechargeUserSmallMonthCard = async (
   deviceInfo: string = ''
 ) => {
   try {
-    const { price, days, name } = MONTH_CARD_CONFIG.SMALL
+    const { days, name } = MONTH_CARD_CONFIG.SMALL
 
     // 创建充值记录
     const record = await createRechargeRecord(userId, {
       type: RechargeType.SMALL_MONTH_CARD,
-      amount: price,
       tier: name,
       month_card_days: days,
       month_card_type: 'small',
@@ -406,12 +565,11 @@ export const rechargeUserBigMonthCard = async (
   deviceInfo: string = ''
 ) => {
   try {
-    const { price, days, name } = MONTH_CARD_CONFIG.BIG
+    const { days, name } = MONTH_CARD_CONFIG.BIG
 
     // 创建充值记录
     const record = await createRechargeRecord(userId, {
       type: RechargeType.BIG_MONTH_CARD,
-      amount: price,
       tier: name,
       month_card_days: days,
       month_card_type: 'big',
@@ -446,7 +604,7 @@ export const getUserRechargeRecords = async (
 
     const records = []
     for (const recordId of recordIds) {
-      const recordData = await redis.get(keys.currencyLog(recordId))
+      const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId))
       if (recordData) {
         records.push(JSON.parse(recordData))
       }
@@ -475,7 +633,7 @@ export const getAllRechargeRecords = async (
 ) => {
   try {
     const redis = getIoRedis()
-    const pattern = keys.currencyLog('*')
+    const pattern = REDIS_KEYS.CURRENCY_LOG('*')
     const keys_list = await redis.keys(pattern)
 
     const records = []
@@ -507,7 +665,7 @@ export const getAllRechargeRecords = async (
 export const getRechargeRecordDetail = async (recordId: string) => {
   try {
     const redis = getIoRedis()
-    const recordData = await redis.get(keys.currencyLog(recordId))
+    const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId))
     return recordData ? JSON.parse(recordData) : null
   } catch (error) {
     logger.warn('Error getting recharge record detail:', error)
@@ -526,7 +684,7 @@ const updateGlobalRechargeStats = async (
 ) => {
   try {
     const redis = getIoRedis()
-    const statsKey = 'data:alemonjs-xiuxian:global_recharge_stats'
+    const statsKey = REDIS_KEYS.GLOBAL_STATS()
 
     let stats = initGlobalRechargeStats
     const statsData = await redis.get(statsKey)
@@ -552,13 +710,42 @@ const updateGlobalRechargeStats = async (
 }
 
 /**
+ * 检查交易号是否已存在（防止重复支付）
+ * @param transactionId 交易号
+ * @returns 是否已存在
+ */
+export const isTransactionIdExists = async (
+  transactionId: string
+): Promise<boolean> => {
+  try {
+    const redis = getIoRedis()
+    const transactionKey = REDIS_KEYS.TRANSACTION(transactionId)
+    const exists = await redis.exists(transactionKey)
+
+    if (exists === 0) {
+      // 设置交易号记录，过期时间24小时
+      await redis.setex(
+        transactionKey,
+        CURRENCY_CONFIG.TRANSACTION_EXPIRE_TIME,
+        '1'
+      )
+    }
+
+    return exists === 1
+  } catch (error) {
+    logger.warn('Error checking transaction ID:', error)
+    return false
+  }
+}
+
+/**
  * 获取全局充值统计
  * @returns 全局充值统计
  */
 export const getGlobalRechargeStats = async () => {
   try {
     const redis = getIoRedis()
-    const statsKey = 'data:alemonjs-xiuxian:global_recharge_stats'
+    const statsKey = REDIS_KEYS.GLOBAL_STATS()
     const statsData = await redis.get(statsKey)
     return statsData ? JSON.parse(statsData) : initGlobalRechargeStats
   } catch (error) {
@@ -602,7 +789,18 @@ export const consumeMonthCardDays = async (
   userId: string,
   cardType: 'small' | 'big',
   days: number = 1
-) => {
+): Promise<boolean> => {
+  // 输入验证
+  if (!userId || typeof userId !== 'string') {
+    throw new Error('Invalid user ID')
+  }
+  if (!['small', 'big'].includes(cardType)) {
+    throw new Error('Invalid card type')
+  }
+  if (!days || days <= 0) {
+    throw new Error('Invalid days amount')
+  }
+
   try {
     const redis = getIoRedis()
     const userInfo = await findUserRechargeInfo(userId)
@@ -620,7 +818,10 @@ export const consumeMonthCardDays = async (
     }
 
     userInfo.updated_at = Date.now()
-    await redis.set(keys.playerCurrency(userId), JSON.stringify(userInfo))
+    await redis.set(
+      REDIS_KEYS.PLAYER_CURRENCY(userId),
+      JSON.stringify(userInfo)
+    )
     return true
   } catch (error) {
     logger.warn('Error consuming month card days:', error)
@@ -634,7 +835,18 @@ export const consumeMonthCardDays = async (
  * @param amount 消费金额
  * @returns 是否成功
  */
-export const consumeUserCurrency = async (userId: string, amount: number) => {
+export const consumeUserCurrency = async (
+  userId: string,
+  amount: number
+): Promise<boolean> => {
+  // 输入验证
+  if (!userId || typeof userId !== 'string') {
+    throw new Error('Invalid user ID')
+  }
+  if (!amount || amount <= 0) {
+    throw new Error('Invalid consumption amount')
+  }
+
   try {
     const redis = getIoRedis()
     const userInfo = await findUserRechargeInfo(userId)
@@ -645,7 +857,10 @@ export const consumeUserCurrency = async (userId: string, amount: number) => {
 
     userInfo.currency -= amount
     userInfo.updated_at = Date.now()
-    await redis.set(keys.playerCurrency(userId), JSON.stringify(userInfo))
+    await redis.set(
+      REDIS_KEYS.PLAYER_CURRENCY(userId),
+      JSON.stringify(userInfo)
+    )
     return true
   } catch (error) {
     logger.warn('Error consuming user currency:', error)
@@ -655,16 +870,23 @@ export const consumeUserCurrency = async (userId: string, amount: number) => {
 
 /**
  * 获取所有用户的货币信息
+ * @param limit 限制数量，默认100
+ * @param offset 偏移量，默认0
  * @returns 用户货币信息列表
  */
-export const getAllUsersCurrencyInfo = async () => {
+export const getAllUsersCurrencyInfo = async (
+  limit: number = 100,
+  offset: number = 0
+): Promise<UserCurrencyData[]> => {
   try {
     const redis = getIoRedis()
-    // 获取所有玩家货币数据的key
-    const keys = await redis.keys('data:alemonjs-xiuxian:player_currency:*')
-    const users: any[] = []
+    // 获取所有玩家货币数据的key（限制数量避免性能问题）
+    const allKeys = await redis.keys(REDIS_KEYS.PLAYER_CURRENCY_PATTERN())
+    const userKeys = allKeys.slice(offset, offset + limit)
 
-    for (const key of keys) {
+    const users: UserCurrencyData[] = []
+
+    for (const key of userKeys) {
       const userId = key.replace('data:alemonjs-xiuxian:player_currency:', '')
       const userInfo = await findUserRechargeInfo(userId)
 

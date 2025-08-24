@@ -62,15 +62,7 @@ export const TaskConfig = ({
           >
             <Input
               placeholder="请输入Cron表达式，如: 0 0/1 * * * ?"
-              className="custom-input"
-              styles={{
-                input: {
-                  backgroundColor: 'rgba(71, 85, 105, 0.5)',
-                  border: '1px solid rgba(148, 163, 184, 0.3)',
-                  color: 'white',
-                  borderRadius: '8px'
-                }
-              }}
+              className="xiuxian-input"
             />
           </Form.Item>
         ))}

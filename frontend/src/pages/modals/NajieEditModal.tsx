@@ -156,7 +156,7 @@ export default function NajieEditModal({
             placeholder="物品名称"
             value={item.name}
             onChange={e => updateItem(category, index, 'name', e.target.value)}
-            className="bg-slate-600/50 border-slate-500 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500"
+            className="xiuxian-input"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300"></div>
         </Col>
@@ -165,7 +165,7 @@ export default function NajieEditModal({
             placeholder="品质"
             value={item.grade}
             onChange={e => updateItem(category, index, 'grade', e.target.value)}
-            className="bg-slate-600/50 border-slate-500 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500"
+            className="xiuxian-input"
           />
         </Col>
         <Col span={3}>
@@ -173,7 +173,7 @@ export default function NajieEditModal({
             placeholder="品级"
             value={item.pinji}
             onChange={value => updateItem(category, index, 'pinji', value)}
-            className="w-full bg-slate-600/50 border-slate-500 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+            className="w-full xiuxian-input"
             min={1}
           />
         </Col>
@@ -319,7 +319,7 @@ export default function NajieEditModal({
                     <Input
                       value={inputValue}
                       onChange={e => setInputValue(e.target.value)}
-                      className=" max-w-40 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500"
+                      className="max-w-40 xiuxian-input"
                     />
                     <Button
                       type="primary"

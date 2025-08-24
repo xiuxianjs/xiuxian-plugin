@@ -130,34 +130,6 @@ export default function UserCurrencyTab({
           )}
         </div>
       )
-    },
-    {
-      title: '操作',
-      key: 'actions',
-      width: 150,
-      render: (_, record) => (
-        <Space>
-          <Button
-            type="primary"
-            size="small"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              // 充值功能 - 待实现
-            }}
-          >
-            充值
-          </Button>
-          <Button
-            size="small"
-            icon={<EyeOutlined />}
-            onClick={() => {
-              // 查看用户充值记录
-            }}
-          >
-            记录
-          </Button>
-        </Space>
-      )
     }
   ]
 

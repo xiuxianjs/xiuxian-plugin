@@ -294,3 +294,124 @@ body,
     @apply bg-slate-600 !important;
   }
 }
+
+/* Input组件暗色主题样式 */
+.ant-input {
+  @apply bg-slate-700/50 border-slate-600 text-white !important;
+
+  &:hover {
+    @apply border-slate-500 !important;
+  }
+
+  &:focus {
+    @apply border-purple-500 shadow-purple-500/20 !important;
+  }
+
+  &::placeholder {
+    @apply text-slate-400 !important;
+  }
+}
+
+.ant-input-search {
+  .ant-input-search-button {
+    @apply bg-slate-600 border-slate-500 text-white !important;
+
+    &:hover {
+      @apply bg-slate-500 border-slate-400 !important;
+    }
+  }
+}
+
+/* Input.Group组件暗色主题样式 */
+.ant-input-group {
+  .ant-input-group-addon {
+    @apply bg-slate-600 border-slate-500 text-slate-300 !important;
+  }
+}
+
+/* TextArea组件暗色主题样式 */
+.ant-input-textarea {
+  .ant-input {
+    @apply bg-slate-700/50 border-slate-600 text-white !important;
+  }
+}
+
+/* 全局Input样式类 */
+.xiuxian-input {
+  @apply bg-slate-700/50 border-slate-600 text-white !important;
+
+  &:hover {
+    @apply border-slate-500 !important;
+  }
+
+  &:focus {
+    @apply border-purple-500 shadow-purple-500/20 !important;
+  }
+
+  &::placeholder {
+    @apply text-slate-400 !important;
+  }
+}
+
+/* Select组件全局样式类 */
+.xiuxian-select {
+  .ant-select-selector {
+    @apply bg-slate-700/50 border-slate-600 text-white !important;
+  }
+
+  .ant-select-selection-item {
+    @apply text-white !important;
+  }
+
+  .ant-select-selection-placeholder {
+    @apply text-slate-400 !important;
+  }
+}
+
+/* InputNumber组件暗色主题样式 */
+.ant-input-number {
+  @apply bg-slate-700/50 border-slate-600 text-white !important;
+
+  &:hover {
+    @apply border-slate-500 !important;
+  }
+
+  &:focus {
+    @apply border-purple-500 shadow-purple-500/20 !important;
+  }
+
+  .ant-input-number-input {
+    @apply text-white !important;
+  }
+
+  .ant-input-number-handler-wrap {
+    @apply bg-slate-600 border-slate-500 !important;
+  }
+
+  .ant-input-number-handler {
+    @apply text-slate-300 hover:text-white hover:bg-slate-500 !important;
+  }
+}
+
+/* Modal组件暗色主题样式 */
+.xiuxian-modal {
+  .ant-modal-header {
+    @apply bg-slate-800 border-slate-700 !important;
+  }
+
+  .ant-modal-title {
+    @apply text-white !important;
+  }
+
+  .ant-modal-content {
+    @apply bg-slate-800 border-slate-700 !important;
+  }
+
+  .ant-modal-body {
+    @apply bg-slate-800 text-white !important;
+  }
+
+  .ant-modal-footer {
+    @apply bg-slate-800 border-slate-700 !important;
+  }
+}

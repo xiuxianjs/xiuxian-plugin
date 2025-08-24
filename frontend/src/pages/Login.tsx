@@ -49,7 +49,7 @@ export default function Login() {
                   type="text"
                   required
                   minLength={3}
-                  className="w-full pl-10 pr-4 py-3 sm:py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200 text-sm sm:text-base"
+                  className="w-full pl-10 pr-4 py-3 sm:py-3 xiuxian-input rounded-xl text-sm sm:text-base"
                   placeholder="请输入管理员用户名"
                 />
               </div>
@@ -68,7 +68,7 @@ export default function Login() {
                   type="password"
                   required
                   minLength={6}
-                  className="w-full pl-10 pr-4 py-3 sm:py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200 text-sm sm:text-base"
+                  className="w-full pl-10 pr-4 py-3 sm:py-3 xiuxian-input rounded-xl text-sm sm:text-base"
                   placeholder="请输入密码"
                 />
               </div>

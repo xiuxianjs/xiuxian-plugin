@@ -165,7 +165,7 @@ export default function App() {
         </header>
 
         {/* 主内容区域 - 添加顶部边距避免被固定header遮挡 */}
-        <main className="flex-1 overflow-y-auto pt-20  px-2  sm:px-6 lg:px-8">
+        <main className="flex-1 overflow-y-auto pt-20">
           <Outlet />
         </main>
       </div>

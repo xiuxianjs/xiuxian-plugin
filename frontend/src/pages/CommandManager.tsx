@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Button, Breadcrumb, Spin, Empty, List, Avatar } from 'antd'
+import { Breadcrumb, Spin, Empty, List, Avatar } from 'antd'
 import {
   ReloadOutlined,
   ArrowLeftOutlined,
@@ -23,36 +23,47 @@ export default function CommandManager() {
   return (
     <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="relative z-10 p-2 md:p-6 h-full overflow-y-auto">
-        {/* 页面标题 */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">⚡ 指令开关</h1>
-            <p className="text-slate-300">管理和控制修仙插件的各种响应体功能</p>
+        {/* 页面标题和操作按钮 */}
+        <div className="flex flex-col sm:flex-row gap-2 justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+              <FolderOutlined className="text-white text-xl" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">
+                指令开关
+              </h1>
+              <p className="text-slate-400 text-sm mt-1">
+                管理和控制修仙插件的各种响应体功能
+              </p>
+            </div>
           </div>
           <div className="flex gap-2">
-            <Button
-              type="primary"
-              icon={<ArrowLeftOutlined />}
+            <button
+              className="px-2 py-1 rounded-md bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
               onClick={handleBackToParent}
               disabled={currentPath.length === 0}
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 border-0 hover:from-blue-600 hover:to-indigo-600"
             >
+              <ArrowLeftOutlined />
               返回上级
-            </Button>
-            <Button
-              type="primary"
-              icon={<ReloadOutlined />}
+            </button>
+            <button
+              className="px-2 py-1 rounded-md bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
               onClick={handleRefresh}
-              loading={loading}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 border-0 hover:from-purple-600 hover:to-pink-600"
+              disabled={loading}
             >
-              刷新
-            </Button>
+              <ReloadOutlined className={loading ? 'animate-spin' : ''} />
+              {loading ? '刷新中...' : '刷新'}
+            </button>
           </div>
         </div>
 
         {/* 面包屑导航 */}
-        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg mb-6">
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <FolderOutlined className="text-purple-400" />
+            路径导航
+          </h3>
           <Breadcrumb
             items={[
               {
@@ -80,13 +91,13 @@ export default function CommandManager() {
             ]}
             className="text-slate-300"
           />
-        </Card>
+        </div>
 
         {/* 当前目录内容 */}
-        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg">
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden">
           <div className="p-6 border-b border-slate-700/50">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <FolderOutlined className="text-blue-400" />
+              <FolderOutlined className="text-purple-400" />
               当前目录
               {currentPath.length > 0 && (
                 <span className="text-slate-400 text-sm font-normal">
@@ -170,10 +181,12 @@ export default function CommandManager() {
                 )}
               />
             ) : (
-              <Empty description="当前目录为空" className="text-slate-400" />
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-12 shadow-lg text-center">
+                <Empty description="当前目录为空" className="text-slate-400" />
+              </div>
             )}
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   )
