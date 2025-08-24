@@ -39,10 +39,11 @@ const res = onResponse(selects, async e => {
   // 解析 @ 提及
   let B: string | undefined
   try {
-    const mentionApi = useMention(e)[0]
-    const result = await mentionApi.find({ IsBot: false })
-    const list = result?.data || []
-    const target = list.find(item => !item.IsBot)
+    const [mention] = useMention(e)
+    const res = await mention.findOne()
+    const target = res?.data
+    if (!target || res.code !== 2000) return false
+
     if (target) B = target.UserId
   } catch {
     // ignore, B 为空将触发返回

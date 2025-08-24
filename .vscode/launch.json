@@ -12,6 +12,26 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "discord",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--login", "discord"],
+      "runtimeExecutable": "yarn",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "onebot",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--login", "onebot"],
+      "runtimeExecutable": "yarn",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    },
+    {
       "name": "jsxp",
       "type": "node",
       "request": "launch",

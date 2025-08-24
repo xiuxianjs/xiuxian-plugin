@@ -415,12 +415,6 @@ export async function getDanyaoImage(
   e: EventsMessageCreateEnum
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
-
-  const redis = getIoRedis()
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
-  if (!ifexistplay) {
-    return
-  }
   const player: Player | null = await readPlayer(usr_qq)
   if (!player) return
   const najie = await readNajie(usr_qq)
@@ -467,11 +461,6 @@ export async function getGongfaImage(
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId
 
-  const redis = getIoRedis()
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0
-  if (!ifexistplay) {
-    return
-  }
   const player = await await getPlayerDataSafe(usr_qq)
   if (!player) {
     return

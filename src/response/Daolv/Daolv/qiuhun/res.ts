@@ -36,16 +36,12 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const Mentions = (await useMention(e)[0].find({ IsBot: false })).data
-  if (!Mentions || Mentions.length === 0) {
-    return // @ 提及为空
-  }
-  // 查找用户类型的 @ 提及，且不是 bot
-  const User = Mentions.find(item => !item.IsBot)
-  if (!User) {
-    return // 未找到用户Id
-  }
-  const B = User.UserId
+  const [mention] = useMention(e)
+  const res = await mention.findOne()
+  const target = res?.data
+  if (!target || res.code !== 2000) return false
+
+  const B = target.UserId
   if (A == B) {
     Send(Text('精神分裂?'))
     return false

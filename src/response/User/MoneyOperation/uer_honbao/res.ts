@@ -40,12 +40,11 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  // 提及对象
   const [mention] = useMention(e)
-  const found = await mention.find({ IsBot: false })
-  const list = (found && found.data) || []
-  const target: MentionUser | undefined = list.find(u => !u.IsBot)
-  if (!target) return false
+  const res = await mention.findOne()
+  const target = res?.data
+  if (!target || res.code !== 2000) return false
+
   const honbao_qq = target.UserId
   if (honbao_qq === usr_qq) {
     Send(Text('不能抢自己的红包'))
