@@ -105,7 +105,11 @@ export async function findDaolvQinmidu(A: string) {
   return 0
 }
 
-// 查询 A 的婚姻；有则返回对方 QQ，无则空字符串
+/**
+ * 查询A是否有婚姻
+ * @param A
+ * @returns 有婚返回对方QQ，无婚返回空字符串
+ */
 export async function existHunyin(A: string) {
   let list: QinmiduRecord[] = []
   try {

@@ -6,7 +6,8 @@ import {
   findQinmidu,
   fstaddQinmidu,
   addQinmidu,
-  addNajieThing
+  addNajieThing,
+  existHunyin
 } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
@@ -45,8 +46,12 @@ const res = onResponse(selects, async e => {
   if (pd === false) {
     await fstaddQinmidu(A, B)
   } else if (pd == 0) {
-    Send(Text(`对方已有道侣`))
-    return false
+    // 查询A的道侣
+    const existHunyinA = await existHunyin(A)
+    if (existHunyinA !== B) {
+      Send(Text(`对方已有道侣`))
+      return false
+    }
   }
 
   await addQinmidu(A, B, 60)
