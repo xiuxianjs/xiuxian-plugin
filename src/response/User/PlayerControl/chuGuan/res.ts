@@ -9,7 +9,8 @@ import {
   addNajieThing,
   addExp,
   addExp2,
-  setFileValue
+  setFileValue,
+  writeDanyao
 } from '@src/model/index'
 import { setDataByUserId } from '@src/model/Redis'
 
@@ -93,6 +94,7 @@ async function getPlayerAction(usr_qq: string): Promise<ActionState | false> {
  * @return  falses {Promise<void>}
  */
 async function biguan_jiesuan(user_id, time, is_random, group_id?) {
+  console.log('闭关结算')
   const usr_qq = user_id
   await playerEfficiency(usr_qq)
   const player = await data.getData('player', usr_qq)
@@ -117,6 +119,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   let transformation = '修为'
   let xueqi = 0
   const dy = await readDanyao(usr_qq)
+  console.log('dy', dy)
   if (dy.biguan > 0) {
     dy.biguan--
     if (dy.biguan == 0) {
@@ -219,7 +222,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     dy.beiyong4 = 0
   }
   //炼丹师修正结束
-  // 写回：当前闭关不修改原始丹药数组结构（mapDanyaoArrayToStatus 仅用于结算显示），故此处不调用 writeDanyao 覆写
+  // 写回当前丹药状态
+  await writeDanyao(usr_qq, dy)
+
   return false
 }
 import mw from '@src/response/mw'
