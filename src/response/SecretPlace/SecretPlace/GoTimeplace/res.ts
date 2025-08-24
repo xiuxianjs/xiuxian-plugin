@@ -67,7 +67,8 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const levelInfo = data.Level_list.find(l => l.level_id === player.level_id)
+  const levelList = await getDataList('Level1')
+  const levelInfo = levelList.find(l => l.level_id === player.level_id)
   if (!levelInfo) {
     Send(Text('境界数据缺失'))
     return false
@@ -155,4 +156,5 @@ const res = onResponse(selects, async e => {
   return false
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

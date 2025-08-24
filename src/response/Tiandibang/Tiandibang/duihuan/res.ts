@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { existplayer, addNajieThing } from '@src/model/index'
 import { readTiandibang, Write_tiandibang, TiandibangRow } from '../tian'
 
@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const table = (data.tianditang || []) as TianditangItem[]
+  const table = ((await getDataList('Tianditang')) || []) as TianditangItem[]
   const item = table.find(it => it.name === thingName)
   if (!item) {
     Send(Text(`天地堂还没有这样的东西: ${thingName}`))

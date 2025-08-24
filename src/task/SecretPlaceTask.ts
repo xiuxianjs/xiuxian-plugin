@@ -1,4 +1,5 @@
-import { data, pushInfo } from '@src/model/api'
+import { pushInfo } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer } from '@src/model/xiuxian'
 import { zdBattle } from '@src/model/battle'
@@ -89,10 +90,11 @@ export const SecretPlaceTask = async () => {
           }
           let buff = 1
           if (weizhi.name == '大千世界' || weizhi.name == '仙界矿场') buff = 0.6
-          const monster_length = data.monster_list.length
+          const monsterList = await getDataList('Monster')
+          const monster_length = monsterList.length
           if (monster_length === 0) return
           const monster_index = Math.trunc(Math.random() * monster_length)
-          const monster = data.monster_list[monster_index] as {
+          const monster = monsterList[monster_index] as {
             名号: string
             攻击: number
             防御: number
@@ -237,10 +239,11 @@ export const SecretPlaceTask = async () => {
             // 旧逻辑写回：无法直接存储状态对象，只能原样写回列表（保持兼容）
             await writeDanyao(player_id, dy)
             if (random > newrandom) {
-              const length = data.xianchonkouliang.length
+              const xianchonkouliangList = await getDataList('Xianchonkouliang')
+              const length = xianchonkouliangList.length
               if (length > 0) {
                 const index = Math.trunc(Math.random() * length)
-                const kouliang = data.xianchonkouliang[index]
+                const kouliang = xianchonkouliangList[index]
                 last_msg +=
                   '\n七彩流光的神奇仙谷[' +
                   kouliang.name +

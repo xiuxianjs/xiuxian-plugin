@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { getRedisKey } from '@src/model/keys'
 import { startAction } from '@src/response/actionHelper'
 import {
@@ -34,7 +34,8 @@ const res = onResponse(selects, async e => {
     Send(Text('请#同步信息'))
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const levelList = await getDataList('Level1')
+  const now_level_id = levelList.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 22) {
@@ -48,9 +49,8 @@ const res = onResponse(selects, async e => {
   if (i > 12) {
     return false
   }
-  const weizhiRaw = await data.forbiddenarea_list.find(
-    item => item.name == didian
-  )
+  const forbiddenareaList = await getDataList('ForbiddenArea')
+  const weizhiRaw = await forbiddenareaList.find(item => item.name == didian)
   if (!notUndAndNull(weizhiRaw)) {
     return false
   }
@@ -114,4 +114,5 @@ const res = onResponse(selects, async e => {
   Send(Text('正在前往' + weizhi.name + ',' + time + '分钟后归来!'))
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

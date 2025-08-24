@@ -1,5 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs'
-import { data } from '@src/model/api'
+import { existplayer } from '@src/model/xiuxian_impl'
+import Association from '@src/model/Association'
+import { getDataList } from '@src/model/DataList'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门列表$/
@@ -27,7 +29,7 @@ function isExtendedAss(v): v is ExtendedAss {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return
   const assList = await keysByPath(__PATH.association)
   const temp: Array<Record<string, unknown>> = []
@@ -36,7 +38,7 @@ const res = onResponse(selects, async e => {
     return
   }
   for (const this_name of assList) {
-    const assRaw = await data.getAssociation(this_name)
+    const assRaw = await Association.getAssociation(this_name)
     if (assRaw === 'error' || !isExtendedAss(assRaw)) continue
     const this_ass = assRaw
     const baseLevel = Number(this_ass.宗门等级 ?? 1)
@@ -46,7 +48,8 @@ const res = onResponse(selects, async e => {
     if (!this_ass.宗门驻地 || this_ass.宗门驻地 === 0) {
       this_ass_xiuxian = baseEff
     } else {
-      const dongTan = (data.bless_list || []).find(
+      const blessData = await getDataList('Bless')
+      const dongTan = (blessData || []).find(
         item => item.name === this_ass.宗门驻地
       )
       const addEff =
@@ -63,7 +66,8 @@ const res = onResponse(selects, async e => {
       this_ass.宗门驻地 && this_ass.宗门驻地 !== 0 ? this_ass.宗门驻地 : '暂无'
     const power = this_ass.power === 0 ? '凡界' : '仙界'
     const minLevelId = Number(this_ass.最低加入境界 ?? 0)
-    const levelItem = data.Level_list.find(item => item.level_id === minLevelId)
+    const levelListData = await getDataList('Level1')
+    const levelItem = levelListData.find(item => item.level_id === minLevelId)
     const levelText = levelItem ? levelItem.level : '未知'
     const memberList = Array.isArray(this_ass.所有成员) ? this_ass.所有成员 : []
     const capIndex = Math.max(

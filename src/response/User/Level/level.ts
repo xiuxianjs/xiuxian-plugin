@@ -1,5 +1,6 @@
 import { useSend, Text } from 'alemonjs'
-import { data, config } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
+import { getConfig } from '@src/model/Config'
 import { getString, setTimestamp, userKey } from '@src/model/utils/redisHelper'
 import { notUndAndNull } from '@src/model/common'
 import { readEquipment, writeEquipment } from '@src/model/equipment'
@@ -23,7 +24,8 @@ export async function Level_up(e, luck = false) {
   //读取信息
   const player = await readPlayer(usr_qq)
   //境界
-  const now_level = data.Level_list.find(
+  const levelList = await getDataList('Level1')
+  const now_level = levelList.find(
     item => item.level_id == player.level_id
   ).level
   //拦截渡劫期
@@ -42,7 +44,7 @@ export async function Level_up(e, luck = false) {
     Send(Text('请先#刷新信息'))
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const now_level_id = levelList.find(
     item => item.level_id == player.level_id
   ).level_id
   //真仙突破
@@ -64,14 +66,12 @@ export async function Level_up(e, luck = false) {
   }
   const now_exp = player.修为
   //修为
-  const need_exp = data.Level_list.find(
-    item => item.level_id == player.level_id
-  ).exp
+  const need_exp = levelList.find(item => item.level_id == player.level_id).exp
   if (now_exp < need_exp) {
     Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可突破`))
     return false
   }
-  const cf = await config.getConfig('xiuxian', 'xiuxian')
+  const cf = await getConfig('xiuxian', 'xiuxian')
   const Time = cf.CD.level_up
   const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)
@@ -154,43 +154,34 @@ export async function Level_up(e, luck = false) {
     }
   }
   //线性概率获得仙宠
+  const changzhuxianchonList = await getDataList('Changzhuxianchon')
   if (now_level_id < 42) {
     const random = Math.random()
     if (random < ((now_level_id / 60) * 0.5) / 5) {
-      let random2 = Math.trunc(Math.random() * data.changzhuxianchon.length)
+      let random2 = Math.trunc(Math.random() * changzhuxianchonList.length)
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5
       Send(
         Text(
           '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
-            data.changzhuxianchon[random2].name +
+            changzhuxianchonList[random2].name +
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
-      await addNajieThing(
-        usr_qq,
-        data.changzhuxianchon[random2].name,
-        '仙宠',
-        1
-      )
+      await addNajieThing(usr_qq, changzhuxianchonList[random2].name, '仙宠', 1)
     }
   } else {
     const random = Math.random()
     if (random < (now_level_id / 60) * 0.5) {
-      let random2 = Math.trunc(Math.random() * data.changzhuxianchon.length)
+      let random2 = Math.trunc(Math.random() * changzhuxianchonList.length)
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5
       Send(
         Text(
           '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
-            data.changzhuxianchon[random2].name +
+            changzhuxianchonList[random2].name +
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
-      await addNajieThing(
-        usr_qq,
-        data.changzhuxianchon[random2].name,
-        '仙宠',
-        1
-      )
+      await addNajieThing(usr_qq, changzhuxianchonList[random2].name, '仙宠', 1)
     }
   }
   //境界提升,修为扣除,攻防血重新加载,当前血量拉满
@@ -203,9 +194,7 @@ export async function Level_up(e, luck = false) {
   //补血
   await addHP(usr_qq, 999999999999)
   //查境界名
-  const level = data.Level_list.find(
-    item => item.level_id == player.level_id
-  ).level
+  const level = levelList.find(item => item.level_id == player.level_id).level
   Send(Text(`突破成功,当前境界为${level}`))
   //记录cd
   await setTimestamp(usr_qq, 'last_Levelup_time', now_Time)
@@ -226,11 +215,12 @@ export async function LevelMax_up(e, luck) {
     Send(Text('请先#刷新信息'))
     return false
   }
-  const now_level_id = data.LevelMax_list.find(
+  const levelMaxList = await getDataList('Level2')
+  const now_level_id = levelMaxList.find(
     item => item.level_id == player.Physique_id
   ).level_id
   const now_exp = player.血气
-  const need_exp = data.LevelMax_list.find(
+  const need_exp = levelMaxList.find(
     item => item.level_id == player.Physique_id
   ).exp
   if (now_exp < need_exp) {
@@ -241,7 +231,7 @@ export async function LevelMax_up(e, luck) {
     Send(Text(`你已突破至最高境界`))
     return false
   }
-  const cf = await config.getConfig('xiuxian', 'xiuxian')
+  const cf = await getConfig('xiuxian', 'xiuxian')
   const Time = cf.CD.level_up
   const now_Time = Date.now() //获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time)
@@ -320,21 +310,22 @@ export async function LevelMax_up(e, luck) {
     }
   }
   //线性概率获得仙宠
+  const changzhuxianchonList2 = await getDataList('Changzhuxianchon')
   if (now_level_id < 42) {
     const random = Math.random()
     if (random < ((now_level_id / 60) * 0.5) / 5) {
-      let random2 = Math.trunc(Math.random() * data.changzhuxianchon.length)
+      let random2 = Math.trunc(Math.random() * changzhuxianchonList2.length)
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5
       Send(
         Text(
           '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
-            data.changzhuxianchon[random2].name +
+            changzhuxianchonList2[random2].name +
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
       await addNajieThing(
         usr_qq,
-        data.changzhuxianchon[random2].name,
+        changzhuxianchonList2[random2].name,
         '仙宠',
         1
       )
@@ -342,18 +333,18 @@ export async function LevelMax_up(e, luck) {
   } else {
     const random = Math.random()
     if (random < (now_level_id / 60) * 0.5) {
-      let random2 = Math.trunc(Math.random() * data.changzhuxianchon.length)
+      let random2 = Math.trunc(Math.random() * changzhuxianchonList2.length)
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5
       Send(
         Text(
           '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
-            data.changzhuxianchon[random2].name +
+            changzhuxianchonList2[random2].name +
             '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       )
       await addNajieThing(
         usr_qq,
-        data.changzhuxianchon[random2].name,
+        changzhuxianchonList2[random2].name,
         '仙宠',
         1
       )
@@ -365,7 +356,7 @@ export async function LevelMax_up(e, luck) {
   const equipment = await readEquipment(usr_qq)
   await writeEquipment(usr_qq, equipment)
   await addHP(usr_qq, 999999999999)
-  const level = data.LevelMax_list.find(
+  const level = levelMaxList.find(
     item => item.level_id == player.Physique_id
   ).level
   Send(Text(`突破成功至${level}`))

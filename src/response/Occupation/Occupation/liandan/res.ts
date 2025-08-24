@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import {
   existplayer,
   readPlayer,
@@ -65,9 +65,8 @@ const res = onResponse(selects, async e => {
   if (n <= 0) n = 1
   if (n > MAX_BATCH) n = MAX_BATCH
 
-  const danfang = (data.danfang_list as DanfangRecipe[]).find(
-    item => item.name === danyao
-  )
+  const danfangListData = (await getDataList('Danfang')) as DanfangRecipe[]
+  const danfang = danfangListData.find(item => item.name === danyao)
   if (!notUndAndNull(danfang)) {
     Send(Text(`世界上没有丹药[${danyao}]的配方`))
     return false

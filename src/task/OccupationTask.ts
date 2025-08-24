@@ -1,5 +1,5 @@
-import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
+import { readPlayer } from '@src/model/xiuxian_impl'
 import { __PATH, keysByPath } from '@src/model/keys'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import { safeParse } from '@src/model/utils/safe'
@@ -68,7 +68,7 @@ export const OccupationTask = async () => {
     if (action.mine === '0') {
       const end_time = action.end_time - 60000 * 2
       if (now_time > end_time) {
-        const playerRaw = await data.getData('player', player_id)
+        const playerRaw = await readPlayer(player_id)
         if (!playerRaw || Array.isArray(playerRaw)) continue
         const player = playerRaw as Player
         if (!notUndAndNull(player.level_id)) continue

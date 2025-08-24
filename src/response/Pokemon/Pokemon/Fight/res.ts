@@ -1,9 +1,14 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { addPet } from '@src/model/pets'
-import { readNajie, writePlayer } from '@src/model/xiuxian_impl'
+import {
+  readNajie,
+  writePlayer,
+  readPlayer,
+  existplayer
+} from '@src/model/xiuxian_impl'
+import { getDataList } from '@src/model/DataList'
 import type { Player, NajieItem, XianchongInfo } from '@src/types/player'
 
 import { selects } from '@src/response/mw'
@@ -53,8 +58,8 @@ function getPlayerPetLevel(
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player
+  if (!(await existplayer(usr_qq))) return false
+  const player = (await readPlayer(usr_qq)) as Player
   if (!player || typeof player !== 'object') return false
   if (!player.仙宠) player.仙宠 = { name: '', type: '', 加成: 0 }
 
@@ -86,7 +91,8 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const petDef = (data.xianchon as PetDef[]).find(p => p.name === input)
+  const xianchonData = await getDataList('Xianchon')
+  const petDef = (xianchonData as PetDef[]).find(p => p.name === input)
   if (!notUndAndNull(petDef)) {
     Send(Text('这方世界不存在' + input))
     return false

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
+
 import {
   existplayer,
   existNajieThing,
@@ -8,6 +8,7 @@ import {
   sleep,
   addPet
 } from '@src/model/index'
+import { getDataList } from '@src/model/DataList'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/
@@ -43,20 +44,21 @@ const res = onResponse(selects, async e => {
     }
     await addNajieThing(usr_qq, '银丝仙网', '道具', -1)
   }
-  tianluoRandom = Math.floor(Math.random() * data.changzhuxianchon.length)
+  const changzhuxianchonData = await getDataList('Changzhuxianchon')
+  tianluoRandom = Math.floor(Math.random() * changzhuxianchonData.length)
   tianluoRandom = (Math.ceil((tianluoRandom + 1) / 5) - 1) * 5
   Send(Text('一道金光从天而降'))
   await sleep(5000)
   Send(
     Text(
       '金光掉落在地上，走近一看是【' +
-        data.changzhuxianchon[tianluoRandom].品级 +
+        changzhuxianchonData[tianluoRandom].品级 +
         '】' +
-        data.changzhuxianchon[tianluoRandom].name
+        changzhuxianchonData[tianluoRandom].name
     )
   )
-  await addPet(usr_qq, data.changzhuxianchon[tianluoRandom].name, 1)
-  Send(Text('恭喜获得' + data.changzhuxianchon[tianluoRandom].name))
+  await addPet(usr_qq, changzhuxianchonData[tianluoRandom].name, 1)
+  Send(Text('恭喜获得' + changzhuxianchonData[tianluoRandom].name))
 })
 import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

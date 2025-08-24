@@ -53,6 +53,14 @@ export async function updateBagThing(
   return true
 }
 
+/**
+ * 检查物品是否存在于纳戒中
+ * @param usr_qq 玩家QQ
+ * @param thing_name 物品名称
+ * @param thing_class 物品类型
+ * @param thing_pinji 物品等级
+ * @returns
+ */
 export async function existNajieThing(
   usr_qq: string,
   thing_name: string,

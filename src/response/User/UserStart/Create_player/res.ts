@@ -1,5 +1,5 @@
 import { Image, Text, useSend } from 'alemonjs'
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import {
   __PATH,
   getRandomTalent,
@@ -11,6 +11,7 @@ import {
   keysByPath,
   keys
 } from '@src/model/index'
+import { getDataList } from '@src/model/DataList'
 import { selects } from '@src/response/mw'
 import { getPlayerImage } from '@src/model/image'
 import type { Player } from '@src/types'
@@ -31,8 +32,9 @@ function normalizeTalent(t): Talent {
   return { eff: 0 }
 }
 
-function pickEquip(name: string) {
-  return data.equipment_list.find(i => i.name === name) || null
+async function pickEquip(name: string) {
+  const equipmentData = await getDataList('Equipment')
+  return equipmentData.find(i => i.name === name) || null
 }
 
 const res = onResponse(selects, async e => {
@@ -107,9 +109,9 @@ const res = onResponse(selects, async e => {
   } as Player
   await writePlayer(usr_qq, new_player)
   const new_equipment = {
-    武器: pickEquip('烂铁匕首'),
-    护具: pickEquip('破铜护具'),
-    法宝: pickEquip('廉价炮仗')
+    武器: await pickEquip('烂铁匕首'),
+    护具: await pickEquip('破铜护具'),
+    法宝: await pickEquip('廉价炮仗')
   }
   await writeEquipment(usr_qq, new_equipment)
   const new_najie = {

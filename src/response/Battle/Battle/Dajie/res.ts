@@ -41,6 +41,7 @@ import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { getDataByUserId } from '@src/model/Redis'
 import { screenshot } from '@src/image'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?打劫$/
 
 function isPlayerGuildRef(v): v is PlayerGuildRef {
@@ -111,7 +112,8 @@ const res = onResponse(selects, async e => {
     Send(Text('请先#同步信息'))
     return false
   }
-  const levelA = data.Level_list.find(it => it.level_id === playerAA.level_id)
+  const levelList = await getDataList('Level1')
+  const levelA = levelList.find(it => it.level_id === playerAA.level_id)
   if (!levelA) {
     Send(Text('你的境界数据异常'))
     return false
@@ -123,7 +125,7 @@ const res = onResponse(selects, async e => {
     Send(Text('对方为错误存档！'))
     return false
   }
-  const levelB = data.Level_list.find(it => it.level_id === playerBB.level_id)
+  const levelB = levelList.find(it => it.level_id === playerBB.level_id)
   if (!levelB) {
     Send(Text('对方境界数据异常'))
     return false

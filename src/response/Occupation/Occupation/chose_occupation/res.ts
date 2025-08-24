@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import {
   Go,
   existplayer,
@@ -42,16 +42,14 @@ const res = onResponse(selects, async e => {
     return false
   }
   const player_occupation = String(player.occupation || '')
-  const targetOcc = (data.occupation_list as OccupationItem[]).find(
-    o => o.name === occupation
-  )
+  const occupation_list = (await getDataList('Occupation')) as OccupationItem[]
+  const targetOcc = occupation_list.find(o => o.name === occupation)
   if (!notUndAndNull(targetOcc)) {
     Send(Text(`没有[${occupation}]这项职业`))
     return false
   }
-  const levelRow = data.Level_list.find(
-    item => item.level_id == player.level_id
-  )
+  const levelList = await getDataList('Level1')
+  const levelRow = levelList.find(item => item.level_id == player.level_id)
   const now_level_id = levelRow ? levelRow.level_id : 0
   if (now_level_id < 17 && occupation === '采矿师') {
     Send(Text('包工头:就你这小身板还来挖矿？再去修炼几年吧'))
@@ -97,4 +95,5 @@ const res = onResponse(selects, async e => {
   return false
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

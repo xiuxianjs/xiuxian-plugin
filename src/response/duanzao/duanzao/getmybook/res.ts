@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
-import { existplayer, settripod } from '@src/model/index'
+import { existplayer, settripod, readPlayer } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?炼器师能力评测/
@@ -13,7 +12,7 @@ const res = onResponse(selects, async e => {
   if (!(await existplayer(user_qq))) {
     return false
   }
-  const player = await data.getData('player', user_qq)
+  const player = await readPlayer(user_qq)
   if (player.occupation != '炼器师') {
     Send(Text(`你还不是炼器师哦,宝贝`))
     return false

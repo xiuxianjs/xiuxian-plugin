@@ -18,11 +18,11 @@ const res = onResponse(selects, async e => {
   if (!action.技能[jineng]) return false
   else {
     const data = {
-      jineng: await getDataList('Jineng')
+      Jineng: await getDataList('Jineng')
     }
     if (
       action.技能[jineng].cd <
-      data.jineng.find(item => item.name == action.技能[jineng].name).cd
+      data.Jineng.find(item => item.name == action.技能[jineng].name).cd
     ) {
       Send(Text(`${action.技能[jineng].name}技能cd中`))
       return false

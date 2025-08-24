@@ -1,13 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
-import { notUndAndNull, shijianc } from '@src/model/index'
+import { redis } from '@src/model/api'
+import { notUndAndNull, shijianc, existplayer, readPlayer, writePlayer } from '@src/model/index'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, __PATH } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?宗门俸禄$/
 
 interface DateParts {
@@ -38,12 +38,17 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await readPlayer(usr_qq)
   if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门))
     return false
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`)
+  if (!assData) {
+    Send(Text('宗门数据异常'))
+    return
+  }
+  const assRaw = JSON.parse(assData)
   if (assRaw === 'error') {
     Send(Text('宗门数据不存在或已损坏'))
     return false
@@ -95,8 +100,8 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool - gift_lingshi
   player.灵石 += gift_lingshi
   await redis.set(getRedisKey(usr_qq, 'lastsign_Asso_time'), nowTime)
-  await data.setData('player', usr_qq, serializePlayer(player))
-  await data.setAssociation(ass.宗门名称, ass)
+  await writePlayer(usr_qq, serializePlayer(player))
+  await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass))
   Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`))
   return false
 })

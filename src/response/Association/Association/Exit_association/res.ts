@@ -1,8 +1,9 @@
 import { Text, useSend } from 'alemonjs'
 import { __PATH, keys } from '@src/model/keys'
 import { getRandomFromARR, notUndAndNull } from '@src/model/common'
+import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl'
 import { playerEfficiency } from '@src/model/efficiency'
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
@@ -72,9 +73,9 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await readPlayer(usr_qq)
   if (!player) return false
   if (!notUndAndNull(player.宗门)) return false
   if (!isPlayerGuildInfo(player.宗门)) return false
@@ -92,7 +93,12 @@ const res = onResponse(selects, async e => {
   }
 
   const role = guildInfo.职位 as RoleKey
-  const assRaw = await data.getAssociation(guildInfo.宗门名称)
+  const assData = await redis.get(`${__PATH.association}:${guildInfo.宗门名称}`)
+  if (!assData) {
+    Send(Text('宗门数据异常'))
+    return
+  }
+  const assRaw = JSON.parse(assData)
   if (assRaw === 'error') {
     Send(Text('宗门数据错误'))
     return false
@@ -103,9 +109,12 @@ const res = onResponse(selects, async e => {
     const roleList = getRoleList(ass, role).filter(item => item !== usr_qq)
     setRoleList(ass, role, roleList)
     ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== usr_qq)
-    await data.setAssociation(ass.宗门名称, ass)
+    await redis.set(
+      `${__PATH.association}:${ass.宗门名称}`,
+      JSON.stringify(ass)
+    )
     delete (player as Player & { 宗门? }).宗门
-    await data.setData('player', usr_qq, serializePlayer(player))
+    await writePlayer(usr_qq, serializePlayer(player))
     await playerEfficiency(usr_qq)
     Send(Text('退出宗门成功'))
   } else {
@@ -113,7 +122,7 @@ const res = onResponse(selects, async e => {
     if (ass.所有成员.length < 2) {
       await redis.del(keys.association(guildInfo.宗门名称))
       delete (player as Player & { 宗门? }).宗门
-      await data.setData('player', usr_qq, serializePlayer(player))
+      await writePlayer(usr_qq, serializePlayer(player))
       await playerEfficiency(usr_qq)
       Send(
         Text(
@@ -123,7 +132,7 @@ const res = onResponse(selects, async e => {
     } else {
       ass.所有成员 = ass.所有成员.filter(item => item !== usr_qq)
       delete (player as Player & { 宗门? }).宗门
-      await data.setData('player', usr_qq, serializePlayer(player))
+      await writePlayer(usr_qq, serializePlayer(player))
       await playerEfficiency(usr_qq)
       const fz = getRoleList(ass, '副宗主')
       const zl = getRoleList(ass, '长老')
@@ -134,10 +143,7 @@ const res = onResponse(selects, async e => {
       else if (nmdz.length > 0) randmember_qq = await getRandomFromARR(nmdz)
       else randmember_qq = await getRandomFromARR(ass.所有成员)
 
-      const randmember = (await data.getData(
-        'player',
-        randmember_qq
-      )) as Player | null
+      const randmember = await readPlayer(randmember_qq)
       if (!randmember || !isPlayerGuildInfo(randmember.宗门)) {
         Send(Text('随机继任者数据错误'))
         return false
@@ -149,14 +155,17 @@ const res = onResponse(selects, async e => {
       setRoleList(ass, rGuild.职位 as RoleKey, oldList)
       setRoleList(ass, '宗主', [randmember_qq])
       rGuild.职位 = '宗主'
-      await data.setData('player', randmember_qq, serializePlayer(randmember))
-      await data.setData('player', usr_qq, serializePlayer(player))
-      await data.setAssociation(ass.宗门名称, ass)
+      await writePlayer(randmember_qq, serializePlayer(randmember))
+      await writePlayer(usr_qq, serializePlayer(player))
+      await redis.set(
+        `${__PATH.association}:${ass.宗门名称}`,
+        JSON.stringify(ass)
+      )
       Send(Text(`退出宗门成功,退出后,宗主职位由${randmember.名号}接管`))
     }
   }
   player.favorability = 0
-  await data.setData('player', usr_qq, serializePlayer(player))
+  await writePlayer(usr_qq, serializePlayer(player))
 })
 
 export default onResponse(selects, [mw.current, res.current])

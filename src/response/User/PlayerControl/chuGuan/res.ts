@@ -101,7 +101,8 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   if (!notUndAndNull(player.level_id)) {
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const LevelList = await getDataList('Level1')
+  const now_level_id = LevelList.find(
     item => item.level_id == player.level_id
   ).level_id
   //闭关收益倍率计算 倍率*境界id*天赋*时间
@@ -228,4 +229,5 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   return false
 }
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

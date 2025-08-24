@@ -8,7 +8,8 @@ import {
   Go,
   readPlayer
 } from '@src/model/index'
-import { data } from '@src/model/api'
+
+import { getDataList } from '@src/model/DataList'
 import type { NajieCategory } from '@src/types/model'
 
 import { selects } from '@src/response/mw'
@@ -45,7 +46,8 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const commodity = (data.commodities_list as Commodity[]).find(
+  const commodityData = await getDataList('Commodity')
+  const commodity = (commodityData as Commodity[]).find(
     item => item.name === thing_name
   )
   if (!commodity) {

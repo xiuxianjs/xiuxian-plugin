@@ -1,6 +1,7 @@
-import { data, pushInfo } from '@src/model/api'
+import { pushInfo } from '@src/model/api'
 // 直接从具体模块导入，避免经由 barrel 产生的 re-export 循环
 import { notUndAndNull } from '@src/model/common'
+import { readPlayer, writePlayer } from '@src/model/xiuxian_impl'
 import { readDanyao, writeDanyao } from '@src/model/danyao'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addExp, addExp2 } from '@src/model/economy'
@@ -10,6 +11,7 @@ import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { ActionState } from '@src/types'
 import { getConfig } from '@src/model'
+import { getDataList } from '@src/model/DataList'
 
 /**
  * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于闭关或降妖状态。
@@ -60,11 +62,12 @@ export const PlayerControlTask = async () => {
         //时间过了
         end_time = end_time - 60000 * 2
         if (now_time > end_time) {
-          const player = await data.getData('player', player_id)
+          const player = await readPlayer(player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
           }
-          const now_level_id = data.Level_list.find(
+          const levelList = await getDataList('Level1')
+          const now_level_id = levelList.find(
             item => item.level_id == player.level_id
           ).level_id
           const size = cf.biguan.size
@@ -201,11 +204,12 @@ export const PlayerControlTask = async () => {
         //时间过了
         if (now_time > end_time) {
           //现在大于结算时间，即为结算
-          const player = await data.getData('player', player_id)
+          const player = await readPlayer(player_id)
           if (!notUndAndNull(player.level_id)) {
             return false
           }
-          const now_level_id = data.Level_list.find(
+          const levelList = await getDataList('Level1')
+          const now_level_id = levelList.find(
             item => item.level_id == player.level_id
           ).level_id
           const size = cf.work.size
@@ -250,7 +254,7 @@ export const PlayerControlTask = async () => {
           }
           //
           player.血气 += other_xueqi
-          data.setData('player', player_id, player)
+          await writePlayer(player_id, player)
           const get_lingshi = Math.trunc(lingshi * time + other_lingshi) //最后获取到的灵石
           //
           await setFileValue(player_id, get_lingshi, '灵石') //添加灵石

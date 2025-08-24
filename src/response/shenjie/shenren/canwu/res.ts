@@ -1,12 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
+
 import {
   existplayer,
   readPlayer,
   existNajieThing,
   addNajieThing
 } from '@src/model/index'
+import { getDataList } from '@src/model/DataList'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?参悟神石$/
@@ -35,9 +36,10 @@ const res = onResponse(selects, async e => {
     return false
   }
   await addNajieThing(usr_qq, '神石', '道具', -8)
-  const wuping_length = data.timedanyao_list.length
-  const wuping_index = Math.trunc(Math.random() * wuping_length)
-  const wuping = data.timedanyao_list[wuping_index]
+  const timeDanyaoData = await getDataList('TimeDanyao')
+  const wuping_length = timeDanyaoData.length
+  const wuping_index = Math.floor(Math.random() * wuping_length)
+  const wuping = timeDanyaoData[wuping_index]
   Send(Text('获得了' + wuping.name))
   await addNajieThing(usr_qq, wuping.name, wuping.class, 1)
 })

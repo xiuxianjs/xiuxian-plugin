@@ -11,8 +11,9 @@ import {
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { getQquipmentImage } from '@src/model/image'
-import DataList from '@src/model/DataList'
+import { getDataList } from '@src/model/DataList'
 import { EquipmentLike } from '@src/types/model'
+import { Player } from '@src/types/player'
 export const regular = /^(#|＃|\/)?一键装备$/
 
 interface EquipItem {
@@ -39,22 +40,22 @@ function num(v, d = 0) {
   return num
 }
 
-function calcBaseThree(
-  player: Record<string, unknown>
-): [number, number, number] | null {
-  const levelObj = DataList.Level_list.find(
-    i => i['level_id'] === player['level_id']
+async function calcBaseThree(
+  player: Player
+): Promise<[number, number, number] | null> {
+  const levelObj = (await getDataList('Level1')).find(
+    i => i['level_id'] === player.level_id
   )
-  const phyObj = DataList.LevelMax_list.find(
-    i => i['level_id'] === player['Physique_id']
+  const phyObj = (await getDataList('Level2')).find(
+    i => i['level_id'] === player.Physique_id
   )
   if (!levelObj || !phyObj) return null
   const atk =
-    num(levelObj.基础攻击) + num(player['攻击加成']) + num(phyObj.基础攻击)
+    num(levelObj.基础攻击) + num(player.攻击加成) + num(phyObj.基础攻击)
   const def =
-    num(levelObj.基础防御) + num(player['防御加成']) + num(phyObj.基础防御)
+    num(levelObj.基础防御) + num(player.防御加成) + num(phyObj.基础防御)
   const hp =
-    num(levelObj.基础血量) + num(player['生命加成']) + num(phyObj.基础血量)
+    num(levelObj.基础血量) + num(player.生命加成) + num(phyObj.基础血量)
   return [atk, def, hp]
 }
 
@@ -85,7 +86,7 @@ const res = onResponse(selects, async e => {
 
   const najie = (await data.getData('najie', usr_qq)) as NajieEquipBag | null
   const player = await readPlayer(usr_qq)
-  const base = calcBaseThree(player)
+  const base = await calcBaseThree(player)
   if (!base) {
     Send(Text('境界数据缺失，无法智能换装'))
     return false

@@ -1,4 +1,4 @@
-import { data, pushInfo } from '@src/model/api'
+import { pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { readPlayer, writePlayer } from '@src/model/xiuxian'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
@@ -11,6 +11,7 @@ import { DataMention, Mention } from 'alemonjs'
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
 import type { Player, CoreNajieCategory as NajieCategory } from '@src/types'
 import { getConfig } from '@src/model'
+import { getDataList } from '@src/model/DataList'
 
 // === 本文件局部类型声明，避免 any ===
 interface SecretPlaceItem {
@@ -109,10 +110,11 @@ export const SecretPlaceplusTask = async () => {
           },
           仙宠: player.仙宠 || { name: '无', type: 'none', 加成: 0 }
         }
-        const monster_length = data.monster_list.length
+        const monsterList = await getDataList('Monster')
+        const monster_length = monsterList.length
         if (monster_length === 0) continue
         const monster_index = Math.trunc(Math.random() * monster_length)
-        const monster = data.monster_list[monster_index] as MonsterLike
+        const monster = monsterList[monster_index] as MonsterLike
         const B_player = {
           名号: monster.名号,
           攻击: Math.floor(Number(monster.攻击 || 0) * player.攻击),
@@ -205,11 +207,7 @@ export const SecretPlaceplusTask = async () => {
                 Number(player.幸运 || 0) - Number(player.addluckyNo || 0)
               player.addluckyNo = 0
             }
-            data.setData(
-              'player',
-              player_id,
-              JSON.parse(JSON.stringify(player))
-            )
+            await writePlayer(player_id, JSON.parse(JSON.stringify(player)))
           }
         }
         m += `]×${n}个。`
@@ -240,10 +238,11 @@ export const SecretPlaceplusTask = async () => {
           }
           await writeDanyao(player_id, dy)
           if (random > newrandom) {
-            const length = data.xianchonkouliang.length
+            const xianchonkouliang = await getDataList('Xianchonkouliang')
+            const length = xianchonkouliang.length
             if (length > 0) {
               const index = Math.trunc(Math.random() * length)
-              const kouliang = data.xianchonkouliang[index]
+              const kouliang = xianchonkouliang[index]
               last_msg += `\n七彩流光的神奇仙谷[${kouliang.name}]深埋在土壤中，是仙兽们的最爱。`
               await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1)
             }

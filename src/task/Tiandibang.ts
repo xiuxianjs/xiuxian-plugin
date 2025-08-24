@@ -1,9 +1,10 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-import { data } from '@src/model/api'
+
 // 细粒度导入
 import { __PATH, keysByPath } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
+import { getDataList } from '@src/model/DataList'
 
 /**
  * 遍历所有玩家，读取玩家的属性（如名号、境界、攻击、防御、血量、暴击率、灵根、功法、魔道值、神石等）。
@@ -20,7 +21,11 @@ export const TiandibangTask = async () => {
   for (let k = 0; k < playerList.length; k++) {
     const user_qq = playerList[k]
     const player = await readPlayer(user_qq)
-    const level_id = data.Level_list.find(
+    if (!player) {
+      continue
+    }
+    const LevelList = await getDataList('Level1')
+    const level_id = LevelList.find(
       item => item.level_id == player.level_id
     ).level_id
     temp[k] = {

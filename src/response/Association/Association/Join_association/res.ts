@@ -1,10 +1,15 @@
 import { Text, useSend } from 'alemonjs'
+import { getIoRedis } from '@alemonjs/db'
 
-import { data } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
+import { keys } from '@src/model/keys'
 import {
   notUndAndNull,
   timestampToTime,
-  playerEfficiency
+  playerEfficiency,
+  existplayer,
+  readPlayer,
+  writePlayer
 } from '@src/model/index'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
@@ -41,17 +46,18 @@ interface PlayerGuildEntry {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await readPlayer(usr_qq)
   if (!player) return false
   if (notUndAndNull(player.宗门)) return false
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'))
     return false
   }
-  const levelEntry = data.Level_list.find(
-    item => item.level_id == player.level_id
+  const levelList = await getDataList('Level1')
+  const levelEntry = levelList.find(
+    (item: { level_id: number }) => item.level_id == player.level_id
   )
   if (!levelEntry) {
     Send(Text('境界数据缺失'))
@@ -66,12 +72,23 @@ const res = onResponse(selects, async e => {
     Send(Text('请输入宗门名称'))
     return false
   }
-  const ifexistass = await data.existData('association', association_name)
+  const redis = getIoRedis()
+  const ifexistass = await redis.exists(keys.association(association_name))
   if (!ifexistass) {
     Send(Text('这方天地不存在' + association_name))
     return false
   }
-  const assRaw = await data.getAssociation(association_name)
+  const assData = await redis.get(keys.association(association_name))
+  if (!assData) {
+    Send(Text('没有这个宗门'))
+    return false
+  }
+  let assRaw: AssociationDetailData | 'error'
+  try {
+    assRaw = JSON.parse(assData) as AssociationDetailData
+  } catch (_error) {
+    assRaw = 'error'
+  }
   if (assRaw === 'error') {
     Send(Text('没有这个宗门'))
     return false
@@ -95,12 +112,14 @@ const res = onResponse(selects, async e => {
   }
 
   if (Number(ass.最低加入境界 || 0) > now_level_id) {
-    const level =
-      data.Level_list.find(item => item.level_id === ass.最低加入境界)?.level ||
-      '未知境界'
+    const levelList = await getDataList('Level1')
+    const levelEntry = levelList.find(
+      (item: { level_id: number }) => item.level_id === ass.最低加入境界
+    )
+    const level = levelEntry?.level || '未知境界'
     Send(
       Text(
-        `${association_name}招收弟子的最低境界要求为:${level},当前未达到要求`
+        `${association_name}招收弟子的最低加入境界要求为:${level},当前未达到要求`
       )
     )
     return false
@@ -125,8 +144,8 @@ const res = onResponse(selects, async e => {
   ass.所有成员.push(usr_qq)
   ass.外门弟子.push(usr_qq)
   await playerEfficiency(usr_qq)
-  await data.setData('player', usr_qq, serializePlayer(player))
-  await data.setAssociation(association_name, ass)
+  await writePlayer(usr_qq, serializePlayer(player) as unknown as Player)
+  await redis.set(keys.association(association_name), JSON.stringify(ass))
   Send(Text(`恭喜你成功加入${association_name}`))
 })
 

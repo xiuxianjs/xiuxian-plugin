@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { config, data } from '@src/model/api'
+import { config } from '@src/model/api'
 import {
   readPlayer,
   notUndAndNull,
@@ -12,6 +12,7 @@ import {
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?怡红院$/
 
 const res = onResponse(selects, async e => {
@@ -38,9 +39,8 @@ const res = onResponse(selects, async e => {
   if (!flag) {
     return false
   }
-  const levelObj = data.Level_list.find(
-    item => item.level_id == player.level_id
-  )
+  const levelList = await getDataList('Level1')
+  const levelObj = levelList.find(item => item.level_id == player.level_id)
   if (!levelObj) {
     Send(Text('境界数据缺失'))
     return false

@@ -1,7 +1,9 @@
 import { Text, useSend } from 'alemonjs'
 
 import { notUndAndNull } from '@src/model/common'
-import { data } from '@src/model/api'
+import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl'
+import { redis } from '@src/model/api'
+import { __PATH } from '@src/model/keys'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
 import { selects } from '@src/response/mw'
@@ -32,9 +34,9 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await readPlayer(usr_qq)
   if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门))
     return false
 
@@ -53,7 +55,14 @@ const res = onResponse(selects, async e => {
     Send(Text(`你身上只有${player.灵石}灵石,数量不足`))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  const assData = await redis.get(
+    `${__PATH.association}:${player.宗门.宗门名称}`
+  )
+  if (!assData) {
+    Send(Text('宗门数据异常'))
+    return
+  }
+  const assRaw = JSON.parse(assData)
   if (assRaw === 'error') {
     Send(Text('宗门数据不存在或已损坏'))
     return false
@@ -80,8 +89,8 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool + lingshi
   player.宗门.lingshi_donate = (player.宗门.lingshi_donate || 0) + lingshi
   player.灵石 -= lingshi
-  await data.setData('player', usr_qq, serializePlayer(player))
-  await data.setAssociation(ass.宗门名称, ass)
+  await writePlayer(usr_qq, serializePlayer(player))
+  await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass))
   Send(
     Text(
       `捐赠成功,你身上还有${player.灵石}灵石,宗门灵石池目前有${ass.灵石池}灵石`

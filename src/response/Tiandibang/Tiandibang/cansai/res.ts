@@ -1,11 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?报名比赛/
 
 const res = onResponse(selects, async e => {
@@ -24,7 +24,8 @@ const res = onResponse(selects, async e => {
 
   if (!tiandibang.find(item => item.qq === usr_qq)) {
     const player = await readPlayer(usr_qq)
-    const level_id = data.Level_list.find(
+    const levelList = await getDataList('Level1')
+    const level_id = levelList.find(
       item => item.level_id == player.level_id
     ).level_id
     const A_player = {

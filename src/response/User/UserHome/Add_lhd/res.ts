@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import {
   existplayer,
   existNajieThing,
@@ -28,7 +27,7 @@ const res = onResponse(selects, async e => {
     )
     return false
   }
-  const player = await data.getData('player', usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.轮回点 >= 10 && player.lunhui == 0) {
     Send(Text('你梳洗完毕，将小石头摆在案上,点上香烛，拜上三拜！'))
     await sleep(3000)
@@ -41,7 +40,7 @@ const res = onResponse(selects, async e => {
           `或者放拍卖行骗几个自认为识货的人回本？”`
       )
     )
-    data.setData('player', usr_qq, player)
+    await writePlayer(usr_qq, player)
     return false
   }
   await addNajieThing(usr_qq, '长相奇怪的小石头', '道具', -1)
@@ -57,7 +56,7 @@ const res = onResponse(selects, async e => {
   )
   await sleep(1000)
   player.轮回点++
-  data.setData('player', usr_qq, player)
+  await writePlayer(usr_qq, player)
   return false
 })
 import mw from '@src/response/mw'

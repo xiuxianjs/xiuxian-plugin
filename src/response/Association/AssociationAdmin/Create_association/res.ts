@@ -2,6 +2,8 @@ import { Text, useMessage, useSubscribe } from 'alemonjs'
 
 import { data } from '@src/model/api'
 import { notUndAndNull, setFileValue, timestampToTime } from '@src/model/index'
+import { getDataList } from '@src/model/DataList'
+import { readPlayer, existplayer, writePlayer } from '@src/model/index'
 
 import mw, { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?开宗立派$/
@@ -9,10 +11,13 @@ export const regular = /^(#|＃|\/)?开宗立派$/
 const res = onResponse(selects, async e => {
   const usr_qq = e.UserId
   const [message] = useMessage(e)
-  const ifexistplay = await data.existData('player', usr_qq)
+  // 使用existplayer检查玩家是否存在
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return
-  const player = await data.getData('player', usr_qq)
-  const now_level_id = data.Level_list.find(
+  const player = await readPlayer(usr_qq)
+  if (!player) return false
+  const levelList = await getDataList('Level1')
+  const now_level_id = levelList.find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 22) {
@@ -80,13 +85,13 @@ const res = onResponse(selects, async e => {
       const now = new Date()
       const nowTime = now.getTime() //获取当前时间戳
       const date = timestampToTime(nowTime)
-      const player = await data.getData('player', usr_qq)
+      const player = await readPlayer(usr_qq)
       player.宗门 = {
         宗门名称: association_name,
         职位: '宗主',
         time: [date, nowTime]
       }
-      data.setData('player', usr_qq, player)
+      await writePlayer(usr_qq, player)
       await new_Association(association_name, usr_qq, e)
       await setFileValue(usr_qq, -10000, '灵石')
       message.send(format(Text('宗门创建成功')))
@@ -108,8 +113,9 @@ const res = onResponse(selects, async e => {
 })
 async function new_Association(name, holder_qq, e) {
   const usr_qq = e.UserId
-  const player = await data.getData('player', usr_qq)
-  const now_level_id = data.Level_list.find(
+  const player = await readPlayer(usr_qq)
+  const levelList = await getDataList('Level1')
+  const now_level_id = levelList.find(
     item => item.level_id == player.level_id
   ).level_id
   const isHigh = now_level_id > 41

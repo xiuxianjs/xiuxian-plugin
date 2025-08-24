@@ -1,7 +1,8 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
-import { getRedisKey } from '@src/model/keys'
+import { redis } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
+import { getRedisKey, __PATH } from '@src/model/keys'
 import {
   Go,
   readPlayer,
@@ -42,7 +43,12 @@ const res = onResponse(selects, async e => {
     Send(Text('请先加入宗门'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`)
+  if (!assData) {
+    Send(Text('宗门数据异常'))
+    return
+  }
+  const assRaw = JSON.parse(assData)
   if (assRaw === 'error' || !isExtAss(assRaw)) {
     Send(Text('宗门数据不存在'))
     return false
@@ -58,7 +64,7 @@ const res = onResponse(selects, async e => {
     Send(Text('请在指令后面补充秘境名称'))
     return false
   }
-  const listRaw = data.guildSecrets_list
+  const listRaw = await getDataList('GuildSecrets')
   const weizhi = listRaw?.find(item => item.name === didian)
   if (!notUndAndNull(weizhi)) {
     Send(Text('未找到该宗门秘境'))
@@ -79,7 +85,7 @@ const res = onResponse(selects, async e => {
   // 灵石池收益 5% 向下取整
   const guildGain = Math.trunc(price * 0.05)
   ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain
-  await data.setAssociation(ass.宗门名称, ass)
+  await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass))
 
   await addCoin(usr_qq, -price)
   interface XiuxianConfig {

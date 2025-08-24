@@ -1,5 +1,6 @@
 import { Text, useSend } from 'alemonjs'
-import { redis, data } from '@src/model/api'
+import { redis } from '@src/model/api'
+import { __PATH } from '@src/model/keys'
 import {
   existplayer,
   readPlayer,
@@ -42,7 +43,8 @@ const res = onResponse(selects, async e => {
   //读取信息
   const player = await readPlayer(usr_qq)
   //境界
-  const now_level = data.Level_list.find(
+  const levelList = await getDataList('Level1')
+  const now_level = levelList.find(
     item => item.level_id == player.level_id
   ).level
   if (now_level != '渡劫期') {
@@ -79,14 +81,12 @@ const res = onResponse(selects, async e => {
     Send(Text('请先#刷新信息'))
     return false
   }
-  now_level_id = data.Level_list.find(
+  now_level_id = levelList.find(
     item => item.level_id == player.level_id
   ).level_id
   const now_exp = player.修为
   //修为
-  const need_exp = data.Level_list.find(
-    item => item.level_id == player.level_id
-  ).exp
+  const need_exp = levelList.find(item => item.level_id == player.level_id).exp
   if (now_exp < need_exp) {
     Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可成仙！`))
     return false
@@ -115,7 +115,11 @@ const res = onResponse(selects, async e => {
       }
       //有宗门
       if (player.宗门.职位 != '宗主') {
-        const ass = await data.getAssociation(player.宗门.宗门名称)
+        const assData = await redis.get(
+          `${__PATH.association}:${player.宗门.宗门名称}`
+        )
+        if (!assData) return false
+        const ass = JSON.parse(assData)
         if (ass === 'error') return false
         const association = ass
         // 成员职位列表统一视为 string[]
@@ -124,9 +128,12 @@ const res = onResponse(selects, async e => {
         association[pos] = curList.filter(item => item != usr_qq)
         const allList = (association['所有成员'] as string[] | undefined) || []
         association['所有成员'] = allList.filter(item => item != usr_qq)
-        data.setAssociation(association.宗门名称 as string, association)
+        await redis.set(
+          `${__PATH.association}:${association.宗门名称}`,
+          JSON.stringify(association)
+        )
         delete player.宗门
-        data.setData('player', usr_qq, player)
+        await writePlayer(usr_qq, player)
         await playerEfficiency(usr_qq)
         Send(Text('退出宗门成功'))
       } else {
@@ -135,9 +142,9 @@ const res = onResponse(selects, async e => {
         const association = ass
         const allList = (association.所有成员 as string[] | undefined) || []
         if (allList.length < 2) {
-          await redis.del(`${data.association}:${player.宗门.宗门名称}`)
+          await redis.del(`${__PATH.association}:${player.宗门.宗门名称}`)
           delete player.宗门 //删除存档里的宗门信息
-          data.setData('player', usr_qq, player)
+          await writePlayer(usr_qq, player)
           await playerEfficiency(usr_qq)
           Send(
             Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹')
@@ -145,7 +152,7 @@ const res = onResponse(selects, async e => {
         } else {
           association['所有成员'] = allList.filter(item => item != usr_qq) // 剔除原成员
           delete player.宗门 //删除这个B存档里的宗门信息
-          data.setData('player', usr_qq, player)
+          await writePlayer(usr_qq, player)
           await playerEfficiency(usr_qq)
           //随机一个幸运儿的QQ,优先挑选等级高的
           let randmember_qq
@@ -163,15 +170,18 @@ const res = onResponse(selects, async e => {
               (association.所有成员 as string[] | undefined) || []
             )
           }
-          const randmember = await await data.getData('player', randmember_qq) //获取幸运儿的存档
+          const randmember = await readPlayer(randmember_qq) //获取幸运儿的存档
           const rPos = randmember.宗门.职位 as string
           const rList = (association[rPos] as string[] | undefined) || []
           association[rPos] = rList.filter(item => item != randmember_qq)
           association['宗主'] = randmember_qq //新的职位表加入这个幸运儿
           randmember.宗门.职位 = '宗主' //成员存档里改职位
-          data.setData('player', randmember_qq, randmember) //记录到存档
-          data.setData('player', usr_qq, player)
-          data.setAssociation(association.宗门名称 as string, association) //记录到宗门
+          await writePlayer(randmember_qq, randmember) //记录到存档
+          await writePlayer(usr_qq, player)
+          await redis.set(
+            `${__PATH.association}:${association.宗门名称}`,
+            JSON.stringify(association)
+          ) //记录到宗门
           Send(
             Text(
               `飞升前,遵循你的嘱托,${randmember.名号}将继承你的衣钵,成为新一任的宗主`
@@ -184,4 +194,5 @@ const res = onResponse(selects, async e => {
   }
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

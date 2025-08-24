@@ -1,7 +1,9 @@
 import { Text, useMessage, Image } from 'alemonjs'
-import { data } from '@src/model/api'
+
 import { selects } from '@src/response/mw'
 import { __PATH, keysByPath } from '@src/model/index'
+import Association from '@src/model/Association'
+import { getDataList } from '@src/model/DataList'
 import { screenshot } from '@src/image'
 import type { AssociationDetailData } from '@src/types'
 
@@ -31,7 +33,7 @@ function isBlessPlace(v): v is BlessPlace {
 
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e)
-  const blessRaw = data.bless_list || undefined
+  const blessRaw = await getDataList('Bless')
   const blessList: BlessPlace[] = Array.isArray(blessRaw)
     ? blessRaw.filter(isBlessPlace)
     : []
@@ -42,7 +44,7 @@ const res = onResponse(selects, async e => {
 
   const guildNames = await keysByPath(__PATH.association)
   const assListRaw = await Promise.all(
-    guildNames.map(n => data.getAssociation(n))
+    guildNames.map(n => Association.getAssociation(n))
   )
   const locationMap = new Map<string | number, string>()
   for (let idx = 0; idx < assListRaw.length; idx++) {

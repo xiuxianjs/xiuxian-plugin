@@ -15,7 +15,7 @@ const res = onResponse(selects, async e => {
   const msg = []
 
   const data = {
-    jineng: await getDataList('Jineng')
+    Jineng: await getDataList('Jineng')
   }
 
   if (A_QQ.some(item => item.QQ == e.UserId)) {
@@ -26,7 +26,7 @@ const res = onResponse(selects, async e => {
           j[`选择技能`].push(
             JSON.parse(
               JSON.stringify(
-                data.jineng.find(item => item.name == j.技能[+code[m] - 1])
+                data.Jineng.find(item => item.name == j.技能[+code[m] - 1])
               )
             )
           )
@@ -44,7 +44,7 @@ const res = onResponse(selects, async e => {
           j[`选择技能`].push(
             JSON.parse(
               JSON.stringify(
-                data.jineng.find(item => item.name == j.技能[+code[m] - 1])
+                data.Jineng.find(item => item.name == j.技能[+code[m] - 1])
               )
             )
           )

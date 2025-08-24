@@ -6,6 +6,7 @@ import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { Mention, DataMention } from 'alemonjs'
 import type { ActionState } from '@src/types'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?降妖归来$/
 
 const res = onResponse(selects, async e => {
@@ -89,7 +90,8 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   if (!notUndAndNull(player.level_id)) {
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const LevelList = await getDataList('Level1')
+  const now_level_id = LevelList.find(
     item => item.level_id == player.level_id
   ).level_id
   const cf = await config.getConfig('xiuxian', 'xiuxian')

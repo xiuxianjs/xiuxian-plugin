@@ -57,10 +57,7 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const data = {
-    duihuan: await getDataList('ExchangeItem')
-  }
-  const list = (data.duihuan || []) as ExchangeCode[]
+  const list = ((await getDataList('ExchangeItem')) || []) as ExchangeCode[]
   const codeObj = list.find(c => c.name === codeInput)
   if (!codeObj) {
     Send(Text('兑换码不存在!'))

@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { getRedisKey } from '@src/model/keys'
 import { startAction } from '@src/response/actionHelper'
 import {
@@ -27,7 +28,8 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq)
   let didian = e.MessageText.replace(/^(#|＃|\/)?降临秘境/, '')
   didian = didian.trim()
-  const weizhiRaw = await data.didian_list.find(item => item.name == didian)
+  const didianList = await getDataList('Didian')
+  const weizhiRaw = didianList?.find(item => item.name == didian)
   if (!notUndAndNull(weizhiRaw)) {
     return false
   }

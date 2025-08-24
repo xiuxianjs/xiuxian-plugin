@@ -1,5 +1,7 @@
 import { Text, useSend } from 'alemonjs'
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
+import { __PATH } from '@src/model/keys'
+import { getIoRedis } from '@alemonjs/db'
 import {
   existplayer,
   notUndAndNull,
@@ -9,7 +11,8 @@ import {
   getRandomFromARR,
   addNajieThing,
   writeEquipment,
-  addHP
+  addHP,
+  readPlayer
 } from '@src/model/index'
 import type { TalentInfo, Player } from '@src/types/player'
 import type { AssociationData } from '@src/types/domain'
@@ -162,12 +165,17 @@ async function exitAssociationIfNeed(
     return
   }
   // 宗主：处理解散或继任
-  const ass3Raw = await data.getAssociation(guild.宗门名称)
+  const redisClient = getIoRedis()
+  const ass3Data = await redisClient.get(
+    `${__PATH.association}:${guild.宗门名称}`
+  )
+  if (!ass3Data) return
+  const ass3Raw = JSON.parse(ass3Data)
   if (!isAssociation(ass3Raw)) return
   const ass3 = ass3Raw as AssociationData & {}
   if (!Array.isArray(ass3.所有成员)) ass3.所有成员 = []
   if ((ass3.所有成员 as string[]).length < 2) {
-    await redis.del(`${data.association}:${guild.宗门名称}`)
+    await redis.del(`${__PATH.association}:${guild.宗门名称}`)
     delete player.宗门
     await writePlayer(usr_qq, player as Player)
     await playerEfficiency(usr_qq)
@@ -229,7 +237,8 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   if (!(await existplayer(usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as PlayerEx
+  const player = await readPlayer(usr_qq)
+  // const player = (await data.getData('player', usr_qq)) as PlayerEx
   if (!notUndAndNull(player.lunhui)) {
     setNum(player, 'lunhui', 0)
     await writePlayer(usr_qq, player as Player)

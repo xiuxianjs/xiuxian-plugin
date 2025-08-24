@@ -1,7 +1,7 @@
 import { getRedisKey } from '@src/model/keys'
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { redis, data, config } from '@src/model/api'
+import { redis, config } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { zdBattle } from '@src/model/battle'
 import { addHP, addExp2, addCoin } from '@src/model/economy'
@@ -11,6 +11,7 @@ import type { Player } from '@src/types/player'
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?比武$/
 
 interface ActionState {
@@ -177,10 +178,11 @@ const res = onResponse(selects, async e => {
     return false
   }
 
+  const levelList = await getDataList('Level1')
   const levelA =
-    data.Level_list.find(l => l.level_id == A_player.level_id)?.level_id || 1
+    levelList.find(l => l.level_id == A_player.level_id)?.level_id || 1
   const levelB =
-    data.Level_list.find(l => l.level_id == B_player.level_id)?.level_id || 1
+    levelList.find(l => l.level_id == B_player.level_id)?.level_id || 1
 
   if (aWin) {
     const qixueA = Math.trunc(1000 * levelB)

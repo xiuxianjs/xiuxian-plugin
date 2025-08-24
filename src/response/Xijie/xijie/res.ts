@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { redis, data } from '@src/model/api'
+import { redis } from '@src/model/api'
 import {
   existplayer,
   shijianc,
@@ -9,6 +9,7 @@ import {
   readPlayer,
   writePlayer
 } from '@src/model/index'
+import { getDataList } from '@src/model/DataList'
 import {
   readAction,
   isActionRunning,
@@ -85,8 +86,10 @@ const res = onResponse(selects, async e => {
 
   let shop = await readShop()
   if (!Array.isArray(shop) || shop.length === 0) {
-    const converted = data.shop_list.map(item => ({
+    const shopData = await getDataList('Shop')
+    const converted = shopData.map(item => ({
       name: item.name,
+      price: num(item.price),
       one: (item.one || []).map(g => ({ name: g.name, 数量: g.数量 }))
     }))
     await writeShop(converted)

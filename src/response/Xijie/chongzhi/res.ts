@@ -1,10 +1,10 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import { readShop, writeShop } from '@src/model/index'
 import type { ShopData } from '@src/types'
 
 import mw, { selects } from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?重置.*$/
 
 const res = onResponse(selects, async e => {
@@ -21,7 +21,8 @@ const res = onResponse(selects, async e => {
   try {
     shop = await readShop()
   } catch {
-    await writeShop(data.shop_list as ShopData)
+    const shopList = await getDataList('Shop')
+    await writeShop(shopList as ShopData)
     shop = await readShop()
   }
 

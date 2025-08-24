@@ -4,7 +4,7 @@ import { __PATH, keysByPath } from './keys.js'
 import { writePlayer } from './pub.js'
 import { safeParse } from './utils/safe.js'
 import type { Player, Tripod, TalentInfo } from '../types/player.js'
-import { DATA_LIST as DataList } from './DataList.js'
+import { getDataList } from './DataList.js'
 import { LIB_MAP, LibHumanReadable } from '../types/model.js'
 import type { CustomRecord } from '../types/model.js'
 import { keys } from './keys.js'
@@ -130,7 +130,7 @@ export async function readThat(
   weizhi: LibHumanReadable
 ): Promise<unknown | undefined> {
   const key = LIB_MAP[weizhi]
-  const arr = DataList[key]
+  const arr = await getDataList(key)
   if (Array.isArray(arr)) {
     for (const item of arr) {
       if (
@@ -149,7 +149,7 @@ export async function readThat(
 // 返回 unknown[] 保持宽松兼容
 export async function readAll(weizhi: LibHumanReadable): Promise<unknown[]> {
   const key = LIB_MAP[weizhi]
-  const arr = DataList[key]
+  const arr = await getDataList(key)
   return Array.isArray(arr) ? arr : []
 }
 

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { getRedisKey } from '@src/model/keys'
 import { startAction } from '@src/response/actionHelper'
 import {
@@ -30,7 +30,8 @@ const res = onResponse(selects, async e => {
   if (i > 12) {
     return false
   }
-  const weizhi = await data.didian_list.find(item => item.name == didian)
+  const diDianList = await getDataList('Didian')
+  const weizhi = await diDianList.find(item => item.name == didian)
   if (!notUndAndNull(weizhi)) {
     return false
   }
@@ -87,4 +88,5 @@ const res = onResponse(selects, async e => {
   Send(Text('开始降临' + didian + ',' + time + '分钟后归来!'))
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

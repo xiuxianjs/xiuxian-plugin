@@ -29,7 +29,8 @@ const res = onResponse(selects, async e => {
     Send(Text('请输入境界名称'))
     return false
   }
-  const levelInfo = data.Level_list.find(item => item.level === jiar)
+  const levelList = await getDataList('Level1')
+  const levelInfo = levelList.find(item => item.level === jiar)
   if (!levelInfo) {
     Send(Text('境界不存在'))
     return false
@@ -54,4 +55,5 @@ const res = onResponse(selects, async e => {
 })
 
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

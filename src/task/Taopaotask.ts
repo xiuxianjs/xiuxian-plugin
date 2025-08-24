@@ -1,4 +1,5 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { notUndAndNull } from '@src/model/common'
 import { Harm } from '@src/model/battle'
 import { readShop, writeShop } from '@src/model/shop'
@@ -83,25 +84,26 @@ export const Taopaotask = async () => {
         if (now_time >= end_time) {
           const weizhi = action.Place_address
           if (!weizhi) return
+          const npcList = await getDataList('NPC')
           let i = 0 //获取对应npc列表的位置
-          for (i = 0; i < data.npc_list.length; i++) {
-            if (data.npc_list[i].name == '万仙盟') break
+          for (i = 0; i < npcList.length; i++) {
+            if (npcList[i].name == '万仙盟') break
           }
           const A_player = action.A_player
           if (!A_player) return
           let monster: MonsterSlot
           if (weizhi.Grade == 1) {
-            const monster_length = data.npc_list[i].one.length
+            const monster_length = npcList[i].one.length
             const monster_index = Math.trunc(Math.random() * monster_length)
-            monster = data.npc_list[i].one[monster_index]
+            monster = npcList[i].one[monster_index]
           } else if (weizhi.Grade == 2) {
-            const monster_length = data.npc_list[i].two.length
+            const monster_length = npcList[i].two.length
             const monster_index = Math.trunc(Math.random() * monster_length)
-            monster = data.npc_list[i].two[monster_index]
+            monster = npcList[i].two[monster_index]
           } else {
-            const monster_length = data.npc_list[i].three.length
+            const monster_length = npcList[i].three.length
             const monster_index = Math.trunc(Math.random() * monster_length)
-            monster = data.npc_list[i].three[monster_index]
+            monster = npcList[i].three[monster_index]
           }
           //设定npc数值
           const B_player = {

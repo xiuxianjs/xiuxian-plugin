@@ -21,14 +21,10 @@ export async function writeEquipment(
 ): Promise<void> {
   const player: Player | null = await readPlayer(usr_qq)
   if (!player) return
-  const data = {
-    Level_list: await getDataList('Level1'),
-    LevelMax_list: await getDataList('Level2')
-  }
-  const levelInfo = data.Level_list.find(
-    item => item.level_id == player.level_id
-  )
-  const physiqueInfo = data.LevelMax_list.find(
+  const levelList = await getDataList('Level1')
+  const physiqueList = await getDataList('Level2')
+  const levelInfo = levelList.find(item => item.level_id == player.level_id)
+  const physiqueInfo = physiqueList.find(
     item => item.level_id == player.Physique_id
   )
   player.攻击 =

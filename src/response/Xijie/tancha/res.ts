@@ -1,6 +1,5 @@
 import { Text, Image, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import { getString, userKey } from '@src/model/utils/redisHelper'
 import {
   readAction,
@@ -19,6 +18,7 @@ import {
 
 import mw, { selects } from '@src/response/mw'
 import { screenshot } from '@src/image'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?探查.*$/
 
 const res = onResponse(selects, async e => {
@@ -49,8 +49,9 @@ const res = onResponse(selects, async e => {
   try {
     shop = await readShop()
   } catch {
-    // 将原始 shop_list 转换为写入所需结构（确保存在 one 数组）
-    const converted = data.shop_list.map(item => ({
+    const shopList = await getDataList('Shop')
+    // 将原始 shopList 转换为写入所需结构（确保存在 one 数组）
+    const converted = shopList.map(item => ({
       name: item.name,
       one: item.one || [],
       ...item

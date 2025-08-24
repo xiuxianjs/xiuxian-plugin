@@ -5,8 +5,16 @@ import { getIoRedis } from '@alemonjs/db'
 import { createPlayerRepository } from './repository/playerRepository.js'
 import { createNajieRepository } from './repository/najieRepository.js'
 import { keys } from './keys.js'
+import { getDataList } from './DataList.js'
 
-const playerRepo = createPlayerRepository(() => data.occupation_exp_list)
+const experienceList = (await getDataList('Occupation')) as Array<{
+  id: number
+  name: string
+  experience: number
+  rate: number
+}>
+
+const playerRepo = createPlayerRepository(() => experienceList)
 const najieRepo = createNajieRepository()
 
 // 辅助函数：安全获取玩家数据
@@ -33,7 +41,11 @@ export async function getEquipmentDataSafe(
   return equipmentData as Equipment
 }
 
-// 检查存档是否存在，存在返回 true
+/**
+ * 检查玩家存档是否存在
+ * @param usr_qq 玩家QQ
+ * @returns
+ */
 export async function existplayer(usr_qq: string): Promise<boolean> {
   const redis = getIoRedis()
   const res = await redis.exists(keys.player(usr_qq))

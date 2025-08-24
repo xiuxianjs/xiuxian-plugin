@@ -1,5 +1,6 @@
 import { screenshot } from '@src/image'
-import { redis, data } from '@src/model/api'
+import { redis } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { __PATH, shijianc, readPlayer } from '@src/model/index'
 import { getRedisKey, keys, keysByPath } from '@src/model/keys'
 import type { Player, TalentInfo } from '@src/types'
@@ -53,7 +54,7 @@ export async function getLastbisai(usr_qq: string | number) {
 export async function get_tianditang_img(e, jifen) {
   const usr_qq = e.UserId
   const player = await readPlayer(usr_qq)
-  const commodities_list = data.tianditang
+  const commodities_list = await getDataList('Tianditang')
   const tianditang_data = {
     name: player.名号,
     jifen,
@@ -70,7 +71,8 @@ export async function re_bangdang() {
   for (let k = 0; k < playerList.length; k++) {
     const thisQqStr = playerList[k]!
     const player = await readPlayer(thisQqStr)
-    const level_id = data.Level_list.find(
+    const levelList = await getDataList('Level1')
+    const level_id = levelList.find(
       item => item.level_id == player.level_id
     )?.level_id
     if (level_id == null) continue

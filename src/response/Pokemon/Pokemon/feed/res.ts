@@ -1,15 +1,15 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import {
   convert2integer,
   notUndAndNull,
   existNajieThing,
   addNajieThing
 } from '@src/model/index'
+import { readPlayer, existplayer, writePlayer } from '@src/model/xiuxian_impl'
 
 import { selects } from '@src/response/mw'
-import DataList from '@src/model/DataList'
+import { getDataList } from '@src/model/DataList'
 import { PetItem } from '@src/types'
 export const regular = /^(#|＃|\/)?喂给仙宠.*$/
 
@@ -17,9 +17,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //用户不存在
-  const ifexistplay = await data.existData('player', usr_qq)
+  const ifexistplay = await existplayer(usr_qq)
   if (!ifexistplay) return false
-  const player = await data.getData('player', usr_qq)
+  const player = await readPlayer(usr_qq)
   if (player.仙宠 == '') {
     //有无仙宠
     Send(Text('你没有仙宠'))
@@ -29,17 +29,20 @@ const res = onResponse(selects, async e => {
   const code = thing.split('*')
   const thing_name = code[0] //物品
   const thing_value = await convert2integer(code[1]) //数量
-  const ifexist = data.xianchonkouliang.find(item => item.name == thing_name) //查找
+  const xianchonkouliangData = await getDataList('Xianchonkouliang')
+  const ifexist = xianchonkouliangData.find(item => item.name == thing_name) //查找
   if (!notUndAndNull(ifexist)) {
     Send(Text('此乃凡物,仙宠不吃' + thing_name))
     return false
   }
   if (!player.仙宠.等级上限) {
-    const list = ['xianchon', 'changzhuxianchon']
+    const list = ['Xianchon', 'Changzhuxianchon']
     for (const item of list) {
-      const i = (DataList[item] as PetItem[]).find(
-        x => x.name == player.仙宠.name
-      )
+      const i = (
+        (await getDataList(
+          item as 'Xianchon' | 'Changzhuxianchon'
+        )) as PetItem[]
+      ).find(x => x.name == player.仙宠.name)
       if (i) {
         player.仙宠.等级上限 = i.等级上限
         break
@@ -59,7 +62,8 @@ const res = onResponse(selects, async e => {
     return false
   }
   //纳戒中的数量
-  const thing_quantity = await existNajieThing(usr_qq, thing_name, '仙宠口粮')
+  const thing_quantity =
+    (await existNajieThing(usr_qq, thing_name, '仙宠口粮')) || 0
   if (thing_quantity < thing_value || !thing_quantity) {
     //没有
     Send(Text(`【${thing_name}】数量不足`))
@@ -90,7 +94,7 @@ const res = onResponse(selects, async e => {
     }
     player.仙宠.等级 = player.仙宠.等级上限
   }
-  await data.setData('player', usr_qq, player)
+  await writePlayer(usr_qq, player)
   Send(Text(`喂养成功，仙宠的等级增加了${jiachen},当前为${player.仙宠.等级}`))
 })
 import mw from '@src/response/mw'

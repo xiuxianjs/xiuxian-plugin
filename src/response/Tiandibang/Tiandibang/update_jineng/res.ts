@@ -1,10 +1,10 @@
 import { Text, useSend } from 'alemonjs'
-import { data } from '@src/model/api'
 import { existplayer, readPlayer } from '@src/model/index'
 import { readTiandibang, Write_tiandibang } from '../tian'
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import type { TalentInfo } from '@src/types'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?更新属性$/
 
 const res = onResponse(selects, async e => {
@@ -51,7 +51,8 @@ const res = onResponse(selects, async e => {
   if (typeof tiandibang[index].神石 !== 'number')
     tiandibang[index].神石 = player.神石 || 0
   if (typeof tiandibang[index].次数 !== 'number') tiandibang[index].次数 = 0
-  const level_id = data.Level_list.find(
+  const levelList = await getDataList('Level1')
+  const level_id = levelList.find(
     item => item.level_id == player.level_id
   ).level_id
   const row = tiandibang[index]

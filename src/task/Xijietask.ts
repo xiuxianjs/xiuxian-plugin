@@ -9,6 +9,7 @@ import type { RaidActionState } from '@src/types'
 import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
 import { screenshot } from '@src/image'
 import { getAvatar } from '@src/model/utils/utilsx.js'
+import { getDataList } from '@src/model/DataList'
 
 /**
  * 获取所有玩家，逐个检查其当前动作（action）。
@@ -64,8 +65,9 @@ export const Xijietask = async () => {
           const weizhi = action.Place_address
           if (!weizhi) continue
           let i //获取对应npc列表的位置
-          for (i = 0; i < data.npc_list.length; i++) {
-            if (data.npc_list[i].name == weizhi.name) {
+          const npc_list = await getDataList('NPC')
+          for (i = 0; i < npc_list.length; i++) {
+            if (npc_list[i].name == weizhi.name) {
               break
             }
           }
@@ -74,17 +76,17 @@ export const Xijietask = async () => {
           let monster_index
           let monster
           if (weizhi.Grade == 1) {
-            monster_length = data.npc_list[i].one.length
+            monster_length = npc_list[i].one.length
             monster_index = Math.trunc(Math.random() * monster_length)
-            monster = data.npc_list[i].one[monster_index]
+            monster = npc_list[i].one[monster_index]
           } else if (weizhi.Grade == 2) {
-            monster_length = data.npc_list[i].two.length
+            monster_length = npc_list[i].two.length
             monster_index = Math.trunc(Math.random() * monster_length)
-            monster = data.npc_list[i].two[monster_index]
+            monster = npc_list[i].two[monster_index]
           } else {
-            monster_length = data.npc_list[i].three.length
+            monster_length = npc_list[i].three.length
             monster_index = Math.trunc(Math.random() * monster_length)
-            monster = data.npc_list[i].three[monster_index]
+            monster = npc_list[i].three[monster_index]
           }
           //设定npc数值
           const B_player = {

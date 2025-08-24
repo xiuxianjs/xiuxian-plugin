@@ -3,6 +3,8 @@ import { Text, useSend } from 'alemonjs'
 import { data, redis } from '@src/model/api'
 import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
 import type { AssociationDetailData } from '@src/types'
+import Association from '@src/model/Association'
+import { getDataList } from '@src/model/DataList'
 
 import { selects } from '@src/response/mw'
 import { getRedisKey } from '@src/model/keys'
@@ -66,7 +68,7 @@ const res = onResponse(selects, async e => {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  const assRaw = await Association.getAssociation(player.宗门.宗门名称)
   if (assRaw === 'error' || !isExtAss(assRaw)) {
     Send(Text('宗门数据不存在'))
     return false
@@ -107,24 +109,31 @@ const res = onResponse(selects, async e => {
   //   xuanwu: await getDataList('xuanwu'),
   //   zhuque: await getDataList('zhuque'),
   //   baihu: await getDataList('baihu'),
-  //   danyao_list: await getDataList('danyao_list'),
-  //   gongfa_list: await getDataList('gongfa_list'),
-  //   equipment_list: await getDataList('equipment_list')
+  //   Danyao: await getDataList('Danyao'),
+    //   Gongfa: await getDataList('Gongfa'),
+    //   Equipment: await getDataList('Equipment')
   // }
 
+  const qilinData = await getDataList('Qilin')
+  const qinlongData = await getDataList('Qinglong')
+  const xuanwuData = await getDataList('Xuanwu')
+  const danyaoData = await getDataList('Danyao')
+  const gongfaData = await getDataList('Gongfa')
+  const equipmentData = await getDataList('Equipment')
+
   const highProbLists: Record<string, NamedClassItem[]> = {
-    麒麟: toNamedList(data.qilin),
-    青龙: toNamedList(data.qinlong),
-    玄武: toNamedList(data.xuanwu),
-    朱雀: toNamedList(data.xuanwu), // 原逻辑同 xuanwu
-    白虎: toNamedList(data.xuanwu)
+    麒麟: toNamedList(qilinData),
+    青龙: toNamedList(qinlongData),
+    玄武: toNamedList(xuanwuData),
+    朱雀: toNamedList(xuanwuData), // 原逻辑同 xuanwu
+    白虎: toNamedList(xuanwuData)
   }
   const normalLists: Record<string, NamedClassItem[]> = {
-    麒麟: toNamedList(data.danyao_list),
-    青龙: toNamedList(data.gongfa_list),
-    玄武: toNamedList(data.equipment_list),
-    朱雀: toNamedList(data.equipment_list), // 原逻辑同 equipment
-    白虎: toNamedList(data.equipment_list)
+    麒麟: toNamedList(danyaoData),
+    青龙: toNamedList(gongfaData),
+    玄武: toNamedList(equipmentData),
+    朱雀: toNamedList(equipmentData), // 原逻辑同 equipment
+    白虎: toNamedList(equipmentData)
   }
   const highList = highProbLists[beast] || []
   const normalList = normalLists[beast] || []

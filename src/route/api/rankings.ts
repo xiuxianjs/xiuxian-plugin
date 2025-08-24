@@ -3,7 +3,7 @@ import { validateRole } from '@src/route/core/auth'
 import { __PATH, keysByPath } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian_impl'
 import Association from '@src/model/Association'
-import { data } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 
 // 获取排名数据
 export const GET = async (ctx: Context) => {
@@ -143,7 +143,8 @@ export const GET = async (ctx: Context) => {
         for (const qq of playerList) {
           const player = await readPlayer(qq)
           if (player) {
-            const level = data.Level_list.find(
+            const levelList = await getDataList('Level1')
+            const level = levelList.find(
               item => item.level_id === player.level_id
             )
             rankingData.push({

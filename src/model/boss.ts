@@ -1,6 +1,7 @@
 import { EventsMessageCreateEnum, useSend, Text } from 'alemonjs'
 import * as _ from 'lodash-es'
-import { data, pushInfo, redis } from '@src/model/api'
+import { pushInfo, redis } from '@src/model/api'
+import { readPlayer, existplayer as existPlayer, writePlayer } from '@src/model'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
@@ -226,8 +227,8 @@ export async function WorldBossBattle(e) {
     send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
-  if (await data.existData('player', usr_qq)) {
-    const player = await data.getData('player', usr_qq)
+  if (await existPlayer(usr_qq)) {
+    const player = await readPlayer(usr_qq)
     if (player.level_id < 42 && player.lunhui == 0) {
       send(Text('你在仙界吗'))
       return false
@@ -400,7 +401,7 @@ export async function WorldBossBattle(e) {
         )
       )
       for (let i = 0; i < PlayerList.length; i++)
-        await data.getData('player', PlayerRecordJSON.QQ[PlayerList[i]])
+        await readPlayer(PlayerRecordJSON.QQ[PlayerList[i]])
       let Show_MAX
       const Rewardmsg = ['****妖王周本贡献排行榜****']
       if (PlayerList.length > 20) Show_MAX = 20
@@ -413,8 +414,7 @@ export async function WorldBossBattle(e) {
       )
         TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]]
       for (let i = 0; i < PlayerList.length; i++) {
-        const CurrentPlayer = await data.getData(
-          'player',
+        const CurrentPlayer = await readPlayer(
           PlayerRecordJSON.QQ[PlayerList[i]]
         )
         if (i < Show_MAX) {
@@ -434,8 +434,7 @@ export async function WorldBossBattle(e) {
               `获得灵石奖励${Reward}`
           )
           CurrentPlayer.灵石 += Reward
-          data.setData(
-            'player',
+          writePlayer(
             PlayerRecordJSON.QQ[PlayerList[i]],
             CurrentPlayer
           )
@@ -452,8 +451,7 @@ export async function WorldBossBattle(e) {
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励200000`
           )
-          data.setData(
-            'player',
+          writePlayer(
             PlayerRecordJSON.QQ[PlayerList[i]],
             CurrentPlayer
           )

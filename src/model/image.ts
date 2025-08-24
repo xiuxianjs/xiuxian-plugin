@@ -122,11 +122,8 @@ export async function getdanfangImage(
   if (!ifexistplay) {
     return
   }
-  const data = {
-    danfang_list: await getDataList('Danfang')
-  }
 
-  const danfang_list = data.danfang_list
+  const danfang_list = await getDataList('Danfang')
 
   const danfang_data = {
     user_id: usr_qq,
@@ -533,14 +530,12 @@ export async function getPowerImage(
   } else {
     this_association = player.宗门
   }
-  const data = {
-    LevelMax_list: await getDataList('Level2')
-  }
+  const physiqueList = await getDataList('Level2')
   //境界名字需要查找境界名
-  const levelMax = data.LevelMax_list.find(
+  const levelMax = physiqueList.find(
     item => item.level_id == player.Physique_id
   ).level
-  const need_xueqi = data.LevelMax_list.find(
+  const need_xueqi = physiqueList.find(
     item => item.level_id == player.Physique_id
   ).exp
   const playercopy = {
@@ -653,14 +648,10 @@ export async function getPlayerImage(
     kxjs[count] = `${num[count].toFixed(2)} x 10`
     count++
   }
-  const data = {
-    Level_list: await getDataList('Level1'),
-    LevelMax_list: await getDataList('Level2')
-  }
+  const levelList = await getDataList('Level1')
+  const physiqueList = await getDataList('Level2')
   //境界名字需要查找境界名
-  const level = data.Level_list.find(
-    item => item.level_id == player.level_id
-  ).level
+  const level = levelList.find(item => item.level_id == player.level_id).level
   const power = (
     (player.攻击 * 0.9 +
       player.防御 * 1.1 +
@@ -673,13 +664,11 @@ export async function getPlayerImage(
     (player.攻击 + player.防御 * 1.1 + player.血量上限 * 0.5) /
     10000
   ).toFixed(2)
-  const level2 = data.LevelMax_list.find(
+  const level2 = physiqueList.find(
     item => item.level_id == player.Physique_id
   ).level
-  const need_exp = data.Level_list.find(
-    item => item.level_id == player.level_id
-  ).exp
-  const need_exp2 = data.LevelMax_list.find(
+  const need_exp = levelList.find(item => item.level_id == player.level_id).exp
+  const need_exp2 = physiqueList.find(
     item => item.level_id == player.Physique_id
   ).exp
   let occupation = player.occupation
@@ -734,13 +723,13 @@ export async function getPlayerImage(
   } else {
     法宝评级 = pinji[equipment.法宝.pinji]
   }
-  const rank_lianqi = data.Level_list.find(
+  const rank_lianqi = levelList.find(
     item => item.level_id == player.level_id
   ).level
-  const expmax_lianqi = data.Level_list.find(
+  const expmax_lianqi = levelList.find(
     item => item.level_id == player.level_id
   ).exp
-  const rank_llianti = data.LevelMax_list.find(
+  const rank_llianti = physiqueList.find(
     item => item.level_id == player.Physique_id
   ).level
   const expmax_llianti = need_exp2
@@ -925,12 +914,8 @@ export async function getAssociationImage(
     weizhi = '仙界'
   }
   //门槛
-  const data = {
-    Level_list: await getDataList('Level1')
-  }
-  const level = data.Level_list.find(
-    item => item.level_id === ass.最低加入境界
-  ).level
+  const levelList = await getDataList('Level1')
+  const level = levelList.find(item => item.level_id === ass.最低加入境界).level
   // 副宗主
   const fuzong = []
   for (item in ass.副宗主 || {}) {

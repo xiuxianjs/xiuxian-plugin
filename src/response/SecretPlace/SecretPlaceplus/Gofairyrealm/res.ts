@@ -1,7 +1,7 @@
 import { getRedisKey } from '@src/model/keys'
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { startAction } from '@src/response/actionHelper'
 import {
   Go,
@@ -15,6 +15,7 @@ import {
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export const regular = /^(#|＃|\/)?沉迷仙境.*$/
 
 const res = onResponse(selects, async e => {
@@ -31,7 +32,8 @@ const res = onResponse(selects, async e => {
   if (i > 12) {
     return false
   }
-  const weizhiRaw = await data.Fairyrealm_list.find(item => item.name == didian)
+  const fairyrealmList = await getDataList('FairyRealm')
+  const weizhiRaw = await fairyrealmList.find(item => item.name == didian)
   if (!notUndAndNull(weizhiRaw)) {
     return false
   }
@@ -56,7 +58,7 @@ const res = onResponse(selects, async e => {
     return false
   }
   player = await readPlayer(usr_qq)
-  const now_level_id = data.Level_list.find(
+  const now_level_id = (await getDataList('Level1')).find(
     item => item.level_id == player.level_id
   ).level_id
   if (now_level_id < 42 && player.lunhui == 0) {

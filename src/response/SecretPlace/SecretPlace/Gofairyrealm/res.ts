@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { getRedisKey } from '@src/model/keys'
 import { startAction } from '@src/response/actionHelper'
 import {
@@ -25,7 +26,8 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq)
   let didian = e.MessageText.replace(/^(#|＃|\/)?镇守仙境/, '')
   didian = didian.trim()
-  const weizhiRaw = await data.Fairyrealm_list.find(item => item.name == didian)
+  const fairyRealmList = await getDataList('FairyRealm')
+  const weizhiRaw = fairyRealmList?.find(item => item.name == didian)
   if (!notUndAndNull(weizhiRaw)) {
     return false
   }
@@ -43,9 +45,10 @@ const res = onResponse(selects, async e => {
     Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'))
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const levelList = await getDataList('Level1')
+  const now_level_id = levelList?.find(
     item => item.level_id == player.level_id
-  ).level_id
+  )?.level_id
   if (now_level_id < 42 && player.lunhui == 0) {
     return false
   }

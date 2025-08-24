@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { Go, notUndAndNull } from '@src/model/common'
 import { convert2integer } from '@src/model/utils/number'
 import { readPlayer } from '@src/model/xiuxian_impl'
@@ -66,7 +67,7 @@ const res = onResponse(selects, async e => {
     Send(Text('次数需在 1-12 之间'))
     return false
   }
-  const listRaw = data.guildSecrets_list
+  const listRaw = await getDataList('GuildSecrets')
   const weizhi = listRaw?.find(item => item.name === didian)
   if (!notUndAndNull(weizhi)) {
     Send(Text('未找到该宗门秘境'))

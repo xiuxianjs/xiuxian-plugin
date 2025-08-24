@@ -1,18 +1,19 @@
 import { Text, useMessage, useSend, useSubscribe } from 'alemonjs'
 
-import { redis, data } from '@src/model/api'
+import { redis } from '@src/model/api'
+import { __PATH } from '@src/model/keys'
 import {
-  __PATH,
   existplayer,
   getRandomFromARR,
   Go,
   notUndAndNull,
   writePlayer,
-  getConfig
+  getConfig,
+  readPlayer
 } from '@src/model/index'
-import fs from 'fs'
+import Association from '@src/model/Association'
 import { selects } from '@src/response/mw'
-import type { Player, AssociationDetailData } from '@src/types'
+import type { AssociationDetailData } from '@src/types'
 import { getRedisKey } from '@src/model/keys'
 
 export const regular = /^(#|＃|\/)?再入仙途$/
@@ -63,7 +64,7 @@ const res = onResponse(selects, async e => {
     await redis.set(rebornKey, '1')
   }
 
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await readPlayer(usr_qq)
   if (!player) {
     Send(Text('玩家数据异常'))
     return false
@@ -120,13 +121,13 @@ const res = onResponse(selects, async e => {
       }
       acountVal += 1
 
-      const playerNow = (await data.getData('player', usr_qq)) as Player | null
+      const playerNow = await readPlayer(usr_qq)
       if (
         playerNow &&
         notUndAndNull(playerNow.宗门) &&
         isPlayerGuildRef(playerNow.宗门)
       ) {
-        const assRaw = await data.getAssociation(playerNow.宗门.宗门名称)
+        const assRaw = await Association.getAssociation(playerNow.宗门.宗门名称)
         if (assRaw !== 'error' && isExtAss(assRaw)) {
           const ass = assRaw
           if (playerNow.宗门.职位 !== '宗主') {
@@ -134,12 +135,15 @@ const res = onResponse(selects, async e => {
             ass.所有成员 = (ass.所有成员 || []).filter(q => q !== usr_qq)
             if ('宗门' in playerNow)
               delete (playerNow as { 宗门?: PlayerGuildRef }).宗门
-            await data.setAssociation(ass.宗门名称, ass)
+            await Association.setAssociation(ass.宗门名称, ass)
             await writePlayer(usr_qq, playerNow)
           } else {
             if ((ass.所有成员 || []).length < 2) {
               try {
-                fs.rmSync(`${data.association}/${ass.宗门名称}.json`)
+                // 注意：这里原本是文件系统操作，但现在数据存储在Redis中
+                // fs.rmSync(`${__PATH.association}/${ass.宗门名称}.json`)
+                // 改为删除Redis中的数据
+                await redis.del(`${__PATH.association}:${ass.宗门名称}`)
               } catch {
                 /* ignore */
               }
@@ -152,10 +156,7 @@ const res = onResponse(selects, async e => {
                 randmember_qq = await getRandomFromARR(ass.内门弟子)
               else randmember_qq = await getRandomFromARR(ass.所有成员 || [])
               if (randmember_qq) {
-                const randmember = (await data.getData(
-                  'player',
-                  randmember_qq
-                )) as Player | null
+                const randmember = await readPlayer(randmember_qq)
                 if (
                   randmember &&
                   randmember.宗门 &&
@@ -165,7 +166,7 @@ const res = onResponse(selects, async e => {
                   ass.宗主 = randmember_qq
                   randmember.宗门.职位 = '宗主'
                   await writePlayer(randmember_qq, randmember)
-                  await data.setAssociation(ass.宗门名称, ass)
+                  await Association.setAssociation(ass.宗门名称, ass)
                 }
               }
             }

@@ -1,10 +1,11 @@
 import { Text, useSend, Image } from 'alemonjs'
-import { data } from '@src/model/api'
 import { __PATH, keysByPath } from '@src/model/keys'
 import { notUndAndNull } from '@src/model/common'
 import { sortBy, getAllExp } from '@src/model/cultivation'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 import { getRankingPowerImage } from '@src/model/image'
 export const regular = /^(#|＃|\/)?天榜$/
 const res = onResponse(selects, async e => {
@@ -24,9 +25,8 @@ const res = onResponse(selects, async e => {
       return false
     }
     //境界名字需要查找境界名
-    const level = data.Level_list.find(
-      item => item.level_id == player.level_id
-    ).level
+    const levelList = await getDataList('Level1')
+    const level = levelList.find(item => item.level_id == player.level_id).level
     temp.push({
       总修为: sum_exp,
       境界: level,
@@ -46,11 +46,12 @@ const res = onResponse(selects, async e => {
     temp[i].名次 = i + 1
     Data[i] = temp[i]
   }
-  const thisplayer = await await data.getData('player', usr_qq)
+  // const thisplayer = await await data.getData('player', usr_qq)
+  const thisplayer = await readPlayer(usr_qq)
   const img = await getRankingPowerImage(e, Data, usr_paiming, thisplayer)
   if (Buffer.isBuffer(img)) {
     Send(Image(img))
   }
 })
-import mw from '@src/response/mw'
+
 export default onResponse(selects, [mw.current, res.current])

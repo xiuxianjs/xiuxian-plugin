@@ -1,6 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
 import { data, redis, config } from '@src/model/api'
+import { getDataList } from '@src/model/DataList'
 import { getRedisKey } from '@src/model/keys'
 import { startAction } from '@src/response/actionHelper'
 import {
@@ -31,16 +32,18 @@ const res = onResponse(selects, async e => {
     Send(Text('请#同步信息'))
     return false
   }
-  const now_level_id = data.Level_list.find(
+  const levelList = await getDataList('Level1')
+  const now_level_id = levelList?.find(
     item => item.level_id == player.level_id
-  ).level_id
+  )?.level_id
   if (now_level_id < 22) {
     Send(Text('没有达到化神之前还是不要去了'))
     return false
   }
   let didian = await e.MessageText.replace(/^(#|＃|\/)?前往禁地/, '')
   didian = didian.trim()
-  const weizhiRaw = await data.forbiddenarea_list.find(
+  const forbiddenAreaList = await getDataList('ForbiddenArea')
+  const weizhiRaw = forbiddenAreaList?.find(
     item => item.name == didian
   )
   // if (player.power_place == 0 && weizhi.id != 666) {

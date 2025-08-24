@@ -2,7 +2,6 @@ import { Text, useSend } from 'alemonjs'
 
 import { dujie, LevelTask } from '@src/model/cultivation'
 import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl'
-import { data } from '@src/model/api'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?渡劫$/
@@ -41,8 +40,8 @@ const res = onResponse(selects, async e => {
 
   const player = await readPlayer(usr_qq)
   if (!player) return false
-
-  const levelInfo = data.Level_list.find(l => l.level_id === player.level_id)
+  const levelList = await getDataList('Level1')
+  const levelInfo = levelList.find(l => l.level_id === player.level_id)
   if (!levelInfo) {
     Send(Text('境界数据缺失'))
     return false
@@ -145,4 +144,5 @@ const res = onResponse(selects, async e => {
   return false
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

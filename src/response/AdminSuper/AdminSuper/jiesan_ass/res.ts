@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs'
-import { __PATH, keys, writePlayer } from '@src/model/index'
-import { data } from '@src/model/api'
+import { __PATH, keys, readPlayer, writePlayer } from '@src/model/index'
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { redis } from '@src/model/api'
@@ -30,9 +29,8 @@ const res = onResponse(selects, async e => {
     }
     const members = Array.isArray(ass.所有成员) ? ass.所有成员 : []
     for (const qq of members) {
-      const player = (await data.getData('player', qq)) as
-        | (Player & PlayerData)
-        | null
+      // 使用readPlayer读取玩家数据
+      const player = (await readPlayer(qq)) as (Player & PlayerData) | null
       if (!player) continue
       const guild = player.宗门
       if (

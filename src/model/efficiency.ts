@@ -2,7 +2,7 @@
 import { readPlayer, addConFaByUser, writePlayer } from './xiuxian_impl.js'
 export { addConFaByUser }
 import type { GongfaItem } from '../types/model'
-import DataList from './DataList.js'
+import { getDataList } from './DataList.js'
 import { readDanyao } from './danyao.js'
 import { notUndAndNull } from './common.js'
 import { getIoRedis } from '@alemonjs/db'
@@ -32,7 +32,7 @@ export async function playerEfficiency(userId: string): Promise<null> {
     if (ass.宗门驻地 == 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05
     } else {
-      const dongTan = DataList.bless_list.find(
+      const dongTan = (await getDataList('Bless')).find(
         item => item.name == ass.宗门驻地
       )
       try {
@@ -46,12 +46,12 @@ export async function playerEfficiency(userId: string): Promise<null> {
   linggen_efficiency = player.灵根.eff //灵根修炼速率
   label1: for (const i in player.学习的功法) {
     //存在功法，遍历功法加成
-    const gongfa = ['gongfa_list', 'timegongfa_list']
+    const gongfa = ['Gongfa', 'TimeGongfa']
     //这里是查看了功法表
     for (const j of gongfa) {
-      const ifexist = (DataList[j] as GongfaItem[]).find(
-        item => item.name == player.学习的功法[i]
-      )
+      const ifexist = (
+        (await getDataList(j as 'Gongfa' | 'TimeGongfa')) as GongfaItem[]
+      ).find(item => item.name == player.学习的功法[i])
       if (ifexist) {
         gongfa_efficiency += ifexist.修炼加成 as number
         continue label1
