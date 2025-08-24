@@ -22,7 +22,7 @@ const SecretPlace = ({ didian_list }) => {
 
         <div className="relative z-10 container mx-auto px-4 py-8">
           {/* 主标题区域 */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <div className="inline-block relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur-lg opacity-30"></div>
               <div className="relative bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl px-8 py-4 border border-blue-400/30 backdrop-blur-sm">
@@ -68,7 +68,7 @@ const SecretPlace = ({ didian_list }) => {
                   {didian_list?.map((item, index) => (
                     <div key={index} className="relative group">
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-600/10 rounded-2xl blur-sm"></div>
-                      <div className="relative backdrop-blur-md bg-white/90 rounded-2xl border border-blue-400/40 p-6 shadow-lg">
+                      <div className="relative backdrop-blur-md  rounded-2xl border border-blue-400/40 p-6 shadow-lg">
                         {/* 秘境标题和价格 */}
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-3">

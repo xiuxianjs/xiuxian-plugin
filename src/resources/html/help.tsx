@@ -73,11 +73,6 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
         {/* 顶部标题区域 */}
         <header className="mb-8">
           <div className="relative">
-            {/* 静态边框 */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 p-[3px]">
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-            </div>
-
             <div className="relative rounded-3xl p-6 bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border border-white/20 shadow-2xl">
               {/* 装饰性元素 */}
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"></div>
@@ -100,9 +95,6 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
         <main className="space-y-8">
           {helpData.map((val, index) => (
             <section key={index} className="relative">
-              {/* 静态边框 */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 p-[2px]"></div>
-
               <div className="relative rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden">
                 {/* 装饰性角落 */}
                 <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-teal-400/50 rounded-tr-lg"></div>
@@ -143,10 +135,10 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
 
                           {/* 内容区域 */}
                           <div className="flex-1 min-w-0">
-                            <strong className="block font-bold text-teal-200 mb-1">
+                            <strong className="block font-bold text-slate-800 mb-1">
                               {item.title}
                             </strong>
-                            <span className="block text-sm leading-relaxed text-white/70">
+                            <span className="block text-sm leading-relaxed text-gray-600">
                               {item.desc}
                             </span>
                           </div>
@@ -163,9 +155,6 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
         {/* 分页 / 提示 */}
         <footer className="mt-8">
           <div className="relative">
-            {/* 静态边框 */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 p-[2px]"></div>
-
             <div className="relative rounded-2xl p-6 bg-gradient-to-br from-black/30 to-black/50 backdrop-blur-xl border border-white/20 shadow-xl">
               {/* 装饰性元素 */}
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-red-400 to-yellow-400 rounded-full"></div>

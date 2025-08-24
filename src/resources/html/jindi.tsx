@@ -35,7 +35,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
 
         <div className="relative z-10 container mx-auto px-4 py-8">
           {/* 主标题区域 */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <div className="inline-block relative">
               <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-lg opacity-50"></div>
               <div className="relative bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl px-8 py-4 border border-red-400/30 backdrop-blur-sm">

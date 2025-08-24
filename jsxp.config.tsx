@@ -74,7 +74,7 @@ import CombatResult from '@src/resources/html/CombatResult'
 export default defineConfig({
   routes: {
     '/combatResult': { component: <CombatResult {...combatResult} /> },
-    '/temp': { component: <Temp temp={temp} /> },
+    '/temp': { component: <Temp {...temp} /> },
     '/adminset': { component: <Adminset {...adminset} /> },
     '/association': { component: <Association {...association} /> },
     '/BlessPlace': { component: <BlessPlace {...BlessPlaceData} /> },

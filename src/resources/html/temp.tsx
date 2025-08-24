@@ -2,7 +2,7 @@ import React from 'react'
 import HTML from './HTML'
 import tempStyles from '@src/resources/styles/temp.scss'
 
-const Temp = ({ temp }) => {
+const Temp = ({ temp = [] }) => {
   return (
     <HTML linkStyleSheets={[tempStyles]}>
       <div className="min-h-screen bg-gradient-to-b from-amber-50 via-yellow-100 to-orange-200 flex flex-col items-center py-8 relative overflow-hidden">
