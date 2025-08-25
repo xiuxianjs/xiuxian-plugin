@@ -37,7 +37,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const najie = (await data.getData('najie', usr_qq)) as NajieData | null;
 
@@ -75,19 +77,29 @@ const res = onResponse(selects, async e => {
   for (const cat of targetCats) {
     const arr = najie[cat] as BagItem[] | undefined;
 
-    if (!Array.isArray(arr) || arr.length === 0) { continue; }
+    if (!Array.isArray(arr) || arr.length === 0) {
+      continue;
+    }
     for (const item of arr) {
-      if (!item?.name) { continue; }
+      if (!item?.name) {
+        continue;
+      }
       const thing = await foundthing(item.name);
 
       // 原逻辑错误：若存在则 continue，这里修复为不存在跳过
-      if (!thing) { continue; }
+      if (!thing) {
+        continue;
+      }
       const qty = num(item.数量);
 
-      if (qty <= 0) { continue; }
+      if (qty <= 0) {
+        continue;
+      }
       const salePrice = num(item.出售价);
 
-      if (salePrice <= 0) { continue; }
+      if (salePrice <= 0) {
+        continue;
+      }
       // 材料/草药 1 倍，其它 2 倍
       const multiplier
         = normalizeCat(item.class) === '材料' || normalizeCat(item.class) === '草药' ? 1 : 2;

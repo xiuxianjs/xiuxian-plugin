@@ -7,7 +7,9 @@ import mw from '@src/response/mw';
 import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?以武会友$/;
 function extractFaQiu(lg): number | undefined {
-  if (!lg || typeof lg !== 'object') { return undefined; }
+  if (!lg || typeof lg !== 'object') {
+    return undefined;
+  }
   const o = lg;
   const v = o.法球倍率;
 
@@ -18,12 +20,16 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const A = e.UserId;
 
-  if (!(await existplayer(A))) { return false; }
+  if (!(await existplayer(A))) {
+    return false;
+  }
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
   const B = target.UserId;
 
   if (A === B) {
@@ -70,12 +76,16 @@ const res = onResponse(selects, async e => {
   if (a.灵根) {
     const v = extractFaQiu(a.灵根);
 
-    if (v !== undefined) { a.法球倍率 = v; }
+    if (v !== undefined) {
+      a.法球倍率 = v;
+    }
   }
   if (b.灵根) {
     const v = extractFaQiu(b.灵根);
 
-    if (v !== undefined) { b.法球倍率 = v; }
+    if (v !== undefined) {
+      b.法球倍率 = v;
+    }
   }
   a.当前血量 = a.血量上限;
   b.当前血量 = b.血量上限;

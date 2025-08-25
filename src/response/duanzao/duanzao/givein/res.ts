@@ -21,7 +21,9 @@ const res = onResponse(selects, async e => {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
   // 不开放私聊
   // （已弃用 game_action 直接 redis 检查，若需要应接入统一状态辅助工具）
   const A = await looktripod(user_qq);

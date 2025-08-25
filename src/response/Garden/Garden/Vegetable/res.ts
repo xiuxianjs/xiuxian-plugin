@@ -40,7 +40,9 @@ function toInt(v, d = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 function fmtRemain(ms: number) {
-  if (ms <= 0) { return '0天0小时0分钟'; }
+  if (ms <= 0) {
+    return '0天0小时0分钟';
+  }
   const d = Math.trunc(ms / 86400000);
   const h = Math.trunc((ms % 86400000) / 3600000);
   const m = Math.trunc((ms % 3600000) / 60000);
@@ -58,7 +60,9 @@ const res = onResponse(selects, async e => {
   }
   const guildName = player?.宗门?.宗门名称;
 
-  if (!guildName) { return false; }
+  if (!guildName) {
+    return false;
+  }
   let ass = await getDataJSONParseByKey(keys.association(guildName));
 
   if (!ass) {
@@ -83,8 +87,12 @@ const res = onResponse(selects, async e => {
   const now = Date.now();
 
   for (const crop of finalGarden.作物 || []) {
-    if (!crop?.name) { continue; }
-    if (['天灵花', '皇草', '创世花'].includes(crop.name)) { continue; }
+    if (!crop?.name) {
+      continue;
+    }
+    if (['天灵花', '皇草', '创世花'].includes(crop.name)) {
+      continue;
+    }
     const matureKey = `xiuxian:${guildName}${crop.name}`;
     const matureAtRaw = await redis.get(matureKey);
     const matureAt = toInt(matureAtRaw, now);
@@ -130,7 +138,9 @@ async function createGarden(association_name: string, user_qq: string, level: nu
   const garden: GardenData = { 药园等级: level, 作物: crops };
   const ass: AssociationLike = await getDataJSONParseByKey(keys.association(association_name));
 
-  if (!ass) { return; }
+  if (!ass) {
+    return;
+  }
   ass.药园 = garden;
   await setDataJSONStringifyByKey(keys.association(association_name), ass);
   // 初始化成熟时间戳

@@ -49,7 +49,9 @@ const res = onResponse(selects, async e => {
   }
   let level = Number(ass.宗门建设等级 || 0);
 
-  if (level < 0) { level = 0; }
+  if (level < 0) {
+    level = 0;
+  }
   ass.宗门建设等级 = level;
   const pool = Math.max(0, Number(ass.灵石池 || 0));
 

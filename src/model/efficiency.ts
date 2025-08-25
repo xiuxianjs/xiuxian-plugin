@@ -36,7 +36,7 @@ export async function playerEfficiency(userId: string): Promise<null> {
       const dongTan = (await getDataList('Bless')).find(item => item.name == ass.宗门驻地);
 
       try {
-        Assoc_efficiency = ass.宗门等级 * 0.05 + (dongTan.efficiency);
+        Assoc_efficiency = ass.宗门等级 * 0.05 + dongTan.efficiency;
       } catch {
         Assoc_efficiency = ass.宗门等级 * 0.05 + 0.5;
       }

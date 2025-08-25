@@ -22,7 +22,9 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const thing = e.MessageText.replace(/^(#|＃|\/)?发布/, '');
   const code = thing.split('*');
   const thing_name = code[0]; // 物品
@@ -54,7 +56,9 @@ const res = onResponse(selects, async e => {
   const whole = Math.trunc(thing_value * thing_amount);
   let off = Math.trunc(whole * 0.03);
 
-  if (off < 100000) { off = 100000; }
+  if (off < 100000) {
+    off = 100000;
+  }
   const player = await readPlayer(usr_qq);
 
   if (player.灵石 < off + whole) {

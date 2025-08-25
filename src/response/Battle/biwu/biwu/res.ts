@@ -73,22 +73,30 @@ const BASE_SKILLS = [
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
   const A_QQ = biwuPlayer.A_QQ;
   const B_QQ = biwuPlayer.B_QQ;
   const A = e.UserId;
 
-  if (!(await existplayer(A))) { return false; }
+  if (!(await existplayer(A))) {
+    return false;
+  }
 
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const B = target.UserId;
 
-  if (A === B) { return false; }
+  if (A === B) {
+    return false;
+  }
   if (!(await existplayer(B))) {
     Send(Text('修仙者不可对凡人出手!'));
 
@@ -197,7 +205,9 @@ async function battle(e, num: number) {
     action_A = JSON.parse((await redis.get(getRedisKey(A_QQ[num].QQ, 'bisai'))) || '{}');
     action_B = JSON.parse((await redis.get(getRedisKey(B_QQ[num].QQ, 'bisai'))) || '{}');
     // 清空上次技能 cd
-    if (action_A.技能 && action_A.技能[action_A.use]) { action_A.技能[action_A.use].cd = 0; }
+    if (action_A.技能 && action_A.技能[action_A.use]) {
+      action_A.技能[action_A.use].cd = 0;
+    }
 
     // Buff 处理 (B 对 A 的控制 / 降低)
     applyBuffDecay(
@@ -217,7 +227,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('阴风蚀骨');
 
-        if (cfg?.pr) { A_player.攻击 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          A_player.攻击 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${A_player.名号}受到侵蚀,攻击力降低,剩余回合{left}`
@@ -229,7 +241,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('万年俱灰');
 
-        if (cfg?.pr) { A_player.攻击 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          A_player.攻击 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${A_player.名号}受到立场影响,攻击力降低,剩余回合{left}`
@@ -241,7 +255,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('玄冰封印');
 
-        if (cfg?.pr) { A_player.暴击率 = cfg.pr; }
+        if (cfg?.pr) {
+          A_player.暴击率 = cfg.pr;
+        }
       },
       roundMsgs,
       `${A_player.名号}暴击率被压制,剩余回合{left}`
@@ -253,7 +269,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('心烦意乱');
 
-        if (cfg?.pr) { B_player.防御 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          B_player.防御 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${B_player.名号}防御力降低,剩余回合{left}`
@@ -265,7 +283,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('失魂落魄');
 
-        if (cfg?.pr) { B_player.防御 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          B_player.防御 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${B_player.名号}防御力下降,剩余回合{left}`
@@ -277,7 +297,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('祝水咒');
 
-        if (cfg?.pr) { A_player.当前血量 += Math.trunc(A_player.血量上限 * cfg.pr); }
+        if (cfg?.pr) {
+          A_player.当前血量 += Math.trunc(A_player.血量上限 * cfg.pr);
+        }
       },
       roundMsgs,
       `${A_player.名号}血量回复,剩余回合{left}`
@@ -305,7 +327,9 @@ async function battle(e, num: number) {
         }
         break;
       case '长生诀':
-        if (sk.pr) { A_player.当前血量 += Math.trunc(A_player.血量上限 * sk.pr); }
+        if (sk.pr) {
+          A_player.当前血量 += Math.trunc(A_player.血量上限 * sk.pr);
+        }
         break;
       case '祝水咒':
         buff_A.祝水咒 = sk.last || 0;
@@ -329,12 +353,16 @@ async function battle(e, num: number) {
         buff_A.诛仙三剑 = sk.last || 0;
         break;
       }
-      if (sk.msg) { roundMsgs.push(`${A_player.名号}${sk.msg}`); }
+      if (sk.msg) {
+        roundMsgs.push(`${A_player.名号}${sk.msg}`);
+      }
     }
     if (buff_A.诛仙三剑) {
       const cfg = getSkill('诛仙三剑');
 
-      if (cfg?.pr) { A_harm = Math.trunc(A_harm * (1 + cfg.pr)); }
+      if (cfg?.pr) {
+        A_harm = Math.trunc(A_harm * (1 + cfg.pr));
+      }
       buff_A.诛仙三剑--;
     }
     B_player.当前血量 -= A_harm;
@@ -345,7 +373,9 @@ async function battle(e, num: number) {
     }
 
     // B 方
-    if (action_B.技能 && action_B.技能[action_B.use]) { action_B.技能[action_B.use].cd = 0; }
+    if (action_B.技能 && action_B.技能[action_B.use]) {
+      action_B.技能[action_B.use].cd = 0;
+    }
     applyBuffDecay(
       buff_A,
       B_player,
@@ -363,7 +393,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('阴风蚀骨');
 
-        if (cfg?.pr) { B_player.攻击 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          B_player.攻击 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${B_player.名号}攻击力降低,剩余回合{left}`
@@ -375,7 +407,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('万年俱灰');
 
-        if (cfg?.pr) { B_player.攻击 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          B_player.攻击 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${B_player.名号}攻击力下降,剩余回合{left}`
@@ -387,7 +421,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('玄冰封印');
 
-        if (cfg?.pr) { B_player.暴击率 = cfg.pr; }
+        if (cfg?.pr) {
+          B_player.暴击率 = cfg.pr;
+        }
       },
       roundMsgs,
       `${B_player.名号}暴击率被压制,剩余回合{left}`
@@ -399,7 +435,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('心烦意乱');
 
-        if (cfg?.pr) { A_player.防御 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          A_player.防御 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${A_player.名号}防御力降低,剩余回合{left}`
@@ -411,7 +449,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('失魂落魄');
 
-        if (cfg?.pr) { A_player.防御 *= 1 - cfg.pr; }
+        if (cfg?.pr) {
+          A_player.防御 *= 1 - cfg.pr;
+        }
       },
       roundMsgs,
       `${A_player.名号}防御力下降,剩余回合{left}`
@@ -423,7 +463,9 @@ async function battle(e, num: number) {
       () => {
         const cfg = getSkill('祝水咒');
 
-        if (cfg?.pr) { B_player.当前血量 += Math.trunc(B_player.血量上限 * cfg.pr); }
+        if (cfg?.pr) {
+          B_player.当前血量 += Math.trunc(B_player.血量上限 * cfg.pr);
+        }
       },
       roundMsgs,
       `${B_player.名号}血量回复,剩余回合{left}`
@@ -449,7 +491,9 @@ async function battle(e, num: number) {
         }
         break;
       case '长生诀':
-        if (sk.pr) { B_player.当前血量 += Math.trunc(B_player.血量上限 * sk.pr); }
+        if (sk.pr) {
+          B_player.当前血量 += Math.trunc(B_player.血量上限 * sk.pr);
+        }
         break;
       case '祝水咒':
         buff_B.祝水咒 = sk.last || 0;
@@ -473,12 +517,16 @@ async function battle(e, num: number) {
         buff_B.诛仙三剑 = sk.last || 0;
         break;
       }
-      if (sk.msg) { roundMsgs.push(`${B_player.名号}${sk.msg}`); }
+      if (sk.msg) {
+        roundMsgs.push(`${B_player.名号}${sk.msg}`);
+      }
     }
     if (buff_B.诛仙三剑) {
       const cfg = getSkill('诛仙三剑');
 
-      if (cfg?.pr) { B_harm = Math.trunc(B_harm * (1 + cfg.pr)); }
+      if (cfg?.pr) {
+        B_harm = Math.trunc(B_harm * (1 + cfg.pr));
+      }
       buff_B.诛仙三剑--;
     }
     A_player.当前血量 -= B_harm;

@@ -25,7 +25,9 @@ function toInt(v, d = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 function parseJson<T>(raw, fallback: T): T {
-  if (typeof raw !== 'string' || raw === '') { return fallback; }
+  if (typeof raw !== 'string' || raw === '') {
+    return fallback;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -43,7 +45,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const A = e.UserId;
 
-  if (!(await existplayer(A))) { return false; }
+  if (!(await existplayer(A))) {
+    return false;
+  }
 
   // 猜大小占用检查
   const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'));
@@ -60,7 +64,9 @@ const res = onResponse(selects, async e => {
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const B = target.UserId;
 
@@ -77,10 +83,12 @@ const res = onResponse(selects, async e => {
   }
 
   // 读取双方玩家
-  const A_player = (await readPlayer(A)) as Player;
-  const B_player = (await readPlayer(B)) as Player;
+  const A_player = await readPlayer(A);
+  const B_player = await readPlayer(B);
 
-  if (!A_player || !B_player) { return false; }
+  if (!A_player || !B_player) {
+    return false;
+  }
 
   // 境界校验
   if (!notUndAndNull(A_player.level_id) || !notUndAndNull(B_player.level_id)) {

@@ -33,7 +33,9 @@ export function calcEffectiveMinutes(
   } else {
     minutes = Math.floor((end - start) / 60000);
   }
-  if (minutes < slot) { return 0; }
+  if (minutes < slot) {
+    return 0;
+  }
   const full = Math.min(Math.floor(minutes / slot), maxSlots);
 
   return full * slot;
@@ -97,7 +99,9 @@ export async function plant_jiesuan(user_id: string, time: number, group_id?: st
   for (let i = 0; i < amounts.length; i++) {
     const val = Math.floor(amounts[i]);
 
-    if (val <= 0) { continue; }
+    if (val <= 0) {
+      continue;
+    }
     msg.push(`\n${names[i]}${val}个`);
     await addNajieThing(usr_qq, names[i], '草药', val);
   }
@@ -116,7 +120,9 @@ export async function mine_jiesuan(user_id: string, time: number, group_id?: str
   const usr_qq = user_id;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   // 基础经验
   const exp = time * 10;
   const occFactor = await calcOccupationFactor(player.occupation_level);

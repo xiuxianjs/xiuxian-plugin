@@ -12,7 +12,9 @@ export const regular = /^(#|＃|\/)?修仙更新/;
 const res = onResponse(selects, e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return; }
+  if (!e.IsMaster) {
+    return;
+  }
   exec('git  pull', { cwd: mdDir }, function(error, stdout) {
     if (/(Already up[ -]to[ -]date|已经是最新的)/.test(stdout)) {
       Send(Text('目前已经是最新版了~'));

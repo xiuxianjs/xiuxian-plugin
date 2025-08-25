@@ -43,11 +43,15 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const { action, rest } = parseCommand(e.MessageText);
 
-  if (!['锁定', '解锁'].includes(action)) { return false; }
+  if (!['锁定', '解锁'].includes(action)) {
+    return false;
+  }
 
   const parts = rest
     .split('*')
@@ -87,7 +91,9 @@ const res = onResponse(selects, async e => {
         return false;
       }
       thingName = equip.name;
-      if (equip.pinji !== undefined) { qualityToken = String(equip.pinji); }
+      if (equip.pinji !== undefined) {
+        qualityToken = String(equip.pinji);
+      }
     }
   }
 

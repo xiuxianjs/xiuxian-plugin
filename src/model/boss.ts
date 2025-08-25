@@ -47,7 +47,9 @@ export async function InitWorldBoss() {
   if (player_quantity == 0) {
     return -1;
   }
-  if (player_quantity < 5) { Reward = 6000000; }
+  if (player_quantity < 5) {
+    Reward = 6000000;
+  }
   const X = AverageDamage * 0.01;
 
   logger.info(`[妖王] 化神玩家总数：${player_quantity}`);
@@ -84,7 +86,9 @@ export async function InitWorldBoss2() {
   if (player_quantity == 0) {
     return -1;
   }
-  if (player_quantity < 5) { Reward = 3000000; }
+  if (player_quantity < 5) {
+    Reward = 3000000;
+  }
   const X = AverageDamage * 0.01;
 
   logger.mark(`[金角大王] 化神玩家总数：${player_quantity}`);
@@ -119,10 +123,14 @@ export async function GetAverageDamage() {
   await Promise.all(playerList.map(async p => {
     const exs = await redis.exists(keys.player(p));
 
-    if (exs == 0) { return; }
+    if (exs == 0) {
+      return;
+    }
     const data = await redis.get(keys.player(p));
 
-    if (!data) { return; }
+    if (!data) {
+      return;
+    }
     let player = null;
 
     try {
@@ -144,7 +152,15 @@ export async function GetAverageDamage() {
   });
   let AverageDamage = 0;
 
-  if (TotalPlayer > 15) { for (let i = 2; i < temp.length - 4; i++) { AverageDamage += temp[i]; } } else { for (let i = 0; i < temp.length; i++) { AverageDamage += temp[i]; } }
+  if (TotalPlayer > 15) {
+    for (let i = 2; i < temp.length - 4; i++) {
+      AverageDamage += temp[i];
+    }
+  } else {
+    for (let i = 0; i < temp.length; i++) {
+      AverageDamage += temp[i];
+    }
+  }
   AverageDamage
     = TotalPlayer > 15
       ? AverageDamage / (temp.length - 6)
@@ -165,7 +181,9 @@ export async function LookUpWorldBossStatus(e: EventsMessageCreateEnum) {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   if (await Boss2IsAlive()) {
     const statusStr = await redis.get(KEY_WORLD_BOOS_STATUS_TWO);
@@ -225,7 +243,9 @@ export async function WorldBossBattle(e) {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   const WorldBOSSBattleCD = WorldBossBattleInfo.CD;
 
@@ -295,7 +315,9 @@ export async function WorldBossBattle(e) {
 
       return false;
     } else if (WorldBossStatus.KilledTime != -1) {
-      if ((await InitWorldBoss()) == false) { await WorldBossBattle(e); }
+      if ((await InitWorldBoss()) == false) {
+        await WorldBossBattle(e);
+      }
 
       return false;
     }
@@ -360,7 +382,9 @@ export async function WorldBossBattle(e) {
     const A_win = `${player.名号}击败了${Boss.名号}`;
     const B_win = `${Boss.名号}击败了${player.名号}`;
 
-    if (msg.length <= 60) { await send(Text(msg.join('\n'))); } else {
+    if (msg.length <= 60) {
+      await send(Text(msg.join('\n')));
+    } else {
       // let msgg = JSON.parse(JSON.stringify(msg))
       const msgg = _.cloneDeep(msg);
 
@@ -419,14 +443,22 @@ export async function WorldBossBattle(e) {
       const PlayerList = await SortPlayer(PlayerRecordJSON);
 
       send(Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'));
-      for (let i = 0; i < PlayerList.length; i++) { await readPlayer(PlayerRecordJSON.QQ[PlayerList[i]]); }
+      for (let i = 0; i < PlayerList.length; i++) {
+        await readPlayer(PlayerRecordJSON.QQ[PlayerList[i]]);
+      }
       let Show_MAX;
       const Rewardmsg = ['****妖王周本贡献排行榜****'];
 
-      if (PlayerList.length > 20) { Show_MAX = 20; } else { Show_MAX = PlayerList.length; }
+      if (PlayerList.length > 20) {
+        Show_MAX = 20;
+      } else {
+        Show_MAX = PlayerList.length;
+      }
       let TotalDamage = 0;
 
-      for (let i = 0; i < (PlayerList.length <= 20 ? PlayerList.length : 20); i++) { TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]]; }
+      for (let i = 0; i < (PlayerList.length <= 20 ? PlayerList.length : 20); i++) {
+        TotalDamage += PlayerRecordJSON.TotalDamage[PlayerList[i]];
+      }
       for (let i = 0; i < PlayerList.length; i++) {
         const CurrentPlayer = await readPlayer(PlayerRecordJSON.QQ[PlayerList[i]]);
 
@@ -451,7 +483,9 @@ export async function WorldBossBattle(e) {
           logger.info(`[妖王周本] 结算:${PlayerRecordJSON.QQ[PlayerList[i]]}增加奖励200000`);
           writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
         }
-        if (i == PlayerList.length - 1) { Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！'); }
+        if (i == PlayerList.length - 1) {
+          Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！');
+        }
       }
       // await ForwardMsg(e, Rewardmsg)
       send(Text(Rewardmsg.join('\n')));

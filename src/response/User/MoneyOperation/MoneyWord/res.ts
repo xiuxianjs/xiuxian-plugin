@@ -18,7 +18,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const raw = e.MessageText.replace(/^(#|＃|\/)?交税/, '').trim();
 
@@ -35,7 +37,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (amount > MAX_TAX) { amount = MAX_TAX; }
+  if (amount > MAX_TAX) {
+    amount = MAX_TAX;
+  }
 
   const player = await readPlayer(usr_qq);
 

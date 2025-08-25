@@ -22,7 +22,9 @@ export const ForumTask = async() => {
   for (let i = 0; i < Forum.length; i++) {
     const time = (now_time - Forum[i].now_time) / 24 / 60 / 60 / 1000;
 
-    if (time < 3) { break; }
+    if (time < 3) {
+      break;
+    }
     const usr_qq = Forum[i].qq;
     const lingshi = Forum[i].whole;
 

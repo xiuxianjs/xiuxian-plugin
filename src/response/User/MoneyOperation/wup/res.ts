@@ -23,11 +23,17 @@ const PINJI_MAP: Record<string, number> = {
 };
 
 function parsePinji(raw: string | undefined): number | undefined {
-  if (!raw) { return undefined; }
-  if (raw in PINJI_MAP) { return PINJI_MAP[raw]; }
+  if (!raw) {
+    return undefined;
+  }
+  if (raw in PINJI_MAP) {
+    return PINJI_MAP[raw];
+  }
   const n = Number(raw);
 
-  if (Number.isInteger(n) && n >= 0 && n <= 6) { return n; }
+  if (Number.isInteger(n) && n >= 0 && n <= 6) {
+    return n;
+  }
 
   return undefined;
 }
@@ -35,7 +41,9 @@ function parsePinji(raw: string | undefined): number | undefined {
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
 
   // 解析 @ 目标
   let targetQQ: string | undefined;
@@ -45,12 +53,18 @@ const res = onResponse(selects, async e => {
     const res = await mention.findOne();
     const target = res?.data;
 
-    if (!target || res.code !== 2000) { return false; }
-    if (target) { targetQQ = target.UserId; }
+    if (!target || res.code !== 2000) {
+      return false;
+    }
+    if (target) {
+      targetQQ = target.UserId;
+    }
   } catch {
     // ignore
   }
-  if (!targetQQ) { return false; }
+  if (!targetQQ) {
+    return false;
+  }
 
   if (!(await existplayer(targetQQ))) {
     Send(Text('对方无踏入仙途'));
@@ -81,7 +95,13 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
-    if (thingName === '灵石') { await addCoin(targetQQ, amount); } else if (thingName === '修为') { await addExp(targetQQ, amount); } else { await addExp2(targetQQ, amount); }
+    if (thingName === '灵石') {
+      await addCoin(targetQQ, amount);
+    } else if (thingName === '修为') {
+      await addExp(targetQQ, amount);
+    } else {
+      await addExp2(targetQQ, amount);
+    }
     Send(Text(`发放成功: ${thingName} x ${amount}`));
 
     return false;

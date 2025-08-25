@@ -39,16 +39,18 @@ export const MojiTask = async() => {
       let push_address = player_id; // 消息推送地址
       let is_group = false; // 是否推送到群
 
-      if (isExploreAction(action) && notUndAndNull((action).group_id)) {
+      if (isExploreAction(action) && notUndAndNull(action.group_id)) {
         is_group = true;
-        push_address = (action).group_id!;
+        push_address = action.group_id!;
       }
 
       // 最后发送的消息
       const msg: string[] = [];
 
       // 动作结束时间
-      if (!isExploreAction(action)) { continue; }
+      if (!isExploreAction(action)) {
+        continue;
+      }
       const act = action;
       let end_time = act.end_time;
       // 现在的时间
@@ -165,7 +167,7 @@ export const MojiTask = async() => {
             += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu || 0) - 1);
           msg.push('\n' + player.名号 + last_msg + fyd_msg);
           const arr: ExploreActionState = {
-            ...(act)
+            ...act
           };
 
           if (arr.cishu == 1) {
@@ -188,7 +190,9 @@ export const MojiTask = async() => {
             // 发送消息
             await pushInfo(push_address, is_group, msg.join(''));
           } else {
-            if (typeof arr.cishu === 'number') { arr.cishu--; }
+            if (typeof arr.cishu === 'number') {
+              arr.cishu--;
+            }
 
             await setDataByUserId(player_id, 'action', JSON.stringify(arr));
             // 先完结再结算

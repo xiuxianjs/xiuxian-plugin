@@ -46,7 +46,9 @@ export async function getLastsign(usr_qq: string): Promise<LastSignTime | false>
   const redis = getIoRedis();
   const time = await redis.get(getRedisKey(usr_qq, 'lastsign_time'));
 
-  if (time != null) { return await shijianc(parseInt(time)); }
+  if (time != null) {
+    return await shijianc(parseInt(time));
+  }
 
   return false;
 }
@@ -71,11 +73,15 @@ export async function getPlayerAction(usr_qq: string): Promise<PlayerActionData>
 }
 
 export async function dataverification(e: EventsMessageCreateEnum) {
-  if (e.name !== 'message.create') { return 1; }
+  if (e.name !== 'message.create') {
+    return 1;
+  }
   const usr_qq = e.UserId;
   const ext = await existDataByKey(keys.player(usr_qq));
 
-  if (!ext) { return 1; }
+  if (!ext) {
+    return 1;
+  }
 
   return 0;
 }

@@ -10,7 +10,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'));
 
@@ -36,7 +38,7 @@ const res = onResponse(selects, async e => {
   // 断言类型收窄
   const association = ass as AssociationDetailData;
 
-  if ((association.灵石池 as number) < lingshi) {
+  if (association.灵石池 < lingshi) {
     Send(Text(`宗门灵石池只有${ass.灵石池}灵石,数量不足`));
 
     return false;

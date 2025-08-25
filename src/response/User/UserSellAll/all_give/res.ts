@@ -12,13 +12,17 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const A_qq = e.UserId;
 
-  if (!(await existplayer(A_qq))) { return false; }
+  if (!(await existplayer(A_qq))) {
+    return false;
+  }
 
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const B_qq = target.UserId;
 
@@ -74,13 +78,21 @@ const res = onResponse(selects, async e => {
         sent = true;
       }
     }
-    if (sent) { sendTypes.push(type); } else { nothingToSend.push(type); }
+    if (sent) {
+      sendTypes.push(type);
+    } else {
+      nothingToSend.push(type);
+    }
   }
 
   let msg = '';
 
-  if (sendTypes.length) { msg += `已赠送：${sendTypes.join('、')}\n`; }
-  if (nothingToSend.length) { msg += `无可赠送：${nothingToSend.join('、')}`; }
+  if (sendTypes.length) {
+    msg += `已赠送：${sendTypes.join('、')}\n`;
+  }
+  if (nothingToSend.length) {
+    msg += `无可赠送：${nothingToSend.join('、')}`;
+  }
   Send(Text(msg.trim() || '一键赠送完成'));
 });
 

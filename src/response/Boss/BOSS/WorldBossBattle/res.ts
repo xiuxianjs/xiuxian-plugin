@@ -40,7 +40,9 @@ interface ActionState {
 }
 
 function parseJson<T>(raw, fallback: T): T {
-  if (typeof raw !== 'string' || raw === '') { return fallback; }
+  if (typeof raw !== 'string' || raw === '') {
+    return fallback;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -59,7 +61,9 @@ const res = onResponse(selects, async e => {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   if (!(await BossIsAlive())) {
     Send(Text('妖王未开启！'));
@@ -135,7 +139,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   } else if (WorldBossStatus.KilledTime != -1) {
-    if ((await InitWorldBoss()) == false) { await WorldBossBattle(e); }
+    if ((await InitWorldBoss()) == false) {
+      await WorldBossBattle(e);
+    }
 
     return false;
   }
@@ -191,7 +197,9 @@ const res = onResponse(selects, async e => {
   const A_win = `${player.名号}击败了${Boss.名号}`;
   const B_win = `${Boss.名号}击败了${player.名号}`;
 
-  if (msg.length <= 60) { await Send(Text(msg.join('\n'))); } else {
+  if (msg.length <= 60) {
+    await Send(Text(msg.join('\n')));
+  } else {
     const msgg = _.cloneDeep(msg);
 
     msgg.length = 60;
@@ -262,19 +270,27 @@ const res = onResponse(selects, async e => {
     const showMax = Math.min(PlayerList.length, 20);
     let topDamageSum = 0;
 
-    for (let i = 0; i < showMax; i++) { topDamageSum += PlayerRecordJSON.TotalDamage[PlayerList[i]]; }
-    if (topDamageSum <= 0) { topDamageSum = showMax; } // 防止除零 -> 平分
+    for (let i = 0; i < showMax; i++) {
+      topDamageSum += PlayerRecordJSON.TotalDamage[PlayerList[i]];
+    }
+    if (topDamageSum <= 0) {
+      topDamageSum = showMax;
+    } // 防止除零 -> 平分
 
     for (let i = 0; i < PlayerList.length; i++) {
       const idx = PlayerList[i];
       const qq = PlayerRecordJSON.QQ[idx];
       const CurrentPlayer = await getDataJSONParseByKey(keys.player(qq));
 
-      if (!CurrentPlayer) { continue; }
+      if (!CurrentPlayer) {
+        continue;
+      }
       if (i < showMax) {
         let reward = Math.trunc((PlayerRecordJSON.TotalDamage[idx] / topDamageSum) * WorldBossStatus.Reward);
 
-        if (!Number.isFinite(reward) || reward < 200000) { reward = 200000; }
+        if (!Number.isFinite(reward) || reward < 200000) {
+          reward = 200000;
+        }
         Rewardmsg.push(`第${i + 1}名:\n名号:${CurrentPlayer.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`);
         CurrentPlayer.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), CurrentPlayer);
@@ -283,7 +299,9 @@ const res = onResponse(selects, async e => {
         CurrentPlayer.灵石 += 200000;
         await setDataJSONStringifyByKey(keys.player(qq), CurrentPlayer);
         logger.info(`[妖王周本] 结算:${qq}增加奖励200000`);
-        if (i === PlayerList.length - 1) { Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！'); }
+        if (i === PlayerList.length - 1) {
+          Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！');
+        }
       }
     }
     Send(Text(Rewardmsg.join('\n')));

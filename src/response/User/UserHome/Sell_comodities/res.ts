@@ -31,8 +31,12 @@ const PINJI_MAP: Record<string, number> = {
 };
 
 function parsePinji(raw: string | undefined): number | undefined {
-  if (!raw) { return undefined; }
-  if (raw in PINJI_MAP) { return PINJI_MAP[raw]; }
+  if (!raw) {
+    return undefined;
+  }
+  if (raw in PINJI_MAP) {
+    return PINJI_MAP[raw];
+  }
   const n = Number(raw);
 
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined;
@@ -42,11 +46,15 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const najie = await readNajie(usr_qq);
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
 
   // 提取命令部分（去前缀）
   const raw = e.MessageText.replace(/^(#|＃|\/)?出售/, '').trim();
@@ -74,7 +82,11 @@ const res = onResponse(selects, async e => {
 
   if (Number.isInteger(codeNum)) {
     try {
-      if (codeNum > 1000) { thingName = najie.仙宠[codeNum - 1001]?.name || thingName; } else if (codeNum > 100) { thingName = najie.装备[codeNum - 101]?.name || thingName; }
+      if (codeNum > 1000) {
+        thingName = najie.仙宠[codeNum - 1001]?.name || thingName;
+      } else if (codeNum > 100) {
+        thingName = najie.装备[codeNum - 101]?.name || thingName;
+      }
     } catch {
       Send(Text('代号解析失败'));
 
@@ -111,7 +123,9 @@ const res = onResponse(selects, async e => {
 
   let amount = await convert2integer(amountStr);
 
-  if (!amount || amount <= 0) { amount = 1; }
+  if (!amount || amount <= 0) {
+    amount = 1;
+  }
 
   // 装备 / 仙宠 默认数量为 1
   if ((itemClass === '装备' || itemClass === '仙宠') && amount !== 1) {
@@ -153,9 +167,13 @@ const res = onResponse(selects, async e => {
     // 在 najie 中查找对应品级的装备
     const sel = (najie.装备 || []).find(i => i.name === thingName && toInt(i.pinji) === (pinji ?? 0));
 
-    if (sel) { price = toInt(sel.出售价) * amount; }
+    if (sel) {
+      price = toInt(sel.出售价) * amount;
+    }
   }
-  if (price <= 0) { price = 1; }
+  if (price <= 0) {
+    price = 1;
+  }
   await addCoin(usr_qq, price);
 
   const remain = (await existNajieThing(usr_qq, thingName, itemClass, pinji)) || 0;

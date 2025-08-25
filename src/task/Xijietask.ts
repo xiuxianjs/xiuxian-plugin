@@ -60,12 +60,14 @@ export const Xijietask = async() => {
           = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
         const dur = isNaN(durRaw) ? 0 : durRaw;
 
-        end_time = (end_time) - dur + 60000 * 10;
+        end_time = end_time - dur + 60000 * 10;
         // 时间过了
         if (typeof end_time === 'number' && now_time >= end_time) {
           const weizhi = action.Place_address;
 
-          if (!weizhi) { continue; }
+          if (!weizhi) {
+            continue;
+          }
           let i; // 获取对应npc列表的位置
           const npc_list = await getDataList('NPC');
 
@@ -74,7 +76,7 @@ export const Xijietask = async() => {
               break;
             }
           }
-          const A_player = action.A_player!;
+          const A_player = action.A_player;
           let monster_length;
           let monster_index;
           let monster;
@@ -239,7 +241,7 @@ export const Xijietask = async() => {
           = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
         const dur2 = isNaN(dur2Raw) ? 0 : dur2Raw;
 
-        end_time = (end_time) - dur2 + 60000 * 5;
+        end_time = end_time - dur2 + 60000 * 5;
         // 时间过了
         if (typeof end_time === 'number' && now_time >= end_time) {
           const weizhi = action.Place_address;

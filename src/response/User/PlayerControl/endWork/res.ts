@@ -12,11 +12,17 @@ export const regular = /^(#|＃|\/)?降妖归来$/;
 const res = onResponse(selects, async e => {
   const rawAction = await getPlayerAction(e.UserId);
 
-  if (!rawAction) { return; }
+  if (!rawAction) {
+    return;
+  }
   const action: ActionState = rawAction as unknown as ActionState;
 
-  if (action.action == '空闲') { return; }
-  if (action.working == 1) { return false; }
+  if (action.action == '空闲') {
+    return;
+  }
+  if (action.working == 1) {
+    return false;
+  }
   // 结算
   const end_time = action.end_time;
   const start_time = action.end_time - Number(action.time);

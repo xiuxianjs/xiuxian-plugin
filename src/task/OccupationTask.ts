@@ -22,7 +22,9 @@ export const OccupationTask = async() => {
     const action = safeParse<ActionState | null>(actionRaw, null);
 
     // 不为空，存在动作
-    if (!action) { continue; }
+    if (!action) {
+      continue;
+    }
 
     let push_address: string | undefined; // 消息推送地址
 
@@ -39,7 +41,9 @@ export const OccupationTask = async() => {
 
       if (now_time > end_time) {
         // 若已结算，跳过
-        if (action.is_jiesuan === 1) { continue; }
+        if (action.is_jiesuan === 1) {
+          continue;
+        }
 
         // 计算开始时间和有效时间（使用统一的时间槽计算逻辑）
         const start_time = action.end_time - Number(action.time);
@@ -72,10 +76,14 @@ export const OccupationTask = async() => {
       if (now_time > end_time) {
         const playerRaw = await readPlayer(player_id);
 
-        if (!playerRaw || Array.isArray(playerRaw)) { continue; }
+        if (!playerRaw || Array.isArray(playerRaw)) {
+          continue;
+        }
         const player = playerRaw;
 
-        if (!notUndAndNull(player.level_id)) { continue; }
+        if (!notUndAndNull(player.level_id)) {
+          continue;
+        }
         const rawTime2
           = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
         const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;

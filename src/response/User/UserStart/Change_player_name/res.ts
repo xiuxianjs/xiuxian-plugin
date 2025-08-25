@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { existplayer, shijianc, readPlayer, writePlayer } from '@src/model/index';
-import { Show_player } from '../user';
+import { showSlayer } from '../user';
 import { selects } from '@src/response/mw';
-import type { Player } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
 
 export const regular = /^(#|＃|\/)?(改名|设置道宣).*$/;
@@ -17,7 +16,9 @@ interface DateStruct {
 async function getDayStruct(ts): Promise<DateStruct | null> {
   const n = Number(ts);
 
-  if (!Number.isFinite(n) || n <= 0) { return null; }
+  if (!Number.isFinite(n) || n <= 0) {
+    return null;
+  }
   try {
     return (await shijianc(n)) as DateStruct;
   } catch {
@@ -30,7 +31,7 @@ function sameDay(a: DateStruct | null, b: DateStruct | null) {
 function cleanInput(raw: string) {
   return raw.replace(regularCut, '').replace(/\s+/g, '').replace(/\+/g, '');
 }
-function isMessageEvent(ev): ev is Parameters<typeof Show_player>[0] {
+function isMessageEvent(ev): ev is Parameters<typeof showSlayer>[0] {
   return !!ev && typeof ev === 'object' && 'MessageText' in ev;
 }
 
@@ -38,7 +39,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const isRename = /改名/.test(e.MessageText);
   const raw = cleanInput(e.MessageText);
@@ -67,7 +70,7 @@ const res = onResponse(selects, async e => {
       return false;
     }
 
-    const player = (await readPlayer(usr_qq));
+    const player = await readPlayer(usr_qq);
 
     if (!player) {
       Send(Text('玩家数据异常'));
@@ -85,12 +88,16 @@ const res = onResponse(selects, async e => {
     player.灵石 -= cost;
     await writePlayer(usr_qq, player);
     await redis.set(lastKey, String(now));
-    if (isMessageEvent(e)) { Show_player(e); }
+    if (isMessageEvent(e)) {
+      showSlayer(e);
+    }
 
     return false;
   }
   // 设置道宣
-  if (raw.length === 0) { return false; }
+  if (raw.length === 0) {
+    return false;
+  }
   if (raw.length > 50) {
     Send(Text('道宣最多50字符'));
 
@@ -109,7 +116,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const player = (await readPlayer(usr_qq));
+  const player = await readPlayer(usr_qq);
 
   if (!player) {
     Send(Text('玩家数据异常'));
@@ -119,7 +126,9 @@ const res = onResponse(selects, async e => {
   player.宣言 = raw;
   await writePlayer(usr_qq, player);
   await redis.set(lastKey, String(now));
-  if (isMessageEvent(e)) { Show_player(e); }
+  if (isMessageEvent(e)) {
+    showSlayer(e);
+  }
 
   return false;
 });

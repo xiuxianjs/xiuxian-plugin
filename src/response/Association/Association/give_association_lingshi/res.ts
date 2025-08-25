@@ -25,8 +25,14 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   const r: Record<string, JSONValue> = {};
 
   for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') { continue; }
-    if (v && typeof v === 'object') { r[k] = JSON.parse(JSON.stringify(v)); } else { r[k] = v as JSONValue; }
+    if (typeof v === 'function') {
+      continue;
+    }
+    if (v && typeof v === 'object') {
+      r[k] = JSON.parse(JSON.stringify(v));
+    } else {
+      r[k] = v as JSONValue;
+    }
   }
 
   return r;
@@ -37,10 +43,14 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) { return false; }
+  if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) {
+    return false;
+  }
 
   const reg = /^(#|＃|\/)?宗门(上交|上缴|捐赠)灵石/;
   const msg = e.MessageText.replace(reg, '').trim();

@@ -8,10 +8,14 @@ export const regular = /^(#|＃|\/)?仙境$/;
 const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   const list = (data.Fairyrealm_list || []) as NamedItem[];
 
-  if (!Array.isArray(list) || list.length === 0) { return false; }
+  if (!Array.isArray(list) || list.length === 0) {
+    return false;
+  }
   await Goweizhi(e as import('alemonjs').EventsMessageCreateEnum, list);
 
   return false;

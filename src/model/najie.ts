@@ -24,7 +24,9 @@ export async function updateBagThing(
 ): Promise<boolean> {
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
 
   // 确保 thing_class 对应的数组存在
   if (!Array.isArray(najie[thing_class])) {
@@ -33,11 +35,15 @@ export async function updateBagThing(
 
   if (thing_class == '装备' && (thing_pinji || thing_pinji == 0)) {
     for (const i of najie['装备']) {
-      if (i.name == thing_name && i.pinji == thing_pinji) { i.islockd = lock; }
+      if (i.name == thing_name && i.pinji == thing_pinji) {
+        i.islockd = lock;
+      }
     }
   } else {
     for (const i of najie[thing_class]) {
-      if (i.name == thing_name) { i.islockd = lock; }
+      if (i.name == thing_name) {
+        i.islockd = lock;
+      }
     }
   }
   await writeNajie(usr_qq, najie);
@@ -61,7 +67,9 @@ export async function existNajieThing(
 ): Promise<number | false> {
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
   let ifexist: NajieItem | undefined;
 
   if (thing_class == '装备' && (thing_pinji || thing_pinji == 0)) {
@@ -83,12 +91,18 @@ export async function existNajieThing(
     for (const cat of type) {
       const list = najie[cat];
 
-      if (!Array.isArray(list)) { continue; }
-      ifexist = (list).find(item => item.name == thing_name);
-      if (ifexist) { break; }
+      if (!Array.isArray(list)) {
+        continue;
+      }
+      ifexist = list.find(item => item.name == thing_name);
+      if (ifexist) {
+        break;
+      }
     }
   }
-  if (ifexist) { return ifexist.数量 || 0; }
+  if (ifexist) {
+    return ifexist.数量 || 0;
+  }
 
   return false;
 }
@@ -109,17 +123,23 @@ export async function addNajieThing(
   x: number,
   pinji?: number
 ): Promise<void> {
-  if (x == 0) { return; }
+  if (x == 0) {
+    return;
+  }
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
 
   // 确保 thing_class 对应的数组存在
   if (!Array.isArray(najie[thing_class])) {
     najie[thing_class] = [];
   }
   if (thing_class == '装备') {
-    if (!pinji && pinji != 0) { pinji = Math.trunc(Math.random() * 6); }
+    if (!pinji && pinji != 0) {
+      pinji = Math.trunc(Math.random() * 6);
+    }
     const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2];
 
     if (x > 0) {
@@ -134,16 +154,24 @@ export async function addNajieThing(
         data[5] = await getDataList('Xuanwu');
 
         for (const i of data) {
-          if (!Array.isArray(i)) { continue; }
+          if (!Array.isArray(i)) {
+            continue;
+          }
           const thing = (i as NajieItem[]).find(item => item.name == name);
 
           if (thing) {
             const equ = _.cloneDeep(thing) as EquipmentLike;
 
             equ.pinji = pinji;
-            if (typeof equ.atk === 'number') { equ.atk *= z[pinji]; }
-            if (typeof equ.def === 'number') { equ.def *= z[pinji]; }
-            if (typeof equ.HP === 'number') { equ.HP *= z[pinji]; }
+            if (typeof equ.atk === 'number') {
+              equ.atk *= z[pinji];
+            }
+            if (typeof equ.def === 'number') {
+              equ.def *= z[pinji];
+            }
+            if (typeof equ.HP === 'number') {
+              equ.HP *= z[pinji];
+            }
             equ.数量 = x;
             equ.islockd = 0;
             najie[thing_class].push(equ);
@@ -153,7 +181,9 @@ export async function addNajieThing(
           }
         }
       } else {
-        if (!name.pinji) { name.pinji = pinji; }
+        if (!name.pinji) {
+          name.pinji = pinji;
+        }
         (name as NajieItem).数量 = x;
         (name as NajieItem).islockd = 0;
         najie[thing_class].push(name as NajieItem);
@@ -164,7 +194,9 @@ export async function addNajieThing(
     }
     const fb = najie[thing_class].find(item => item.name == ((name as NajieItem).name || name) && item.pinji == pinji);
 
-    if (fb) { fb.数量 = (fb.数量 || 0) + x; }
+    if (fb) {
+      fb.数量 = (fb.数量 || 0) + x;
+    }
     najie.装备 = najie.装备.filter(item => (item.数量 || 0) > 0);
     await writeNajie(usr_qq, najie);
 
@@ -203,7 +235,9 @@ export async function addNajieThing(
     }
     const fb = najie[thing_class].find(item => item.name == ((name as NajieItem).name || name));
 
-    if (fb) { fb.数量 = (fb.数量 || 0) + x; }
+    if (fb) {
+      fb.数量 = (fb.数量 || 0) + x;
+    }
     najie.仙宠 = najie.仙宠.filter(item => (item.数量 || 0) > 0);
     await writeNajie(usr_qq, najie);
 
@@ -225,7 +259,9 @@ export async function addNajieThing(
     data[7] = await getDataList('Xianchonkouliang');
     data[8] = await getDataList('Duanzhaocailiao');
     for (const i of data) {
-      if (!Array.isArray(i)) { continue; }
+      if (!Array.isArray(i)) {
+        continue;
+      }
       thing = (i as NajieItem[]).find(item => item.name == name);
       if (thing) {
         najie[thing_class].push(thing);
@@ -243,7 +279,9 @@ export async function addNajieThing(
   }
   const fb = najie[thing_class].find(item => item.name == name);
 
-  if (fb) { fb.数量 = (fb.数量 || 0) + x; }
+  if (fb) {
+    fb.数量 = (fb.数量 || 0) + x;
+  }
   najie[thing_class] = najie[thing_class].filter(item => (item.数量 || 0) > 0);
   await writeNajie(usr_qq, najie);
 }
@@ -253,7 +291,9 @@ export async function insteadEquipment(usr_qq: string, equipment_data: Equipment
   const { readEquipment, writeEquipment } = await import('./equipment.js');
   const equipment: Equipment | null = await readEquipment(usr_qq);
 
-  if (!equipment) { return; }
+  if (!equipment) {
+    return;
+  }
   if (equipment_data.type == '武器') {
     await addNajieThing(
       usr_qq,

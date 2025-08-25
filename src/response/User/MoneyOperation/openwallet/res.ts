@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await await data.getData('player', usr_qq);
   const thing_name = '水脚脚的钱包';
   // x是纳戒内有的数量

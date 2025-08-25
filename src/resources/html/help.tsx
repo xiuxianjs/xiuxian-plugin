@@ -25,7 +25,9 @@ const CommandIcons = {
 // 获取命令图标
 const getCommandIcon = (title: string) => {
   for (const [key, icon] of Object.entries(CommandIcons)) {
-    if (title.includes(key)) { return icon; }
+    if (title.includes(key)) {
+      return icon;
+    }
   }
 
   return '✨';

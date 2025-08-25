@@ -19,7 +19,9 @@ interface ActionState {
 }
 
 function parseJson<T>(raw: string | null): T | null {
-  if (!raw) { return null; }
+  if (!raw) {
+    return null;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -31,7 +33,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const actionState = parseJson<ActionState>(await redis.get(getRedisKey(usr_qq, 'action')));
 
@@ -170,7 +174,9 @@ const res = onResponse(selects, async e => {
     const redisGlKey = KEY_AUCTION_GROUP_LIST;
     const groupList = await redis.smembers(redisGlKey);
 
-    for (const group of groupList) { pushInfo(group, true, last_msg); }
+    for (const group of groupList) {
+      pushInfo(group, true, last_msg);
+    }
   }
 });
 

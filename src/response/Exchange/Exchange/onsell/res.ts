@@ -34,8 +34,12 @@ const PINJI_MAP: Record<string, number> = {
 const PINJI_TEXT = ['劣', '普', '优', '精', '极', '绝', '顶'];
 
 function parsePinji(raw: string | undefined): number | undefined {
-  if (!raw) { return undefined; }
-  if (raw in PINJI_MAP) { return PINJI_MAP[raw]; }
+  if (!raw) {
+    return undefined;
+  }
+  if (raw in PINJI_MAP) {
+    return PINJI_MAP[raw];
+  }
   const n = Number(raw);
 
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined;
@@ -51,11 +55,15 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
 
   const raw = e.MessageText.replace(/^(#|＃|\/)?上架/, '').trim();
 
@@ -199,7 +207,9 @@ const res = onResponse(selects, async e => {
   }
   let fee = Math.trunc(totalPrice * 0.03);
 
-  if (fee < 100000) { fee = 100000; }
+  if (fee < 100000) {
+    fee = 100000;
+  }
 
   const player = await readPlayer(usr_qq);
 
@@ -215,7 +225,9 @@ const res = onResponse(selects, async e => {
   try {
     const data = await readExchange();
 
-    if (Array.isArray(data)) { exchange = data; }
+    if (Array.isArray(data)) {
+      exchange = data;
+    }
   } catch {
     await writeExchange([]);
   }

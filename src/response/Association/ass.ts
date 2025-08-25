@@ -24,7 +24,9 @@ export function isNotMaintenance(ass) {
  * @returns obj==null/undefined,return false,other return true
  */
 export function notUndAndNull(obj) {
-  if (obj == undefined || obj == null) { return false; }
+  if (obj == undefined || obj == null) {
+    return false;
+  }
 
   return true;
 }

@@ -23,13 +23,17 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const A_qq = e.UserId;
 
-  if (!(await existplayer(A_qq))) { return false; }
+  if (!(await existplayer(A_qq))) {
+    return false;
+  }
 
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const B_qq = target.UserId;
 
@@ -155,7 +159,7 @@ const res = onResponse(selects, async e => {
         .sort((a, b) => b.pinji - a.pinji);
 
       equ = sorted[0];
-      thing_piji = (equ as (typeof sorted)[number] | undefined)?.pinji;
+      thing_piji = equ?.pinji;
     }
   } else if (cls === '仙宠') {
     equ = najie.仙宠.find(item => item.name == thing_name);

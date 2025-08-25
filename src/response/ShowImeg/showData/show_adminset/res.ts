@@ -7,7 +7,9 @@ export const regular = /^(#|＃|\/)?修仙设置$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
   const img = await getAdminsetImage(e);
 
   if (Buffer.isBuffer(img)) {

@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   {
-    if (!e.IsMaster) { return false; }
+    if (!e.IsMaster) {
+      return false;
+    }
 
     Send(Text('开始清除！'));
     let Exchange = [];
@@ -27,7 +29,9 @@ const res = onResponse(selects, async e => {
       let thing = i.thing.name;
       const quanity = i.aconut;
 
-      if (i.thing.class == '装备' || i.thing.class == '仙宠') { thing = i.thing; }
+      if (i.thing.class == '装备' || i.thing.class == '仙宠') {
+        thing = i.thing;
+      }
       await addNajieThing(usr_qq, thing, i.thing.class, quanity, i.thing.pinji);
     }
     await writeExchange([]);

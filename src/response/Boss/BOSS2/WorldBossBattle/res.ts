@@ -40,7 +40,9 @@ interface ActionState {
 }
 
 function parseJson<T>(raw, fallback: T): T {
-  if (typeof raw !== 'string' || raw === '') { return fallback; }
+  if (typeof raw !== 'string' || raw === '') {
+    return fallback;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -59,7 +61,9 @@ const res = onResponse(selects, async e => {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   if (!(await Boss2IsAlive())) {
     Send(Text('金角大王未开启！'));
@@ -141,7 +145,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   } else if (WorldBossStatus.KilledTime !== -1) {
-    if ((await InitWorldBoss2()) === false) { await WorldBossBattle(e); }
+    if ((await InitWorldBoss2()) === false) {
+      await WorldBossBattle(e);
+    }
 
     return false;
   }
@@ -272,8 +278,12 @@ const res = onResponse(selects, async e => {
     const showMax = Math.min(PlayerList.length, 20);
     let topSum = 0;
 
-    for (let i = 0; i < showMax; i++) { topSum += PlayerRecordJSON.TotalDamage[PlayerList[i]]; }
-    if (topSum <= 0) { topSum = showMax; }
+    for (let i = 0; i < showMax; i++) {
+      topSum += PlayerRecordJSON.TotalDamage[PlayerList[i]];
+    }
+    if (topSum <= 0) {
+      topSum = showMax;
+    }
 
     const Rewardmsg: string[] = ['****金角大王周本贡献排行榜****'];
 
@@ -285,7 +295,9 @@ const res = onResponse(selects, async e => {
       if (i < showMax) {
         let reward = Math.trunc((PlayerRecordJSON.TotalDamage[idx] / topSum) * WorldBossStatus.Reward);
 
-        if (!Number.isFinite(reward) || reward < 200000) { reward = 200000; }
+        if (!Number.isFinite(reward) || reward < 200000) {
+          reward = 200000;
+        }
         Rewardmsg.push(`第${i + 1}名:\n名号:${cur.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`);
         cur.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
@@ -294,7 +306,9 @@ const res = onResponse(selects, async e => {
         cur.灵石 += 200000;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
         logger.info(`[金角大王周本] 结算:${qq}增加奖励200000`);
-        if (i === PlayerList.length - 1) { Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！'); }
+        if (i === PlayerList.length - 1) {
+          Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！');
+        }
       }
     }
     Send(Text(Rewardmsg.join('\n')));

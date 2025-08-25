@@ -14,7 +14,9 @@ export async function Level_up(e, luck = false) {
   // 有无账号
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 获取游戏状态
   const game_action = await getString(userKey(usr_qq, 'game_action'));
 
@@ -197,7 +199,9 @@ export async function LevelMax_up(e, luck) {
   const Send = useSend(e);
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const game_action = await getString(userKey(usr_qq, 'game_action'));
 
   if (game_action === '1') {

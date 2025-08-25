@@ -19,7 +19,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId; // 用户qq
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   // 不开放私聊
 
   // 获取游戏状态
@@ -46,7 +48,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中，剩余时间:${formatRemaining(remainingMs(current!))}`));
+    Send(Text(`正在${current?.action}中，剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }

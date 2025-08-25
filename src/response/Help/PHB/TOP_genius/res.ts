@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
 
   const playerList = await keysByPath(__PATH.player_path);
   // 数组

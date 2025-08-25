@@ -18,7 +18,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   const game_action = await getString(userKey(usr_qq, 'game_action'));
 
   // 防止继续其他娱乐行为
@@ -41,11 +43,11 @@ const res = onResponse(selects, async e => {
 
   if (isActionRunning(action)) {
     const now = Date.now();
-    const rest = action!.end_time - now;
+    const rest = action.end_time - now;
     const m = Math.floor(rest / 60000);
     const s = Math.floor((rest - m * 60000) / 1000);
 
-    Send(Text(`正在${action!.action}中,剩余时间:${m}分${s}秒`));
+    Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
 
     return false;
   }
@@ -66,7 +68,9 @@ const res = onResponse(selects, async e => {
   // 保持 setDataByUserId 兼容写入
   const mirror = await readAction(usr_qq);
 
-  if (mirror) { await setDataByUserId(usr_qq, 'action', JSON.stringify(mirror)); }
+  if (mirror) {
+    await setDataByUserId(usr_qq, 'action', JSON.stringify(mirror));
+  }
   Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`));
 });
 

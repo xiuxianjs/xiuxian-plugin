@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   let thing_name = e.MessageText.replace(/^(#|＃|\/)?回收/, '');
 
   thing_name = thing_name.trim();
@@ -26,7 +28,9 @@ const res = onResponse(selects, async e => {
   let lingshi = 0;
   const najie = await readNajie(usr_qq);
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
   const type: NajieCategory[] = [
     '装备',
     '丹药',
@@ -41,7 +45,9 @@ const res = onResponse(selects, async e => {
   for (const cate of type) {
     const list = najie[cate];
 
-    if (!Array.isArray(list)) { continue; }
+    if (!Array.isArray(list)) {
+      continue;
+    }
     const thing = (
       list as Array<{
         name: string;
@@ -52,7 +58,9 @@ const res = onResponse(selects, async e => {
       }>
     ).find(item => item.name == thing_name);
 
-    if (!thing) { continue; }
+    if (!thing) {
+      continue;
+    }
     const sell = typeof thing.出售价 === 'number' ? thing.出售价 : 0;
     const num = typeof thing.数量 === 'number' ? thing.数量 : 0;
     const cls = (thing.class as NajieCategory) || cate;

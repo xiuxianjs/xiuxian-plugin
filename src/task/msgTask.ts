@@ -25,7 +25,9 @@ export const MsgTask = async() => {
     group.push(temp[0].qq_group);
     f1: for (const i of temp) {
       for (const j of group) {
-        if (i.qq_group == j) { continue f1; }
+        if (i.qq_group == j) {
+          continue f1;
+        }
       }
       group.push(i.qq_group);
     }
@@ -41,7 +43,9 @@ export const MsgTask = async() => {
 
       const img = await screenshot('temp', i, temp_data);
 
-      if (img) { await pushInfo(i, true, img); }
+      if (img) {
+        await pushInfo(i, true, img);
+      }
     }
     await writeTemp([]);
   }

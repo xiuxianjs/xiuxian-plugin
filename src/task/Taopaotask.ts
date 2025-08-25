@@ -82,16 +82,22 @@ export const Taopaotask = async() => {
         if (now_time >= end_time) {
           const weizhi = action.Place_address;
 
-          if (!weizhi) { return; }
+          if (!weizhi) {
+            return;
+          }
           const npcList = await getDataList('NPC');
           let i = 0; // 获取对应npc列表的位置
 
           for (i = 0; i < npcList.length; i++) {
-            if (npcList[i].name == '万仙盟') { break; }
+            if (npcList[i].name == '万仙盟') {
+              break;
+            }
           }
           const A_player = action.A_player;
 
-          if (!A_player) { return; }
+          if (!A_player) {
+            return;
+          }
           let monster: MonsterSlot;
 
           if (weizhi.Grade == 1) {
@@ -147,22 +153,30 @@ export const Taopaotask = async() => {
             A_player.当前血量 = Number(A_player.当前血量 || 0) - Math.trunc(npc_damage * 0.5);
             last_msg += `身体快到极限了嘛,你暗暗问道,脚下逃跑的步伐更加迅速,剩余血量${A_player.当前血量}`;
           }
-          if (A_player.当前血量 < 0) { A_player.当前血量 = 0; }
+          if (A_player.当前血量 < 0) {
+            A_player.当前血量 = 0;
+          }
           const arr: ActionState = action;
           const shop = await readShop();
           const slot = shop.find(s => s.name == weizhi.name) as ShopSlotLike | undefined;
 
-          if (slot) { slot.state = 0; }
+          if (slot) {
+            slot.state = 0;
+          }
           if (A_player.当前血量 > 0) {
             arr.A_player = A_player;
-            if (typeof arr.cishu === 'number') { arr.cishu -= 1; }
+            if (typeof arr.cishu === 'number') {
+              arr.cishu -= 1;
+            }
           } else {
             const num = Number(weizhi.Grade || 0) + 1;
 
             last_msg += `\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x${num}`;
             await addNajieThing(player_id, '秘境之匙', '道具', num);
             delete arr.group_id;
-            if (slot) { slot.state = 0; }
+            if (slot) {
+              slot.state = 0;
+            }
             await writeShop(shop);
             const time = 60; // 时间（分钟）
             const action_time = 60000 * time; // 持续时间，单位毫秒
@@ -174,7 +188,9 @@ export const Taopaotask = async() => {
             const groupList = await redis.smembers(redisGlKey);
             const notice = `【全服公告】${A_player.名号}被${B_player.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
 
-            for (const gid of groupList) { pushInfo(gid, true, notice); }
+            for (const gid of groupList) {
+              pushInfo(gid, true, notice);
+            }
           }
           if ((arr.cishu || 0) === 0) {
             last_msg += '\n你成功躲过了万仙盟的追杀,躲进了宗门';
@@ -183,12 +199,16 @@ export const Taopaotask = async() => {
             delete arr.group_id;
             if (Array.isArray(arr.thing)) {
               for (const t of arr.thing) {
-                if (!t) { continue; }
+                if (!t) {
+                  continue;
+                }
                 const tn = t.name;
                 const tc = isNajieCategory(t.class) ? t.class : '道具';
-                const count = (t.数量 as number) || 0;
+                const count = t.数量 || 0;
 
-                if (tn && count > 0) { await addNajieThing(player_id, tn, tc, count); }
+                if (tn && count > 0) {
+                  await addNajieThing(player_id, tn, tc, count);
+                }
               }
             }
             if (slot) {

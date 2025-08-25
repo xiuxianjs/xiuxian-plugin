@@ -13,7 +13,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 计算当前用户排名
   const playerList = await keysByPath(__PATH.player_path);
   let File_length = playerList.length;

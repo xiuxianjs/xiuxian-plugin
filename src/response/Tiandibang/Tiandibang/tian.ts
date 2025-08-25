@@ -79,7 +79,9 @@ export async function re_bangdang() {
     const levelList = await getDataList('Level1');
     const level_id = levelList.find(item => item.level_id == player.level_id)?.level_id;
 
-    if (level_id == null) { continue; }
+    if (level_id == null) {
+      continue;
+    }
     temp.push({
       名号: player.名号,
       境界: level_id,

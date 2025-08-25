@@ -27,7 +27,9 @@ const testCache = {};
  * @returns
  */
 export const testTip = (UID: string) => {
-  if (testCache) { return true; }
+  if (testCache) {
+    return true;
+  }
   testCache[UID] = true;
 
   return false;

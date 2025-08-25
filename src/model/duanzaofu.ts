@@ -38,7 +38,9 @@ export async function settripod(qq: string): Promise<string> {
   }
   const player = await readPlayer(qq);
 
-  if (!player) { return '玩家数据获取失败'; }
+  if (!player) {
+    return '玩家数据获取失败';
+  }
   const tianfu = Math.floor(40 * Math.random() + 80);
 
   player.锻造天赋 = tianfu;
@@ -110,7 +112,9 @@ export async function jiaozheng(value): Promise<number> {
   if (typeof value === 'string') {
     const n = Number(value);
 
-    if (Number.isNaN(n)) { return 1; }
+    if (Number.isNaN(n)) {
+      return 1;
+    }
     size = n;
   } else if (typeof value === 'number') {
     size = value;
@@ -138,7 +142,9 @@ export async function readThat(
 
   if (Array.isArray(arr)) {
     for (const item of arr) {
-      if (item && typeof item === 'object' && 'name' in item && item.name === thing_name) { return item; }
+      if (item && typeof item === 'object' && 'name' in item && item.name === thing_name) {
+        return item;
+      }
     }
   }
 
@@ -179,7 +185,7 @@ export async function getxuanze(
     }
   }
   for (const item2 in b) {
-    if (b[item2] == a!) {
+    if (b[item2] == a) {
       return [c[0], shuzu[item2]];
     }
   }

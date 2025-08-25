@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
 
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
 
   // 无宗门
   if (!notUndAndNull(player.宗门)) {

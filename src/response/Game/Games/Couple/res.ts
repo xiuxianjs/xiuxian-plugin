@@ -19,7 +19,9 @@ function toInt(v): number {
 }
 // 辅助：格式化剩余时间
 function formatRemain(ms: number): string {
-  if (ms <= 0) { return '0分 0秒'; }
+  if (ms <= 0) {
+    return '0分 0秒';
+  }
   const m = Math.trunc(ms / 60000);
   const s = Math.trunc((ms % 60000) / 1000);
 
@@ -30,7 +32,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const cf = await config.getConfig('xiuxian', 'xiuxian');
 
-  if (!cf?.sw?.couple) { return false; }
+  if (!cf?.sw?.couple) {
+    return false;
+  }
 
   const A = e.UserId;
 
@@ -42,13 +46,19 @@ const res = onResponse(selects, async e => {
     const res = await mention.findOne();
     const target = res?.data;
 
-    if (!target || res.code !== 2000) { return false; }
+    if (!target || res.code !== 2000) {
+      return false;
+    }
 
-    if (target) { B = target.UserId; }
+    if (target) {
+      B = target.UserId;
+    }
   } catch {
     // ignore, B 为空将触发返回
   }
-  if (!B) { return false; }
+  if (!B) {
+    return false;
+  }
   if (A === B) {
     Send(Text('你咋这么爱撸自己呢?'));
 

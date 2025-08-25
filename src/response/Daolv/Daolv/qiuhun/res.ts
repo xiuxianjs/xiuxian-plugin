@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
   const A_action = await readAction(A);
 
   if (isActionRunning(A_action)) {
-    Send(Text(`正在${A_action?.action}中,剩余时间:${formatRemaining(remainingMs(A_action!))}`));
+    Send(Text(`正在${A_action?.action}中,剩余时间:${formatRemaining(remainingMs(A_action))}`));
 
     return false;
   }
@@ -34,7 +34,9 @@ const res = onResponse(selects, async e => {
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const B = target.UserId;
 
@@ -53,7 +55,7 @@ const res = onResponse(selects, async e => {
   const B_action = await readAction(B);
 
   if (isActionRunning(B_action)) {
-    Send(Text(`对方正在${B_action!.action}中,剩余时间:${formatRemaining(remainingMs(B_action!))}`));
+    Send(Text(`对方正在${B_action.action}中,剩余时间:${formatRemaining(remainingMs(B_action))}`));
 
     return false;
   }
@@ -72,7 +74,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   } else if (pd == false || (pd > 0 && pd < 500)) {
-    if (pd == false) { pd = 0; }
+    if (pd == false) {
+      pd = 0;
+    }
     Send(Text(`你们亲密度不足500,无法心意相通(当前亲密度${pd})`));
 
     return false;

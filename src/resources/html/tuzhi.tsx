@@ -5,17 +5,39 @@ import HTML from './HTML';
 
 const Tuzhi = ({ tuzhi_list }) => {
   const getWeaponTypeIcon = name => {
-    if (name.includes('剑')) { return '⚔️'; }
-    if (name.includes('刀')) { return '🗡️'; }
-    if (name.includes('枪')) { return '🔱'; }
-    if (name.includes('弓')) { return '🏹'; }
-    if (name.includes('盾')) { return '🛡️'; }
-    if (name.includes('甲')) { return '🥋'; }
-    if (name.includes('袍')) { return '👘'; }
-    if (name.includes('靴')) { return '👢'; }
-    if (name.includes('冠')) { return '👑'; }
-    if (name.includes('戒')) { return '💍'; }
-    if (name.includes('链')) { return '📿'; }
+    if (name.includes('剑')) {
+      return '⚔️';
+    }
+    if (name.includes('刀')) {
+      return '🗡️';
+    }
+    if (name.includes('枪')) {
+      return '🔱';
+    }
+    if (name.includes('弓')) {
+      return '🏹';
+    }
+    if (name.includes('盾')) {
+      return '🛡️';
+    }
+    if (name.includes('甲')) {
+      return '🥋';
+    }
+    if (name.includes('袍')) {
+      return '👘';
+    }
+    if (name.includes('靴')) {
+      return '👢';
+    }
+    if (name.includes('冠')) {
+      return '👑';
+    }
+    if (name.includes('戒')) {
+      return '💍';
+    }
+    if (name.includes('链')) {
+      return '📿';
+    }
 
     return '🔨';
   };
@@ -23,9 +45,15 @@ const Tuzhi = ({ tuzhi_list }) => {
   const getSuccessRateColor = rate => {
     const percentage = rate * 100;
 
-    if (percentage >= 80) { return 'text-blue-700'; }
-    if (percentage >= 60) { return 'text-blue-600'; }
-    if (percentage >= 40) { return 'text-blue-500'; }
+    if (percentage >= 80) {
+      return 'text-blue-700';
+    }
+    if (percentage >= 60) {
+      return 'text-blue-600';
+    }
+    if (percentage >= 40) {
+      return 'text-blue-500';
+    }
 
     return 'text-blue-400';
   };
@@ -33,9 +61,15 @@ const Tuzhi = ({ tuzhi_list }) => {
   const getSuccessRateBg = rate => {
     const percentage = rate * 100;
 
-    if (percentage >= 80) { return 'bg-gradient-to-r from-blue-100/80 to-blue-200/60'; }
-    if (percentage >= 60) { return 'bg-gradient-to-r from-blue-100/70 to-blue-200/50'; }
-    if (percentage >= 40) { return 'bg-gradient-to-r from-blue-100/60 to-blue-200/40'; }
+    if (percentage >= 80) {
+      return 'bg-gradient-to-r from-blue-100/80 to-blue-200/60';
+    }
+    if (percentage >= 60) {
+      return 'bg-gradient-to-r from-blue-100/70 to-blue-200/50';
+    }
+    if (percentage >= 40) {
+      return 'bg-gradient-to-r from-blue-100/60 to-blue-200/40';
+    }
 
     return 'bg-gradient-to-r from-blue-100/50 to-blue-200/30';
   };

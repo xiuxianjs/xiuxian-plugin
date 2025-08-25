@@ -32,10 +32,14 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) { return false; }
+  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+    return false;
+  }
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
   if (!assData) {
@@ -45,7 +49,9 @@ const res = onResponse(selects, async e => {
   }
   const assRaw = JSON.parse(assData);
 
-  if (assRaw === 'error' || !isExtAss(assRaw)) { return false; }
+  if (assRaw === 'error' || !isExtAss(assRaw)) {
+    return false;
+  }
   const ass = assRaw;
   const members = Array.isArray(ass.所有成员) ? ass.所有成员 : [];
 

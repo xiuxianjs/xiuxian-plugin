@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
   // 查看存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const x = await existNajieThing(usr_qq, '闪闪发光的石头', '道具');
 
   if (!x) {

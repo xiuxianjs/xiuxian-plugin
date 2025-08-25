@@ -14,7 +14,9 @@ function toInt(v, def = 0): number {
   return Number.isFinite(n) ? Math.floor(n) : def;
 }
 function formatRemain(ms: number) {
-  if (ms <= 0) { return '0分0秒'; }
+  if (ms <= 0) {
+    return '0分0秒';
+  }
   const m = Math.trunc(ms / 60000);
   const s = Math.trunc((ms % 60000) / 1000);
 
@@ -37,7 +39,9 @@ const res = onResponse(selects, async e => {
   }
   const guildName = player?.宗门?.宗门名称;
 
-  if (!guildName) { return false; }
+  if (!guildName) {
+    return false;
+  }
   const ass = await getDataJSONParseByKey(keys.association(guildName));
 
   if (ass) {

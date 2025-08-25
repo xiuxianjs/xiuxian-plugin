@@ -10,14 +10,20 @@ export function parseUnitNumber(input: string): number {
     .replace(/[,，\s]/g, '')
     .trim();
 
-  if (!str) { return 0; }
+  if (!str) {
+    return 0;
+  }
   const match = str.match(/^(\d+)(k|w|e)?$/i);
 
-  if (!match) { return Number(str) || 0; }
+  if (!match) {
+    return Number(str) || 0;
+  }
   const [, num, unit] = match;
   const n = parseInt(num, 10);
 
-  if (isNaN(n)) { return 0; }
+  if (isNaN(n)) {
+    return 0;
+  }
   switch (unit) {
   case 'k':
     return n * 1000;

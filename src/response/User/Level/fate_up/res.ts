@@ -37,11 +37,15 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   const levelList = await getDataList('Level1');
   const levelInfo = levelList.find(l => l.level_id === player.level_id);
 
@@ -94,7 +98,9 @@ const res = onResponse(selects, async e => {
   if (x <= n) {
     player.当前血量 = 0;
     player.修为 -= Math.floor(needExp / 4);
-    if (player.修为 < 0) { player.修为 = 0; }
+    if (player.修为 < 0) {
+      player.修为 = 0;
+    }
     await writePlayer(usr_qq, player);
     Send(Text('天空一声巨响，未降下雷劫，就被天道的气势震死了。'));
 
@@ -120,7 +126,9 @@ const res = onResponse(selects, async e => {
   let active = true;
 
   const doStrike = async() => {
-    if (!active) { return; }
+    if (!active) {
+      return;
+    }
     const stillPlayer = await readPlayer(usr_qq);
 
     if (!stillPlayer) {
@@ -148,7 +156,9 @@ const res = onResponse(selects, async e => {
   };
 
   const release = (_reason: string) => {
-    if (!active) { return; }
+    if (!active) {
+      return;
+    }
     active = false;
     dj = 0;
     // 可选调试: console.debug('渡劫结束:', usr_qq, reason)

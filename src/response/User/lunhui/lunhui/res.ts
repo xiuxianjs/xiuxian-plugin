@@ -110,7 +110,9 @@ async function applyRebirthCommon(usr_qq: string, player: PlayerEx) {
   await writePlayer(usr_qq, player);
   const eq = await readEquipment(usr_qq);
 
-  if (eq) { await writeEquipment(usr_qq, eq); }
+  if (eq) {
+    await writeEquipment(usr_qq, eq);
+  }
   await addHP(usr_qq, 99_999_999);
   // 根据是否有轮回阵旗效果减少惩罚
   const lunhuiBH = numVal(player.lunhuiBH, 0);
@@ -132,10 +134,14 @@ function isAssociation(obj): obj is AssociationData & { 所有成员?: string[] 
 }
 
 async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t) => unknown) {
-  if (!notUndAndNull(player.宗门)) { return; }
+  if (!notUndAndNull(player.宗门)) {
+    return;
+  }
   const guild = player.宗门 as AssociationData;
 
-  if (!guild || typeof guild !== 'object' || !('宗门名称' in guild)) { return; }
+  if (!guild || typeof guild !== 'object' || !('宗门名称' in guild)) {
+    return;
+  }
   const assPower = await getDataJSONParseByKey(keys.association(guild.宗门名称));
 
   if (!assPower) {
@@ -151,12 +157,18 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
   if (guild.职位 !== '宗主') {
     const ass2Raw = await getDataJSONParseByKey(keys.association(guild.宗门名称));
 
-    if (!ass2Raw) { return; }
+    if (!ass2Raw) {
+      return;
+    }
     if (isAssociation(ass2Raw)) {
       const ass2 = ass2Raw;
 
-      if (Array.isArray(ass2[guild.职位])) { (ass2[guild.职位] as string[]) = (ass2[guild.职位] as string[]).filter(q => q !== usr_qq); }
-      if (Array.isArray(ass2['所有成员'])) { (ass2['所有成员'] as string[]) = (ass2['所有成员'] as string[]).filter(q => q !== usr_qq); }
+      if (Array.isArray(ass2[guild.职位])) {
+        (ass2[guild.职位] as string[]) = (ass2[guild.职位] as string[]).filter(q => q !== usr_qq);
+      }
+      if (Array.isArray(ass2['所有成员'])) {
+        ass2['所有成员'] = ass2['所有成员'].filter(q => q !== usr_qq);
+      }
       await setDataJSONStringifyByKey(keys.association(guild.宗门名称), ass2Raw);
     }
     delete player.宗门;
@@ -170,13 +182,19 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
   const redisClient = getIoRedis();
   const ass3Data = await redisClient.get(`${__PATH.association}:${guild.宗门名称}`);
 
-  if (!ass3Data) { return; }
+  if (!ass3Data) {
+    return;
+  }
   const ass3Raw = JSON.parse(ass3Data);
 
-  if (!isAssociation(ass3Raw)) { return; }
+  if (!isAssociation(ass3Raw)) {
+    return;
+  }
   const ass3 = ass3Raw as AssociationData & {};
 
-  if (!Array.isArray(ass3.所有成员)) { ass3.所有成员 = []; }
+  if (!Array.isArray(ass3.所有成员)) {
+    ass3.所有成员 = [];
+  }
   if ((ass3.所有成员 as string[]).length < 2) {
     await redis.del(`${__PATH.association}:${guild.宗门名称}`);
     delete player.宗门;
@@ -202,12 +220,16 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
   if (randmember_qq) {
     const randmember = (await getDataJSONParseByKey(keys.player(randmember_qq))) as PlayerEx;
 
-    if (!randmember) { return; }
+    if (!randmember) {
+      return;
+    }
     if (randmember?.宗门 && (randmember.宗门 as AssociationData).职位) {
-      const pos = (randmember.宗门 as AssociationData).职位 as string;
+      const pos = (randmember.宗门 as AssociationData).职位;
       const arr = ass3[pos];
 
-      if (Array.isArray(arr)) { ass3[pos] = (arr as string[]).filter(q => q !== randmember_qq); }
+      if (Array.isArray(arr)) {
+        ass3[pos] = (arr as string[]).filter(q => q !== randmember_qq);
+      }
       ass3['宗主'] = randmember_qq;
       (randmember.宗门 as AssociationData).职位 = '宗主';
       await writePlayer(randmember_qq, randmember);
@@ -235,15 +257,21 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return; }
+  if (!player) {
+    return;
+  }
   if (!notUndAndNull(player.lunhui)) {
     setNum(player, 'lunhui', 0);
     await writePlayer(usr_qq, player);
   }
-  if (!notUndAndNull(player.轮回点)) { setNum(player, '轮回点', 0); }
+  if (!notUndAndNull(player.轮回点)) {
+    setNum(player, '轮回点', 0);
+  }
 
   const key = KEY_LH(usr_qq);
   const lhxqRaw = await redis.get(key);

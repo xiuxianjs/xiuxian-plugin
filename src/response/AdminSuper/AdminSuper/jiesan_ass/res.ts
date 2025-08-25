@@ -10,7 +10,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   {
-    if (!e.IsMaster) { return false; }
+    if (!e.IsMaster) {
+      return false;
+    }
     const didian = e.MessageText.replace(/^(#|＃|\/)?解散宗门/, '').trim();
 
     if (didian == '') {
@@ -40,7 +42,9 @@ const res = onResponse(selects, async e => {
       // 使用readPlayer读取玩家数据
       const player = (await readPlayer(qq)) as (Player & PlayerData) | null;
 
-      if (!player) { continue; }
+      if (!player) {
+        continue;
+      }
       const guild = player.宗门;
 
       if (

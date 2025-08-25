@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await await data.getData('player', usr_qq);
   const equipment = await await data.getData('equipment', usr_qq);
   const type = ['武器', '护具', '法宝'];
@@ -43,8 +45,12 @@ const res = onResponse(selects, async e => {
     } else if (ZYTcs >= 200) {
       Reward = 700 * ZYTcs + 1000;
     }
-    if (Reward > 400000) { Reward = 400000; }
-    if (player.镇妖塔层数 > 6000) { Reward = 0; }
+    if (Reward > 400000) {
+      Reward = 400000;
+    }
+    if (player.镇妖塔层数 > 6000) {
+      Reward = 0;
+    }
     const bosszt = {
       Health: Health,
       OriginHealth: Health,
@@ -109,10 +115,18 @@ const res = onResponse(selects, async e => {
           BOSS_To_Player_Damage = Math.trunc(BOSS_To_Player_Damage * 1.2);
         }
         player.当前血量 -= BOSS_To_Player_Damage;
-        if (bosszt.isAngry) { bosszt.isAngry--; }
-        if (bosszt.isWeak) { bosszt.isWeak--; }
-        if (!bosszt.isAngry && BOSSCurrentAttack > bosszt.Attack) { BOSSCurrentAttack = bosszt.Attack; }
-        if (!bosszt.isWeak && BOSSCurrentDefence < bosszt.Defence) { BOSSCurrentDefence = bosszt.Defence; }
+        if (bosszt.isAngry) {
+          bosszt.isAngry--;
+        }
+        if (bosszt.isWeak) {
+          bosszt.isWeak--;
+        }
+        if (!bosszt.isAngry && BOSSCurrentAttack > bosszt.Attack) {
+          BOSSCurrentAttack = bosszt.Attack;
+        }
+        if (!bosszt.isWeak && BOSSCurrentDefence < bosszt.Defence) {
+          BOSSCurrentDefence = bosszt.Defence;
+        }
         if (player.当前血量 < 0) {
           player.当前血量 = 0;
         }
@@ -124,7 +138,9 @@ const res = onResponse(selects, async e => {
       player.镇妖塔层数 += 5;
       cengshu += 5;
       lingshi += Reward;
-      if (Reward > 0) { player.灵石 -= 20000; }
+      if (Reward > 0) {
+        player.灵石 -= 20000;
+      }
       player.当前血量 = player.血量上限;
     } else if (player.当前血量 <= 0) {
       player.当前血量 = 0;

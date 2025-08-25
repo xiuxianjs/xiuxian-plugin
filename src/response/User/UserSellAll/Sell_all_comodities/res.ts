@@ -13,11 +13,15 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   let commodities_price = 0;
   const najie = (await data.getData('najie', usr_qq)) as Record<string, unknown> | null;
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
   let wupin: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
   const wupin1: NajieCategory[] = [];
 
@@ -38,7 +42,9 @@ const res = onResponse(selects, async e => {
     for (const i of wupin) {
       const list = najie[i];
 
-      if (!Array.isArray(list)) { continue; }
+      if (!Array.isArray(list)) {
+        continue;
+      }
       for (const l of list as Array<{
         name: string;
         islockd?: number;
@@ -69,7 +75,9 @@ const res = onResponse(selects, async e => {
   for (const i of wupin) {
     const list = najie[i];
 
-    if (!Array.isArray(list)) { continue; }
+    if (!Array.isArray(list)) {
+      continue;
+    }
     for (const l of list as Array<{
       name: string;
       islockd?: number;
@@ -130,7 +138,9 @@ const res = onResponse(selects, async e => {
       for (const i of wupin) {
         const list = najie2[i];
 
-        if (!Array.isArray(list)) { continue; }
+        if (!Array.isArray(list)) {
+          continue;
+        }
         for (const l of list as Array<{
           name: string;
           islockd?: number;

@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 检索方法
   const najie = await await data.getData('najie', usr_qq);
   const player = await readPlayer(usr_qq);

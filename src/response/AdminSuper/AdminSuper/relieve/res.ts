@@ -13,19 +13,25 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   {
-    if (!e.IsMaster) { return false; }
+    if (!e.IsMaster) {
+      return false;
+    }
 
     const [mention] = useMention(e);
     const res = await mention.findOne();
     const target = res?.data;
 
-    if (!target || res.code !== 2000) { return false; }
+    if (!target || res.code !== 2000) {
+      return false;
+    }
     // 对方qq
     const qq = target.UserId;
     // 检查存档
     const ifexistplay = await existplayer(qq);
 
-    if (!ifexistplay) { return false; }
+    if (!ifexistplay) {
+      return false;
+    }
     // 清除游戏状态
     await redis.del(userKey(qq, 'game_action'));
     const record = await readAction(qq);

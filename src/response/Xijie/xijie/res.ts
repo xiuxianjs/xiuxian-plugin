@@ -44,7 +44,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const game_action = await getString(userKey(usr_qq, 'game_action'));
 
@@ -57,7 +59,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current!))}`));
+    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }
@@ -109,7 +111,9 @@ const res = onResponse(selects, async e => {
 
   const index = shop.findIndex(s => isShopItem(s) && s.name === didian);
 
-  if (index === -1) { return false; }
+  if (index === -1) {
+    return false;
+  }
   const target = shop[index];
 
   if (!isShopItem(target)) {
@@ -126,7 +130,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const player = (await readPlayer(usr_qq));
+  const player = await readPlayer(usr_qq);
 
   if (!player) {
     Send(Text('玩家数据异常'));

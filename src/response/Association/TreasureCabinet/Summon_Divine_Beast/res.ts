@@ -79,7 +79,17 @@ const res = onResponse(selects, async e => {
   const r = Math.random();
   let newBeast: string;
 
-  if (r > 0.8) { newBeast = '麒麟'; } else if (r > 0.6) { newBeast = '青龙'; } else if (r > 0.4) { newBeast = '玄武'; } else if (r > 0.2) { newBeast = '朱雀'; } else { newBeast = '白虎'; }
+  if (r > 0.8) {
+    newBeast = '麒麟';
+  } else if (r > 0.6) {
+    newBeast = '青龙';
+  } else if (r > 0.4) {
+    newBeast = '玄武';
+  } else if (r > 0.2) {
+    newBeast = '朱雀';
+  } else {
+    newBeast = '白虎';
+  }
 
   ass.宗门神兽 = newBeast;
   ass.灵石池 = pool - cost;

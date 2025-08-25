@@ -272,7 +272,9 @@ export async function getXianChongImage(e: EventsMessageCreateEnum): Promise<Scr
   const player = playerData as Player;
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
   const XianChong_have: NamedItem[] = [];
   const XianChong_need: NamedItem[] = [];
   const Kouliang: NamedItem[] = [];
@@ -323,7 +325,9 @@ export async function getDaojuImage(e: EventsMessageCreateEnum): Promise<Screens
   const player = playerData as Player;
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
   const daoju_have: NamedItem[] = [];
   const daoju_need: NamedItem[] = [];
   const daoju_list = await getDataList('Daoju');
@@ -359,13 +363,19 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
   }
   const player = await getPlayerDataSafe(usr_qq);
 
-  if (!player) { return; }
+  if (!player) {
+    return;
+  }
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
   const equipment = await readEquipment(usr_qq);
 
-  if (!equipment) { return; }
+  if (!equipment) {
+    return;
+  }
   const wuqi_have: NamedItem[] = [];
   const wuqi_need: NamedItem[] = [];
   const wuqi_list = [
@@ -386,7 +396,9 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
   for (const i of wuqi_list) {
     const arr = data[i];
 
-    if (!Array.isArray(arr)) { continue; }
+    if (!Array.isArray(arr)) {
+      continue;
+    }
     for (const j of arr as NamedItem[]) {
       if (
         najie['装备'].find(item => item.name == j.name)
@@ -424,10 +436,14 @@ export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<Screen
   const usr_qq = e.UserId;
   const player: Player | null = await readPlayer(usr_qq);
 
-  if (!player) { return; }
+  if (!player) {
+    return;
+  }
   const najie = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
   const danyao_have: NamedItem[] = [];
   const danyao_need: NamedItem[] = [];
   const danyao = ['danyao_list', 'timedanyao_list', 'newdanyao_list'];
@@ -441,7 +457,9 @@ export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<Screen
   for (const i of danyao) {
     const arr = data[i];
 
-    if (!Array.isArray(arr)) { continue; }
+    if (!Array.isArray(arr)) {
+      continue;
+    }
     for (const j of arr as NamedItem[]) {
       if (
         najie['丹药'].find(item => item.name == j.name)
@@ -491,7 +509,9 @@ export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<Screen
   for (const i of gongfa) {
     const arr = data[i];
 
-    if (!Array.isArray(arr)) { continue; }
+    if (!Array.isArray(arr)) {
+      continue;
+    }
     for (const j of arr as NamedItem[]) {
       if (xuexi_gongfa.includes(j.name) && !gongfa_have.find(item => item.name == j.name)) {
         gongfa_have.push(j);
@@ -649,7 +669,9 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   }
   let nd = '无';
 
-  if (player.隐藏灵根) { nd = player.隐藏灵根.name; }
+  if (player.隐藏灵根) {
+    nd = player.隐藏灵根.name;
+  }
   const zd = ['攻击', '防御', '生命加成', '防御加成', '攻击加成'];
   const num: number[] = [];
   const p: (number | '')[] = [];
@@ -785,11 +807,11 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     if (qinmidu[i].QQ_A == A || qinmidu[i].QQ_B == A) {
       if (qinmidu[i].婚姻 > 0) {
         if (qinmidu[i].QQ_A == A) {
-          const B = (await readPlayer(qinmidu[i].QQ_B));
+          const B = await readPlayer(qinmidu[i].QQ_B);
 
           hunyin = B?.名号 || hunyin;
         } else {
-          const APlayer = (await readPlayer(qinmidu[i].QQ_A));
+          const APlayer = await readPlayer(qinmidu[i].QQ_A);
 
           hunyin = APlayer?.名号 || hunyin;
         }
@@ -1082,7 +1104,9 @@ export async function getNajieImage(e: EventsMessageCreateEnum): Promise<Screens
   const player = playerData as Player;
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
   const lingshi = Math.trunc(najie.灵石);
   const lingshi2 = Math.trunc(najie.灵石上限 || 0);
   const strand_hp: StrandResult = Strand(player.当前血量, player.血量上限);

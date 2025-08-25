@@ -14,7 +14,9 @@ interface WorldBossStatusInfo {
   KilledTime: number;
 }
 function parseJson<T>(raw, fallback: T): T {
-  if (typeof raw !== 'string' || raw === '') { return fallback; }
+  if (typeof raw !== 'string' || raw === '') {
+    return fallback;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -33,7 +35,9 @@ const res = onResponse(selects, async e => {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   if (!(await Boss2IsAlive())) {
     Send(Text('金角大王未开启！'));
@@ -60,7 +64,9 @@ const res = onResponse(selects, async e => {
   }
   // 如果已被击杀但冷却结束需要初始化
   if (status.KilledTime !== -1) {
-    if ((await InitWorldBoss()) === false) { await LookUpWorldBossStatus(e); }
+    if ((await InitWorldBoss()) === false) {
+      await LookUpWorldBossStatus(e);
+    }
 
     return false;
   }

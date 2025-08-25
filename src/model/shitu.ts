@@ -47,7 +47,11 @@ export async function addShitu(A: string, num: number) {
   }
   let i: number;
 
-  for (i = 0; i < list.length; i++) { if ((list[i] as { A?: string }).A == A) { break; } } // 兼容历史错误字段 A
+  for (i = 0; i < list.length; i++) {
+    if ((list[i] as { A?: string }).A == A) {
+      break;
+    }
+  } // 兼容历史错误字段 A
   if (i == list.length) {
     await fstaddShitu(A);
     list = await readShitu();
@@ -66,8 +70,14 @@ export async function findShitu(A: string): Promise<string | false> {
   }
   let i: number;
 
-  for (i = 0; i < list.length; i++) { if (list[i].师傅 == A) { break; } }
-  if (i == list.length) { return false; }
+  for (i = 0; i < list.length; i++) {
+    if (list[i].师傅 == A) {
+      break;
+    }
+  }
+  if (i == list.length) {
+    return false;
+  }
 
   return list[i].师徒 ?? false; // 兼容原结构：若不存在则 false
 }
@@ -77,7 +87,9 @@ export async function findTudi(A: string): Promise<string | false> {
   const target = String(A);
 
   for (let i = 0; i < list.length; i++) {
-    if (String(list[i].未出师徒弟) == target) { return list[i].师徒 ?? false; }
+    if (String(list[i].未出师徒弟) == target) {
+      return list[i].师徒 ?? false;
+    }
   }
 
   return false;

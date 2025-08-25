@@ -64,7 +64,9 @@ const res = onResponse(selects, async e => {
   // 类型收窄
   const weizhiUnknown = weizhiRaw;
   const guardWeizhi = (v): v is { name: string; Price: number; experience: number } => {
-    if (!v || typeof v !== 'object') { return false; }
+    if (!v || typeof v !== 'object') {
+      return false;
+    }
     const r = v;
 
     return (

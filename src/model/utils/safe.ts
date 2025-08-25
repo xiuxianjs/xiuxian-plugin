@@ -2,7 +2,9 @@ import { getIoRedis } from '@alemonjs/db';
 import { keys } from '../keys.js';
 
 export function safeParse<T>(s: string | null | undefined, fallback: T): T {
-  if (!s) { return fallback; }
+  if (!s) {
+    return fallback;
+  }
   try {
     return JSON.parse(s) as T;
   } catch {
@@ -18,7 +20,9 @@ export class PlayerRepo {
   async getObject<T>(id: string): Promise<T | null> {
     const raw = await this.getRaw(id);
 
-    if (!raw) { return null; }
+    if (!raw) {
+      return null;
+    }
 
     return safeParse<T | null>(raw, null);
   }
@@ -26,13 +30,19 @@ export class PlayerRepo {
     await this.redis.set(keys.player(id), JSON.stringify(obj));
   }
   async atomicAdjust(id: string, field: string, delta: number): Promise<number | null> {
-    if (!delta) { return null; }
+    if (!delta) {
+      return null;
+    }
 
     const obj = await this.getObject<Record<string, unknown>>(id);
 
-    if (!obj) { return null; }
+    if (!obj) {
+      return null;
+    }
 
-    if (Array.isArray(obj)) { return null; }
+    if (Array.isArray(obj)) {
+      return null;
+    }
 
     const current = Number(obj[field] || 0);
     const newValue = current + delta;

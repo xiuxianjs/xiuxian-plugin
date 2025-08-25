@@ -9,7 +9,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const user_qq = e.UserId;
 
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
   const A = await looktripod(user_qq);
 
   if (A != 1) {

@@ -20,11 +20,15 @@ const res = onResponse(selects, async e => {
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const gameswitch = cf?.sw?.Moneynumber;
 
-  if (gameswitch !== true) { return false; }
+  if (gameswitch !== true) {
+    return false;
+  }
 
   const flag = await Go(e);
 
-  if (!flag) { return false; }
+  if (!flag) {
+    return false;
+  }
 
   // 玩家数据
   const player = await readPlayer(usr_qq);
@@ -51,7 +55,9 @@ const res = onResponse(selects, async e => {
     await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time);
     await redis.del(getRedisKey(usr_qq, 'game_action'));
     game.yazhu[usr_qq] = 0;
-    if (game.game_time[usr_qq]) { clearTimeout(game.game_time[usr_qq]); }
+    if (game.game_time[usr_qq]) {
+      clearTimeout(game.game_time[usr_qq]);
+    }
     Send(Text('媚娘：钱不够也想玩？'));
 
     return false;
@@ -61,7 +67,9 @@ const res = onResponse(selects, async e => {
   const last_game_time_raw = await redis.get(getRedisKey(usr_qq, 'last_game_time'));
   let last_game_time = Number(last_game_time_raw);
 
-  if (!Number.isFinite(last_game_time)) { last_game_time = 0; }
+  if (!Number.isFinite(last_game_time)) {
+    last_game_time = 0;
+  }
 
   const transferTimeout = toInt(cf?.CD?.gambling, 30) * 1000; // 默认30s
 

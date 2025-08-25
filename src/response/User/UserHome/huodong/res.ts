@@ -26,7 +26,9 @@ function toInt(v, d = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 function parseJson<T>(raw): T | null {
-  if (typeof raw !== 'string' || !raw) { return null; }
+  if (typeof raw !== 'string' || !raw) {
+    return null;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -52,7 +54,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const codeInput = e.MessageText.replace(/^(#|＃|\/)?活动兑换/, '').trim();
 
@@ -89,7 +93,9 @@ const res = onResponse(selects, async e => {
   for (const t of codeObj.thing || []) {
     const qty = toInt(t.数量, 0);
 
-    if (!t.name || qty <= 0) { continue; }
+    if (!t.name || qty <= 0) {
+      continue;
+    }
     const cate = normalizeCategory(t.class);
 
     await addNajieThing(usr_qq, t.name, cate, qty);

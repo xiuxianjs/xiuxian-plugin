@@ -36,8 +36,10 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
-  const player = (await readPlayer(usr_qq));
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
+  const player = await readPlayer(usr_qq);
 
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     Send(Text('你尚未加入宗门'));
@@ -88,9 +90,15 @@ const res = onResponse(selects, async e => {
   const assListRaw = assDatas.filter(Boolean);
 
   for (const other of assListRaw) {
-    if (other === 'error' || !isExtAss(other)) { continue; }
-    if (other.宗门名称 === ass.宗门名称) { continue; }
-    if (other.宗门驻地 !== dongTan.name) { continue; }
+    if (other === 'error' || !isExtAss(other)) {
+      continue;
+    }
+    if (other.宗门名称 === ass.宗门名称) {
+      continue;
+    }
+    if (other.宗门驻地 !== dongTan.name) {
+      continue;
+    }
     // 发生争夺
     const attackMembers = Array.isArray(ass.所有成员) ? ass.所有成员 : [];
     const defendMembers = Array.isArray(other.所有成员) ? other.所有成员 : [];
@@ -115,8 +123,16 @@ const res = onResponse(selects, async e => {
     const randA = Math.random();
     const randB = Math.random();
 
-    if (randA > 0.75) { attackPower = Math.trunc(attackPower * 1.1); } else if (randA < 0.25) { attackPower = Math.trunc(attackPower * 0.9); }
-    if (randB > 0.75) { defendPower = Math.trunc(defendPower * 1.1); } else if (randB < 0.25) { defendPower = Math.trunc(defendPower * 0.9); }
+    if (randA > 0.75) {
+      attackPower = Math.trunc(attackPower * 1.1);
+    } else if (randA < 0.25) {
+      attackPower = Math.trunc(attackPower * 0.9);
+    }
+    if (randB > 0.75) {
+      defendPower = Math.trunc(defendPower * 1.1);
+    } else if (randB < 0.25) {
+      defendPower = Math.trunc(defendPower * 0.9);
+    }
 
     const ass阵血 = Math.max(0, Number(ass.大阵血量 || 0));
     const other阵血 = Math.max(0, Number(other.大阵血量 || 0));

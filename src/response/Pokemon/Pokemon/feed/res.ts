@@ -14,7 +14,9 @@ const res = onResponse(selects, async e => {
   // 用户不存在
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
   if (player.仙宠 == '') {

@@ -30,7 +30,9 @@ const res = onResponse(selects, async e => {
   // 有无账号
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 不开放私聊
 
   // 获取游戏状态
@@ -125,10 +127,14 @@ const res = onResponse(selects, async e => {
       if (player.宗门.职位 != '宗主') {
         const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
-        if (!assData) { return false; }
+        if (!assData) {
+          return false;
+        }
         const ass = JSON.parse(assData);
 
-        if (ass === 'error') { return false; }
+        if (ass === 'error') {
+          return false;
+        }
         const association = ass;
         // 成员职位列表统一视为 string[]
         const pos = player.宗门.职位 as string;
@@ -149,7 +155,9 @@ const res = onResponse(selects, async e => {
       } else {
         const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-        if (!ass) { return; }
+        if (!ass) {
+          return;
+        }
         const association = ass;
         const allList = (association.所有成员 as string[] | undefined) || [];
 

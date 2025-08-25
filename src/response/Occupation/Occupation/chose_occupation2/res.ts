@@ -17,7 +17,9 @@ const res = onResponse(selects, async e => {
   }
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
 
   const player = await readPlayer(usr_qq);
   // 获取副职
@@ -41,12 +43,12 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const a = action.职业名;
-  const b = action.职业经验 as number;
-  const c = action.职业等级 as number;
+  const b = action.职业经验;
+  const c = action.职业等级;
 
   (action as Fuzhi).职业名 = player.occupation as string;
-  (action as Fuzhi).职业经验 = player.occupation_exp as number;
-  (action as Fuzhi).职业等级 = player.occupation_level as number;
+  (action as Fuzhi).职业经验 = player.occupation_exp;
+  (action as Fuzhi).职业等级 = player.occupation_level;
   player.occupation = a;
   player.occupation_exp = b;
   player.occupation_level = c;

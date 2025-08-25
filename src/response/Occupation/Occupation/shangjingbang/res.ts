@@ -13,7 +13,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // todo
   let action = await redis.get(getRedisKey('1', 'shangjing'));
 
@@ -35,7 +37,9 @@ const res = onResponse(selects, async e => {
         count = 1;
       }
     }
-    if (count == 0) { break; }
+    if (count == 0) {
+      break;
+    }
   }
   // tudo
   await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(action));

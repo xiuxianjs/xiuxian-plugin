@@ -11,7 +11,9 @@ type Gender = '男' | '女';
 function normalizeGender(input: string): Gender | null {
   const v = input.trim();
 
-  if (v === '男' || v === '女') { return v; }
+  if (v === '男' || v === '女') {
+    return v;
+  }
 
   return null;
 }
@@ -19,8 +21,14 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   const r: Record<string, JSONValue> = {};
 
   for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') { continue; }
-    if (v && typeof v === 'object') { r[k] = JSON.parse(JSON.stringify(v)); } else { r[k] = v as JSONValue; }
+    if (typeof v === 'function') {
+      continue;
+    }
+    if (v && typeof v === 'object') {
+      r[k] = JSON.parse(JSON.stringify(v));
+    } else {
+      r[k] = v as JSONValue;
+    }
   }
 
   return r;
@@ -30,8 +38,10 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
-  const player = (await readPlayer(usr_qq)) as Player;
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
+  const player = await readPlayer(usr_qq);
 
   if (player.sex && player.sex !== '0') {
     Send(Text('每个存档仅可设置一次性别！'));

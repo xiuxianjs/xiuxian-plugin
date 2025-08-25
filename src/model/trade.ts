@@ -17,14 +17,18 @@ export async function writeForum(wupin: ForumRecord[]): Promise<void> {
 export async function readExchange(): Promise<ExchangeRecord[]> {
   const Exchange = await getDataJSONParseByKey(keys.exchange('Exchange'));
 
-  if (!Exchange) { return []; }
+  if (!Exchange) {
+    return [];
+  }
 
   return safeParse<ExchangeRecord[]>(Exchange, []);
 }
 export async function readForum(): Promise<ForumRecord[]> {
   const Forum = await getDataJSONParseByKey(keys.exchange('Forum'));
 
-  if (!Forum) { return []; }
+  if (!Forum) {
+    return [];
+  }
 
   return safeParse<ForumRecord[]>(Forum, []);
 }
@@ -36,7 +40,9 @@ export async function openAU(): Promise<ExchangeRecord> {
   const xinggeFirst = data.xingge?.[0];
   const oneList = (xinggeFirst?.one || []) as AuctionItem[];
 
-  if (oneList.length === 0) { throw new Error('星阁拍卖行数据为空'); }
+  if (oneList.length === 0) {
+    throw new Error('星阁拍卖行数据为空');
+  }
   const redis = getIoRedis();
   const random = Math.floor(Math.random() * oneList.length);
   const thing_data = oneList[random];

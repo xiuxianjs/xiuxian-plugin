@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const img = await getStatezhiyeImage(e, null);
 
   if (Buffer.isBuffer(img)) {

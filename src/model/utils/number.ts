@@ -6,7 +6,9 @@ export async function convert2integer(amount: string | number): Promise<number> 
   const fallback = 1;
   const reg = /^[1-9][0-9]{0,12}$/;
 
-  if (!reg.test(String(amount))) { return fallback; }
+  if (!reg.test(String(amount))) {
+    return fallback;
+  }
 
   return Math.floor(Number(amount));
 }
@@ -15,7 +17,9 @@ export async function convert2integer(amount: string | number): Promise<number> 
  * 大数字格式化（兼容原逻辑的单位区间）
  */
 export function bigNumberTransform(value: number): string {
-  if (!Number.isFinite(value)) { return '0'; }
+  if (!Number.isFinite(value)) {
+    return '0';
+  }
   const units = [
     { limit: 1e16, text: '千万亿', divisor: 1e15 },
     { limit: 1e13, text: '万亿', divisor: 1e12 },

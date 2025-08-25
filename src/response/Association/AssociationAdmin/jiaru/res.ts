@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   if (!player.宗门) {
     Send(Text('你尚未加入宗门'));
 
@@ -46,7 +48,9 @@ const res = onResponse(selects, async e => {
 
   const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-  if (!ass) { return false; }
+  if (!ass) {
+    return false;
+  }
   if (ass.power === 0 && jr_level_id > 41) {
     jr_level_id = 41;
     Send(Text('不知哪位大能立下誓言：凡界无仙！'));

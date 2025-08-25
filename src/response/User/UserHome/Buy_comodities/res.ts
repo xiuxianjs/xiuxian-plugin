@@ -33,8 +33,12 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
-  if (!(await Go(e))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
+  if (!(await Go(e))) {
+    return false;
+  }
 
   const raw = e.MessageText.replace(/^(#|＃|\/)?购买/, '').trim();
 
@@ -63,8 +67,12 @@ const res = onResponse(selects, async e => {
 
   let qty = toInt(await convert2integer(rawQty), 1);
 
-  if (!Number.isFinite(qty) || qty <= 0) { qty = 1; }
-  if (qty > MAX_QTY) { qty = MAX_QTY; }
+  if (!Number.isFinite(qty) || qty <= 0) {
+    qty = 1;
+  }
+  if (qty > MAX_QTY) {
+    qty = MAX_QTY;
+  }
 
   const player = await readPlayer(usr_qq);
 
@@ -84,7 +92,9 @@ const res = onResponse(selects, async e => {
   const unitPrice = Math.max(0, Number(commodity.出售价) || 0);
   let totalPrice = Math.trunc(unitPrice * PRICE_RATE * qty);
 
-  if (totalPrice <= 0) { totalPrice = 1; }
+  if (totalPrice <= 0) {
+    totalPrice = 1;
+  }
   // 防溢出
   if (!Number.isFinite(totalPrice) || totalPrice > 1e15) {
     Send(Text('价格异常，购买已取消'));

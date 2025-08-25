@@ -28,10 +28,14 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   const r: Record<string, JSONValue> = {};
 
   for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') { continue; }
+    if (typeof v === 'function') {
+      continue;
+    }
     if (v && typeof v === 'object') {
       r[k] = JSON.parse(JSON.stringify(v));
-    } else { r[k] = v as JSONValue; }
+    } else {
+      r[k] = v as JSONValue;
+    }
   }
 
   return r;
@@ -42,10 +46,14 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) { return false; }
+  if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) {
+    return false;
+  }
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
   if (!assData) {
@@ -88,7 +96,13 @@ const res = onResponse(selects, async e => {
   }
   let n = 1;
 
-  if (role === '长老') { n = 3; } else if (role === '副宗主') { n = 4; } else if (role === '宗主') { n = 5; }
+  if (role === '长老') {
+    n = 3;
+  } else if (role === '副宗主') {
+    n = 4;
+  } else if (role === '宗主') {
+    n = 5;
+  }
 
   interface ExtendedAss extends AssociationDetailData {
     宗门建设等级?: number;

@@ -17,11 +17,15 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 此群是否开启星阁体系
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
 
-  if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) { return false; }
+  if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) {
+    return false;
+  }
   // 是否到拍卖时间
   const auction = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
 

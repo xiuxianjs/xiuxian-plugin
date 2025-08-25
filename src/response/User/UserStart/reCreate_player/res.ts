@@ -45,7 +45,9 @@ function parseNum(v, def = 0) {
 function removeFromRole(ass: ExtAss, role: string, qq: string) {
   const list = ass[role];
 
-  if (Array.isArray(list)) { ass[role] = list.filter(v => v !== qq); }
+  if (Array.isArray(list)) {
+    ass[role] = list.filter(v => v !== qq);
+  }
 }
 
 const res = onResponse(selects, async e => {
@@ -82,7 +84,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (!(await Go(e))) { return false; }
+  if (!(await Go(e))) {
+    return false;
+  }
 
   const nowTime = Date.now();
   const lastKey = getRedisKey(usr_qq, 'last_reCreate_time');
@@ -145,7 +149,9 @@ const res = onResponse(selects, async e => {
           if (playerNow.宗门.职位 !== '宗主') {
             removeFromRole(ass, playerNow.宗门.职位, usr_qq);
             ass.所有成员 = (ass.所有成员 || []).filter(q => q !== usr_qq);
-            if ('宗门' in playerNow) { delete (playerNow as { 宗门?: PlayerGuildRef }).宗门; }
+            if ('宗门' in playerNow) {
+              delete (playerNow as { 宗门?: PlayerGuildRef }).宗门;
+            }
             await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
             await writePlayer(usr_qq, playerNow);
           } else {
@@ -162,7 +168,13 @@ const res = onResponse(selects, async e => {
               ass.所有成员 = (ass.所有成员 || []).filter(q => q !== usr_qq);
               let randmember_qq: string | undefined;
 
-              if ((ass.长老 || []).length > 0) { randmember_qq = await getRandomFromARR(ass.长老); } else if ((ass.内门弟子 || []).length > 0) { randmember_qq = await getRandomFromARR(ass.内门弟子); } else { randmember_qq = await getRandomFromARR(ass.所有成员 || []); }
+              if ((ass.长老 || []).length > 0) {
+                randmember_qq = await getRandomFromARR(ass.长老);
+              } else if ((ass.内门弟子 || []).length > 0) {
+                randmember_qq = await getRandomFromARR(ass.内门弟子);
+              } else {
+                randmember_qq = await getRandomFromARR(ass.所有成员 || []);
+              }
               if (randmember_qq) {
                 const randmember = await readPlayer(randmember_qq);
 

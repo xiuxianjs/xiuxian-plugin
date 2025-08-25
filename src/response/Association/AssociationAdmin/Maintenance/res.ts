@@ -19,8 +19,12 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return; }
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) { return false; }
+  if (!player) {
+    return;
+  }
+  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+    return false;
+  }
   if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
     Send(Text('只有宗主、副宗主可以操作'));
 

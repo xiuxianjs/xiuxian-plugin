@@ -11,7 +11,9 @@ export async function getString(key: string): Promise<RedisScalar> {
 export async function getNumber(key: string): Promise<number | null> {
   const v = await redis.get(key);
 
-  if (v == null) { return null; }
+  if (v == null) {
+    return null;
+  }
   const n = Number(v);
 
   return Number.isNaN(n) ? null : n;
@@ -21,7 +23,9 @@ export async function getNumber(key: string): Promise<number | null> {
 export async function getJSON<T = unknown>(key: string): Promise<T | null> {
   const v = await redis.get(key);
 
-  if (v == null) { return null; }
+  if (v == null) {
+    return null;
+  }
   try {
     return JSON.parse(v) as T;
   } catch {
@@ -31,7 +35,11 @@ export async function getJSON<T = unknown>(key: string): Promise<T | null> {
 
 // set：自动 stringify 对象
 export async function setValue(key: string, value): Promise<void> {
-  if (typeof value === 'string') { await redis.set(key, value); } else { await redis.set(key, JSON.stringify(value)); }
+  if (typeof value === 'string') {
+    await redis.set(key, value);
+  } else {
+    await redis.set(key, JSON.stringify(value));
+  }
 }
 
 // 数值自增（不存在时初始化为 delta 或 0）

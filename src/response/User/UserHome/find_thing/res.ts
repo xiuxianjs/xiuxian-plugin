@@ -42,7 +42,9 @@ const res = onResponse(selects, async e => {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   // 提取物品名
   const thingName = normalizeName(e.MessageText.replace(/^(#|＃|\/)?哪里有/, ''));
@@ -78,19 +80,25 @@ const res = onResponse(selects, async e => {
     const root: Record<string, unknown> = data;
     const collection = root[key];
 
-    if (!Array.isArray(collection)) { continue; }
+    if (!Array.isArray(collection)) {
+      continue;
+    }
     for (const areaRaw of collection) {
       const area = areaRaw as AreaLike;
 
-      if (!area || typeof area !== 'object') { continue; }
+      if (!area || typeof area !== 'object') {
+        continue;
+      }
       const areaName = area.name || '未知地点';
       let matched = false;
 
       for (const levelKey of ITEM_LEVEL_KEYS) {
         const list = area[levelKey];
 
-        if (!Array.isArray(list) || list.length === 0) { continue; }
-        if (list.some(it => it && typeof it === 'object' && (it).name === thingName)) {
+        if (!Array.isArray(list) || list.length === 0) {
+          continue;
+        }
+        if (list.some(it => it && typeof it === 'object' && it.name === thingName)) {
           matched = true;
           break;
         }

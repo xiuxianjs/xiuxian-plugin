@@ -29,8 +29,12 @@ const PINJI_MAP: Record<string, number> = {
   顶: 6
 };
 const parsePinji = (raw): number | undefined => {
-  if (typeof raw !== 'string' || raw === '') { return undefined; }
-  if (raw in PINJI_MAP) { return PINJI_MAP[raw]; }
+  if (typeof raw !== 'string' || raw === '') {
+    return undefined;
+  }
+  if (raw in PINJI_MAP) {
+    return PINJI_MAP[raw];
+  }
   const n = Number(raw);
 
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined;
@@ -43,34 +47,46 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const [message] = useMessage(e);
 
-  if (!(await existplayer(usr_qq))) { return; }
+  if (!(await existplayer(usr_qq))) {
+    return;
+  }
   const player = await readPlayer(usr_qq);
   const najie = await readNajie(usr_qq);
 
-  if (!player || !najie) { return; }
+  if (!player || !najie) {
+    return;
+  }
 
   const reg = /装备|服用|消耗|学习/;
   const func = reg.exec(e.MessageText);
 
-  if (!func) { return; }
+  if (!func) {
+    return;
+  }
 
   const msg = e.MessageText.replace(reg, '').replace(/^#/, '').trim();
 
-  if (!msg) { return; }
+  if (!msg) {
+    return;
+  }
   const code = msg.split('*').map(s => s.trim());
   let thing_name: string = code[0];
   const maybeIndex = Number(code[0]);
   const quantityRaw = code[1];
   let quantity = await convert2integer(quantityRaw);
 
-  if (!quantity || quantity <= 0) { quantity = 1; }
+  if (!quantity || quantity <= 0) {
+    quantity = 1;
+  }
 
   // 装备代号解析
   if (func[0] === '装备' && Number.isInteger(maybeIndex) && maybeIndex > 100) {
     try {
       const target = najie.装备[maybeIndex - 101];
 
-      if (!target) { throw new Error('no equip'); }
+      if (!target) {
+        throw new Error('no equip');
+      }
       thing_name = target.name;
       code[1] = String(target.pinji);
     } catch {
@@ -90,7 +106,7 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  const thingClass = thing_exist.class as string | undefined;
+  const thingClass = thing_exist.class;
   // 品级解析（修复 0 被视为 falsy 问题）
   const pinji = parsePinji(code[1]);
   const x = await existNajieThing(
@@ -142,7 +158,9 @@ const res = onResponse(selects, async e => {
 
   // 服用丹药
   if (func[0] == '服用') {
-    if (thingClass !== '丹药') { return; }
+    if (thingClass !== '丹药') {
+      return;
+    }
     // 读取丹药列表并做最终防御：确保为数组
     const dy = await readDanyao(usr_qq);
     const tType = thingType(thing_exist);
@@ -218,10 +236,18 @@ const res = onResponse(selects, async e => {
     if (tType === '凝仙') {
       const addTimes = numOr('机缘') * quantity;
 
-      if (dy.biguan > 0) { dy.biguan += addTimes; }
-      if (dy.lianti > 0) { dy.lianti += addTimes; }
-      if (dy.ped > 0) { dy.ped += addTimes; }
-      if (dy.beiyong2 > 0) { dy.beiyong2 += addTimes; }
+      if (dy.biguan > 0) {
+        dy.biguan += addTimes;
+      }
+      if (dy.lianti > 0) {
+        dy.lianti += addTimes;
+      }
+      if (dy.ped > 0) {
+        dy.ped += addTimes;
+      }
+      if (dy.beiyong2 > 0) {
+        dy.beiyong2 += addTimes;
+      }
       message.send(format(Text(`丹韵入体,身体内蕴含的仙丹药效增加了${addTimes}次`)));
       await addNajieThing(usr_qq, thing_name, '丹药', -quantity);
       await writeDanyao(usr_qq, dy);
@@ -436,7 +462,9 @@ const res = onResponse(selects, async e => {
     if (thing_name == '重铸石') {
       const equipment = await readEquipment(usr_qq);
 
-      if (!equipment) { return; }
+      if (!equipment) {
+        return;
+      }
       const type = ['武器', '护具', '法宝'] as const;
       const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5];
 
@@ -444,7 +472,9 @@ const res = onResponse(selects, async e => {
         const random = Math.trunc(Math.random() * 6);
         const cur = equipment[t];
 
-        if (cur?.pinji === undefined || !z[cur.pinji]) { continue; }
+        if (cur?.pinji === undefined || !z[cur.pinji]) {
+          continue;
+        }
         cur.atk = (cur.atk / z[cur.pinji]) * z[random];
         cur.def = (cur.def / z[cur.pinji]) * z[random];
         cur.HP = (cur.HP / z[cur.pinji]) * z[random];
@@ -511,9 +541,15 @@ const res = onResponse(selects, async e => {
 
         return;
       }
-      if (typeof player.攻击加成 !== 'number') { player.攻击加成 = Number(player.攻击加成) || 0; }
-      if (typeof player.防御加成 !== 'number') { player.防御加成 = Number(player.防御加成) || 0; }
-      if (typeof player.生命加成 !== 'number') { player.生命加成 = Number(player.生命加成) || 0; }
+      if (typeof player.攻击加成 !== 'number') {
+        player.攻击加成 = Number(player.攻击加成) || 0;
+      }
+      if (typeof player.防御加成 !== 'number') {
+        player.防御加成 = Number(player.防御加成) || 0;
+      }
+      if (typeof player.生命加成 !== 'number') {
+        player.生命加成 = Number(player.生命加成) || 0;
+      }
       player.攻击加成 += toNumber(qh.攻击) * quantity;
       player.防御加成 += toNumber(qh.防御) * quantity;
       player.生命加成 += toNumber(qh.血量) * quantity;

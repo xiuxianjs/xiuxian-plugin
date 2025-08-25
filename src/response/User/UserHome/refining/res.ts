@@ -16,8 +16,12 @@ const PINJI_MAP: Record<string, number> = {
 };
 
 function parsePinji(raw: string | undefined): number | undefined {
-  if (!raw) { return undefined; }
-  if (raw in PINJI_MAP) { return PINJI_MAP[raw]; }
+  if (!raw) {
+    return undefined;
+  }
+  if (raw in PINJI_MAP) {
+    return PINJI_MAP[raw];
+  }
   const n = Number(raw);
 
   return Number.isInteger(n) && n >= 0 && n <= 6 ? n : undefined;
@@ -27,7 +31,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const raw = e.MessageText.replace(/^(#|＃|\/)?打磨/, '').trim();
   const parts = raw
@@ -75,7 +81,9 @@ const res = onResponse(selects, async e => {
 
   const najie = await readNajie(usr_qq);
 
-  if (!najie) { return false; }
+  if (!najie) {
+    return false;
+  }
   const equips = (najie.装备 || []).filter(i => i.name === thingName && (i.pinji ?? -1) === pinjiInput);
   const count = equips.length;
 

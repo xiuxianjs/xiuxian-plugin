@@ -13,7 +13,9 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const x = await existNajieThing(usr_qq, '长相奇怪的小石头', '道具');
 
   if (!x) {

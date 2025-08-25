@@ -60,7 +60,9 @@ const res = onResponse(selects, async e => {
     try {
       const auction = await openAU();
 
-      if (!isExchangeRecord(auction)) { throw new Error('拍卖数据结构异常'); }
+      if (!isExchangeRecord(auction)) {
+        throw new Error('拍卖数据结构异常');
+      }
       let msg = `___[星阁]___\n目前正在拍卖【${auction.thing.name}】\n`;
 
       if (auction.last_offer_player === 0) {

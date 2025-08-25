@@ -19,7 +19,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     Send(Text('你尚未加入宗门'));
 

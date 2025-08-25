@@ -45,7 +45,9 @@ function getPer(p: BagPetLike): number | undefined {
 
 // 兼容 Player.仙宠 计算等级 (部分旧数据无等级字段)
 function getPlayerPetLevel(p: XianchongInfo | (XianchongInfo & { 等级?: number })): number {
-  if (typeof (p as { 等级? }).等级 === 'number') { return Math.trunc((p as { 等级: number }).等级); }
+  if (typeof (p as { 等级? }).等级 === 'number') {
+    return Math.trunc((p as { 等级: number }).等级);
+  }
 
   return 1;
 }
@@ -54,11 +56,17 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
-  const player = (await readPlayer(usr_qq)) as Player;
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
+  const player = await readPlayer(usr_qq);
 
-  if (!player || typeof player !== 'object') { return false; }
-  if (!player.仙宠) { player.仙宠 = { name: '', type: '', 加成: 0 }; }
+  if (!player || typeof player !== 'object') {
+    return false;
+  }
+  if (!player.仙宠) {
+    player.仙宠 = { name: '', type: '', 加成: 0 };
+  }
 
   let input = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '').trim();
 
@@ -105,7 +113,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const bagPetUnknown = najie.仙宠.find(p => (p).name === input);
+  const bagPetUnknown = najie.仙宠.find(p => p.name === input);
 
   if (!isBagPetLike(bagPetUnknown)) {
     Send(Text('你没有' + input));
@@ -123,8 +131,12 @@ const res = onResponse(selects, async e => {
   if (player.仙宠 && notUndAndNull(player.仙宠.name)) {
     const oldLevel = getPlayerPetLevel(player.仙宠);
 
-    if (player.仙宠.type === '修炼') { player.修炼效率提升 -= Number(player.仙宠.加成 || 0); }
-    if (player.仙宠.type === '幸运') { player.幸运 -= Number(player.仙宠.加成 || 0); }
+    if (player.仙宠.type === '修炼') {
+      player.修炼效率提升 -= Number(player.仙宠.加成 || 0);
+    }
+    if (player.仙宠.type === '幸运') {
+      player.幸运 -= Number(player.仙宠.加成 || 0);
+    }
     await addPet(usr_qq, player.仙宠.name, 1, oldLevel);
   }
 
@@ -147,8 +159,12 @@ const res = onResponse(selects, async e => {
 
   player.仙宠 = newPet;
 
-  if (newPet.type === '修炼') { player.修炼效率提升 += newPet.加成; }
-  if (newPet.type === '幸运') { player.幸运 += newPet.加成; }
+  if (newPet.type === '修炼') {
+    player.修炼效率提升 += newPet.加成;
+  }
+  if (newPet.type === '幸运') {
+    player.幸运 += newPet.加成;
+  }
 
   await addPet(usr_qq, newPet.name, -1, newPet.等级);
   await writePlayer(usr_qq, player);

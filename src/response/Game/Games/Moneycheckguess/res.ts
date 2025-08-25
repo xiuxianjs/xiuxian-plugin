@@ -16,8 +16,12 @@ const res = onResponse(selects, async e => {
   const ifexistplay = await existplayer(usr_qq);
   const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
 
-  if (!ifexistplay || !game_action) { return false; }
-  if (isNaN(game.yazhu[usr_qq])) { return false; }
+  if (!ifexistplay || !game_action) {
+    return false;
+  }
+  if (isNaN(game.yazhu[usr_qq])) {
+    return false;
+  }
   if (!game.game_key_user[usr_qq]) {
     Send(Text('媚娘：公子，你还没投入呢'));
 

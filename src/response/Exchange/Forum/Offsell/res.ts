@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   let Forum = [];
   const player = await readPlayer(usr_qq);
   const x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1;

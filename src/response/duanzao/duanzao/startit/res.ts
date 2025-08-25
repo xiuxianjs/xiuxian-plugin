@@ -24,7 +24,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const user_qq = e.UserId;
 
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
   const A = await looktripod(user_qq);
 
   if (A != 1) {
@@ -50,7 +52,7 @@ const res = onResponse(selects, async e => {
       const action = await readActionWithSuffix(user_qq, 'action10');
 
       if (isActionRunning(action)) {
-        Send(Text(`正在${action!.action}中，剩余时间:${formatRemaining(remainingMs(action!))}`));
+        Send(Text(`正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`));
 
         return false;
       }

@@ -42,7 +42,9 @@ const res = onResponse(selects, async e => {
   for (let idx = 0; idx < assListRaw.length; idx++) {
     const a = assListRaw[idx];
 
-    if (a === 'error' || !isExtAss(a)) { continue; }
+    if (a === 'error' || !isExtAss(a)) {
+      continue;
+    }
     if (a.宗门驻地 != null && !locationMap.has(a.宗门驻地)) {
       locationMap.set(a.宗门驻地, a.宗门名称);
     }

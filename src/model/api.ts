@@ -20,7 +20,11 @@ export const redis = getIoRedis();
 export async function pushInfo(guild_id: string, isGroup: boolean, msg: MessageInput) {
   let message: MessageEnumsArray = [];
 
-  if (typeof msg === 'string') { message = format(Text(msg)) as MessageEnumsArray; } else if (Buffer.isBuffer(msg)) { message = format(Image(msg)) as MessageEnumsArray; } else if (Array.isArray(msg)) {
+  if (typeof msg === 'string') {
+    message = format(Text(msg)) as MessageEnumsArray;
+  } else if (Buffer.isBuffer(msg)) {
+    message = format(Image(msg)) as MessageEnumsArray;
+  } else if (Array.isArray(msg)) {
     const list = msg.map(item => (typeof item === 'string' ? Text(item) : item));
 
     message = format(...list) as MessageEnumsArray;

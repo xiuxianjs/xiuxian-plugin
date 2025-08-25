@@ -36,7 +36,9 @@ const res = onResponse(selects, async e => {
   }
   const weizhiUnknown = weizhiRaw;
   const guardWeizhi = (v): v is { name: string; Price: number } => {
-    if (!v || typeof v !== 'object') { return false; }
+    if (!v || typeof v !== 'object') {
+      return false;
+    }
     const r = v;
 
     return typeof r.Price === 'number' && typeof r.name === 'string';

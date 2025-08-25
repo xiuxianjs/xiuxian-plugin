@@ -20,13 +20,17 @@ const res = onResponse(selects, async e => {
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const B = target.UserId;
   const A = e.UserId;
   const ifexistplay = await existplayer(A);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   if (A == B) {
     Send(Text('精神分裂?'));
 

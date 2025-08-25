@@ -31,8 +31,14 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
   const r: Record<string, JSONValue> = {};
 
   for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') { continue; }
-    if (v && typeof v === 'object') { r[k] = JSON.parse(JSON.stringify(v)); } else { r[k] = v as JSONValue; }
+    if (typeof v === 'function') {
+      continue;
+    }
+    if (v && typeof v === 'object') {
+      r[k] = JSON.parse(JSON.stringify(v));
+    } else {
+      r[k] = v as JSONValue;
+    }
   }
 
   return r;
@@ -49,11 +55,17 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return false; }
-  if (notUndAndNull(player.宗门)) { return false; }
+  if (!player) {
+    return false;
+  }
+  if (notUndAndNull(player.宗门)) {
+    return false;
+  }
   if (!notUndAndNull(player.level_id)) {
     Send(Text('请先#同步信息'));
 

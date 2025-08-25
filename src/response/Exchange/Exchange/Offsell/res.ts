@@ -28,10 +28,14 @@ function toInt(v, d = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 function mapRecord(r): LegacyRecord | null {
-  if (!r || typeof r !== 'object') { return null; }
+  if (!r || typeof r !== 'object') {
+    return null;
+  }
   const rec = r as LegacyRecord;
 
-  if ('qq' in rec && rec.name) { return rec; }
+  if ('qq' in rec && rec.name) {
+    return rec;
+  }
   const er = r as RawExchangeRecord;
 
   if (er.thing) {
@@ -50,7 +54,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const now = Date.now();
   const cdMs = Math.floor(0.5 * 60000);
@@ -85,7 +91,7 @@ const res = onResponse(selects, async e => {
     await writeExchange([] as RawExchangeRecord[]);
     rawList = [];
   }
-  const list: LegacyRecord[] = rawList.map(mapRecord).filter(Boolean) as LegacyRecord[];
+  const list: LegacyRecord[] = rawList.map(mapRecord).filter(Boolean);
 
   if (idx >= list.length) {
     Send(Text(`没有编号为${idx + 1}的物品`));
@@ -117,7 +123,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const amount = toInt(rec.aconut, 1);
-  const cate: NajieCategory = (thingClass || '道具');
+  const cate: NajieCategory = thingClass || '道具';
 
   if (cate === '装备' || cate === '仙宠') {
     const equipName = typeof rec.name === 'string' ? rec.name : rec.name.name;

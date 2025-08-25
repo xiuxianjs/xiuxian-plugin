@@ -21,8 +21,12 @@ export const regular = /^(#|＃|\/)?出关$/;
 const res = onResponse(selects, async e => {
   const action = await getPlayerAction(e.UserId);
 
-  if (!action) { return; }
-  if (action.shutup == 1) { return; }
+  if (!action) {
+    return;
+  }
+  if (action.shutup == 1) {
+    return;
+  }
 
   // 结算
   const end_time = action.end_time;
@@ -86,7 +90,9 @@ const res = onResponse(selects, async e => {
 async function getPlayerAction(usr_qq: string): Promise<ActionState | false> {
   const raw = await getJSON<ActionState>(userKey(usr_qq, 'action'));
 
-  if (!raw) { return false; }
+  if (!raw) {
+    return false;
+  }
 
   return raw;
 }

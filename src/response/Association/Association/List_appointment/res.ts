@@ -15,7 +15,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return; }
+  if (!ifexistplay) {
+    return;
+  }
   const assList = await keysByPath(__PATH.association);
   const temp: Array<Record<string, unknown>> = [];
 

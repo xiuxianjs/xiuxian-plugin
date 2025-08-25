@@ -32,7 +32,9 @@ interface EquipmentSlots {
 function num(v, d = 0) {
   const num = Number(v);
 
-  if (isNaN(num) || !isFinite(num)) { return d; }
+  if (isNaN(num) || !isFinite(num)) {
+    return d;
+  }
 
   return num;
 }
@@ -41,7 +43,9 @@ async function calcBaseThree(player: Player): Promise<[number, number, number] |
   const levelObj = (await getDataList('Level1')).find(i => i['level_id'] === player.level_id);
   const phyObj = (await getDataList('Level2')).find(i => i['level_id'] === player.Physique_id);
 
-  if (!levelObj || !phyObj) { return null; }
+  if (!levelObj || !phyObj) {
+    return null;
+  }
   const atk = num(levelObj.基础攻击) + num(player.攻击加成) + num(phyObj.基础攻击);
   const def = num(levelObj.基础防御) + num(player.防御加成) + num(phyObj.基础防御);
   const hp = num(levelObj.基础血量) + num(player.生命加成) + num(phyObj.基础血量);
@@ -74,7 +78,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const najie = (await data.getData('najie', usr_qq)) as NajieEquipBag | null;
   const player = await readPlayer(usr_qq);
@@ -99,16 +105,22 @@ const res = onResponse(selects, async e => {
   for (const slot of slotTypes) {
     const current = equipment[slot];
 
-    if (!current) { continue; }
+    if (!current) {
+      continue;
+    }
     let bestScore = score(current, base);
 
     let best: EquipItem | null = null;
 
     for (const item of bagList) {
-      if (!item || item.type !== slot) { continue; }
+      if (!item || item.type !== slot) {
+        continue;
+      }
       const thing = await foundthing(item.name);
 
-      if (!thing) { continue; }
+      if (!thing) {
+        continue;
+      }
       const sc = score(item, base);
 
       if (sc > bestScore) {

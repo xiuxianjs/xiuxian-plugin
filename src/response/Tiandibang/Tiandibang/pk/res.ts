@@ -86,7 +86,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 获取游戏状态
   const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
 
@@ -181,10 +183,14 @@ const res = onResponse(selects, async e => {
     let k;
 
     for (k = x - 1; k >= 0; k--) {
-      if (tiandibang[x].境界 > 41) { break; } else {
+      if (tiandibang[x].境界 > 41) {
+        break;
+      } else {
         if (tiandibang[k].境界 > 41) {
           continue;
-        } else { break; }
+        } else {
+          break;
+        }
       }
     }
     let B_player: BattlePlayer;

@@ -14,7 +14,9 @@ const res = onResponse(selects, async e => {
   // 查看存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 榜单数据类型定义（局部）
   interface RankRow {
     qq: string;
@@ -51,9 +53,15 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   // 若缺失补全默认字段
-  if (typeof tiandibang[index].魔道值 !== 'number') { tiandibang[index].魔道值 = player.魔道值 || 0; }
-  if (typeof tiandibang[index].神石 !== 'number') { tiandibang[index].神石 = player.神石 || 0; }
-  if (typeof tiandibang[index].次数 !== 'number') { tiandibang[index].次数 = 0; }
+  if (typeof tiandibang[index].魔道值 !== 'number') {
+    tiandibang[index].魔道值 = player.魔道值 || 0;
+  }
+  if (typeof tiandibang[index].神石 !== 'number') {
+    tiandibang[index].神石 = player.神石 || 0;
+  }
+  if (typeof tiandibang[index].次数 !== 'number') {
+    tiandibang[index].次数 = 0;
+  }
   const levelList = await getDataList('Level1');
   const level_id = levelList.find(item => item.level_id == player.level_id).level_id;
   const row = tiandibang[index];

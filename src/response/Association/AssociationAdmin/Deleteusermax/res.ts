@@ -20,8 +20,12 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) { return false; }
+  if (!player) {
+    return false;
+  }
+  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+    return false;
+  }
 
   const member_qq = e.MessageText.replace(/^(#|＃|\/)?逐出/, '').trim();
 
@@ -37,7 +41,9 @@ const res = onResponse(selects, async e => {
   }
   const playerB = await getDataJSONParseByKey(keys.player(member_qq));
 
-  if (!playerB) { return false; }
+  if (!playerB) {
+    return false;
+  }
   if (!playerB || !notUndAndNull(playerB.宗门) || !isPlayerGuildRef(playerB.宗门)) {
     Send(Text('对方尚未加入宗门'));
 
@@ -52,7 +58,9 @@ const res = onResponse(selects, async e => {
   const ass = assRaw;
   const bss = bssRaw;
 
-  if (ass.宗门名称 !== bss.宗门名称) { return false; }
+  if (ass.宗门名称 !== bss.宗门名称) {
+    return false;
+  }
 
   const actorRole = player.宗门.职位;
   const targetRole = playerB.宗门.职位;

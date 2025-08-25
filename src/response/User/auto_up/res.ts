@@ -11,16 +11,22 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (player.level_id > 31 || player.lunhui == 0) { return false; }
+  if (player.level_id > 31 || player.lunhui == 0) {
+    return false;
+  }
   Send(Text('已为你开启10次自动突破'));
   let num = 1;
   const timer = setInterval(() => {
     Level_up(e);
     num++;
-    if (num > 10) { clearInterval(timer); }
+    if (num > 10) {
+      clearInterval(timer);
+    }
   }, 185000);
 
   return false;

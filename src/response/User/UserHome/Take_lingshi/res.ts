@@ -18,10 +18,14 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const flag = await Go(e);
 
-  if (!flag) { return false; }
+  if (!flag) {
+    return false;
+  }
   // 检索方法
   const reg = new RegExp(/取|存/);
   const func = reg.exec(e.MessageText)[0];

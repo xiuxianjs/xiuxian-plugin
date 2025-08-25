@@ -23,7 +23,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const player = await readPlayer(usr_qq);
 
@@ -67,9 +69,19 @@ const res = onResponse(selects, async e => {
   const Defence = 36000 * currentLayer + 10000;
   let Reward: number;
 
-  if (currentLayer < 100) { Reward = 260 * currentLayer + 100; } else if (currentLayer < 200) { Reward = 360 * currentLayer + 1000; } else { Reward = 700 * currentLayer + 1000; }
-  if (Reward > 400000) { Reward = 400000; }
-  if (Reward < 0) { Reward = 0; }
+  if (currentLayer < 100) {
+    Reward = 260 * currentLayer + 100;
+  } else if (currentLayer < 200) {
+    Reward = 360 * currentLayer + 1000;
+  } else {
+    Reward = 700 * currentLayer + 1000;
+  }
+  if (Reward > 400000) {
+    Reward = 400000;
+  }
+  if (Reward < 0) {
+    Reward = 0;
+  }
 
   const bosszt = {
     Health,
@@ -131,7 +143,9 @@ const res = onResponse(selects, async e => {
       }
       playerDamage = Math.trunc(playerDamage * critMul + Math.random() * 100);
       bosszt.Health -= playerDamage;
-      if (bosszt.Health < 0) { bosszt.Health = 0; }
+      if (bosszt.Health < 0) {
+        bosszt.Health = 0;
+      }
       msg.push(`${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`);
     } else {
       let bossDamage = Harm(BOSSCurrentAttack, Math.trunc((Number(player.防御) || 0) * 0.1));
@@ -147,7 +161,9 @@ const res = onResponse(selects, async e => {
         bossDamage = Math.trunc(bossDamage * 1.2);
       }
       player.当前血量 = (Number(player.当前血量) || 0) - bossDamage;
-      if (player.当前血量 < 0) { player.当前血量 = 0; }
+      if (player.当前血量 < 0) {
+        player.当前血量 = 0;
+      }
       msg.push(`未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`);
     }
     BattleFrame++;

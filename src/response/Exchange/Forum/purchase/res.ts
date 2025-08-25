@@ -52,7 +52,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await Go(e))) { return false; }
+  if (!(await Go(e))) {
+    return false;
+  }
 
   // 冷却
   const cdKey = getRedisKey(usr_qq, 'ForumCD');
@@ -123,8 +125,8 @@ const res = onResponse(selects, async e => {
   const orderRaw = forum[orderIndex];
   const order: ForumOrder = {
     ...orderRaw,
-    name: orderRaw.thing?.name as string,
-    class: orderRaw.thing?.class as string,
+    name: orderRaw.thing?.name,
+    class: orderRaw.thing?.class,
     aconut: orderRaw.amount,
     price: orderRaw.last_price
   };
@@ -149,7 +151,9 @@ const res = onResponse(selects, async e => {
   // 解析数量
   let deliverQty: number;
 
-  if (!qtyRaw) { deliverQty = remaining; } else {
+  if (!qtyRaw) {
+    deliverQty = remaining;
+  } else {
     deliverQty = toInt(await convert2integer(qtyRaw), 0);
     if (deliverQty <= 0) {
       Send(Text('数量需为正整数'));
@@ -157,8 +161,12 @@ const res = onResponse(selects, async e => {
       return false;
     }
   }
-  if (deliverQty > remaining) { deliverQty = remaining; }
-  if (deliverQty > MAX_QTY) { deliverQty = MAX_QTY; }
+  if (deliverQty > remaining) {
+    deliverQty = remaining;
+  }
+  if (deliverQty > MAX_QTY) {
+    deliverQty = MAX_QTY;
+  }
 
   // 检查库存
   const hasNum = await existNajieThing(usr_qq, order.name, order.class as NajieCategory);
@@ -187,13 +195,15 @@ const res = onResponse(selects, async e => {
   await addCoin(usr_qq, gain);
   await addNajieThing(
     String(order.qq ?? order.last_offer_player ?? ''),
-    order.name!,
+    order.name,
     order.class as NajieCategory,
     deliverQty
   );
   // 更新订单
   orderRaw.amount = remaining - deliverQty;
-  if (typeof order.whole === 'number') { order.whole = order.whole - gain; }
+  if (typeof order.whole === 'number') {
+    order.whole = order.whole - gain;
+  }
   if (orderRaw.amount <= 0) {
     forum.splice(orderIndex, 1);
   }

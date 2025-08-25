@@ -584,11 +584,7 @@ export const rechargeUserBigMonthCard = async(
  * @param offset 偏移量
  * @returns 充值记录列表
  */
-export const getUserRechargeRecords = async(
-  userId: string,
-  limit = 20,
-  offset = 0
-) => {
+export const getUserRechargeRecords = async(userId: string, limit = 20, offset = 0) => {
   try {
     const redis = getIoRedis();
     const userInfo = await findUserRechargeInfo(userId);

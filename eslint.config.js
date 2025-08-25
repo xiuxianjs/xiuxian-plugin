@@ -32,7 +32,6 @@ export default [
     files: ['**/*.d.ts'],
     rules: {
       'spaced-comment': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off'
     }
   },
   // 基础 JS 推荐

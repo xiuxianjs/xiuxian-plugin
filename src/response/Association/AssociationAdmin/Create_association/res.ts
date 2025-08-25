@@ -14,10 +14,14 @@ const res = onResponse(selects, async e => {
   // 使用existplayer检查玩家是否存在
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return; }
+  if (!ifexistplay) {
+    return;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   const levelList = await getDataList('Level1');
   const now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
 

@@ -12,16 +12,20 @@ export async function addPet(
 ): Promise<void> {
   const x = Number(n);
 
-  if (x === 0) { return; }
+  if (x === 0) {
+    return;
+  }
   const najie: Najie | null = await readNajie(usr_qq);
 
-  if (!najie) { return; }
+  if (!najie) {
+    return;
+  }
   const rawList = Array.isArray(najie.仙宠) ? najie.仙宠 : [];
   const petList: PetList = rawList.map(r => {
     const base: Partial<OwnedPetItem> = r as OwnedPetItem;
 
     return {
-      name: (base.name as string) ?? '',
+      name: base.name ?? '',
       class: '仙宠',
       等级: typeof base.等级 === 'number' ? base.等级 : 1,
       每级增加: typeof base.每级增加 === 'number' ? base.每级增加 : 0,
@@ -60,11 +64,13 @@ export async function addPet(
       islockd: 0
     };
 
-    if (thing_level != null) { newthing.等级 = thing_level; }
+    if (thing_level != null) {
+      newthing.等级 = thing_level;
+    }
     petList.push(newthing);
     // 回写
-    (najie).仙宠 = petList;
-    const target = petList.find(item => item.name == thing_name && item.等级 == newthing.等级) as OwnedPetItem;
+    najie.仙宠 = petList;
+    const target = petList.find(item => item.name == thing_name && item.等级 == newthing.等级);
 
     target.数量 = x;
     target.加成 = target.等级 * target.每级增加;
@@ -73,14 +79,16 @@ export async function addPet(
 
     return;
   }
-  if (!trr) { return; }
-  const target = petList.find(item => item.name == thing_name && item.等级 == trr.等级) as OwnedPetItem;
+  if (!trr) {
+    return;
+  }
+  const target = petList.find(item => item.name == thing_name && item.等级 == trr.等级);
 
   target.数量 += x;
   if (target.数量 < 1) {
     const next = petList.filter(item => item.name != thing_name || item.等级 != trr.等级);
 
-    (najie).仙宠 = next;
+    najie.仙宠 = next;
   }
   await writeNajie(usr_qq, najie);
 }

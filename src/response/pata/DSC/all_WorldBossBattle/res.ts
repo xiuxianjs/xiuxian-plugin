@@ -13,7 +13,9 @@ const res = onResponse(selects, async e => {
   let cengshu = 0;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await await data.getData('player', usr_qq);
 
   while (player.当前血量 > 0) {
@@ -27,8 +29,12 @@ const res = onResponse(selects, async e => {
     // 奖励下降
     let Reward = 1200 * 神魄段数;
 
-    if (Reward > 400000) { Reward = 400000; }
-    if (player.神魄段数 > 6000) { Reward = 0; }
+    if (Reward > 400000) {
+      Reward = 400000;
+    }
+    if (player.神魄段数 > 6000) {
+      Reward = 0;
+    }
     const bosszt = {
       Health: Health,
       OriginHealth: Health,
@@ -72,10 +78,18 @@ const res = onResponse(selects, async e => {
         const BOSS_To_Player_Damage = Harm(BOSSCurrentAttack, Math.trunc(player.防御 * 0.1));
 
         player.当前血量 -= BOSS_To_Player_Damage;
-        if (bosszt.isAngry) { bosszt.isAngry--; }
-        if (bosszt.isWeak) { bosszt.isWeak--; }
-        if (!bosszt.isAngry && BOSSCurrentAttack > bosszt.Attack) { BOSSCurrentAttack = bosszt.Attack; }
-        if (!bosszt.isWeak && BOSSCurrentDefence < bosszt.Defence) { BOSSCurrentDefence = bosszt.Defence; }
+        if (bosszt.isAngry) {
+          bosszt.isAngry--;
+        }
+        if (bosszt.isWeak) {
+          bosszt.isWeak--;
+        }
+        if (!bosszt.isAngry && BOSSCurrentAttack > bosszt.Attack) {
+          BOSSCurrentAttack = bosszt.Attack;
+        }
+        if (!bosszt.isWeak && BOSSCurrentDefence < bosszt.Defence) {
+          BOSSCurrentDefence = bosszt.Defence;
+        }
         if (player.当前血量 < 0) {
           player.当前血量 = 0;
         }

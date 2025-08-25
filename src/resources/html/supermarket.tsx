@@ -105,7 +105,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>⚔️</span>
                                   </div>
                                   <span className='text-sm text-red-200'>
-                                      攻击：{item.name.atk.toFixed(0)}
+                                    攻击：{item.name.atk.toFixed(0)}
                                   </span>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -113,7 +113,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>🛡️</span>
                                   </div>
                                   <span className='text-sm text-blue-200'>
-                                      防御：{item.name.def.toFixed(0)}
+                                    防御：{item.name.def.toFixed(0)}
                                   </span>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -121,7 +121,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>❤️</span>
                                   </div>
                                   <span className='text-sm text-green-200'>
-                                      血量：{item.name.HP.toFixed(0)}
+                                    血量：{item.name.HP.toFixed(0)}
                                   </span>
                                 </div>
                               </>
@@ -132,7 +132,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>🌟</span>
                                   </div>
                                   <span className='text-sm text-yellow-200'>
-                                      属性: {['金', '木', '土', '水', '火'][item.name.id - 1]}
+                                    属性: {['金', '木', '土', '水', '火'][item.name.id - 1]}
                                   </span>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -140,7 +140,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>⚔️</span>
                                   </div>
                                   <span className='text-sm text-red-200'>
-                                      攻击：{(item.name.atk * 100).toFixed(0)}%
+                                    攻击：{(item.name.atk * 100).toFixed(0)}%
                                   </span>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -148,7 +148,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>🛡️</span>
                                   </div>
                                   <span className='text-sm text-blue-200'>
-                                      防御：{(item.name.def * 100).toFixed(0)}%
+                                    防御：{(item.name.def * 100).toFixed(0)}%
                                   </span>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -156,7 +156,7 @@ const Supermarket = ({ Exchange_list }) => {
                                     <span className='text-xs'>❤️</span>
                                   </div>
                                   <span className='text-sm text-green-200'>
-                                      血量：{(item.name.HP * 100).toFixed(0)}%
+                                    血量：{(item.name.HP * 100).toFixed(0)}%
                                   </span>
                                 </div>
                               </>
@@ -166,7 +166,7 @@ const Supermarket = ({ Exchange_list }) => {
                                 <span className='text-xs'>💥</span>
                               </div>
                               <span className='text-sm text-purple-200'>
-                                  暴击：{(item.name.bao * 100).toFixed(0)}%
+                                暴击：{(item.name.bao * 100).toFixed(0)}%
                               </span>
                             </div>
                           </div>
@@ -179,7 +179,7 @@ const Supermarket = ({ Exchange_list }) => {
                                 <span className='text-xs'>🐉</span>
                               </div>
                               <span className='text-sm font-medium text-purple-200'>
-                                  等级：{item.name.等级.toFixed(0)}
+                                等级：{item.name.等级.toFixed(0)}
                               </span>
                             </div>
                           </div>

@@ -29,7 +29,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const cdKey = getRedisKey(usr_qq, 'forumShowCD');
   const now = Date.now();

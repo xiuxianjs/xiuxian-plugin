@@ -32,10 +32,14 @@ const res = onResponse(selects, async e => {
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     Send(Text('你尚未加入宗门'));
 

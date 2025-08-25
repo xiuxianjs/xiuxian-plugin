@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const player = await readPlayer(usr_qq);
 
@@ -35,8 +37,12 @@ const res = onResponse(selects, async e => {
   const Defence = 200000 * layer;
   let Reward = 1200 * layer;
 
-  if (Reward > 400000) { Reward = 400000; }
-  if (Reward < 0) { Reward = 0; }
+  if (Reward > 400000) {
+    Reward = 400000;
+  }
+  if (Reward < 0) {
+    Reward = 0;
+  }
 
   const bosszt = {
     Health,
@@ -90,7 +96,9 @@ const res = onResponse(selects, async e => {
       }
       damage = Math.trunc(damage * critMul);
       bosszt.Health -= damage;
-      if (bosszt.Health < 0) { bosszt.Health = 0; }
+      if (bosszt.Health < 0) {
+        bosszt.Health = 0;
+      }
       msg.push(`${player.名号}${ifbaoji(critMul)}消耗了${damage}，此段剩余${bosszt.Health}未炼化`);
     } else {
       // 反噬（BOSS回合）
@@ -107,7 +115,9 @@ const res = onResponse(selects, async e => {
         bossDamage = Math.trunc(bossDamage * 1.2);
       }
       player.当前血量 = (Number(player.当前血量) || 0) - bossDamage;
-      if (player.当前血量 < 0) { player.当前血量 = 0; }
+      if (player.当前血量 < 0) {
+        player.当前血量 = 0;
+      }
       msg.push(`${player.名号}损失血量${bossDamage}，剩余血量${player.当前血量}`);
     }
     BattleFrame++;

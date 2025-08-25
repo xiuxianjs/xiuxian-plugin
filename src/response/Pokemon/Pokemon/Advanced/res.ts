@@ -11,7 +11,9 @@ const res = onResponse(selects, async e => {
 
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
 
   const list = ['仙胎', '仙仔', '仙兽', '仙道', '仙灵'];
   const list_level = [20, 40, 60, 80, 100];

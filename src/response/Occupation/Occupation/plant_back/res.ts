@@ -22,19 +22,31 @@ interface PlantAction {
 const res = onResponse(selects, async e => {
   const raw = (await getPlayerAction(e.UserId)) as unknown as PlantAction | null;
 
-  if (!raw) { return false; }
-  if (raw.action === '空闲') { return false; }
+  if (!raw) {
+    return false;
+  }
+  if (raw.action === '空闲') {
+    return false;
+  }
 
-  if (raw.plant === '1') { return false; }
+  if (raw.plant === '1') {
+    return false;
+  }
 
   // 若已结算（通过自定义 is_jiesuan 标志）直接返回
-  if (raw.is_jiesuan === 1) { return false; }
+  if (raw.is_jiesuan === 1) {
+    return false;
+  }
 
   const start_time = raw.end_time - raw.time;
   const now = Date.now();
   const effective = calcEffectiveMinutes(start_time, raw.end_time, now);
 
-  if (e.name === 'message.create') { await plant_jiesuan(e.UserId, effective, e.ChannelId); } else { await plant_jiesuan(e.UserId, effective); }
+  if (e.name === 'message.create') {
+    await plant_jiesuan(e.UserId, effective, e.ChannelId);
+  } else {
+    await plant_jiesuan(e.UserId, effective);
+  }
 
   const next: PlantAction = { ...raw };
 

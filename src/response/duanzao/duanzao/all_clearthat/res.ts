@@ -9,7 +9,9 @@ export const regular = /^(#|＃|\/)?全体清空锻炉/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
   await writeDuanlu([]);
   const playerList = await keysByPath(__PATH.player_path);
 

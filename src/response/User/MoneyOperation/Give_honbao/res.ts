@@ -22,8 +22,12 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
-  if (!(await Go(e))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
+  if (!(await Go(e))) {
+    return false;
+  }
 
   const cdKey = getRedisKey(usr_qq, 'giveHongbaoCD');
 
@@ -66,7 +70,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (count > MAX_PACKETS) { count = MAX_PACKETS; }
+  if (count > MAX_PACKETS) {
+    count = MAX_PACKETS;
+  }
 
   const total = per * count;
 

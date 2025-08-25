@@ -62,7 +62,9 @@ export const TiandibangTask = async() => {
         count = 1;
       }
     }
-    if (count == 0) { break; }
+    if (count == 0) {
+      break;
+    }
   }
   await Write_tiandibang(temp);
 

@@ -21,7 +21,9 @@ const res = onResponse(selects, async e => {
   // 全局状态判断
   const flag = await Go(e);
 
-  if (!flag) { return false; }
+  if (!flag) {
+    return false;
+  }
   // 防并发cd
   const time0 = 0.5; // 分钟cd
   // 获取当前时间

@@ -30,10 +30,18 @@ const Danyao = ({
   const renderEffect = (item: DanyaoItem) => {
     const effects = [];
 
-    if (item.HP) { effects.push(item.HP); }
-    if (item.exp) { effects.push(item.exp); }
-    if (item.xueqi) { effects.push(item.xueqi); }
-    if (item.xingyun > 0) { effects.push(`${(item.xingyun * 100).toFixed(1)}%`); }
+    if (item.HP) {
+      effects.push(item.HP);
+    }
+    if (item.exp) {
+      effects.push(item.exp);
+    }
+    if (item.xueqi) {
+      effects.push(item.xueqi);
+    }
+    if (item.xingyun > 0) {
+      effects.push(`${(item.xingyun * 100).toFixed(1)}%`);
+    }
 
     return effects.join('');
   };

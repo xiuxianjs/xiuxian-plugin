@@ -162,7 +162,9 @@ export async function screenshot(
     for (let i = 0; i < 50; i++) {
       const k = entries[i]?.[0];
 
-      if (k) { shotCache.delete(k); }
+      if (k) {
+        shotCache.delete(k);
+      }
     }
   }
 

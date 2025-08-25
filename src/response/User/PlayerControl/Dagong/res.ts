@@ -51,7 +51,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current!))}`));
+    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }

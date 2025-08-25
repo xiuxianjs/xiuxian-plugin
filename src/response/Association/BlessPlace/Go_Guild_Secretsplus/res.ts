@@ -26,9 +26,11 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const flag = await Go(e);
 
-  if (!flag) { return false; }
+  if (!flag) {
+    return false;
+  }
 
-  const player = (await readPlayer(usr_qq));
+  const player = await readPlayer(usr_qq);
 
   if (!player?.宗门 || !isPlayerGuildRef(player.宗门)) {
     Send(Text('请先加入宗门'));

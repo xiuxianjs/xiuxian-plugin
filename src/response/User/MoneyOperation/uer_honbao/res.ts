@@ -17,7 +17,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   // 读取玩家（仅用于名字展示）
   const player = await data.getData('player', usr_qq);
@@ -44,7 +46,9 @@ const res = onResponse(selects, async e => {
   const res = await mention.findOne();
   const target = res?.data;
 
-  if (!target || res.code !== 2000) { return false; }
+  if (!target || res.code !== 2000) {
+    return false;
+  }
 
   const honbao_qq = target.UserId;
 
@@ -53,7 +57,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (!(await existplayer(honbao_qq))) { return false; }
+  if (!(await existplayer(honbao_qq))) {
+    return false;
+  }
 
   // 使用原子操作检查并扣减红包数量
   const countKey = getRedisKey(honbao_qq, 'honbaoacount');

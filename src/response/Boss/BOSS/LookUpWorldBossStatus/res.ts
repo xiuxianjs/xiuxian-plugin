@@ -21,7 +21,9 @@ const res = onResponse(selects, async e => {
 
         return false;
       } else if (WorldBossStatus.KilledTime != -1) {
-        if ((await InitWorldBoss()) == false) { await LookUpWorldBossStatus(e); }
+        if ((await InitWorldBoss()) == false) {
+          await LookUpWorldBossStatus(e);
+        }
 
         return false;
       }
@@ -31,7 +33,9 @@ const res = onResponse(selects, async e => {
 
       Send(Text(ReplyMsg.join('\n')));
     }
-  } else { Send(Text('妖王未开启！')); }
+  } else {
+    Send(Text('妖王未开启！'));
+  }
 });
 
 import mw from '@src/response/mw';

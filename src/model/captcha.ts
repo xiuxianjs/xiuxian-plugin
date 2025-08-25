@@ -3,7 +3,7 @@ import svgCaptcha from 'svg-captcha';
 import sharp from 'sharp';
 import { keys } from './keys';
 
-export async function generateCaptcha() {
+export function generateCaptcha() {
   const captcha = svgCaptcha.create({
     size: 4,
     noise: 2,
@@ -28,7 +28,9 @@ export async function verifyCaptcha(userId: string, input: string) {
   const redis = getIoRedis();
   const answer = await redis.get(keys.captcha(userId));
 
-  if (!answer) { return false; }
+  if (!answer) {
+    return false;
+  }
   if ((input || '').trim().toLowerCase() === answer) {
     await redis.del(keys.captcha(userId));
 

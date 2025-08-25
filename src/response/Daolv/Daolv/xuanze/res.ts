@@ -9,7 +9,9 @@ export const regular = /^(#|＃|\/)?^(我愿意|我拒绝)$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (e.UserId != Daolv.user_B) { return false; }
+  if (e.UserId != Daolv.user_B) {
+    return false;
+  }
   if (Daolv.x == 1) {
     const player_B = await readPlayer(Daolv.user_B);
 

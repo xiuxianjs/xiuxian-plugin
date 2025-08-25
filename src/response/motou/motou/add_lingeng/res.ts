@@ -119,7 +119,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return; }
+  if (!(await existplayer(usr_qq))) {
+    return;
+  }
   const player = await readPlayer(usr_qq);
 
   if ((player.魔道值 || 0) < 1000) {

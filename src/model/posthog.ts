@@ -31,7 +31,9 @@ export const initPostlog = () => {
   const postlog = value?.postlog || {};
   const api_key = postlog.api_key || '';
 
-  if (!api_key) { return; }
+  if (!api_key) {
+    return;
+  }
   const options = postlog.options || {};
   const host = postlog.host || 'https://us.i.posthog.com';
 
@@ -67,7 +69,9 @@ export const postLogCommand = (props: {
   };
 }) => {
   // 开发模式下不发送
-  if (process.env.NODE_ENV === 'development') { return; }
+  if (process.env.NODE_ENV === 'development') {
+    return;
+  }
   const ext = props.ext || {};
 
   postLog({

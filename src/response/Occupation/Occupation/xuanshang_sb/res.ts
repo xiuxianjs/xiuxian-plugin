@@ -41,11 +41,17 @@ const res = onResponse(selects, async e => {
   }
   let money = await convert2integer(code[1]);
 
-  if (!Number.isFinite(money)) { money = 0; }
+  if (!Number.isFinite(money)) {
+    money = 0;
+  }
   const MIN_BOUNTY = 300000;
 
-  if (money < MIN_BOUNTY) { money = MIN_BOUNTY; }
-  if (money > 1000000000) { money = 1000000000; }
+  if (money < MIN_BOUNTY) {
+    money = MIN_BOUNTY;
+  }
+  if (money > 1000000000) {
+    money = 1000000000;
+  }
 
   if ((player.灵石 || 0) < money) {
     Send(Text('您手头这点灵石,似乎在说笑'));
@@ -76,7 +82,9 @@ const res = onResponse(selects, async e => {
     try {
       const parsed = JSON.parse(raw);
 
-      if (Array.isArray(parsed)) { list = parsed.filter(v => v && typeof v === 'object'); }
+      if (Array.isArray(parsed)) {
+        list = parsed.filter(v => v && typeof v === 'object');
+      }
     } catch {
       list = [];
     }

@@ -10,7 +10,9 @@ export async function writeShop(shop: ShopData) {
 export async function readShop(): Promise<ShopData> {
   const shop = await getDataJSONParseByKey(keys.shop('shop'));
 
-  if (!shop) { return []; }
+  if (!shop) {
+    return [];
+  }
 
   return shop;
 }
@@ -19,7 +21,9 @@ export async function existshop(didian: string): Promise<ShopThing[] | false> {
   const shop = await readShop();
   const slot = shop.find(s => s.name == didian);
 
-  if (!slot) { return false; }
+  if (!slot) {
+    return false;
+  }
   const available = slot.one.filter(t => t.数量 > 0);
 
   return available.length > 0 ? available : false;

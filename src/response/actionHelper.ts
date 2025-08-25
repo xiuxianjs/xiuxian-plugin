@@ -50,7 +50,9 @@ export async function writeActionWithSuffix(
 }
 
 export function isActionRunning(record: ActionRecord | null | undefined, now = Date.now()) {
-  if (!record) { return false; }
+  if (!record) {
+    return false;
+  }
 
   return now <= record.end_time;
 }
@@ -91,7 +93,9 @@ export function normalizeBiguanMinutes(raw: number | undefined): number {
   const STEP = 30;
   const MAX_MULTIPLIER = 240; // 与旧逻辑一致（30 * 240 分）
 
-  if (!raw || Number.isNaN(raw)) { return DEFAULT_MIN; }
+  if (!raw || Number.isNaN(raw)) {
+    return DEFAULT_MIN;
+  }
   let m = Math.max(raw, DEFAULT_MIN);
 
   // 向下对齐到 STEP 的倍数但不超过最大
@@ -110,18 +114,24 @@ export function normalizeBiguanMinutes(raw: number | undefined): number {
 export function normalizeDurationMinutes(raw, step: number, loops: number, min: number): number {
   const parsed = typeof raw === 'string' ? parseInt(raw, 10) : Number(raw);
 
-  if (Number.isNaN(parsed)) { return min; }
+  if (Number.isNaN(parsed)) {
+    return min;
+  }
   let m = parsed;
   const max = step * loops;
 
-  if (m > max) { m = max; }
+  if (m > max) {
+    m = max;
+  }
   for (let i = loops; i > 0; i--) {
     if (m >= step * i) {
       m = step * i;
       break;
     }
   }
-  if (m < min) { m = min; }
+  if (m < min) {
+    m = min;
+  }
 
   return m;
 }
@@ -148,7 +158,9 @@ export async function updateAction(
   const prev = await readAction(userId);
   const next = updater(prev);
 
-  if (next) { await writeAction(userId, next); }
+  if (next) {
+    await writeAction(userId, next);
+  }
 
   return next;
 }
@@ -161,7 +173,9 @@ export async function updateActionWithSuffix(
   const prev = await readActionWithSuffix(userId, suffix);
   const next = updater(prev);
 
-  if (next) { await writeActionWithSuffix(userId, suffix, next); }
+  if (next) {
+    await writeActionWithSuffix(userId, suffix, next);
+  }
 
   return next;
 }
@@ -169,7 +183,9 @@ export async function updateActionWithSuffix(
 // 提前结束当前动作（若存在），可附加额外字段覆盖；返回更新后的记录
 export async function stopAction(userId: string | number, extra: Partial<ActionRecord & {}> = {}) {
   return updateAction(userId, prev => {
-    if (!prev) { return null; }
+    if (!prev) {
+      return null;
+    }
 
     return {
       ...prev,
@@ -185,7 +201,9 @@ export async function stopActionWithSuffix(
   extra: Partial<ActionRecord & {}> = {}
 ) {
   return updateActionWithSuffix(userId, suffix, prev => {
-    if (!prev) { return null; }
+    if (!prev) {
+      return null;
+    }
 
     return {
       ...prev,

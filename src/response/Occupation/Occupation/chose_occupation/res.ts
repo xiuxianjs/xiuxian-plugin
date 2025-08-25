@@ -29,8 +29,12 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const flag = await Go(e);
 
-  if (!flag) { return false; }
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!flag) {
+    return false;
+  }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '').trim();
 

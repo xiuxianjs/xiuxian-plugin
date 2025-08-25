@@ -6,10 +6,14 @@ export const regular = /^(#|＃|\/)?秘境$/;
 const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   const didian = await getDataList('Didian');
 
-  if (!Array.isArray(didian) || didian.length === 0) { return false; }
+  if (!Array.isArray(didian) || didian.length === 0) {
+    return false;
+  }
   const pubEvent = e as import('alemonjs').EventsMessageCreateEnum;
 
   await Goweizhi(pubEvent, didian);

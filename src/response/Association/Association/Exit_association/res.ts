@@ -27,21 +27,23 @@ type RoleKey = '宗主' | '副宗主' | '长老' | '内门弟子' | string;
 function getRoleList(ass: AssociationDetailData, role: RoleKey): string[] {
   const raw = ass[role];
 
-  return Array.isArray(raw) ? (raw.filter(i => typeof i === 'string')) : [];
+  return Array.isArray(raw) ? raw.filter(i => typeof i === 'string') : [];
 }
 function setRoleList(ass: AssociationDetailData, role: RoleKey, list: string[]): void {
   ass[role] = list;
 }
 
 function ensureStringArray(v): string[] {
-  return Array.isArray(v) ? (v.filter(i => typeof i === 'string')) : [];
+  return Array.isArray(v) ? v.filter(i => typeof i === 'string') : [];
 }
 
 function serializePlayer(p: Player): Record<string, JSONValue> {
   const result: Record<string, JSONValue> = {};
 
   for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') { continue; }
+    if (typeof v === 'function') {
+      continue;
+    }
     // 简单递归：仅处理对象/数组基础可序列化部分
     if (v && typeof v === 'object') {
       if (Array.isArray(v)) {
@@ -50,11 +52,15 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
         const obj: Record<string, JSONValue> = {};
 
         for (const [ik, iv] of Object.entries(v)) {
-          if (typeof iv === 'function') { continue; }
+          if (typeof iv === 'function') {
+            continue;
+          }
           if (iv && typeof iv === 'object') {
             // 深层再做一次浅拷贝（避免过度复杂）
             obj[ik] = JSON.parse(JSON.stringify(iv));
-          } else { obj[ik] = iv as JSONValue; }
+          } else {
+            obj[ik] = iv as JSONValue;
+          }
         }
         result[k] = obj as JSONValue;
       }
@@ -71,12 +77,20 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return false; }
-  if (!notUndAndNull(player.宗门)) { return false; }
-  if (!isPlayerGuildInfo(player.宗门)) { return false; }
+  if (!player) {
+    return false;
+  }
+  if (!notUndAndNull(player.宗门)) {
+    return false;
+  }
+  if (!isPlayerGuildInfo(player.宗门)) {
+    return false;
+  }
 
   const guildInfo = player.宗门;
   const nowTime = Date.now();
@@ -138,7 +152,15 @@ const res = onResponse(selects, async e => {
       const nmdz = getRoleList(ass, '内门弟子');
       let randmember_qq: string;
 
-      if (fz.length > 0) { randmember_qq = await getRandomFromARR(fz); } else if (zl.length > 0) { randmember_qq = await getRandomFromARR(zl); } else if (nmdz.length > 0) { randmember_qq = await getRandomFromARR(nmdz); } else { randmember_qq = await getRandomFromARR(ass.所有成员); }
+      if (fz.length > 0) {
+        randmember_qq = await getRandomFromARR(fz);
+      } else if (zl.length > 0) {
+        randmember_qq = await getRandomFromARR(zl);
+      } else if (nmdz.length > 0) {
+        randmember_qq = await getRandomFromARR(nmdz);
+      } else {
+        randmember_qq = await getRandomFromARR(ass.所有成员);
+      }
 
       const randmember = await readPlayer(randmember_qq);
 

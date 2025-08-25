@@ -15,7 +15,9 @@ import { setDataJSONStringifyByKey } from './DataControl.js';
 export async function dujie(user_qq: string): Promise<number> {
   const player: Player | null = await readPlayer(user_qq);
 
-  if (!player) { return 0; }
+  if (!player) {
+    return 0;
+  }
   let new_blood = player.当前血量 / 100000;
   let new_defense = player.防御 / 100000;
   let new_attack = player.攻击 / 100000;
@@ -26,7 +28,13 @@ export async function dujie(user_qq: string): Promise<number> {
   const N = new_blood + new_defense;
   let x = N * new_attack;
 
-  if (player.灵根.type == '真灵根') { x = x * 1.5; } else if (player.灵根.type == '天灵根') { x = x * 1.75; } else { x = x * 2; }
+  if (player.灵根.type == '真灵根') {
+    x = x * 1.5;
+  } else if (player.灵根.type == '天灵根') {
+    x = x * 1.75;
+  } else {
+    x = x * 2;
+  }
 
   return Number(Number(x).toFixed(2));
 }
@@ -106,7 +114,9 @@ export async function getAllExp(usr_qq: string) {
   const player = await readPlayer(usr_qq);
   let sum_exp = 0;
 
-  if (!notUndAndNull(player?.level_id)) { return; }
+  if (!notUndAndNull(player?.level_id)) {
+    return;
+  }
   const levelList = await getDataList('Level1');
   const now_level_id = levelList.find(item => item.level_id == player.level_id)?.level_id;
 
@@ -123,8 +133,12 @@ export async function getAllExp(usr_qq: string) {
 }
 
 export function getRandomRes(P: number) {
-  if (P > 1) { P = 1; }
-  if (P < 0) { P = 0; }
+  if (P > 1) {
+    P = 1;
+  }
+  if (P < 0) {
+    P = 0;
+  }
 
   return Math.random() < P;
 }
@@ -155,12 +169,16 @@ export async function getRandomTalent(): Promise<TalentInfo> {
 export async function setFileValue(user_qq: string, num: number, type: string): Promise<void> {
   const player = await readPlayer(user_qq);
 
-  if (!player) { return; }
+  if (!player) {
+    return;
+  }
   const current_raw = player[type];
   const current_num = typeof current_raw === 'number' ? current_raw : 0;
   let new_num = current_num + num;
 
-  if (type == '当前血量' && new_num > player.血量上限) { new_num = player.血量上限; }
+  if (type == '当前血量' && new_num > player.血量上限) {
+    new_num = player.血量上限;
+  }
   player[type] = new_num;
   setDataJSONStringifyByKey(keys.player(user_qq), player);
 }
@@ -207,7 +225,11 @@ export async function foundthing(thing_name: string): Promise<FoundThing | false
     const arr = data[key];
 
     if (Array.isArray(arr)) {
-      for (const j of arr) { if (hasName(j) && j.name === thing_name) { return j; } }
+      for (const j of arr) {
+        if (hasName(j) && j.name === thing_name) {
+          return j;
+        }
+      }
     }
   }
   let customList;
@@ -219,7 +241,11 @@ export async function foundthing(thing_name: string): Promise<FoundThing | false
     customList = [];
   }
   if (Array.isArray(customList)) {
-    for (const j of customList) { if (hasName(j) && j.name === thing_name) { return j; } }
+    for (const j of customList) {
+      if (hasName(j) && j.name === thing_name) {
+        return j;
+      }
+    }
   }
   const simplifiedName = thing_name.replace(/[0-9]+/g, '');
   const secondaryGroups = ['duanzhaowuqi', 'duanzhaohuju', 'duanzhaobaowu', 'zalei'] as const;
@@ -228,7 +254,11 @@ export async function foundthing(thing_name: string): Promise<FoundThing | false
     const arr = data[key];
 
     if (Array.isArray(arr)) {
-      for (const j of arr) { if (hasName(j) && j.name === simplifiedName) { return j; } }
+      for (const j of arr) {
+        if (hasName(j) && j.name === simplifiedName) {
+          return j;
+        }
+      }
     }
   }
 

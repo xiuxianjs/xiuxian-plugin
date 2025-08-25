@@ -33,7 +33,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await Go(e))) { return false; }
+  if (!(await Go(e))) {
+    return false;
+  }
 
   const player = await readPlayer(usr_qq);
 
@@ -116,7 +118,9 @@ const res = onResponse(selects, async e => {
 
   const priceToPay = Math.trunc(place.Price * discountFactor);
 
-  if (priceToPay > 0) { await addCoin(usr_qq, -priceToPay); }
+  if (priceToPay > 0) {
+    await addCoin(usr_qq, -priceToPay);
+  }
 
   const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {
     CD: { timeplace: 10 }
@@ -140,7 +144,9 @@ const res = onResponse(selects, async e => {
     Place_address: place
   };
 
-  if (e.name === 'message.create') { actionRecord.group_id = e.ChannelId; }
+  if (e.name === 'message.create') {
+    actionRecord.group_id = e.ChannelId;
+  }
 
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(actionRecord));
   await addExp(usr_qq, -MIN_REQ_EXP);

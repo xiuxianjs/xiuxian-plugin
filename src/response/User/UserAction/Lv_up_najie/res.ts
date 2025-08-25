@@ -10,12 +10,16 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const flag = await Go(e);
 
-  if (!flag) { return false; }
+  if (!flag) {
+    return false;
+  }
   const usr_qq = e.UserId;
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const najie = await readNajie(usr_qq);
   const player = await readPlayer(usr_qq);
   const cf = await config.getConfig('xiuxian', 'xiuxian');

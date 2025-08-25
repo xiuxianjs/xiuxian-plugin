@@ -67,7 +67,9 @@ export const SecretPlaceplusTask = async() => {
     } catch {
       action = null;
     }
-    if (!action) { continue; }
+    if (!action) {
+      continue;
+    }
 
     let push_address: string | undefined;
     let is_group = false;
@@ -80,9 +82,11 @@ export const SecretPlaceplusTask = async() => {
     const msg: Array<DataMention | string> = [Mention(player_id)];
     let end_time = Number(action.end_time) || 0;
     const now_time = Date.now();
-    const player = (await readPlayer(player_id));
+    const player = await readPlayer(player_id);
 
-    if (!player) { continue; }
+    if (!player) {
+      continue;
+    }
 
     if (String(action.Place_actionplus) === '0') {
       const rawTime = action.time;
@@ -93,7 +97,9 @@ export const SecretPlaceplusTask = async() => {
       if (now_time > end_time) {
         const weizhi = action.Place_address;
 
-        if (!weizhi) { continue; }
+        if (!weizhi) {
+          continue;
+        }
         if (player.当前血量 < 0.3 * player.血量上限) {
           if (await existNajieThing(player_id, '起死回生丹', '丹药')) {
             player.当前血量 = player.血量上限;
@@ -118,7 +124,9 @@ export const SecretPlaceplusTask = async() => {
         const monsterList = await getDataList('Monster');
         const monster_length = monsterList.length;
 
-        if (monster_length === 0) { continue; }
+        if (monster_length === 0) {
+          continue;
+        }
         const monster_index = Math.trunc(Math.random() * monster_length);
         const monster = monsterList[monster_index] as MonsterLike;
         const B_player = {
@@ -239,7 +247,9 @@ export const SecretPlaceplusTask = async() => {
           const dy = await readDanyao(player_id);
 
           newrandom -= Number(dy.beiyong1 || 0);
-          if (dy.ped > 0) { dy.ped--; } else {
+          if (dy.ped > 0) {
+            dy.ped--;
+          } else {
             dy.beiyong1 = 0;
             dy.ped = 0;
           }
@@ -285,7 +295,11 @@ export const SecretPlaceplusTask = async() => {
           await addExp2(player_id, qixue);
           await addExp(player_id, xiuwei);
           await addHP(player_id, Data_battle.A_xue);
-          if (is_group && push_address) { await pushInfo(push_address, is_group, msg); } else { await pushInfo(player_id, is_group, msg); }
+          if (is_group && push_address) {
+            await pushInfo(push_address, is_group, msg);
+          } else {
+            await pushInfo(player_id, is_group, msg);
+          }
         } else {
           arr.cishu = (arr.cishu || 0) - 1;
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));

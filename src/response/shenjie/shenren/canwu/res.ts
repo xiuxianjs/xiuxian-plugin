@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   // 查看存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
   if (player.魔道值 > 0 || (player.灵根.type != '转生' && player.level_id < 42)) {

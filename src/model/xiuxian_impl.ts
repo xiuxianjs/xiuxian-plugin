@@ -56,15 +56,21 @@ export async function writeNajie(usr_qq: string, najie: Najie): Promise<void> {
 }
 
 export async function addExp4(usr_qq: string, exp = 0) {
-  if (exp === 0 || isNaN(exp)) { return; }
+  if (exp === 0 || isNaN(exp)) {
+    return;
+  }
   await playerRepo.addOccupationExp(usr_qq, exp);
 }
 
 export async function addConFaByUser(usr_qq: string, gongfa_name: string) {
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return; }
-  if (!Array.isArray(player.学习的功法)) { player.学习的功法 = []; }
+  if (!player) {
+    return;
+  }
+  if (!Array.isArray(player.学习的功法)) {
+    player.学习的功法 = [];
+  }
   player.学习的功法.push(gongfa_name);
   await setDataJSONStringifyByKey(keys.player(usr_qq), player);
   import('./efficiency.js').then(m => m.playerEfficiency(usr_qq)).catch(() => {});
@@ -73,7 +79,9 @@ export async function addConFaByUser(usr_qq: string, gongfa_name: string) {
 export async function addBagCoin(usr_qq: string, lingshi: number) {
   const delta = Math.trunc(Number(lingshi));
 
-  if (delta === 0) { return; }
+  if (delta === 0) {
+    return;
+  }
   await najieRepo.addLingShi(usr_qq, delta);
 }
 

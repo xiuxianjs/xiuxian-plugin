@@ -81,7 +81,13 @@ export async function findQinmidu(A: string, B: string) {
       break;
     }
   }
-  if (i == list.length) { return false; } else if (QQ.length != 0) { return 0; } else { return list[i].亲密度; }
+  if (i == list.length) {
+    return false;
+  } else if (QQ.length != 0) {
+    return 0;
+  } else {
+    return list[i].亲密度;
+  }
 }
 
 // 查询道侣亲密度
@@ -117,9 +123,13 @@ export async function existHunyin(A: string) {
   }
   for (let i = 0; i < list.length; i++) {
     if (list[i].QQ_A == A) {
-      if (list[i].婚姻 != 0) { return list[i].QQ_B; }
+      if (list[i].婚姻 != 0) {
+        return list[i].QQ_B;
+      }
     } else if (list[i].QQ_B == A) {
-      if (list[i].婚姻 != 0) { return list[i].QQ_A; }
+      if (list[i].婚姻 != 0) {
+        return list[i].QQ_A;
+      }
     }
   }
 

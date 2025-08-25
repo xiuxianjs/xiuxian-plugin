@@ -9,7 +9,9 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   // 计算排名
   const playerList = await keysByPath(__PATH.player_path);
   const temp = [];
@@ -17,7 +19,9 @@ const res = onResponse(selects, async e => {
   for (let i = 0; i < playerList.length; i++) {
     const player = await readPlayer(playerList[i]);
 
-    if (!player) { continue; }
+    if (!player) {
+      continue;
+    }
     temp.push(player);
   }
   let File_length = temp.length;

@@ -12,7 +12,9 @@ const res = onResponse(selects, async e => {
   // 有无存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const najie = await await data.getData('najie', usr_qq);
   let wupin = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
   const wupin1 = [];
@@ -35,7 +37,9 @@ const res = onResponse(selects, async e => {
   for (const i of wupin) {
     const list = najie[i];
 
-    if (!Array.isArray(list)) { continue; }
+    if (!Array.isArray(list)) {
+      continue;
+    }
     for (const l of najie[i]) {
       // 纳戒中的数量
       l.islockd = 0;

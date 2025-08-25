@@ -21,7 +21,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
   if (!player) {
@@ -48,7 +50,9 @@ const res = onResponse(selects, async e => {
   if (t[1]) {
     const n = Number(t[1]);
 
-    if (Number.isFinite(n) && n > 1) { count = Math.min(Math.trunc(n), 20); }
+    if (Number.isFinite(n) && n > 1) {
+      count = Math.min(Math.trunc(n), 20);
+    }
   }
 
   interface AnyTuzhiLike {
@@ -87,8 +91,12 @@ const res = onResponse(selects, async e => {
 
   let suc_rate = Number(tuzhi.rate) || 0;
 
-  if (suc_rate < 0) { suc_rate = 0; }
-  if (suc_rate > 1) { suc_rate = 1; }
+  if (suc_rate < 0) {
+    suc_rate = 0;
+  }
+  if (suc_rate > 1) {
+    suc_rate = 1;
+  }
 
   let occRate = 0;
 
@@ -108,9 +116,13 @@ const res = onResponse(selects, async e => {
   if (player.occupation === '炼器师') {
     extraMsg += `你是炼器师，额外增加成功率${Math.floor(occRate * 100)}%(乘算)，`;
     suc_rate *= 1 + occRate;
-    if (player.occupation_level >= 24) { suc_rate = 0.8; }
+    if (player.occupation_level >= 24) {
+      suc_rate = 0.8;
+    }
   }
-  if (suc_rate > 0.95) { suc_rate = 0.95; }
+  if (suc_rate > 0.95) {
+    suc_rate = 0.95;
+  }
 
   const expGainPer = tuzhi.exp[0];
 
@@ -171,7 +183,9 @@ const res = onResponse(selects, async e => {
     .map(([k, v]) => `${k}×${v}`)
     .join('，');
 
-  if (!pjSummary) { pjSummary = '无'; }
+  if (!pjSummary) {
+    pjSummary = '无';
+  }
 
   const msg = `${extraMsg}${costMsg}打造成功${success}/${count}件，获得${equipment_name}(${pjSummary})，炼器经验+${totalExp}`;
 

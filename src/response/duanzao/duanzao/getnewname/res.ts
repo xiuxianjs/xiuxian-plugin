@@ -27,11 +27,21 @@ function toStr(v): string {
 }
 function calcCanName(item: { atk: number; def: number; HP: number; type?: string }): boolean {
   // 原逻辑: 三项基础值都 < 10 时才允许按阈值比较 (老版本强化? 以防高面板反复赋名)
-  if (!(item.atk < 10 && item.def < 10 && item.HP < 10)) { return false; }
-  if (item.atk >= 1.5) { return true; }
-  if (item.def >= 1.2) { return true; }
-  if (item.type === '法宝' && (item.atk >= 1 || item.def >= 1)) { return true; }
-  if (item.atk + item.def > 1.95) { return true; }
+  if (!(item.atk < 10 && item.def < 10 && item.HP < 10)) {
+    return false;
+  }
+  if (item.atk >= 1.5) {
+    return true;
+  }
+  if (item.def >= 1.2) {
+    return true;
+  }
+  if (item.type === '法宝' && (item.atk >= 1 || item.def >= 1)) {
+    return true;
+  }
+  if (item.atk + item.def > 1.95) {
+    return true;
+  }
 
   return false;
 }
@@ -40,7 +50,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const user_qq = e.UserId;
 
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   const raw = e.MessageText.replace(/^(#|＃|\/)?赋名/, '').trim();
 

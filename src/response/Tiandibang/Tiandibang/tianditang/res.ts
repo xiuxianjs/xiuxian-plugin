@@ -13,7 +13,9 @@ const res = onResponse(selects, async e => {
   // 查看存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   let tiandibang = [];
 
   try {

@@ -10,7 +10,9 @@ export const regular = /^(#|＃|\/)?重置.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
 
   const didian = e.MessageText.replace(/^(#|＃|\/)?重置/, '').trim();
 
@@ -33,7 +35,9 @@ const res = onResponse(selects, async e => {
 
   const idx = shop.findIndex(s => s.name === didian);
 
-  if (idx === -1) { return false; }
+  if (idx === -1) {
+    return false;
+  }
 
   type ShopSlot = ShopData[number];
   type ShopSlotWithState = ShopSlot & { state?: number };

@@ -34,7 +34,9 @@ interface NamedClassItem {
   class?: string;
 }
 function toNamedList(arr): NamedClassItem[] {
-  if (!Array.isArray(arr)) { return []; }
+  if (!Array.isArray(arr)) {
+    return [];
+  }
 
   return arr
     .map(it => {
@@ -176,7 +178,9 @@ async function getLastsign_Bonus(usr_qq: string): Promise<DateParts | null> {
   if (time) {
     const parts = await shijianc(parseInt(time, 10));
 
-    if (isDateParts(parts)) { return parts; }
+    if (isDateParts(parts)) {
+      return parts;
+    }
   }
 
   return null;

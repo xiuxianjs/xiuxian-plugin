@@ -10,11 +10,15 @@ export const regular = /^(#|＃|\/)?清空赏金榜$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   let action = await redis.get(getRedisKey('1', 'shangjing'));
 
   action = await JSON.parse(action);

@@ -40,10 +40,14 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
   const player = await readPlayer(usr_qq);
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
   if (player.occupation !== '炼丹师') {
     Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'));
 
@@ -64,8 +68,12 @@ const res = onResponse(selects, async e => {
   const danyao = seg[0];
   let n = toInt(await convert2integer(seg[1]), 1);
 
-  if (n <= 0) { n = 1; }
-  if (n > MAX_BATCH) { n = MAX_BATCH; }
+  if (n <= 0) {
+    n = 1;
+  }
+  if (n > MAX_BATCH) {
+    n = MAX_BATCH;
+  }
 
   const danfangListData = (await getDataList('Danfang')) as DanfangRecipe[];
   const danfang = danfangListData.find(item => item.name === danyao);

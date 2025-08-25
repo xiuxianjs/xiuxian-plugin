@@ -35,7 +35,9 @@ function toInt(v, def = 0) {
 }
 function parseJSON<T>(raw): T | null {
   try {
-    if (typeof raw === 'string' && raw.trim()) { return JSON.parse(raw) as T; }
+    if (typeof raw === 'string' && raw.trim()) {
+      return JSON.parse(raw) as T;
+    }
   } catch {
     /* ignore */
   }
@@ -43,7 +45,9 @@ function parseJSON<T>(raw): T | null {
   return null;
 }
 function isDayChanged(a: DayInfo | null, b: DayInfo | null): boolean {
-  if (!a || !b) { return true; }
+  if (!a || !b) {
+    return true;
+  }
 
   return a.Y !== b.Y || a.M !== b.M || a.D !== b.D;
 }
@@ -57,7 +61,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   // 全局娱乐占用状态
   const gameActionRaw = await redis.get(getRedisKey(usr_qq, 'game_action'));
@@ -84,7 +90,9 @@ const res = onResponse(selects, async e => {
 
   let player = await readPlayer(usr_qq);
 
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
 
   const now = Date.now();
   const today = (await shijianc(now)) as DayInfo;
@@ -97,13 +105,25 @@ const res = onResponse(selects, async e => {
     let n = 1;
     const ln = player.灵根?.name;
 
-    if (ln === '二转轮回体') { n = 2; } else if (ln === '三转轮回体' || ln === '四转轮回体') { n = 3; } else if (ln === '五转轮回体' || ln === '六转轮回体') { n = 4; } else if (ln === '七转轮回体' || ln === '八转轮回体') { n = 4; } else if (ln === '九转轮回体') { n = 5; }
+    if (ln === '二转轮回体') {
+      n = 2;
+    } else if (ln === '三转轮回体' || ln === '四转轮回体') {
+      n = 3;
+    } else if (ln === '五转轮回体' || ln === '六转轮回体') {
+      n = 4;
+    } else if (ln === '七转轮回体' || ln === '八转轮回体') {
+      n = 4;
+    } else if (ln === '九转轮回体') {
+      n = 5;
+    }
     player.神界次数 = n;
     await writePlayer(usr_qq, player);
   }
 
   player = await readPlayer(usr_qq);
-  if (!player) { return false; }
+  if (!player) {
+    return false;
+  }
 
   // 资格校验
   if (toInt(player.魔道值) > 0 || (player.灵根?.type !== '转生' && toInt(player.level_id) < 42)) {
@@ -147,7 +167,9 @@ const res = onResponse(selects, async e => {
     cishu: '5'
   };
 
-  if (e.name === 'message.create') { newAction.group_id = e.ChannelId; }
+  if (e.name === 'message.create') {
+    newAction.group_id = e.ChannelId;
+  }
   await redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(newAction));
   Send(Text(`开始进入神界, ${DURATION_MINUTES}分钟后归来!`));
 

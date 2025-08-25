@@ -9,7 +9,9 @@ export const regular = /^(#|＃|\/)?解除所有$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return; }
+  if (!e.IsMaster) {
+    return;
+  }
   Send(Text('开始行动！'));
   const playerList = await keysByPath(__PATH.player_path);
 

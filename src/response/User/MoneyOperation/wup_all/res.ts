@@ -35,7 +35,9 @@ function toInt(v, d = 0) {
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  if (!e.IsMaster) { return false; }
+  if (!e.IsMaster) {
+    return false;
+  }
 
   // 解析玩家列表
   const playerList = await keysByPath(__PATH.player_path);
@@ -82,10 +84,18 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
-    if (amt > MAX_AMOUNT) { amt = MAX_AMOUNT; }
+    if (amt > MAX_AMOUNT) {
+      amt = MAX_AMOUNT;
+    }
 
     for (const qq of playerList) {
-      if (name === '灵石') { await addCoin(qq, amt); } else if (name === '修为') { await addExp(qq, amt); } else { await addExp2(qq, amt); }
+      if (name === '灵石') {
+        await addCoin(qq, amt);
+      } else if (name === '修为') {
+        await addExp(qq, amt);
+      } else {
+        await addExp2(qq, amt);
+      }
     }
     Send(Text(`发放成功，共${playerCount}人，每人增加 ${name} x ${amt}`));
 
@@ -110,19 +120,33 @@ const res = onResponse(selects, async e => {
       // 默认 1 件 普通品质0
     } else if (seg.length === 2) {
       // 判断第二段是否品质或数量
-      if (QUALITY_MAP[seg[1]] !== undefined) { quality = QUALITY_MAP[seg[1]]; } else { amount = toInt(seg[1], 1); }
+      if (QUALITY_MAP[seg[1]] !== undefined) {
+        quality = QUALITY_MAP[seg[1]];
+      } else {
+        amount = toInt(seg[1], 1);
+      }
     } else {
-      if (QUALITY_MAP[seg[1]] !== undefined) { quality = QUALITY_MAP[seg[1]]; }
+      if (QUALITY_MAP[seg[1]] !== undefined) {
+        quality = QUALITY_MAP[seg[1]];
+      }
       amount = toInt(seg[2], 1);
     }
   } else {
     // 普通物品: 名称*数量
-    if (seg.length >= 2) { amount = toInt(seg[1], 1); }
+    if (seg.length >= 2) {
+      amount = toInt(seg[1], 1);
+    }
   }
 
-  if (!Number.isFinite(amount) || amount <= 0) { amount = 1; }
-  if (amount > MAX_AMOUNT) { amount = MAX_AMOUNT; }
-  if (!Number.isFinite(quality) || quality < 0) { quality = 0; }
+  if (!Number.isFinite(amount) || amount <= 0) {
+    amount = 1;
+  }
+  if (amount > MAX_AMOUNT) {
+    amount = MAX_AMOUNT;
+  }
+  if (!Number.isFinite(quality) || quality < 0) {
+    quality = 0;
+  }
 
   for (const qq of playerList) {
     await addNajieThing(

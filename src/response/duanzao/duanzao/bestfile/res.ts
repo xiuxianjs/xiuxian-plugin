@@ -40,8 +40,12 @@ function calcScore(r: { atk: number; def: number; HP: number }) {
   return Math.trunc((r.atk * 1.2 + r.def * 1.5 + r.HP * 1.5) * 10000);
 }
 function getSectDisplay(p: PlayerLite | null): string {
-  if (!p?.宗门) { return '无门无派'; }
-  if (typeof p.宗门 === 'string') { return p.宗门 || '无门无派'; }
+  if (!p?.宗门) {
+    return '无门无派';
+  }
+  if (typeof p.宗门 === 'string') {
+    return p.宗门 || '无门无派';
+  }
 
   return p.宗门.宗门名称 || '无门无派';
 }
@@ -80,7 +84,9 @@ const res = onResponse(selects, async e => {
     const playerCache = new Map<string, PlayerLite | null>();
 
     async function getPlayer(qq: string): Promise<PlayerLite | null> {
-      if (playerCache.has(qq)) { return playerCache.get(qq) || null; }
+      if (playerCache.has(qq)) {
+        return playerCache.get(qq) || null;
+      }
       try {
         const p = await data.getData('player', qq);
 
@@ -111,7 +117,9 @@ const res = onResponse(selects, async e => {
         }
         const equ = (await readEquipment(qq)) as EquipSlots;
 
-        if (!najie || !equ) { continue; }
+        if (!najie || !equ) {
+          continue;
+        }
         let found: { name?: string } | undefined = najie.装备.find(it => it.name === rec.name);
 
         if (!found) {
@@ -124,14 +132,18 @@ const res = onResponse(selects, async e => {
             }
           }
         }
-        if (!found) { continue; }
+        if (!found) {
+          continue;
+        }
         wupin[idx].owner_name = qq;
         let authorName = '神秘匠师';
 
         if (rec.author_name) {
           const authorP = await getPlayer(rec.author_name);
 
-          if (authorP) { authorName = authorP.名号; }
+          if (authorP) {
+            authorName = authorP.名号;
+          }
         }
         const ownerP = await getPlayer(qq);
         const ownerDisplay = `${ownerP?.名号 || qq}(${getSectDisplay(ownerP)})`;

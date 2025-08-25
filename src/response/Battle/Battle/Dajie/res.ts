@@ -52,7 +52,9 @@ function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v;
 }
 function extractFaQiu(lg): number | undefined {
-  if (!lg || typeof lg !== 'object') { return undefined; }
+  if (!lg || typeof lg !== 'object') {
+    return undefined;
+  }
   const v = lg.法球倍率;
 
   return typeof v === 'number' ? v : undefined;
@@ -64,7 +66,9 @@ const res = onResponse(selects, async e => {
   const user_qq = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) { return false; }
+  if (!(await existplayer(user_qq))) {
+    return false;
+  }
 
   // 时间窗口校验（星阁开启时禁止）
   const nowDate = new Date();
@@ -85,7 +89,9 @@ const res = onResponse(selects, async e => {
 
   const A = e.UserId;
 
-  if (!(await existplayer(A))) { return false; }
+  if (!(await existplayer(A))) {
+    return false;
+  }
 
   // 游戏状态判断（猜大小占用）
   const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'));
@@ -99,10 +105,14 @@ const res = onResponse(selects, async e => {
   const mentionsApi = useMention(e)[0];
   const Mentions = (await mentionsApi.find({ IsBot: false })).data;
 
-  if (!Mentions || Mentions.length === 0) { return false; }
+  if (!Mentions || Mentions.length === 0) {
+    return false;
+  }
   const target = Mentions.find(m => !m.IsBot);
 
-  if (!target) { return false; }
+  if (!target) {
+    return false;
+  }
   const B = target.UserId;
 
   if (A === B) {
@@ -164,7 +174,9 @@ const res = onResponse(selects, async e => {
   const playerAFull = await getDataJSONParseByKey(keys.player(A));
   const playerBFull = await getDataJSONParseByKey(keys.player(B));
 
-  if (!playerAFull || !playerBFull) { return false; }
+  if (!playerAFull || !playerBFull) {
+    return false;
+  }
   if (
     playerAFull?.宗门
     && playerBFull?.宗门
@@ -174,7 +186,9 @@ const res = onResponse(selects, async e => {
     const assA = await getDataJSONParseByKey(keys.association(playerAFull.宗门.宗门名称));
     const assB = await getDataJSONParseByKey(keys.association(playerBFull.宗门.宗门名称));
 
-    if (!assA || !assB) { return false; }
+    if (!assA || !assB) {
+      return false;
+    }
     if (
       assA !== 'error'
       && assB !== 'error'
@@ -298,10 +312,14 @@ const res = onResponse(selects, async e => {
 
   const faA = extractFaQiu(A_player.灵根);
 
-  if (faA !== undefined) { (A_player as PlayerWithFaQiu).法球倍率 = faA; }
+  if (faA !== undefined) {
+    (A_player as PlayerWithFaQiu).法球倍率 = faA;
+  }
   const faB = extractFaQiu(B_player.灵根);
 
-  if (faB !== undefined) { (B_player as PlayerWithFaQiu).法球倍率 = faB; }
+  if (faB !== undefined) {
+    (B_player as PlayerWithFaQiu).法球倍率 = faB;
+  }
   A_player.当前血量 = A_player.血量上限;
   B_player.当前血量 = B_player.血量上限;
 
@@ -365,7 +383,9 @@ const res = onResponse(selects, async e => {
     const qixue = Math.trunc(100 * now_level_idAA);
     const mdz = Math.trunc(lingshi / 10000);
 
-    if (lingshi >= B_player.灵石) { lingshi = Math.trunc(B_player.灵石 / 2); }
+    if (lingshi >= B_player.灵石) {
+      lingshi = Math.trunc(B_player.灵石 / 2);
+    }
     A_player.灵石 += lingshi + mdzJL;
     B_player.灵石 -= lingshi;
     A_player.血气 += qixue;
@@ -396,7 +416,9 @@ const res = onResponse(selects, async e => {
     } else {
       let lingshi = Math.trunc(A_player.灵石 / 4);
 
-      if (lingshi < 0) { lingshi = 0; }
+      if (lingshi < 0) {
+        lingshi = 0;
+      }
       A_player.灵石 -= lingshi;
       B_player.灵石 += lingshi;
       B_player.血气 += qixue;

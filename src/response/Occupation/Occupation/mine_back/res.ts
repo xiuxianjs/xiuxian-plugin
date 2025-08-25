@@ -53,10 +53,18 @@ function normalizeAction(raw): PlayerAction {
   };
 
   // 将非法 0 视为未设置
-  if (!action.end_time) { delete action.end_time; }
-  if (!action.time) { delete action.time; }
-  if (!action.start) { delete action.start; }
-  if (!action.duration) { delete action.duration; }
+  if (!action.end_time) {
+    delete action.end_time;
+  }
+  if (!action.time) {
+    delete action.time;
+  }
+  if (!action.start) {
+    delete action.start;
+  }
+  if (!action.duration) {
+    delete action.duration;
+  }
 
   return action;
 }
@@ -74,13 +82,17 @@ function calcEffectiveMinutes(act: PlayerAction, now: number): number {
     startMs = act.start;
     durationMs = act.duration;
   }
-  if (!startMs || !durationMs) { return 0; }
+  if (!startMs || !durationMs) {
+    return 0;
+  }
 
   const endMs = startMs + durationMs;
   const elapsed = endMs > now ? Math.max(0, now - startMs) : durationMs;
   const minutes = Math.floor(elapsed / 60000);
 
-  if (minutes < BLOCK_MINUTES) { return 0; }
+  if (minutes < BLOCK_MINUTES) {
+    return 0;
+  }
   const blocks = Math.min(MAX_BLOCKS, Math.floor(minutes / BLOCK_MINUTES));
 
   return blocks * BLOCK_MINUTES;
@@ -90,8 +102,12 @@ const res = onResponse(selects, async e => {
   const raw = await getPlayerAction(e.UserId);
   const action = normalizeAction(raw);
 
-  if (action.action === '空闲') { return false; }
-  if (action.mine === 1) { return false; }
+  if (action.action === '空闲') {
+    return false;
+  }
+  if (action.mine === 1) {
+    return false;
+  }
 
   const now = Date.now();
   const minutes = calcEffectiveMinutes(action, now);

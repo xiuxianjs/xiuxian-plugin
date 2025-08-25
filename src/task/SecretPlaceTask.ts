@@ -61,9 +61,11 @@ export const SecretPlaceTask = async() => {
       // 现在的时间
       const now_time = Date.now();
       // 用户信息
-      const player = (await readPlayer(player_id));
+      const player = await readPlayer(player_id);
 
-      if (!player) { continue; }
+      if (!player) {
+        continue;
+      }
       // 有秘境状态:这个直接结算即可
       if (action.Place_action == '0') {
         // 这里改一改,要在结束时间的前两分钟提前结算
@@ -72,7 +74,9 @@ export const SecretPlaceTask = async() => {
         if (now_time > end_time) {
           const weizhi = action.Place_address;
 
-          if (!weizhi) { continue; }
+          if (!weizhi) {
+            continue;
+          }
           const A_player = {
             名号: player.名号,
             攻击: player.攻击,
@@ -89,11 +93,15 @@ export const SecretPlaceTask = async() => {
           };
           let buff = 1;
 
-          if (weizhi.name == '大千世界' || weizhi.name == '仙界矿场') { buff = 0.6; }
+          if (weizhi.name == '大千世界' || weizhi.name == '仙界矿场') {
+            buff = 0.6;
+          }
           const monsterList = await getDataList('Monster');
           const monster_length = monsterList.length;
 
-          if (monster_length === 0) { return; }
+          if (monster_length === 0) {
+            return;
+          }
           const monster_index = Math.trunc(Math.random() * monster_length);
           const monster = monsterList[monster_index] as {
             名号: string;
@@ -138,14 +146,18 @@ export const SecretPlaceTask = async() => {
               if (random3 <= z) {
                 random4 = Math.floor(Math.random() * weizhi.three.length);
                 thing_name = weizhi.three[random4].name;
-                if (isNajieCategory(weizhi.three[random4].class)) { thing_class = weizhi.three[random4].class as NajieCategory; }
+                if (isNajieCategory(weizhi.three[random4].class)) {
+                  thing_class = weizhi.three[random4].class as NajieCategory;
+                }
                 m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是：[${thing_name}`;
                 t1 = 2 + Math.random();
                 t2 = 2 + Math.random();
               } else {
                 random4 = Math.floor(Math.random() * weizhi.two.length);
                 thing_name = weizhi.two[random4].name;
-                if (isNajieCategory(weizhi.two[random4].class)) { thing_class = weizhi.two[random4].class as NajieCategory; }
+                if (isNajieCategory(weizhi.two[random4].class)) {
+                  thing_class = weizhi.two[random4].class as NajieCategory;
+                }
                 m = `在洞穴中拿到[${thing_name}`;
                 t1 = 1 + Math.random();
                 t2 = 1 + Math.random();
@@ -157,13 +169,17 @@ export const SecretPlaceTask = async() => {
             } else {
               random4 = Math.floor(Math.random() * weizhi.one.length);
               thing_name = weizhi.one[random4].name;
-              if (isNajieCategory(weizhi.one[random4].class)) { thing_class = weizhi.one[random4].class as NajieCategory; }
+              if (isNajieCategory(weizhi.one[random4].class)) {
+                thing_class = weizhi.one[random4].class as NajieCategory;
+              }
               m = `捡到了[${thing_name}`;
               t1 = 0.5 + Math.random() * 0.5;
               t2 = 0.5 + Math.random() * 0.5;
               if (weizhi.name == '诸神黄昏·旧神界') {
                 n = 100;
-                if (thing_name == '洗根水') { n = 130; }
+                if (thing_name == '洗根水') {
+                  n = 130;
+                }
                 m = '捡到了[' + thing_name;
               }
               if (weizhi.name == '太极之阳' || weizhi.name == '太极之阴') {

@@ -25,7 +25,9 @@ interface SignConfig {
   Sign?: { ticket?: number };
 }
 function isLastSignStruct(v): v is LastSignStruct {
-  if (!v || typeof v !== 'object') { return false; }
+  if (!v || typeof v !== 'object') {
+    return false;
+  }
   const obj = v;
 
   return typeof obj.Y === 'number' && typeof obj.M === 'number' && typeof obj.D === 'number';
@@ -36,7 +38,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const nowTime = Date.now();
   const yesterdayStruct = await shijianc(nowTime - 24 * 60 * 60 * 1000);
@@ -70,7 +74,9 @@ const res = onResponse(selects, async e => {
   let currentStreak = 0;
   const rawStreak = record['连续签到天数'];
 
-  if (typeof rawStreak === 'number' && Number.isFinite(rawStreak)) { currentStreak = rawStreak; }
+  if (typeof rawStreak === 'number' && Number.isFinite(rawStreak)) {
+    currentStreak = rawStreak;
+  }
   let newStreak = currentStreak === 7 || !continued ? 0 : currentStreak;
 
   newStreak += 1;
@@ -82,7 +88,9 @@ const res = onResponse(selects, async e => {
   const ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0));
   const gift_xiuwei = newStreak * 3000;
 
-  if (ticketNum > 0) { await addNajieThing(usr_qq, '秘境之匙', '道具', ticketNum); }
+  if (ticketNum > 0) {
+    await addNajieThing(usr_qq, '秘境之匙', '道具', ticketNum);
+  }
   await addExp(usr_qq, gift_xiuwei);
 
   Send(Text(`已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''}`));

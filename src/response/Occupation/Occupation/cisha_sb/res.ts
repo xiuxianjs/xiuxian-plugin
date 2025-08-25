@@ -20,7 +20,9 @@ interface AssassinationTarget {
 }
 
 function parseJson<T>(raw: string | null): T | null {
-  if (!raw) { return null; }
+  if (!raw) {
+    return null;
+  }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -32,7 +34,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const actionState = parseJson<ActionState>(await redis.get(getRedisKey(usr_qq, 'action')));
 
@@ -163,13 +167,19 @@ const res = onResponse(selects, async e => {
     await writePlayer(usr_qq, player);
     broadcast = `【全服公告】${player.名号}刺杀失败,${player_B.名号}勃然大怒,单手就反杀了${player.名号}`;
   }
-  if (msg.length > 100) { logger.info('通过'); } else { Send(Text(msg.join('\n'))); }
+  if (msg.length > 100) {
+    logger.info('通过');
+  } else {
+    Send(Text(msg.join('\n')));
+  }
 
   if (broadcast) {
     const redisGlKey = KEY_AUCTION_GROUP_LIST;
     const groupList = await redis.smembers(redisGlKey);
 
-    for (const group of groupList) { pushInfo(group, true, broadcast); }
+    for (const group of groupList) {
+      pushInfo(group, true, broadcast);
+    }
   }
 
   return false;

@@ -20,7 +20,9 @@ export const AuctionofficialTask = async() => {
     const closeTime = startOfDay + closeHour * 3600_000;
     const nowTime = now.getTime();
 
-    if (nowTime < openTime || nowTime > closeTime) { return false; }
+    if (nowTime < openTime || nowTime > closeTime) {
+      return false;
+    }
 
     // 开启新拍卖
     const auction = await openAU();

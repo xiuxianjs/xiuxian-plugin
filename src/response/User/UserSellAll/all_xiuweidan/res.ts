@@ -29,7 +29,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  if (!(await existplayer(usr_qq))) { return false; }
+  if (!(await existplayer(usr_qq))) {
+    return false;
+  }
 
   const najie = (await data.getData('najie', usr_qq)) as NajieLike | null;
   const pills = Array.isArray(najie?.丹药) ? najie.丹药 : [];
@@ -43,11 +45,15 @@ const res = onResponse(selects, async e => {
   let totalExp = 0;
 
   for (const pill of pills) {
-    if (!pill || pill.type !== '修为') { continue; }
+    if (!pill || pill.type !== '修为') {
+      continue;
+    }
     const category = normalizeCategory(pill.class);
     const qty = num(await existNajieThing(usr_qq, pill.name, category), 0);
 
-    if (qty <= 0) { continue; }
+    if (qty <= 0) {
+      continue;
+    }
     const gain = num(pill.exp, 0) * qty;
 
     if (gain > 0) {

@@ -19,7 +19,9 @@ const res = onResponse(selects, async e => {
   // 查看存档
   const ifexistplay = await existplayer(usr_qq);
 
-  if (!ifexistplay) { return false; }
+  if (!ifexistplay) {
+    return false;
+  }
   const game_action = await getString(userKey(usr_qq, 'game_action'));
 
   // 防止继续其他娱乐行为
@@ -32,7 +34,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current!))}`));
+    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }
