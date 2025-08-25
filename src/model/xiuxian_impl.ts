@@ -6,6 +6,7 @@ import { createNajieRepository } from './repository/najieRepository.js'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
 import {
+  existDataByKey,
   getDataJSONParseByKey,
   setDataJSONStringifyByKey
 } from './DataControl.js'
@@ -41,9 +42,7 @@ export async function getEquipmentDataSafe(
  * @returns
  */
 export async function existplayer(usr_qq: string): Promise<boolean> {
-  const redis = getIoRedis()
-  const res = await redis.exists(keys.player(usr_qq))
-  return res === 1
+  return existDataByKey(keys.player(usr_qq))
 }
 
 // 读取存档信息，返回成一个 JavaScript 对象
@@ -75,9 +74,7 @@ export async function addConFaByUser(usr_qq: string, gongfa_name: string) {
   if (!player) return
   if (!Array.isArray(player.学习的功法)) player.学习的功法 = []
   player.学习的功法.push(gongfa_name)
-  // 使用底层 writePlayer 避免 JSONData 结构限制
-  await import('./pub.js').then(m => m.writePlayer(usr_qq, player))
-  // 动态加载效率计算，避免与 efficiency.ts 形成静态循环依赖
+  await setDataJSONStringifyByKey(keys.player(usr_qq), player)
   import('./efficiency.js')
     .then(m => m.playerEfficiency(usr_qq))
     .catch(() => {})

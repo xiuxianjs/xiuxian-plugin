@@ -4,7 +4,8 @@ import { safeParse } from './utils/safe.js'
 import type { LastSignTime, PlayerActionData } from '../types/model'
 import { convert2integer } from './utils/number.js'
 import { getIoRedis } from '@alemonjs/db'
-import { getRedisKey, keysAction } from './keys.js'
+import { getRedisKey, keys, keysAction } from './keys.js'
+import { existDataByKey } from './DataControl.js'
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length)
@@ -72,9 +73,8 @@ export async function getPlayerAction(
 export async function dataverification(e: EventsMessageCreateEnum) {
   if (e.name !== 'message.create') return 1
   const usr_qq = e.UserId
-  const { existplayer } = await import('./xiuxian.js')
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return 1
+  const ext = await existDataByKey(keys.player(usr_qq))
+  if (!ext) return 1
   return 0
 }
 
@@ -93,9 +93,10 @@ export function isNotBlank(value): boolean {
 export async function Go(e): Promise<boolean | 0> {
   const usr_qq = e.UserId
   const Send = useSend(e)
-  const { existplayer } = await import('./xiuxian.js')
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return 0
+  const ext = await existDataByKey(keys.player(usr_qq))
+  if (!ext) {
+    return 0
+  }
   const redis = getIoRedis()
   const game_action = await redis.get(keysAction.gameAction(usr_qq))
   if (game_action === '1') {

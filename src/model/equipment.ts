@@ -1,25 +1,24 @@
 import { __PATH } from './keys.js'
 import { writePlayer } from './pub.js'
 import type { Player, Equipment } from '../types/player.js'
-import { getIoRedis } from '@alemonjs/db'
 import { readPlayer } from './xiuxian_impl.js'
 import { addHP } from './economy.js'
-import { safeParse } from './utils/safe.js'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 export async function readEquipment(usr_qq: string): Promise<Equipment | null> {
-  const redis = getIoRedis()
-  const equipment = await redis.get(keys.equipment(usr_qq))
-  if (!equipment) return null
-  return safeParse<Equipment | null>(equipment, null)
+  return await getDataJSONParseByKey(keys.equipment(usr_qq))
 }
 
 export async function writeEquipment(
   usr_qq: string,
   equipment: Equipment
 ): Promise<void> {
-  const player: Player | null = await readPlayer(usr_qq)
+  const player: Player = await readPlayer(usr_qq)
   if (!player) return
   const levelList = await getDataList('Level1')
   const physiqueList = await getDataList('Level2')
@@ -62,8 +61,7 @@ export async function writeEquipment(
   if (player.仙宠.type == '暴伤') player.暴击伤害 += player.仙宠.加成
   await writePlayer(usr_qq, player)
   await addHP(usr_qq, 0)
-  const redis = getIoRedis()
-  await redis.set(keys.equipment(usr_qq), JSON.stringify(equipment))
+  await setDataJSONStringifyByKey(keys.equipment(usr_qq), equipment)
 }
 
 export default { readEquipment, writeEquipment }

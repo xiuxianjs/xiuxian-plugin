@@ -14,9 +14,9 @@ import {
   圣体概率
 } from './settions.js'
 
-import { getIoRedis } from '@alemonjs/db'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
+import { setDataJSONStringifyByKey } from './DataControl.js'
 
 export async function dujie(user_qq: string): Promise<number> {
   const player: Player | null = await readPlayer(user_qq)
@@ -159,16 +159,14 @@ export async function setFileValue(
   num: number,
   type: string
 ): Promise<void> {
-  const str = await getIoRedis().get(keys.player(user_qq))
-  if (!str) return
-  const player = JSON.parse(str)
+  const player = await readPlayer(user_qq)
   if (!player) return
   const current_raw = player[type]
   const current_num = typeof current_raw === 'number' ? current_raw : 0
   let new_num = current_num + num
   if (type == '当前血量' && new_num > player.血量上限) new_num = player.血量上限
   player[type] = new_num
-  await getIoRedis().set(keys.player(user_qq), JSON.stringify(player))
+  setDataJSONStringifyByKey(keys.player(user_qq), player)
 }
 
 export type FoundThing = {

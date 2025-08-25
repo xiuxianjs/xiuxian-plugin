@@ -1,13 +1,17 @@
 import { getIoRedis } from '@alemonjs/db'
-
 import { __PATH, keysByPath } from './keys.js'
 import { writePlayer } from './pub.js'
 import { safeParse } from './utils/safe.js'
-import type { Player, Tripod, TalentInfo } from '../types/player.js'
+import type { Tripod, TalentInfo } from '../types/player.js'
 import { getDataList } from './DataList.js'
 import { LIB_MAP, LibHumanReadable } from '../types/model.js'
 import type { CustomRecord } from '../types/model.js'
 import { keys } from './keys.js'
+import { readPlayer } from './xiuxian_impl.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 export async function settripod(qq: string): Promise<string> {
   let tripod1: Tripod[] = []
@@ -32,17 +36,8 @@ export async function settripod(qq: string): Promise<string> {
     tripod1.push(newtripod)
     await writeDuanlu(tripod1)
   }
-  //增加锻造天赋
-  const redis = getIoRedis()
-  const data = await redis.get(keys.player(qq))
-  if (!data) {
-    return '玩家数据获取失败'
-  }
-  const playerData = JSON.parse(data)
-  if (!playerData || Array.isArray(playerData)) {
-    return '玩家数据获取失败'
-  }
-  const player = playerData as Player
+  const player = await readPlayer(qq)
+  if (!player) return '玩家数据获取失败'
   const tianfu = Math.floor(40 * Math.random() + 80)
   player.锻造天赋 = tianfu
   //增加隐藏灵根
@@ -98,8 +93,7 @@ export async function readTripod(): Promise<Tripod[]> {
 }
 
 export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
-  const redis = getIoRedis()
-  redis.set(keys.duanlu('duanlu'), JSON.stringify(duanlu, null, '\t'))
+  await setDataJSONStringifyByKey(keys.duanlu('duanlu'), duanlu)
   return
 }
 //数量矫正, 违规数量改成1
@@ -251,18 +245,11 @@ export async function readIt(): Promise<unknown> {
 }
 
 export async function readItTyped(): Promise<CustomRecord[]> {
-  const redis = getIoRedis()
-  const custom = await redis.get(keys.custom('custom'))
-  if (!custom) return []
-  const raw = safeParse<unknown>(custom, [])
-  if (!Array.isArray(raw)) return []
-  return raw.filter(r => typeof r === 'object' && r) as CustomRecord[]
+  const data = await getDataJSONParseByKey(keys.custom('custom'))
+  return (data || []).filter(r => typeof r === 'object' && r) as CustomRecord[]
 }
 
 export async function alluser(): Promise<string[]> {
   const B = await keysByPath(__PATH.player_path)
-  if (B.length == 0) {
-    return []
-  }
   return B
 }

@@ -1,7 +1,7 @@
-import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './keys'
 import type { AssociationData } from '@src/types'
 import { keys } from './keys'
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl'
 
 /**
  * 获取宗门数据
@@ -11,18 +11,11 @@ import { keys } from './keys'
 async function getAssociation(
   file_name: string
 ): Promise<AssociationData | 'error'> {
-  const redis = getIoRedis()
-  const data = await redis.get(keys.association(file_name))
-  if (!data) {
-    // 如果没有数据，返回空对象
+  const ass = await getDataJSONParseByKey(keys.association(file_name))
+  if (!ass) {
     return 'error'
   }
-  try {
-    return JSON.parse(data) as AssociationData
-  } catch (error) {
-    logger.error('读取文件错误：' + error)
-    return 'error'
-  }
+  return ass
 }
 
 /**
@@ -35,9 +28,7 @@ async function setAssociation(
   file_name: string,
   data: AssociationData
 ): Promise<void> {
-  const redis = getIoRedis()
-  await redis.set(keys.association(file_name), JSON.stringify(data))
-  return
+  await setDataJSONStringifyByKey(keys.association(file_name), data)
 }
 
 export default {

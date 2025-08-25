@@ -10,24 +10,24 @@ import {
   KEY_AUCTION_OFFICIAL_TASK
 } from './constants.js'
 import { getDataList } from './DataList.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 export async function writeExchange(wupin: ExchangeRecord[]): Promise<void> {
-  const redis = getIoRedis()
-  await redis.set(keys.exchange('Exchange'), JSON.stringify(wupin))
+  await setDataJSONStringifyByKey(keys.exchange('Exchange'), wupin)
 }
 export async function writeForum(wupin: ForumRecord[]): Promise<void> {
-  const redis = getIoRedis()
-  await redis.set(keys.exchange('Forum'), JSON.stringify(wupin))
+  await setDataJSONStringifyByKey(keys.exchange('Forum'), wupin)
 }
 export async function readExchange(): Promise<ExchangeRecord[]> {
-  const redis = getIoRedis()
-  const Exchange = await redis.get(keys.exchange('Exchange'))
+  const Exchange = await getDataJSONParseByKey(keys.exchange('Exchange'))
   if (!Exchange) return []
   return safeParse<ExchangeRecord[]>(Exchange, [])
 }
 export async function readForum(): Promise<ForumRecord[]> {
-  const redis = getIoRedis()
-  const Forum = await redis.get(keys.exchange('Forum'))
+  const Forum = await getDataJSONParseByKey(keys.exchange('Forum'))
   if (!Forum) return []
   return safeParse<ForumRecord[]>(Forum, [])
 }
@@ -55,7 +55,7 @@ export async function openAU(): Promise<ExchangeRecord> {
     last_offer_player: 0,
     groupList
   }
-  await redis.set(KEY_AUCTION_OFFICIAL_TASK, JSON.stringify(wupin))
+  await setDataJSONStringifyByKey(KEY_AUCTION_OFFICIAL_TASK, wupin)
   return wupin
 }
 

@@ -1,18 +1,23 @@
 // 玩家效率/收益相关逻辑抽取
-import { readPlayer, addConFaByUser, writePlayer } from './xiuxian_impl.js'
+import { addConFaByUser } from './xiuxian_impl.js'
 export { addConFaByUser }
 import type { GongfaItem } from '../types/model'
 import { getDataList } from './DataList.js'
 import { readDanyao } from './danyao.js'
 import { notUndAndNull } from './common.js'
-import { getIoRedis } from '@alemonjs/db'
 import { keys } from './keys.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 export async function playerEfficiency(userId: string): Promise<null> {
   //这里有问题
   const usr_qq = userId
-  const player = await readPlayer(usr_qq)
-  let ass
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
+    return
+  }
   let Assoc_efficiency //宗门效率加成
   let linggen_efficiency = 0 //灵根效率加成
   let gongfa_efficiency = 0 //功法效率加成
@@ -21,13 +26,11 @@ export async function playerEfficiency(userId: string): Promise<null> {
     //是否存在宗门信息
     Assoc_efficiency = 0 //不存在，宗门效率为0
   } else {
-    const redis = getIoRedis()
-
-    const data = await redis.get(keys.association(player.宗门['宗门名称']))
-    if (!data) return
-    ass = data
-    if (typeof data == 'string') {
-      ass = JSON.parse(data)
+    const ass = await getDataJSONParseByKey(
+      keys.association(player.宗门['宗门名称'])
+    )
+    if (ass) {
+      return
     }
     if (ass.宗门驻地 == 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05
@@ -71,8 +74,7 @@ export async function playerEfficiency(userId: string): Promise<null> {
     gongfa_efficiency +
     xianchong_efficiency +
     bgdan //修炼效率综合
-
-  await writePlayer(usr_qq, player)
+  await setDataJSONStringifyByKey(keys.player(usr_qq), player)
   return
 }
 

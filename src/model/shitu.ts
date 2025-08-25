@@ -1,19 +1,18 @@
 // 师徒系统逻辑抽离
-import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './keys.js'
-import { safeParse } from './utils/safe.js'
 import type { ShituRecord } from '../types/model'
 import { keys } from './keys.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 export async function writeShitu(list: ShituRecord[]) {
-  const redis = getIoRedis()
-  await redis.set(keys.shitu('shitu'), JSON.stringify(list))
+  await setDataJSONStringifyByKey(keys.shitu('shitu'), list)
 }
 export async function readShitu(): Promise<ShituRecord[]> {
-  const redis = getIoRedis()
-  const shitu = await redis.get(keys.shitu('shitu'))
-  if (!shitu) return []
-  return safeParse(shitu, [])
+  const shitu = await getDataJSONParseByKey(keys.shitu('shitu'))
+  return shitu || []
 }
 
 export async function fstaddShitu(A: string) {

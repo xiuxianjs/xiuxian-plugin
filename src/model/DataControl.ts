@@ -85,8 +85,7 @@ export const existDataByPath = (
   name: string
 ) => {
   const dir = `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
-  const redis = getIoRedis()
-  return redis.exists(dir)
+  return existDataByKey(dir)
 }
 
 /**
@@ -100,16 +99,9 @@ export const readDataByPath = async (
   from: string,
   name: string
 ) => {
-  const redis = getIoRedis()
-  try {
-    const data = await redis.get(
-      `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
-    )
-    return JSON.parse(data)
-  } catch (error) {
-    logger.error('读取文件错误：' + error)
-    return null
-  }
+  return await getDataJSONParseByKey(
+    `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
+  )
 }
 
 /**
@@ -125,10 +117,9 @@ export const writeDataByPath = (
   name: string,
   data: JSONData
 ): void => {
-  const redis = getIoRedis()
-  redis.set(
+  setDataJSONStringifyByKey(
     `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`,
-    JSON.stringify(data)
+    data
   )
 }
 
@@ -139,9 +130,7 @@ export const writeDataByPath = (
  * @deprecated
  */
 async function existData(file_path_type: FilePathType, file_name: string) {
-  const redis = getIoRedis()
-  const res = await redis.exists(`${filePathMap[file_path_type]}:${file_name}`)
-  return res === 1
+  return existDataByKey(`${filePathMap[file_path_type]}:${file_name}`)
 }
 
 /**
@@ -151,13 +140,10 @@ async function existData(file_path_type: FilePathType, file_name: string) {
  * @deprecated
  */
 async function getData(file_name: FilePathType | string, user_qq?: string) {
-  const redis = getIoRedis()
   if (user_qq) {
-    const data = await redis.get(`${filePathMap[file_name]}:${user_qq}`)
-    return data ? JSON.parse(data) : null
+    return await getDataJSONParseByKey(`${filePathMap[file_name]}:${user_qq}`)
   } else {
-    const data = await redis.get(`${filePathMap[file_name]}`)
-    return data ? JSON.parse(data) : null
+    return await getDataJSONParseByKey(`${filePathMap[file_name]}`)
   }
 }
 
@@ -173,10 +159,9 @@ function setData(
   user_qq: string | null,
   data: JSONData
 ): void {
-  const redis = getIoRedis()
-  redis.set(
+  setDataJSONStringifyByKey(
     `${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`,
-    JSON.stringify(data)
+    data
   )
   return
 }

@@ -438,7 +438,8 @@ const res = onResponse(selects, async e => {
               message.send(format(Text('取消兑换')))
               return
             } else if (les == '兑换') {
-              const ifexist2 = data.bapin.find(item => item.name == gonfa)
+              const bapin = await getDataList('Bapin')
+              const ifexist2 = bapin.find(item => item.name == gonfa)
               if (ifexist2) {
                 await addNajieThing(usr_qq, '残卷', '道具', -10)
                 await addNajieThing(usr_qq, gonfa, '功法', 1)

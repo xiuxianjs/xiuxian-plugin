@@ -1,20 +1,19 @@
 // 亲密度与婚姻逻辑抽离
-import { getIoRedis } from '@alemonjs/db'
 import { __PATH } from './keys.js'
-import { safeParse } from './utils/safe.js'
 import type { QinmiduRecord } from '../types/model'
 import { keys } from './keys.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 export async function readQinmidu(): Promise<QinmiduRecord[]> {
-  const redis = getIoRedis()
-  const qinmidu = await redis.get(keys.qinmidu('qinmidu'))
-  if (!qinmidu) return []
-  return safeParse(qinmidu, [])
+  const data = await getDataJSONParseByKey(keys.qinmidu('qinmidu'))
+  return data || []
 }
 
 export async function writeQinmidu(qinmidu: QinmiduRecord[]) {
-  const redis = getIoRedis()
-  await redis.set(keys.qinmidu('qinmidu'), JSON.stringify(qinmidu))
+  await setDataJSONStringifyByKey(keys.qinmidu('qinmidu'), qinmidu)
 }
 
 export async function fstaddQinmidu(A: string, B: string) {
