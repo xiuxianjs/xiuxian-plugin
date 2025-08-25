@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs'
 import { redis } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
-import { __PATH } from '@src/model/keys'
-import type { AssociationDetailData, Player } from '@src/types'
+import { __PATH, keys } from '@src/model/keys'
+import type { AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
@@ -34,7 +34,9 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq)
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门))
     return false
-  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`)
+  const assData = await redis.get(
+    `${__PATH.association}:${player.宗门.宗门名称}`
+  )
   if (!assData) {
     Send(Text('宗门数据异常'))
     return
@@ -49,10 +51,24 @@ const res = onResponse(selects, async e => {
   }
   const donate_list: Array<{ name: string; lingshi_donate: number }> = []
   for (const member_qq of members) {
-    const member_data = (await data.getData(
-      'player',
-      member_qq
-    )) as Player | null
+    const ext = await redis.exists(keys.player(member_qq))
+    if (!ext) {
+      continue
+    }
+    const res = await redis.get(keys.player(member_qq))
+    if (!res) {
+      continue
+    }
+    let member_data = null
+    try {
+      member_data = JSON.parse(res)
+    } catch (error) {
+      logger.warn(error)
+      continue
+    }
+    if (!member_data) {
+      continue
+    }
     if (
       !member_data ||
       !notUndAndNull(member_data.宗门) ||
