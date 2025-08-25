@@ -4,10 +4,20 @@ import react from 'eslint-plugin-react';
 import ts from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 
-// 统一 flat config
+/**
+ * ESLint 配置文件
+ * 
+ * 使用 ESLint Flat Config 格式
+ * 包含 TypeScript、React 和代码质量规则
+ * 
+ * 特殊处理：
+ * - 禁用了 no-mixed-operators 规则以避免与格式化工具冲突
+ * - 配置了 Prettier 兼容性
+ * - 针对修仙插件项目优化了规则
+ */
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
-  // 忽略文件
+  // 忽略不需要检查的文件和目录
   {
     ignores: [
       'lib/**',
@@ -27,20 +37,20 @@ export default [
       'src/env.d.ts'
     ]
   },
-  // TypeScript 声明文件配置
+  // TypeScript 声明文件配置 - 放宽注释规则
   {
     files: ['**/*.d.ts'],
     rules: {
       'spaced-comment': 'off',
     }
   },
-  // 基础 JS 推荐
+  // 基础 JavaScript 推荐规则
   js.configs.recommended,
-  // TS 推荐 (包含 parser 与插件)
+  // TypeScript 推荐规则 (包含 parser 与插件)
   ...ts.configs.recommended,
-  // 添加更严格的TypeScript规则
+  // 添加更严格的 TypeScript 规则
   ...ts.configs.strict,
-  // TypeScript 文件配置
+  // TypeScript 文件配置 - 指定解析器和项目配置
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -51,13 +61,13 @@ export default [
       },
     },
   },
-  // React 规则
+  // React 相关规则配置
   {
     plugins: { react },
     rules: {
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
-      // 关闭prop-types检查，因为使用TypeScript
+      // 关闭 prop-types 检查，因为使用 TypeScript 类型系统
       'react/prop-types': 'off',
       'react/display-name': 'off',
       'react/jsx-key': 'error',
@@ -82,7 +92,7 @@ export default [
   },
   // 关闭与 Prettier 冲突的格式化规则
   prettier,
-  // 主要配置
+  // 主要代码质量规则配置
   {
     languageOptions: {
       sourceType: 'module',
@@ -93,7 +103,8 @@ export default [
       }
     },
     rules: {
-      // TypeScript 相关规则
+      // ===== TypeScript 相关规则 =====
+      // 未使用变量检查 - 忽略以下划线开头的变量
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -117,7 +128,8 @@ export default [
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/require-await': 'error',
 
-      // 代码质量规则
+      // ===== 代码质量规则 =====
+      // 优先使用 const - 解构时也要求使用 const
       'prefer-const': ['error', { destructuring: 'all' }],
       'no-empty': ['error', { allowEmptyCatch: true }],
       'no-unused-expressions': 'error',
@@ -139,7 +151,8 @@ export default [
       'require-await': 'error',
       'yoda': 'error',
 
-      // 最佳实践
+      // ===== 最佳实践规则 =====
+      // 严格相等比较 - 禁止使用 == 和 !=
       'eqeqeq': ['error', 'always'],
       'curly': ['error', 'all'],
       'no-multi-spaces': 'error',
@@ -149,7 +162,6 @@ export default [
       'comma-dangle': ['error', 'never'],
       'semi': ['error', 'always'],
       'quotes': ['error', 'single', { avoidEscape: true }],
-      'indent': ['error', 2],
       'object-curly-spacing': ['error', 'always'],
       'array-bracket-spacing': ['error', 'never'],
       'comma-spacing': ['error', { before: false, after: true }],
@@ -166,26 +178,38 @@ export default [
       'func-call-spacing': ['error', 'never'],
       'function-paren-newline': ['error', 'multiline'],
       'implicit-arrow-linebreak': ['error', 'beside'],
+      // 最大行长度限制 - 100字符，忽略URL和字符串
       'max-len': ['error', { code: 100, ignoreUrls: true, ignoreStrings: true }],
-      'no-mixed-operators': 'error',
+      
+      // 禁用混合运算符检查 - 与自动格式化工具冲突
+      'no-mixed-operators': 'off',
+      // 禁止使用制表符，统一使用空格
       'no-tabs': 'error',
+      // 运算符换行规则 - 运算符放在行首
       'operator-linebreak': ['error', 'before'],
+      // 禁止块级代码前后有空行
       'padded-blocks': ['error', 'never'],
+      // 语句间空行规则
       'padding-line-between-statements': [
         'error',
         { blankLine: 'always', prev: '*', next: 'return' },
         { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
         { blankLine: 'any', prev: ['const', 'let', 'var'], next: ['const', 'let', 'var'] }
       ],
+      // 对象属性引号规则 - 只在必要时使用引号
       'quote-props': ['error', 'as-needed'],
+      // 函数括号前空格规则 - 禁止空格
       'space-before-function-paren': ['error', 'never'],
+      // 一元运算符空格规则
       'space-unary-ops': 'error',
+      // 注释空格规则 - 要求空格，但允许特殊标记
       'spaced-comment': ['error', 'always', { 
         line: { 
           markers: ['/'], 
           exceptions: ['///'] 
         } 
       }],
+      // 模板标签间距规则
       'template-tag-spacing': 'error'
     }
   }

@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
+commit_regex='^(feat|fix|docs|style|refactor|test|chore|update|del)(\(.+\))?: .{1,50}'
 
 if ! grep -qE "$commit_regex" "$1"; then
     echo "❌ 提交信息格式错误！"
     echo "正确格式: type(scope): description"
     echo "例如: feat(auth): add login functionality"
-    echo "类型: feat, fix, docs, style, refactor, test, chore"
+    echo "类型: feat, fix, docs, style, refactor, test, chore, update, del"
     exit 1
 fi
 

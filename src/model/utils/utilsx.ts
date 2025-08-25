@@ -25,17 +25,17 @@ export function parseUnitNumber(input: string): number {
     return 0;
   }
   switch (unit) {
-  case 'k':
-    return n * 1000;
-  case 'w':
-    return n * 10000;
-  case 'e':
-    return n * 100000000;
-  default:
-    return n;
+    case 'k':
+      return n * 1000;
+    case 'w':
+      return n * 10000;
+    case 'e':
+      return n * 100000000;
+    default:
+      return n;
   }
 }
 
-export const getAvatar = (usr_qq: string | number) => {
-  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usr_qq}`;
+export const getAvatar = (usrId: string | number) => {
+  return `https://q1.qlogo.cn/g?b=qq&s=0&nk=${usrId}`;
 };
