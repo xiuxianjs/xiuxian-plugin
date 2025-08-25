@@ -1,10 +1,12 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data } from '@src/model/api'
-import { getConfig, notUndAndNull, shijianc } from '@src/model/index'
-import type { AssociationDetailData, Player, JSONValue } from '@src/types'
-
+import { getConfig, keys, notUndAndNull, shijianc } from '@src/model/index'
+import mw from '@src/response/mw'
 import { selects } from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
+
 export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/
 
 interface PlayerGuildRef {
@@ -14,41 +16,25 @@ interface PlayerGuildRef {
 function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
-interface ExtAss extends AssociationDetailData {
-  维护时间?: number
-  灵石池?: number
-  宗门等级?: number
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {}
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') continue
-    if (v && typeof v === 'object') r[k] = JSON.parse(JSON.stringify(v))
-    else r[k] = v as JSONValue
-  }
-  return r
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) return
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门))
     return false
   if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
     Send(Text('只有宗主、副宗主可以操作'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  const ass = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!ass) {
     Send(Text('宗门数据不存在'))
-    return false
+    return
   }
-  const ass = assRaw
   const nowTime = Date.now()
   const cfg = await getConfig('xiuxian', 'xiuxian')
   const time = cfg.CD.association
@@ -72,8 +58,8 @@ const res = onResponse(selects, async e => {
   }
   ass.灵石池 = pool - need
   ass.维护时间 = nowTime
-  await data.setAssociation(ass.宗门名称, ass)
-  await data.setData('player', usr_qq, serializePlayer(player))
+  setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
+  setDataJSONStringifyByKey(keys.player(usr_qq), player)
   const nextmt_time = await shijianc(ass.维护时间 + 60000 * time)
   Send(
     Text(
@@ -83,5 +69,4 @@ const res = onResponse(selects, async e => {
   return false
 })
 
-import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

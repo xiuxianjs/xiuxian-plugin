@@ -1,7 +1,7 @@
 import { Text, useMessage, useSend, useSubscribe } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { __PATH } from '@src/model/keys'
+import { __PATH, keys } from '@src/model/keys'
 import {
   existplayer,
   getRandomFromARR,
@@ -11,10 +11,14 @@ import {
   getConfig,
   readPlayer
 } from '@src/model/index'
-import Association from '@src/model/Association'
 import { selects } from '@src/response/mw'
 import type { AssociationDetailData } from '@src/types'
 import { getRedisKey } from '@src/model/keys'
+import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 
 export const regular = /^(#|＃|\/)?再入仙途$/
 
@@ -127,7 +131,9 @@ const res = onResponse(selects, async e => {
         notUndAndNull(playerNow.宗门) &&
         isPlayerGuildRef(playerNow.宗门)
       ) {
-        const assRaw = await Association.getAssociation(playerNow.宗门.宗门名称)
+        const assRaw = await getDataJSONParseByKey(
+          keys.association(playerNow.宗门.宗门名称)
+        )
         if (assRaw !== 'error' && isExtAss(assRaw)) {
           const ass = assRaw
           if (playerNow.宗门.职位 !== '宗主') {
@@ -135,7 +141,7 @@ const res = onResponse(selects, async e => {
             ass.所有成员 = (ass.所有成员 || []).filter(q => q !== usr_qq)
             if ('宗门' in playerNow)
               delete (playerNow as { 宗门?: PlayerGuildRef }).宗门
-            await Association.setAssociation(ass.宗门名称, ass)
+            await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
             await writePlayer(usr_qq, playerNow)
           } else {
             if ((ass.所有成员 || []).length < 2) {
@@ -166,7 +172,10 @@ const res = onResponse(selects, async e => {
                   ass.宗主 = randmember_qq
                   randmember.宗门.职位 = '宗主'
                   await writePlayer(randmember_qq, randmember)
-                  await Association.setAssociation(ass.宗门名称, ass)
+                  await setDataJSONStringifyByKey(
+                    keys.association(ass.宗门名称),
+                    ass
+                  )
                 }
               }
             }
@@ -194,5 +203,4 @@ const res = onResponse(selects, async e => {
   return false
 })
 
-import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

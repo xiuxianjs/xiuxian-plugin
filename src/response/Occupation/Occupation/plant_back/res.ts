@@ -19,8 +19,6 @@ interface PlantAction {
   group_id?: string
 }
 
-
-
 const res = onResponse(selects, async e => {
   const raw = (await getPlayerAction(e.UserId)) as unknown as PlantAction | null
   if (!raw) return false

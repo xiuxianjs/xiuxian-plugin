@@ -8,14 +8,14 @@ import {
   WorldBossBattle,
   WorldBossBattleInfo
 } from '../../../../model/boss'
-import { redis, data, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
 
 import { selects } from '@src/response/mw'
 import { existplayer } from '@src/model'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys } from '@src/model/keys'
 import {
   KEY_AUCTION_GROUP_LIST,
   KEY_RECORD_TWO,
@@ -75,12 +75,11 @@ const res = onResponse(selects, async e => {
     Send(Text(`正在CD中，剩余cd:  ${m}分 ${s}秒`))
     return false
   }
-
-  if (!(await data.existData('player', usr_qq))) {
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
     Send(Text('区区凡人，也想参与此等战斗中吗？'))
     return false
   }
-  const player = await data.getData('player', usr_qq)
   // 限制：22~41 且 未轮回 (推测原逻辑)
   if (player.level_id > 41 || player.lunhui > 0) {
     Send(Text('仙人不得下凡'))
@@ -264,11 +263,6 @@ const res = onResponse(selects, async e => {
         '正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'
       )
     )
-
-    for (const idx of PlayerList) {
-      await data.getData('player', PlayerRecordJSON.QQ[idx])
-    }
-
     const showMax = Math.min(PlayerList.length, 20)
     let topSum = 0
     for (let i = 0; i < showMax; i++)
@@ -279,7 +273,7 @@ const res = onResponse(selects, async e => {
     for (let i = 0; i < PlayerList.length; i++) {
       const idx = PlayerList[i]
       const qq = PlayerRecordJSON.QQ[idx]
-      const cur = await data.getData('player', qq)
+      const cur = await getDataJSONParseByKey(keys.player(qq))
       if (i < showMax) {
         let reward = Math.trunc(
           (PlayerRecordJSON.TotalDamage[idx] / topSum) * WorldBossStatus.Reward
@@ -289,11 +283,11 @@ const res = onResponse(selects, async e => {
           `第${i + 1}名:\n名号:${cur.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`
         )
         cur.灵石 += reward
-        data.setData('player', qq, cur)
+        await setDataJSONStringifyByKey(keys.player(qq), cur)
         logger.info(`[金角大王周本] 结算:${qq}增加奖励${reward}`)
       } else {
         cur.灵石 += 200000
-        data.setData('player', qq, cur)
+        await setDataJSONStringifyByKey(keys.player(qq), cur)
         logger.info(`[金角大王周本] 结算:${qq}增加奖励200000`)
         if (i === PlayerList.length - 1)
           Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！')
@@ -307,4 +301,8 @@ const res = onResponse(selects, async e => {
   return false
 })
 import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

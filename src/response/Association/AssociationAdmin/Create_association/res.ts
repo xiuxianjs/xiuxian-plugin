@@ -1,11 +1,19 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs'
 
-import { data } from '@src/model/api'
-import { notUndAndNull, setFileValue, timestampToTime } from '@src/model/index'
+import {
+  keys,
+  notUndAndNull,
+  setFileValue,
+  timestampToTime
+} from '@src/model/index'
 import { getDataList } from '@src/model/DataList'
 import { readPlayer, existplayer, writePlayer } from '@src/model/index'
 
 import mw, { selects } from '@src/response/mw'
+import {
+  existDataByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?开宗立派$/
 
 const res = onResponse(selects, async e => {
@@ -72,7 +80,9 @@ const res = onResponse(selects, async e => {
         next()
         return
       }
-      const ifexistass = await data.existData('association', association_name)
+      const ifexistass = await existDataByKey(
+        keys.association(association_name)
+      )
       if (ifexistass) {
         message.send(
           format(Text('该宗门已经存在,请重新输入:\n想改变主意请回复:【取消】'))
@@ -148,7 +158,7 @@ async function new_Association(name, holder_qq, e) {
     最低加入境界: dj,
     power: x
   }
-  data.setAssociation(name, Association)
+  await setDataJSONStringifyByKey(keys.association(name), Association)
   return
 }
 

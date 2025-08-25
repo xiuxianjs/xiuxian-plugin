@@ -43,7 +43,9 @@ const res = onResponse(selects, async e => {
     Send(Text('请先加入宗门'))
     return false
   }
-  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`)
+  const assData = await redis.get(
+    `${__PATH.association}:${player.宗门.宗门名称}`
+  )
   if (!assData) {
     Send(Text('宗门数据异常'))
     return

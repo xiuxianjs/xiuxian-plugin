@@ -1,9 +1,9 @@
 import { Context } from 'koa'
 import { validateRole } from '@src/route/core/auth'
-import { __PATH, keysByPath } from '@src/model/keys'
+import { __PATH, keys, keysByPath } from '@src/model/keys'
 import { readPlayer } from '@src/model/xiuxian_impl'
-import Association from '@src/model/Association'
 import { getDataList } from '@src/model/DataList'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 
 // 获取排名数据
 export const GET = async (ctx: Context) => {
@@ -40,8 +40,8 @@ export const GET = async (ctx: Context) => {
         const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
-          const ass = await Association.getAssociation(assName)
-          if (ass && ass !== 'error') {
+          const ass = await getDataJSONParseByKey(keys.association(assName))
+          if (ass) {
             const power = ass.power || 0
             const level = ass.宗门等级 || 1
             const members = ass.所有成员?.length || 0
@@ -75,8 +75,8 @@ export const GET = async (ctx: Context) => {
         const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
-          const ass = await Association.getAssociation(assName)
-          if (ass && ass !== 'error') {
+          const ass = await getDataJSONParseByKey(keys.association(assName))
+          if (ass) {
             const members = ass.所有成员?.length || 0
             rankingData.push({
               id: assName,
@@ -97,8 +97,8 @@ export const GET = async (ctx: Context) => {
         const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
-          const ass = await Association.getAssociation(assName)
-          if (ass && ass !== 'error') {
+          const ass = await getDataJSONParseByKey(keys.association(assName))
+          if (ass) {
             const lingshi = ass.宗门灵石池 || 0
             rankingData.push({
               id: assName,
@@ -119,8 +119,8 @@ export const GET = async (ctx: Context) => {
         const associationList = await keysByPath(__PATH.association)
 
         for (const assName of associationList) {
-          const ass = await Association.getAssociation(assName)
-          if (ass && ass !== 'error') {
+          const ass = await getDataJSONParseByKey(keys.association(assName))
+          if (ass) {
             const level = ass.宗门等级 || 1
             rankingData.push({
               id: assName,
@@ -297,8 +297,8 @@ export const POST = async (ctx: Context) => {
     }> = []
 
     for (const assName of associationKeys) {
-      const ass = await Association.getAssociation(assName)
-      if (ass && ass !== 'error') {
+      const ass = await getDataJSONParseByKey(keys.association(assName))
+      if (ass) {
         const power = ass.power || 0
         const level = ass.宗门等级 || 1
         const members = ass.所有成员?.length || 0

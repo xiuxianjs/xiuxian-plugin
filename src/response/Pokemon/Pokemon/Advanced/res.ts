@@ -1,7 +1,11 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
-import { existNajieThing, addNajieThing, writePlayer } from '@src/model/index'
+import {
+  existNajieThing,
+  addNajieThing,
+  writePlayer,
+  keys
+} from '@src/model/index'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?进阶仙宠$/
@@ -9,9 +13,10 @@ export const regular = /^(#|＃|\/)?进阶仙宠$/
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const ifexistplay = await data.existData('player', usr_qq)
-  if (!ifexistplay) return false
-  const player = await data.getData('player', usr_qq)
+
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) return false
+
   const list = ['仙胎', '仙仔', '仙兽', '仙道', '仙灵']
   const list_level = [20, 40, 60, 80, 100]
   const currentIndex = list.findIndex(l => l == player.仙宠.品级)
@@ -34,9 +39,13 @@ const res = onResponse(selects, async e => {
   const player_level = player.仙宠.等级
   const last_jiachen = player.仙宠.加成
   if (player_level == list_level[currentIndex]) {
+    const xianchonData = await getDataList('Xianchon')
     //判断是否满级
-    const thing = data.xianchon.find(item => item.id == player.仙宠.id + 1) //查找下个等级仙宠
-    logger.info(thing)
+    const thing = xianchonData.find(item => item.id == player.仙宠.id + 1) //查找下个等级仙宠
+    if (!thing) {
+      Send(Text('仙宠不存在'))
+      return
+    }
     player.仙宠 = thing
     player.仙宠.等级 = player_level //赋值之前的等级
     player.仙宠.加成 = last_jiachen //赋值之前的加成
@@ -50,4 +59,6 @@ const res = onResponse(selects, async e => {
   }
 })
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

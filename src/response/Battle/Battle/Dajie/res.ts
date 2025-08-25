@@ -1,7 +1,7 @@
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys } from '@src/model/keys'
 import { Image, Text, useMention, useSend } from 'alemonjs'
 import { getAvatar } from '@src/model/utils/utilsx.js'
-import { config, data, redis } from '@src/model/api'
+import { config, redis } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -42,6 +42,7 @@ import mw from '@src/response/mw'
 import { getDataByUserId } from '@src/model/Redis'
 import { screenshot } from '@src/image'
 import { getDataList } from '@src/model/DataList'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?打劫$/
 
 function isPlayerGuildRef(v): v is PlayerGuildRef {
@@ -140,18 +141,23 @@ const res = onResponse(selects, async e => {
     Send(Text('不可欺负弱小！'))
     return false
   }
-
   // 同宗门禁止
-  const playerAFull = (await data.getData('player', A)) as Player | null
-  const playerBFull = (await data.getData('player', B)) as Player | null
+  const playerAFull = await getDataJSONParseByKey(keys.player(A))
+  const playerBFull = await getDataJSONParseByKey(keys.player(B))
+  if (!playerAFull || !playerBFull) return false
   if (
     playerAFull?.宗门 &&
     playerBFull?.宗门 &&
     isPlayerGuildRef(playerAFull.宗门) &&
     isPlayerGuildRef(playerBFull.宗门)
   ) {
-    const assA = await data.getAssociation(playerAFull.宗门.宗门名称)
-    const assB = await data.getAssociation(playerBFull.宗门.宗门名称)
+    const assA = await getDataJSONParseByKey(
+      keys.association(playerAFull.宗门.宗门名称)
+    )
+    const assB = await getDataJSONParseByKey(
+      keys.association(playerBFull.宗门.宗门名称)
+    )
+    if (!assA || !assB) return false
     if (
       assA !== 'error' &&
       assB !== 'error' &&

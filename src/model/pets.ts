@@ -1,8 +1,8 @@
-import data from './XiuxianData.js'
 import { writeNajie, readNajie } from './xiuxian_impl.js'
 import { notUndAndNull } from './common.js'
 import type { Najie } from '../types/player.js'
 import type { OwnedPetItem, PetList } from '../types/model'
+import { getDataList } from './DataList.js'
 
 export async function addPet(
   usr_qq: string,
@@ -38,8 +38,9 @@ export async function addPet(
       每级增加?: number
       加成?: number
     }
-    const base = Array.isArray(data.xianchon)
-      ? (data.xianchon as SourcePetLike[]).find(item => item.name == thing_name)
+    const data = getDataList('Xianchon')
+    const base = Array.isArray(data)
+      ? (data as SourcePetLike[]).find(item => item.name == thing_name)
       : undefined
     if (!notUndAndNull(base)) {
       console.info('没有这个东西')

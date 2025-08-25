@@ -1,9 +1,8 @@
 import { Write_tiandibang } from '@src/response/Tiandibang/Tiandibang/tian'
-import { data, redis } from '@src/model/api'
-// 细粒度导入
 import { __PATH, keys, keysByPath } from '@src/model/keys'
 import type { TiandibangRankEntry as RankEntry } from '@src/types'
 import { getDataList } from '@src/model/DataList'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 
 /**
  * 遍历所有玩家，读取玩家的属性（如名号、境界、攻击、防御、血量、暴击率、灵根、功法、魔道值、神石等）。
@@ -17,33 +16,16 @@ export const TiandibangTask = async () => {
   const playerList = await keysByPath(__PATH.player_path)
   const temp: RankEntry[] = []
   let t: RankEntry | undefined
+  let k: number
   await Promise.all(
     playerList.map(async user_qq => {
-      const is = await redis.exists(keys.player(user_qq))
-      if (!is) {
+      const player = await getDataJSONParseByKey(keys.player(user_qq))
+      if (!player) {
         return
       }
-      const res = await redis.get(keys.player(user_qq))
-      if (!res) {
-        return
-      }
-      let player: any
-      try {
-        player = JSON.parse(res)
-        //
-      } catch (e) {
-        logger.warn('Failed to parse player data', e)
-        return
-      }
-      try {
-        player = JSON.parse(res)
-      } catch (e) {
-        logger.warn('Failed to parse player data', e)
-        return
-      }
-      const level = data.Level_list.find(
-        item => item.level_id == player.level_id
-      )
+
+      const levelList = await getDataList('Level1')
+      const level = levelList.find(item => item.level_id == player.level_id)
       if (!level) {
         return
       }
@@ -64,6 +46,7 @@ export const TiandibangTask = async () => {
         次数: 3,
         积分: 0
       }
+      k++
     })
   )
   for (let i = 0; i < playerList.length - 1; i++) {

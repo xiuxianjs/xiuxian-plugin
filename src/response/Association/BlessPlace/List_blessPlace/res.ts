@@ -1,8 +1,7 @@
 import { Text, useMessage, Image } from 'alemonjs'
 
 import { selects } from '@src/response/mw'
-import { __PATH, keysByPath } from '@src/model/index'
-import Association from '@src/model/Association'
+import { __PATH, keys, keysByPath } from '@src/model/index'
 import { getDataList } from '@src/model/DataList'
 import { screenshot } from '@src/image'
 import type { AssociationDetailData } from '@src/types'
@@ -41,11 +40,11 @@ const res = onResponse(selects, async e => {
     message.send([Text('暂无洞天福地配置')])
     return false
   }
-
   const guildNames = await keysByPath(__PATH.association)
-  const assListRaw = await Promise.all(
-    guildNames.map(n => Association.getAssociation(n))
+  const datas = await Promise.all(
+    guildNames.map(n => getDataJSONParseByKey(keys.association(n)))
   )
+  const assListRaw = datas.filter(Boolean)
   const locationMap = new Map<string | number, string>()
   for (let idx = 0; idx < assListRaw.length; idx++) {
     const a = assListRaw[idx]
@@ -77,4 +76,5 @@ const res = onResponse(selects, async e => {
   return false
 })
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

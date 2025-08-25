@@ -1,14 +1,11 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index'
 import type { AssociationDetailData } from '@src/types'
-import Association from '@src/model/Association'
 import { getDataList } from '@src/model/DataList'
 
 import { selects } from '@src/response/mw'
-import { getRedisKey } from '@src/model/keys'
-import { existDataByPath, readDataByPath } from '@src/model/DataControl'
+import { getRedisKey, keys } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?神兽赐福$/
 
 interface PlayerGuildRef {
@@ -57,18 +54,17 @@ function toNamedList(arr): NamedClassItem[] {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  const exi = await existDataByPath('player_path', '', usr_qq)
-  if (!exi) return false
-  const player = await readDataByPath('player_path', '', usr_qq)
-  if (
-    !player ||
-    !notUndAndNull(player.宗门) ||
-    !isPlayerGuildRef(player.宗门)
-  ) {
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
+    return
+  }
+  if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  const assRaw = await Association.getAssociation(player.宗门.宗门名称)
+  const assRaw = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
   if (assRaw === 'error' || !isExtAss(assRaw)) {
     Send(Text('宗门数据不存在'))
     return false
@@ -110,8 +106,8 @@ const res = onResponse(selects, async e => {
   //   zhuque: await getDataList('zhuque'),
   //   baihu: await getDataList('baihu'),
   //   Danyao: await getDataList('Danyao'),
-    //   Gongfa: await getDataList('Gongfa'),
-    //   Equipment: await getDataList('Equipment')
+  //   Gongfa: await getDataList('Gongfa'),
+  //   Equipment: await getDataList('Equipment')
   // }
 
   const qilinData = await getDataList('Qilin')
@@ -170,4 +166,5 @@ async function getLastsign_Bonus(usr_qq: string): Promise<DateParts | null> {
   return null
 }
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

@@ -1,16 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
   notUndAndNull,
   writePlayer
 } from '@src/model/index'
-
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?猎户转.*$/
-
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
@@ -22,7 +19,12 @@ const res = onResponse(selects, async e => {
     return false
   }
   const occupation = e.MessageText.replace(/^(#|＃|\/)?猎户转/, '')
-  const x = data.occupation_list.find(item => item.name == occupation)
+  const OccupationData = await getDataList('Occupation')
+  if (!Array.isArray(OccupationData)) {
+    Send(Text('职业数据获取错误'))
+    return false
+  }
+  const x = OccupationData.find(item => item.name == occupation)
   if (!notUndAndNull(x)) {
     Send(Text(`没有[${occupation}]这项职业`))
     return false
@@ -32,4 +34,5 @@ const res = onResponse(selects, async e => {
   Send(Text(`恭喜${player.名号}转职为[${occupation}]`))
 })
 import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
 export default onResponse(selects, [mw.current, res.current])

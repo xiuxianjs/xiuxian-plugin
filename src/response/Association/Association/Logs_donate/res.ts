@@ -8,6 +8,7 @@ import type { AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?宗门捐献记录$/
 
 interface ExtAss extends Omit<AssociationDetailData, '宗门名称'> {
@@ -51,30 +52,16 @@ const res = onResponse(selects, async e => {
   }
   const donate_list: Array<{ name: string; lingshi_donate: number }> = []
   for (const member_qq of members) {
-    const ext = await redis.exists(keys.player(member_qq))
-    if (!ext) {
-      continue
-    }
-    const res = await redis.get(keys.player(member_qq))
-    if (!res) {
-      continue
-    }
-    let member_data = null
-    try {
-      member_data = JSON.parse(res)
-    } catch (error) {
-      logger.warn(error)
-      continue
-    }
+    const member_data = await getDataJSONParseByKey(keys.player(member_qq))
     if (!member_data) {
       continue
     }
     if (
-      !member_data ||
       !notUndAndNull(member_data.宗门) ||
       !isPlayerGuildRef(member_data.宗门)
-    )
+    ) {
       continue
+    }
     const donate = Number(member_data.宗门.lingshi_donate || 0)
     donate_list.push({
       name: String(member_data.名号 || member_qq),

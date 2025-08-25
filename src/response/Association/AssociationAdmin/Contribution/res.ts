@@ -1,7 +1,7 @@
 import { Text, useMessage } from 'alemonjs'
 import mw, { selects } from '@src/response/mw'
-import { readPlayer } from '@src/model'
-import Association from '@src/model/Association'
+import { keys, readPlayer } from '@src/model'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 
 export const regular = /^(#|＃|\/)?查看宗门贡献$/
 
@@ -20,8 +20,10 @@ const res = onResponse(selects, async e => {
     message.send(format(Text(`您没有权限查看宗门贡献`)))
     return
   }
-  const ass = await Association.getAssociation(player.宗门['宗门名称'])
-  if (ass === 'error') {
+  const ass = await getDataJSONParseByKey(
+    keys.association(player.宗门['宗门名称'])
+  )
+  if (!ass) {
     message.send(format(Text(`宗门不存在`)))
     return
   }

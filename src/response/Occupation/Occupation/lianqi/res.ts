@@ -1,6 +1,4 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -8,8 +6,10 @@ import {
   addNajieThing,
   addExp4
 } from '@src/model/index'
-
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
+import { getDataList } from '@src/model/DataList'
+
 export const regular = /^(#|＃|\/)?打造.*(\*[0-9]*)?$/
 
 interface TuzhiMaterial {
@@ -55,8 +55,9 @@ const res = onResponse(selects, async e => {
     exp?
     materials?
   }
-  const tuzhiRaw = data.tuzhi_list
-  const tuzhiCandidate = tuzhiRaw.find((it): it is AnyTuzhiLike => {
+  // const tuzhiRaw = data.tuzhi_list
+  const data = await getDataList('Tuzhi')
+  const tuzhiCandidate = data.find(it => {
     return (
       !!it &&
       typeof it === 'object' &&
@@ -88,9 +89,8 @@ const res = onResponse(selects, async e => {
 
   let occRate = 0
   if (player.occupation_level > 0) {
-    const occConf = data.occupation_exp_list.find(
-      item => item.id == player.occupation_level
-    )
+    const dataList = await getDataList('experience')
+    const occConf = dataList.find(item => item.id == player.occupation_level)
     if (occConf) {
       // 使用经验表的 experience 做近似比率换算（避免不存在的 rate 字段）
       const base = Number(occConf.experience) || 0
@@ -159,5 +159,4 @@ const res = onResponse(selects, async e => {
   Send(Text(msg))
   return false
 })
-import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

@@ -4,12 +4,13 @@ import * as _ from 'lodash-es'
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl'
-import { data, pushInfo, redis } from '@src/model/api'
+import { pushInfo, redis } from '@src/model/api'
 
 import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { biwuPlayer } from '../biwu'
 import { screenshot } from '@src/image'
+import { getDataList } from '@src/model/DataList'
 
 // 修正正则 (去掉重复 ^)
 export const regular = /^(#|＃|\/)?切磋$/
@@ -37,34 +38,10 @@ interface BuffMap {
   [k: string]: number
 }
 
-function getSkill(name: string): SkillCfg | undefined {
-  return data.jineng.find((s): s is SkillCfg => s.name === name) as
-    | SkillCfg
-    | undefined
-}
 function clonePlayer<T>(p: T): T {
   return _.cloneDeep(p)
 }
-function buildSelectMsg(list: string[]) {
-  const lines: string[] = ['指令样式:#选择技能1,2,3\n请选择你本局携带的技能:']
-  list.forEach((n, idx) => {
-    const cfg = getSkill(n)
-    lines.push(`\n${idx + 1}、${n} cd:${cfg ? cfg.cd : 0}`)
-  })
-  return lines
-}
-function buildRoundMsg(skills: SkillRuntime[], cnt: number) {
-  const lines: string[] = [
-    `指令样式:#释放技能1\n第${cnt}回合,是否释放以下技能:`
-  ]
-  skills.forEach((s, idx) => {
-    s.cd++
-    const cfg = getSkill(s.name)
-    const left = cfg ? Math.max(cfg.cd - s.cd, 0) : 0
-    lines.push(`\n${idx + 1}、${s.name} cd:${left}`)
-  })
-  return lines
-}
+
 function applyBuffDecay(
   source: BuffMap,
   _targetUnused,
@@ -79,6 +56,7 @@ function applyBuffDecay(
     msgArr.push(label.replace('{left}', String(source[buffName])))
   }
 }
+
 const BASE_SKILLS = [
   '四象封印',
   '桃园结义',
@@ -128,6 +106,35 @@ const res = onResponse(selects, async e => {
 export default onResponse(selects, [mw.current, res.current])
 
 async function battle(e, num: number) {
+  const JinengData = await getDataList('Jineng')
+
+  function getSkill(name: string) {
+    const data = JinengData
+    return data.find(s => s.name === name) as SkillCfg
+  }
+
+  function buildSelectMsg(list: string[]) {
+    const lines: string[] = ['指令样式:#选择技能1,2,3\n请选择你本局携带的技能:']
+    list.forEach((n, idx) => {
+      const cfg = getSkill(n)
+      lines.push(`\n${idx + 1}、${n} cd:${cfg ? cfg.cd : 0}`)
+    })
+    return lines
+  }
+
+  function buildRoundMsg(skills: SkillRuntime[], cnt: number) {
+    const lines: string[] = [
+      `指令样式:#释放技能1\n第${cnt}回合,是否释放以下技能:`
+    ]
+    skills.forEach((s, idx) => {
+      s.cd++
+      const cfg = getSkill(s.name)
+      const left = cfg ? Math.max(cfg.cd - s.cd, 0) : 0
+      lines.push(`\n${idx + 1}、${s.name} cd:${left}`)
+    })
+    return lines
+  }
+
   const evt = e as Parameters<typeof useSend>[0]
   const A_QQ = biwuPlayer.A_QQ
   const B_QQ = biwuPlayer.B_QQ

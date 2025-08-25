@@ -1,12 +1,12 @@
-import { Image, useSend } from 'alemonjs'
-import { data } from '@src/model/api'
+import { Image, Text, useSend } from 'alemonjs'
 import {
   existplayer,
   __PATH,
   sortBy,
   sleep,
   readPlayer,
-  keysByPath
+  keysByPath,
+  keys
 } from '@src/model/index'
 import { selects } from '@src/response/mw'
 import { getRankingMoneyImage } from '@src/model/image'
@@ -19,7 +19,6 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) return false
   // 计算排名
   const playerList = await keysByPath(__PATH.player_path)
-
   const temp = []
   for (let i = 0; i < playerList.length; i++) {
     const player = await readPlayer(playerList[i])
@@ -38,18 +37,21 @@ const res = onResponse(selects, async e => {
     Data[i] = temp[i]
   }
   await sleep(500)
-  const thisplayer = await await data.getData('player', usr_qq)
-  const thisnajie = await await data.getData('najie', usr_qq)
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  const thisnajie = await getDataJSONParseByKey(keys.najie(usr_qq))
   const img = await getRankingMoneyImage(
     e,
     Data,
     usr_paiming,
-    thisplayer,
+    player,
     thisnajie
   )
   if (Buffer.isBuffer(img)) {
     Send(Image(img))
+    return
   }
+  Send(Text('图片生成错误'))
 })
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

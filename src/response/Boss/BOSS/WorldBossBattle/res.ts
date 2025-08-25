@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 import * as _ from 'lodash-es'
 
-import { redis, data, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
 import { zdBattle, Harm } from '@src/model/battle'
 import { sleep } from '@src/model/common'
 import { addHP, addCoin } from '@src/model/economy'
@@ -14,13 +14,17 @@ import {
   WorldBossBattleInfo
 } from '../../../../model/boss'
 import { existplayer } from '@src/model'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys } from '@src/model/keys'
 import mw from '@src/response/mw'
 import {
   KEY_AUCTION_GROUP_LIST,
   KEY_RECORD,
   KEY_WORLD_BOOS_STATUS
 } from '@src/model/constants'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 
 export const selects = onSelects(['message.create'])
 export const regular = /^(#|＃|\/)?讨伐妖王$/
@@ -79,11 +83,11 @@ const res = onResponse(selects, async e => {
     Send(Text(`正在CD中，剩余cd:  ${Couple_m}分 ${Couple_s}秒`))
     return false
   }
-  if (!(await data.existData('player', usr_qq))) {
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
     Send(Text('区区凡人，也想参与此等战斗中吗？'))
     return false
   }
-  const player = await data.getData('player', usr_qq)
   if (player.level_id < 42 && player.lunhui == 0) {
     Send(Text('你在仙界吗'))
     return false
@@ -253,6 +257,7 @@ const res = onResponse(selects, async e => {
     await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus))
 
     const PlayerList = await SortPlayer(PlayerRecordJSON)
+
     Send(
       Text(
         '正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'
@@ -260,9 +265,9 @@ const res = onResponse(selects, async e => {
     )
 
     // 预加载玩家校验
-    for (const idx of PlayerList) {
-      await data.getData('player', PlayerRecordJSON.QQ[idx])
-    }
+    // for (const idx of PlayerList) {
+    //   await data.getData('player', PlayerRecordJSON.QQ[idx])
+    // }
 
     const Rewardmsg: string[] = ['****妖王周本贡献排行榜****']
     const showMax = Math.min(PlayerList.length, 20)
@@ -274,7 +279,8 @@ const res = onResponse(selects, async e => {
     for (let i = 0; i < PlayerList.length; i++) {
       const idx = PlayerList[i]
       const qq = PlayerRecordJSON.QQ[idx]
-      const CurrentPlayer = await data.getData('player', qq)
+      const CurrentPlayer = await getDataJSONParseByKey(keys.player(qq))
+      if (!CurrentPlayer) continue
       if (i < showMax) {
         let reward = Math.trunc(
           (PlayerRecordJSON.TotalDamage[idx] / topDamageSum) *
@@ -285,11 +291,11 @@ const res = onResponse(selects, async e => {
           `第${i + 1}名:\n名号:${CurrentPlayer.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`
         )
         CurrentPlayer.灵石 += reward
-        data.setData('player', qq, CurrentPlayer)
+        await setDataJSONStringifyByKey(keys.player(qq), CurrentPlayer)
         logger.info(`[妖王周本] 结算:${qq}增加奖励${reward}`)
       } else {
         CurrentPlayer.灵石 += 200000
-        data.setData('player', qq, CurrentPlayer)
+        await setDataJSONStringifyByKey(keys.player(qq), CurrentPlayer)
         logger.info(`[妖王周本] 结算:${qq}增加奖励200000`)
         if (i === PlayerList.length - 1)
           Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！')

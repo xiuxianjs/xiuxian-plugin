@@ -229,6 +229,10 @@ export async function WorldBossBattle(e) {
   }
   if (await existPlayer(usr_qq)) {
     const player = await readPlayer(usr_qq)
+    if (!player) {
+      send(Text('玩家数据不存在'))
+      return false
+    }
     if (player.level_id < 42 && player.lunhui == 0) {
       send(Text('你在仙界吗'))
       return false
@@ -434,10 +438,7 @@ export async function WorldBossBattle(e) {
               `获得灵石奖励${Reward}`
           )
           CurrentPlayer.灵石 += Reward
-          writePlayer(
-            PlayerRecordJSON.QQ[PlayerList[i]],
-            CurrentPlayer
-          )
+          writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer)
           logger.info(
             `[妖王周本] 结算:${
               PlayerRecordJSON.QQ[PlayerList[i]]
@@ -451,10 +452,7 @@ export async function WorldBossBattle(e) {
               PlayerRecordJSON.QQ[PlayerList[i]]
             }增加奖励200000`
           )
-          writePlayer(
-            PlayerRecordJSON.QQ[PlayerList[i]],
-            CurrentPlayer
-          )
+          writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer)
         }
         if (i == PlayerList.length - 1)
           Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！')

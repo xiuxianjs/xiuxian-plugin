@@ -96,7 +96,9 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
   const disabledButtonClass = `${baseButtonClass} bg-slate-800/30 text-slate-500 border border-slate-700 cursor-not-allowed`
 
   return (
-    <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-xl border border-slate-700/50 rounded-xl ${className}`}>
+    <div
+      className={`flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-xl border border-slate-700/50 rounded-xl ${className}`}
+    >
       {/* 左侧信息 */}
       <div className="flex items-center gap-4 text-sm text-slate-300">
         {showTotal && (
@@ -104,13 +106,13 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
             {showTotal(total, [startItem, endItem])}
           </span>
         )}
-        
+
         {showSizeChanger && (
           <div className="flex items-center gap-2">
             <span>每页显示:</span>
             <select
               value={pageSize}
-              onChange={(e) => handleSizeChange(Number(e.target.value))}
+              onChange={e => handleSizeChange(Number(e.target.value))}
               disabled={disabled}
               className="bg-slate-700/50 border border-slate-600 text-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -131,7 +133,9 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
         <button
           onClick={() => handlePageChange(1)}
           disabled={current === 1 || disabled}
-          className={current === 1 || disabled ? disabledButtonClass : normalButtonClass}
+          className={
+            current === 1 || disabled ? disabledButtonClass : normalButtonClass
+          }
           title="首页"
         >
           <DoubleLeftOutlined />
@@ -141,7 +145,9 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
         <button
           onClick={() => handlePageChange(current - 1)}
           disabled={current === 1 || disabled}
-          className={current === 1 || disabled ? disabledButtonClass : normalButtonClass}
+          className={
+            current === 1 || disabled ? disabledButtonClass : normalButtonClass
+          }
           title="上一页"
         >
           <LeftOutlined />
@@ -160,8 +166,8 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
                   page === current
                     ? activeButtonClass
                     : disabled
-                    ? disabledButtonClass
-                    : normalButtonClass
+                      ? disabledButtonClass
+                      : normalButtonClass
                 }
               >
                 {page}
@@ -174,7 +180,11 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
         <button
           onClick={() => handlePageChange(current + 1)}
           disabled={current === totalPages || disabled}
-          className={current === totalPages || disabled ? disabledButtonClass : normalButtonClass}
+          className={
+            current === totalPages || disabled
+              ? disabledButtonClass
+              : normalButtonClass
+          }
           title="下一页"
         >
           <RightOutlined />
@@ -184,7 +194,11 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
         <button
           onClick={() => handlePageChange(totalPages)}
           disabled={current === totalPages || disabled}
-          className={current === totalPages || disabled ? disabledButtonClass : normalButtonClass}
+          className={
+            current === totalPages || disabled
+              ? disabledButtonClass
+              : normalButtonClass
+          }
           title="末页"
         >
           <DoubleRightOutlined />
@@ -200,7 +214,7 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
             min={1}
             max={totalPages}
             className="w-16 bg-slate-700/50 border border-slate-600 text-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-            onKeyPress={(e) => {
+            onKeyPress={e => {
               if (e.key === 'Enter') {
                 const value = parseInt((e.target as HTMLInputElement).value)
                 if (value >= 1 && value <= totalPages) {

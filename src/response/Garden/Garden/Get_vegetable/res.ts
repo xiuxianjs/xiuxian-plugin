@@ -1,11 +1,10 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis, config } from '@src/model/api'
+import { redis, config } from '@src/model/api'
 import { addNajieThing } from '@src/model/index'
-import type { AssociationData } from '@src/types/domain'
 
 import { selects } from '@src/response/mw'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?拔苗助长.*$/
 
 // 数值安全转换
@@ -19,10 +18,7 @@ function formatRemain(ms: number) {
   const s = Math.trunc((ms % 60000) / 1000)
   return `${m}分${s}秒`
 }
-interface PlayerWithGuild {
-  名号?: string
-  宗门?: { 宗门名称: string }
-}
+
 interface GardenCrop {
   name: string
   ts?: number
@@ -32,15 +28,16 @@ interface GardenCrop {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData(
-    'player',
-    usr_qq
-  )) as PlayerWithGuild | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (player) {
+    return
+  }
   const guildName = player?.宗门?.宗门名称
   if (!guildName) return false
-
-  const ass = (await data.getAssociation(guildName)) as AssociationData
+  const ass = await getDataJSONParseByKey(keys.association(guildName))
+  if (ass) {
+    return
+  }
   // 兼容药园结构（可能未定义）
   const gardenAny = ass['药园'] as Record<string, unknown> | undefined
   const garden = gardenAny as
@@ -92,7 +89,7 @@ const res = onResponse(selects, async e => {
     crop.start_time = now
     await redis.set(matureKey, matureAt)
     // 写回
-    await data.setAssociation(ass.宗门名称, ass)
+    await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
   }
 
   // 如果预计成熟还大于 30 分钟，则可加速：减少 30 分钟
@@ -119,9 +116,13 @@ const res = onResponse(selects, async e => {
   await addNajieThing(usr_qq, rawName, '草药', 1)
   const nextMature = now + 24 * 60 * 60 * 1000 * ts
   crop.start_time = now
-  await data.setAssociation(ass.宗门名称, ass)
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
   await Promise.all([redis.set(matureKey, nextMature), redis.set(lastKey, now)])
   return false
 })
 import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

@@ -1,8 +1,6 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data } from '@src/model/api'
-import { notUndAndNull } from '@src/model/index'
-import type { AssociationDetailData, Player } from '@src/types'
+import { keys, notUndAndNull } from '@src/model/index'
+import type { AssociationDetailData } from '@src/types'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?查看护宗大阵$/
@@ -21,20 +19,22 @@ function isAssDetail(v): v is AssociationDetailData {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) return false
   if (
-    !player ||
+    // !player ||
     !notUndAndNull(player.宗门) ||
     !isPlayerGuildRef(player.宗门)
   ) {
     Send(Text('你尚未加入宗门'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isAssDetail(assRaw)) {
+  const assRaw = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!assRaw || !isAssDetail(assRaw)) {
     Send(Text('宗门数据不存在'))
-    return false
+    return
   }
   const hp = typeof assRaw.大阵血量 === 'number' ? assRaw.大阵血量 : 0
   Send(Text(`护宗大阵血量:${hp}`))
@@ -42,4 +42,5 @@ const res = onResponse(selects, async e => {
 })
 
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

@@ -1,18 +1,17 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data } from '@src/model/api'
-import { notUndAndNull } from '@src/model/index'
-
+import { keys, notUndAndNull } from '@src/model/index'
 import mw, { selects } from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 export const regular = /^(#|＃|\/)?我的贡献$/
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
   //用户不存在
-  const ifexistplay = await data.existData('player', usr_qq)
-  if (!ifexistplay) return false
-  const player = await data.getData('player', usr_qq)
+
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) return false
+
   //无宗门
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'))

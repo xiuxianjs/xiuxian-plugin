@@ -1,9 +1,14 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import type { AssociationData } from '@src/types'
-
 import { selects } from '@src/response/mw'
+import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
+import { keys } from '@src/model'
+
 export const regular = /^(#|＃|\/)?药园*$/
 
 interface GardenCrop {
@@ -22,17 +27,11 @@ interface GuildData {
   宗门等级?: number
   宗门名称: string
 }
-interface PlayerGuild {
-  宗门?: { 宗门名称: string }
-}
+
 interface AssociationLike extends AssociationData {
   药园?: GardenData
   宗门等级?: number
   宗门名称: string
-}
-
-function isAssociationLike(v): v is AssociationLike {
-  return !!v && typeof v === 'object' && '宗门名称' in v
 }
 
 function cap(n: number, max: number) {
@@ -53,12 +52,16 @@ function fmtRemain(ms: number) {
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as PlayerGuild | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
+    return
+  }
   const guildName = player?.宗门?.宗门名称
   if (!guildName) return false
-
-  let ass = (await data.getAssociation(guildName)) as GuildData
+  let ass = await getDataJSONParseByKey(keys.association(guildName))
+  if (!ass) {
+    return
+  }
   const garden = ass.药园
   const guildLevel = toInt(ass.宗门等级, 1)
 
@@ -69,7 +72,9 @@ const res = onResponse(selects, async e => {
   ) {
     await createGarden(guildName, usr_qq, guildLevel)
     Send(Text('新建药园，种下了一棵草'))
-    ass = (await data.getAssociation(guildName)) as GuildData
+    ass = (await getDataJSONParseByKey(
+      keys.association(guildName)
+    )) as GuildData
   }
 
   const finalGarden = ass.药园 || { 药园等级: 1, 作物: [] }
@@ -130,16 +135,16 @@ async function createGarden(
     .slice(0, count)
     .map(c => ({ ...c, start_time: now, who_plant: user_qq }))
   const garden: GardenData = { 药园等级: level, 作物: crops }
-  const res = await data.getAssociation(association_name)
-  if (res === 'error' || !isAssociationLike(res)) return
-  const ass: AssociationLike = res as AssociationLike
+  const ass: AssociationLike = await getDataJSONParseByKey(
+    keys.association(association_name)
+  )
+  if (!ass) return
   ass.药园 = garden
-  await data.setAssociation(association_name, ass)
+  await setDataJSONStringifyByKey(keys.association(association_name), ass)
   // 初始化成熟时间戳
   for (const c of crops) {
     const matureAt = now + 24 * 60 * 60 * 1000 * toInt(c.ts, 1)
     await redis.set(`xiuxian:${association_name}${c.name}`, matureAt)
   }
 }
-import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

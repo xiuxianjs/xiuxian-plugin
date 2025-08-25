@@ -315,10 +315,7 @@ export default function UserManager() {
       />
 
       {/* 用户表格 */}
-      <XiuxianTableContainer
-        title="修仙者列表"
-        icon={<UserOutlined />}
-      >
+      <XiuxianTableContainer title="修仙者列表" icon={<UserOutlined />}>
         <XiuxianTableWithPagination
           columns={columns}
           dataSource={gameUsers}

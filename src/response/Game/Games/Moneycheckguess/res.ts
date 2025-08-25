@@ -1,6 +1,6 @@
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys } from '@src/model/keys'
 import { Text, useSend } from 'alemonjs'
-import { redis, data, config } from '@src/model/api'
+import { redis, config } from '@src/model/api'
 import {
   existplayer,
   readPlayer,
@@ -11,6 +11,7 @@ import { selects } from '@src/response/mw'
 import mw from '@src/response/mw'
 import { openMoneySystem } from '@src/model/money'
 import { game } from '../game'
+import { setDataJSONStringifyByKey } from '@src/model/DataControl'
 
 export const regular = /^(#|＃|\/)?((大|小)|([1-6]))$/
 const res = onResponse(selects, async e => {
@@ -26,6 +27,9 @@ const res = onResponse(selects, async e => {
     return false
   }
   const player = await readPlayer(usr_qq)
+  if (!player) {
+    return
+  }
   const es = e.MessageText.replace(/^(#|＃|\/)?/, '')
 
   // 判断输入是否合法，只接受“大”或“小”或1-6
@@ -75,7 +79,7 @@ const res = onResponse(selects, async e => {
         player.金银坊胜场 = 1
         player.金银坊收入 = ensureNumber(game.yazhu[usr_qq])
       }
-      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
+      await setDataJSONStringifyByKey(keys.player(usr_qq), player)
       addCoin(usr_qq, game.yazhu[usr_qq])
       if (y == 1) {
         Send(
@@ -99,7 +103,7 @@ const res = onResponse(selects, async e => {
         player.金银坊败场 = 1
         player.金银坊支出 = inputMoney
       }
-      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
+      await setDataJSONStringifyByKey(keys.player(usr_qq), player)
       addCoin(usr_qq, -inputMoney)
       const now_money = player.灵石 - inputMoney
       const msg = [`骰子最终为 ${touzi} 你猜错了！\n现在拥有灵石:${now_money}`]
@@ -125,7 +129,7 @@ const res = onResponse(selects, async e => {
         player.金银坊胜场 = 1
         player.金银坊收入 = winAmount
       }
-      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
+      await setDataJSONStringifyByKey(keys.player(usr_qq), player)
       addCoin(usr_qq, winAmount)
       Send(
         Text(
@@ -140,7 +144,7 @@ const res = onResponse(selects, async e => {
         player.金银坊败场 = 1
         player.金银坊支出 = inputMoney
       }
-      data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)))
+      await setDataJSONStringifyByKey(keys.player(usr_qq), player)
       addCoin(usr_qq, -inputMoney)
       const now_money = player.灵石 - inputMoney
       const msg = [`骰子最终为 ${touzi}，你猜错了！\n现在拥有灵石:${now_money}`]

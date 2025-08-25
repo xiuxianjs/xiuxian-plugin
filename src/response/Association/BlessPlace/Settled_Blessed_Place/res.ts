@@ -1,17 +1,21 @@
 import { Text, useSend } from 'alemonjs'
-
 import {
   __PATH,
   keysByPath,
   notUndAndNull,
   readPlayer,
-  existplayer
+  existplayer,
+  keys
 } from '@src/model/index'
-import Association from '@src/model/Association'
 import { getDataList } from '@src/model/DataList'
 import type { Player, AssociationDetailData } from '@src/types'
-
+import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 import { selects } from '@src/response/mw'
+
 export const regular = /^(#|＃|\/)?入驻洞天.*$/
 
 interface PlayerGuildRef {
@@ -56,8 +60,10 @@ const res = onResponse(selects, async e => {
     return false
   }
 
-  const assRaw = await Association.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  const assRaw = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!assRaw) {
     Send(Text('宗门数据不存在'))
     return false
   }
@@ -83,9 +89,10 @@ const res = onResponse(selects, async e => {
 
   // 查询所有宗门，判断洞天是否被占据
   const guildNames = await keysByPath(__PATH.association)
-  const assListRaw = await Promise.all(
-    guildNames.map(n => Association.getAssociation(n))
+  const assDatas = await Promise.all(
+    guildNames.map(n => getDataJSONParseByKey(keys.association(n)))
   )
+  const assListRaw = assDatas.filter(Boolean)
   for (const other of assListRaw) {
     if (other === 'error' || !isExtAss(other)) continue
     if (other.宗门名称 === ass.宗门名称) continue
@@ -129,15 +136,15 @@ const res = onResponse(selects, async e => {
       ass.宗门建设等级 = other建设
       other.宗门建设等级 = Math.max(0, other建设 - 10)
       other.大阵血量 = 0
-      await Association.setAssociation(ass.宗门名称, ass)
-      await Association.setAssociation(other.宗门名称, other)
+      await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
+      await setDataJSONStringifyByKey(keys.association(other.宗门名称), other)
       Send(
         Text(
           `洞天被占据！${ass.宗门名称} 发动进攻 (战力${attackPower}) 攻破 ${other.宗门名称} (防御${defendPower})，夺取了 ${dongTan.name}`
         )
       )
     } else {
-      await Association.setAssociation(other.宗门名称, other)
+      await setDataJSONStringifyByKey(keys.association(other.宗门名称), other)
       Send(
         Text(
           `${ass.宗门名称} 进攻 ${other.宗门名称} 失败 (进攻${attackPower} / 防御${defendPower})`
@@ -150,9 +157,8 @@ const res = onResponse(selects, async e => {
   // 无主洞天 -> 直接入驻
   ass.宗门驻地 = dongTan.name
   ass.宗门建设等级 = 0
-  await Association.setAssociation(ass.宗门名称, ass)
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
   Send(Text(`入驻成功，${ass.宗门名称} 当前驻地为：${dongTan.name}`))
   return false
 })
-import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

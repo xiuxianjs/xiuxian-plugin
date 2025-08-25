@@ -1,8 +1,6 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
-import { notUndAndNull } from '@src/model/index'
-import type { AssociationDetailData, Player, JSONValue } from '@src/types'
+import { keys, notUndAndNull } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?建设宗门$/
@@ -14,29 +12,14 @@ interface PlayerGuildRef {
 function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
 }
-interface ExtAss extends AssociationDetailData {
-  宗门驻地?: string | number
-  宗门建设等级?: number
-  灵石池?: number
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {}
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') continue
-    if (v && typeof v === 'object') r[k] = JSON.parse(JSON.stringify(v))
-    else r[k] = v as JSONValue
-  }
-  return r
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
+    return false
+  }
   if (
     !player ||
     !notUndAndNull(player.宗门) ||
@@ -45,13 +28,16 @@ const res = onResponse(selects, async e => {
     Send(Text('你尚未加入宗门'))
     return false
   }
+
   // 可选：限制权限（只有宗主/副宗主/长老）
   if (!['宗主', '副宗主', '长老'].includes(player.宗门.职位)) {
     Send(Text('权限不足'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  const assRaw = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!assRaw) {
     Send(Text('宗门数据不存在'))
     return false
   }
@@ -73,8 +59,8 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool - cost
   const add = Math.trunc(Number(player.level_id || 0) / 7) + 1
   ass.宗门建设等级 = level + add
-  await data.setAssociation(ass.宗门名称, ass)
-  await data.setData('player', usr_qq, serializePlayer(player))
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
+  await setDataJSONStringifyByKey(keys.player(usr_qq), player)
   Send(
     Text(
       `成功消耗 宗门${cost}灵石 建设宗门，增加了${add}点建设度,当前宗门建设等级为${ass.宗门建设等级}`
@@ -84,4 +70,8 @@ const res = onResponse(selects, async e => {
 })
 
 import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

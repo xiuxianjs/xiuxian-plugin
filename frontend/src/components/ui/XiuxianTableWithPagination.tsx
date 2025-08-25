@@ -2,7 +2,8 @@ import React from 'react'
 import { Table, TableProps } from 'antd'
 import { XiuxianPagination } from './index'
 
-interface XiuxianTableWithPaginationProps extends Omit<TableProps<any>, 'pagination'> {
+interface XiuxianTableWithPaginationProps
+  extends Omit<TableProps<any>, 'pagination'> {
   pagination?: {
     current: number
     pageSize: number
@@ -38,12 +39,8 @@ const XiuxianTableWithPagination: React.FC<XiuxianTableWithPaginationProps> = ({
 
   return (
     <div className={className}>
-      <Table
-        {...tableProps}
-        pagination={false}
-        className="xiuxian-table"
-      />
-      
+      <Table {...tableProps} pagination={false} className="xiuxian-table" />
+
       {pagination && (
         <div className="mt-4">
           <XiuxianPagination

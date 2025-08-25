@@ -1,21 +1,17 @@
 import { __PATH } from './keys.js'
 import type { Player } from '../types/player.js'
-import { getIoRedis } from '@alemonjs/db'
 import type { CustomRecord } from '../types/model'
 import { keys } from './keys.js'
+import { setDataJSONStringifyByKey } from './DataControl.js'
 
 export async function writeIt(custom: CustomRecord): Promise<void> {
-  const new_ARR = JSON.stringify(custom, null, '\t')
-  const redis = getIoRedis()
-  redis.set(keys.custom('custom'), new_ARR)
+  await setDataJSONStringifyByKey(keys.custom('custom'), custom)
 }
 
-//写入存档信息,第二个参数是一个JavaScript对象
 export async function writePlayer(
   usr_qq: string,
   player: Player
 ): Promise<void> {
-  const redis = getIoRedis()
-  redis.set(keys.player(usr_qq), JSON.stringify(player))
+  await setDataJSONStringifyByKey(keys.player(usr_qq), player)
   return
 }

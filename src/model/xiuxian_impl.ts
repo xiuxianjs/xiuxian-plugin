@@ -1,4 +1,3 @@
-import data from './XiuxianData.js'
 import { __PATH } from './keys.js'
 import type { Player, Equipment, Najie } from '../types/player.js'
 import { getIoRedis } from '@alemonjs/db'
@@ -6,6 +5,10 @@ import { createPlayerRepository } from './repository/playerRepository.js'
 import { createNajieRepository } from './repository/najieRepository.js'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from './DataControl.js'
 
 const experienceList = (await getDataList('experience')) as Array<{
   id: number
@@ -21,24 +24,15 @@ const najieRepo = createNajieRepository()
 export async function getPlayerDataSafe(
   usr_qq: string
 ): Promise<Player | null> {
-  const dataStr = await getIoRedis().get(keys.player(usr_qq))
-  if (!dataStr) return null
-  const playerData = JSON.parse(dataStr)
-  if (!playerData || Array.isArray(playerData)) {
-    return null
-  }
-  return playerData as Player
+  return await getDataJSONParseByKey(keys.player(usr_qq))
 }
 
 // 辅助函数：安全获取装备数据
 export async function getEquipmentDataSafe(
   usr_qq: string
 ): Promise<Equipment | null> {
-  const equipmentData = await data.getData('equipment', usr_qq)
-  if (equipmentData === 'error' || Array.isArray(equipmentData)) {
-    return null
-  }
-  return equipmentData as Equipment
+  const equipmentData = await getDataJSONParseByKey(keys.equipment(usr_qq))
+  return equipmentData
 }
 
 /**
@@ -54,24 +48,12 @@ export async function existplayer(usr_qq: string): Promise<boolean> {
 
 // 读取存档信息，返回成一个 JavaScript 对象
 export async function readPlayer(usr_qq: string): Promise<Player | null> {
-  const redis = getIoRedis()
-  const player = await redis.get(keys.player(usr_qq))
-  if (!player) return null
-  try {
-    const playerData = JSON.parse(player)
-    return playerData as Player
-  } catch (error) {
-    logger.warn('Error parsing player data:', error)
-    return null
-  }
+  return await getDataJSONParseByKey(keys.player(usr_qq))
 }
 
 // 读取纳戒信息
 export async function readNajie(usr_qq: string): Promise<Najie | null> {
-  const redis = getIoRedis()
-  const raw = await redis.get(keys.najie(usr_qq))
-  if (!raw) return null
-  return JSON.parse(raw) as Najie
+  return await getDataJSONParseByKey(keys.najie(usr_qq))
 }
 
 /**
@@ -80,8 +62,7 @@ export async function readNajie(usr_qq: string): Promise<Najie | null> {
  * @param najie 纳戒信息
  */
 export async function writeNajie(usr_qq: string, najie: Najie): Promise<void> {
-  const redis = getIoRedis()
-  await redis.set(keys.najie(usr_qq), JSON.stringify(najie))
+  await setDataJSONStringifyByKey(keys.najie(usr_qq), najie)
 }
 
 export async function addExp4(usr_qq: string, exp = 0) {
@@ -108,5 +89,4 @@ export async function addBagCoin(usr_qq: string, lingshi: number) {
   await najieRepo.addLingShi(usr_qq, delta)
 }
 
-// Re-export to keep backward compatibility for modules that previously imported from xiuxian.ts
 export { writePlayer } from './pub.js'

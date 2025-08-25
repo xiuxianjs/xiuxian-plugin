@@ -43,9 +43,7 @@ const res = onResponse(selects, async e => {
   let didian = await e.MessageText.replace(/^(#|＃|\/)?前往禁地/, '')
   didian = didian.trim()
   const forbiddenAreaList = await getDataList('ForbiddenArea')
-  const weizhiRaw = forbiddenAreaList?.find(
-    item => item.name == didian
-  )
+  const weizhiRaw = forbiddenAreaList?.find(item => item.name == didian)
   // if (player.power_place == 0 && weizhi.id != 666) {
   //     Send(Text("仙人不得下凡")
   //     return  false;

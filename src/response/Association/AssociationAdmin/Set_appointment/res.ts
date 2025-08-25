@@ -1,8 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
-import { notUndAndNull } from '@src/model/index'
-import type { AssociationDetailData, Player, JSONValue } from '@src/types'
+import { keys, notUndAndNull } from '@src/model/index'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?^任命.*/
@@ -17,26 +15,6 @@ interface PlayerGuildRef {
 }
 function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
-}
-interface ExtAss extends AssociationDetailData {
-  所有成员?: string[]
-  宗门等级?: number
-  副宗主?: string[]
-  长老?: string[]
-  内门弟子?: string[]
-  外门弟子?: string[]
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {}
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') continue
-    if (v && typeof v === 'object') r[k] = JSON.parse(JSON.stringify(v))
-    else r[k] = v as JSONValue
-  }
-  return r
 }
 
 const VALID_APPOINT = ['副宗主', '长老', '内门弟子', '外门弟子'] as const
@@ -54,14 +32,9 @@ const res = onResponse(selects, async e => {
   const res = await mention.findOne()
   const target = res?.data
   if (!target || res.code !== 2000) return false
-
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
-  if (
-    !player ||
-    !notUndAndNull(player.宗门) ||
-    !isPlayerGuildRef(player.宗门)
-  ) {
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) return false
+  if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     Send(Text('你尚未加入宗门'))
     return false
   }
@@ -74,21 +47,30 @@ const res = onResponse(selects, async e => {
     Send(Text('不能对自己任命'))
     return false
   }
-  if (!(await data.existData('player', member_qq))) {
-    Send(Text('目标未踏入仙途'))
-    return false
+  // if (!(await data.existData('player', member_qq))) {
+  //   Send(Text('目标未踏入仙途'))
+  //   return false
+  // }
+  const ass = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!ass) {
+    Send(Text('宗门数据不存在'))
+    return
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isExtAss(assRaw)) return false
-  const ass = assRaw
   ass.所有成员 = Array.isArray(ass.所有成员) ? ass.所有成员 : []
   if (!ass.所有成员.includes(member_qq)) {
     Send(Text('只能设置宗门内弟子的职位'))
     return false
   }
-  const member = (await data.getData('player', member_qq)) as Player | null
-  if (!member || !notUndAndNull(member.宗门) || !isPlayerGuildRef(member.宗门))
+  const member = await getDataJSONParseByKey(keys.player(member_qq))
+  if (!member) {
+    Send(Text('目标玩家数据不存在'))
     return false
+  }
+  if (!notUndAndNull(member.宗门) || !isPlayerGuildRef(member.宗门)) {
+    return false
+  }
   const now_apmt = member.宗门.职位
   if (player.宗门.职位 === '副宗主' && now_apmt === '宗主') {
     Send(Text('你想造反吗！？'))
@@ -140,8 +122,8 @@ const res = onResponse(selects, async e => {
   targetList.push(member_qq)
   ass[appointment] = targetList
   member.宗门.职位 = appointment
-  await data.setData('player', member_qq, serializePlayer(member))
-  await data.setAssociation(ass.宗门名称, ass)
+  await setDataJSONStringifyByKey(keys.player(member_qq), member)
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
   Send(
     Text(
       `${ass.宗门名称} ${player.宗门.职位} 已经成功将${member.名号}任命为${appointment}!`
@@ -151,4 +133,8 @@ const res = onResponse(selects, async e => {
 })
 
 import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

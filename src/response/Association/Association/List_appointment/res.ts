@@ -1,30 +1,14 @@
 import { Image, Text, useSend } from 'alemonjs'
 import { existplayer } from '@src/model/xiuxian_impl'
-import Association from '@src/model/Association'
 import { getDataList } from '@src/model/DataList'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?宗门列表$/
-import { __PATH, keysByPath } from '@src/model/index'
+import { __PATH, keys, keysByPath } from '@src/model/index'
 import { screenshot } from '@src/image'
-import type { AssociationDetailData } from '@src/types'
 import mw from '@src/response/mw'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27]
-
-interface ExtendedAss extends AssociationDetailData {
-  宗门等级?: number
-  所有成员?: string[]
-  宗门驻地?: string | number
-  宗门神兽?: string | number
-  宗门建设等级?: number
-  镇宗神兽?: string
-  宗主?: string
-  最低加入境界?: number
-  外门弟子?: string[]
-}
-function isExtendedAss(v): v is ExtendedAss {
-  return !!v && typeof v === 'object' && 'power' in v
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
@@ -38,9 +22,11 @@ const res = onResponse(selects, async e => {
     return
   }
   for (const this_name of assList) {
-    const assRaw = await Association.getAssociation(this_name)
-    if (assRaw === 'error' || !isExtendedAss(assRaw)) continue
-    const this_ass = assRaw
+    const ass = await getDataJSONParseByKey(keys.association(this_name))
+    if (!ass) {
+      continue
+    }
+    const this_ass = ass
     const baseLevel = Number(this_ass.宗门等级 ?? 1)
     // 效率
     let this_ass_xiuxian = 0

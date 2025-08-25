@@ -1,13 +1,8 @@
-import { data, pushInfo } from '@src/model/api'
-import { addNajieThing, addExp4 } from '@src/model/index'
+import { pushInfo } from '@src/model/api'
+import { getDataJSONParseByKey } from '@src/model/DataControl'
+import { getDataList } from '@src/model/DataList'
+import { addNajieThing, addExp4, keys } from '@src/model/index'
 import { DataMention, Mention } from 'alemonjs'
-
-interface PlayerLite {
-  level_id: number
-  occupation_level: number
-  occupation?: string
-  神魄段数?: number
-}
 
 function toNum(v, d = 0) {
   const n = Number(v)
@@ -42,10 +37,9 @@ export function calcEffectiveMinutes(
 }
 
 // 计算职业系数（使用经验表 experience 做近似归一化）
-function calcOccupationFactor(occupation_level: number): number {
-  const row = data.occupation_exp_list.find(r => r.id === occupation_level)
-  if (!row) return 0
-  return row.rate
+async function calcOccupationFactor(occupation_level: number) {
+  const res = await getDataList('experience')
+  return res.find(r => r.id === occupation_level)?.rate || 0
 }
 
 export async function plant_jiesuan(
@@ -54,14 +48,16 @@ export async function plant_jiesuan(
   group_id?: string
 ) {
   const usr_qq = user_id
-  const player = (await data.getData('player', usr_qq)) as PlayerLite | null
-  if (!player) return false
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
+    return false
+  }
   time = Math.max(1, toNum(time))
   // 经验
   const exp = time * 10
   // 基础倍率 (低境界减半)
   const k = player.level_id < 22 ? 0.5 : 1
-  const occFactor = calcOccupationFactor(player.occupation_level)
+  const occFactor = await calcOccupationFactor(player.occupation_level)
   // 基础产量
   let sum = (time / 480) * (player.occupation_level * 2 + 12) * k
   if (player.level_id >= 36) {
@@ -118,11 +114,11 @@ export async function mine_jiesuan(
   group_id?: string
 ) {
   const usr_qq = user_id
-  const player = (await data.getData('player', usr_qq)) as PlayerLite | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
   if (!player) return false
   // 基础经验
   const exp = time * 10
-  const occFactor = calcOccupationFactor(player.occupation_level)
+  const occFactor = await calcOccupationFactor(player.occupation_level)
   // 旧代码*10, 这里统一
   const rate = occFactor * 10
   // 基础矿石量：1.8 ~ 2.2 之间的随机数 * 时间

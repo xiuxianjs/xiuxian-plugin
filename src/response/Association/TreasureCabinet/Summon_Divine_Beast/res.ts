@@ -1,36 +1,30 @@
 import { Text, useSend } from 'alemonjs'
-
-import { data } from '@src/model/api'
-import { notUndAndNull } from '@src/model/index'
-import type { Player, AssociationDetailData } from '@src/types'
-
+import { keys, notUndAndNull } from '@src/model/index'
+import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 import { selects } from '@src/response/mw'
+
 export const regular = /^(#|＃|\/)?召唤神兽$/
 
 interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
+
 function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
-}
-interface ExtAss extends AssociationDetailData {
-  宗门等级?: number
-  宗门建设等级?: number
-  宗门驻地?: string | number
-  灵石池?: number
-  宗门神兽?: string | number
-  宗门名称: string
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) {
+    return false
+  }
   if (
     !player ||
     !notUndAndNull(player.宗门) ||
@@ -43,8 +37,10 @@ const res = onResponse(selects, async e => {
     Send(Text('只有宗主可以操作'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  const assRaw = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!assRaw) {
     Send(Text('宗门数据不存在'))
     return false
   }
@@ -88,7 +84,7 @@ const res = onResponse(selects, async e => {
 
   ass.宗门神兽 = newBeast
   ass.灵石池 = pool - cost
-  await data.setAssociation(ass.宗门名称, ass)
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
   Send(
     Text(
       `召唤成功，神兽 ${newBeast} 投下一道分身，开始守护你的宗门，绑定神兽后不可更换哦`
@@ -96,5 +92,4 @@ const res = onResponse(selects, async e => {
   )
   return false
 })
-import mw from '@src/response/mw'
 export default onResponse(selects, [mw.current, res.current])

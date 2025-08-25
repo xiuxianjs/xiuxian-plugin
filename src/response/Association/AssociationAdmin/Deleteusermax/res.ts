@@ -1,8 +1,7 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data } from '@src/model/api'
-import { notUndAndNull, playerEfficiency } from '@src/model/index'
-import type { AssociationDetailData, Player, JSONValue } from '@src/types'
+import { keys, notUndAndNull, playerEfficiency } from '@src/model/index'
+import type { Player } from '@src/types'
 
 import { selects } from '@src/response/mw'
 export const regular = /^(#|＃|\/)?逐出.*$/
@@ -11,30 +10,16 @@ interface PlayerGuildRef {
   宗门名称: string
   职位: string
 }
+
 function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
-}
-interface ExtAss extends AssociationDetailData {
-  所有成员?: string[]
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {}
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') continue
-    if (v && typeof v === 'object') r[k] = JSON.parse(JSON.stringify(v))
-    else r[k] = v as JSONValue
-  }
-  return r
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e)
   const usr_qq = e.UserId
-  if (!(await data.existData('player', usr_qq))) return false
-  const player = (await data.getData('player', usr_qq)) as Player | null
+  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  if (!player) return false
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门))
     return false
 
@@ -47,11 +32,8 @@ const res = onResponse(selects, async e => {
     Send(Text('不能踢自己'))
     return false
   }
-  if (!(await data.existData('player', member_qq))) {
-    Send(Text('此人未踏入仙途！'))
-    return false
-  }
-  const playerB = (await data.getData('player', member_qq)) as Player | null
+  const playerB = await getDataJSONParseByKey(keys.player(member_qq))
+  if (!playerB) return false
   if (
     !playerB ||
     !notUndAndNull(playerB.宗门) ||
@@ -60,15 +42,15 @@ const res = onResponse(selects, async e => {
     Send(Text('对方尚未加入宗门'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  const bssRaw = await data.getAssociation(playerB.宗门.宗门名称)
-  if (
-    assRaw === 'error' ||
-    bssRaw === 'error' ||
-    !isExtAss(assRaw) ||
-    !isExtAss(bssRaw)
+  const assRaw = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
   )
+  const bssRaw = await getDataJSONParseByKey(
+    keys.association(playerB.宗门.宗门名称)
+  )
+  if (!assRaw || !bssRaw) {
     return false
+  }
   const ass = assRaw
   const bss = bssRaw
   if (ass.宗门名称 !== bss.宗门名称) return false
@@ -88,8 +70,8 @@ const res = onResponse(selects, async e => {
 
   if (actorRole === '宗主') {
     removeMember()
-    await data.setAssociation(bss.宗门名称, bss)
-    await data.setData('player', member_qq, serializePlayer(playerB))
+    await setDataJSONStringifyByKey(keys.association(bss.宗门名称), bss)
+    await setDataJSONStringifyByKey(keys.player(member_qq), playerB)
     await playerEfficiency(member_qq)
     Send(Text('已踢出！'))
     return false
@@ -104,8 +86,8 @@ const res = onResponse(selects, async e => {
       return false
     }
     removeMember()
-    await data.setAssociation(bss.宗门名称, bss)
-    await data.setData('player', member_qq, serializePlayer(playerB))
+    await setDataJSONStringifyByKey(keys.association(bss.宗门名称), bss)
+    await setDataJSONStringifyByKey(keys.player(member_qq), playerB)
     await playerEfficiency(member_qq)
     Send(Text('已踢出！'))
     return false
@@ -120,8 +102,8 @@ const res = onResponse(selects, async e => {
       return false
     }
     removeMember()
-    await data.setAssociation(bss.宗门名称, bss)
-    await data.setData('player', member_qq, serializePlayer(playerB))
+    await setDataJSONStringifyByKey(keys.association(bss.宗门名称), bss)
+    await setDataJSONStringifyByKey(keys.player(member_qq), playerB)
     await playerEfficiency(member_qq)
     Send(Text('已踢出！'))
     return false
@@ -131,4 +113,8 @@ const res = onResponse(selects, async e => {
 })
 
 import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

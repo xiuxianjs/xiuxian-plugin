@@ -13,32 +13,31 @@ body,
 }
 
 /* 响应式表格样式 */
-.responsive-table .ant-table-thead>tr>th,
-.responsive-table .ant-table-tbody>tr>td {
+.responsive-table .ant-table-thead > tr > th,
+.responsive-table .ant-table-tbody > tr > td {
   @apply px-2 sm:px-4 py-2 sm:py-3;
 }
 
-.responsive-table .ant-table-thead>tr>th {
+.responsive-table .ant-table-thead > tr > th {
   @apply text-xs sm:text-sm font-medium;
 }
 
-.responsive-table .ant-table-tbody>tr>td {
+.responsive-table .ant-table-tbody > tr > td {
   @apply text-xs sm:text-sm;
 }
 
 /* 移动端表格优化 */
 @media (max-width: 640px) {
-
-  .responsive-table .ant-table-thead>tr>th,
-  .responsive-table .ant-table-tbody>tr>td {
+  .responsive-table .ant-table-thead > tr > th,
+  .responsive-table .ant-table-tbody > tr > td {
     @apply px-1 py-1;
   }
 
-  .responsive-table .ant-table-thead>tr>th {
+  .responsive-table .ant-table-thead > tr > th {
     @apply text-xs;
   }
 
-  .responsive-table .ant-table-tbody>tr>td {
+  .responsive-table .ant-table-tbody > tr > td {
     @apply text-xs;
   }
 }
@@ -85,7 +84,6 @@ body,
 
 /* 移动端触摸优化 */
 @media (max-width: 768px) {
-
   /* 增加触摸目标大小 */
   .ant-btn {
     @apply min-h-10;
@@ -141,15 +139,15 @@ body,
     @apply bg-gray-800;
   }
 
-  .ant-table-thead>tr>th {
+  .ant-table-thead > tr > th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
-  .ant-table-tbody>tr>td {
+  .ant-table-tbody > tr > td {
     @apply border-gray-600 text-gray-300;
   }
 
-  .ant-table-tbody>tr:hover>td {
+  .ant-table-tbody > tr:hover > td {
     @apply bg-gray-700;
   }
 }
@@ -182,7 +180,6 @@ body,
 }
 
 .xiuxian-table {
-
   // 表格整体背景
   .ant-table {
     @apply bg-gray-800;
@@ -194,7 +191,7 @@ body,
   }
 
   // 表格头部
-  .ant-table-thead>tr>th {
+  .ant-table-thead > tr > th {
     @apply bg-gray-700 border-gray-600 text-gray-200;
   }
 
@@ -204,12 +201,12 @@ body,
   }
 
   // 表格行背景
-  .ant-table-tbody>tr {
+  .ant-table-tbody > tr {
     @apply bg-gray-800;
   }
 
   // 表格行悬停效果
-  .ant-table-tbody>tr:hover>td {
+  .ant-table-tbody > tr:hover > td {
     @apply bg-gray-700 !important;
   }
 
@@ -218,11 +215,11 @@ body,
   }
 
   // 表格行选中状态
-  .ant-table-tbody>tr.ant-table-row-selected>td {
+  .ant-table-tbody > tr.ant-table-row-selected > td {
     @apply bg-gray-700 !important;
   }
 
-  .ant-table-tbody>tr.ant-table-row-selected:hover>td {
+  .ant-table-tbody > tr.ant-table-row-selected:hover > td {
     @apply bg-gray-600 !important;
   }
 
@@ -232,7 +229,7 @@ body,
   }
 
   // 表格单元格
-  .ant-table-tbody>tr>td {
+  .ant-table-tbody > tr > td {
     @apply border-gray-600 text-gray-300 bg-gray-800;
   }
 

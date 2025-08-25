@@ -17,9 +17,7 @@ const XiuxianDivider: React.FC<XiuxianDividerProps> = ({
         </div>
         {text && (
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-slate-800/50 text-slate-400">
-              {text}
-            </span>
+            <span className="px-2 bg-slate-800/50 text-slate-400">{text}</span>
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { redis, data, pushInfo } from '@src/model/api'
+import { redis, pushInfo } from '@src/model/api'
 import { notUndAndNull } from '@src/model/common'
 import { zdBattle } from '@src/model/battle'
 import { addNajieThing } from '@src/model/najie'

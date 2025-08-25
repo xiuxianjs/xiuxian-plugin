@@ -1,16 +1,16 @@
 import { Text, useSend } from 'alemonjs'
 
-import { data, redis } from '@src/model/api'
+import { redis } from '@src/model/api'
 import { getDataList } from '@src/model/DataList'
 import { Go, notUndAndNull } from '@src/model/common'
 import { convert2integer } from '@src/model/utils/number'
 import { readPlayer } from '@src/model/xiuxian_impl'
 import { existNajieThing, addNajieThing } from '@src/model/najie'
 import { addCoin } from '@src/model/economy'
-import type { Player, AssociationDetailData } from '@src/types'
+import type { Player } from '@src/types'
 
 import { selects } from '@src/response/mw'
-import { getRedisKey } from '@src/model/keys'
+import { getRedisKey, keys } from '@src/model/keys'
 export const regular = /^(#|＃|\/)?沉迷宗门秘境.*$/
 
 interface PlayerGuildRef {
@@ -19,14 +19,6 @@ interface PlayerGuildRef {
 }
 function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
-}
-interface ExtAss extends AssociationDetailData {
-  宗门驻地?: string | number
-  灵石池?: number
-  power?: number
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v
 }
 
 const res = onResponse(selects, async e => {
@@ -40,12 +32,14 @@ const res = onResponse(selects, async e => {
     Send(Text('请先加入宗门'))
     return false
   }
-  const assRaw = await data.getAssociation(player.宗门.宗门名称)
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  // const assRaw = await data.getAssociation(player.宗门.宗门名称)
+  const ass = await getDataJSONParseByKey(
+    keys.association(player.宗门.宗门名称)
+  )
+  if (!ass) {
     Send(Text('宗门数据不存在'))
     return false
   }
-  const ass = assRaw
   if (!ass.宗门驻地 || ass.宗门驻地 === 0) {
     Send(Text('你的宗门还没有驻地，不能探索秘境哦'))
     return false
@@ -96,7 +90,7 @@ const res = onResponse(selects, async e => {
 
   const guildGain = Math.trunc(Price * 0.05)
   ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain
-  await data.setAssociation(ass.宗门名称, ass)
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
 
   await addCoin(usr_qq, -Price)
   const time = i * 10 * 5 + 10 // 分钟
@@ -124,4 +118,8 @@ const res = onResponse(selects, async e => {
   return false
 })
 import mw from '@src/response/mw'
+import {
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl'
 export default onResponse(selects, [mw.current, res.current])

@@ -1,10 +1,6 @@
 import React from 'react'
 import { Table, Tooltip } from 'antd'
-import {
-  EyeOutlined,
-  EditOutlined,
-  ShoppingOutlined
-} from '@ant-design/icons'
+import { EyeOutlined, EditOutlined, ShoppingOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { Najie } from '@/types/types'
 import NajieInfo from './NajieInfo'

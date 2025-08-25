@@ -1,7 +1,13 @@
 import { Text, useSend } from 'alemonjs'
 
 import { redis } from '@src/model/api'
-import { notUndAndNull, shijianc, existplayer, readPlayer, writePlayer } from '@src/model/index'
+import {
+  notUndAndNull,
+  shijianc,
+  existplayer,
+  readPlayer,
+  writePlayer
+} from '@src/model/index'
 import { getLastsign_Asso, isNotMaintenance } from '../../ass'
 import type { AssociationDetailData, Player, JSONValue } from '@src/types'
 
@@ -43,7 +49,9 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq)
   if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门))
     return false
-  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`)
+  const assData = await redis.get(
+    `${__PATH.association}:${player.宗门.宗门名称}`
+  )
   if (!assData) {
     Send(Text('宗门数据异常'))
     return
