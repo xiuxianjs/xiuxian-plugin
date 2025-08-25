@@ -14,39 +14,44 @@ interface DateStruct {
   M: number;
   D: number;
 }
-async function getDayStruct (ts): Promise<DateStruct | null> {
+async function getDayStruct(ts): Promise<DateStruct | null> {
   const n = Number(ts);
-  if (!Number.isFinite(n) || n <= 0) return null;
+
+  if (!Number.isFinite(n) || n <= 0) { return null; }
   try {
     return (await shijianc(n)) as DateStruct;
   } catch {
     return null;
   }
 }
-function sameDay (a: DateStruct | null, b: DateStruct | null) {
+function sameDay(a: DateStruct | null, b: DateStruct | null) {
   return !!a && !!b && a.Y === b.Y && a.M === b.M && a.D === b.D;
 }
-function cleanInput (raw: string) {
+function cleanInput(raw: string) {
   return raw.replace(regularCut, '').replace(/\s+/g, '').replace(/\+/g, '');
 }
-function isMessageEvent (ev): ev is Parameters<typeof Show_player>[0] {
+function isMessageEvent(ev): ev is Parameters<typeof Show_player>[0] {
   return !!ev && typeof ev === 'object' && 'MessageText' in ev;
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  if (!(await existplayer(usr_qq))) return false;
+
+  if (!(await existplayer(usr_qq))) { return false; }
 
   const isRename = /改名/.test(e.MessageText);
   const raw = cleanInput(e.MessageText);
+
   if (isRename) {
     if (raw.length === 0) {
       Send(Text('改名格式为:【#改名张三】请输入正确名字'));
+
       return false;
     }
     if (raw.length > 8) {
       Send(Text('玩家名字最多八字'));
+
       return false;
     }
 
@@ -55,32 +60,40 @@ const res = onResponse(selects, async e => {
     const lastKey = getRedisKey(usr_qq, 'last_setname_time');
     const lastRaw = await redis.get(lastKey);
     const lastStruct = await getDayStruct(lastRaw);
+
     if (sameDay(today, lastStruct)) {
       Send(Text('每日只能改名一次'));
+
       return false;
     }
 
-    const player = (await readPlayer(usr_qq)) as Player | null;
+    const player = (await readPlayer(usr_qq));
+
     if (!player) {
       Send(Text('玩家数据异常'));
+
       return false;
     }
     const cost = 1000;
+
     if (typeof player.灵石 !== 'number' || player.灵石 < cost) {
       Send(Text(`改名需要${cost}灵石`));
+
       return false;
     }
     player.名号 = raw;
     player.灵石 -= cost;
     await writePlayer(usr_qq, player);
     await redis.set(lastKey, String(now));
-    if (isMessageEvent(e)) Show_player(e);
+    if (isMessageEvent(e)) { Show_player(e); }
+
     return false;
   }
   // 设置道宣
-  if (raw.length === 0) return false;
+  if (raw.length === 0) { return false; }
   if (raw.length > 50) {
     Send(Text('道宣最多50字符'));
+
     return false;
   }
 
@@ -89,21 +102,27 @@ const res = onResponse(selects, async e => {
   const lastKey = getRedisKey(usr_qq, 'last_setxuanyan_time');
   const lastRaw = await redis.get(lastKey);
   const lastStruct = await getDayStruct(lastRaw);
+
   if (sameDay(today, lastStruct)) {
     Send(Text('每日仅可更改一次'));
+
     return false;
   }
 
-  const player = (await readPlayer(usr_qq)) as Player | null;
+  const player = (await readPlayer(usr_qq));
+
   if (!player) {
     Send(Text('玩家数据异常'));
+
     return false;
   }
   player.宣言 = raw;
   await writePlayer(usr_qq, player);
   await redis.set(lastKey, String(now));
-  if (isMessageEvent(e)) Show_player(e);
+  if (isMessageEvent(e)) { Show_player(e); }
+
   return false;
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

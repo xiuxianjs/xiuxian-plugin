@@ -11,19 +11,22 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   const player = await await data.getData('player', usr_qq);
   const thing_name = '水脚脚的钱包';
-  //x是纳戒内有的数量
+  // x是纳戒内有的数量
   const acount = await existNajieThing(usr_qq, thing_name, '装备');
-  //没有
+
+  // 没有
   if (!acount) {
     Send(Text(`你没有[${thing_name}]这样的装备`));
+
     return false;
   }
-  //扣掉装备
+  // 扣掉装备
   await addNajieThing(usr_qq, thing_name, '装备', -1);
-  //获得随机
+  // 获得随机
   const x = 0.4;
   const random1 = Math.random();
   const y = 0.3;
@@ -34,6 +37,7 @@ const res = onResponse(selects, async e => {
   const random4 = Math.random();
   let m = '';
   let lingshi = 0;
+
   // 获得灵石
   if (random1 < x) {
     if (random2 < y) {
@@ -59,6 +63,8 @@ const res = onResponse(selects, async e => {
   }
   await addCoin(usr_qq, lingshi);
   Send(Text(m));
+
   return false;
 });
+
 export default onResponse(selects, [mw.current, res.current]);

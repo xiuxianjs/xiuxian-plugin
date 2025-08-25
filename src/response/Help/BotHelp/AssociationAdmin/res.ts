@@ -23,9 +23,11 @@ const res = onResponse(selects, async e => {
     },
     true
   );
+
   if (Buffer.isBuffer(img)) {
     Send(Image(img));
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

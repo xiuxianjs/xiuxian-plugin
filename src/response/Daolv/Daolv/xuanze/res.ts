@@ -8,12 +8,15 @@ export const regular = /^(#|＃|\/)?^(我愿意|我拒绝)$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  if (e.UserId != Daolv.user_B) return false;
+
+  if (e.UserId != Daolv.user_B) { return false; }
   if (Daolv.x == 1) {
     const player_B = await readPlayer(Daolv.user_B);
+
     if (e.MessageText == '我愿意') {
       const qinmidu = await readQinmidu();
       const i = await found(Daolv.user_A, Daolv.user_B);
+
       if (i != qinmidu.length) {
         qinmidu[i].婚姻 = 1;
         await writeQinmidu(qinmidu);
@@ -26,8 +29,10 @@ const res = onResponse(selects, async e => {
     clearTimeout(Daolv.chaoshi_time);
     Daolv.set_chaoshi_time(null);
     Daolv.set_x(0);
+
     return false;
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

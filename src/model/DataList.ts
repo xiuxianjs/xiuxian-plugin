@@ -153,23 +153,28 @@ export const getDataList = async <T extends DataListKeys>(key: T): Promise<DataL
   const redis = getIoRedis();
   // 先判断 redis 有无，没有则读本地的
   const size = await redis.exists(key);
+
   if (size > 0) {
     try {
       const redisData = await redis.get(key);
+
       return JSON.parse(redisData);
     } catch (error) {
       logger.warn(`Failed to parse redis data for key ${key}: ${error}`);
+
       return DATA_LIST[key];
     }
   }
+
   return DATA_LIST[key];
 };
 
 /**
  * 写入则是直接写进 redis
  */
-export const setDataList = async (key: keyof typeof DATA_LIST, data) => {
+export const setDataList = async(key: keyof typeof DATA_LIST, data) => {
   const redis = getIoRedis();
+
   try {
     await redis.set(key, JSON.stringify(data));
   } catch (error) {

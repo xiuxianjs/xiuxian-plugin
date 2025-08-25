@@ -2,11 +2,11 @@ import { Context } from 'koa';
 import { logout } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const body = await parseJsonBody(ctx);
-    const token =
-      ctx.request.headers.authorization?.replace('Bearer ', '') || (body.token as string);
+    const token
+      = ctx.request.headers.authorization?.replace('Bearer ', '') || (body.token as string);
 
     if (!token) {
       ctx.status = 400;
@@ -15,6 +15,7 @@ export const POST = async (ctx: Context) => {
         message: 'Token不能为空',
         data: null
       };
+
       return;
     }
 

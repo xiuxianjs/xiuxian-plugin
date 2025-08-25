@@ -62,4 +62,5 @@ const masterDiscipleHelpConfig: HelpGroup[] = [
     ]
   }
 ];
+
 export default masterDiscipleHelpConfig;

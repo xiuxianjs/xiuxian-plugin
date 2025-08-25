@@ -4,7 +4,7 @@ import { Context } from 'koa';
  * 手动解析JSON请求体的工具函数
  * 用于在没有koa-bodyparser中间件的情况下解析POST请求的JSON数据
  */
-export const parseJsonBody = async (ctx: Context): Promise<Record<string, unknown>> => {
+export const parseJsonBody = async(ctx: Context): Promise<Record<string, unknown>> => {
   return new Promise((resolve, reject) => {
     // 检查Content-Type是否为application/json
     if (ctx.request.headers['content-type']?.includes('application/json')) {
@@ -19,6 +19,7 @@ export const parseJsonBody = async (ctx: Context): Promise<Record<string, unknow
       ctx.req.on('end', () => {
         try {
           const parsed = JSON.parse(data);
+
           resolve(parsed);
         } catch (_error) {
           reject(new Error('Invalid JSON format'));
@@ -38,7 +39,7 @@ export const parseJsonBody = async (ctx: Context): Promise<Record<string, unknow
  * 解析表单数据的工具函数
  * 用于解析application/x-www-form-urlencoded格式的数据
  */
-export const parseFormBody = async (ctx: Context): Promise<Record<string, unknown>> => {
+export const parseFormBody = async(ctx: Context): Promise<Record<string, unknown>> => {
   return new Promise((resolve, reject) => {
     if (ctx.request.headers['content-type']?.includes('application/x-www-form-urlencoded')) {
       let data = '';
@@ -73,7 +74,7 @@ export const parseFormBody = async (ctx: Context): Promise<Record<string, unknow
  * 通用的body解析函数
  * 根据Content-Type自动选择解析方式
  */
-export const parseBody = async (ctx: Context): Promise<Record<string, unknown>> => {
+export const parseBody = async(ctx: Context): Promise<Record<string, unknown>> => {
   const contentType = ctx.request.headers['content-type'] || '';
 
   if (contentType.includes('application/json')) {

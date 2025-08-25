@@ -23,21 +23,21 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
         }}
       >
         {/* 背景遮罩 */}
-        <div className='absolute inset-0 bg-gradient-to-br from-black/60 via-gray-900/50 to-black/70'></div>
+        <div className='absolute inset-0 bg-gradient-to-br from-black/60 via-gray-900/50 to-black/70' />
 
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-30'>
-          <div className='absolute top-10 left-10 w-32 h-32 border border-red-400 rounded-full'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-orange-400 rounded-full'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-yellow-400 rounded-full'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-red-400 rounded-full'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-red-400 rounded-full' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-orange-400 rounded-full' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-yellow-400 rounded-full' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-red-400 rounded-full' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
           {/* 主标题区域 */}
           <div className='text-center mb-8'>
             <div className='inline-block relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-lg opacity-50'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-lg opacity-50' />
               <div className='relative bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl px-8 py-4 border border-red-400/30 backdrop-blur-sm'>
                 <h1 className='text-3xl font-bold text-white tracking-wider'>⚠️ 禁地 ⚠️</h1>
               </div>
@@ -48,14 +48,14 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
           {/* 主信息区域 */}
           <div className='max-w-6xl mx-auto'>
             <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-sm bg-black/40 rounded-3xl border border-red-400/30 p-8 shadow-xl'>
                 {/* 禁地列表 */}
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                   {didian_list?.length ? (
                     didian_list.map((item, index) => (
                       <div key={index} className='relative group'>
-                        <div className='absolute inset-0 bg-gradient-to-br from-red-400/20 to-orange-600/20 rounded-2xl blur-sm'></div>
+                        <div className='absolute inset-0 bg-gradient-to-br from-red-400/20 to-orange-600/20 rounded-2xl blur-sm' />
                         <div
                           className='relative backdrop-blur-md bg-black/60 rounded-2xl border border-red-400/40 p-6 shadow-lg'
                           style={{
@@ -70,44 +70,42 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                               <div className='w-10 h-10 bg-gradient-to-br from-red-400 to-orange-600 rounded-lg flex items-center justify-center border border-red-300/50 shadow-md'>
                                 <span className='text-sm'>
                                   {typeof item.Grade === 'number' && item.Grade <= 10 && '🌱'}
-                                  {typeof item.Grade === 'number' &&
-                                    item.Grade > 10 &&
-                                    item.Grade <= 20 &&
-                                    '🌿'}
-                                  {typeof item.Grade === 'number' &&
-                                    item.Grade > 20 &&
-                                    item.Grade <= 30 &&
-                                    '🌳'}
-                                  {typeof item.Grade === 'number' &&
-                                    item.Grade > 30 &&
-                                    item.Grade <= 40 &&
-                                    '🌲'}
-                                  {typeof item.Grade === 'number' &&
-                                    item.Grade > 40 &&
-                                    item.Grade <= 50 &&
-                                    '🌟'}
+                                  {typeof item.Grade === 'number'
+                                    && item.Grade > 10
+                                    && item.Grade <= 20
+                                    && '🌿'}
+                                  {typeof item.Grade === 'number'
+                                    && item.Grade > 20
+                                    && item.Grade <= 30
+                                    && '🌳'}
+                                  {typeof item.Grade === 'number'
+                                    && item.Grade > 30
+                                    && item.Grade <= 40
+                                    && '🌲'}
+                                  {typeof item.Grade === 'number'
+                                    && item.Grade > 40
+                                    && item.Grade <= 50
+                                    && '🌟'}
                                   {typeof item.Grade === 'number' && item.Grade > 50 && '💎'}
-                                  {typeof item.Grade === 'string' &&
-                                    item.Grade.includes('初级') &&
-                                    '🌱'}
-                                  {typeof item.Grade === 'string' &&
-                                    item.Grade.includes('中级') &&
-                                    '🌿'}
-                                  {typeof item.Grade === 'string' &&
-                                    item.Grade.includes('高级') &&
-                                    '🌳'}
-                                  {typeof item.Grade === 'string' &&
-                                    item.Grade.includes('顶级') &&
-                                    '🌲'}
-                                  {typeof item.Grade === 'string' &&
-                                    item.Grade.includes('传说') &&
-                                    '🌟'}
-                                  {typeof item.Grade === 'string' &&
-                                    item.Grade.includes('神话') &&
-                                    '💎'}
-                                  {!['🌱', '🌿', '🌳', '🌲', '🌟', '💎'].includes(
-                                    item.Grade as string
-                                  ) && '⚠️'}
+                                  {typeof item.Grade === 'string'
+                                    && item.Grade.includes('初级')
+                                    && '🌱'}
+                                  {typeof item.Grade === 'string'
+                                    && item.Grade.includes('中级')
+                                    && '🌿'}
+                                  {typeof item.Grade === 'string'
+                                    && item.Grade.includes('高级')
+                                    && '🌳'}
+                                  {typeof item.Grade === 'string'
+                                    && item.Grade.includes('顶级')
+                                    && '🌲'}
+                                  {typeof item.Grade === 'string'
+                                    && item.Grade.includes('传说')
+                                    && '🌟'}
+                                  {typeof item.Grade === 'string'
+                                    && item.Grade.includes('神话')
+                                    && '💎'}
+                                  {!['🌱', '🌿', '🌳', '🌲', '🌟', '💎'].includes(item.Grade as string) && '⚠️'}
                                 </span>
                               </div>
                               <div>
@@ -183,7 +181,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                                   style={{
                                     width: `${Math.min((index + 1) * 15, 100)}%`
                                   }}
-                                ></div>
+                                />
                               </div>
                               <span className='text-xs text-gray-300'>
                                 {Math.min((index + 1) * 15, 100)}%

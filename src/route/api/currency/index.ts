@@ -8,9 +8,10 @@ import {
 } from '@src/model/currency';
 
 // 默认返回配置信息（保持向后兼容）
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }

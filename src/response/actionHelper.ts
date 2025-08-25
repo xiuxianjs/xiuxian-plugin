@@ -25,23 +25,23 @@ export interface ActionRecord {
 }
 
 // 默认动作 key；支持自定义 suffix 以兼容特殊场景（如锻造使用 action10）
-export function actionRedisKey (userId: string | number, suffix = 'action') {
+export function actionRedisKey(userId: string | number, suffix = 'action') {
   return userKey(userId, suffix);
 }
 
-export async function readAction (userId: string | number) {
+export async function readAction(userId: string | number) {
   return getJSON<ActionRecord>(actionRedisKey(userId));
 }
 
-export async function readActionWithSuffix (userId: string | number, suffix: string) {
+export async function readActionWithSuffix(userId: string | number, suffix: string) {
   return getJSON<ActionRecord>(actionRedisKey(userId, suffix));
 }
 
-export async function writeAction (userId: string | number, record: ActionRecord) {
+export async function writeAction(userId: string | number, record: ActionRecord) {
   await setValue(actionRedisKey(userId), record);
 }
 
-export async function writeActionWithSuffix (
+export async function writeActionWithSuffix(
   userId: string | number,
   suffix: string,
   record: ActionRecord
@@ -49,13 +49,14 @@ export async function writeActionWithSuffix (
   await setValue(actionRedisKey(userId, suffix), record);
 }
 
-export function isActionRunning (record: ActionRecord | null | undefined, now = Date.now()) {
-  if (!record) return false;
+export function isActionRunning(record: ActionRecord | null | undefined, now = Date.now()) {
+  if (!record) { return false; }
+
   return now <= record.end_time;
 }
 
 // 通用启动：传入动作名与持续时长（毫秒）以及附加 flag
-export async function startAction (
+export async function startAction(
   userId: string | number,
   name: string,
   durationMs: number,
@@ -64,7 +65,7 @@ export async function startAction (
   return startActionWithSuffix(userId, 'action', name, durationMs, flags);
 }
 
-export async function startActionWithSuffix (
+export async function startActionWithSuffix(
   userId: string | number,
   suffix: string,
   name: string,
@@ -78,17 +79,21 @@ export async function startActionWithSuffix (
     time: durationMs,
     ...flags
   };
+
   await writeActionWithSuffix(userId, suffix, record);
+
   return record;
 }
 
 // 便捷：闭关动作（默认 30 分钟，向上取 30 的倍数，最大 30*240）
-export function normalizeBiguanMinutes (raw: number | undefined): number {
+export function normalizeBiguanMinutes(raw: number | undefined): number {
   const DEFAULT_MIN = 30;
   const STEP = 30;
   const MAX_MULTIPLIER = 240; // 与旧逻辑一致（30 * 240 分）
-  if (!raw || Number.isNaN(raw)) return DEFAULT_MIN;
+
+  if (!raw || Number.isNaN(raw)) { return DEFAULT_MIN; }
   let m = Math.max(raw, DEFAULT_MIN);
+
   // 向下对齐到 STEP 的倍数但不超过最大
   for (let i = MAX_MULTIPLIER; i > 0; i--) {
     if (m >= STEP * i) {
@@ -96,66 +101,76 @@ export function normalizeBiguanMinutes (raw: number | undefined): number {
       break;
     }
   }
+
   return m;
 }
 
 // 通用分钟归一：
 // raw 任意输入；step 步长；loops 最大循环次数（决定最大 = step * loops）；min 最小值
-export function normalizeDurationMinutes (raw, step: number, loops: number, min: number): number {
+export function normalizeDurationMinutes(raw, step: number, loops: number, min: number): number {
   const parsed = typeof raw === 'string' ? parseInt(raw, 10) : Number(raw);
-  if (Number.isNaN(parsed)) return min;
+
+  if (Number.isNaN(parsed)) { return min; }
   let m = parsed;
   const max = step * loops;
-  if (m > max) m = max;
+
+  if (m > max) { m = max; }
   for (let i = loops; i > 0; i--) {
     if (m >= step * i) {
       m = step * i;
       break;
     }
   }
-  if (m < min) m = min;
+  if (m < min) { m = min; }
+
   return m;
 }
 
 // 计算剩余毫秒
-export function remainingMs (record: ActionRecord, now = Date.now()): number {
+export function remainingMs(record: ActionRecord, now = Date.now()): number {
   return Math.max(0, record.end_time - now);
 }
 
 // 格式化剩余 mm分ss秒
-export function formatRemaining (ms: number) {
+export function formatRemaining(ms: number) {
   const total = Math.floor(ms / 1000);
   const m = Math.floor(total / 60);
   const s = total - m * 60;
+
   return `${m}分${s}秒`;
 }
 
 // 通用更新：传入回调，回调返回新的记录（或 null 代表不更新）
-export async function updateAction (
+export async function updateAction(
   userId: string | number,
   updater: (prev: ActionRecord | null) => ActionRecord | null
 ) {
   const prev = await readAction(userId);
   const next = updater(prev);
-  if (next) await writeAction(userId, next);
+
+  if (next) { await writeAction(userId, next); }
+
   return next;
 }
 
-export async function updateActionWithSuffix (
+export async function updateActionWithSuffix(
   userId: string | number,
   suffix: string,
   updater: (prev: ActionRecord | null) => ActionRecord | null
 ) {
   const prev = await readActionWithSuffix(userId, suffix);
   const next = updater(prev);
-  if (next) await writeActionWithSuffix(userId, suffix, next);
+
+  if (next) { await writeActionWithSuffix(userId, suffix, next); }
+
   return next;
 }
 
 // 提前结束当前动作（若存在），可附加额外字段覆盖；返回更新后的记录
-export async function stopAction (userId: string | number, extra: Partial<ActionRecord & {}> = {}) {
+export async function stopAction(userId: string | number, extra: Partial<ActionRecord & {}> = {}) {
   return updateAction(userId, prev => {
-    if (!prev) return null;
+    if (!prev) { return null; }
+
     return {
       ...prev,
       end_time: Date.now(),
@@ -164,13 +179,14 @@ export async function stopAction (userId: string | number, extra: Partial<Action
   });
 }
 
-export async function stopActionWithSuffix (
+export async function stopActionWithSuffix(
   userId: string | number,
   suffix: string,
   extra: Partial<ActionRecord & {}> = {}
 ) {
   return updateActionWithSuffix(userId, suffix, prev => {
-    if (!prev) return null;
+    if (!prev) { return null; }
+
     return {
       ...prev,
       end_time: Date.now(),

@@ -12,8 +12,10 @@ const res = onResponse(selects, async e => {
   const image = await screenshot('updateRecord', e.UserId, {
     Record: data
   });
+
   if (Buffer.isBuffer(image)) {
     Send(Image(image));
+
     return;
   }
   Send(Text('更新日志获取失败'));

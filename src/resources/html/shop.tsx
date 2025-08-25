@@ -28,7 +28,7 @@ const Shop: React.FC<ShopProps> = ({ name, level, state, thing = [] }) => {
       <main className='max-w-4xl mx-auto space-y-8'>
         {/* 商店标题区域 */}
         <header className='relative'>
-          <div className='absolute inset-0 bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-3xl blur-2xl'></div>
+          <div className='absolute inset-0 bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-3xl blur-2xl' />
           <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-amber-400/30 p-8 shadow-2xl border border-amber-300/20'>
             <div className='flex items-center justify-center space-x-4 mb-6'>
               <div className='w-10 h-10 bg-amber-400/30 rounded-full flex items-center justify-center'>
@@ -58,7 +58,7 @@ const Shop: React.FC<ShopProps> = ({ name, level, state, thing = [] }) => {
         {/* 商品列表 */}
         {thing.length > 0 && (
           <section className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-3xl blur-2xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-blue-400/30 p-6 md:p-8 shadow-2xl border border-blue-300/20'>
               <div className='space-y-4'>
                 {thing.map((item, index) => (
@@ -66,8 +66,8 @@ const Shop: React.FC<ShopProps> = ({ name, level, state, thing = [] }) => {
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-blue-900/40 to-purple-900/40 p-5 shadow-xl border border-blue-400/30 backdrop-blur-md hover:border-blue-300/50 transition-all duration-300'
                   >
-                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-t-2xl'></div>
-                    <div className='absolute top-2 right-2 w-3 h-3 bg-blue-400/50 rounded-full'></div>
+                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-t-2xl' />
+                    <div className='absolute top-2 right-2 w-3 h-3 bg-blue-400/50 rounded-full' />
 
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center space-x-4'>
@@ -101,7 +101,7 @@ const Shop: React.FC<ShopProps> = ({ name, level, state, thing = [] }) => {
         {/* 空状态 */}
         {thing.length === 0 && (
           <section className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-br from-gray-600/10 to-slate-600/10 rounded-3xl blur-2xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-gray-600/10 to-slate-600/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-gray-400/30 p-8 shadow-2xl border border-gray-300/20'>
               <div className='flex flex-col items-center space-y-4'>
                 <div className='w-16 h-16 bg-gray-400/20 rounded-full flex items-center justify-center'>

@@ -32,7 +32,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
         {/* 标题 */}
         <header className='space-y-6 flex flex-col items-center'>
           <div className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-r from-sky-400/30 to-cyan-400/30 rounded-3xl blur-xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-r from-sky-400/30 to-cyan-400/30 rounded-3xl blur-xl' />
             <h1
               className='relative inline-block px-10 py-4 rounded-3xl
               bg-gradient-to-r from-sky-400/60 via-cyan-300/50 to-sky-400/60
@@ -45,7 +45,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
             </h1>
           </div>
           <div className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-r from-sky-500/10 to-cyan-500/10 rounded-2xl blur-lg'></div>
+            <div className='absolute inset-0 bg-gradient-to-r from-sky-500/10 to-cyan-500/10 rounded-2xl blur-lg' />
             <div className='relative px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-sky-200/30 text-sky-100/90 text-xs md:text-sm space-y-2 drop-shadow'>
               <div className='flex items-center justify-center space-x-2'>
                 <span className='text-sky-300'>📜</span>
@@ -65,7 +65,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
 
         {/* 卡片区 */}
         <section className='relative'>
-          <div className='absolute inset-0 bg-gradient-to-br from-sky-600/5 to-cyan-600/5 rounded-3xl blur-2xl'></div>
+          <div className='absolute inset-0 bg-gradient-to-br from-sky-600/5 to-cyan-600/5 rounded-3xl blur-2xl' />
           <div className='relative grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
             {forumData?.length ? (
               forumData.map((item, index) => (
@@ -82,7 +82,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                   />
 
                   {/* 右上角装饰 */}
-                  <div className='absolute top-3 right-3 w-3 h-3 bg-cyan-400/50 rounded-full'></div>
+                  <div className='absolute top-3 right-3 w-3 h-3 bg-cyan-400/50 rounded-full' />
 
                   <div className='space-y-3'>
                     <div className='flex items-center space-x-2'>
@@ -124,7 +124,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
               ))
             ) : (
               <div className='col-span-full relative'>
-                <div className='absolute inset-0 bg-gradient-to-br from-sky-600/10 to-cyan-600/10 rounded-2xl blur-xl'></div>
+                <div className='absolute inset-0 bg-gradient-to-br from-sky-600/10 to-cyan-600/10 rounded-2xl blur-xl' />
                 <div
                   className='relative px-8 py-6 rounded-2xl
                   border border-sky-200/40 bg-white/10
@@ -143,11 +143,11 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
 
         {/* 底部装饰 */}
         <div className='flex justify-center space-x-4 pt-8'>
-          <div className='w-16 h-1 bg-gradient-to-r from-sky-400/50 to-transparent rounded-full'></div>
+          <div className='w-16 h-1 bg-gradient-to-r from-sky-400/50 to-transparent rounded-full' />
           <div className='w-8 h-8 bg-gradient-to-br from-sky-400/30 to-cyan-400/30 rounded-full flex items-center justify-center'>
             <span className='text-white/70 text-sm'>💎</span>
           </div>
-          <div className='w-16 h-1 bg-gradient-to-l from-cyan-400/50 to-transparent rounded-full'></div>
+          <div className='w-16 h-1 bg-gradient-to-l from-cyan-400/50 to-transparent rounded-full' />
         </div>
       </main>
     </HTML>

@@ -11,16 +11,20 @@ export const regular = /^(#|＃|\/)?允许双修$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
+
   if (!(await existplayer(usr_qq))) {
     return false;
   }
   const player = await readPlayer(usr_qq);
+
   if (!player) {
     Send(Text('玩家数据读取失败'));
+
     return false;
   }
   redis.set(getRedisKey(usr_qq, 'couple'), 0);
   Send(Text(`${player.名号}开启了允许模式`));
+
   return false;
 });
 

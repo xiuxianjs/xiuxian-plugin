@@ -123,19 +123,19 @@ const Najie = ({
         {/* 多层背景装饰元素 - 增强层次感 */}
         <div className='absolute inset-0'>
           {/* 第一层装饰 */}
-          <div className='absolute top-10 left-10 w-32 h-32 border border-white/20 rounded-full backdrop-blur-sm'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-white/20 rounded-full backdrop-blur-sm'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-white/20 rounded-full backdrop-blur-sm'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-white/20 rounded-full backdrop-blur-sm'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-white/20 rounded-full backdrop-blur-sm' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-white/20 rounded-full backdrop-blur-sm' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-white/20 rounded-full backdrop-blur-sm' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-white/20 rounded-full backdrop-blur-sm' />
 
           {/* 第二层装饰 */}
-          <div className='absolute top-20 left-1/3 w-20 h-20 border border-white/15 rounded-full backdrop-blur-sm'></div>
-          <div className='absolute top-60 right-1/4 w-16 h-16 border border-white/15 rounded-full backdrop-blur-sm'></div>
-          <div className='absolute bottom-60 left-1/5 w-24 h-24 border border-white/15 rounded-full backdrop-blur-sm'></div>
+          <div className='absolute top-20 left-1/3 w-20 h-20 border border-white/15 rounded-full backdrop-blur-sm' />
+          <div className='absolute top-60 right-1/4 w-16 h-16 border border-white/15 rounded-full backdrop-blur-sm' />
+          <div className='absolute bottom-60 left-1/5 w-24 h-24 border border-white/15 rounded-full backdrop-blur-sm' />
 
           {/* 第三层装饰 */}
-          <div className='absolute top-40 left-1/2 w-12 h-12 border border-white/10 rounded-full backdrop-blur-sm'></div>
-          <div className='absolute bottom-80 right-1/6 w-28 h-28 border border-white/10 rounded-full backdrop-blur-sm'></div>
+          <div className='absolute top-40 left-1/2 w-12 h-12 border border-white/10 rounded-full backdrop-blur-sm' />
+          <div className='absolute bottom-80 right-1/6 w-28 h-28 border border-white/10 rounded-full backdrop-blur-sm' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
@@ -145,16 +145,16 @@ const Najie = ({
           <div className='max-w-4xl mx-auto mb-8'>
             <div className='relative'>
               {/* 多层阴影效果 */}
-              <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-              <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+              <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                 <div className='flex flex-col md:flex-row items-center gap-6'>
                   {/* 头像区域 */}
                   <div className='flex flex-col items-center'>
                     <div className='relative'>
                       {/* 头像光晕效果 */}
-                      <div className='absolute inset-0 bg-white/30 rounded-full blur-lg'></div>
-                      <div className='absolute inset-0 bg-white/20 rounded-full blur-md'></div>
+                      <div className='absolute inset-0 bg-white/30 rounded-full blur-lg' />
+                      <div className='absolute inset-0 bg-white/20 rounded-full blur-md' />
                       <Avatar
                         src={getAvatar(user_id)}
                         rootClassName='w-60 h-60'
@@ -205,7 +205,7 @@ const Najie = ({
                               <div
                                 className='bg-gradient-to-r from-red-400 to-red-600 h-3 rounded-full'
                                 style={strand_hp.style}
-                              ></div>
+                              />
                             </div>
                             <span className='text-sm font-bold text-gray-800'>
                               {player.当前血量 || 0}/{player.血量上限 || 0}
@@ -227,7 +227,7 @@ const Najie = ({
                               <div
                                 className='bg-gradient-to-r from-blue-400 to-blue-600 h-3 rounded-full'
                                 style={strand_lingshi.style}
-                              ></div>
+                              />
                             </div>
                             <span className='text-sm font-bold text-gray-800'>
                               {najie.灵石 || 0}/{najie.灵石上限 || 0}
@@ -248,8 +248,8 @@ const Najie = ({
             {najie.道具?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>
@@ -297,8 +297,8 @@ const Najie = ({
             {najie.装备?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>
@@ -309,6 +309,7 @@ const Najie = ({
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.装备.map((item, index) => {
                       const stats = renderEquipmentStats(item);
+
                       return (
                         <div
                           key={index}
@@ -373,8 +374,8 @@ const Najie = ({
             {najie.丹药?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>
@@ -441,8 +442,8 @@ const Najie = ({
             {najie.草药?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>
@@ -491,8 +492,8 @@ const Najie = ({
             {najie.材料?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>
@@ -537,8 +538,8 @@ const Najie = ({
             {najie.仙宠?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>
@@ -587,8 +588,8 @@ const Najie = ({
             {najie.仙宠口粮?.length > 0 && (
               <div className='relative'>
                 {/* 多层阴影效果 */}
-                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl'></div>
-                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl'></div>
+                <div className='absolute inset-0 bg-white/15 rounded-3xl blur-2xl' />
+                <div className='absolute inset-0 bg-white/10 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-xl bg-white/25 rounded-3xl border border-white/40 p-6 shadow-2xl'>
                   <div className='flex items-center gap-3 mb-6'>
                     <div className='w-10 h-10 bg-white/40 backdrop-blur-sm rounded-lg flex items-center justify-center'>

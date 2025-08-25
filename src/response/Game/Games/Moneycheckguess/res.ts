@@ -15,13 +15,16 @@ const res = onResponse(selects, async e => {
   const now_time = Date.now();
   const ifexistplay = await existplayer(usr_qq);
   const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
-  if (!ifexistplay || !game_action) return false;
-  if (isNaN(game.yazhu[usr_qq])) return false;
+
+  if (!ifexistplay || !game_action) { return false; }
+  if (isNaN(game.yazhu[usr_qq])) { return false; }
   if (!game.game_key_user[usr_qq]) {
     Send(Text('媚娘：公子，你还没投入呢'));
+
     return false;
   }
   const player = await readPlayer(usr_qq);
+
   if (!player) {
     return;
   }
@@ -37,7 +40,7 @@ const res = onResponse(selects, async e => {
 
   const inputMoney = game.yazhu[usr_qq];
 
-  function ensureNumber (v): number {
+  function ensureNumber(v): number {
     return typeof v === 'number' ? v : parseInt(String(v || 0)) || 0;
   }
 
@@ -47,6 +50,7 @@ const res = onResponse(selects, async e => {
 
     // 调用系统核心逻辑 (对象返回结构)
     const { win, dice } = await openMoneySystem(isBig, inputMoney);
+
     isWin = win;
     touzi = dice;
 
@@ -72,15 +76,9 @@ const res = onResponse(selects, async e => {
       await setDataJSONStringifyByKey(keys.player(usr_qq), player);
       addCoin(usr_qq, game.yazhu[usr_qq]);
       if (y == 1) {
-        Send(
-          Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`)
-        );
+        Send(Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`));
       } else {
-        Send(
-          Text(
-            `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`
-          )
-        );
+        Send(Text(`骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`));
       }
     } else {
       // 输了
@@ -95,6 +93,7 @@ const res = onResponse(selects, async e => {
       addCoin(usr_qq, -inputMoney);
       const now_money = player.灵石 - inputMoney;
       const msg = [`骰子最终为 ${touzi} 你猜错了！\n现在拥有灵石:${now_money}`];
+
       if (now_money <= 0) {
         msg.push('\n媚娘：没钱了也想跟老娘耍？\n你已经裤衩都输光了...快去降妖赚钱吧！');
       }
@@ -103,11 +102,13 @@ const res = onResponse(selects, async e => {
   } else {
     // 猜数字直接判断是否相等，猜中3倍收益
     const inputNumber = parseInt(es);
+
     touzi = Math.floor(Math.random() * 6) + 1;
     isWin = inputNumber === touzi;
 
     if (isWin) {
       const winAmount = inputMoney * 5;
+
       if (notUndAndNull(player.金银坊胜场)) {
         player.金银坊胜场 = ensureNumber(player.金银坊胜场) + 1;
         player.金银坊收入 = ensureNumber(player.金银坊收入) + winAmount;
@@ -117,11 +118,7 @@ const res = onResponse(selects, async e => {
       }
       await setDataJSONStringifyByKey(keys.player(usr_qq), player);
       addCoin(usr_qq, winAmount);
-      Send(
-        Text(
-          `骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`
-        )
-      );
+      Send(Text(`骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`));
     } else {
       if (notUndAndNull(player.金银坊败场)) {
         player.金银坊败场 = ensureNumber(player.金银坊败场) + 1;
@@ -134,6 +131,7 @@ const res = onResponse(selects, async e => {
       addCoin(usr_qq, -inputMoney);
       const now_money = player.灵石 - inputMoney;
       const msg = [`骰子最终为 ${touzi}，你猜错了！\n现在拥有灵石:${now_money}`];
+
       if (now_money <= 0) {
         msg.push('\n媚娘：没钱了也想跟老娘耍？\n你已经裤衩都输光了...快去降妖赚钱吧！');
       }
@@ -146,6 +144,7 @@ const res = onResponse(selects, async e => {
   await redis.del(getRedisKey(usr_qq, 'game_action'));
   game.yazhu[usr_qq] = 0;
   clearTimeout(game.game_time[usr_qq]);
+
   return false;
 });
 

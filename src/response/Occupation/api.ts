@@ -4,8 +4,9 @@ import { getDataList } from '@src/model/DataList';
 import { addNajieThing, addExp4, keys } from '@src/model/index';
 import { DataMention, Mention } from 'alemonjs';
 
-function toNum (v, d = 0) {
+function toNum(v, d = 0) {
   const n = Number(v);
+
   return Number.isFinite(n) ? n : d;
 }
 
@@ -18,7 +19,7 @@ function toNum (v, d = 0) {
  * @param maxSlots 最大时间槽数（默认48个，即720分钟）
  * @returns 有效时间（分钟）
  */
-export function calcEffectiveMinutes (
+export function calcEffectiveMinutes(
   start: number,
   end: number,
   now: number,
@@ -26,25 +27,29 @@ export function calcEffectiveMinutes (
   maxSlots = 48
 ) {
   let minutes: number;
+
   if (end > now) {
     minutes = Math.floor((now - start) / 60000);
   } else {
     minutes = Math.floor((end - start) / 60000);
   }
-  if (minutes < slot) return 0;
+  if (minutes < slot) { return 0; }
   const full = Math.min(Math.floor(minutes / slot), maxSlots);
+
   return full * slot;
 }
 
 // 计算职业系数（使用经验表 experience 做近似归一化）
-async function calcOccupationFactor (occupation_level: number) {
+async function calcOccupationFactor(occupation_level: number) {
   const res = await getDataList('experience');
+
   return res.find(r => r.id === occupation_level)?.rate || 0;
 }
 
-export async function plant_jiesuan (user_id: string, time: number, group_id?: string) {
+export async function plant_jiesuan(user_id: string, time: number, group_id?: string) {
   const usr_qq = user_id;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
   if (!player) {
     return false;
   }
@@ -56,6 +61,7 @@ export async function plant_jiesuan (user_id: string, time: number, group_id?: s
   const occFactor = await calcOccupationFactor(player.occupation_level);
   // 基础产量
   let sum = (time / 480) * (player.occupation_level * 2 + 12) * k;
+
   if (player.level_id >= 36) {
     sum = (time / 480) * (player.occupation_level * 3 + 11);
   }
@@ -86,10 +92,12 @@ export async function plant_jiesuan (user_id: string, time: number, group_id?: s
   const amounts = baseVec.map(p => p * sum * mult);
 
   const msg: Array<DataMention | string> = [Mention(usr_qq)];
+
   msg.push(`\n恭喜你获得了经验${exp},草药:`);
   for (let i = 0; i < amounts.length; i++) {
     const val = Math.floor(amounts[i]);
-    if (val <= 0) continue;
+
+    if (val <= 0) { continue; }
     msg.push(`\n${names[i]}${val}个`);
     await addNajieThing(usr_qq, names[i], '草药', val);
   }
@@ -100,13 +108,15 @@ export async function plant_jiesuan (user_id: string, time: number, group_id?: s
   } else {
     await pushInfo(usr_qq, false, msg);
   }
+
   return false;
 }
 
-export async function mine_jiesuan (user_id: string, time: number, group_id?: string) {
+export async function mine_jiesuan(user_id: string, time: number, group_id?: string) {
   const usr_qq = user_id;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
-  if (!player) return false;
+
+  if (!player) { return false; }
   // 基础经验
   const exp = time * 10;
   const occFactor = await calcOccupationFactor(player.occupation_level);
@@ -144,6 +154,7 @@ export async function mine_jiesuan (user_id: string, time: number, group_id?: st
     '蓝色妖丹'
   ];
   const xuanze = Math.trunc(Math.random() * A.length);
+
   end_amount *= player.level_id / 40;
   end_amount = Math.floor(end_amount);
   await addNajieThing(usr_qq, '庚金', '材料', end_amount);
@@ -152,6 +163,7 @@ export async function mine_jiesuan (user_id: string, time: number, group_id?: st
   await addNajieThing(usr_qq, B[xuanze], '材料', Math.trunc(num / 48));
   await addExp4(usr_qq, exp);
   const msg: Array<DataMention | string> = [Mention(usr_qq)];
+
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`);
   msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`);
   if (group_id) {
@@ -159,5 +171,6 @@ export async function mine_jiesuan (user_id: string, time: number, group_id?: st
   } else {
     await pushInfo(usr_qq, false, msg);
   }
+
   return false;
 }

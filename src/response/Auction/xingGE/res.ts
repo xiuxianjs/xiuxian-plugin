@@ -12,19 +12,24 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   const res = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
+
   if (!notUndAndNull(res)) {
     Send(Text('目前没有拍卖正在进行'));
+
     return false;
   }
   const auction = JSON.parse(res);
 
   let msg = `___[星阁]___\n目前正在拍卖【${auction.thing.name}】\n`;
+
   if (auction.last_offer_player === 0) {
     msg += '暂无人出价';
   } else {
     const player = await readPlayer(auction.last_offer_player);
+
     msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
   }
   await Send(Text(msg));

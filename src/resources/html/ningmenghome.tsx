@@ -12,7 +12,7 @@ const Ningmenghome = ({ commodities_list }) => {
         }}
       >
         {/* 白色居中渐变叠加 */}
-        <div className='absolute inset-0 bg-gradient-to-b from-white/95 via-white/80 to-blue-300/90 pointer-events-none'></div>
+        <div className='absolute inset-0 bg-gradient-to-b from-white/95 via-white/80 to-blue-300/90 pointer-events-none' />
 
         {/* 内容容器 */}
         <div className='relative max-w-4xl w-full bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 text-blue-900 z-10'>

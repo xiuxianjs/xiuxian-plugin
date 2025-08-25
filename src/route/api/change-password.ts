@@ -3,7 +3,7 @@ import { setUserPassword, validateToken } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 
 // 修改密码接口
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     // 验证token
     const token = ctx.request.headers.authorization?.replace('Bearer ', '');
@@ -15,6 +15,7 @@ export const POST = async (ctx: Context) => {
         message: 'Token不能为空',
         data: null
       };
+
       return;
     }
 
@@ -27,6 +28,7 @@ export const POST = async (ctx: Context) => {
         message: 'Token无效或已过期',
         data: null
       };
+
       return;
     }
 
@@ -44,6 +46,7 @@ export const POST = async (ctx: Context) => {
         message: '当前密码和新密码不能为空',
         data: null
       };
+
       return;
     }
 
@@ -55,6 +58,7 @@ export const POST = async (ctx: Context) => {
         message: '新密码长度至少6位',
         data: null
       };
+
       return;
     }
 
@@ -66,6 +70,7 @@ export const POST = async (ctx: Context) => {
         message: '当前密码错误',
         data: null
       };
+
       return;
     }
 

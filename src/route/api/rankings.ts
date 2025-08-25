@@ -6,9 +6,10 @@ import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 
 // 获取排名数据
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -24,6 +25,7 @@ export const GET = async (ctx: Context) => {
         message: '排名类型不能为空',
         data: null
       };
+
       return;
     }
 
@@ -41,6 +43,7 @@ export const GET = async (ctx: Context) => {
 
       for (const assName of associationList) {
         const ass = await getDataJSONParseByKey(keys.association(assName));
+
         if (ass) {
           const power = ass.power || 0;
           const level = ass.宗门等级 || 1;
@@ -48,8 +51,8 @@ export const GET = async (ctx: Context) => {
           const lingshi = ass.宗门灵石池 || 0;
 
           // 综合实力计算：等级 * 1000 + 成员数 * 100 + 灵石池 / 10000 + 仙界加成
-          const totalPower =
-              level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
+          const totalPower
+              = level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
 
           rankingData.push({
             id: assName,
@@ -73,8 +76,10 @@ export const GET = async (ctx: Context) => {
 
       for (const assName of associationList) {
         const ass = await getDataJSONParseByKey(keys.association(assName));
+
         if (ass) {
           const members = ass.所有成员?.length || 0;
+
           rankingData.push({
             id: assName,
             name: ass.宗门名称 || assName,
@@ -95,8 +100,10 @@ export const GET = async (ctx: Context) => {
 
       for (const assName of associationList) {
         const ass = await getDataJSONParseByKey(keys.association(assName));
+
         if (ass) {
           const lingshi = ass.宗门灵石池 || 0;
+
           rankingData.push({
             id: assName,
             name: ass.宗门名称 || assName,
@@ -117,8 +124,10 @@ export const GET = async (ctx: Context) => {
 
       for (const assName of associationList) {
         const ass = await getDataJSONParseByKey(keys.association(assName));
+
         if (ass) {
           const level = ass.宗门等级 || 1;
+
           rankingData.push({
             id: assName,
             name: ass.宗门名称 || assName,
@@ -139,9 +148,11 @@ export const GET = async (ctx: Context) => {
 
       for (const qq of playerList) {
         const player = await readPlayer(qq);
+
         if (player) {
           const levelList = await getDataList('Level1');
           const level = levelList.find(item => item.level_id === player.level_id);
+
           rankingData.push({
             id: qq,
             name: player.名号 || `玩家${qq}`,
@@ -159,10 +170,13 @@ export const GET = async (ctx: Context) => {
     case 'PLAYER_ATTACK': {
       // 玩家攻击力排名
       const playerList = await keysByPath(__PATH.player_path);
+
       for (const qq of playerList) {
         const player = await readPlayer(qq);
+
         if (player) {
           const attack = player.攻击 || 0;
+
           rankingData.push({
             id: qq,
             name: player.名号 || `玩家${qq}`,
@@ -183,8 +197,10 @@ export const GET = async (ctx: Context) => {
 
       for (const qq of playerList) {
         const player = await readPlayer(qq);
+
         if (player) {
           const defense = player.防御 || 0;
+
           rankingData.push({
             id: qq,
             name: player.名号 || `玩家${qq}`,
@@ -206,6 +222,7 @@ export const GET = async (ctx: Context) => {
         message: '不支持的排名类型',
         data: null
       };
+
       return;
     }
 
@@ -236,9 +253,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 获取排名统计信息
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -261,6 +279,7 @@ export const POST = async (ctx: Context) => {
 
     for (const qq of playerKeys) {
       const player = await readPlayer(qq);
+
       if (player) {
         topPlayers.push({
           id: qq,
@@ -293,14 +312,15 @@ export const POST = async (ctx: Context) => {
 
     for (const assName of associationKeys) {
       const ass = await getDataJSONParseByKey(keys.association(assName));
+
       if (ass) {
         const power = ass.power || 0;
         const level = ass.宗门等级 || 1;
         const members = ass.所有成员?.length || 0;
         const lingshi = ass.宗门灵石池 || 0;
 
-        const totalPower =
-          level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
+        const totalPower
+          = level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
 
         topAssociations.push({
           id: assName,
@@ -347,15 +367,17 @@ export const POST = async (ctx: Context) => {
 };
 
 // 手动触发排名计算
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     // 触发天地榜任务
     const { TiandibangTask } = await import('@src/task/Tiandibang');
+
     await TiandibangTask();
 
     ctx.status = 200;

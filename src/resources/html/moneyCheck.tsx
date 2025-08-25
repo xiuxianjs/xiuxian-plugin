@@ -21,7 +21,7 @@ const MoneyCheck = ({
       style={{ backgroundImage: `url(${ningmenghomeBgURL})` }}
     >
       {/* 白色居中渐变叠加 */}
-      <div className='absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-blue-200/80 pointer-events-none'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-blue-200/80 pointer-events-none' />
 
       <main
         className='relative max-w-md w-full bg-gradient-to-tr from-blue-100/60 to-blue-200/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 flex flex-col items-center gap-8

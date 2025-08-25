@@ -9,32 +9,40 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
-  if (!player) return false;
+
+  if (!player) { return false; }
   if (!notUndAndNull(player.宗门)) {
     Send(Text('你尚未加入宗门'));
+
     return false;
   }
 
   if (!['宗主', '副宗主', '长老'].includes(player.宗门.职位)) {
     Send(Text('只有宗主、副宗主或长老可以操作'));
+
     return false;
   }
-  //获取灵石数量
+  // 获取灵石数量
   const msg = e.MessageText.replace(/^#维护护宗大阵/, '');
-  //校验输入灵石数
+  // 校验输入灵石数
   const lingshi = await convert2integer(msg);
   const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
+
   if (!ass) {
     Send(Text('宗门数据异常'));
+
     return false;
   }
   // 断言类型收窄
   const association = ass as AssociationDetailData;
+
   if ((association.灵石池 as number) < lingshi) {
     Send(Text(`宗门灵石池只有${ass.灵石池}灵石,数量不足`));
+
     return false;
   }
   let xian = 5;
+
   if (association.power == 1) {
     xian = 2;
   }

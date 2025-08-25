@@ -9,7 +9,7 @@ const Log = ({ log }: { log?: string[] }) => {
       style={{ backgroundImage: `url(${najieURL})` }}
     >
       {/* 背景遮罩渐变，防止文字与背景冲突 */}
-      <div className='absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-none'></div>
+      <div className='absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-none' />
 
       <main className='relative max-w-3xl mx-auto space-y-6 z-10'>
         <section className='rounded-3xl bg-white/10 backdrop-blur-lg ring-1 ring-white/20 p-6 md:p-8 shadow-lg'>

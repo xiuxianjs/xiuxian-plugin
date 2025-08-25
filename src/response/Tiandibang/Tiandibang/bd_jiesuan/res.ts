@@ -8,18 +8,21 @@ export const regular = /^(#|＃|\/)?清空积分/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
   if (!e.IsMaster) {
     Send(Text('只有主人可以执行操作'));
+
     return false;
   }
   try {
     await readTiandibang();
   } catch {
-    //没有表要先建立一个！
+    // 没有表要先建立一个！
     await Write_tiandibang([]);
   }
   await re_bangdang();
   Send(Text('积分已经重置！'));
+
   return false;
 });
 

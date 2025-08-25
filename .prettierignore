@@ -1,13 +1,41 @@
-# Node dependencies
-node_modules
+# 构建输出
+dist/
+lib/
+build/
 
-# alemon dev/config
-/data/
+# 依赖
+node_modules/
 
-# Logs
-logs
+# 日志
+logs/
 *.log
 
-# Local env files
-.env.*
-!.env.example
+# 缓存
+.cache/
+.eslintcache
+
+# 配置文件
+*.config.js
+*.config.ts
+lvy.config.ts
+jsxp.config.tsx
+
+# 数据文件
+*.json
+!package.json
+!package-lock.json
+!yarn.lock
+
+# 其他
+.DS_Store
+.env*
+.git/
+.vscode/
+.idea/
+
+# 前端构建文件
+frontend/dist/
+frontend/build/
+
+# 测试文件
+testone/

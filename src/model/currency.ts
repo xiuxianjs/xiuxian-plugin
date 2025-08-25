@@ -240,14 +240,16 @@ const initGlobalRechargeStats: GlobalRechargeStats = {
 /**
  * 获取下一个充值记录ID（使用原子操作避免并发问题）
  */
-export const getNextRechargeRecordId = async (): Promise<string> => {
+export const getNextRechargeRecordId = async(): Promise<string> => {
   try {
     const redis = getIoRedis();
     // 使用原子操作递增ID
     const nextId = await redis.incr(REDIS_KEYS.CURRENCY_INDEX());
+
     return nextId.toString();
   } catch (error) {
     logger.warn('Error getting next recharge record ID:', error);
+
     // 降级方案：使用时间戳+随机数
     return `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
   }
@@ -258,7 +260,7 @@ export const getNextRechargeRecordId = async (): Promise<string> => {
  * @param userId 用户ID
  * @returns 用户充值信息
  */
-export const findUserRechargeInfo = async (userId: string): Promise<UserCurrencyData> => {
+export const findUserRechargeInfo = async(userId: string): Promise<UserCurrencyData> => {
   // 输入验证
   if (!userId || typeof userId !== 'string') {
     throw new Error('Invalid user ID');
@@ -276,6 +278,7 @@ export const findUserRechargeInfo = async (userId: string): Promise<UserCurrency
     };
   } catch (error) {
     logger.warn('Error finding user recharge info:', error);
+
     return {
       ...initUserCurrencyData,
       id: userId
@@ -289,7 +292,7 @@ export const findUserRechargeInfo = async (userId: string): Promise<UserCurrency
  * @param rechargeData 充值数据
  * @returns 充值记录
  */
-export const createRechargeRecord = async (
+export const createRechargeRecord = async(
   userId: string,
   rechargeData: {
     type: RechargeType;
@@ -364,10 +367,10 @@ export const createRechargeRecord = async (
  * @param paymentMethod 支付方式
  * @returns 更新后的充值记录
  */
-export const completeRechargePayment = async (
+export const completeRechargePayment = async(
   recordId: string,
   transactionId: string,
-  paymentMethod: string = 'unknown'
+  paymentMethod = 'unknown'
 ): Promise<RechargeRecord> => {
   // 输入验证
   if (!recordId || typeof recordId !== 'string') {
@@ -382,6 +385,7 @@ export const completeRechargePayment = async (
 
     // 获取充值记录
     const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId));
+
     if (!recordData) {
       throw new Error('Recharge record not found');
     }
@@ -392,6 +396,7 @@ export const completeRechargePayment = async (
     // 检查是否已经支付成功
     if (record.payment_status === PaymentStatus.SUCCESS) {
       logger.warn('Recharge record already completed:', recordId);
+
       return record;
     }
 
@@ -472,12 +477,12 @@ export const completeRechargePayment = async (
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserCurrency = async (
+export const rechargeUserCurrency = async(
   userId: string,
   tier: string,
-  paymentMethod: string = 'unknown',
-  ipAddress: string = '',
-  deviceInfo: string = ''
+  paymentMethod = 'unknown',
+  ipAddress = '',
+  deviceInfo = ''
 ) => {
   try {
     // 根据档位获取金额
@@ -510,11 +515,11 @@ export const rechargeUserCurrency = async (
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserSmallMonthCard = async (
+export const rechargeUserSmallMonthCard = async(
   userId: string,
-  paymentMethod: string = 'unknown',
-  ipAddress: string = '',
-  deviceInfo: string = ''
+  paymentMethod = 'unknown',
+  ipAddress = '',
+  deviceInfo = ''
 ) => {
   try {
     const { days, name } = MONTH_CARD_CONFIG.SMALL;
@@ -545,11 +550,11 @@ export const rechargeUserSmallMonthCard = async (
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserBigMonthCard = async (
+export const rechargeUserBigMonthCard = async(
   userId: string,
-  paymentMethod: string = 'unknown',
-  ipAddress: string = '',
-  deviceInfo: string = ''
+  paymentMethod = 'unknown',
+  ipAddress = '',
+  deviceInfo = ''
 ) => {
   try {
     const { days, name } = MONTH_CARD_CONFIG.BIG;
@@ -579,10 +584,10 @@ export const rechargeUserBigMonthCard = async (
  * @param offset 偏移量
  * @returns 充值记录列表
  */
-export const getUserRechargeRecords = async (
+export const getUserRechargeRecords = async(
   userId: string,
-  limit: number = 20,
-  offset: number = 0
+  limit = 20,
+  offset = 0
 ) => {
   try {
     const redis = getIoRedis();
@@ -590,8 +595,10 @@ export const getUserRechargeRecords = async (
     const recordIds = userInfo.recharge_record_ids.slice(offset, offset + limit);
 
     const records = [];
+
     for (const recordId of recordIds) {
       const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId));
+
       if (recordData) {
         records.push(JSON.parse(recordData));
       }
@@ -600,6 +607,7 @@ export const getUserRechargeRecords = async (
     return records.sort((a, b) => b.created_at - a.created_at);
   } catch (error) {
     logger.warn('Error getting user recharge records:', error);
+
     return [];
   }
 };
@@ -612,9 +620,9 @@ export const getUserRechargeRecords = async (
  * @param type 充值类型过滤
  * @returns 充值记录列表
  */
-export const getAllRechargeRecords = async (
-  limit: number = 50,
-  offset: number = 0,
+export const getAllRechargeRecords = async(
+  limit = 50,
+  offset = 0,
   status?: PaymentStatus,
   type?: RechargeType
 ) => {
@@ -624,10 +632,13 @@ export const getAllRechargeRecords = async (
     const keys_list = await redis.keys(pattern);
 
     const records = [];
+
     for (const key of keys_list.slice(offset, offset + limit)) {
       const recordData = await redis.get(key);
+
       if (recordData) {
         const record = JSON.parse(recordData);
+
         if ((!status || record.payment_status === status) && (!type || record.type === type)) {
           records.push(record);
         }
@@ -637,6 +648,7 @@ export const getAllRechargeRecords = async (
     return records.sort((a, b) => b.created_at - a.created_at);
   } catch (error) {
     logger.warn('Error getting all recharge records:', error);
+
     return [];
   }
 };
@@ -646,13 +658,15 @@ export const getAllRechargeRecords = async (
  * @param recordId 充值记录ID
  * @returns 充值记录详情
  */
-export const getRechargeRecordDetail = async (recordId: string) => {
+export const getRechargeRecordDetail = async(recordId: string) => {
   try {
     const redis = getIoRedis();
     const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId));
+
     return recordData ? JSON.parse(recordData) : null;
   } catch (error) {
     logger.warn('Error getting recharge record detail:', error);
+
     return null;
   }
 };
@@ -662,13 +676,14 @@ export const getRechargeRecordDetail = async (recordId: string) => {
  * @param amount 充值金额
  * @param isFirstRecharge 是否首充
  */
-const updateGlobalRechargeStats = async (amount: number, isFirstRecharge: boolean) => {
+const updateGlobalRechargeStats = async(amount: number, isFirstRecharge: boolean) => {
   try {
     const redis = getIoRedis();
     const statsKey = REDIS_KEYS.GLOBAL_STATS();
 
     let stats = initGlobalRechargeStats;
     const statsData = await redis.get(statsKey);
+
     if (statsData) {
       stats = JSON.parse(statsData);
     }
@@ -695,7 +710,7 @@ const updateGlobalRechargeStats = async (amount: number, isFirstRecharge: boolea
  * @param transactionId 交易号
  * @returns 是否已存在
  */
-export const isTransactionIdExists = async (transactionId: string): Promise<boolean> => {
+export const isTransactionIdExists = async(transactionId: string): Promise<boolean> => {
   try {
     const redis = getIoRedis();
     const transactionKey = REDIS_KEYS.TRANSACTION(transactionId);
@@ -709,6 +724,7 @@ export const isTransactionIdExists = async (transactionId: string): Promise<bool
     return exists === 1;
   } catch (error) {
     logger.warn('Error checking transaction ID:', error);
+
     return false;
   }
 };
@@ -717,14 +733,16 @@ export const isTransactionIdExists = async (transactionId: string): Promise<bool
  * 获取全局充值统计
  * @returns 全局充值统计
  */
-export const getGlobalRechargeStats = async () => {
+export const getGlobalRechargeStats = async() => {
   try {
     const redis = getIoRedis();
     const statsKey = REDIS_KEYS.GLOBAL_STATS();
     const statsData = await redis.get(statsKey);
+
     return statsData ? JSON.parse(statsData) : initGlobalRechargeStats;
   } catch (error) {
     logger.warn('Error getting global recharge stats:', error);
+
     return initGlobalRechargeStats;
   }
 };
@@ -734,9 +752,10 @@ export const getGlobalRechargeStats = async () => {
  * @param userId 用户ID
  * @returns 月卡状态信息
  */
-export const checkUserMonthCardStatus = async (userId: string) => {
+export const checkUserMonthCardStatus = async(userId: string) => {
   try {
     const userInfo = await findUserRechargeInfo(userId);
+
     return {
       userId,
       small_month_card_days: userInfo.small_month_card_days,
@@ -749,6 +768,7 @@ export const checkUserMonthCardStatus = async (userId: string) => {
     };
   } catch (error) {
     logger.warn('Error checking user month card status:', error);
+
     return null;
   }
 };
@@ -760,10 +780,10 @@ export const checkUserMonthCardStatus = async (userId: string) => {
  * @param days 消费天数
  * @returns 是否成功
  */
-export const consumeMonthCardDays = async (
+export const consumeMonthCardDays = async(
   userId: string,
   cardType: 'small' | 'big',
-  days: number = 1
+  days = 1
 ): Promise<boolean> => {
   // 输入验证
   if (!userId || typeof userId !== 'string') {
@@ -794,9 +814,11 @@ export const consumeMonthCardDays = async (
 
     userInfo.updated_at = Date.now();
     await redis.set(REDIS_KEYS.PLAYER_CURRENCY(userId), JSON.stringify(userInfo));
+
     return true;
   } catch (error) {
     logger.warn('Error consuming month card days:', error);
+
     return false;
   }
 };
@@ -807,7 +829,7 @@ export const consumeMonthCardDays = async (
  * @param amount 消费金额
  * @returns 是否成功
  */
-export const consumeUserCurrency = async (userId: string, amount: number): Promise<boolean> => {
+export const consumeUserCurrency = async(userId: string, amount: number): Promise<boolean> => {
   // 输入验证
   if (!userId || typeof userId !== 'string') {
     throw new Error('Invalid user ID');
@@ -827,9 +849,11 @@ export const consumeUserCurrency = async (userId: string, amount: number): Promi
     userInfo.currency -= amount;
     userInfo.updated_at = Date.now();
     await redis.set(REDIS_KEYS.PLAYER_CURRENCY(userId), JSON.stringify(userInfo));
+
     return true;
   } catch (error) {
     logger.warn('Error consuming user currency:', error);
+
     return false;
   }
 };
@@ -840,9 +864,9 @@ export const consumeUserCurrency = async (userId: string, amount: number): Promi
  * @param offset 偏移量，默认0
  * @returns 用户货币信息列表
  */
-export const getAllUsersCurrencyInfo = async (
-  limit: number = 100,
-  offset: number = 0
+export const getAllUsersCurrencyInfo = async(
+  limit = 100,
+  offset = 0
 ): Promise<UserCurrencyData[]> => {
   try {
     const redis = getIoRedis();
@@ -858,10 +882,10 @@ export const getAllUsersCurrencyInfo = async (
 
       // 只返回有充值记录的用户
       if (
-        userInfo.total_recharge_count > 0 ||
-        userInfo.currency > 0 ||
-        userInfo.small_month_card_days > 0 ||
-        userInfo.big_month_card_days > 0
+        userInfo.total_recharge_count > 0
+        || userInfo.currency > 0
+        || userInfo.small_month_card_days > 0
+        || userInfo.big_month_card_days > 0
       ) {
         users.push(userInfo);
       }
@@ -873,6 +897,7 @@ export const getAllUsersCurrencyInfo = async (
     return users;
   } catch (error) {
     logger.warn('Error getting all users currency info:', error);
+
     return [];
   }
 };

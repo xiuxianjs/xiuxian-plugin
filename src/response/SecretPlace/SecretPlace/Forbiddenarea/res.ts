@@ -10,10 +10,13 @@ const res = onResponse(selects, async e => {
   const image = await screenshot('jindi', e.UserId, {
     didian_list: await getDataList('ForbiddenArea')
   });
+
   if (!image) {
     message.send(format(Text('图片生成失败')));
+
     return;
   }
   message.send(format(Image(image)));
 });
+
 export default onResponse(selects, [mw.current, res.current]);

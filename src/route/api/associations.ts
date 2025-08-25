@@ -7,9 +7,10 @@ import { __PATH, keys } from '@src/model/keys';
 const redis = getIoRedis();
 
 // 获取宗门列表（支持分页）
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -29,6 +30,7 @@ export const GET = async (ctx: Context) => {
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+
       cursor = parseInt(result[0]);
       allKeys.push(...result[1]);
     } while (cursor !== 0);
@@ -48,15 +50,16 @@ export const GET = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase()) ||
-              associationName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch
+              = !search
+              || associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase())
+              || associationName.toLowerCase().includes(search.toLowerCase());
 
             if (matchesSearch) {
               total++;
               // 只添加当前页的数据
               const startIndex = (page - 1) * pageSize;
+
               if (associations.length < pageSize && total > startIndex) {
                 associations.push(associationWithName);
               }
@@ -87,6 +90,7 @@ export const GET = async (ctx: Context) => {
               name: associationName,
               ...association
             };
+
             associations.push(associationWithName);
           } catch (error) {
             logger.error(`解析宗门数据失败 ${associationName}:`, error);
@@ -121,9 +125,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 获取单个宗门详情
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -138,6 +143,7 @@ export const POST = async (ctx: Context) => {
         message: '宗门名称不能为空',
         data: null
       };
+
       return;
     }
 
@@ -150,6 +156,7 @@ export const POST = async (ctx: Context) => {
         message: '宗门不存在',
         data: null
       };
+
       return;
     }
 
@@ -176,9 +183,10 @@ export const POST = async (ctx: Context) => {
 };
 
 // 获取宗门统计信息
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -193,6 +201,7 @@ export const PUT = async (ctx: Context) => {
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+
       cursor = parseInt(result[0]);
       allKeys.push(...result[1]);
     } while (cursor !== 0);
@@ -219,10 +228,10 @@ export const PUT = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase()) ||
-              associationName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch
+              = !search
+              || associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase())
+              || associationName.toLowerCase().includes(search.toLowerCase());
 
             if (matchesSearch) {
               total++;
@@ -247,6 +256,7 @@ export const PUT = async (ctx: Context) => {
 
       // 获取部分数据进行资源统计（避免性能问题）
       const sampleKeys = allKeys.slice(0, Math.min(50, allKeys.length));
+
       for (const key of sampleKeys) {
         const associationName = key.replace(`${__PATH.association}:`, '');
         const associationData = await redis.get(key);
@@ -254,6 +264,7 @@ export const PUT = async (ctx: Context) => {
         if (associationData) {
           try {
             const association = JSON.parse(associationData);
+
             totalMembers += association.所有成员?.length || 0;
             totalPower += association.power || 0;
             totalLingshi += association.灵石池 || 0;
@@ -271,6 +282,7 @@ export const PUT = async (ctx: Context) => {
       // 根据样本比例估算总数
       if (sampleKeys.length > 0) {
         const ratio = allKeys.length / sampleKeys.length;
+
         totalMembers = Math.round(totalMembers * ratio);
         totalPower = Math.round(totalPower * ratio);
         totalLingshi = Math.round(totalLingshi * ratio);

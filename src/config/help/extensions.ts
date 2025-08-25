@@ -228,4 +228,5 @@ const advancedHelpConfig: HelpGroup[] = [
     ]
   }
 ];
+
 export default advancedHelpConfig;

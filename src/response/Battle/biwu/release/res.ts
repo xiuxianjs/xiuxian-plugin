@@ -12,18 +12,21 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const action_res = await redis.get(getRedisKey(e.UserId, 'bisai'));
   const action = await JSON.parse(action_res);
-  if (!action) return false;
+
+  if (!action) { return false; }
   const msg = e.MessageText.replace(/^(#|＃|\/)?释放技能/, '');
   const jineng = Number(msg) - 1;
-  if (!action.技能[jineng]) return false;
-  else {
+
+  if (!action.技能[jineng]) { return false; } else {
     const data = {
       Jineng: await getDataList('Jineng')
     };
+
     if (
       action.技能[jineng].cd < data.Jineng.find(item => item.name == action.技能[jineng].name).cd
     ) {
       Send(Text(`${action.技能[jineng].name}技能cd中`));
+
       return false;
     }
   }

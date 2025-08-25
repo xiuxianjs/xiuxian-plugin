@@ -3,7 +3,7 @@ import { validateLogin, validateToken } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 
 // 登录接口
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const body = await parseJsonBody(ctx);
     const { username, password } = body as {
@@ -18,6 +18,7 @@ export const POST = async (ctx: Context) => {
         message: '用户名和密码不能为空',
         data: null
       };
+
       return;
     }
 
@@ -53,11 +54,11 @@ export const POST = async (ctx: Context) => {
 };
 
 // 验证token接口
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
-    const token =
-      ctx.request.headers.authorization?.replace('Bearer ', '') ||
-      (ctx.request.query.token as string);
+    const token
+      = ctx.request.headers.authorization?.replace('Bearer ', '')
+      || (ctx.request.query.token as string);
 
     if (!token) {
       ctx.status = 401;
@@ -66,6 +67,7 @@ export const GET = async (ctx: Context) => {
         message: 'Token不能为空',
         data: null
       };
+
       return;
     }
 
@@ -73,6 +75,7 @@ export const GET = async (ctx: Context) => {
 
     if (user) {
       const { password: _password, ...userWithoutPassword } = user;
+
       ctx.status = 200;
       ctx.body = {
         code: 200,

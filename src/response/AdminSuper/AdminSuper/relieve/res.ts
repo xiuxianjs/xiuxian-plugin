@@ -11,21 +11,25 @@ export const regular = /^(#|＃|\/)?解封.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
   {
-    if (!e.IsMaster) return false;
+    if (!e.IsMaster) { return false; }
 
     const [mention] = useMention(e);
     const res = await mention.findOne();
     const target = res?.data;
-    if (!target || res.code !== 2000) return false;
-    //对方qq
+
+    if (!target || res.code !== 2000) { return false; }
+    // 对方qq
     const qq = target.UserId;
-    //检查存档
+    // 检查存档
     const ifexistplay = await existplayer(qq);
-    if (!ifexistplay) return false;
-    //清除游戏状态
+
+    if (!ifexistplay) { return false; }
+    // 清除游戏状态
     await redis.del(userKey(qq, 'game_action'));
     const record = await readAction(qq);
+
     if (record) {
       await stopAction(qq, {
         is_jiesuan: 1,
@@ -36,9 +40,11 @@ const res = onResponse(selects, async e => {
         Place_actionplus: '1'
       });
       Send(Text('已解除！'));
+
       return false;
     }
     Send(Text('不需要解除！'));
+
     return false;
   }
 });

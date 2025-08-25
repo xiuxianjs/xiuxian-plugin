@@ -11,31 +11,36 @@ export const regular = /^(#|＃|\/)?喂给仙宠.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  //用户不存在
+  // 用户不存在
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   const player = await readPlayer(usr_qq);
+
   if (player.仙宠 == '') {
-    //有无仙宠
+    // 有无仙宠
     Send(Text('你没有仙宠'));
+
     return false;
   }
   const thing = e.MessageText.replace(/^(#|＃|\/)?喂给仙宠/, '');
   const code = thing.split('*');
-  const thing_name = code[0]; //物品
-  const thing_value = await convert2integer(code[1]); //数量
+  const thing_name = code[0]; // 物品
+  const thing_value = await convert2integer(code[1]); // 数量
   const xianchonkouliangData = await getDataList('Xianchonkouliang');
-  const ifexist = xianchonkouliangData.find(item => item.name == thing_name); //查找
+  const ifexist = xianchonkouliangData.find(item => item.name == thing_name); // 查找
+
   if (!notUndAndNull(ifexist)) {
     Send(Text('此乃凡物,仙宠不吃' + thing_name));
+
     return false;
   }
   if (!player.仙宠.等级上限) {
     const list = ['Xianchon', 'Changzhuxianchon'];
+
     for (const item of list) {
-      const i = ((await getDataList(item as 'Xianchon' | 'Changzhuxianchon')) as PetItem[]).find(
-        x => x.name == player.仙宠.name
-      );
+      const i = ((await getDataList(item as 'Xianchon' | 'Changzhuxianchon')) as PetItem[]).find(x => x.name == player.仙宠.name);
+
       if (i) {
         player.仙宠.等级上限 = i.等级上限;
         break;
@@ -43,32 +48,38 @@ const res = onResponse(selects, async e => {
     }
     if (!notUndAndNull(player.仙宠.等级上限)) {
       Send(Text('存档出错，请联系管理员'));
+
       return false;
     }
   }
   if (player.仙宠.等级 == player.仙宠.等级上限 && player.仙宠.品级 != '仙灵') {
     Send(Text('等级已达到上限,请主人尽快为仙宠突破品级'));
+
     return false;
   }
   if (player.仙宠.品级 == '仙灵' && player.仙宠.等级 == player.仙宠.等级上限) {
     Send(Text('您的仙宠已达到天赋极限'));
+
     return false;
   }
-  //纳戒中的数量
+  // 纳戒中的数量
   const thing_quantity = (await existNajieThing(usr_qq, thing_name, '仙宠口粮')) || 0;
+
   if (thing_quantity < thing_value || !thing_quantity) {
-    //没有
+    // 没有
     Send(Text(`【${thing_name}】数量不足`));
+
     return false;
   }
-  //纳戒数量减少
+  // 纳戒数量减少
   await addNajieThing(usr_qq, thing_name, '仙宠口粮', -thing_value);
-  //待完善加成
-  let jiachen = +ifexist.level * thing_value; //加的等级
+  // 待完善加成
+  let jiachen = +ifexist.level * thing_value; // 加的等级
+
   if (jiachen > player.仙宠.等级上限 - player.仙宠.等级) {
     jiachen = player.仙宠.等级上限 - player.仙宠.等级;
   }
-  //保留
+  // 保留
   player.仙宠.加成 += jiachen * player.仙宠.每级增加;
   if (player.仙宠.type == '修炼') {
     player.修炼效率提升 += jiachen * player.仙宠.每级增加;
@@ -89,5 +100,6 @@ const res = onResponse(selects, async e => {
   await writePlayer(usr_qq, player);
   Send(Text(`喂养成功，仙宠的等级增加了${jiachen},当前为${player.仙宠.等级}`));
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

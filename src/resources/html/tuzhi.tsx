@@ -5,33 +5,38 @@ import HTML from './HTML';
 
 const Tuzhi = ({ tuzhi_list }) => {
   const getWeaponTypeIcon = name => {
-    if (name.includes('剑')) return '⚔️';
-    if (name.includes('刀')) return '🗡️';
-    if (name.includes('枪')) return '🔱';
-    if (name.includes('弓')) return '🏹';
-    if (name.includes('盾')) return '🛡️';
-    if (name.includes('甲')) return '🥋';
-    if (name.includes('袍')) return '👘';
-    if (name.includes('靴')) return '👢';
-    if (name.includes('冠')) return '👑';
-    if (name.includes('戒')) return '💍';
-    if (name.includes('链')) return '📿';
+    if (name.includes('剑')) { return '⚔️'; }
+    if (name.includes('刀')) { return '🗡️'; }
+    if (name.includes('枪')) { return '🔱'; }
+    if (name.includes('弓')) { return '🏹'; }
+    if (name.includes('盾')) { return '🛡️'; }
+    if (name.includes('甲')) { return '🥋'; }
+    if (name.includes('袍')) { return '👘'; }
+    if (name.includes('靴')) { return '👢'; }
+    if (name.includes('冠')) { return '👑'; }
+    if (name.includes('戒')) { return '💍'; }
+    if (name.includes('链')) { return '📿'; }
+
     return '🔨';
   };
 
   const getSuccessRateColor = rate => {
     const percentage = rate * 100;
-    if (percentage >= 80) return 'text-blue-700';
-    if (percentage >= 60) return 'text-blue-600';
-    if (percentage >= 40) return 'text-blue-500';
+
+    if (percentage >= 80) { return 'text-blue-700'; }
+    if (percentage >= 60) { return 'text-blue-600'; }
+    if (percentage >= 40) { return 'text-blue-500'; }
+
     return 'text-blue-400';
   };
 
   const getSuccessRateBg = rate => {
     const percentage = rate * 100;
-    if (percentage >= 80) return 'bg-gradient-to-r from-blue-100/80 to-blue-200/60';
-    if (percentage >= 60) return 'bg-gradient-to-r from-blue-100/70 to-blue-200/50';
-    if (percentage >= 40) return 'bg-gradient-to-r from-blue-100/60 to-blue-200/40';
+
+    if (percentage >= 80) { return 'bg-gradient-to-r from-blue-100/80 to-blue-200/60'; }
+    if (percentage >= 60) { return 'bg-gradient-to-r from-blue-100/70 to-blue-200/50'; }
+    if (percentage >= 40) { return 'bg-gradient-to-r from-blue-100/60 to-blue-200/40'; }
+
     return 'bg-gradient-to-r from-blue-100/50 to-blue-200/30';
   };
 
@@ -44,38 +49,38 @@ const Tuzhi = ({ tuzhi_list }) => {
       }}
     >
       {/* 背景装饰层 */}
-      <div className='absolute inset-0 bg-gradient-to-b from-blue-900/20 via-transparent to-blue-800/30 pointer-events-none'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-blue-900/20 via-transparent to-blue-800/30 pointer-events-none' />
 
       {/* 静态装饰元素 */}
       <div className='absolute inset-0 pointer-events-none'>
-        <div className='absolute top-20 left-10 w-2 h-2 bg-blue-400/40 rounded-full'></div>
-        <div className='absolute top-40 right-20 w-1 h-1 bg-blue-300/50 rounded-full'></div>
-        <div className='absolute bottom-40 left-20 w-1.5 h-1.5 bg-blue-400/30 rounded-full'></div>
-        <div className='absolute bottom-20 right-10 w-1 h-1 bg-blue-300/40 rounded-full'></div>
-        <div className='absolute top-1/3 left-1/4 w-1 h-1 bg-blue-400/30 rounded-full'></div>
-        <div className='absolute bottom-1/3 right-1/4 w-1.5 h-1.5 bg-blue-300/40 rounded-full'></div>
+        <div className='absolute top-20 left-10 w-2 h-2 bg-blue-400/40 rounded-full' />
+        <div className='absolute top-40 right-20 w-1 h-1 bg-blue-300/50 rounded-full' />
+        <div className='absolute bottom-40 left-20 w-1.5 h-1.5 bg-blue-400/30 rounded-full' />
+        <div className='absolute bottom-20 right-10 w-1 h-1 bg-blue-300/40 rounded-full' />
+        <div className='absolute top-1/3 left-1/4 w-1 h-1 bg-blue-400/30 rounded-full' />
+        <div className='absolute bottom-1/3 right-1/4 w-1.5 h-1.5 bg-blue-300/40 rounded-full' />
       </div>
 
-      <div className='h-8 w-full'></div>
+      <div className='h-8 w-full' />
 
       {/* 标题区域 - 炼器图纸牌匾 */}
       <div className='relative z-10 w-full max-w-xl flex flex-col items-center px-5 mb-8'>
         <div className='relative w-full'>
           {/* 牌匾装饰 */}
-          <div className='absolute -top-2 left-1/2 transform -translate-x-1/2 w-20 h-2 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full shadow-lg'></div>
-          <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-300 to-blue-500 rounded-full shadow-md'></div>
+          <div className='absolute -top-2 left-1/2 transform -translate-x-1/2 w-20 h-2 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full shadow-lg' />
+          <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-300 to-blue-500 rounded-full shadow-md' />
 
           <div className='border-2 border-gradient-to-r  rounded-2xl w-full flex flex-col justify-center bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-xl shadow-2xl py-8 relative overflow-hidden'>
             {/* 背景装饰 */}
-            <div className='absolute inset-0 bg-gradient-to-r from-blue-400/5 via-transparent to-blue-600/5'></div>
-            <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/20 to-transparent'></div>
-            <div className='absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-600/20 to-transparent'></div>
+            <div className='absolute inset-0 bg-gradient-to-r from-blue-400/5 via-transparent to-blue-600/5' />
+            <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/20 to-transparent' />
+            <div className='absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-600/20 to-transparent' />
 
             {/* 牌匾装饰元素 */}
-            <div className='absolute top-2 left-4 w-1 h-1 bg-blue-400/60 rounded-full'></div>
-            <div className='absolute top-2 right-4 w-1 h-1 bg-blue-600/60 rounded-full'></div>
-            <div className='absolute bottom-2 left-4 w-1 h-1 bg-blue-300/60 rounded-full'></div>
-            <div className='absolute bottom-2 right-4 w-1 h-1 bg-blue-500/60 rounded-full'></div>
+            <div className='absolute top-2 left-4 w-1 h-1 bg-blue-400/60 rounded-full' />
+            <div className='absolute top-2 right-4 w-1 h-1 bg-blue-600/60 rounded-full' />
+            <div className='absolute bottom-2 left-4 w-1 h-1 bg-blue-300/60 rounded-full' />
+            <div className='absolute bottom-2 right-4 w-1 h-1 bg-blue-500/60 rounded-full' />
 
             <div className='flex flex-col items-center gap-4 relative z-10'>
               <span
@@ -112,14 +117,14 @@ const Tuzhi = ({ tuzhi_list }) => {
             className='relative min-w-[34rem] backdrop-blur-xl shadow-xl border-2 p-6 rounded-2xl border-blue-400/40 bg-gradient-to-r from-white/80 to-white/60 shadow-blue-500/20'
           >
             {/* 装饰边框 */}
-            <div className='absolute top-0 left-0 w-6 h-1 bg-gradient-to-r from-blue-400/40 to-transparent'></div>
-            <div className='absolute top-0 right-0 w-6 h-1 bg-gradient-to-l from-blue-600/40 to-transparent'></div>
-            <div className='absolute bottom-0 left-0 w-6 h-1 bg-gradient-to-r from-blue-300/40 to-transparent'></div>
-            <div className='absolute bottom-0 right-0 w-6 h-1 bg-gradient-to-l from-blue-500/40 to-transparent'></div>
+            <div className='absolute top-0 left-0 w-6 h-1 bg-gradient-to-r from-blue-400/40 to-transparent' />
+            <div className='absolute top-0 right-0 w-6 h-1 bg-gradient-to-l from-blue-600/40 to-transparent' />
+            <div className='absolute bottom-0 left-0 w-6 h-1 bg-gradient-to-r from-blue-300/40 to-transparent' />
+            <div className='absolute bottom-0 right-0 w-6 h-1 bg-gradient-to-l from-blue-500/40 to-transparent' />
 
             {/* 角落装饰 */}
-            <div className='absolute top-2 right-2 w-2 h-2 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full opacity-60'></div>
-            <div className='absolute bottom-2 left-2 w-1.5 h-1.5 bg-gradient-to-br from-blue-300 to-blue-500 rounded-full opacity-40'></div>
+            <div className='absolute top-2 right-2 w-2 h-2 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full opacity-60' />
+            <div className='absolute bottom-2 left-2 w-1.5 h-1.5 bg-gradient-to-br from-blue-300 to-blue-500 rounded-full opacity-40' />
 
             {/* 头部信息 */}
             <div className='flex items-center justify-between w-full mb-6 relative'>
@@ -177,7 +182,7 @@ const Tuzhi = ({ tuzhi_list }) => {
         ))}
       </div>
 
-      <div className='h-8 w-full'></div>
+      <div className='h-8 w-full' />
     </HTML>
   );
 };

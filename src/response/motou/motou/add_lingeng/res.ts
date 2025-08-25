@@ -80,22 +80,25 @@ const MAGIC_STAGES: MagicStage[] = [
   { from: '八重魔功', to: '九重魔功', cost: 50, prob: 0.2, eff: 1.2, rate: 1.2 }
 ];
 
-const Res = onResponse(selects, async (e, next) => {
+const Res = onResponse(selects, async(e, next) => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const player = await readPlayer(usr_qq);
   const choice = e.MessageText;
+
   if (choice === '放弃魔根') {
     await Send(Text('重拾道心,继续修行'));
-    return;
   } else if (choice === '转世魔根') {
     const x = await existNajieThing(usr_qq, '魔石', '道具');
+
     if (!x) {
       Send(Text('你没有魔石'));
+
       return;
     }
     if (x < 10) {
       Send(Text('你魔石不足10个'));
+
       return;
     }
     await addNajieThing(usr_qq, '魔石', '道具', -10);
@@ -107,7 +110,6 @@ const Res = onResponse(selects, async (e, next) => {
     };
     await writePlayer(usr_qq, player);
     Send(Text('恭喜你,转世魔头成功!'));
-    return;
   } else {
     Send(Text('输入错误,请重新输入'));
     next();
@@ -116,35 +118,46 @@ const Res = onResponse(selects, async (e, next) => {
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  if (!(await existplayer(usr_qq))) return;
+
+  if (!(await existplayer(usr_qq))) { return; }
   const player = await readPlayer(usr_qq);
+
   if ((player.魔道值 || 0) < 1000) {
     Send(Text('你不是魔头'));
+
     return;
   }
   const x = await existNajieThing(usr_qq, '魔石', '道具');
+
   if (!x) {
     Send(Text('你没有魔石'));
+
     return;
   }
   if (player.灵根.type !== '魔头') {
     await Send(Text('一旦转为魔根,将会舍弃当前灵根。回复:【放弃魔根】或者【转世魔根】进行选择'));
     const [Observer] = useObserver(e, 'message.create');
+
     Observer(Res.current, ['UserId']);
+
     return;
   }
   // 查找当前阶段
   const stage = MAGIC_STAGES.find(s => s.from === player.灵根.name);
+
   if (!stage) {
     Send(Text('当前灵根已达最高或无法突破'));
+
     return;
   }
   if (x < stage.cost) {
     Send(Text(`魔石不足${stage.cost}个,当前魔石数量${x}个`));
+
     return;
   }
   await addNajieThing(usr_qq, '魔石', '道具', -stage.cost);
   const random = Math.random();
+
   if (random < stage.prob) {
     player.灵根 = {
       name: stage.to,
@@ -158,5 +171,6 @@ const res = onResponse(selects, async e => {
     Send(Text('灵根突破失败'));
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

@@ -8,13 +8,16 @@ import { __PATH, keysByPath } from '@src/model/index';
 export const regular = /^(#|＃|\/)?解除所有$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  if (!e.IsMaster) return;
+
+  if (!e.IsMaster) { return; }
   Send(Text('开始行动！'));
   const playerList = await keysByPath(__PATH.player_path);
+
   for (const player_id of playerList) {
-    //清除游戏状态
+    // 清除游戏状态
     await redis.del(userKey(player_id, 'game_action'));
     const action = await readAction(player_id);
+
     if (action) {
       await stopAction(player_id, {
         is_jiesuan: 1,

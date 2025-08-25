@@ -10,11 +10,14 @@ const res = onResponse(selects, async e => {
 
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   const img = await getGongfaImage(e);
+
   if (Buffer.isBuffer(img)) {
     Send(Image(img));
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

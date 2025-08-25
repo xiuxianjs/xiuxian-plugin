@@ -6,7 +6,7 @@ import type { ActionState, PlaceThing, PlaceAddress } from './action';
 import type { ShopItem } from './data_extra';
 import type { Player } from './player';
 
-/****************************** 公共辅助 ******************************/
+/** **************************** 公共辅助 ******************************/
 /** 任务阶段统一时间戳（毫秒） */
 export type Timestamp = number;
 /** 用户 ID / QQ ID */
@@ -14,7 +14,7 @@ export type UserId = string | number;
 /** 群组 ID */
 export type GroupId = string | number;
 
-/****************************** 拍卖 (AuctionofficialTask) ******************************/
+/** **************************** 拍卖 (AuctionofficialTask) ******************************/
 export interface AuctionThing {
   name: string;
   class: string;
@@ -40,7 +40,7 @@ export type NajieCategory =
   | '仙宠'
   | '仙宠口粮';
 
-/****************************** 交易 / 论坛 (ExchangeTask / ForumTask) ******************************/
+/** **************************** 交易 / 论坛 (ExchangeTask / ForumTask) ******************************/
 export interface ExchangeEntry {
   now_time: Timestamp;
   qq: string;
@@ -57,7 +57,7 @@ export interface ForumEntry {
   whole: number; // 灵石数量
 }
 
-/****************************** 洗劫 / 逃跑 流程 (Xijietask / Taopaotask) ******************************/
+/** **************************** 洗劫 / 逃跑 流程 (Xijietask / Taopaotask) ******************************/
 /** 洗劫阶段：0=准备/战斗判定，-1=搜刮，-2=逃跑，1=结束关闭 */
 export type RaidPhase = '-2' | '-1' | '0' | '1' | -2 | -1 | 0 | 1 | number;
 export interface RaidLoot extends PlaceThing {
@@ -84,7 +84,7 @@ export interface RaidActionState extends Omit<ActionState, 'A_player'> {
   cishu?: number;
 }
 
-/****************************** 魔界 / 神界 探索 (mojietask / shenjietask) ******************************/
+/** **************************** 魔界 / 神界 探索 (mojietask / shenjietask) ******************************/
 /** 探索阶段：0=进行中(多次结算), -1=特殊神界模式, 1=结束 */
 export type ExplorePhase = '-1' | '0' | '1' | -1 | 0 | 1 | number;
 export interface ExploreActionState extends ActionState {
@@ -92,7 +92,7 @@ export interface ExploreActionState extends ActionState {
   cishu?: number; // 剩余次数
 }
 
-/****************************** 秘境 探索 (SecretPlaceTask / SecretPlaceplusTask) ******************************/
+/** **************************** 秘境 探索 (SecretPlaceTask / SecretPlaceplusTask) ******************************/
 export interface SecretPlaceAddress extends PlaceAddress {
   Grade?: number;
   one?: PlaceThing[];
@@ -106,13 +106,13 @@ export interface SecretPlaceActionState extends ActionState {
   cishu?: number; // plus 模式剩余次数
 }
 
-/****************************** 职业 / 闭关 / 采矿 (OccupationTask / PlayerControlTask) ******************************/
+/** **************************** 职业 / 闭关 / 采矿 (OccupationTask / PlayerControlTask) ******************************/
 export interface OccupationActionState extends ActionState {
   plant?: string | number; // 种植 / 炼丹师特殊闭关扩展
   mine?: string | number; // 采矿状态
 }
 
-/****************************** 临时消息 (msgTask / 探索多次写入 temp) ******************************/
+/** **************************** 临时消息 (msgTask / 探索多次写入 temp) ******************************/
 export interface TempMessage {
   /** 文本内容 */
   msg?: string;
@@ -122,7 +122,7 @@ export interface TempMessage {
   qq?: string | number;
 }
 
-/****************************** 商店动态 (Taopaotask / Shoptask / ShopGradetask) ******************************/
+/** **************************** 商店动态 (Taopaotask / Shoptask / ShopGradetask) ******************************/
 // 扩展 ShopItem 时改用可选并复用原 ShopGoodsItem 结构
 export type DynamicShopItem = ShopItem & {
   one?: ShopItem['one'];
@@ -130,7 +130,7 @@ export type DynamicShopItem = ShopItem & {
   three?: ShopItem['three'];
 };
 
-/****************************** 天地榜 (Tiandibang) ******************************/
+/** **************************** 天地榜 (Tiandibang) ******************************/
 /** 榜单条目基础结构（来自原 response/Tiandibang/Tiandibang/tian.ts） */
 export interface TiandibangRow {
   名号: string;
@@ -166,7 +166,7 @@ export interface TiandibangRankEntry extends TiandibangRow {
   积分: number;
 }
 
-/****************************** 玩家综合控制 (PlayerControlTask) ******************************/
+/** **************************** 玩家综合控制 (PlayerControlTask) ******************************/
 /**
  * PlayerControlTask 运行期间使用的综合动作状态扩展。
  * 包含闭关(shutup)/降妖(working)/渡劫(power_up)等基础字段（来源于 ActionState），
@@ -177,7 +177,7 @@ export interface ControlActionState extends ActionState {
   acount?: number;
 }
 
-/****************************** 世界 Boss (BOSS / BOSS2) ******************************/
+/** **************************** 世界 Boss (BOSS / BOSS2) ******************************/
 /** 世界 Boss 当前状态 */
 export interface WorldBossStatus {
   Health: number;
@@ -193,7 +193,7 @@ export interface WorldBossPlayerRecord {
   Name: string[];
 }
 
-/****************************** 商店日常 (ShopGradetask / Shoptask) ******************************/
+/** **************************** 商店日常 (ShopGradetask / Shoptask) ******************************/
 /** 定时衰减/刷新时使用的最小商店槽位（只关心会被改写的字段） */
 export interface ShopMutableSlot {
   name: string;
@@ -205,13 +205,13 @@ export interface ShopMutableSlot {
   three?: Array<{ name: string; 数量: number }>;
 }
 
-/****************************** 备份任务 (BackUptask) ******************************/
+/** **************************** 备份任务 (BackUptask) ******************************/
 /** 占位：未来若有备份元数据可在此扩展 */
 export interface BackupTaskMeta {
   lastRun?: number;
 }
 
-/****************************** 汇总联合类型（如需在外部做窄化） ******************************/
+/** **************************** 汇总联合类型（如需在外部做窄化） ******************************/
 export type AnyTaskActionState =
   | RaidActionState
   | ExploreActionState
@@ -220,19 +220,19 @@ export type AnyTaskActionState =
   | ControlActionState
   | ActionState; // 兜底
 
-/****************************** Type Guard 辅助 ******************************/
-export function isRaidActionState (a): a is RaidActionState {
+/** **************************** Type Guard 辅助 ******************************/
+export function isRaidActionState(a): a is RaidActionState {
   return !!a && typeof a === 'object' && ('xijie' in a || 'Place_address' in a) && 'end_time' in a;
 }
-export function isExploreActionState (a): a is ExploreActionState {
+export function isExploreActionState(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'mojie' in a;
 }
-export function isSecretPlaceActionState (a): a is SecretPlaceActionState {
+export function isSecretPlaceActionState(a): a is SecretPlaceActionState {
   return !!a && typeof a === 'object' && ('Place_action' in a || 'Place_actionplus' in a);
 }
-export function isOccupationActionState (a): a is OccupationActionState {
+export function isOccupationActionState(a): a is OccupationActionState {
   return !!a && typeof a === 'object' && ('plant' in a || 'mine' in a);
 }
-export function isControlActionState (a): a is ControlActionState {
+export function isControlActionState(a): a is ControlActionState {
   return !!a && typeof a === 'object' && 'acount' in a;
 }

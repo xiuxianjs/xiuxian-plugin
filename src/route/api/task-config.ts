@@ -12,9 +12,10 @@ import {
 } from '@src/task/index';
 import { TaskMap } from '@src/model/task';
 // 获取定时任务配置
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -41,9 +42,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 更新定时任务配置
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -60,6 +62,7 @@ export const POST = async (ctx: Context) => {
         message: '任务配置不能为空',
         data: null
       };
+
       return;
     }
 
@@ -90,9 +93,10 @@ export const POST = async (ctx: Context) => {
 };
 
 // 获取任务状态
-export const PATCH = async (ctx: Context) => {
+export const PATCH = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -127,10 +131,11 @@ export const PATCH = async (ctx: Context) => {
 };
 
 // 任务控制接口
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     // 验证管理员权限
     const token = ctx.request.headers.authorization?.replace('Bearer ', '');
+
     if (!token) {
       ctx.status = 401;
       ctx.body = {
@@ -138,10 +143,12 @@ export const PUT = async (ctx: Context) => {
         message: '需要登录',
         data: null
       };
+
       return;
     }
 
     const user = await validateToken(token);
+
     if (!user || user.role !== 'admin') {
       ctx.status = 403;
       ctx.body = {
@@ -149,6 +156,7 @@ export const PUT = async (ctx: Context) => {
         message: '权限不足',
         data: null
       };
+
       return;
     }
 
@@ -172,9 +180,11 @@ export const PUT = async (ctx: Context) => {
           message: '启动任务需要指定任务名称',
           data: null
         };
+
         return;
       }
       const startResult = await startSingleTask(taskName);
+
       success = startResult.success;
       message = startResult.message;
       data = { taskName, action: 'start' };
@@ -189,6 +199,7 @@ export const PUT = async (ctx: Context) => {
           message: '停止任务需要指定任务名称',
           data: null
         };
+
         return;
       }
       success = stopTask(taskName);
@@ -205,6 +216,7 @@ export const PUT = async (ctx: Context) => {
           message: '重启任务需要指定任务名称',
           data: null
         };
+
         return;
       }
       success = await restartTask(taskName);
@@ -215,6 +227,7 @@ export const PUT = async (ctx: Context) => {
 
     case 'startAll': {
       const startAllResult = await startAllTasks();
+
       success = startAllResult.success;
       message = startAllResult.message;
       data = { action: 'startAll', ...startAllResult.data };
@@ -223,6 +236,7 @@ export const PUT = async (ctx: Context) => {
 
     case 'stopAll': {
       const stoppedTasks = stopAllTasks();
+
       success = true;
       message = `已停止所有任务: ${stoppedTasks.join(', ')}`;
       data = { action: 'stopAll', stoppedTasks };
@@ -239,6 +253,7 @@ export const PUT = async (ctx: Context) => {
     default:
       ctx.status = 400;
       ctx.body = { code: 400, message: '无效的操作类型', data: null };
+
       return;
     }
 

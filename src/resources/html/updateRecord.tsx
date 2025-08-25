@@ -8,17 +8,17 @@ export default ({ Record }) => {
       <div className='min-h-screen bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 relative overflow-hidden'>
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-10'>
-          <div className='absolute top-10 left-10 w-32 h-32 border border-teal-400 rounded-full'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-cyan-400 rounded-full'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-blue-400 rounded-full'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-indigo-400 rounded-full'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-teal-400 rounded-full' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-cyan-400 rounded-full' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-blue-400 rounded-full' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-indigo-400 rounded-full' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
           {/* 主标题区域 */}
           <div className='text-center mb-8'>
             <div className='inline-block relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl blur-lg opacity-50'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl blur-lg opacity-50' />
               <div className='relative bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl px-8 py-4 border border-teal-400/30'>
                 <h1 className='text-3xl font-bold text-white tracking-wider'>
                   📜 修仙界更新日志 📜
@@ -30,18 +30,18 @@ export default ({ Record }) => {
           {/* 更新记录区域 */}
           <div className='max-w-4xl mx-auto'>
             <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-sm bg-white/10 rounded-3xl border border-teal-400/30 p-8'>
                 <div className='space-y-6'>
                   {Record.map((item, index) => (
                     <div key={item.id || index} className='relative'>
-                      <div className='absolute inset-0 bg-gradient-to-r from-teal-400/10 to-cyan-400/10 rounded-2xl blur-sm'></div>
+                      <div className='absolute inset-0 bg-gradient-to-r from-teal-400/10 to-cyan-400/10 rounded-2xl blur-sm' />
                       <div className='relative backdrop-blur-md bg-white/5 rounded-2xl border border-teal-400/20 p-6'>
                         <div className='flex items-start gap-6'>
                           {/* 用户头像区域 */}
                           <div className='flex flex-col items-center'>
                             <div className='relative'>
-                              <div className='absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-full blur-sm'></div>
+                              <div className='absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-full blur-sm' />
                               <div className='relative w-16 h-16 rounded-full border-2 border-teal-400/30 overflow-hidden'>
                                 {item.user.avatar ? (
                                   <img

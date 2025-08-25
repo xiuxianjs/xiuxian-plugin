@@ -3,9 +3,10 @@ import { getIoRedis } from '@alemonjs/db';
 import { validateRole } from '@src/model';
 
 // 获取禁言日志
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -22,6 +23,7 @@ export const GET = async (ctx: Context) => {
     for (const logStr of logList) {
       try {
         const log = JSON.parse(logStr);
+
         logs.push({
           ...log,
           timestamp: new Date(log.timestamp).toISOString()
@@ -56,9 +58,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 清理日志
-export const DELETE = async (ctx: Context) => {
+export const DELETE = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }

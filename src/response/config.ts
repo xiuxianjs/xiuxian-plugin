@@ -12,7 +12,7 @@ export const MIN_COUNT = 90; // 夜间阈值
 export const MAX_COUNT = 120; // 白天阈值
 
 // 判断是否为夜晚（23:00~06:59）
-export function isNight (hour: number) {
+export function isNight(hour: number) {
   return hour >= 23 || hour < 7;
 }
 

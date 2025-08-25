@@ -11,17 +11,21 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   // 校验当前是否可进行操作
   const flag = await Go(e);
+
   if (!flag) {
     return false;
   }
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
 
   const player = await readPlayer(usr_qq);
   // 获取副职
   const actionStr = await redis.get(keys.fuzhi(usr_qq));
+
   if (!actionStr) {
     Send(Text('您还没有副职哦'));
+
     return false;
   }
   interface Fuzhi {
@@ -30,13 +34,16 @@ const res = onResponse(selects, async e => {
     职业等级: number;
   }
   const action = JSON.parse(actionStr) as Partial<Fuzhi>;
-  if (!action || !action.职业名) {
+
+  if (!action?.职业名) {
     Send(Text('您还没有副职哦'));
+
     return false;
   }
-  const a = action.职业名 as string;
+  const a = action.职业名;
   const b = action.职业经验 as number;
   const c = action.职业等级 as number;
+
   (action as Fuzhi).职业名 = player.occupation as string;
   (action as Fuzhi).职业经验 = player.occupation_exp as number;
   (action as Fuzhi).职业等级 = player.occupation_level as number;
@@ -47,5 +54,6 @@ const res = onResponse(selects, async e => {
   await writePlayer(usr_qq, player);
   Send(Text(`恭喜${player.名号}转职为[${player.occupation}],您的副职为${action.职业名}`));
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

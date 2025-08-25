@@ -7,4 +7,5 @@ export const regular = /^(#|＃|\/)?突破$/;
 const res = onResponse(selects, async e => {
   Level_up(e, false);
 });
+
 export default onResponse(selects, [mw.current, res.current]);

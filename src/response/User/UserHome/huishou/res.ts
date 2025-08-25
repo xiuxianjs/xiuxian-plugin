@@ -8,20 +8,25 @@ export const regular = /^(#|＃|\/)?回收.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  //固定写法
+  // 固定写法
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   let thing_name = e.MessageText.replace(/^(#|＃|\/)?回收/, '');
+
   thing_name = thing_name.trim();
   const thing_exist = await foundthing(thing_name);
+
   if (thing_exist) {
     Send(Text(`${thing_name}可以使用,不需要回收`));
+
     return false;
   }
   let lingshi = 0;
   const najie = await readNajie(usr_qq);
-  if (!najie) return false;
+
+  if (!najie) { return false; }
   const type: NajieCategory[] = [
     '装备',
     '丹药',
@@ -32,9 +37,11 @@ const res = onResponse(selects, async e => {
     '仙宠',
     '仙宠口粮'
   ];
+
   for (const cate of type) {
     const list = najie[cate];
-    if (!Array.isArray(list)) continue;
+
+    if (!Array.isArray(list)) { continue; }
     const thing = (
       list as Array<{
         name: string;
@@ -44,10 +51,12 @@ const res = onResponse(selects, async e => {
         pinji?: number;
       }>
     ).find(item => item.name == thing_name);
-    if (!thing) continue;
+
+    if (!thing) { continue; }
     const sell = typeof thing.出售价 === 'number' ? thing.出售价 : 0;
     const num = typeof thing.数量 === 'number' ? thing.数量 : 0;
     const cls = (thing.class as NajieCategory) || cate;
+
     if (cls == '材料' || cls == '草药') {
       lingshi += sell * num;
     } else {
@@ -60,5 +69,6 @@ const res = onResponse(selects, async e => {
   await addCoin(usr_qq, lingshi);
   Send(Text(`回收成功,获得${lingshi}灵石`));
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

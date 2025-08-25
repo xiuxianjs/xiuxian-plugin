@@ -104,7 +104,7 @@ const EquipmentCard: React.FC<{
           quality.gradient
         )}
       >
-        <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500'></div>
+        <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
       </div>
 
       {/* 主卡片内容 */}
@@ -118,8 +118,8 @@ const EquipmentCard: React.FC<{
         )}
       >
         {/* 装饰性角落元素 */}
-        <div className='absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-white/30 rounded-tr-lg'></div>
-        <div className='absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-white/30 rounded-bl-lg'></div>
+        <div className='absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-white/30 rounded-tr-lg' />
+        <div className='absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-white/30 rounded-bl-lg' />
 
         {/* 标题区域 */}
         <div className='flex items-center justify-between mb-4'>
@@ -196,7 +196,7 @@ const PlayerStats: React.FC<{
   <article className='group relative'>
     {/* 动态边框 */}
     <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 p-[2px] animate-pulse'>
-      <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700'></div>
+      <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700' />
     </div>
 
     <div
@@ -205,11 +205,11 @@ const PlayerStats: React.FC<{
       hover:scale-[1.02] hover:bg-gradient-to-br hover:from-cyan-500/15 hover:to-purple-500/15'
     >
       {/* 装饰性元素 */}
-      <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full'></div>
+      <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full' />
       <div
         className='absolute top-4 right-4 w-6 h-6 border-2 border-cyan-400/50 rounded-full animate-spin'
         style={{ animationDuration: '3s' }}
-      ></div>
+      />
 
       <h2 className='text-2xl font-black mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 drop-shadow-lg tracking-wider'>
         ✨ 修仙属性 ✨
@@ -263,6 +263,7 @@ const Equipment: React.FC<EquipmentProps> = ({
 
   const renderStats = (item: EquipmentItem) => {
     const isAbsolute = item.atk > 10 || item.def > 10 || item.HP > 10;
+
     return {
       attribute: isAbsolute ? '无' : elements[item.id - 1],
       atk: isAbsolute ? item.atk.toFixed(0) : (item.atk * 100).toFixed(0) + '%',
@@ -276,13 +277,13 @@ const Equipment: React.FC<EquipmentProps> = ({
       {/* 动态背景效果 */}
       <div className='absolute inset-0'>
         {/* 星空背景 */}
-        <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:30px_30px] animate-pulse'></div>
+        <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:30px_30px] animate-pulse' />
 
         {/* 流动的灵气 */}
         <div
           className='absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent animate-pulse'
           style={{ animationDuration: '4s' }}
-        ></div>
+        />
 
         {/* 修仙符文装饰 */}
         <div
@@ -318,7 +319,7 @@ const Equipment: React.FC<EquipmentProps> = ({
           <h1 className='text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-2xl mb-2 tracking-wider'>
             装备界面
           </h1>
-          <div className='w-32 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto rounded-full shadow-lg'></div>
+          <div className='w-32 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto rounded-full shadow-lg' />
         </div>
 
         {/* 装备网格 */}

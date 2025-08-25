@@ -24,6 +24,7 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
     if (item.exp) {
       return item.exp.join(' / ');
     }
+
     return '';
   };
 
@@ -33,7 +34,7 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
       style={{ backgroundImage: `url(${danfangURL})` }}
     >
       {/* 背景渐变遮罩 */}
-      <div className='absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-transparent backdrop-blur-sm pointer-events-none'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-transparent backdrop-blur-sm pointer-events-none' />
 
       <main className='relative max-w-6xl mx-auto space-y-10'>
         <header className='space-y-3'>
@@ -55,6 +56,7 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
         <section className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
           {danfang_list?.map((item, index) => {
             const ratePercent = Math.floor(item.rate * 100);
+
             return (
               <article
                 key={index}

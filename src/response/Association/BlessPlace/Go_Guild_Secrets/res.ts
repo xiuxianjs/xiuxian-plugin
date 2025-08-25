@@ -14,7 +14,7 @@ interface PlayerGuildRef {
   宗门名称: string;
   职位: string;
 }
-function isPlayerGuildRef (v): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
 }
 interface ExtAss extends AssociationDetailData {
@@ -22,7 +22,7 @@ interface ExtAss extends AssociationDetailData {
   灵石池?: number;
   power?: number;
 }
-function isExtAss (v): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v;
 }
 
@@ -30,54 +30,71 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const flag = await Go(e);
-  if (!flag) return false;
 
-  const player = (await readPlayer(usr_qq)) as Player | null;
-  if (!player || !player.宗门 || !isPlayerGuildRef(player.宗门)) {
+  if (!flag) { return false; }
+
+  const player = (await readPlayer(usr_qq));
+
+  if (!player?.宗门 || !isPlayerGuildRef(player.宗门)) {
     Send(Text('请先加入宗门'));
+
     return false;
   }
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
+
   if (!assData) {
     Send(Text('宗门数据异常'));
+
     return;
   }
   const assRaw = JSON.parse(assData);
+
   if (assRaw === 'error' || !isExtAss(assRaw)) {
     Send(Text('宗门数据不存在'));
+
     return false;
   }
   const ass = assRaw;
+
   if (!ass.宗门驻地 || ass.宗门驻地 === 0) {
     Send(Text('你的宗门还没有驻地，不能探索秘境哦'));
+
     return false;
   }
 
   const didian = e.MessageText.replace(/^(#|＃|\/)?探索宗门秘境/, '').trim();
+
   if (!didian) {
     Send(Text('请在指令后面补充秘境名称'));
+
     return false;
   }
   const listRaw = await getDataList('GuildSecrets');
   const weizhi = listRaw?.find(item => item.name === didian);
+
   if (!notUndAndNull(weizhi)) {
     Send(Text('未找到该宗门秘境'));
+
     return false;
   }
 
   const playerCoin = Number(player.灵石 || 0);
   const price = Number(weizhi.Price || 0);
+
   if (price <= 0) {
     Send(Text('秘境费用配置异常'));
+
     return false;
   }
   if (playerCoin < price) {
     Send(Text(`没有灵石寸步难行, 攒到${price}灵石才够哦~`));
+
     return false;
   }
 
   // 灵石池收益 5% 向下取整
   const guildGain = Math.trunc(price * 0.05);
+
   ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain;
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
 
@@ -102,12 +119,11 @@ const res = onResponse(selects, async e => {
     Place_address: weizhi,
     XF: ass.power
   };
+
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
-  Send(
-    Text(
-      `开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`
-    )
-  );
+  Send(Text(`开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`));
+
   return false;
 });
+
 export default onResponse(selects, [mw.current, res.current]);

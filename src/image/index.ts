@@ -115,25 +115,29 @@ const shotCache = new Map<string, ShotCacheEntry>();
  * @param data 传入组件的数据
  * @param enableCache 是否启用内部缓存(默认 false 保持旧行为；传 true 时，若数据内容未变化直接复用上一张图)
  */
-export async function screenshot (
+export async function screenshot(
   name: keyof typeof map,
   uid: number | string,
   data,
   enableCache = false
 ) {
   const keyBase = `data/${name}/${uid}`;
+
   if (process.env.NODE_ENV === 'development') {
     const dir = './views';
+
     mkdirSync(dir, { recursive: true });
     writeFileSync(`${dir}/${name}.json`, JSON.stringify(data, null, 2));
   }
   const component = map[name] as ComponentType;
+
   if (!enableCache) {
     return await renderComponentToBuffer(keyBase, component, data);
   }
 
   // 计算数据哈希；若序列化失败则退回不缓存
   let hash = '';
+
   try {
     hash = md5(JSON.stringify(data));
   } catch {
@@ -142,21 +146,26 @@ export async function screenshot (
 
   const cacheKey = `${keyBase}`;
   const existed = shotCache.get(cacheKey);
+
   if (existed && existed.hash === hash) {
     return existed.buffer;
   }
 
   const buffer = await renderComponentToBuffer(keyBase, component, data);
+
   shotCache.set(cacheKey, { hash, buffer, at: Date.now() });
 
   // 简单回收：超过 200 条时删最早的 50 条
   if (shotCache.size > 200) {
     const entries = [...shotCache.entries()].sort((a, b) => a[1].at - b[1].at);
+
     for (let i = 0; i < 50; i++) {
       const k = entries[i]?.[0];
-      if (k) shotCache.delete(k);
+
+      if (k) { shotCache.delete(k); }
     }
   }
+
   return buffer;
 }
 

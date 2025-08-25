@@ -8,5 +8,6 @@ const res = onResponse(selects, async e => {
     await InitWorldBoss2();
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

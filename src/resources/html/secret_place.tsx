@@ -14,17 +14,17 @@ const SecretPlace = ({ didian_list }) => {
       >
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-20'>
-          <div className='absolute top-10 left-10 w-32 h-32 border border-blue-400 rounded-full'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-cyan-400 rounded-full'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-indigo-400 rounded-full'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-blue-400 rounded-full'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-blue-400 rounded-full' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-cyan-400 rounded-full' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-indigo-400 rounded-full' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-blue-400 rounded-full' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
           {/* 主标题区域 */}
           <div className='text-center mb-8'>
             <div className='inline-block relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur-lg opacity-30'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur-lg opacity-30' />
               <div className='relative bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl px-8 py-4 border border-blue-400/30 backdrop-blur-sm'>
                 <h1 className='text-3xl font-bold text-white tracking-wider'>🏔️ 秘境 🏔️</h1>
               </div>
@@ -37,7 +37,7 @@ const SecretPlace = ({ didian_list }) => {
           {/* 主信息区域 */}
           <div className='max-w-6xl mx-auto'>
             <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-sm bg-white/80 rounded-3xl border border-blue-400/30 p-8 shadow-xl'>
                 {/* 头部信息 */}
                 <div className='text-center mb-8'>
@@ -57,7 +57,7 @@ const SecretPlace = ({ didian_list }) => {
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
                   {didian_list?.map((item, index) => (
                     <div key={index} className='relative group'>
-                      <div className='absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-600/10 rounded-2xl blur-sm'></div>
+                      <div className='absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-600/10 rounded-2xl blur-sm' />
                       <div className='relative backdrop-blur-md  rounded-2xl border border-blue-400/40 p-6 shadow-lg'>
                         {/* 秘境标题和价格 */}
                         <div className='flex items-center justify-between mb-4'>
@@ -70,9 +70,7 @@ const SecretPlace = ({ didian_list }) => {
                                 {item.Grade === '顶级' && '🌲'}
                                 {item.Grade === '传说' && '🌟'}
                                 {item.Grade === '神话' && '💎'}
-                                {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(
-                                  item.Grade
-                                ) && '🏔️'}
+                                {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(item.Grade) && '🏔️'}
                               </span>
                             </div>
                             <div>
@@ -169,9 +167,7 @@ const SecretPlace = ({ didian_list }) => {
                               {item.Grade === '顶级' && '🌲 顶级秘境，传说级奖励'}
                               {item.Grade === '传说' && '🌟 传说秘境，神话级宝物'}
                               {item.Grade === '神话' && '💎 神话秘境，至尊级机缘'}
-                              {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(
-                                item.Grade
-                              ) && '🏔️ 神秘秘境，未知的挑战'}
+                              {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(item.Grade) && '🏔️ 神秘秘境，未知的挑战'}
                             </span>
                           </div>
                         </div>

@@ -9,14 +9,18 @@ export const regular = /^(#|＃|\/)?取消星阁体系$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
   if (!e.IsMaster) {
     Send(Text('只有主人可以取消'));
+
     return false;
   }
 
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
+
   if (!redis.sismember(redisGlKey, String(e.ChannelId))) {
     Send(Text('本来就没开取消个冒险'));
+
     return false;
   }
   await redis.srem(redisGlKey, String(e.ChannelId));

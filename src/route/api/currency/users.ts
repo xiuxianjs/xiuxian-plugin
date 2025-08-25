@@ -3,14 +3,16 @@ import { validateRole } from '@src/route/core/auth';
 import { findUserRechargeInfo, getAllUsersCurrencyInfo } from '@src/model/currency';
 
 // 获取所有用户货币信息
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const users = await getAllUsersCurrencyInfo();
+
     ctx.status = 200;
     ctx.body = {
       code: 200,
@@ -29,14 +31,16 @@ export const GET = async (ctx: Context) => {
 };
 
 // 获取指定用户货币信息
-export const GET_USER = async (ctx: Context) => {
+export const GET_USER = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const userId = ctx.request.query.userId as string;
+
     if (!userId) {
       ctx.status = 400;
       ctx.body = {
@@ -44,10 +48,12 @@ export const GET_USER = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 
     const userInfo = await findUserRechargeInfo(userId);
+
     ctx.status = 200;
     ctx.body = {
       code: 200,

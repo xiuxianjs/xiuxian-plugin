@@ -8,30 +8,35 @@ import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK } from './constants.j
 import { getDataList } from './DataList.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
-export async function writeExchange (wupin: ExchangeRecord[]): Promise<void> {
+export async function writeExchange(wupin: ExchangeRecord[]): Promise<void> {
   await setDataJSONStringifyByKey(keys.exchange('Exchange'), wupin);
 }
-export async function writeForum (wupin: ForumRecord[]): Promise<void> {
+export async function writeForum(wupin: ForumRecord[]): Promise<void> {
   await setDataJSONStringifyByKey(keys.exchange('Forum'), wupin);
 }
-export async function readExchange (): Promise<ExchangeRecord[]> {
+export async function readExchange(): Promise<ExchangeRecord[]> {
   const Exchange = await getDataJSONParseByKey(keys.exchange('Exchange'));
-  if (!Exchange) return [];
+
+  if (!Exchange) { return []; }
+
   return safeParse<ExchangeRecord[]>(Exchange, []);
 }
-export async function readForum (): Promise<ForumRecord[]> {
+export async function readForum(): Promise<ForumRecord[]> {
   const Forum = await getDataJSONParseByKey(keys.exchange('Forum'));
-  if (!Forum) return [];
+
+  if (!Forum) { return []; }
+
   return safeParse<ForumRecord[]>(Forum, []);
 }
-export async function openAU (): Promise<ExchangeRecord> {
+export async function openAU(): Promise<ExchangeRecord> {
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
   const data = {
     xingge: await getDataList('Xingge')
   };
   const xinggeFirst = data.xingge?.[0];
   const oneList = (xinggeFirst?.one || []) as AuctionItem[];
-  if (oneList.length === 0) throw new Error('星阁拍卖行数据为空');
+
+  if (oneList.length === 0) { throw new Error('星阁拍卖行数据为空'); }
   const redis = getIoRedis();
   const random = Math.floor(Math.random() * oneList.length);
   const thing_data = oneList[random];
@@ -48,7 +53,9 @@ export async function openAU (): Promise<ExchangeRecord> {
     last_offer_player: 0,
     groupList
   };
+
   await setDataJSONStringifyByKey(KEY_AUCTION_OFFICIAL_TASK, wupin);
+
   return wupin;
 }
 

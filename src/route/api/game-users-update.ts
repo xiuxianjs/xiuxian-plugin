@@ -7,15 +7,17 @@ import { __PATH, keys } from '@src/model/keys';
 const redis = getIoRedis();
 
 // 更新游戏用户数据
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     // 解析请求体
     const body = await parseJsonBody(ctx);
+
     if (!body) {
       ctx.status = 400;
       ctx.body = {
@@ -23,6 +25,7 @@ export const PUT = async (ctx: Context) => {
         message: '请求体不能为空',
         data: null
       };
+
       return;
     }
 
@@ -35,11 +38,13 @@ export const PUT = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 
     // 检查用户是否存在
     const existingData = await redis.get(keys.player(String(id)));
+
     if (!existingData) {
       ctx.status = 404;
       ctx.body = {
@@ -47,11 +52,13 @@ export const PUT = async (ctx: Context) => {
         message: '用户不存在',
         data: null
       };
+
       return;
     }
 
     // 解析现有数据
     let existingUser;
+
     try {
       existingUser = JSON.parse(existingData);
     } catch (error) {
@@ -62,6 +69,7 @@ export const PUT = async (ctx: Context) => {
         message: '用户数据格式错误',
         data: null
       };
+
       return;
     }
 

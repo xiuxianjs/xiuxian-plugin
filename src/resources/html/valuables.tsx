@@ -61,7 +61,7 @@ const FloorSection = ({
         'absolute inset-0 bg-gradient-to-r rounded-2xl blur-sm',
         `${color.replace('400', '500')}/20`
       )}
-    ></div>
+    />
     <div
       className={classNames(
         'relative backdrop-blur-md bg-white/5 rounded-2xl border p-6 hover:border-opacity-60 transition-all duration-300',
@@ -95,17 +95,17 @@ const Valuables = () => {
       <div className='min-h-screen bg-gradient-to-br from-slate-900 via-amber-900 to-slate-900 relative overflow-hidden'>
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-10'>
-          <div className='absolute top-10 left-10 w-32 h-32 border border-amber-400 rounded-full'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-yellow-400 rounded-full'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-orange-400 rounded-full'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-red-400 rounded-full'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-amber-400 rounded-full' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-yellow-400 rounded-full' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-orange-400 rounded-full' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-red-400 rounded-full' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
           {/* 主标题区域 */}
           <div className='text-center mb-8'>
             <div className='inline-block relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-2xl blur-lg opacity-50'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-2xl blur-lg opacity-50' />
               <div className='relative bg-gradient-to-r from-amber-600 to-yellow-600 rounded-2xl px-8 py-4 border border-amber-400/30'>
                 <h1 className='text-3xl font-bold text-white tracking-wider'>🏛️ 万宝楼 🏛️</h1>
               </div>
@@ -116,7 +116,7 @@ const Valuables = () => {
           {/* 主信息区域 */}
           <div className='max-w-4xl mx-auto mb-12'>
             <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-sm bg-white/10 rounded-3xl border border-amber-400/30 p-8'>
                 <div className='text-center'>
                   <div className='text-2xl font-extrabold text-amber-300 mb-4'>🏛️ 万宝楼</div>

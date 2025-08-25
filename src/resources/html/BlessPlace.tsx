@@ -17,7 +17,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
       style={{ backgroundImage: `url(${secretPlaceURL})` }}
     >
       {/* 背景渐变遮罩 */}
-      <div className='absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/20 backdrop-blur-[2px] pointer-events-none'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/20 backdrop-blur-[2px] pointer-events-none' />
 
       <main className='relative max-w-5xl mx-auto space-y-8'>
         <header className='space-y-4 flex flex-col items-center'>
@@ -39,7 +39,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
               style={{ backgroundImage: `url(${cardURL})` }}
             >
               {/* 背景遮罩 */}
-              <div className='absolute inset-0 bg-gradient-to-br from-black/30 via-black/20 to-black/40 group-hover:from-black/20 group-hover:to-black/30 transition-colors'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-black/30 via-black/20 to-black/40 group-hover:from-black/20 group-hover:to-black/30 transition-colors' />
 
               <div className='relative z-10 p-4 md:p-5 flex flex-col h-full justify-between'>
                 <header className='space-y-1'>

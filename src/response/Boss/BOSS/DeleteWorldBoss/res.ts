@@ -9,6 +9,7 @@ export const regular = /^(#|＃|\/)?关闭妖王$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
   if (e.IsMaster) {
     if (await BossIsAlive()) {
       await redis.del(KEY_WORLD_BOOS_STATUS);
@@ -19,5 +20,6 @@ const res = onResponse(selects, async e => {
     }
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

@@ -41,7 +41,7 @@ const CombatResult = ({
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
         }}
-      ></div>
+      />
 
       {/* 主容器 */}
       <div className='relative z-10 max-w-5xl mx-auto'>
@@ -82,7 +82,7 @@ const CombatResult = ({
         <div className='bg-gradient-to-br from-slate-800/80 via-purple-800/60 to-slate-800/80 backdrop-blur-md border border-purple-400/30 rounded-2xl shadow-2xl p-4'>
           <div className='relative'>
             {/* 装饰性边框 */}
-            <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent'></div>
+            <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent' />
 
             {/* 战斗双方区域 */}
             <div className='relative z-10'>
@@ -90,7 +90,7 @@ const CombatResult = ({
                 {/* 战斗方A */}
                 <div className='flex-1 bg-gradient-to-br from-blue-900/60 to-cyan-800/40 backdrop-blur-sm border border-blue-400/30 rounded-xl p-6 shadow-lg relative overflow-hidden'>
                   {/* 装饰性光效 */}
-                  <div className='absolute top-0 right-0 w-20 h-20 bg-blue-400/10 rounded-full blur-xl'></div>
+                  <div className='absolute top-0 right-0 w-20 h-20 bg-blue-400/10 rounded-full blur-xl' />
 
                   <div className='flex flex-col items-center'>
                     {/* 头像区域 */}
@@ -140,7 +140,7 @@ const CombatResult = ({
                           style={{
                             width: `${Math.max(0, (playerA.hp / playerA.maxHp) * 100)}%`
                           }}
-                        ></div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -169,14 +169,14 @@ const CombatResult = ({
                         'bg-gradient-to-br from-red-500 to-pink-500': result === 'B',
                         'bg-gradient-to-br from-purple-500 to-pink-500': result === 'draw'
                       })}
-                    ></div>
+                    />
                   </div>
                 </div>
 
                 {/* 战斗方B */}
                 <div className='flex-1 bg-gradient-to-br from-red-900/60 to-pink-800/40 backdrop-blur-sm border border-red-400/30 rounded-xl p-6 shadow-lg relative overflow-hidden'>
                   {/* 装饰性光效 */}
-                  <div className='absolute top-0 left-0 w-20 h-20 bg-red-400/10 rounded-full blur-xl'></div>
+                  <div className='absolute top-0 left-0 w-20 h-20 bg-red-400/10 rounded-full blur-xl' />
 
                   <div className='flex flex-col items-center'>
                     {/* 头像区域 */}
@@ -226,7 +226,7 @@ const CombatResult = ({
                           style={{
                             width: `${Math.max(0, (playerB.hp / playerB.maxHp) * 100)}%`
                           }}
-                        ></div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -249,7 +249,7 @@ const CombatResult = ({
                       className='bg-gradient-to-r from-slate-600/50 to-slate-700/50 backdrop-blur-sm border border-slate-500/20 rounded-lg p-4 shadow-md relative overflow-hidden'
                     >
                       {/* 装饰性光效 */}
-                      <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-400/30 to-transparent'></div>
+                      <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-400/30 to-transparent' />
 
                       <div className='flex items-start'>
                         <div className='w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0 shadow-md'>
@@ -268,10 +268,10 @@ const CombatResult = ({
         {/* 底部装饰 */}
         <div className='flex justify-center'>
           <div className='flex space-x-4'>
-            <div className='w-3 h-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full shadow-lg'></div>
-            <div className='w-3 h-3 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full shadow-lg'></div>
-            <div className='w-3 h-3 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full shadow-lg'></div>
-            <div className='w-3 h-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full shadow-lg'></div>
+            <div className='w-3 h-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full shadow-lg' />
+            <div className='w-3 h-3 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full shadow-lg' />
+            <div className='w-3 h-3 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full shadow-lg' />
+            <div className='w-3 h-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full shadow-lg' />
           </div>
         </div>
       </div>

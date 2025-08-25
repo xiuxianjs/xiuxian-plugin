@@ -12,13 +12,13 @@ interface PlayerGuildRef {
   宗门名称: string;
   职位: string;
 }
-function isPlayerGuildRef (v): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
 }
 interface ExtAss extends AssociationDetailData {
   宗门神兽?: string;
 }
-function isExtAss (v): v is ExtAss {
+function isExtAss(v): v is ExtAss {
   return !!v && typeof v === 'object' && 'power' in v;
 }
 interface DateParts {
@@ -26,19 +26,21 @@ interface DateParts {
   M: number;
   D: number;
 }
-function isDateParts (v): v is DateParts {
+function isDateParts(v): v is DateParts {
   return !!v && typeof v === 'object' && 'Y' in v && 'M' in v && 'D' in v;
 }
 interface NamedClassItem {
   name: string;
   class?: string;
 }
-function toNamedList (arr): NamedClassItem[] {
-  if (!Array.isArray(arr)) return [];
+function toNamedList(arr): NamedClassItem[] {
+  if (!Array.isArray(arr)) { return []; }
+
   return arr
     .map(it => {
       if (it && typeof it === 'object') {
         const o = it;
+
         if (typeof o.name === 'string') {
           return {
             name: o.name,
@@ -46,6 +48,7 @@ function toNamedList (arr): NamedClassItem[] {
           };
         }
       }
+
       return undefined;
     })
     .filter(v => v !== undefined) as NamedClassItem[];
@@ -55,30 +58,38 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
   if (!player) {
     return;
   }
   if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     Send(Text('你尚未加入宗门'));
+
     return false;
   }
   const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
+
   if (assRaw === 'error' || !isExtAss(assRaw)) {
     Send(Text('宗门数据不存在'));
+
     return false;
   }
   const ass = assRaw;
+
   if (!ass.宗门神兽 || ass.宗门神兽 === '0' || ass.宗门神兽 === '无') {
     Send(Text('你的宗门还没有神兽的护佑，快去召唤神兽吧'));
+
     return false;
   }
 
   const nowTime = Date.now();
   const Today = await shijianc(nowTime);
   const lastsign_time = await getLastsign_Bonus(usr_qq);
+
   if (isDateParts(Today) && isDateParts(lastsign_time)) {
     if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
       Send(Text('今日已经接受过神兽赐福了，明天再来吧'));
+
       return false;
     }
   }
@@ -86,8 +97,10 @@ const res = onResponse(selects, async e => {
   await redis.set(getRedisKey(usr_qq, 'getLastsign_Bonus'), String(nowTime));
 
   const random = Math.random();
+
   if (random <= 0.7) {
     Send(Text(`${ass.宗门神兽}闭上了眼睛，表示今天不想理你`));
+
     return false;
   }
 
@@ -127,36 +140,45 @@ const res = onResponse(selects, async e => {
   };
   const highList = highProbLists[beast] || [];
   const normalList = normalLists[beast] || [];
+
   if (!highList.length && !normalList.length) {
     Send(Text('神兽奖励配置缺失'));
+
     return false;
   }
 
   const randomB = Math.random();
   const fromList = randomB > 0.9 && highList.length ? highList : normalList;
   const item = fromList[Math.floor(Math.random() * fromList.length)];
+
   if (!item) {
     Send(Text('本次赐福意外失败'));
+
     return false;
   }
   const category = (
     item.class && typeof item.class === 'string' ? item.class : '道具'
   ) as import('@src/types').NajieCategory;
+
   await addNajieThing(usr_qq, item.name, category, 1);
   if (randomB > 0.9) {
     Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`));
   } else {
     Send(Text(`${beast} 今天心情不错，随手丢给了你 ${item.name}`));
   }
+
   return false;
 });
 
-async function getLastsign_Bonus (usr_qq: string): Promise<DateParts | null> {
+async function getLastsign_Bonus(usr_qq: string): Promise<DateParts | null> {
   const time = await redis.get(getRedisKey(usr_qq, 'getLastsign_Bonus'));
+
   if (time) {
     const parts = await shijianc(parseInt(time, 10));
-    if (isDateParts(parts)) return parts;
+
+    if (isDateParts(parts)) { return parts; }
   }
+
   return null;
 }
 import mw from '@src/response/mw';

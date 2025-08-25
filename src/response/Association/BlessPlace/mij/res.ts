@@ -7,7 +7,9 @@ export const regular = /^(#|＃|\/)?宗门秘境$/;
 
 const res = onResponse(selects, async e => {
   const raw = await getDataList('GuildSecrets');
+
   await Goweizhi(e as import('alemonjs').EventsMessageCreateEnum, raw as NamedItem[]);
+
   return false;
 });
 

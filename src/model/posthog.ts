@@ -30,9 +30,11 @@ export const initPostlog = () => {
   const value = values[pkg.name] || {};
   const postlog = value?.postlog || {};
   const api_key = postlog.api_key || '';
-  if (!api_key) return;
+
+  if (!api_key) { return; }
   const options = postlog.options || {};
   const host = postlog.host || 'https://us.i.posthog.com';
+
   log = new PostHog(postlog.api_key, {
     ...options,
     host
@@ -65,8 +67,9 @@ export const postLogCommand = (props: {
   };
 }) => {
   // 开发模式下不发送
-  if (process.env.NODE_ENV === 'development') return;
+  if (process.env.NODE_ENV === 'development') { return; }
   const ext = props.ext || {};
+
   postLog({
     distinctId: props.id,
     event: LOG_EVENT_NAME.COMMAND,

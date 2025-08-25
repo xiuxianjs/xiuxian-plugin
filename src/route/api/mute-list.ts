@@ -4,9 +4,10 @@ import { keys, validateRole } from '@src/model';
 import { parseJsonBody } from '../core/bodyParser';
 
 // 获取禁言列表
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -16,6 +17,7 @@ export const GET = async (ctx: Context) => {
     const muteKeys = await redis.keys(mutePattern);
 
     const muteList = [];
+
     for (const key of muteKeys) {
       const userId = key.replace(keys.mute(''), '');
       const ttl = await redis.ttl(key);
@@ -58,14 +60,16 @@ export const GET = async (ctx: Context) => {
 };
 
 // 添加禁言
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const body = await parseJsonBody(ctx);
+
     if (!body) {
       ctx.status = 400;
       ctx.body = {
@@ -73,6 +77,7 @@ export const POST = async (ctx: Context) => {
         message: '请求体不能为空',
         data: null
       };
+
       return;
     }
 
@@ -85,18 +90,22 @@ export const POST = async (ctx: Context) => {
         message: '用户ID和禁言时长不能为空',
         data: null
       };
+
       return;
     }
 
     // 验证时长格式 (支持小时和分钟)
     let seconds = 0;
+
     if (typeof duration === 'number') {
       seconds = duration * 60; // 默认按分钟处理
     } else if (typeof duration === 'string') {
       const match = duration.match(/^(\d+)(h|m|s)$/);
+
       if (match) {
         const value = parseInt(match[1]);
         const unit = match[2];
+
         switch (unit) {
         case 'h':
           seconds = value * 3600;
@@ -120,6 +129,7 @@ export const POST = async (ctx: Context) => {
         message: '禁言时长必须大于0',
         data: null
       };
+
       return;
     }
 
@@ -127,6 +137,7 @@ export const POST = async (ctx: Context) => {
 
     // 检查用户是否已存在
     const exist = await redis.exists(keys.player(userId));
+
     if (exist === 0) {
       ctx.status = 400;
       ctx.body = {
@@ -134,6 +145,7 @@ export const POST = async (ctx: Context) => {
         message: '用户不存在',
         data: null
       };
+
       return;
     }
 
@@ -174,9 +186,10 @@ export const POST = async (ctx: Context) => {
 };
 
 // 解除禁言
-export const DELETE = async (ctx: Context) => {
+export const DELETE = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -190,6 +203,7 @@ export const DELETE = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 
@@ -197,6 +211,7 @@ export const DELETE = async (ctx: Context) => {
 
     // 检查用户是否被禁言
     const muteExists = await redis.exists(keys.mute(userId));
+
     if (muteExists === 0) {
       ctx.status = 400;
       ctx.body = {
@@ -204,6 +219,7 @@ export const DELETE = async (ctx: Context) => {
         message: '用户未被禁言',
         data: null
       };
+
       return;
     }
 
@@ -240,14 +256,16 @@ export const DELETE = async (ctx: Context) => {
 };
 
 // 批量解除禁言
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const body = await parseJsonBody(ctx);
+
     if (!body) {
       ctx.status = 400;
       ctx.body = {
@@ -255,6 +273,7 @@ export const PUT = async (ctx: Context) => {
         message: '请求体不能为空',
         data: null
       };
+
       return;
     }
 
@@ -267,6 +286,7 @@ export const PUT = async (ctx: Context) => {
         message: '用户ID列表不能为空',
         data: null
       };
+
       return;
     }
 
@@ -275,6 +295,7 @@ export const PUT = async (ctx: Context) => {
 
     for (const userId of userIds) {
       const muteExists = await redis.exists(keys.mute(userId));
+
       if (muteExists > 0) {
         await redis.del(keys.mute(userId));
         results.push({ userId, success: true });
@@ -307,7 +328,7 @@ export const PUT = async (ctx: Context) => {
 };
 
 // 格式化剩余时间
-function formatRemainingTime (seconds: number): string {
+function formatRemainingTime(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;

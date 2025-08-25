@@ -7,17 +7,17 @@ const Statezhiye = ({ Level_list }) => {
       <div className='min-h-screen bg-gradient-to-br from-slate-900 via-violet-900 to-slate-900 relative overflow-hidden'>
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-10'>
-          <div className='absolute top-10 left-10 w-32 h-32 border border-violet-400 rounded-full'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-purple-400 rounded-full'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-indigo-400 rounded-full'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-pink-400 rounded-full'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-violet-400 rounded-full' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-purple-400 rounded-full' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-indigo-400 rounded-full' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-pink-400 rounded-full' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
           {/* 主标题区域 */}
           <div className='text-center mb-8'>
             <div className='inline-block relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl blur-lg opacity-50'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl blur-lg opacity-50' />
               <div className='relative bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl px-8 py-4 border border-violet-400/30'>
                 <h1 className='text-3xl font-bold text-white tracking-wider'>🎯 职业等级图鉴 🎯</h1>
               </div>
@@ -28,7 +28,7 @@ const Statezhiye = ({ Level_list }) => {
           {/* 主信息区域 */}
           <div className='max-w-4xl mx-auto'>
             <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-violet-500/20 to-purple-500/20 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-violet-500/20 to-purple-500/20 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-sm bg-white/10 rounded-3xl border border-violet-400/30 p-8'>
                 {/* 头部信息 */}
                 <div className='text-center mb-8'>
@@ -47,7 +47,7 @@ const Statezhiye = ({ Level_list }) => {
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                   {Level_list?.map((item, index) => (
                     <div key={index} className='relative group'>
-                      <div className='absolute inset-0 bg-gradient-to-br from-violet-400/20 to-purple-600/20 rounded-2xl blur-sm'></div>
+                      <div className='absolute inset-0 bg-gradient-to-br from-violet-400/20 to-purple-600/20 rounded-2xl blur-sm' />
                       <div className='relative backdrop-blur-md bg-white/5 rounded-2xl border border-violet-400/40 p-6'>
                         {/* 等级标题 */}
                         <div className='flex items-center justify-between mb-4'>
@@ -118,7 +118,7 @@ const Statezhiye = ({ Level_list }) => {
                               style={{
                                 width: `${Math.min((index + 1) * 10, 100)}%`
                               }}
-                            ></div>
+                            />
                           </div>
                           <span className='text-xs text-gray-300'>
                             {Math.min((index + 1) * 10, 100)}%

@@ -24,6 +24,7 @@ interface ZongMengItem {
  */
 const ZongMeng = ({ temp }: { temp?: ZongMengItem[] }) => {
   const data = temp || [];
+
   return (
     <HTML
       className='w-full text-white/90 p-6 bg-center bg-cover font-serif'

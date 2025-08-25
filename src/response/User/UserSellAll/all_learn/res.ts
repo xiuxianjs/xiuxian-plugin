@@ -9,15 +9,18 @@ export const regular = /^(#|＃|\/)?一键学习$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  //有无存档
+  // 有无存档
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
-  //检索方法
+
+  if (!ifexistplay) { return false; }
+  // 检索方法
   const najie = await await data.getData('najie', usr_qq);
   const player = await readPlayer(usr_qq);
   let name = '';
+
   for (const l of najie.功法) {
     const islearned = player.学习的功法.find(item => item == l.name);
+
     if (!islearned) {
       await addNajieThing(usr_qq, l.name, '功法', -1);
       await addConFaByUser(usr_qq, l.name);
@@ -30,5 +33,6 @@ const res = onResponse(selects, async e => {
     Send(Text('无新功法'));
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

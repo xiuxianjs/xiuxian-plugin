@@ -9,35 +9,37 @@ export const regular = /^(#|＃|\/)?升级纳戒$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const flag = await Go(e);
-  if (!flag) return false;
+
+  if (!flag) { return false; }
   const usr_qq = e.UserId;
-  //有无存档
+  // 有无存档
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   const najie = await readNajie(usr_qq);
   const player = await readPlayer(usr_qq);
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const najie_num = cf.najie_num;
   const najie_price = cf.najie_price;
+
   if (najie.等级 == najie_num.length) {
     Send(Text('你的纳戒已经是最高级的了'));
+
     return false;
   }
   if (player.灵石 < najie_price[najie.等级]) {
     Send(Text(`灵石不足,还需要准备${najie_price[najie.等级] - player.灵石}灵石`));
+
     return false;
   }
   await addCoin(usr_qq, -najie_price[najie.等级]);
   najie.灵石上限 = najie_num[najie.等级];
   najie.等级 += 1;
   await writeNajie(usr_qq, najie);
-  Send(
-    Text(
-      `你的纳戒升级成功,花了${
-        najie_price[najie.等级 - 1]
-      }灵石,目前纳戒灵石存储上限为${najie.灵石上限},可以使用【#我的纳戒】来查看`
-    )
-  );
+  Send(Text(`你的纳戒升级成功,花了${
+    najie_price[najie.等级 - 1]
+  }灵石,目前纳戒灵石存储上限为${najie.灵石上限},可以使用【#我的纳戒】来查看`));
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

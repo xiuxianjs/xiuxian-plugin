@@ -31,7 +31,7 @@ const AREA_COLLECTION_KEYS = [
 ] as const;
 const ITEM_LEVEL_KEYS: (keyof AreaLike)[] = ['one', 'two', 'three'];
 
-function normalizeName (raw: string): string {
+function normalizeName(raw: string): string {
   return raw.trim();
 }
 
@@ -39,28 +39,35 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  const user_qq = e.UserId; //用户qq
-  //有无存档
-  if (!(await existplayer(user_qq))) return false;
+  const user_qq = e.UserId; // 用户qq
+
+  // 有无存档
+  if (!(await existplayer(user_qq))) { return false; }
 
   // 提取物品名
   const thingName = normalizeName(e.MessageText.replace(/^(#|＃|\/)?哪里有/, ''));
+
   if (!thingName) {
     Send(Text('请输入要查找的物品名称'));
+
     return false;
   }
 
   // 校验物品是否存在于全局映射(避免无意义遍历)
   const exists = await foundthing(thingName);
+
   if (!exists) {
     Send(Text(`你在瞎说啥呢?哪来的【${thingName}】?`));
+
     return false;
   }
 
   // 检查寻物纸数量
   const paperCount = await existNajieThing(usr_qq, '寻物纸', '道具');
+
   if (!paperCount || paperCount <= 0) {
     Send(Text('查找物品需要【寻物纸】'));
+
     return false;
   }
 
@@ -70,16 +77,20 @@ const res = onResponse(selects, async e => {
   for (const key of AREA_COLLECTION_KEYS) {
     const root: Record<string, unknown> = data;
     const collection = root[key];
-    if (!Array.isArray(collection)) continue;
+
+    if (!Array.isArray(collection)) { continue; }
     for (const areaRaw of collection) {
       const area = areaRaw as AreaLike;
-      if (!area || typeof area !== 'object') continue;
+
+      if (!area || typeof area !== 'object') { continue; }
       const areaName = area.name || '未知地点';
       let matched = false;
+
       for (const levelKey of ITEM_LEVEL_KEYS) {
         const list = area[levelKey];
-        if (!Array.isArray(list) || list.length === 0) continue;
-        if (list.some(it => it && typeof it === 'object' && (it as ThingLike).name === thingName)) {
+
+        if (!Array.isArray(list) || list.length === 0) { continue; }
+        if (list.some(it => it && typeof it === 'object' && (it).name === thingName)) {
           matched = true;
           break;
         }
@@ -96,14 +107,18 @@ const res = onResponse(selects, async e => {
 
   if (foundPlaces.length === 0) {
     Send(Text('天地没有回应......(已消耗1张寻物纸)'));
+
     return false;
   }
 
-  const resultMsg =
-    `【${thingName}】可能出现在:\n` +
-    foundPlaces.map(n => `- ${n}`).join('\n') +
-    '\n(已消耗1张寻物纸)';
+  const resultMsg
+    = `【${thingName}】可能出现在:\n`
+    + foundPlaces.map(n => `- ${n}`).join('\n')
+    + '\n(已消耗1张寻物纸)';
+
   Send(Text(resultMsg));
+
   return false;
 });
+
 export default onResponse(selects, [mw.current, res.current]);

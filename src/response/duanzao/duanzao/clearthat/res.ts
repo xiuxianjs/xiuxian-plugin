@@ -9,12 +9,15 @@ export const regular = /^(#|＃|\/)?清空锻炉/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId; //用户qq
-  //有无存档
-  if (!(await existplayer(user_qq))) return false;
+  const user_qq = e.UserId; // 用户qq
+
+  // 有无存档
+  if (!(await existplayer(user_qq))) { return false; }
   const A = await looktripod(user_qq);
+
   if (A == 1) {
     const newtripod = await readTripod();
+
     for (const item of newtripod) {
       if (user_qq == item.qq) {
         item.材料 = [];
@@ -28,10 +31,12 @@ const res = onResponse(selects, async e => {
         // 显式清空 key（兼容旧逻辑使用 null）
         await setValue(userKey(user_qq, 'action10'), null);
         Send(Text('材料成功清除'));
+
         return false;
       }
     }
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

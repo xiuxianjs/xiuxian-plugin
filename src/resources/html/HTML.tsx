@@ -9,6 +9,7 @@ const HTML = (
   }
 ) => {
   const { linkStyleSheets = [], dangerouslySetInnerHTML, ...reSet } = props;
+
   return (
     <html>
       <head>

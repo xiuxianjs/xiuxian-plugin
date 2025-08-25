@@ -17,19 +17,29 @@
     "bundle-install": "yarn --cwd frontend install",
     "bundle-dev": "yarn --cwd frontend dev",
     "bundle": "yarn --cwd frontend build",
-    "eslint": "eslint src --fix",
-    "eslint:check": "eslint src --ext .ts,.tsx,.js",
-    "eslint:fix": "eslint src --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
-    "eslint:fix-all": "eslint . --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
+    "lint": "eslint src --ext .ts,.tsx,.js",
+    "lint:fix": "eslint src --ext .ts,.tsx,.js --fix",
+    "lint:check": "eslint src --ext .ts,.tsx,.js",
+    "lint:fix-all": "eslint . --ext .ts,.tsx,.js --fix",
+    "lint:staged": "lint-staged",
+    "lint:changed": "git diff origin/main...HEAD --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint",
+    "lint:baseline": "eslint -f json src > eslint-baseline.json || true",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check-format": "git diff --exit-code",
-    "lint:staged": "git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",
-    "lint:changed": "git diff origin/main...HEAD --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",
-    "lint:fix": "eslint src --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
-    "lint:baseline": "eslint -f json src > eslint-baseline.json || true",
-    "code:check": "npm run eslint:check && npm run format:check",
-    "code:fix": "npm run eslint:fix && npm run format"
+    "format:fix": "prettier --write .",
+    "code:check": "npm run lint:check && npm run format:check",
+    "code:fix": "npm run lint:fix && npm run format:fix",
+    "code:fix-all": "npm run lint:fix-all && npm run format:fix",
+    "pre-commit": "lint-staged",
+    "prepare": "husky",
+    "clean": "rm -rf dist lib .eslintcache",
+    "clean:all": "rm -rf dist lib .eslintcache node_modules/.cache",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "test": "echo \"No tests specified\" && exit 0",
+    "test:watch": "npm run test -- --watch",
+    "ci:check": "npm run type-check && npm run code:check",
+    "ci:fix": "npm run code:fix-all"
   },
   "dependencies": {
     "classnames": "^2.5.1",
@@ -58,6 +68,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "lvyjs": "0.2.20",
     "prettier": "^3",
     "sass": "^1.90.0",
@@ -68,5 +80,21 @@
     "web": {
       "root": "dist"
     }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write"
+    ],
+    "*.{jsx,tsx}": [
+      "eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,scss,html}": [
+      "prettier --write"
+    ],
+    "*.{png,jpg,jpeg,gif,svg}": [
+      "git add"
+    ]
   }
 }

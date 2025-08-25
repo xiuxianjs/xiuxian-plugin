@@ -19,39 +19,42 @@ interface PlayerGuildInfo {
   time?: [number, number];
 }
 
-function isPlayerGuildInfo (val): val is PlayerGuildInfo {
+function isPlayerGuildInfo(val): val is PlayerGuildInfo {
   return !!val && typeof val === 'object' && '宗门名称' in val && '职位' in val;
 }
 
 type RoleKey = '宗主' | '副宗主' | '长老' | '内门弟子' | string;
-function getRoleList (ass: AssociationDetailData, role: RoleKey): string[] {
+function getRoleList(ass: AssociationDetailData, role: RoleKey): string[] {
   const raw = ass[role];
-  return Array.isArray(raw) ? (raw.filter(i => typeof i === 'string') as string[]) : [];
+
+  return Array.isArray(raw) ? (raw.filter(i => typeof i === 'string')) : [];
 }
-function setRoleList (ass: AssociationDetailData, role: RoleKey, list: string[]): void {
+function setRoleList(ass: AssociationDetailData, role: RoleKey, list: string[]): void {
   ass[role] = list;
 }
 
-function ensureStringArray (v): string[] {
-  return Array.isArray(v) ? (v.filter(i => typeof i === 'string') as string[]) : [];
+function ensureStringArray(v): string[] {
+  return Array.isArray(v) ? (v.filter(i => typeof i === 'string')) : [];
 }
 
-function serializePlayer (p: Player): Record<string, JSONValue> {
+function serializePlayer(p: Player): Record<string, JSONValue> {
   const result: Record<string, JSONValue> = {};
+
   for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') continue;
+    if (typeof v === 'function') { continue; }
     // 简单递归：仅处理对象/数组基础可序列化部分
     if (v && typeof v === 'object') {
       if (Array.isArray(v)) {
         result[k] = v.filter(x => typeof x !== 'function') as JSONValue;
       } else {
         const obj: Record<string, JSONValue> = {};
+
         for (const [ik, iv] of Object.entries(v)) {
-          if (typeof iv === 'function') continue;
+          if (typeof iv === 'function') { continue; }
           if (iv && typeof iv === 'object') {
             // 深层再做一次浅拷贝（避免过度复杂）
             obj[ik] = JSON.parse(JSON.stringify(iv));
-          } else obj[ik] = iv as JSONValue;
+          } else { obj[ik] = iv as JSONValue; }
         }
         result[k] = obj as JSONValue;
       }
@@ -59,6 +62,7 @@ function serializePlayer (p: Player): Record<string, JSONValue> {
       result[k] = v as JSONValue;
     }
   }
+
   return result;
 }
 
@@ -66,39 +70,49 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   const player = await readPlayer(usr_qq);
-  if (!player) return false;
-  if (!notUndAndNull(player.宗门)) return false;
-  if (!isPlayerGuildInfo(player.宗门)) return false;
+
+  if (!player) { return false; }
+  if (!notUndAndNull(player.宗门)) { return false; }
+  if (!isPlayerGuildInfo(player.宗门)) { return false; }
 
   const guildInfo = player.宗门;
   const nowTime = Date.now();
   const timeCfg = (await getConfig('xiuxian', 'xiuxian')).CD.joinassociation; // 分钟
   const joinTuple = guildInfo.time || guildInfo.加入时间;
+
   if (joinTuple && Array.isArray(joinTuple) && joinTuple.length >= 2) {
     const addTime = joinTuple[1] + 60000 * timeCfg;
+
     if (addTime > nowTime) {
       Send(Text(`加入宗门不满${timeCfg}分钟,无法退出`));
+
       return false;
     }
   }
 
-  const role = guildInfo.职位 as RoleKey;
+  const role = guildInfo.职位;
   const assData = await redis.get(`${__PATH.association}:${guildInfo.宗门名称}`);
+
   if (!assData) {
     Send(Text('宗门数据异常'));
+
     return;
   }
   const assRaw = JSON.parse(assData);
+
   if (assRaw === 'error') {
     Send(Text('宗门数据错误'));
+
     return false;
   }
   const ass = assRaw as AssociationDetailData;
 
   if (role !== '宗主') {
     const roleList = getRoleList(ass, role).filter(item => item !== usr_qq);
+
     setRoleList(ass, role, roleList);
     ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== usr_qq);
     await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
@@ -113,11 +127,7 @@ const res = onResponse(selects, async e => {
       delete (player as Player & { 宗门? }).宗门;
       await writePlayer(usr_qq, serializePlayer(player));
       await playerEfficiency(usr_qq);
-      Send(
-        Text(
-          '退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'
-        )
-      );
+      Send(Text('退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
     } else {
       ass.所有成员 = ass.所有成员.filter(item => item !== usr_qq);
       delete (player as Player & { 宗门? }).宗门;
@@ -127,19 +137,20 @@ const res = onResponse(selects, async e => {
       const zl = getRoleList(ass, '长老');
       const nmdz = getRoleList(ass, '内门弟子');
       let randmember_qq: string;
-      if (fz.length > 0) randmember_qq = await getRandomFromARR(fz);
-      else if (zl.length > 0) randmember_qq = await getRandomFromARR(zl);
-      else if (nmdz.length > 0) randmember_qq = await getRandomFromARR(nmdz);
-      else randmember_qq = await getRandomFromARR(ass.所有成员);
+
+      if (fz.length > 0) { randmember_qq = await getRandomFromARR(fz); } else if (zl.length > 0) { randmember_qq = await getRandomFromARR(zl); } else if (nmdz.length > 0) { randmember_qq = await getRandomFromARR(nmdz); } else { randmember_qq = await getRandomFromARR(ass.所有成员); }
 
       const randmember = await readPlayer(randmember_qq);
+
       if (!randmember || !isPlayerGuildInfo(randmember.宗门)) {
         Send(Text('随机继任者数据错误'));
+
         return false;
       }
       const rGuild = randmember.宗门;
-      const oldList = getRoleList(ass, rGuild.职位 as RoleKey).filter(i => i !== randmember_qq);
-      setRoleList(ass, rGuild.职位 as RoleKey, oldList);
+      const oldList = getRoleList(ass, rGuild.职位).filter(i => i !== randmember_qq);
+
+      setRoleList(ass, rGuild.职位, oldList);
       setRoleList(ass, '宗主', [randmember_qq]);
       rGuild.职位 = '宗主';
       await writePlayer(randmember_qq, serializePlayer(randmember));

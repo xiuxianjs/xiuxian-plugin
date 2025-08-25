@@ -20,7 +20,7 @@ import { NAJIE_CATEGORIES } from '@src/model/settions';
  * @param v
  * @returns
  */
-function isNajieCategory (v): v is NajieCategory {
+function isNajieCategory(v): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
 }
 
@@ -35,39 +35,44 @@ function isNajieCategory (v): v is NajieCategory {
 兼容多种奖励类型和探索地点，支持多样化的探索体验。
  * @returns
  */
-export const SecretPlaceTask = async () => {
+export const SecretPlaceTask = async() => {
   const playerList = await keysByPath(__PATH.player_path);
+
   for (const player_id of playerList) {
-    //得到动作
+    // 得到动作
     const actionRaw = await getDataByUserId(player_id, 'action');
     const action = safeParse<ActionState | null>(actionRaw, null);
-    //不为空，存在动作
+
+    // 不为空，存在动作
     if (action) {
-      let push_address; //消息推送地址
-      let is_group = false; //是否推送到群
+      let push_address; // 消息推送地址
+      let is_group = false; // 是否推送到群
+
       if ('group_id' in action) {
         if (notUndAndNull(action.group_id)) {
           is_group = true;
           push_address = action.group_id;
         }
       }
-      //最后发送的消息
+      // 最后发送的消息
       const msg: Array<DataMention | string> = [Mention(player_id)];
-      //动作结束时间
+      // 动作结束时间
       let end_time = action.end_time;
-      //现在的时间
+      // 现在的时间
       const now_time = Date.now();
-      //用户信息
-      const player = (await readPlayer(player_id)) as Player | null;
-      if (!player) continue;
-      //有秘境状态:这个直接结算即可
+      // 用户信息
+      const player = (await readPlayer(player_id));
+
+      if (!player) { continue; }
+      // 有秘境状态:这个直接结算即可
       if (action.Place_action == '0') {
-        //这里改一改,要在结束时间的前两分钟提前结算
+        // 这里改一改,要在结束时间的前两分钟提前结算
         end_time = end_time - 60000 * 2;
-        //时间过了
+        // 时间过了
         if (now_time > end_time) {
           const weizhi = action.Place_address;
-          if (!weizhi) continue;
+
+          if (!weizhi) { continue; }
           const A_player = {
             名号: player.名号,
             攻击: player.攻击,
@@ -83,10 +88,12 @@ export const SecretPlaceTask = async () => {
             仙宠: player.仙宠 || { name: '无', type: 'none', 加成: 0 }
           };
           let buff = 1;
-          if (weizhi.name == '大千世界' || weizhi.name == '仙界矿场') buff = 0.6;
+
+          if (weizhi.name == '大千世界' || weizhi.name == '仙界矿场') { buff = 0.6; }
           const monsterList = await getDataList('Monster');
           const monster_length = monsterList.length;
-          if (monster_length === 0) return;
+
+          if (monster_length === 0) { return; }
           const monster_index = Math.trunc(Math.random() * monster_length);
           const monster = monsterList[monster_index] as {
             名号: string;
@@ -120,26 +127,25 @@ export const SecretPlaceTask = async () => {
           let random4;
           let m = '';
           // let fyd_msg = '' // 已不再使用
-          //查找秘境
+          // 查找秘境
           let t1 = 1;
           let t2 = 1;
           let n = 1;
           let last_msg = '';
+
           if (random1 <= x) {
             if (random2 <= y) {
               if (random3 <= z) {
                 random4 = Math.floor(Math.random() * weizhi.three.length);
                 thing_name = weizhi.three[random4].name;
-                if (isNajieCategory(weizhi.three[random4].class))
-                  thing_class = weizhi.three[random4].class as NajieCategory;
+                if (isNajieCategory(weizhi.three[random4].class)) { thing_class = weizhi.three[random4].class as NajieCategory; }
                 m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是：[${thing_name}`;
                 t1 = 2 + Math.random();
                 t2 = 2 + Math.random();
               } else {
                 random4 = Math.floor(Math.random() * weizhi.two.length);
                 thing_name = weizhi.two[random4].name;
-                if (isNajieCategory(weizhi.two[random4].class))
-                  thing_class = weizhi.two[random4].class as NajieCategory;
+                if (isNajieCategory(weizhi.two[random4].class)) { thing_class = weizhi.two[random4].class as NajieCategory; }
                 m = `在洞穴中拿到[${thing_name}`;
                 t1 = 1 + Math.random();
                 t2 = 1 + Math.random();
@@ -151,14 +157,13 @@ export const SecretPlaceTask = async () => {
             } else {
               random4 = Math.floor(Math.random() * weizhi.one.length);
               thing_name = weizhi.one[random4].name;
-              if (isNajieCategory(weizhi.one[random4].class))
-                thing_class = weizhi.one[random4].class as NajieCategory;
+              if (isNajieCategory(weizhi.one[random4].class)) { thing_class = weizhi.one[random4].class as NajieCategory; }
               m = `捡到了[${thing_name}`;
               t1 = 0.5 + Math.random() * 0.5;
               t2 = 0.5 + Math.random() * 0.5;
               if (weizhi.name == '诸神黄昏·旧神界') {
                 n = 100;
-                if (thing_name == '洗根水') n = 130;
+                if (thing_name == '洗根水') { n = 130; }
                 m = '捡到了[' + thing_name;
               }
               if (weizhi.name == '太极之阳' || weizhi.name == '太极之阴') {
@@ -173,8 +178,9 @@ export const SecretPlaceTask = async () => {
             t2 = 0.5 + Math.random() * 0.5;
           }
           if (weizhi.name != '诸神黄昏·旧神界') {
-            //判断是不是旧神界
+            // 判断是不是旧神界
             const random = Math.random();
+
             if (random < player.幸运) {
               if (random < player.addluckyNo) {
                 last_msg += '福源丹生效，所以在';
@@ -198,11 +204,12 @@ export const SecretPlaceTask = async () => {
           }
           m += `]×${n}个。`;
           let xiuwei = 0;
-          //默认结算装备数
+          // 默认结算装备数
           const now_level_id = player.level_id;
           const now_physique_id = player.Physique_id;
-          //结算
+          // 结算
           let qixue = 0;
+
           if (msgg.find(item => item == A_win)) {
             xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
             qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
@@ -214,9 +221,10 @@ export const SecretPlaceTask = async () => {
             }],经过一番战斗,击败对手,获得修为${xiuwei},气血${qixue},剩余血量${
               A_player.当前血量 + Data_battle.A_xue
             }`;
-            const random = Math.random(); //万分之一出神迹
+            const random = Math.random(); // 万分之一出神迹
             let newrandom = 0.995;
             const dy = await readDanyao(player_id);
+
             newrandom -= Number(dy.beiyong1 || 0);
             if (dy.ped > 0) {
               dy.ped--;
@@ -229,33 +237,36 @@ export const SecretPlaceTask = async () => {
             if (random > newrandom) {
               const xianchonkouliangList = await getDataList('Xianchonkouliang');
               const length = xianchonkouliangList.length;
+
               if (length > 0) {
                 const index = Math.trunc(Math.random() * length);
                 const kouliang = xianchonkouliangList[index];
-                last_msg +=
-                  '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
+
+                last_msg
+                  += '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
                 await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1);
               }
             }
             if (random > 0.1 && random < 0.1002) {
-              last_msg +=
-                '\n' +
-                B_player.名号 +
-                '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
+              last_msg
+                += '\n'
+                + B_player.名号
+                + '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
               await addNajieThing(player_id, '长相奇怪的小石头', '道具', 1);
             }
           } else if (msgg.find(item => item == B_win)) {
             xiuwei = 800;
-            last_msg =
-              '不巧撞见[' +
-              B_player.名号 +
-              '],经过一番战斗,败下阵来,还好跑得快,只获得了修为' +
-              xiuwei +
-              ']';
+            last_msg
+              = '不巧撞见['
+              + B_player.名号
+              + '],经过一番战斗,败下阵来,还好跑得快,只获得了修为'
+              + xiuwei
+              + ']';
           }
           msg.push('\n' + player.名号 + last_msg);
           const arr: ActionState = action;
-          //把状态都关了(强制置数字 1)
+
+          // 把状态都关了(强制置数字 1)
           arr.shutup = 1;
           arr.working = 1;
           arr.power_up = 1;

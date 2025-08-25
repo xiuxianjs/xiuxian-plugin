@@ -4,9 +4,10 @@ import { parseJsonBody } from '@src/route/core/bodyParser';
 import { consumeUserCurrency, consumeMonthCardDays } from '@src/model/currency';
 
 // 消费用户货币
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -29,6 +30,7 @@ export const PUT = async (ctx: Context) => {
           message: '用户ID和消费金额不能为空',
           data: null
         };
+
         return;
       }
 
@@ -60,6 +62,7 @@ export const PUT = async (ctx: Context) => {
           message: '用户ID、月卡类型和天数不能为空',
           data: null
         };
+
         return;
       }
 

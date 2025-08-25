@@ -39,28 +39,31 @@ interface ActionState {
   action?: string;
 }
 
-function parseJson<T> (raw, fallback: T): T {
-  if (typeof raw !== 'string' || raw === '') return fallback;
+function parseJson<T>(raw, fallback: T): T {
+  if (typeof raw !== 'string' || raw === '') { return fallback; }
   try {
     return JSON.parse(raw) as T;
   } catch {
     return fallback;
   }
 }
-function toInt (v, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v);
+
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const user_qq = e.UserId; //用户qq
-  //有无存档
-  if (!(await existplayer(user_qq))) return false;
+  const user_qq = e.UserId; // 用户qq
+
+  // 有无存档
+  if (!(await existplayer(user_qq))) { return false; }
 
   if (!(await Boss2IsAlive())) {
     Send(Text('金角大王未开启！'));
+
     return false;
   }
   const usr_qq = e.UserId;
@@ -68,45 +71,58 @@ const res = onResponse(selects, async e => {
   const fightCdMs = 5 * 60000;
   const lastTimeRaw = await redis.get(getRedisKey(usr_qq, 'BOSSCD'));
   const lastTime = toInt(lastTimeRaw);
+
   if (now < lastTime + fightCdMs) {
     const remain = lastTime + fightCdMs - now;
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
+
     Send(Text(`正在CD中，剩余cd:  ${m}分 ${s}秒`));
+
     return false;
   }
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
   if (!player) {
     Send(Text('区区凡人，也想参与此等战斗中吗？'));
+
     return false;
   }
   // 限制：22~41 且 未轮回 (推测原逻辑)
   if (player.level_id > 41 || player.lunhui > 0) {
     Send(Text('仙人不得下凡'));
+
     return false;
   }
   if (player.level_id < 22) {
     Send(Text('修为至少达到化神初期才能参与挑战'));
+
     return false;
   }
 
   const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'));
   const action = parseJson<ActionState | null>(actionRaw, null);
-  if (action && action.end_time && Date.now() <= action.end_time) {
+
+  if (action?.end_time && Date.now() <= action.end_time) {
     const remain = action.end_time - Date.now();
     const m = Math.floor(remain / 60000);
     const s = Math.floor((remain % 60000) / 1000);
+
     Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
+
     return false;
   }
   if (player.当前血量 <= player.血量上限 * 0.1) {
     Send(Text('还是先疗伤吧，别急着参战了'));
+
     return false;
   }
   if (WorldBossBattleInfo.CD[usr_qq]) {
     const seconds = Math.trunc((300000 - (Date.now() - WorldBossBattleInfo.CD[usr_qq])) / 1000);
+
     if (seconds <= 300 && seconds >= 0) {
       Send(Text(`刚刚一战消耗了太多气力，还是先歇息一会儿吧~(剩余${seconds}秒)`));
+
       return false;
     }
   }
@@ -114,21 +130,26 @@ const res = onResponse(selects, async e => {
   const statusStr = await redis.get(KEY_WORLD_BOOS_STATUS_TWO);
   const recordStr = await redis.get(KEY_RECORD_TWO);
   const WorldBossStatus = parseJson<WorldBossStatusInfo | null>(statusStr, null);
+
   if (!WorldBossStatus) {
     Send(Text('状态数据缺失, 请联系管理员重新开启!'));
+
     return false;
   }
   if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
     Send(Text('金角大王正在刷新,20点开启'));
+
     return false;
   } else if (WorldBossStatus.KilledTime !== -1) {
-    if ((await InitWorldBoss2()) === false) await WorldBossBattle(e);
+    if ((await InitWorldBoss2()) === false) { await WorldBossBattle(e); }
+
     return false;
   }
 
   // 玩家伤害记录
   let PlayerRecordJSON: PlayerRecordData;
   let userIdx = 0;
+
   if (!recordStr || recordStr === '0') {
     PlayerRecordJSON = { QQ: [usr_qq], TotalDamage: [0], Name: [player.名号] };
   } else {
@@ -157,6 +178,7 @@ const res = onResponse(selects, async e => {
     灵根: player.灵根,
     法球倍率: player.灵根.法球倍率
   };
+
   player.法球倍率 = player.灵根.法球倍率;
 
   if (WorldBossBattleInfo.UnLockTimer) {
@@ -166,6 +188,7 @@ const res = onResponse(selects, async e => {
   SetWorldBOSSBattleUnLockTimer(e);
   if (WorldBossBattleInfo.Lock !== 0) {
     Send(Text('好像有人正在和金角大王激战，现在去怕是有未知的凶险，还是等等吧！'));
+
     return false;
   }
   WorldBossBattleInfo.setLock(1);
@@ -174,10 +197,12 @@ const res = onResponse(selects, async e => {
   const msg = Data_battle.msg;
   const A_win = `${player.名号}击败了${Boss.名号}`;
   const B_win = `${Boss.名号}击败了${player.名号}`;
+
   if (msg.length <= 60) {
     Send(Text(msg.join('\n')));
   } else {
     const shortMsg = _.cloneDeep(msg);
+
     shortMsg.length = 60;
     Send(Text(shortMsg.join('\n')));
     Send(Text('战斗过长，仅展示部分内容'));
@@ -187,12 +212,14 @@ const res = onResponse(selects, async e => {
   if (!WorldBossStatus.Healthmax) {
     Send(Text('请联系管理员重新开启!'));
     WorldBossBattleInfo.setLock(0);
+
     return false;
   }
 
   let dealt = 0;
   const playerWin = msg.includes(A_win);
   const bossWin = msg.includes(B_win);
+
   if (playerWin) {
     dealt = Math.trunc(WorldBossStatus.Healthmax * 0.06 + Harm(player.攻击 * 0.85, Boss.防御) * 10);
     WorldBossStatus.Health -= dealt;
@@ -205,11 +232,13 @@ const res = onResponse(selects, async e => {
   await addHP(usr_qq, Data_battle.A_xue);
   await sleep(1000);
   const random = Math.random();
+
   if (random < 0.05 && playerWin) {
     Send(Text('这场战斗重创了[金角大王]，金角大王使用了古典秘籍,血量回复了10%'));
     WorldBossStatus.Health += Math.trunc(WorldBossStatus.Healthmax * 0.1);
   } else if (random > 0.95 && bossWin) {
     const extra = Math.trunc(WorldBossStatus.Health * 0.15);
+
     dealt += extra;
     WorldBossStatus.Health -= extra;
     Send(Text(`危及时刻,万先盟-韩立前来助阵,对[金角大王]造成${extra}伤害,并治愈了你的伤势`));
@@ -227,6 +256,7 @@ const res = onResponse(selects, async e => {
     const killMsg = `【全服公告】${player.名号}亲手结果了金角大王的性命,为民除害,额外获得500000灵石奖励！`;
     const glKey = KEY_AUCTION_GROUP_LIST;
     const groups = await redis.smembers(glKey);
+
     for (const g of groups) {
       await pushInfo(g, true, killMsg);
     }
@@ -237,27 +267,26 @@ const res = onResponse(selects, async e => {
     await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus));
 
     const PlayerList = await SortPlayer(PlayerRecordJSON);
-    Send(
-      Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')
-    );
+
+    Send(Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'));
     const showMax = Math.min(PlayerList.length, 20);
     let topSum = 0;
-    for (let i = 0; i < showMax; i++) topSum += PlayerRecordJSON.TotalDamage[PlayerList[i]];
-    if (topSum <= 0) topSum = showMax;
+
+    for (let i = 0; i < showMax; i++) { topSum += PlayerRecordJSON.TotalDamage[PlayerList[i]]; }
+    if (topSum <= 0) { topSum = showMax; }
 
     const Rewardmsg: string[] = ['****金角大王周本贡献排行榜****'];
+
     for (let i = 0; i < PlayerList.length; i++) {
       const idx = PlayerList[i];
       const qq = PlayerRecordJSON.QQ[idx];
       const cur = await getDataJSONParseByKey(keys.player(qq));
+
       if (i < showMax) {
-        let reward = Math.trunc(
-          (PlayerRecordJSON.TotalDamage[idx] / topSum) * WorldBossStatus.Reward
-        );
-        if (!Number.isFinite(reward) || reward < 200000) reward = 200000;
-        Rewardmsg.push(
-          `第${i + 1}名:\n名号:${cur.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`
-        );
+        let reward = Math.trunc((PlayerRecordJSON.TotalDamage[idx] / topSum) * WorldBossStatus.Reward);
+
+        if (!Number.isFinite(reward) || reward < 200000) { reward = 200000; }
+        Rewardmsg.push(`第${i + 1}名:\n名号:${cur.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`);
         cur.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
         logger.info(`[金角大王周本] 结算:${qq}增加奖励${reward}`);
@@ -265,7 +294,7 @@ const res = onResponse(selects, async e => {
         cur.灵石 += 200000;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
         logger.info(`[金角大王周本] 结算:${qq}增加奖励200000`);
-        if (i === PlayerList.length - 1) Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！');
+        if (i === PlayerList.length - 1) { Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！'); }
       }
     }
     Send(Text(Rewardmsg.join('\n')));
@@ -273,8 +302,10 @@ const res = onResponse(selects, async e => {
 
   WorldBossBattleInfo.setCD(usr_qq, Date.now());
   WorldBossBattleInfo.setLock(0);
+
   return false;
 });
+
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

@@ -20,12 +20,13 @@ interface ExchangeCode {
   thing: ExchangeThing[];
 }
 
-function toInt (v, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v);
+
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
-function parseJson<T> (raw): T | null {
-  if (typeof raw !== 'string' || !raw) return null;
+function parseJson<T>(raw): T | null {
+  if (typeof raw !== 'string' || !raw) { return null; }
   try {
     return JSON.parse(raw) as T;
   } catch {
@@ -42,32 +43,40 @@ const CATEGORY_SET: Set<NajieCategory> = new Set([
   '仙宠',
   '仙宠口粮'
 ]);
-function normalizeCategory (c: string | undefined): NajieCategory {
+
+function normalizeCategory(c: string | undefined): NajieCategory {
   return CATEGORY_SET.has(c as NajieCategory) ? (c as NajieCategory) : '道具';
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  if (!(await existplayer(usr_qq))) return false;
+
+  if (!(await existplayer(usr_qq))) { return false; }
 
   const codeInput = e.MessageText.replace(/^(#|＃|\/)?活动兑换/, '').trim();
+
   if (!codeInput) {
     Send(Text('请在指令后输入兑换码'));
+
     return false;
   }
 
   const list = ((await getDataList('ExchangeItem')) || []) as ExchangeCode[];
   const codeObj = list.find(c => c.name === codeInput);
+
   if (!codeObj) {
     Send(Text('兑换码不存在!'));
+
     return false;
   }
 
   const key = getRedisKey(usr_qq, 'duihuan');
   const usedList = parseJson<string[]>(await redis.get(key)) || [];
+
   if (usedList.includes(codeInput)) {
     Send(Text('你已经兑换过该兑换码了'));
+
     return false;
   }
 
@@ -76,19 +85,25 @@ const res = onResponse(selects, async e => {
   await redis.set(key, JSON.stringify(usedList));
 
   const msg: string[] = [];
+
   for (const t of codeObj.thing || []) {
     const qty = toInt(t.数量, 0);
-    if (!t.name || qty <= 0) continue;
+
+    if (!t.name || qty <= 0) { continue; }
     const cate = normalizeCategory(t.class);
+
     await addNajieThing(usr_qq, t.name, cate, qty);
     msg.push(`\n${t.name}x${qty}`);
   }
   if (!msg.length) {
     Send(Text('该兑换码没有有效奖励内容'));
+
     return false;
   }
   Send(Text('恭喜获得:' + msg.join('')));
+
   return false;
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

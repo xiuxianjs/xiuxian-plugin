@@ -28,56 +28,61 @@ import { getDataList } from '@src/model/DataList';
 兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
  * @returns
  */
-export const PlayerControlTask = async () => {
+export const PlayerControlTask = async() => {
   const playerList = await keysByPath(__PATH.player_path);
   const cf = await getConfig('xiuxian', 'xiuxian');
+
   for (const player_id of playerList) {
-    //得到动作
+    // 得到动作
     const actionRaw = await getDataByUserId(player_id, 'action');
     let action: ActionState | null = null;
+
     try {
       action = actionRaw ? (JSON.parse(actionRaw) as ActionState) : null;
     } catch {
       action = null;
     }
-    //不为空，存在动作
+    // 不为空，存在动作
     if (action != null) {
-      let push_address; //消息推送地址
-      let is_group = false; //是否推送到群
+      let push_address; // 消息推送地址
+      let is_group = false; // 是否推送到群
+
       if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
         if (notUndAndNull(action.group_id)) {
           is_group = true;
           push_address = action.group_id;
         }
       }
-      //最后发送的消息
+      // 最后发送的消息
       const msg: Array<DataMention | string> = [Mention(player_id)];
-      //动作结束时间
+      // 动作结束时间
       let end_time = action.end_time;
-      //现在的时间
+      // 现在的时间
       const now_time = Date.now();
-      //闭关状态
+
+      // 闭关状态
       if (action.shutup == '0') {
-        //这里改一改,要在结束时间的前一分钟提前结算
-        //时间过了
+        // 这里改一改,要在结束时间的前一分钟提前结算
+        // 时间过了
         end_time = end_time - 60000 * 2;
         if (now_time > end_time) {
           const player = await readPlayer(player_id);
+
           if (!notUndAndNull(player.level_id)) {
             return false;
           }
           const levelList = await getDataList('Level1');
           const now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
           const size = cf.biguan.size;
-          const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1)); //增加的修为
+          const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1)); // 增加的修为
           const blood = Math.floor(player.血量上限 * 0.02);
           const rawTime = action.time;
-          const time =
-            (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
+          const time
+            = (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
           let rand = Math.random();
           let xueqi = 0;
           let other_xiuwei = 0;
-          //炼丹师丹药修正
+          // 炼丹师丹药修正
           let transformation = '修为';
           // 兼容旧版：readDanyao 现在返回数组，但老逻辑期望对象包含 biguan/biguanxl/lianti/beiyong4 等字段
           // 若未来需要，可引入独立的炼神状态存储结构
@@ -108,15 +113,14 @@ export const PlayerControlTask = async () => {
             other_xiuwei = -1 * rand * time;
             xueqi = Math.trunc(rand * time * dy.beiyong4);
             if (transformation == '血气') {
-              msg.push(
-                '\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi
-              );
+              msg.push('\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi);
             } else {
               msg.push('\n由于你闭关时隔壁装修,导致你差点走火入魔,修为下降' + rand * time);
             }
           }
           let other_x = 0;
           let qixue = 0;
+
           if ((await existNajieThing(player_id, '魔界秘宝', '道具')) && player.魔道值 > 999) {
             other_x += Math.trunc(xiuwei * 0.15 * time);
             await addNajieThing(player_id, '魔界秘宝', '道具', -1);
@@ -124,9 +128,9 @@ export const PlayerControlTask = async () => {
             await addExp(player_id, other_x);
           }
           if (
-            (await existNajieThing(player_id, '神界秘宝', '道具')) &&
-            player.魔道值 < 1 &&
-            (player.灵根.type == '转生' || player.level_id > 41)
+            (await existNajieThing(player_id, '神界秘宝', '道具'))
+            && player.魔道值 < 1
+            && (player.灵根.type == '转生' || player.level_id > 41)
           ) {
             qixue = Math.trunc(xiuwei * 0.1 * time);
             await addNajieThing(player_id, '神界秘宝', '道具', -1);
@@ -140,13 +144,14 @@ export const PlayerControlTask = async () => {
             action.acount = 0;
           }
           const arr = action;
-          //把状态都关了
-          arr.shutup = 1; //闭关状态
-          arr.working = 1; //降妖状态
-          arr.power_up = 1; //渡劫状态
-          arr.Place_action = 1; //秘境
-          arr.Place_actionplus = 1; //沉迷状态
-          delete arr.group_id; //结算完去除group_id
+
+          // 把状态都关了
+          arr.shutup = 1; // 闭关状态
+          arr.working = 1; // 降妖状态
+          arr.power_up = 1; // 渡劫状态
+          arr.Place_action = 1; // 秘境
+          arr.Place_actionplus = 1; // 沉迷状态
+          delete arr.group_id; // 结算完去除group_id
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           xueqi = Math.trunc(xiuwei * time * dy.beiyong4);
           if (transformation == '血气') {
@@ -174,15 +179,16 @@ export const PlayerControlTask = async () => {
           // 仍按旧结构写回：若接口需要数组，后续可实现 fromStatus(dy)
           await writeDanyao(player_id, dy);
         }
-      } //炼丹师修正结束
-      //降妖
+      } // 炼丹师修正结束
+      // 降妖
       if (action.working == '0') {
-        //这里改一改,要在结束时间的前一分钟提前结算
+        // 这里改一改,要在结束时间的前一分钟提前结算
         end_time = end_time - 60000 * 2;
-        //时间过了
+        // 时间过了
         if (now_time > end_time) {
-          //现在大于结算时间，即为结算
+          // 现在大于结算时间，即为结算
           const player = await readPlayer(player_id);
+
           if (!notUndAndNull(player.level_id)) {
             return false;
           }
@@ -191,11 +197,12 @@ export const PlayerControlTask = async () => {
           const size = cf.work.size;
           const lingshi = Math.floor(size * now_level_id * (1 + player.修炼效率提升) * 0.5);
           const rawTime2 = action.time;
-          const time =
-            (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
+          const time
+            = (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
           let other_lingshi = 0;
           let other_xueqi = 0;
           let rand = Math.random();
+
           if (rand < 0.2) {
             rand = Math.trunc(rand * 10) + 40;
             other_lingshi = rand * time;
@@ -203,39 +210,37 @@ export const PlayerControlTask = async () => {
           } else if (rand > 0.8) {
             rand = Math.trunc(rand * 10) + 5;
             other_lingshi = -1 * rand * time;
-            msg.push(
-              '\n途径盗宝团营地，由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少' + rand * time
-            );
+            msg.push('\n途径盗宝团营地，由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少' + rand * time);
           } else if (rand > 0.5 && rand < 0.6) {
             rand = Math.trunc(rand * 10) + 20;
             other_lingshi = -1 * rand * time;
             other_xueqi = -2 * rand * time;
-            msg.push(
-              '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了' +
-                rand * time +
-                '灵石，' +
-                '早上醒来，气血消耗了' +
-                2 * rand * time
-            );
+            msg.push('\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了'
+                + rand * time
+                + '灵石，'
+                + '早上醒来，气血消耗了'
+                + 2 * rand * time);
           }
           //
           player.血气 += other_xueqi;
           await writePlayer(player_id, player);
-          const get_lingshi = Math.trunc(lingshi * time + other_lingshi); //最后获取到的灵石
+          const get_lingshi = Math.trunc(lingshi * time + other_lingshi); // 最后获取到的灵石
+
           //
-          await setFileValue(player_id, get_lingshi, '灵石'); //添加灵石
-          //redis动作
+          await setFileValue(player_id, get_lingshi, '灵石'); // 添加灵石
+          // redis动作
           if (action.acount == null) {
             action.acount = 0;
           }
           const arr = action;
-          //把状态都关了
-          arr.shutup = 1; //闭关状态
-          arr.working = 1; //降妖状态
-          arr.power_up = 1; //渡劫状态
-          arr.Place_action = 1; //秘境
-          arr.Place_actionplus = 1; //沉迷状态
-          delete arr.group_id; //结算完去除group_id
+
+          // 把状态都关了
+          arr.shutup = 1; // 闭关状态
+          arr.working = 1; // 降妖状态
+          arr.power_up = 1; // 渡劫状态
+          arr.Place_action = 1; // 秘境
+          arr.Place_actionplus = 1; // 沉迷状态
+          delete arr.group_id; // 结算完去除group_id
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           msg.push('\n降妖得到' + get_lingshi + '灵石');
           if (is_group) {

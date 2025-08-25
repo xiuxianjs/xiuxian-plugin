@@ -16,28 +16,35 @@ export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId; //用户qq
-  if (!(await existplayer(usr_qq))) return false;
-  //获取游戏状态
+  const usr_qq = e.UserId; // 用户qq
+
+  if (!(await existplayer(usr_qq))) { return false; }
+  // 获取游戏状态
   const game_action = await getString(userKey(usr_qq, 'game_action'));
-  //防止继续其他娱乐行为
+
+  // 防止继续其他娱乐行为
   if (game_action === '1') {
     Send(Text('修仙：游戏进行中...'));
+
     return false;
   }
   const player = await readPlayer(usr_qq);
+
   if (player.occupation != '采矿师') {
     Send(Text('你挖矿许可证呢？非法挖矿，罚款200灵石'));
     await addCoin(usr_qq, -200);
+
     return false;
   }
-  //获取时间
+  // 获取时间
   const timeRaw = e.MessageText.replace(/^(#|＃|\/)?采矿/, '').replace('分钟', '');
   const time = normalizeDurationMinutes(timeRaw, 30, 24, 30);
-  //查询redis中的人物动作
+  // 查询redis中的人物动作
   const current = await readAction(usr_qq);
+
   if (isActionRunning(current)) {
-    Send(Text(`正在${current!.action}中，剩余时间:${formatRemaining(remainingMs(current!))}`));
+    Send(Text(`正在${current?.action}中，剩余时间:${formatRemaining(remainingMs(current!))}`));
+
     return false;
   }
 
@@ -54,8 +61,10 @@ const res = onResponse(selects, async e => {
     xijie: '1',
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
+
   await setValue(userKey(usr_qq, 'action'), arr);
   Send(Text(`现在开始采矿${time}分钟`));
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

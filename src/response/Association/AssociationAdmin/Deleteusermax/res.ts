@@ -11,7 +11,7 @@ interface PlayerGuildRef {
   职位: string;
 }
 
-function isPlayerGuildRef (v): v is PlayerGuildRef {
+function isPlayerGuildRef(v): v is PlayerGuildRef {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
 }
 
@@ -19,37 +19,46 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
-  if (!player) return false;
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) return false;
+
+  if (!player) { return false; }
+  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) { return false; }
 
   const member_qq = e.MessageText.replace(/^(#|＃|\/)?逐出/, '').trim();
+
   if (!member_qq) {
     Send(Text('请输入要逐出成员的QQ'));
+
     return false;
   }
   if (usr_qq === member_qq) {
     Send(Text('不能踢自己'));
+
     return false;
   }
   const playerB = await getDataJSONParseByKey(keys.player(member_qq));
-  if (!playerB) return false;
+
+  if (!playerB) { return false; }
   if (!playerB || !notUndAndNull(playerB.宗门) || !isPlayerGuildRef(playerB.宗门)) {
     Send(Text('对方尚未加入宗门'));
+
     return false;
   }
   const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
   const bssRaw = await getDataJSONParseByKey(keys.association(playerB.宗门.宗门名称));
+
   if (!assRaw || !bssRaw) {
     return false;
   }
   const ass = assRaw;
   const bss = bssRaw;
-  if (ass.宗门名称 !== bss.宗门名称) return false;
+
+  if (ass.宗门名称 !== bss.宗门名称) { return false; }
 
   const actorRole = player.宗门.职位;
   const targetRole = playerB.宗门.职位;
   const removeMember = () => {
     const roleList = bss[targetRole];
+
     if (Array.isArray(roleList)) {
       bss[targetRole] = roleList.filter(q => q !== member_qq);
     }
@@ -63,15 +72,18 @@ const res = onResponse(selects, async e => {
     await setDataJSONStringifyByKey(keys.player(member_qq), playerB);
     await playerEfficiency(member_qq);
     Send(Text('已踢出！'));
+
     return false;
   }
   if (actorRole === '副宗主') {
     if (targetRole === '宗主') {
       Send(Text('你没权限'));
+
       return false;
     }
     if (targetRole === '长老' || targetRole === '副宗主') {
       Send(Text(`宗门${targetRole}任免请上报宗主！`));
+
       return false;
     }
     removeMember();
@@ -79,15 +91,18 @@ const res = onResponse(selects, async e => {
     await setDataJSONStringifyByKey(keys.player(member_qq), playerB);
     await playerEfficiency(member_qq);
     Send(Text('已踢出！'));
+
     return false;
   }
   if (actorRole === '长老') {
     if (targetRole === '宗主' || targetRole === '副宗主') {
       Send(Text('造反啦？'));
+
       return false;
     }
     if (targetRole === '长老') {
       Send(Text(`宗门${targetRole}任免请上报宗主！`));
+
       return false;
     }
     removeMember();
@@ -95,8 +110,10 @@ const res = onResponse(selects, async e => {
     await setDataJSONStringifyByKey(keys.player(member_qq), playerB);
     await playerEfficiency(member_qq);
     Send(Text('已踢出！'));
+
     return false;
   }
+
   // 其它身份无权限
   return false;
 });

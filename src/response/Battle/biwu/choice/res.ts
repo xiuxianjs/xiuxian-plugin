@@ -23,28 +23,26 @@ const res = onResponse(selects, async e => {
       if (j.QQ == e.UserId) {
         code = code.slice(0, 3);
         for (const m in code) {
-          j['选择技能'].push(
-            JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1])))
-          );
+          j['选择技能'].push(JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1]))));
           msg.push(j.技能[+code[m] - 1]);
         }
       }
     }
     Send(Text(`本场战斗支持以下技能\n${msg}`));
+
     return false;
   } else if (B_QQ.some(item => item.QQ == e.UserId)) {
     for (const j of B_QQ) {
       if (j.QQ == e.UserId) {
         code = code.slice(0, 3);
         for (const m in code) {
-          j['选择技能'].push(
-            JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1])))
-          );
+          j['选择技能'].push(JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1]))));
           msg.push(j.技能[+code[m] - 1]);
         }
       }
     }
     Send(Text(`本场战斗支持以下技能\n${msg}`));
+
     return false;
   }
 });

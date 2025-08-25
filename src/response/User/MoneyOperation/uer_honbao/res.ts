@@ -7,15 +7,17 @@ import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?抢红包$/;
 
-function toInt (v, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v);
+
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  if (!(await existplayer(usr_qq))) return false;
+
+  if (!(await existplayer(usr_qq))) { return false; }
 
   // 读取玩家（仅用于名字展示）
   const player = await data.getData('player', usr_qq);
@@ -27,25 +29,31 @@ const res = onResponse(selects, async e => {
   const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {};
   const cdMinutes = toInt(cf?.CD?.honbao, 1);
   const cdMs = cdMinutes * 60000;
+
   if (now < lastTime + cdMs) {
     const remain = lastTime + cdMs - now;
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
+
     Send(Text(`每${cdMinutes}分钟抢一次，正在CD中，剩余cd: ${m}分${s}秒`));
+
     return false;
   }
 
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
-  if (!target || res.code !== 2000) return false;
+
+  if (!target || res.code !== 2000) { return false; }
 
   const honbao_qq = target.UserId;
+
   if (honbao_qq === usr_qq) {
     Send(Text('不能抢自己的红包'));
+
     return false;
   }
-  if (!(await existplayer(honbao_qq))) return false;
+  if (!(await existplayer(honbao_qq))) { return false; }
 
   // 使用原子操作检查并扣减红包数量
   const countKey = getRedisKey(honbao_qq, 'honbaoacount');
@@ -56,6 +64,7 @@ const res = onResponse(selects, async e => {
     // 恢复计数器（因为我们多扣了一次）
     await redis.incr(countKey);
     Send(Text('他的红包被光啦！'));
+
     return false;
   }
 
@@ -63,10 +72,12 @@ const res = onResponse(selects, async e => {
   const valueKey = getRedisKey(honbao_qq, 'honbao');
   const valStr = await redis.get(valueKey);
   const lingshi = toInt(valStr);
+
   if (lingshi <= 0) {
     Send(Text('这个红包里居然是空的...'));
     // 设置CD时间（防刷机制）
     await redis.set(lastKey, now);
+
     return false;
   }
 
@@ -75,7 +86,9 @@ const res = onResponse(selects, async e => {
   await redis.set(lastKey, now);
 
   Send(Text(`【全服公告】${player.名号 || usr_qq}抢到一个${lingshi}灵石的红包！`));
+
   return false;
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

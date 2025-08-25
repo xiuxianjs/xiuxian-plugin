@@ -106,4 +106,5 @@ const helpConfig: HelpGroup[] = [
     ]
   }
 ];
+
 export default helpConfig;

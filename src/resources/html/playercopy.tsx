@@ -20,7 +20,7 @@ const PlayerCopy = ({
       {/* 背景装饰层 */}
       <div className=' w-full max-w-4xl mx-auto'>
         {/* 外层光晕效果 */}
-        <div className='inset-0 bg-gradient-to-br from-green-400/20 via-yellow-300/15 to-red-400/20 rounded-[2rem] blur-3xl scale-110'></div>
+        <div className='inset-0 bg-gradient-to-br from-green-400/20 via-yellow-300/15 to-red-400/20 rounded-[2rem] blur-3xl scale-110' />
 
         {/* 主容器 */}
         <div className=' z-10 w-full bg-gradient-to-br from-green-100/90 via-yellow-50/95 to-red-100/90 backdrop-blur-3xl rounded-[2rem] shadow-[0_20px_60px_0_rgba(46,204,64,0.3),0_0_100px_0_rgba(255,215,0,0.2)] p-6 sm:p-8 mt-8 border border-green-300/60'>
@@ -142,7 +142,7 @@ const PlayerCopy = ({
                 <div className='text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-yellow-600 to-red-600 mb-2 tracking-widest drop-shadow-lg'>
                   ✧ 修仙者档案 ✧
                 </div>
-                <div className='w-24 sm:w-32 h-1 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 mx-auto rounded-full shadow-lg'></div>
+                <div className='w-24 sm:w-32 h-1 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 mx-auto rounded-full shadow-lg' />
               </div>
 
               {/* 头像和基本信息区 */}
@@ -164,7 +164,7 @@ const PlayerCopy = ({
                 <div className='w-full max-w-2xl'>
                   <div className='bg-gradient-to-r from-green-200/90 via-yellow-100/90 to-red-200/90 backdrop-blur-sm px-4 sm:px-8 py-4 sm:py-6 rounded-2xl shadow-2xl border border-green-300/60 relative overflow-hidden'>
                     {/* 背景装饰 */}
-                    <div className='absolute inset-0 bg-gradient-to-br from-green-300/20 to-red-300/20'></div>
+                    <div className='absolute inset-0 bg-gradient-to-br from-green-300/20 to-red-300/20' />
                     <div className='relative z-10 text-center'>
                       <div className='text-xl sm:text-3xl font-black text-green-800 tracking-wider mb-2 sm:mb-3 drop-shadow-lg'>
                         🏮 道号：{nickname} 🏮
@@ -183,7 +183,7 @@ const PlayerCopy = ({
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10 relative z-10'>
             {/* 血量 */}
             <div className='bg-gradient-to-br from-red-200/90 via-red-100/90 to-red-300/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl border border-red-300/60 relative overflow-hidden'>
-              <div className='absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10' />
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>❤️</span>
@@ -199,14 +199,14 @@ const PlayerCopy = ({
                   <div
                     className='bg-gradient-to-r from-red-400 to-red-600 h-full rounded-full shadow-inner'
                     style={{ width: `${(player_nowHP / player_maxHP) * 100}%` }}
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
 
             {/* 气血 */}
             <div className='bg-gradient-to-br from-blue-200/90 via-blue-100/90 to-blue-300/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl border border-blue-300/60 relative overflow-hidden'>
-              <div className='absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-600/10'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-600/10' />
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>💙</span>
@@ -222,14 +222,14 @@ const PlayerCopy = ({
                   <div
                     className='bg-gradient-to-r from-blue-400 to-blue-600 h-full rounded-full shadow-inner'
                     style={{ width: `${(xueqi / need_xueqi) * 100}%` }}
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
 
             {/* 灵石 */}
             <div className='bg-gradient-to-br from-yellow-200/90 via-yellow-100/90 to-yellow-300/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl border border-yellow-300/60 relative overflow-hidden'>
-              <div className='absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-yellow-600/10'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-yellow-600/10' />
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>💰</span>
@@ -246,7 +246,7 @@ const PlayerCopy = ({
 
             {/* 宗门 */}
             <div className='bg-gradient-to-br from-purple-200/90 via-purple-100/90 to-purple-300/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl border border-purple-300/60 relative overflow-hidden'>
-              <div className='absolute inset-0 bg-gradient-to-br from-purple-400/10 to-purple-600/10'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-purple-400/10 to-purple-600/10' />
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>🏛️</span>
@@ -273,7 +273,7 @@ const PlayerCopy = ({
             </div>
 
             <div className='bg-gradient-to-br from-green-100/90 via-yellow-50/90 to-red-100/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl border border-green-300/60 relative overflow-hidden'>
-              <div className='absolute inset-0 bg-gradient-to-br from-green-300/10 to-red-300/10'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-green-300/10 to-red-300/10' />
               <div className='relative z-10'>
                 {!learned_gongfa || learned_gongfa.length === 0 ? (
                   <div className='flex items-center justify-center gap-3 py-6 sm:py-8'>
@@ -291,7 +291,7 @@ const PlayerCopy = ({
                         className='px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-400/90 via-yellow-300/90 to-red-400/90 text-green-900 rounded-full shadow-xl font-black border-2 border-green-300/60 text-base sm:text-lg tracking-wide relative overflow-hidden'
                         style={{ textShadow: '0 2px 8px rgba(46,204,64,0.3)' }}
                       >
-                        <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent'></div>
+                        <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent' />
                         <span className='relative z-10'>《{item}》</span>
                       </div>
                     ))}
@@ -303,7 +303,7 @@ const PlayerCopy = ({
 
           {/* 底部装饰 */}
           <div className='mt-6 sm:mt-8 flex justify-center'>
-            <div className='w-20 sm:w-24 h-1 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 rounded-full shadow-lg'></div>
+            <div className='w-20 sm:w-24 h-1 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 rounded-full shadow-lg' />
           </div>
         </div>
       </div>

@@ -29,10 +29,12 @@ const Danyao = ({
 }) => {
   const renderEffect = (item: DanyaoItem) => {
     const effects = [];
-    if (item.HP) effects.push(item.HP);
-    if (item.exp) effects.push(item.exp);
-    if (item.xueqi) effects.push(item.xueqi);
-    if (item.xingyun > 0) effects.push(`${(item.xingyun * 100).toFixed(1)}%`);
+
+    if (item.HP) { effects.push(item.HP); }
+    if (item.exp) { effects.push(item.exp); }
+    if (item.xueqi) { effects.push(item.xueqi); }
+    if (item.xingyun > 0) { effects.push(`${(item.xingyun * 100).toFixed(1)}%`); }
+
     return effects.join('');
   };
 
@@ -46,8 +48,8 @@ const Danyao = ({
       }}
     >
       {/* 背景加仙气渐变遮罩 + 边角光晕 */}
-      <div className='absolute inset-0 bg-gradient-to-b from-emerald-900/50 via-emerald-700/30 to-red-900/50 pointer-events-none'></div>
-      <div className='absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),transparent_70%)] pointer-events-none'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-emerald-900/50 via-emerald-700/30 to-red-900/50 pointer-events-none' />
+      <div className='absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),transparent_70%)] pointer-events-none' />
 
       <main className='relative max-w-5xl mx-auto space-y-12 z-10'>
         {/* 头像 + 标题 */}
@@ -60,7 +62,7 @@ const Danyao = ({
         {/* 已拥有 */}
         {(danyao_have.length > 0 || danyao2_have.length > 0) && (
           <section className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-emerald-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-emerald-300/20'>
               <div className='flex items-center justify-center space-x-3 mb-6'>
                 <div className='w-8 h-8 bg-emerald-400/30 rounded-full flex items-center justify-center'>
@@ -79,8 +81,8 @@ const Danyao = ({
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-emerald-900/40 to-emerald-700/30 p-5 shadow-xl border border-emerald-400/30 backdrop-blur-md'
                   >
-                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-t-2xl'></div>
-                    <div className='absolute top-2 right-2 w-3 h-3 bg-emerald-400/50 rounded-full'></div>
+                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-t-2xl' />
+                    <div className='absolute top-2 right-2 w-3 h-3 bg-emerald-400/50 rounded-full' />
                     <div className='space-y-3'>
                       <div className='flex items-center space-x-2'>
                         <span className='text-emerald-300 text-lg'>🧪</span>
@@ -120,7 +122,7 @@ const Danyao = ({
         {/* 未拥有 */}
         {danyao_need.length > 0 && (
           <section className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-red-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-red-300/20'>
               <div className='flex items-center justify-center space-x-3 mb-6'>
                 <div className='w-8 h-8 bg-red-400/30 rounded-full flex items-center justify-center'>
@@ -139,8 +141,8 @@ const Danyao = ({
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-red-900/40 to-red-700/30 p-5 shadow-xl border border-red-400/30 backdrop-blur-md'
                   >
-                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-300 rounded-t-2xl'></div>
-                    <div className='absolute top-2 right-2 w-3 h-3 bg-red-400/50 rounded-full'></div>
+                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-300 rounded-t-2xl' />
+                    <div className='absolute top-2 right-2 w-3 h-3 bg-red-400/50 rounded-full' />
                     <div className='space-y-3'>
                       <div className='flex items-center space-x-2'>
                         <span className='text-red-300 text-lg'>🧪</span>
@@ -177,11 +179,11 @@ const Danyao = ({
 
         {/* 底部装饰 */}
         <div className='flex justify-center space-x-4 pt-8'>
-          <div className='w-16 h-1 bg-gradient-to-r from-emerald-400/50 to-transparent rounded-full'></div>
+          <div className='w-16 h-1 bg-gradient-to-r from-emerald-400/50 to-transparent rounded-full' />
           <div className='w-8 h-8 bg-gradient-to-br from-emerald-400/30 to-red-400/30 rounded-full flex items-center justify-center'>
             <span className='text-white/70 text-sm'>🔥</span>
           </div>
-          <div className='w-16 h-1 bg-gradient-to-l from-red-400/50 to-transparent rounded-full'></div>
+          <div className='w-16 h-1 bg-gradient-to-l from-red-400/50 to-transparent rounded-full' />
         </div>
       </main>
     </HTML>

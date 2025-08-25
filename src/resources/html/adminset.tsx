@@ -90,10 +90,10 @@ const SettingItem = ({
 }) => (
   <div className='relative group'>
     {/* 装饰性边框 */}
-    <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-orange-500/20 rounded-xl blur-sm'></div>
+    <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-orange-500/20 rounded-xl blur-sm' />
     <div className='relative bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-md border border-white/20 rounded-xl p-4 shadow-xl'>
       {/* 顶部装饰线 */}
-      <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent'></div>
+      <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent' />
 
       <div className='flex items-center justify-between'>
         <div className='flex items-center'>
@@ -107,7 +107,7 @@ const SettingItem = ({
       </div>
 
       {/* 底部装饰线 */}
-      <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent'></div>
+      <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent' />
     </div>
   </div>
 );
@@ -116,21 +116,21 @@ const SettingItem = ({
 const SettingSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className='relative'>
     {/* 背景装饰 */}
-    <div className='absolute inset-0 bg-gradient-to-br from-black/40 to-black/20 rounded-3xl blur-sm'></div>
+    <div className='absolute inset-0 bg-gradient-to-br from-black/40 to-black/20 rounded-3xl blur-sm' />
     <div className='relative bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-lg border border-white/20 rounded-3xl p-6 shadow-2xl'>
       {/* 四角装饰 */}
-      <div className='absolute top-4 left-4 w-3 h-3 border-l-2 border-t-2 border-amber-400 rounded-tl-lg'></div>
-      <div className='absolute top-4 right-4 w-3 h-3 border-r-2 border-t-2 border-amber-400 rounded-tr-lg'></div>
-      <div className='absolute bottom-4 left-4 w-3 h-3 border-l-2 border-b-2 border-amber-400 rounded-bl-lg'></div>
-      <div className='absolute bottom-4 right-4 w-3 h-3 border-r-2 border-b-2 border-amber-400 rounded-br-lg'></div>
+      <div className='absolute top-4 left-4 w-3 h-3 border-l-2 border-t-2 border-amber-400 rounded-tl-lg' />
+      <div className='absolute top-4 right-4 w-3 h-3 border-r-2 border-t-2 border-amber-400 rounded-tr-lg' />
+      <div className='absolute bottom-4 left-4 w-3 h-3 border-l-2 border-b-2 border-amber-400 rounded-bl-lg' />
+      <div className='absolute bottom-4 right-4 w-3 h-3 border-r-2 border-b-2 border-amber-400 rounded-br-lg' />
 
       <div className='mb-6'>
         <h2 className='text-2xl font-bold tracking-widest text-center text-white/95 flex items-center justify-center gap-3'>
-          <div className='w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent'></div>
+          <div className='w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent' />
           <span className='bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent'>
             {title}
           </span>
-          <div className='w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent'></div>
+          <div className='w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent' />
         </h2>
       </div>
 

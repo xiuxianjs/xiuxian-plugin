@@ -2,14 +2,16 @@ import { ConfigKey, getConfig, setConfig, validateRole } from '@src/model';
 import { Context } from 'koa';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
     const app = ctx.request.query.app as ConfigKey;
     const config = await getConfig('', app);
+
     ctx.body = config;
   } catch (error) {
     logger.warn('获取配置失败', error);
@@ -22,14 +24,16 @@ export const GET = async (ctx: Context) => {
   }
 };
 
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const body = await parseJsonBody(ctx);
+
     if (!body || Object.keys(body).length === 0) {
       ctx.status = 400;
       ctx.body = {
@@ -37,11 +41,13 @@ export const POST = async (ctx: Context) => {
         message: '请求体为空',
         data: null
       };
+
       return;
     }
     const name = body.name as ConfigKey;
     const data = body.data as Record<string, unknown>;
     const setRes = await setConfig(name, data);
+
     if (!setRes) {
       ctx.status = 500;
       ctx.body = {
@@ -49,6 +55,7 @@ export const POST = async (ctx: Context) => {
         message: '配置保存失败',
         data: null
       };
+
       return;
     }
     ctx.body = {

@@ -7,27 +7,31 @@ export const regular = /^(#|＃|\/)?查询亲密度$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const user_qq = e.UserId; //用户qq
-  //有无存档
-  if (!(await existplayer(user_qq))) return false;
+  const user_qq = e.UserId; // 用户qq
+
+  // 有无存档
+  if (!(await existplayer(user_qq))) { return false; }
 
   const A = e.UserId;
 
-  let flag = 0; //关系人数
-  const msg = []; //回复的消息
+  let flag = 0; // 关系人数
+  const msg = []; // 回复的消息
+
   msg.push('\n-----qq----- -亲密度-');
-  //遍历所有人的qq
+  // 遍历所有人的qq
 
   const playerList = await keysByPath(__PATH.player_path);
 
   for (let i = 0; i < playerList.length; i++) {
     const B = playerList[i];
-    //如果是本人不执行查询
+
+    // 如果是本人不执行查询
     if (A == B) {
       continue;
     }
-    //A与B的亲密度
+    // A与B的亲密度
     const pd = await findQinmidu(A, B);
+
     if (pd == false) {
       continue;
     }
@@ -43,5 +47,6 @@ const res = onResponse(selects, async e => {
     }
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

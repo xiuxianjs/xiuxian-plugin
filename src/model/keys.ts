@@ -202,5 +202,6 @@ export const getRedisSystemKey = (name: string) => {
 export const keysByPath = async path => {
   const redis = getIoRedis();
   const keys = await redis.keys(`${path}:*`);
+
   return keys.map(key => key.replace(`${path}:`, ''));
 };

@@ -8,14 +8,17 @@ export const regular = /^(#|＃|\/)?全体清空锻炉/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  if (!e.IsMaster) return false;
+
+  if (!e.IsMaster) { return false; }
   await writeDuanlu([]);
   const playerList = await keysByPath(__PATH.player_path);
+
   for (const player_id of playerList) {
     await stopActionWithSuffix(player_id, 'action10');
     await setValue(userKey(player_id, 'action10'), null);
   }
   Send(Text('清除完成'));
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

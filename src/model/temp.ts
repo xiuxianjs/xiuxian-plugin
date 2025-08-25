@@ -4,12 +4,13 @@ import type { TempRecord } from '../types/model';
 import { keys } from './keys.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
-export async function readTemp (): Promise<TempRecord[]> {
+export async function readTemp(): Promise<TempRecord[]> {
   const data = await getDataJSONParseByKey(keys.temp('temp'));
+
   return data || [];
 }
 
-export async function writeTemp (list: TempRecord[]) {
+export async function writeTemp(list: TempRecord[]) {
   await setDataJSONStringifyByKey(keys.temp('temp'), list);
 }
 

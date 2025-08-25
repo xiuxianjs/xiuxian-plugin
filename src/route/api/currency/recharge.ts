@@ -12,9 +12,10 @@ import {
 } from '@src/model/currency';
 
 // 创建充值记录
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -45,6 +46,7 @@ export const POST = async (ctx: Context) => {
           message: '用户ID和充值档位不能为空',
           data: null
         };
+
         return;
       }
 
@@ -90,6 +92,7 @@ export const POST = async (ctx: Context) => {
           message: '用户ID不能为空',
           data: null
         };
+
         return;
       }
 
@@ -121,6 +124,7 @@ export const POST = async (ctx: Context) => {
           message: '用户ID不能为空',
           data: null
         };
+
         return;
       }
 
@@ -157,6 +161,7 @@ export const POST = async (ctx: Context) => {
           message: '充值记录ID和交易号不能为空',
           data: null
         };
+
         return;
       }
 

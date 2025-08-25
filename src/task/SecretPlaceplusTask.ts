@@ -55,20 +55,23 @@ interface MonsterLike {
 结算后关闭相关状态。
 兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
  */
-export const SecretPlaceplusTask = async () => {
+export const SecretPlaceplusTask = async() => {
   const playerList = await keysByPath(__PATH.player_path);
+
   for (const player_id of playerList) {
     const raw = await getDataByUserId(player_id, 'action');
     let action: ActionLike | null = null;
+
     try {
       action = raw ? (JSON.parse(raw) as ActionLike) : null;
     } catch {
       action = null;
     }
-    if (!action) continue;
+    if (!action) { continue; }
 
     let push_address: string | undefined;
     let is_group = false;
+
     if ('group_id' in action && notUndAndNull(action.group_id)) {
       is_group = true;
       push_address = String(action.group_id);
@@ -77,17 +80,20 @@ export const SecretPlaceplusTask = async () => {
     const msg: Array<DataMention | string> = [Mention(player_id)];
     let end_time = Number(action.end_time) || 0;
     const now_time = Date.now();
-    const player = (await readPlayer(player_id)) as Player | null;
-    if (!player) continue;
+    const player = (await readPlayer(player_id));
+
+    if (!player) { continue; }
 
     if (String(action.Place_actionplus) === '0') {
       const rawTime = action.time;
       const duration = typeof rawTime === 'string' ? parseInt(rawTime) : Number(rawTime);
       const safeDuration = Number.isFinite(duration) ? duration : 0;
+
       end_time = end_time - safeDuration;
       if (now_time > end_time) {
         const weizhi = action.Place_address;
-        if (!weizhi) continue;
+
+        if (!weizhi) { continue; }
         if (player.当前血量 < 0.3 * player.血量上限) {
           if (await existNajieThing(player_id, '起死回生丹', '丹药')) {
             player.当前血量 = player.血量上限;
@@ -111,7 +117,8 @@ export const SecretPlaceplusTask = async () => {
         };
         const monsterList = await getDataList('Monster');
         const monster_length = monsterList.length;
-        if (monster_length === 0) continue;
+
+        if (monster_length === 0) { continue; }
         const monster_index = Math.trunc(Math.random() * monster_length);
         const monster = monsterList[monster_index] as MonsterLike;
         const B_player = {
@@ -141,11 +148,13 @@ export const SecretPlaceplusTask = async () => {
         let t1 = 1;
         let t2 = 1;
         let n = 1;
+
         if (random1 <= x) {
           if (random2 <= y) {
             if (random3 <= z) {
               if (weizhi.three.length) {
                 const random4 = Math.floor(Math.random() * weizhi.three.length);
+
                 thing_name = weizhi.three[random4].name;
                 thing_class = weizhi.three[random4].class;
                 m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是：[${thing_name}`;
@@ -154,6 +163,7 @@ export const SecretPlaceplusTask = async () => {
               }
             } else if (weizhi.two.length) {
               const random4 = Math.floor(Math.random() * weizhi.two.length);
+
               thing_name = weizhi.two[random4].name;
               thing_class = weizhi.two[random4].class;
               m = `在洞穴中拿到[${thing_name}`;
@@ -166,6 +176,7 @@ export const SecretPlaceplusTask = async () => {
             }
           } else if (weizhi.one.length) {
             const random4 = Math.floor(Math.random() * weizhi.one.length);
+
             thing_name = weizhi.one[random4].name;
             thing_class = weizhi.one[random4].class;
             m = `捡到了[${thing_name}`;
@@ -188,6 +199,7 @@ export const SecretPlaceplusTask = async () => {
         }
         if (weizhi.name !== '诸神黄昏·旧神界') {
           const random = Math.random();
+
           if (random < (Number(player.幸运) || 0)) {
             if (random < (Number(player.addluckyNo) || 0)) {
               m += '';
@@ -214,6 +226,7 @@ export const SecretPlaceplusTask = async () => {
         const now_physique_id = player.Physique_id || 0;
         let qixue = 0;
         let last_msg = '';
+
         if (msgg.includes(A_win)) {
           xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
           qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
@@ -224,9 +237,9 @@ export const SecretPlaceplusTask = async () => {
           const random = Math.random();
           let newrandom = 0.995;
           const dy = await readDanyao(player_id);
+
           newrandom -= Number(dy.beiyong1 || 0);
-          if (dy.ped > 0) dy.ped--;
-          else {
+          if (dy.ped > 0) { dy.ped--; } else {
             dy.beiyong1 = 0;
             dy.ped = 0;
           }
@@ -234,9 +247,11 @@ export const SecretPlaceplusTask = async () => {
           if (random > newrandom) {
             const xianchonkouliang = await getDataList('Xianchonkouliang');
             const length = xianchonkouliang.length;
+
             if (length > 0) {
               const index = Math.trunc(Math.random() * length);
               const kouliang = xianchonkouliang[index];
+
               last_msg += `\n七彩流光的神奇仙谷[${kouliang.name}]深埋在土壤中，是仙兽们的最爱。`;
               await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1);
             }
@@ -256,7 +271,8 @@ export const SecretPlaceplusTask = async () => {
           power_up?: number;
           Place_action?: number;
           Place_actionplus?: number;
-        } = action as ActionLike;
+        } = action;
+
         if (arr.cishu === 1) {
           arr.shutup = 1;
           arr.working = 1;
@@ -269,8 +285,7 @@ export const SecretPlaceplusTask = async () => {
           await addExp2(player_id, qixue);
           await addExp(player_id, xiuwei);
           await addHP(player_id, Data_battle.A_xue);
-          if (is_group && push_address) await pushInfo(push_address, is_group, msg);
-          else await pushInfo(player_id, is_group, msg);
+          if (is_group && push_address) { await pushInfo(push_address, is_group, msg); } else { await pushInfo(player_id, is_group, msg); }
         } else {
           arr.cishu = (arr.cishu || 0) - 1;
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
@@ -283,6 +298,7 @@ export const SecretPlaceplusTask = async () => {
               msg: player.名号 + last_msg + fyd_msg,
               qq_group: push_address
             };
+
             temp.push(p);
             await writeTemp(temp);
           } catch {
@@ -292,6 +308,7 @@ export const SecretPlaceplusTask = async () => {
               qq: player_id,
               qq_group: push_address
             };
+
             temp.push(p);
             await writeTemp(temp);
           }

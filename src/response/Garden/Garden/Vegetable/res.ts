@@ -31,18 +31,20 @@ interface AssociationLike extends AssociationData {
   宗门名称: string;
 }
 
-function cap (n: number, max: number) {
+function cap(n: number, max: number) {
   return n > max ? max : n;
 }
-function toInt (v, d = 0) {
+function toInt(v, d = 0) {
   const n = Number(v);
+
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
-function fmtRemain (ms: number) {
-  if (ms <= 0) return '0天0小时0分钟';
+function fmtRemain(ms: number) {
+  if (ms <= 0) { return '0天0小时0分钟'; }
   const d = Math.trunc(ms / 86400000);
   const h = Math.trunc((ms % 86400000) / 3600000);
   const m = Math.trunc((ms % 3600000) / 60000);
+
   return `${d}天${h}小时${m}分钟`;
 }
 
@@ -50,12 +52,15 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
   if (!player) {
     return;
   }
   const guildName = player?.宗门?.宗门名称;
-  if (!guildName) return false;
+
+  if (!guildName) { return false; }
   let ass = await getDataJSONParseByKey(keys.association(guildName));
+
   if (!ass) {
     return;
   }
@@ -76,21 +81,24 @@ const res = onResponse(selects, async e => {
     '药园药草如下:'
   ];
   const now = Date.now();
+
   for (const crop of finalGarden.作物 || []) {
-    if (!crop || !crop.name) continue;
-    if (['天灵花', '皇草', '创世花'].includes(crop.name)) continue;
+    if (!crop?.name) { continue; }
+    if (['天灵花', '皇草', '创世花'].includes(crop.name)) { continue; }
     const matureKey = `xiuxian:${guildName}${crop.name}`;
     const matureAtRaw = await redis.get(matureKey);
     const matureAt = toInt(matureAtRaw, now);
     const remain = matureAt - now;
     const remainStr = fmtRemain(remain);
+
     msg.push(`作物: ${crop.name}\n描述: ${crop.desc || ''}\n成长时间:${remainStr}`);
   }
   Send(Text(msg.join('\n')));
+
   return false;
 });
 
-async function createGarden (association_name: string, user_qq: string, level: number) {
+async function createGarden(association_name: string, user_qq: string, level: number) {
   const now = Date.now();
   const cropTemplates: GardenCrop[] = [
     { name: '凝血草', ts: 1, desc: '汲取了地脉灵气形成的草' },
@@ -121,12 +129,14 @@ async function createGarden (association_name: string, user_qq: string, level: n
     .map(c => ({ ...c, start_time: now, who_plant: user_qq }));
   const garden: GardenData = { 药园等级: level, 作物: crops };
   const ass: AssociationLike = await getDataJSONParseByKey(keys.association(association_name));
-  if (!ass) return;
+
+  if (!ass) { return; }
   ass.药园 = garden;
   await setDataJSONStringifyByKey(keys.association(association_name), ass);
   // 初始化成熟时间戳
   for (const c of crops) {
     const matureAt = now + 24 * 60 * 60 * 1000 * toInt(c.ts, 1);
+
     await redis.set(`xiuxian:${association_name}${c.name}`, matureAt);
   }
 }

@@ -7,9 +7,10 @@ import { __PATH, keys } from '@src/model/keys';
 const redis = getIoRedis();
 
 // 获取玩家背包列表（支持分页）
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -31,6 +32,7 @@ export const GET = async (ctx: Context) => {
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+
       cursor = parseInt(result[0]);
       allKeys.push(...result[1]);
     } while (cursor !== 0);
@@ -60,6 +62,7 @@ export const GET = async (ctx: Context) => {
               total++;
               // 只添加当前页的数据
               const startIndex = (page - 1) * pageSize;
+
               if (najieList.length < pageSize && total > startIndex) {
                 najieList.push(najieWithId);
               }
@@ -94,6 +97,7 @@ export const GET = async (ctx: Context) => {
               total++;
               // 只添加当前页的数据
               const startIndex = (page - 1) * pageSize;
+
               if (najieList.length < pageSize && total > startIndex) {
                 najieList.push(corruptedNajie);
               }
@@ -123,6 +127,7 @@ export const GET = async (ctx: Context) => {
               userId,
               ...najie
             };
+
             najieList.push(najieWithId);
           } catch (error) {
             logger.error(`解析背包数据失败 ${userId}:`, error);
@@ -143,6 +148,7 @@ export const GET = async (ctx: Context) => {
               原始数据: najieData,
               错误信息: error.message
             };
+
             najieList.push(corruptedNajie);
             total++;
           }
@@ -205,6 +211,7 @@ export const GET = async (ctx: Context) => {
           categoryStats
         }
       };
+
       return;
     }
 
@@ -234,9 +241,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 获取单个玩家背包详情
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -251,6 +259,7 @@ export const POST = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 
@@ -263,6 +272,7 @@ export const POST = async (ctx: Context) => {
         message: '背包不存在',
         data: null
       };
+
       return;
     }
 
@@ -289,16 +299,17 @@ export const POST = async (ctx: Context) => {
 };
 
 // 更新背包数据
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const body = await parseJsonBody(ctx);
-    const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 } =
-      body as {
+    const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 }
+      = body as {
         userId: string;
         [key: string]: unknown;
       };
@@ -310,6 +321,7 @@ export const PUT = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 

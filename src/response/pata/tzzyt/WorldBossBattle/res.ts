@@ -22,17 +22,22 @@ interface EquipData {
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  if (!(await existplayer(usr_qq))) return false;
+
+  if (!(await existplayer(usr_qq))) { return false; }
 
   const player = await readPlayer(usr_qq);
+
   if (!player) {
     Send(Text('玩家数据读取失败'));
+
     return false;
   }
 
   const currentLayer = Number(player.镇妖塔层数) || 0;
+
   if (currentLayer > 6000) {
     Send(Text('已达到上限'));
+
     return false;
   }
 
@@ -40,15 +45,19 @@ const res = onResponse(selects, async e => {
   const equipNeed: (keyof EquipData)[] = ['武器', '护具', '法宝'];
   const safeNum = v => {
     const n = Number(v);
+
     return Number.isFinite(n) ? n : 0;
   };
+
   for (const k of equipNeed) {
-    const eq = equipmentRaw?.[k] as EquipSlot | undefined;
+    const eq = equipmentRaw?.[k];
     const atk = safeNum(eq?.atk);
     const def = safeNum(eq?.def);
     const hp = safeNum(eq?.HP);
+
     if (atk < 10 && def < 10 && hp < 10) {
       Send(Text('请更换其他固定数值装备爬塔'));
+
       return false;
     }
   }
@@ -57,11 +66,10 @@ const res = onResponse(selects, async e => {
   const Attack = 22000 * currentLayer + 10000;
   const Defence = 36000 * currentLayer + 10000;
   let Reward: number;
-  if (currentLayer < 100) Reward = 260 * currentLayer + 100;
-  else if (currentLayer < 200) Reward = 360 * currentLayer + 1000;
-  else Reward = 700 * currentLayer + 1000;
-  if (Reward > 400000) Reward = 400000;
-  if (Reward < 0) Reward = 0;
+
+  if (currentLayer < 100) { Reward = 260 * currentLayer + 100; } else if (currentLayer < 200) { Reward = 360 * currentLayer + 1000; } else { Reward = 700 * currentLayer + 1000; }
+  if (Reward > 400000) { Reward = 400000; }
+  if (Reward < 0) { Reward = 0; }
 
   const bosszt = {
     Health,
@@ -80,11 +88,14 @@ const res = onResponse(selects, async e => {
   const last_time_raw = await redis.get(cdKey);
   const lastNum = Number(last_time_raw);
   const cdMs = CD_MIN * 60 * 1000;
+
   if (Number.isFinite(lastNum) && now < lastNum + cdMs) {
     const left = lastNum + cdMs - now;
     const m = Math.trunc(left / 60000);
     const s = Math.trunc((left % 60000) / 1000);
+
     Send(Text(`正在CD中，剩余cd: ${m}分 ${s}秒`));
+
     return false;
   }
 
@@ -95,13 +106,15 @@ const res = onResponse(selects, async e => {
 
   while (player.当前血量 > 0 && bosszt.Health > 0) {
     const Random = Math.random();
+
     if (!(BattleFrame & 1)) {
-      let playerDamage =
-        Harm(Number(player.攻击) || 0, BOSSCurrentDefence) +
-        Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let playerDamage
+        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
+        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const critChance = Number(player.暴击率) || 0;
       const isCrit = Math.random() < critChance;
       const critMul = isCrit ? 1.5 : 1;
+
       msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
       if (Random > 0.5 && BattleFrame === 0) {
         msg.push('你的进攻被反手了！');
@@ -118,12 +131,11 @@ const res = onResponse(selects, async e => {
       }
       playerDamage = Math.trunc(playerDamage * critMul + Math.random() * 100);
       bosszt.Health -= playerDamage;
-      if (bosszt.Health < 0) bosszt.Health = 0;
-      msg.push(
-        `${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`
-      );
+      if (bosszt.Health < 0) { bosszt.Health = 0; }
+      msg.push(`${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`);
     } else {
       let bossDamage = Harm(BOSSCurrentAttack, Math.trunc((Number(player.防御) || 0) * 0.1));
+
       if (Random > 0.94) {
         msg.push('未知妖物的攻击被你破解了');
         bossDamage = Math.trunc(bossDamage * 0.6);
@@ -135,10 +147,8 @@ const res = onResponse(selects, async e => {
         bossDamage = Math.trunc(bossDamage * 1.2);
       }
       player.当前血量 = (Number(player.当前血量) || 0) - bossDamage;
-      if (player.当前血量 < 0) player.当前血量 = 0;
-      msg.push(
-        `未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`
-      );
+      if (player.当前血量 < 0) { player.当前血量 = 0; }
+      msg.push(`未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`);
     }
     BattleFrame++;
   }
@@ -160,13 +170,16 @@ const res = onResponse(selects, async e => {
     Send(Text(`\n恭喜通过此层镇妖塔，层数+5！增加灵石${Reward} 回复血量${Reward * 21}`));
   } else if (player.当前血量 <= 0) {
     const lose = Math.trunc(Reward * 2);
+
     player.灵石 = Math.max(0, (Number(player.灵石) || 0) - lose);
     Send(Text(`\n你未能通过此层镇妖塔！灵石-${lose}`));
   }
 
   // 保证写入 JSON 结构
   data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)));
+
   return false;
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

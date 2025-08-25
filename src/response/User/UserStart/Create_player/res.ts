@@ -23,17 +23,20 @@ interface Talent {
   eff: number;
 }
 
-function normalizeTalent (t): Talent {
+function normalizeTalent(t): Talent {
   if (t && typeof t === 'object') {
     const obj = t;
     const eff = typeof obj.eff === 'number' ? obj.eff : 0;
+
     return { ...obj, eff };
   }
+
   return { eff: 0 };
 }
 
-async function pickEquip (name: string) {
+async function pickEquip(name: string) {
   const equipmentData = await getDataList('Equipment');
+
   return equipmentData.find(i => i.name === name) || null;
 }
 
@@ -41,13 +44,17 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const ex = await redis.exists(keys.player(usr_qq));
+
   if (ex > 0) {
     const img = await getPlayerImage(e as Parameters<typeof getPlayerImage>[0]);
+
     if (Buffer.isBuffer(img)) {
       Send(Image(img));
+
       return;
     }
     Send(Text('图片加载失败'));
+
     return;
   }
   // 玩家计数：使用 redis key 数量作为序号（若需精确可改为读取文件系统）
@@ -107,12 +114,14 @@ const res = onResponse(selects, async e => {
     暴击率: 0,
     暴击伤害: 0
   } as Player;
+
   await writePlayer(usr_qq, new_player);
   const new_equipment = {
     武器: await pickEquip('烂铁匕首'),
     护具: await pickEquip('破铜护具'),
     法宝: await pickEquip('廉价炮仗')
   };
+
   await writeEquipment(usr_qq, new_equipment);
   const new_najie = {
     等级: 1,
@@ -130,6 +139,7 @@ const res = onResponse(selects, async e => {
     护具: null,
     法宝: null
   };
+
   await writeNajie(usr_qq, new_najie);
   await addHP(usr_qq, 999999);
   const danyaoInit = {
@@ -145,13 +155,17 @@ const res = onResponse(selects, async e => {
     beiyong4: 0,
     beiyong5: 0
   };
+
   await writeDanyao(usr_qq, danyaoInit);
   const img = await getPlayerImage(e);
+
   if (Buffer.isBuffer(img)) {
     Send(Image(img));
+
     return false;
   }
   Send(Text('图片加载失败'));
+
   return false;
 });
 

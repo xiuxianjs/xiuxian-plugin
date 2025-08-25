@@ -10,17 +10,20 @@ export const regular = /^(#|＃|\/)?天地堂/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  //查看存档
+  // 查看存档
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   let tiandibang = [];
+
   try {
     tiandibang = await readTiandibang();
   } catch {
-    //没有表要先建立一个！
+    // 没有表要先建立一个！
     await Write_tiandibang([]);
   }
   let m = tiandibang.length;
+
   for (m = 0; m < tiandibang.length; m++) {
     if (tiandibang[m].qq == usr_qq) {
       break;
@@ -28,9 +31,11 @@ const res = onResponse(selects, async e => {
   }
   if (m == tiandibang.length) {
     Send(Text('请先报名!'));
+
     return false;
   }
   const img = await get_tianditang_img(e, tiandibang[m].积分);
+
   if (Buffer.isBuffer(img)) {
     Send(Image(img));
   }

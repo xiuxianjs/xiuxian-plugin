@@ -7,9 +7,10 @@ import { __PATH } from '@src/model/keys';
 const redis = getIoRedis();
 
 // 获取游戏用户数据（支持分页）
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -29,6 +30,7 @@ export const GET = async (ctx: Context) => {
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+
       cursor = parseInt(result[0]);
       allKeys.push(...result[1]);
     } while (cursor !== 0);
@@ -50,15 +52,16 @@ export const GET = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
-              playerWithId.id.includes(search);
+            const matchesSearch
+              = !search
+              || playerWithId.名号?.toLowerCase().includes(search.toLowerCase())
+              || playerWithId.id.includes(search);
 
             if (matchesSearch) {
               total++;
               // 只添加当前页的数据
               const startIndex = (page - 1) * pageSize;
+
               if (players.length < pageSize && total > startIndex) {
                 players.push(playerWithId);
               }
@@ -119,15 +122,16 @@ export const GET = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase()) ||
-              corruptedPlayer.id.includes(search);
+            const matchesSearch
+              = !search
+              || corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase())
+              || corruptedPlayer.id.includes(search);
 
             if (matchesSearch) {
               total++;
               // 只添加当前页的数据
               const startIndex = (page - 1) * pageSize;
+
               if (players.length < pageSize && total > startIndex) {
                 players.push(corruptedPlayer);
               }
@@ -157,6 +161,7 @@ export const GET = async (ctx: Context) => {
               id: userId,
               ...player
             };
+
             players.push(playerWithId);
           } catch (error) {
             logger.error(`解析玩家数据失败 ${userId}:`, error);
@@ -212,6 +217,7 @@ export const GET = async (ctx: Context) => {
               原始数据: playerData,
               错误信息: error.message
             };
+
             players.push(corruptedPlayer);
             total++;
           }
@@ -245,9 +251,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 获取单个游戏用户数据
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -262,6 +269,7 @@ export const POST = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 
@@ -274,6 +282,7 @@ export const POST = async (ctx: Context) => {
         message: '用户不存在',
         data: null
       };
+
       return;
     }
 
@@ -300,9 +309,10 @@ export const POST = async (ctx: Context) => {
 };
 
 // 获取用户统计信息
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -316,6 +326,7 @@ export const PUT = async (ctx: Context) => {
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+
       cursor = parseInt(result[0]);
       allKeys.push(...result[1]);
     } while (cursor !== 0);
@@ -344,10 +355,10 @@ export const PUT = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
-              playerWithId.id.includes(search);
+            const matchesSearch
+              = !search
+              || playerWithId.名号?.toLowerCase().includes(search.toLowerCase())
+              || playerWithId.id.includes(search);
 
             if (matchesSearch) {
               total++;
@@ -371,6 +382,7 @@ export const PUT = async (ctx: Context) => {
 
             // 损坏数据计入总数
             const matchesSearch = !search || userId.includes(search);
+
             if (matchesSearch) {
               total++;
               // 损坏数据计入低境界统计
@@ -385,6 +397,7 @@ export const PUT = async (ctx: Context) => {
 
       // 获取部分数据进行资源统计（避免性能问题）
       const sampleKeys = allKeys.slice(0, Math.min(100, allKeys.length));
+
       for (const key of sampleKeys) {
         const userId = key.replace(`${__PATH.player_path}:`, '');
         const playerData = await redis.get(key);
@@ -424,6 +437,7 @@ export const PUT = async (ctx: Context) => {
       // 根据样本比例估算总数
       if (sampleKeys.length > 0) {
         const ratio = allKeys.length / sampleKeys.length;
+
         highLevel = Math.round(highLevel * ratio);
         mediumLevel = Math.round(mediumLevel * ratio);
         lowLevel = Math.round(lowLevel * ratio);

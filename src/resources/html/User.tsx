@@ -175,7 +175,7 @@ const Player = ({
         `
       }}
     >
-      <div className='h-3'></div>
+      <div className='h-3' />
       <div>
         {/* 上 */}
         <div className='m-5 mx-auto flex flex-nowrap rounded-5xl z-999 bg-[radial-gradient(at_top_left,#ffffff10,#d7edea10)] border-t border-[#ffcc80] border-l border-[#ffcc80] border-r border-[#bb8020] border-b border-[#bb8020] backdrop-blur-sm w-[740px] pb-6'>
@@ -197,8 +197,8 @@ const Player = ({
                   </div>
                 </div>
                 {/* 装饰性光效 */}
-                <div className='absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full opacity-60 animate-pulse'></div>
-                <div className='absolute -bottom-1 -left-1 w-2 h-2 bg-orange-300 rounded-full opacity-40'></div>
+                <div className='absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full opacity-60 animate-pulse' />
+                <div className='absolute -bottom-1 -left-1 w-2 h-2 bg-orange-300 rounded-full opacity-40' />
               </div>
             </div>
           </div>
@@ -232,15 +232,15 @@ const Player = ({
                 {/* 血条 - 使用Tailwind CSS */}
                 <div className='relative w-72 text-white h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg shadow-lg overflow-hidden border border-gray-600/50'>
                   {/* 背景装饰 */}
-                  <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent'></div>
+                  <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent' />
                   <div
                     className='h-full bg-gradient-to-r from-red-400 via-red-500 to-red-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden'
                     style={strand_hp.style}
                   >
                     {/* 进度条内部装饰 */}
-                    <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
-                    <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent'></div>
-                    <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent'></div>
+                    <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent' />
+                    <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent' />
+                    <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent' />
                   </div>
                   <div className='absolute inset-0 flex items-center justify-center'>
                     <span className='font-bold text-xs'>
@@ -359,8 +359,8 @@ const Player = ({
               <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
                 <div className='bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg relative overflow-hidden'>
                   {/* 装饰性光效 */}
-                  <div className='absolute top-0 right-0 w-12 h-12 bg-blue-400/10 rounded-full blur-lg'></div>
-                  <div className='absolute bottom-0 left-0 w-8 h-8 bg-blue-400/5 rounded-full blur-md'></div>
+                  <div className='absolute top-0 right-0 w-12 h-12 bg-blue-400/10 rounded-full blur-lg' />
+                  <div className='absolute bottom-0 left-0 w-8 h-8 bg-blue-400/5 rounded-full blur-md' />
                   <div className='space-y-2 relative z-10'>
                     <div className='flex items-center justify-between'>
                       <span className='text-xs font-medium text-gray-700 flex items-center gap-1.5'>
@@ -375,15 +375,15 @@ const Player = ({
                     </div>
                     {/* 练气进度条 - 使用Tailwind CSS */}
                     <div className='relative w-full h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg overflow-hidden border border-gray-600/50 shadow-inner'>
-                      <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent'></div>
+                      <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent' />
                       <div
                         className='h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden'
                         style={strand_lianqi.style}
                       >
                         {/* 进度条内部装饰 */}
-                        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
-                        <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent'></div>
-                        <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent'></div>
+                        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent' />
+                        <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent' />
+                        <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent' />
                       </div>
                       <div className='absolute inset-0 flex items-center justify-center'>
                         <span className='text-white font-bold text-xs '>{strand_lianqi.num}%</span>
@@ -396,8 +396,8 @@ const Player = ({
                 </div>
                 <div className='bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg relative overflow-hidden'>
                   {/* 装饰性光效 */}
-                  <div className='absolute top-0 right-0 w-12 h-12 bg-green-400/10 rounded-full blur-lg'></div>
-                  <div className='absolute bottom-0 left-0 w-8 h-8 bg-green-400/5 rounded-full blur-md'></div>
+                  <div className='absolute top-0 right-0 w-12 h-12 bg-green-400/10 rounded-full blur-lg' />
+                  <div className='absolute bottom-0 left-0 w-8 h-8 bg-green-400/5 rounded-full blur-md' />
                   <div className='space-y-2 relative z-10'>
                     <div className='flex items-center justify-between'>
                       <span className='text-xs font-medium text-gray-700 flex items-center gap-1.5'>
@@ -412,15 +412,15 @@ const Player = ({
                     </div>
                     {/* 炼体进度条 - 使用Tailwind CSS */}
                     <div className='relative w-full h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg overflow-hidden border border-gray-600/50 shadow-inner'>
-                      <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent'></div>
+                      <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent' />
                       <div
                         className='h-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden'
                         style={strand_llianti.style}
                       >
                         {/* 进度条内部装饰 */}
-                        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
-                        <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent'></div>
-                        <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent'></div>
+                        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent' />
+                        <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent' />
+                        <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent' />
                       </div>
                       <div className='absolute inset-0 flex items-center justify-center'>
                         <span className='text-white font-bold text-xs'>{strand_llianti.num}%</span>
@@ -443,8 +443,8 @@ const Player = ({
                 ) : (
                   <div className='bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg relative overflow-hidden'>
                     {/* 装饰性光效 */}
-                    <div className='absolute top-0 right-0 w-12 h-12 bg-purple-400/10 rounded-full blur-lg'></div>
-                    <div className='absolute bottom-0 left-0 w-8 h-8 bg-purple-400/5 rounded-full blur-md'></div>
+                    <div className='absolute top-0 right-0 w-12 h-12 bg-purple-400/10 rounded-full blur-lg' />
+                    <div className='absolute bottom-0 left-0 w-8 h-8 bg-purple-400/5 rounded-full blur-md' />
                     <div className='space-y-2 relative z-10'>
                       <div className='flex items-center justify-between'>
                         <span className='text-xs font-medium text-gray-700 flex items-center gap-1.5'>
@@ -459,15 +459,15 @@ const Player = ({
                       </div>
                       {/* 炼丹进度条 - 使用Tailwind CSS */}
                       <div className='relative w-full h-6 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg overflow-hidden border border-gray-600/50 shadow-inner'>
-                        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent'></div>
+                        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent' />
                         <div
                           className='h-full bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 rounded-lg transition-all duration-300 ease-out shadow-lg relative overflow-hidden'
                           style={strand_liandan.style}
                         >
                           {/* 进度条内部装饰 */}
-                          <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
-                          <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent'></div>
-                          <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent'></div>
+                          <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent' />
+                          <div className='absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent' />
+                          <div className='absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-black/20 to-transparent' />
                         </div>
                         <div className='absolute inset-0 flex items-center justify-center'>
                           <span className='text-white font-bold text-xs drop-shadow-lg bg-black/20 px-1.5 py-0.5 rounded-full backdrop-blur-sm'>
@@ -547,7 +547,7 @@ const Player = ({
           </div>
         </div>
       </div>
-      <div className='h-3'></div>
+      <div className='h-3' />
     </HTML>
   );
 };

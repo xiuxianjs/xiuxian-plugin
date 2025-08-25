@@ -8,9 +8,10 @@ import { parseJsonBody } from '../core/bodyParser';
  * @param ctx
  * @returns
  */
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -31,10 +32,12 @@ export const GET = async (ctx: Context) => {
           list: []
         }
       };
+
       return;
     }
 
     const data = await getDataList(name);
+
     if (!data) {
       ctx.status = 404;
       ctx.body = {
@@ -44,13 +47,12 @@ export const GET = async (ctx: Context) => {
           list: []
         }
       };
+
       return;
     }
     const filteredData = search
       ? data.filter(item => {
-        return Object.values(item).some(value =>
-          String(value).toLowerCase().includes(search.toLowerCase())
-        );
+        return Object.values(item).some(value => String(value).toLowerCase().includes(search.toLowerCase()));
       })
       : data;
 
@@ -91,9 +93,10 @@ export const GET = async (ctx: Context) => {
  * @param ctx
  * @returns
  */
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -112,6 +115,7 @@ export const PUT = async (ctx: Context) => {
         message: '数据类型不能为空',
         data: null
       };
+
       return;
     }
 
@@ -122,6 +126,7 @@ export const PUT = async (ctx: Context) => {
         message: '数据格式错误，必须是数组',
         data: null
       };
+
       return;
     }
 
@@ -133,6 +138,7 @@ export const PUT = async (ctx: Context) => {
         message: '数据类型不存在',
         data: null
       };
+
       return;
     }
 
@@ -144,6 +150,7 @@ export const PUT = async (ctx: Context) => {
         message: '批量更新数据量过大，请分批处理',
         data: null
       };
+
       return;
     }
 
@@ -175,9 +182,10 @@ export const PUT = async (ctx: Context) => {
  * @param ctx
  * @returns
  */
-export const PATCH = async (ctx: Context) => {
+export const PATCH = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -200,6 +208,7 @@ export const PATCH = async (ctx: Context) => {
         message: '数据类型不能为空',
         data: null
       };
+
       return;
     }
 
@@ -210,6 +219,7 @@ export const PATCH = async (ctx: Context) => {
         message: '更新数据格式错误',
         data: null
       };
+
       return;
     }
 
@@ -221,6 +231,7 @@ export const PATCH = async (ctx: Context) => {
         message: '数据类型不存在',
         data: null
       };
+
       return;
     }
 
@@ -229,11 +240,13 @@ export const PATCH = async (ctx: Context) => {
 
     // 分块处理更新
     const chunks = [];
+
     for (let i = 0; i < updates.length; i += chunkSize) {
       chunks.push(updates.slice(i, i + chunkSize));
     }
 
     let updatedCount = 0;
+
     for (const chunk of chunks) {
       for (const update of chunk) {
         if (currentData[update.index]) {

@@ -23,17 +23,22 @@ export const regular = /^(#|＃|\/)?开炉/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const user_qq = e.UserId;
-  //有无存档
-  if (!(await existplayer(user_qq))) return false;
+
+  // 有无存档
+  if (!(await existplayer(user_qq))) { return false; }
   const A = await looktripod(user_qq);
+
   if (A != 1) {
     Send(Text('请先去#炼器师能力评测,再来锻造吧'));
+
     return false;
   }
   let newtripod = [];
   const player = await await data.getData('player', user_qq);
+
   if (player.occupation != '炼器师') {
     Send(Text('切换到炼器师后再来吧,宝贝'));
+
     return false;
   }
   try {
@@ -45,21 +50,26 @@ const res = onResponse(selects, async e => {
     if (user_qq == item.qq) {
       if (item.TIME == 0) {
         Send(Text('煅炉里面空空如也,也许自己还没有启动它'));
+
         return false;
       }
-      //属性变化系数
+      // 属性变化系数
       let xishu = 1;
-      //判断时间是否正确
+      // 判断时间是否正确
       const newtime = Date.now() - item.TIME;
+
       if (newtime < 1000 * 60 * 30) {
         Send(Text('炼制时间过短,无法获得装备,再等等吧'));
+
         return false;
       }
-      //关闭状态
+      // 关闭状态
 
       const action = await readActionWithSuffix(user_qq, 'action10');
+
       if (!action) {
         Send(Text('未开始锻造或未达到最短锻造时间'));
+
         return false;
       }
       // if (isActionRunning(action)) {
@@ -71,9 +81,10 @@ const res = onResponse(selects, async e => {
       //   return false
       // }
 
-      //判断属性九维值
+      // 判断属性九维值
       let cailiao;
       const jiuwei = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
       for (const newitem in item.材料) {
         cailiao = await readThat(item.材料[newitem], '锻造材料');
         jiuwei[0] += cailiao.攻 * item.数量[newitem];
@@ -91,6 +102,7 @@ const res = onResponse(selects, async e => {
       const xuanze = ['锻造武器', '锻造护具', '锻造宝物'];
       let weizhi;
       let wehizhi1;
+
       if (jiuwei[0] > jiuwei[1] * 2) {
         weizhi = xuanze[0];
         wehizhi1 = '武器';
@@ -108,18 +120,21 @@ const res = onResponse(selects, async e => {
         wehizhi1 = '护具';
       }
 
-      //寻找符合标准的装备
+      // 寻找符合标准的装备
       const newwupin = await readAll(weizhi);
+
       type EquipLike = { atk: number; def: number; HP: number; name: string };
       const list = newwupin as EquipLike[];
       const bizhi: number[] = [];
 
       for (let idx = 0; idx < list.length; idx++) {
         const eq = list[idx];
+
         bizhi[idx] = Math.abs(eq.atk - jiuwei[0] + eq.def - jiuwei[1] + eq.HP - jiuwei[2]);
       }
       let min = bizhi[0];
       let new1;
+
       for (const item3 in bizhi) {
         if (min >= bizhi[item3]) {
           min = bizhi[item3];
@@ -128,9 +143,10 @@ const res = onResponse(selects, async e => {
       }
       const wuqiname = list[new1!].name;
       const num = jiuwei[0] + jiuwei[1] + jiuwei[2];
-      //计算所用时间(毫秒)带来的收益
+      // 计算所用时间(毫秒)带来的收益
       const overtime = (80 * num + 10) * 1000 * 60;
       const nowtime = Math.abs((overtime - newtime) / 1000 / 60);
+
       if (nowtime < 2) {
         xishu += 0.1;
       } else if (nowtime > 8) {
@@ -141,13 +157,14 @@ const res = onResponse(selects, async e => {
         xishu -= 0.25;
       }
       let houzhui;
-      //计算五维收益
+      // 计算五维收益
       let i;
       let qianzhui = 0;
       const wuwei: number[] = [jiuwei[4], jiuwei[5], jiuwei[6], jiuwei[7], jiuwei[8]];
       const wuxing = ['金', '木', '土', '水', '火'];
       let max = wuwei[0];
       let shuzu: string[] = [wuxing[0]];
+
       for (i = 0; i < wuwei.length; i++) {
         if (max < wuwei[i]) {
           max = wuwei[i];
@@ -164,6 +181,7 @@ const res = onResponse(selects, async e => {
       const selectArr = Array.isArray(choose) ? choose : ['无', 0];
       const maxTuple = selectArr as [string, number];
       let fangyuxuejian = 0;
+
       if (qianzhui == 5) {
         houzhui = '五行杂灵';
         xishu += 0.1;
@@ -175,6 +193,7 @@ const res = onResponse(selects, async e => {
         xishu += 0.05;
       } else if (qianzhui == 2) {
         const shuzufu = await restraint(wuwei, maxTuple[0]);
+
         houzhui = shuzufu[0];
         xishu += shuzufu[1];
         if (shuzufu[1] == 0.5) {
@@ -182,6 +201,7 @@ const res = onResponse(selects, async e => {
         }
       } else if (qianzhui == 1) {
         const mu = await mainyuansu(wuwei);
+
         houzhui = '纯' + mu;
         xishu += 0.15;
       }
@@ -199,15 +219,17 @@ const res = onResponse(selects, async e => {
         author_name: player.id,
         出售价: Math.floor(1000000 * sum)
       };
-      await addNajieThing(user_qq, zhuangbei, '装备', 1);
-      //计算经验收益
 
-      //灵根影响值
+      await addNajieThing(user_qq, zhuangbei, '装备', 1);
+      // 计算经验收益
+
+      // 灵根影响值
       const v = player.隐藏灵根.控器 / (Math.abs(maxTuple[1] - player.隐藏灵根.type) + 5);
-      //天赋影响值
+      // 天赋影响值
       const k = ((player.锻造天赋 + 100) * v) / 200 + 1;
-      //基础值
+      // 基础值
       let z = Math.floor(sum * 1000 * 0.7 * k + 200);
+
       if (sum >= 0.9) {
         z += 2000;
       } else if (sum >= 0.7) {
@@ -217,21 +239,23 @@ const res = onResponse(selects, async e => {
         z = Math.floor(z * (1 + (player.仙宠.等级 / 25) * 0.1));
       }
       addExp4(user_qq, z);
-      //关闭所有状态
+      // 关闭所有状态
       item.状态 = 0;
       item.TIME = 0;
       item.材料 = [];
       item.数量 = [];
       await writeDuanlu(newtripod);
-      //清除时间
+      // 清除时间
       // 结束标记：已在上面 stopActionWithSuffix 写入
       await stopActionWithSuffix(user_qq, 'action10');
       // 标记结束时间戳（可选：写入当前时间覆盖 key）
       await setValue(userKey(user_qq, 'action10'), Date.now());
       Send(Text(`恭喜你获得了[${wuqiname}·${houzhui}],炼器经验增加了[${z}]`));
+
       return false;
     }
   }
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

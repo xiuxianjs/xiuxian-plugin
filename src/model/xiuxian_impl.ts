@@ -16,13 +16,14 @@ const playerRepo = createPlayerRepository(() => experienceList);
 const najieRepo = createNajieRepository();
 
 // 辅助函数：安全获取玩家数据
-export async function getPlayerDataSafe (usr_qq: string): Promise<Player | null> {
+export async function getPlayerDataSafe(usr_qq: string): Promise<Player | null> {
   return await getDataJSONParseByKey(keys.player(usr_qq));
 }
 
 // 辅助函数：安全获取装备数据
-export async function getEquipmentDataSafe (usr_qq: string): Promise<Equipment | null> {
+export async function getEquipmentDataSafe(usr_qq: string): Promise<Equipment | null> {
   const equipmentData = await getDataJSONParseByKey(keys.equipment(usr_qq));
+
   return equipmentData;
 }
 
@@ -31,17 +32,17 @@ export async function getEquipmentDataSafe (usr_qq: string): Promise<Equipment |
  * @param usr_qq 玩家QQ
  * @returns
  */
-export async function existplayer (usr_qq: string): Promise<boolean> {
+export async function existplayer(usr_qq: string): Promise<boolean> {
   return existDataByKey(keys.player(usr_qq));
 }
 
 // 读取存档信息，返回成一个 JavaScript 对象
-export async function readPlayer (usr_qq: string): Promise<Player | null> {
+export async function readPlayer(usr_qq: string): Promise<Player | null> {
   return await getDataJSONParseByKey(keys.player(usr_qq));
 }
 
 // 读取纳戒信息
-export async function readNajie (usr_qq: string): Promise<Najie | null> {
+export async function readNajie(usr_qq: string): Promise<Najie | null> {
   return await getDataJSONParseByKey(keys.najie(usr_qq));
 }
 
@@ -50,27 +51,29 @@ export async function readNajie (usr_qq: string): Promise<Najie | null> {
  * @param usr_qq 玩家QQ
  * @param najie 纳戒信息
  */
-export async function writeNajie (usr_qq: string, najie: Najie): Promise<void> {
+export async function writeNajie(usr_qq: string, najie: Najie): Promise<void> {
   await setDataJSONStringifyByKey(keys.najie(usr_qq), najie);
 }
 
-export async function addExp4 (usr_qq: string, exp = 0) {
-  if (exp === 0 || isNaN(exp)) return;
+export async function addExp4(usr_qq: string, exp = 0) {
+  if (exp === 0 || isNaN(exp)) { return; }
   await playerRepo.addOccupationExp(usr_qq, exp);
 }
 
-export async function addConFaByUser (usr_qq: string, gongfa_name: string) {
+export async function addConFaByUser(usr_qq: string, gongfa_name: string) {
   const player = await readPlayer(usr_qq);
-  if (!player) return;
-  if (!Array.isArray(player.学习的功法)) player.学习的功法 = [];
+
+  if (!player) { return; }
+  if (!Array.isArray(player.学习的功法)) { player.学习的功法 = []; }
   player.学习的功法.push(gongfa_name);
   await setDataJSONStringifyByKey(keys.player(usr_qq), player);
   import('./efficiency.js').then(m => m.playerEfficiency(usr_qq)).catch(() => {});
 }
 
-export async function addBagCoin (usr_qq: string, lingshi: number) {
+export async function addBagCoin(usr_qq: string, lingshi: number) {
   const delta = Math.trunc(Number(lingshi));
-  if (delta === 0) return;
+
+  if (delta === 0) { return; }
   await najieRepo.addLingShi(usr_qq, delta);
 }
 

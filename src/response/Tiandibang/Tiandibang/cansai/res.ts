@@ -11,14 +11,16 @@ export const regular = /^(#|＃|\/)?报名比赛/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
-  //查看存档
+  // 查看存档
   const ifexistplay = await existplayer(usr_qq);
-  if (!ifexistplay) return false;
+
+  if (!ifexistplay) { return false; }
   let tiandibang = [];
+
   try {
     tiandibang = await readTiandibang();
   } catch {
-    //没有表要先建立一个！
+    // 没有表要先建立一个！
     await Write_tiandibang([]);
   }
 
@@ -44,10 +46,8 @@ const res = onResponse(selects, async e => {
     tiandibang.push(A_player);
     await Write_tiandibang(tiandibang);
     Send(Text('参赛成功!'));
-    return;
   } else {
     Send(Text('你已经参赛了!'));
-    return;
   }
 });
 

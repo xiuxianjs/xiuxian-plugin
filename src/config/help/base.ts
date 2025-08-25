@@ -248,4 +248,5 @@ const mainHelpConfig: HelpGroup[] = [
     ]
   }
 ];
+
 export default mainHelpConfig;

@@ -7,8 +7,9 @@ import { getRedisKey } from './keys';
  * @param action
  * @returns
  */
-export const getDataByUserId = async (user_id: string, action: ActionType) => {
+export const getDataByUserId = async(user_id: string, action: ActionType) => {
   const redis = getIoRedis();
+
   return await redis.get(getRedisKey(user_id, action));
 };
 
@@ -18,7 +19,8 @@ export const setDataByUserId = async <T extends string | number | boolean | obje
   value: T
 ) => {
   const redis = getIoRedis();
-  const payload =
-    typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
+  const payload
+    = typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
+
   return await redis.set(getRedisKey(user_id, action), payload);
 };

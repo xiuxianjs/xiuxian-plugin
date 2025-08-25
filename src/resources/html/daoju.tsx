@@ -33,7 +33,7 @@ const Daoju = ({
         {/* 玩家头像和标题 */}
         <header className='space-y-6 flex flex-col items-center'>
           <div className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-r from-emerald-400/30 to-red-400/30 rounded-full blur-xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-r from-emerald-400/30 to-red-400/30 rounded-full blur-xl' />
             <Avatar src={getAvatar(user_id)} />
           </div>
         </header>
@@ -41,7 +41,7 @@ const Daoju = ({
         {/* 已拥有 */}
         {daoju_have.length > 0 && (
           <section className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-emerald-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-emerald-300/20'>
               <div className='flex items-center justify-center space-x-3 mb-6'>
                 <div className='w-8 h-8 bg-emerald-400/30 rounded-full flex items-center justify-center'>
@@ -60,8 +60,8 @@ const Daoju = ({
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-emerald-900/40 to-emerald-700/30 p-5 shadow-xl border border-emerald-400/30 backdrop-blur-md'
                   >
-                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-t-2xl'></div>
-                    <div className='absolute top-2 right-2 w-3 h-3 bg-emerald-400/50 rounded-full'></div>
+                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-t-2xl' />
+                    <div className='absolute top-2 right-2 w-3 h-3 bg-emerald-400/50 rounded-full' />
                     <div className='space-y-3'>
                       <div className='flex items-center space-x-2'>
                         <span className='text-emerald-300 text-lg'>🔮</span>
@@ -99,7 +99,7 @@ const Daoju = ({
         {/* 未拥有 */}
         {daoju_need.length > 0 && (
           <section className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-red-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-red-300/20'>
               <div className='flex items-center justify-center space-x-3 mb-6'>
                 <div className='w-8 h-8 bg-red-400/30 rounded-full flex items-center justify-center'>
@@ -118,8 +118,8 @@ const Daoju = ({
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-red-900/40 to-red-700/30 p-5 shadow-xl border border-red-400/30 backdrop-blur-md'
                   >
-                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-300 rounded-t-2xl'></div>
-                    <div className='absolute top-2 right-2 w-3 h-3 bg-red-400/50 rounded-full'></div>
+                    <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-300 rounded-t-2xl' />
+                    <div className='absolute top-2 right-2 w-3 h-3 bg-red-400/50 rounded-full' />
                     <div className='space-y-3'>
                       <div className='flex items-center space-x-2'>
                         <span className='text-red-300 text-lg'>🔮</span>
@@ -156,11 +156,11 @@ const Daoju = ({
 
         {/* 底部装饰 */}
         <div className='flex justify-center space-x-4 pt-8'>
-          <div className='w-16 h-1 bg-gradient-to-r from-emerald-400/50 to-transparent rounded-full'></div>
+          <div className='w-16 h-1 bg-gradient-to-r from-emerald-400/50 to-transparent rounded-full' />
           <div className='w-8 h-8 bg-gradient-to-br from-emerald-400/30 to-red-400/30 rounded-full flex items-center justify-center'>
             <span className='text-white/70 text-sm'>⚡</span>
           </div>
-          <div className='w-16 h-1 bg-gradient-to-l from-red-400/50 to-transparent rounded-full'></div>
+          <div className='w-16 h-1 bg-gradient-to-l from-red-400/50 to-transparent rounded-full' />
         </div>
       </main>
     </HTML>

@@ -11,8 +11,9 @@ import { screenshot } from '@src/image';
  * 通过 pushInfo 方法将截图推送到对应群。
  * 推送完成后，清空临时消息记录。
  */
-export const MsgTask = async () => {
+export const MsgTask = async() => {
   let temp: (TempMessage & TempRecordLegacy)[] = [];
+
   try {
     temp = await readTemp();
   } catch {
@@ -20,15 +21,17 @@ export const MsgTask = async () => {
   }
   if (temp.length > 0) {
     const group: string[] = [];
+
     group.push(temp[0].qq_group);
     f1: for (const i of temp) {
       for (const j of group) {
-        if (i.qq_group == j) continue f1;
+        if (i.qq_group == j) { continue f1; }
       }
       group.push(i.qq_group);
     }
     for (const i of group) {
       const msg: string[] = [];
+
       for (const j of temp) {
         if (i == j.qq_group) {
           msg.push(j.msg);
@@ -37,7 +40,8 @@ export const MsgTask = async () => {
       const temp_data = { temp: msg };
 
       const img = await screenshot('temp', i, temp_data);
-      if (img) await pushInfo(i, true, img);
+
+      if (img) { await pushInfo(i, true, img); }
     }
     await writeTemp([]);
   }

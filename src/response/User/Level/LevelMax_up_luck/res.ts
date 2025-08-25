@@ -10,16 +10,20 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
 
-  const user_qq = e.UserId; //用户qq
-  //有无存档
-  if (!(await existplayer(user_qq))) return false;
+  const user_qq = e.UserId; // 用户qq
+
+  // 有无存档
+  if (!(await existplayer(user_qq))) { return false; }
 
   const x = await existNajieThing(usr_qq, '幸运草', '道具');
+
   if (!x) {
     Send(Text('醒醒，你没有道具【幸运草】!'));
+
     return false;
   }
   LevelMax_up(e, true);
 });
+
 import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

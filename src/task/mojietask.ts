@@ -9,7 +9,7 @@ import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import type { ExploreActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 
-function isExploreAction (a): a is ExploreActionState {
+function isExploreAction(a): a is ExploreActionState {
   return !!a && typeof a === 'object' && 'end_time' in a;
 }
 
@@ -19,46 +19,51 @@ function isExploreAction (a): a is ExploreActionState {
  * 结算时会处理经验、物品发放、状态变更等，并通过推送消息通知玩家或群组。
  * 该任务确保玩家的“魔劫”或探索等行为能在到达指定时间后自动结算和反馈。
  */
-export const MojiTask = async () => {
+export const MojiTask = async() => {
   // 获取缓存中人物列表
   const playerList = await keysByPath(__PATH.player_path);
+
   for (const player_id of playerList) {
     // 查询当前人物动作（日志变量已移除以减 lint 噪声）
     // 得到动作
     const rawAction = await getDataByUserId(player_id, 'action');
     let action;
+
     try {
       action = JSON.parse(rawAction);
     } catch {
       action = null;
     }
-    //不为空，存在动作
+    // 不为空，存在动作
     if (action != null) {
       let push_address = player_id; // 消息推送地址
       let is_group = false; // 是否推送到群
-      if (isExploreAction(action) && notUndAndNull((action as ExploreActionState).group_id)) {
+
+      if (isExploreAction(action) && notUndAndNull((action).group_id)) {
         is_group = true;
-        push_address = (action as ExploreActionState).group_id!;
+        push_address = (action).group_id!;
       }
 
-      //最后发送的消息
+      // 最后发送的消息
       const msg: string[] = [];
-      //动作结束时间
-      if (!isExploreAction(action)) continue;
-      const act = action as ExploreActionState;
+
+      // 动作结束时间
+      if (!isExploreAction(action)) { continue; }
+      const act = action;
       let end_time = act.end_time;
       // 现在的时间
       const now_time = Date.now();
       // 用户信息
       const player = await readPlayer(player_id);
 
-      //有洗劫状态:这个直接结算即可
+      // 有洗劫状态:这个直接结算即可
       if (String(act.mojie) == '0') {
-        //5分钟后开始结算阶段一
-        const baseDuration =
-          typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+        // 5分钟后开始结算阶段一
+        const baseDuration
+          = typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+
         end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
-        //时间过了
+        // 时间过了
         if (now_time > end_time) {
           let thing_name;
           let thing_class;
@@ -113,6 +118,7 @@ export const MojiTask = async () => {
             t2 = 2 + Math.random();
           }
           const random = Math.random();
+
           if (random < player.幸运) {
             if (random < player.addluckyNo) {
               last_msg += '福源丹生效，所以在';
@@ -133,12 +139,13 @@ export const MojiTask = async () => {
             }
             await redis.set(dataKeys.player(player_id), JSON.stringify(player));
           }
-          //默认结算装备数
+          // 默认结算装备数
           const now_level_id = player.level_id;
           const now_physique_id = player.Physique_id;
-          //结算
+          // 结算
           let qixue = 0;
           let xiuwei = 0;
+
           xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
           qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
           if (await existNajieThing(player_id, '修魔丹', '道具')) {
@@ -154,36 +161,37 @@ export const MojiTask = async () => {
           if (thing_name != '' || thing_class != '') {
             await addNajieThing(player_id, thing_name, thing_class, n);
           }
-          last_msg +=
-            m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu || 0) - 1);
+          last_msg
+            += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu || 0) - 1);
           msg.push('\n' + player.名号 + last_msg + fyd_msg);
           const arr: ExploreActionState = {
-            ...(act as ExploreActionState)
+            ...(act)
           };
+
           if (arr.cishu == 1) {
-            //把状态都关了
-            arr.shutup = 1; //闭关状态
-            arr.working = 1; //降妖状态
-            arr.power_up = 1; //渡劫状态
-            arr.Place_action = 1; //秘境
-            arr.Place_actionplus = 1; //沉迷状态
+            // 把状态都关了
+            arr.shutup = 1; // 闭关状态
+            arr.working = 1; // 降妖状态
+            arr.power_up = 1; // 渡劫状态
+            arr.Place_action = 1; // 秘境
+            arr.Place_actionplus = 1; // 沉迷状态
             // 魔界状态关闭并更新时间
             arr.mojie = 1;
             arr.end_time = Date.now();
-            //结算完去除group_id
+            // 结算完去除group_id
             delete arr.group_id;
-            //写入redis
+            // 写入redis
             await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-            //先完结再结算
+            // 先完结再结算
             await addExp2(player_id, qixue);
             await addExp(player_id, xiuwei);
-            //发送消息
+            // 发送消息
             await pushInfo(push_address, is_group, msg.join(''));
           } else {
-            if (typeof arr.cishu === 'number') arr.cishu--;
+            if (typeof arr.cishu === 'number') { arr.cishu--; }
 
             await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-            //先完结再结算
+            // 先完结再结算
             await addExp2(player_id, qixue);
             await addExp(player_id, xiuwei);
             try {
@@ -192,6 +200,7 @@ export const MojiTask = async () => {
                 msg: player.名号 + last_msg + fyd_msg,
                 qq_group: push_address
               };
+
               temp.push(p);
               await writeTemp(temp);
             } catch {
@@ -201,6 +210,7 @@ export const MojiTask = async () => {
                 qq: player_id,
                 qq_group: push_address
               };
+
               temp.push(p);
               await writeTemp(temp);
             }

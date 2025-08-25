@@ -7,17 +7,17 @@ const Shenbing = ({ newwupin }) => {
       <div className='min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900 relative overflow-hidden'>
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-10'>
-          <div className='absolute top-10 left-10 w-32 h-32 border border-red-400 rounded-full'></div>
-          <div className='absolute top-32 right-20 w-24 h-24 border border-orange-400 rounded-full'></div>
-          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-yellow-400 rounded-full'></div>
-          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-amber-400 rounded-full'></div>
+          <div className='absolute top-10 left-10 w-32 h-32 border border-red-400 rounded-full' />
+          <div className='absolute top-32 right-20 w-24 h-24 border border-orange-400 rounded-full' />
+          <div className='absolute bottom-20 left-1/4 w-16 h-16 border border-yellow-400 rounded-full' />
+          <div className='absolute bottom-40 right-1/3 w-20 h-20 border border-amber-400 rounded-full' />
         </div>
 
         <div className='relative z-10 container mx-auto px-4 py-8'>
           {/* 主标题区域 */}
           <div className='text-center mb-8'>
             <div className='inline-block relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-lg opacity-50'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-lg opacity-50' />
               <div className='relative bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl px-8 py-4 border border-red-400/30'>
                 <h1 className='text-3xl font-bold text-white tracking-wider'>⚔️ 神兵榜 ⚔️</h1>
               </div>
@@ -28,7 +28,7 @@ const Shenbing = ({ newwupin }) => {
           {/* 主信息区域 */}
           <div className='max-w-4xl mx-auto'>
             <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-3xl blur-xl'></div>
+              <div className='absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-3xl blur-xl' />
               <div className='relative backdrop-blur-sm bg-white/10 rounded-3xl border border-red-400/30 p-8'>
                 {/* 头部信息 */}
                 <div className='text-center mb-8'>
@@ -45,13 +45,13 @@ const Shenbing = ({ newwupin }) => {
                 <div className='space-y-6'>
                   {newwupin?.map((item, index) => (
                     <div key={index} className='relative group'>
-                      <div className='absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-600/20 rounded-2xl blur-sm'></div>
+                      <div className='absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-600/20 rounded-2xl blur-sm' />
                       <div className='relative backdrop-blur-md bg-white/5 rounded-2xl border border-red-400/40 p-6'>
                         {/* 排名和标题 */}
                         <div className='flex items-center justify-between mb-6'>
                           <div className='flex items-center gap-4'>
                             <div className='relative'>
-                              <div className='absolute inset-0 bg-gradient-to-br from-red-400 to-orange-600 rounded-full blur-sm'></div>
+                              <div className='absolute inset-0 bg-gradient-to-br from-red-400 to-orange-600 rounded-full blur-sm' />
                               <div className='relative w-16 h-16 bg-gradient-to-br from-red-400 to-orange-600 rounded-full flex items-center justify-center border-2 border-red-300/50'>
                                 <span className='text-xl font-bold text-white'>
                                   {index === 0 && '🥇'}
@@ -124,7 +124,7 @@ const Shenbing = ({ newwupin }) => {
                                 style={{
                                   width: `${Math.min((item.评分 / 100) * 100, 100)}%`
                                 }}
-                              ></div>
+                              />
                             </div>
                             <span className='text-xs text-gray-300'>
                               {Math.min((item.评分 / 100) * 100, 100).toFixed(0)}%

@@ -17,6 +17,7 @@ const res = onResponse(selects, async event => {
     // 生成测试验证码
     const captcha = await generateCaptcha(userId, 300); // 5分钟过期
     const img = await svgToPngBuffer(captcha);
+
     Send(Image(img));
   } catch (error) {
     logger.error('测试验证码失败:', error);

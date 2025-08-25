@@ -11,11 +11,13 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(qq));
+
   if (!player) {
     return;
   }
   const toNum = (v): number => {
     const n = Number(v);
+
     return Number.isFinite(n) ? n : 0;
   };
   const victory = toNum(player.金银坊胜场);
@@ -32,8 +34,10 @@ const res = onResponse(selects, async e => {
     defeated_num,
     shenglv
   });
+
   if (Buffer.isBuffer(img)) {
     Send(Image(img));
+
     return;
   }
   Send(Text('生成记录失败'));

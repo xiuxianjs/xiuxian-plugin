@@ -23,14 +23,16 @@ const relativePath = path.relative(cwd, __filename);
 const isInNodeModules = /node_modules/.test(relativePath);
 const commandPrefix = !isInNodeModules ? 'main' : pkg.name;
 
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const body = await parseJsonBody(ctx);
+
     if (!body) {
       ctx.status = 400;
       ctx.body = {
@@ -38,6 +40,7 @@ export const POST = async (ctx: Context) => {
         message: 'menus is required',
         data: null
       };
+
       return;
     }
 
@@ -52,6 +55,7 @@ export const POST = async (ctx: Context) => {
         message: '目录不存在',
         data: null
       };
+
       return;
     }
 
@@ -60,6 +64,7 @@ export const POST = async (ctx: Context) => {
         if (file.isDirectory()) {
           return true;
         }
+
         return file.isFile() && /^res\.(js|ts|jsx|tsx)$/.test(file.name);
       })
       .map(file => {
@@ -104,14 +109,16 @@ export const POST = async (ctx: Context) => {
 };
 
 // 指令状态更新
-export const PUT = async (ctx: Context) => {
+export const PUT = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
 
     const body = await parseJsonBody(ctx);
+
     if (!body) {
       ctx.status = 400;
       ctx.body = {
@@ -119,6 +126,7 @@ export const PUT = async (ctx: Context) => {
         message: '请求体不能为空',
         data: null
       };
+
       return;
     }
 
@@ -132,6 +140,7 @@ export const PUT = async (ctx: Context) => {
         message: 'menus参数格式错误',
         data: null
       };
+
       return;
     }
 
@@ -147,6 +156,7 @@ export const PUT = async (ctx: Context) => {
         message: '状态未发生变化',
         data: null
       };
+
       return;
     }
 

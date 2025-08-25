@@ -2,9 +2,10 @@ import { Context } from 'koa';
 import { createUser, getAllUsers, deleteUser, validateRole } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 // 获取所有用户
-export const GET = async (ctx: Context) => {
+export const GET = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -30,9 +31,10 @@ export const GET = async (ctx: Context) => {
 };
 
 // 创建用户
-export const POST = async (ctx: Context) => {
+export const POST = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -55,6 +57,7 @@ export const POST = async (ctx: Context) => {
         message: '用户名和密码不能为空',
         data: null
       };
+
       return;
     }
 
@@ -62,6 +65,7 @@ export const POST = async (ctx: Context) => {
 
     if (newUser) {
       const { password: _, ...userWithoutPassword } = newUser;
+
       ctx.status = 201;
       ctx.body = {
         code: 201,
@@ -88,9 +92,10 @@ export const POST = async (ctx: Context) => {
 };
 
 // 删除用户
-export const DELETE = async (ctx: Context) => {
+export const DELETE = async(ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
+
     if (!res) {
       return;
     }
@@ -105,6 +110,7 @@ export const DELETE = async (ctx: Context) => {
         message: '用户ID不能为空',
         data: null
       };
+
       return;
     }
 

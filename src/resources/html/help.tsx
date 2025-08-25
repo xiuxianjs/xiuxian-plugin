@@ -25,8 +25,9 @@ const CommandIcons = {
 // 获取命令图标
 const getCommandIcon = (title: string) => {
   for (const [key, icon] of Object.entries(CommandIcons)) {
-    if (title.includes(key)) return icon;
+    if (title.includes(key)) { return icon; }
   }
+
   return '✨';
 };
 
@@ -46,10 +47,10 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
       {/* 静态背景效果 */}
       <div className='absolute inset-0 pointer-events-none'>
         {/* 星空粒子效果 */}
-        <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:25px_25px]'></div>
+        <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:25px_25px]' />
 
         {/* 静态灵气 */}
-        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/3 to-transparent'></div>
+        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/3 to-transparent' />
 
         {/* 修仙符文装饰 */}
         <div className='absolute top-16 left-16 text-cyan-400/15 text-3xl'>☯</div>
@@ -64,14 +65,14 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
           <div className='relative'>
             <div className='relative rounded-3xl p-6 bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border border-white/20 shadow-2xl'>
               {/* 装饰性元素 */}
-              <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full'></div>
-              <div className='absolute top-4 right-4 w-8 h-8 border-2 border-cyan-400/50 rounded-full'></div>
+              <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full' />
+              <div className='absolute top-4 right-4 w-8 h-8 border-2 border-cyan-400/50 rounded-full' />
 
               <div className='text-center'>
                 <h1 className='text-5xl md:text-6xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-2xl mb-2'>
                   {pkg.name}
                 </h1>
-                <div className='w-32 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto rounded-full shadow-lg mb-3'></div>
+                <div className='w-32 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto rounded-full shadow-lg mb-3' />
                 <span className='inline-block px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/30 text-cyan-200 font-bold shadow-lg'>
                   v{pkg.version}
                 </span>
@@ -86,12 +87,12 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
             <section key={index} className='relative'>
               <div className='relative rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden'>
                 {/* 装饰性角落 */}
-                <div className='absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-teal-400/50 rounded-tr-lg'></div>
-                <div className='absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-teal-400/50 rounded-bl-lg'></div>
+                <div className='absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-teal-400/50 rounded-tr-lg' />
+                <div className='absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-teal-400/50 rounded-bl-lg' />
 
                 <h2 className='flex items-center justify-between pr-6 text-xl font-bold tracking-wide text-teal-100 bg-gradient-to-r from-black/40 to-black/60 px-4 py-3 border-b border-white/10'>
                   <span className='flex items-center gap-3'>
-                    <span className='w-2 h-6 bg-gradient-to-b from-teal-300 to-teal-600 rounded-sm shadow-lg'></span>
+                    <span className='w-2 h-6 bg-gradient-to-b from-teal-300 to-teal-600 rounded-sm shadow-lg' />
                     <span className='text-2xl mr-2'>📚</span>
                     {val.group}
                   </span>
@@ -110,7 +111,7 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
                         className='relative p-4 rounded-xl bg-gradient-to-br from-black/20 to-black/30 border border-white/10'
                       >
                         {/* 装饰性光效 */}
-                        <div className='absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-teal-500/5 to-transparent'></div>
+                        <div className='absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-teal-500/5 to-transparent' />
 
                         <div className='relative flex items-start gap-3'>
                           {/* 图标区域 */}
@@ -144,8 +145,8 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
           <div className='relative'>
             <div className='relative rounded-2xl p-6 bg-gradient-to-br from-black/30 to-black/50 backdrop-blur-xl border border-white/20 shadow-xl'>
               {/* 装饰性元素 */}
-              <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-red-400 to-yellow-400 rounded-full'></div>
-              <div className='absolute top-4 right-4 w-6 h-6 border-2 border-red-400/50 rounded-full'></div>
+              <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-red-400 to-yellow-400 rounded-full' />
+              <div className='absolute top-4 right-4 w-6 h-6 border-2 border-red-400/50 rounded-full' />
 
               <div className='text-center'>
                 <div className='inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-yellow-500/20 px-6 py-3 rounded-2xl shadow-inner border border-red-400/30 backdrop-blur-sm'>
