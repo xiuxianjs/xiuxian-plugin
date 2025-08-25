@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, addNajieThing, addCoin, sleep } from '@src/model/index';
+import { existplayer, addNajieThing, addCoin, sleep, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import type { NajieCategory } from '@src/types/model';
@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   let commodities_price = 0;
-  const najie = (await data.getData('najie', usr_qq)) as Record<string, unknown> | null;
+  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
 
   if (!najie) {
     return false;
@@ -116,7 +116,7 @@ const res = onResponse(selects, async e => {
         return;
       }
       const usr_qq = event.UserId;
-      const najie2 = (await data.getData('najie', usr_qq)) as Record<string, unknown> | null;
+      const najie2 = await getDataJSONParseByKey(keys.najie(usr_qq));
 
       if (!najie2) {
         message.send(format(Text('数据缺失，出售失败')));
@@ -178,4 +178,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

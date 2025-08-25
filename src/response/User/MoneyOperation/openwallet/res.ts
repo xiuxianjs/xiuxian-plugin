@@ -1,10 +1,10 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
-import { existplayer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
+import { existplayer, existNajieThing, addNajieThing, addCoin, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?打开钱包$/;
 
 const res = onResponse(selects, async e => {
@@ -15,14 +15,18 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const player = await await data.getData('player', usr_qq);
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
+  if (!player) {
+    return;
+  }
   const thing_name = '水脚脚的钱包';
   // x是纳戒内有的数量
   const acount = await existNajieThing(usr_qq, thing_name, '装备');
 
   // 没有
   if (!acount) {
-    Send(Text(`你没有[${thing_name}]这样的装备`));
+    void Send(Text(`你没有[${thing_name}]这样的装备`));
 
     return false;
   }

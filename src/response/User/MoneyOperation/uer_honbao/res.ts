@@ -4,7 +4,7 @@ import { data, redis, config } from '@src/model/api';
 import { existplayer, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import { getRedisKey } from '@src/model/keys';
+import { getRedisKey, keys } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?抢红包$/;
 
 function toInt(v, d = 0) {
@@ -22,8 +22,11 @@ const res = onResponse(selects, async e => {
   }
 
   // 读取玩家（仅用于名字展示）
-  const player = await data.getData('player', usr_qq);
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
+  if (!player) {
+    return;
+  }
   const now = Date.now();
   const lastKey = getRedisKey(usr_qq, 'last_getbung_time');
   const lastStr = await redis.get(lastKey);
@@ -97,4 +100,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

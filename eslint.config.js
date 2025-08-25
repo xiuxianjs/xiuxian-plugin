@@ -73,8 +73,8 @@ export default [
       'react/jsx-key': 'error',
       'react/jsx-no-duplicate-props': 'error',
       'react/jsx-no-undef': 'error',
-      'react/no-array-index-key': 'warn',
-      'react/no-danger': 'warn',
+      'react/no-array-index-key': 'off',
+      'react/no-danger': 'off',
       'react/no-deprecated': 'error',
       'react/no-direct-mutation-state': 'error',
       'react/no-find-dom-node': 'error',
@@ -83,7 +83,7 @@ export default [
       'react/no-string-refs': 'error',
       'react/no-unescaped-entities': 'error',
       'react/no-unknown-property': 'error',
-      'react/no-unsafe': 'warn',
+      'react/no-unsafe': 'off',
       'react/self-closing-comp': 'error'
     },
     settings: {
@@ -113,12 +113,12 @@ export default [
           caughtErrorsIgnorePattern: '^_'
         }
       ],
-      '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-var-requires': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-empty-function': 'warn',
+      '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-inferrable-types': 'error',
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
@@ -133,9 +133,9 @@ export default [
       'prefer-const': ['error', { destructuring: 'all' }],
       'no-empty': ['error', { allowEmptyCatch: true }],
       'no-unused-expressions': 'error',
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-debugger': 'error',
-      'no-alert': 'warn',
+      'no-alert': 'off',
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
@@ -176,7 +176,7 @@ export default [
       'camelcase': ['error', { properties: 'never' }],
       'comma-style': ['error', 'last'],
       'func-call-spacing': ['error', 'never'],
-      'function-paren-newline': ['error', 'multiline'],
+      'function-paren-newline': 'off',
       'implicit-arrow-linebreak': ['error', 'beside'],
       // 最大行长度限制 - 100字符，忽略URL和字符串
       'max-len': ['error', { code: 100, ignoreUrls: true, ignoreStrings: true }],
@@ -199,7 +199,7 @@ export default [
       // 对象属性引号规则 - 只在必要时使用引号
       'quote-props': ['error', 'as-needed'],
       // 函数括号前空格规则 - 禁止空格
-      'space-before-function-paren': ['error', 'never'],
+      'space-before-function-paren': 'off',
       // 一元运算符空格规则
       'space-unary-ops': 'error',
       // 注释空格规则 - 要求空格，但允许特殊标记

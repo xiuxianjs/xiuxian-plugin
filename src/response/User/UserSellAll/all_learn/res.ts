@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, readPlayer, addNajieThing, addConFaByUser } from '@src/model/index';
+import { existplayer, readPlayer, addNajieThing, addConFaByUser, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键学习$/;
@@ -16,7 +16,11 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 检索方法
-  const najie = await await data.getData('najie', usr_qq);
+  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+
+  if (!najie) {
+    return;
+  }
   const player = await readPlayer(usr_qq);
   let name = '';
 
@@ -37,4 +41,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

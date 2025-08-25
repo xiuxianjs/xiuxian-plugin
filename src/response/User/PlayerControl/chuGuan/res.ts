@@ -10,7 +10,8 @@ import {
   addExp,
   addExp2,
   setFileValue,
-  writeDanyao
+  writeDanyao,
+  keys
 } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
 
@@ -105,11 +106,14 @@ async function getPlayerAction(usr_qq: string): Promise<ActionState | false> {
  * @return  falses {Promise<void>}
  */
 async function biguan_jiesuan(user_id, time, is_random, group_id?) {
-  console.log('闭关结算');
   const usr_qq = user_id;
 
   await playerEfficiency(usr_qq);
-  const player = await data.getData('player', usr_qq);
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
+  if (!player) {
+    return false;
+  }
 
   if (!notUndAndNull(player.level_id)) {
     return false;
@@ -180,9 +184,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     await addExp(usr_qq, other_x);
   }
   if (
-    (await existNajieThing(usr_qq, '神界秘宝', '道具'))
-    && player.魔道值 < 1
-    && (player.灵根.type == '转生' || player.level_id > 41)
+    (await existNajieThing(usr_qq, '神界秘宝', '道具')) &&
+    player.魔道值 < 1 &&
+    (player.灵根.type == '转生' || player.level_id > 41)
   ) {
     qixue = Math.trunc(xiuwei * 0.1 * time);
     await addNajieThing(usr_qq, '神界秘宝', '道具', -1);
@@ -229,4 +233,5 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
 }
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

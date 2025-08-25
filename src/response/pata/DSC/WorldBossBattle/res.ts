@@ -4,7 +4,7 @@ import { data, redis } from '@src/model/api';
 import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import { getRedisKey } from '@src/model/keys';
+import { getRedisKey, keys } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?炼神魄$/;
 
 const res = onResponse(selects, async e => {
@@ -83,9 +83,9 @@ const res = onResponse(selects, async e => {
 
     if (!(BattleFrame & 1)) {
       // 玩家回合
-      let damage
-        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
-        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let damage =
+        Harm(Number(player.攻击) || 0, BOSSCurrentDefence) +
+        Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const isCrit = Math.random() < (Number(player.暴击率) || 0);
       const critMul = isCrit ? 1.5 : 1;
 
@@ -145,10 +145,11 @@ const res = onResponse(selects, async e => {
     Send(Text(`\n你未能通过此层锻神池！修为-${lose}`));
   }
 
-  data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)));
+  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
 
   return false;
 });
 
 import mw from '@src/response/mw';
+import { setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

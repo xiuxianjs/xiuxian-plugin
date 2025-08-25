@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, Harm, ifbaoji } from '@src/model/index';
+import { existplayer, Harm, ifbaoji, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键挑战镇妖塔$/;
@@ -14,8 +14,14 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const player = await await data.getData('player', usr_qq);
-  const equipment = await await data.getData('equipment', usr_qq);
+
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
+  if (!player) {
+    return;
+  }
+
+  const equipment = await getDataJSONParseByKey(keys.equipment(usr_qq));
   const type = ['武器', '护具', '法宝'];
 
   for (const j of type) {
@@ -76,8 +82,8 @@ const res = onResponse(selects, async e => {
       const Random = Math.random();
 
       if (!(BattleFrame & 1)) {
-        let Player_To_BOSS_Damage
-          = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
+        let Player_To_BOSS_Damage =
+          Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
         const SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1;
 
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
@@ -94,13 +100,17 @@ const res = onResponse(selects, async e => {
           msg.push('你抓到了未知妖物的破绽');
           Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * 1.2);
         }
-        Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * SuperAttack + Math.random() * 100);
+        Player_To_BOSS_Damage = Math.trunc(
+          Player_To_BOSS_Damage * SuperAttack + Math.random() * 100
+        );
         bosszt.Health -= Player_To_BOSS_Damage;
         _totalDamage += Player_To_BOSS_Damage;
         if (bosszt.Health < 0) {
           bosszt.Health = 0;
         }
-        msg.push(`${player.名号}${ifbaoji(SuperAttack)}造成伤害${Player_To_BOSS_Damage}，未知妖物剩余血量${bosszt.Health}`);
+        msg.push(
+          `${player.名号}${ifbaoji(SuperAttack)}造成伤害${Player_To_BOSS_Damage}，未知妖物剩余血量${bosszt.Health}`
+        );
       } else {
         let BOSS_To_Player_Damage = Harm(BOSSCurrentAttack, Math.trunc(player.防御 * 0.1));
 
@@ -130,7 +140,9 @@ const res = onResponse(selects, async e => {
         if (player.当前血量 < 0) {
           player.当前血量 = 0;
         }
-        msg.push(`未知妖物攻击了${player.名号}，造成伤害${BOSS_To_Player_Damage}，${player.名号}剩余血量${player.当前血量}`);
+        msg.push(
+          `未知妖物攻击了${player.名号}，造成伤害${BOSS_To_Player_Damage}，${player.名号}剩余血量${player.当前血量}`
+        );
       }
       BattleFrame++;
     }
@@ -149,8 +161,10 @@ const res = onResponse(selects, async e => {
   }
   player.灵石 += lingshi;
   Send(Text(`\n恭喜你获得灵石${lingshi},本次通过${cengshu}层,失去部分灵石`));
-  data.setData('player', usr_qq, player);
+
+  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

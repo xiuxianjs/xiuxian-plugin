@@ -59,9 +59,7 @@ export type JSONData = { [k: string]: JSONValue } | JSONValue[];
 
 // DataControl 模块（已废弃，对外仅保留旧签名类型，方便迁移）
 export interface DataControlAPI {
-  existData(file_path_type: string, file_name: string): Promise<boolean>;
   getData(file_name: string, user_qq?: string): Promise<unknown>;
-  setData(file_name: string, user_qq: string | null, data: JSONData): void;
 }
 
 // Najie / 背包相关

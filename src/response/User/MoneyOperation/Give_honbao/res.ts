@@ -4,7 +4,7 @@ import { data, redis } from '@src/model/api';
 import { existplayer, Go, convert2integer, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import { getRedisKey } from '@src/model/keys';
+import { getRedisKey, keys } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?发红包.*$/;
 
 function toInt(v, d = 0) {
@@ -86,8 +86,11 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  const player = await data.getData('player', usr_qq);
+  if (!player) {
+    return;
+  }
 
   if (!player || Array.isArray(player)) {
     Send(Text('存档异常'));
@@ -120,4 +123,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

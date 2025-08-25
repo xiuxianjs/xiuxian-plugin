@@ -1,10 +1,11 @@
 import { Text, useSend } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, readPlayer } from '@src/model/index';
+import { existplayer, keys, readPlayer } from '@src/model/index';
 import type { Player, JSONValue } from '@src/types';
 
 import mw, { selects } from '@src/response/mw';
+import { setDataJSONStringifyByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?设置性别.*$/;
 
 type Gender = '男' | '女';
@@ -58,8 +59,8 @@ const res = onResponse(selects, async e => {
   }
   // 约定: sex 2=男 1=女 0=未设置
   player.sex = gender === '男' ? '2' : '1';
-  await data.setData('player', usr_qq, serializePlayer(player));
-  Send(Text(`${player.名号}的性别已成功设置为 ${gender}。`));
+  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  void Send(Text(`${player.名号}的性别已成功设置为 ${gender}。`));
 
   return false;
 });

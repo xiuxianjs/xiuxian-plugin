@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, foundthing, addNajieThing, addCoin } from '@src/model/index';
+import { existplayer, foundthing, addNajieThing, addCoin, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键回收(.*)$/;
@@ -41,7 +41,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const najie = (await data.getData('najie', userId)) as NajieData | null;
+  const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
     void Send(Text('纳戒数据异常'));
@@ -123,4 +123,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

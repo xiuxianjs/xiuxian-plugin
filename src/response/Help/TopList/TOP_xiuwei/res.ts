@@ -54,7 +54,6 @@ const res = onResponse(selects, async e => {
     temp[i].名次 = i + 1;
     Data[i] = temp[i];
   }
-  // const thisplayer = await await data.getData('player', usr_qq)
   const thisplayer = await readPlayer(usr_qq);
   const img = await getRankingPowerImage(e, Data, usr_paiming, thisplayer);
 

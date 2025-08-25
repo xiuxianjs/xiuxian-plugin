@@ -1,22 +1,16 @@
 import { Image, Text, useSend } from 'alemonjs';
-
-import { redis, data } from '@src/model/api';
+import { redis } from '@src/model/api';
+import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 import {
   readItTyped,
   writeIt,
   alluser,
   readNajie,
   readEquipment,
-  existplayer
+  existplayer,
+  keys
 } from '@src/model/index';
-interface CustomEquipRecord {
-  name: string;
-  type: string;
-  atk: number;
-  def: number;
-  HP: number;
-  author_name?: string;
-}
 
 import { selects } from '@src/response/mw';
 import { screenshot } from '@src/image';
@@ -33,8 +27,6 @@ interface PlayerLite {
   名号: string;
   宗门?: { 宗门名称: string } | string;
 }
-
-type CustomEquipRecordWithOwner = CustomEquipRecord & { owner_name?: string };
 
 function calcScore(r: { atk: number; def: number; HP: number }) {
   return Math.trunc((r.atk * 1.2 + r.def * 1.5 + r.HP * 1.5) * 10000);
@@ -56,10 +48,10 @@ const CACHE_EXPIRE_MS = 30 * 60 * 1000;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId;
-  const ifexistplay_A = await existplayer(user_qq);
+  const userId = e.UserId;
+  const ifexistplayA = await existplayer(userId);
 
-  if (!ifexistplay_A) {
+  if (!ifexistplayA) {
     return false;
   }
   const now = Date.now();
@@ -67,14 +59,7 @@ const res = onResponse(selects, async e => {
   const lastTs = lastTsRaw ? Number(lastTsRaw) : 0;
   let needRebuild = !lastTs || now - lastTs > CACHE_EXPIRE_MS;
 
-  let wupin: CustomEquipRecordWithOwner[] = [];
-
-  try {
-    wupin = await readItTyped();
-  } catch {
-    await writeIt([]);
-    wupin = [];
-  }
+  const wupin = (await readItTyped()) ?? [];
 
   let result: EquipScoreEntry[] = [];
 
@@ -85,10 +70,10 @@ const res = onResponse(selects, async e => {
 
     async function getPlayer(qq: string): Promise<PlayerLite | null> {
       if (playerCache.has(qq)) {
-        return playerCache.get(qq) || null;
+        return playerCache.get(qq) ?? null;
       }
       try {
-        const p = await data.getData('player', qq);
+        const p = await getDataJSONParseByKey(keys.player(qq));
 
         if (p && typeof p === 'object' && !Array.isArray(p)) {
           playerCache.set(qq, p as PlayerLite);
@@ -175,7 +160,7 @@ const res = onResponse(selects, async e => {
     if (result.length === 0) {
       needRebuild = true;
       await redis.del(CACHE_KEY_TIME);
-      Send(Text('数据缓存缺失，稍后再试'));
+      void Send(Text('数据缓存缺失，稍后再试'));
 
       return false;
     }
@@ -195,13 +180,12 @@ const res = onResponse(selects, async e => {
   const tu = await screenshot('shenbing', e.UserId, { newwupin: result });
 
   if (Buffer.isBuffer(tu)) {
-    Send(Image(tu));
+    void Send(Image(tu));
   } else {
-    Send(Text('图片生成失败'));
+    void Send(Text('图片生成失败'));
   }
 
   return false;
 });
 
-import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

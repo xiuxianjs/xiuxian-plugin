@@ -1,5 +1,5 @@
 import { config, data, pushInfo } from '@src/model/api';
-import { getPlayerAction, notUndAndNull, setFileValue } from '@src/model/index';
+import { getPlayerAction, keys, notUndAndNull, setFileValue } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
 
 import { selects } from '@src/response/mw';
@@ -7,6 +7,7 @@ import mw from '@src/response/mw';
 import { Mention, DataMention } from 'alemonjs';
 import type { ActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?降妖归来$/;
 
 const res = onResponse(selects, async e => {
@@ -95,7 +96,11 @@ export default onResponse(selects, [mw.current, res.current]);
  */
 async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   const usr_qq = user_id;
-  const player = await data.getData('player', usr_qq);
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
+  if (!player) {
+    return false;
+  }
 
   // 当前境界 id
   if (!notUndAndNull(player.level_id)) {

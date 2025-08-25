@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
-import { existplayer, writeNajie } from '@src/model/index';
+import { existplayer, keys, writeNajie } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键锁定(.*)$/;
@@ -15,11 +14,15 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const najie = await await data.getData('najie', usr_qq);
+  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+
+  if (!najie) {
+    return;
+  }
   let wupin = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
   const wupin1 = [];
 
-  if (e.MessageText != '#一键锁定') {
+  if (e.MessageText !== '#一键锁定') {
     let thing = e.MessageText.replace(/^(#|＃|\/)?一键锁定/, '');
 
     for (const i of wupin) {
@@ -50,4 +53,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

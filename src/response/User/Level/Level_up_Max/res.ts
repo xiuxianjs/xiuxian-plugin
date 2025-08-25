@@ -105,9 +105,13 @@ const res = onResponse(selects, async e => {
   }
   // 零，开仙门
   if (player.power_place == 0) {
-    Send(Text('天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，'
-          + player.名号
-          + '来不及思索，立即向前飞去！只见万物仰头相望，似乎感觉到了，也似乎没有感觉，殊不知......'));
+    Send(
+      Text(
+        '天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，' +
+          player.名号 +
+          '来不及思索，立即向前飞去！只见万物仰头相望，似乎感觉到了，也似乎没有感觉，殊不知......'
+      )
+    );
     now_level_id = now_level_id + 1;
     player.level_id = now_level_id;
     player.修为 -= need_exp;
@@ -118,8 +122,11 @@ const res = onResponse(selects, async e => {
     await addHP(usr_qq, 99999999);
     // 突破成仙人
     if (now_level_id >= 42) {
-      const player = await data.getData('player', usr_qq);
+      const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
+      if (!player) {
+        return;
+      }
       if (!notUndAndNull(player.宗门)) {
         return false;
       }
@@ -185,7 +192,9 @@ const res = onResponse(selects, async e => {
           } else if (list_n.length > 0) {
             randmember_qq = await getRandomFromARR(list_n);
           } else {
-            randmember_qq = await getRandomFromARR((association.所有成员 as string[] | undefined) || []);
+            randmember_qq = await getRandomFromARR(
+              (association.所有成员 as string[] | undefined) || []
+            );
           }
           const randmember = await readPlayer(randmember_qq); // 获取幸运儿的存档
           const rPos = randmember.宗门.职位 as string;

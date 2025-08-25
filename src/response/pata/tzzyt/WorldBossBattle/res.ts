@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { data, redis } from '@src/model/api';
-import { getRedisKey } from '@src/model/keys';
+import { getRedisKey, keys } from '@src/model/keys';
 import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
@@ -43,7 +43,11 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const equipmentRaw = (await data.getData('equipment', usr_qq)) as EquipData | null;
+  const equipmentRaw: EquipData | null = await getDataJSONParseByKey(keys.equipment(usr_qq));
+
+  if (!equipmentRaw) {
+    return false;
+  }
   const equipNeed: (keyof EquipData)[] = ['武器', '护具', '法宝'];
   const safeNum = v => {
     const n = Number(v);
@@ -120,9 +124,9 @@ const res = onResponse(selects, async e => {
     const Random = Math.random();
 
     if (!(BattleFrame & 1)) {
-      let playerDamage
-        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
-        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let playerDamage =
+        Harm(Number(player.攻击) || 0, BOSSCurrentDefence) +
+        Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const critChance = Number(player.暴击率) || 0;
       const isCrit = Math.random() < critChance;
       const critMul = isCrit ? 1.5 : 1;
@@ -146,7 +150,9 @@ const res = onResponse(selects, async e => {
       if (bosszt.Health < 0) {
         bosszt.Health = 0;
       }
-      msg.push(`${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`);
+      msg.push(
+        `${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`
+      );
     } else {
       let bossDamage = Harm(BOSSCurrentAttack, Math.trunc((Number(player.防御) || 0) * 0.1));
 
@@ -164,7 +170,9 @@ const res = onResponse(selects, async e => {
       if (player.当前血量 < 0) {
         player.当前血量 = 0;
       }
-      msg.push(`未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`);
+      msg.push(
+        `未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`
+      );
     }
     BattleFrame++;
   }
@@ -191,11 +199,11 @@ const res = onResponse(selects, async e => {
     Send(Text(`\n你未能通过此层镇妖塔！灵石-${lose}`));
   }
 
-  // 保证写入 JSON 结构
-  data.setData('player', usr_qq, JSON.parse(JSON.stringify(player)));
+  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
 
   return false;
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

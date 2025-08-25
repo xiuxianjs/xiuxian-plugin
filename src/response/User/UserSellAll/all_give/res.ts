@@ -1,7 +1,7 @@
 import { Text, useMention, useSend } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, addNajieThing } from '@src/model/index';
+import { existplayer, addNajieThing, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键赠送([\u4e00-\u9fa5]+)?$/;
@@ -51,7 +51,7 @@ const res = onResponse(selects, async e => {
     }
   }
 
-  const najieDataA = await data.getData('najie', UserIdA);
+  const najieDataA = await getDataJSONParseByKey(keys.najie(UserIdA));
 
   if (!najieDataA) {
     return;
@@ -105,4 +105,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

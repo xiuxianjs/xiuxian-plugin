@@ -12,7 +12,8 @@ import {
   restraint,
   mainyuansu,
   addNajieThing,
-  addExp4
+  addExp4,
+  keys
 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
@@ -36,8 +37,11 @@ const res = onResponse(selects, async e => {
     return false;
   }
   let newtripod = [];
-  const player = await await data.getData('player', user_qq);
+  const player = await getDataJSONParseByKey(keys.player(user_qq));
 
+  if (!player) {
+    return;
+  }
   if (player.occupation != '炼器师') {
     Send(Text('切换到炼器师后再来吧,宝贝'));
 
@@ -260,4 +264,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

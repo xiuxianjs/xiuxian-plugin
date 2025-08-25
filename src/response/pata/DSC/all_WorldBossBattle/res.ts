@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
-import { existplayer, Harm, ifbaoji } from '@src/model/index';
+import { existplayer, Harm, ifbaoji, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键炼神魄$/;
@@ -16,8 +15,11 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const player = await await data.getData('player', usr_qq);
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
+  if (!player) {
+    return;
+  }
   while (player.当前血量 > 0) {
     const 神魄段数 = player.神魄段数;
     // 人数的万倍
@@ -58,8 +60,8 @@ const res = onResponse(selects, async e => {
 
     while (player.当前血量 > 0 && bosszt.Health > 0) {
       if (!(BattleFrame & 1)) {
-        let Player_To_BOSS_Damage
-          = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
+        let Player_To_BOSS_Damage =
+          Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
         const SuperAttack = player.暴击率 > 2 ? 1.5 : 1;
 
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
@@ -73,7 +75,9 @@ const res = onResponse(selects, async e => {
         if (bosszt.Health < 0) {
           bosszt.Health = 0;
         }
-        msg.push(`${player.名号}${ifbaoji(SuperAttack)}消耗了${Player_To_BOSS_Damage}，此段剩余${bosszt.Health}未炼化`);
+        msg.push(
+          `${player.名号}${ifbaoji(SuperAttack)}消耗了${Player_To_BOSS_Damage}，此段剩余${bosszt.Health}未炼化`
+        );
       } else {
         const BOSS_To_Player_Damage = Harm(BOSSCurrentAttack, Math.trunc(player.防御 * 0.1));
 
@@ -93,7 +97,9 @@ const res = onResponse(selects, async e => {
         if (player.当前血量 < 0) {
           player.当前血量 = 0;
         }
-        msg.push(`${player.名号}损失血量${BOSS_To_Player_Damage}，${player.名号}剩余血量${player.当前血量}`);
+        msg.push(
+          `${player.名号}损失血量${BOSS_To_Player_Damage}，${player.名号}剩余血量${player.当前血量}`
+        );
       }
       BattleFrame++;
     }
@@ -109,8 +115,9 @@ const res = onResponse(selects, async e => {
   }
   player.血气 += xueqi;
   Send(Text([`\n恭喜你获得血气${xueqi},本次通过${cengshu}层,失去部分修为`].join('')));
-  data.setData('player', usr_qq, player);
+  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

@@ -13,11 +13,11 @@ import {
 import { selects } from '@src/response/mw';
 import { parseUnitNumber } from '@src/model/utils/utilsx';
 import type { NajieCategory } from '@src/types';
-import { getRedisKey } from '@src/model/keys';
+import { getRedisKey, keys } from '@src/model/keys';
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
-export const regular
-  = /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9fa5]+)?(\*\d+(k|w|e)?)?/;
+export const regular =
+  /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9fa5]+)?(\*\d+(k|w|e)?)?/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
@@ -43,8 +43,16 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const A_player = await data.getData('player', A_qq);
-  const B_player = await data.getData('player', B_qq);
+  const A_player = await getDataJSONParseByKey(keys.player(A_qq));
+
+  if (!A_player) {
+    return;
+  }
+  const B_player = await getDataJSONParseByKey(keys.player(B_qq));
+
+  if (!B_player) {
+    return;
+  }
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const msg = e.MessageText.replace(/^(#|＃|\/)?赠送/, '').trim();
 
@@ -76,7 +84,11 @@ const res = onResponse(selects, async e => {
       const waittime_m = Math.trunc(remain / 60000);
       const waittime_s = Math.trunc((remain % 60000) / 1000);
 
-      Send(Text(`每${transferTimeout / 60000}分钟赠送灵石一次，正在CD中，剩余cd: ${waittime_m}分${waittime_s}秒`));
+      Send(
+        Text(
+          `每${transferTimeout / 60000}分钟赠送灵石一次，正在CD中，剩余cd: ${waittime_m}分${waittime_s}秒`
+        )
+      );
 
       return false;
     }
@@ -101,16 +113,16 @@ const res = onResponse(selects, async e => {
   }
 
   // 品级
-  const pinjiStr
-    = code.length === 3
+  const pinjiStr =
+    code.length === 3
       ? code[1]
       : code.length === 2 && /[\u4e00-\u9fa5]/.test(code[1])
         ? code[1]
         : undefined;
 
   // 数量
-  const quantityStr
-    = code.length === 3
+  const quantityStr =
+    code.length === 3
       ? code[2]
       : code.length === 2
         ? /[\u4e00-\u9fa5]/.test(code[1])
@@ -194,4 +206,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

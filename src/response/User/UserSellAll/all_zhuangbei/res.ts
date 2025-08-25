@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs';
 
 import { data } from '@src/model/api';
-import { existplayer, readPlayer, foundthing, insteadEquipment } from '@src/model/index';
+import { existplayer, readPlayer, foundthing, insteadEquipment, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -9,6 +9,7 @@ import { getQquipmentImage } from '@src/model/image';
 import { getDataList } from '@src/model/DataList';
 import { EquipmentLike } from '@src/types/model';
 import { Player } from '@src/types/player';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?一键装备$/;
 
 interface EquipItem {
@@ -82,19 +83,29 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const najie = (await data.getData('najie', usr_qq)) as NajieEquipBag | null;
+  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+
+  if (!najie) {
+    return;
+  }
+
   const player = await readPlayer(usr_qq);
+
+  if (!player) {
+    return;
+  }
   const base = await calcBaseThree(player);
 
   if (!base) {
-    Send(Text('境界数据缺失，无法智能换装'));
+    void Send(Text('境界数据缺失，无法智能换装'));
 
     return false;
   }
-  const equipment = (await data.getData('equipment', usr_qq)) as EquipmentSlots | null;
+
+  const equipment = await getDataJSONParseByKey(keys.equipment(usr_qq));
 
   if (!equipment) {
-    Send(Text('当前装备数据异常'));
+    void Send(Text('当前装备数据异常'));
 
     return false;
   }

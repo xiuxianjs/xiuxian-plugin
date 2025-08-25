@@ -10,7 +10,8 @@ import {
   readMytripod,
   readTripod,
   writeDuanlu,
-  addNajieThing
+  addNajieThing,
+  keys
 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
@@ -33,7 +34,12 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await await data.getData('player', user_qq);
+
+  const player = await getDataJSONParseByKey(keys.player(user_qq));
+
+  if (!player) {
+    return;
+  }
 
   if (player.occupation != '炼器师') {
     Send(Text('切换到炼器师后再来吧,宝贝'));
@@ -45,8 +51,8 @@ const res = onResponse(selects, async e => {
   const thing_name = code[0]; // 物品
   const account = code[1]; // 数量
   const parsedCount = await convert2integer(account);
-  const thing_acount
-    = typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
+  const thing_acount =
+    typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
   const wupintype = await foundthing(thing_name);
 
   if (!wupintype || wupintype.type != '锻造') {
@@ -82,8 +88,8 @@ const res = onResponse(selects, async e => {
   for (const item in tripod.数量) {
     num += Number(tripod.数量[item]);
   }
-  const shengyu
-    = tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
+  const shengyu =
+    tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
 
   if (num + Number(thing_acount) > tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2)) {
     Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`));
@@ -105,7 +111,11 @@ const res = onResponse(selects, async e => {
       await addNajieThing(user_qq, thing_name, '材料', -thing_acount);
       const yongyou = num + Number(thing_acount);
 
-      Send(Text(`熔炼成功,当前煅炉内拥有[${yongyou}]个材料,根据您现有等级,您还可以放入[${shengyu}]个材料`));
+      Send(
+        Text(
+          `熔炼成功,当前煅炉内拥有[${yongyou}]个材料,根据您现有等级,您还可以放入[${shengyu}]个材料`
+        )
+      );
 
       return false;
     }
@@ -113,4 +123,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

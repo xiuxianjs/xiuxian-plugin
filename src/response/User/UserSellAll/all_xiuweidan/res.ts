@@ -1,20 +1,9 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
-import { existplayer, existNajieThing, addNajieThing, addExp } from '@src/model/index';
+import { existplayer, existNajieThing, addNajieThing, addExp, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键服用修为丹$/;
-
-interface DanYaoItem {
-  name: string;
-  type: string;
-  class: string | number;
-  exp?: number;
-}
-interface NajieLike {
-  丹药?: DanYaoItem[];
-}
 
 function num(v, d = 0) {
   const n = Number(v);
@@ -33,11 +22,15 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const najie = (await data.getData('najie', usr_qq)) as NajieLike | null;
+  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+
+  if (!najie) {
+    return;
+  }
   const pills = Array.isArray(najie?.丹药) ? najie.丹药 : [];
 
   if (!pills.length) {
-    Send(Text('纳戒内没有丹药'));
+    void Send(Text('纳戒内没有丹药'));
 
     return false;
   }
@@ -74,4 +67,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);
