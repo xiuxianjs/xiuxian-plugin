@@ -1,9 +1,9 @@
-import React from 'react'
-import { Modal, ModalProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Modal, ModalProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianModalProps extends ModalProps {
-  className?: string
+  className?: string;
 }
 
 const XiuxianModal: React.FC<XiuxianModalProps> = ({ className, ...props }) => {
@@ -21,7 +21,7 @@ const XiuxianModal: React.FC<XiuxianModalProps> = ({ className, ...props }) => {
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianModal
+export default XiuxianModal;

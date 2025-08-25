@@ -1,76 +1,70 @@
-import { Context } from 'koa'
-import { validateRole } from '@src/route/core/auth'
-import { parseJsonBody } from '@src/route/core/bodyParser'
-import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from '@src/model/keys'
+import { Context } from 'koa';
+import { validateRole } from '@src/route/core/auth';
+import { parseJsonBody } from '@src/route/core/bodyParser';
+import { getIoRedis } from '@alemonjs/db';
+import { __PATH } from '@src/model/keys';
 
-const redis = getIoRedis()
+const redis = getIoRedis();
 
 // 获取游戏用户数据（支持分页）
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin')
+    const res = await validateRole(ctx, 'admin');
     if (!res) {
-      return
+      return;
     }
 
     // 获取分页参数
-    const page = parseInt(ctx.request.query.page as string) || 1
-    const pageSize = parseInt(ctx.request.query.pageSize as string) || 20
-    const search = (ctx.request.query.search as string) || ''
+    const page = parseInt(ctx.request.query.page as string) || 1;
+    const pageSize = parseInt(ctx.request.query.pageSize as string) || 20;
+    const search = (ctx.request.query.search as string) || '';
 
-    const players = []
-    let total = 0
+    const players = [];
+    let total = 0;
 
     // 使用SCAN命令分页获取keys，避免一次性获取所有keys
-    const scanPattern = `${__PATH.player_path}:*`
-    let cursor = 0
-    const allKeys = []
+    const scanPattern = `${__PATH.player_path}:*`;
+    let cursor = 0;
+    const allKeys = [];
 
     do {
-      const result = await redis.scan(
-        cursor,
-        'MATCH',
-        scanPattern,
-        'COUNT',
-        100
-      )
-      cursor = parseInt(result[0])
-      allKeys.push(...result[1])
-    } while (cursor !== 0)
+      const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+      cursor = parseInt(result[0]);
+      allKeys.push(...result[1]);
+    } while (cursor !== 0);
 
     // 如果需要搜索，需要先获取所有数据进行过滤
     if (search) {
       // 获取所有数据进行过滤
       for (const key of allKeys) {
-        const userId = key.replace(`${__PATH.player_path}:`, '')
-        const playerData = await redis.get(key)
+        const userId = key.replace(`${__PATH.player_path}:`, '');
+        const playerData = await redis.get(key);
 
         if (playerData) {
           try {
             // 先尝试解码URI
-            const player = JSON.parse(playerData)
+            const player = JSON.parse(playerData);
             const playerWithId = {
               id: userId,
               ...player
-            }
+            };
 
             // 应用搜索过滤
             const matchesSearch =
               !search ||
               playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
-              playerWithId.id.includes(search)
+              playerWithId.id.includes(search);
 
             if (matchesSearch) {
-              total++
+              total++;
               // 只添加当前页的数据
-              const startIndex = (page - 1) * pageSize
+              const startIndex = (page - 1) * pageSize;
               if (players.length < pageSize && total > startIndex) {
-                players.push(playerWithId)
+                players.push(playerWithId);
               }
             }
           } catch (error) {
-            logger.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error);
 
             // 添加损坏的数据到正常列表，但内容为空，显示原始JSON
             const corruptedPlayer = {
@@ -122,22 +116,20 @@ export const GET = async (ctx: Context) => {
               数据状态: 'corrupted',
               原始数据: playerData,
               错误信息: error.message
-            }
+            };
 
             // 应用搜索过滤
             const matchesSearch =
               !search ||
-              corruptedPlayer.名号
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              corruptedPlayer.id.includes(search)
+              corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase()) ||
+              corruptedPlayer.id.includes(search);
 
             if (matchesSearch) {
-              total++
+              total++;
               // 只添加当前页的数据
-              const startIndex = (page - 1) * pageSize
+              const startIndex = (page - 1) * pageSize;
               if (players.length < pageSize && total > startIndex) {
-                players.push(corruptedPlayer)
+                players.push(corruptedPlayer);
               }
             }
           }
@@ -145,29 +137,29 @@ export const GET = async (ctx: Context) => {
       }
     } else {
       // 无搜索，直接分页获取数据
-      total = allKeys.length
+      total = allKeys.length;
 
       // 计算分页范围
-      const startIndex = (page - 1) * pageSize
-      const endIndex = startIndex + pageSize
-      const paginatedKeys = allKeys.slice(startIndex, endIndex)
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedKeys = allKeys.slice(startIndex, endIndex);
 
       // 只获取当前页的数据
       for (const key of paginatedKeys) {
-        const userId = key.replace(`${__PATH.player_path}:`, '')
-        const playerData = await redis.get(key)
+        const userId = key.replace(`${__PATH.player_path}:`, '');
+        const playerData = await redis.get(key);
 
         if (playerData) {
           try {
             // 先尝试解码URI
-            const player = JSON.parse(playerData)
+            const player = JSON.parse(playerData);
             const playerWithId = {
               id: userId,
               ...player
-            }
-            players.push(playerWithId)
+            };
+            players.push(playerWithId);
           } catch (error) {
-            logger.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error);
 
             // 添加损坏的数据到正常列表，但内容为空，显示原始JSON
             const corruptedPlayer = {
@@ -219,15 +211,15 @@ export const GET = async (ctx: Context) => {
               数据状态: 'corrupted',
               原始数据: playerData,
               错误信息: error.message
-            }
-            players.push(corruptedPlayer)
-            total++
+            };
+            players.push(corruptedPlayer);
+            total++;
           }
         }
       }
     }
 
-    ctx.status = 200
+    ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取游戏用户列表成功',
@@ -240,54 +232,54 @@ export const GET = async (ctx: Context) => {
           totalPages: Math.ceil(total / pageSize)
         }
       }
-    }
+    };
   } catch (error) {
-    logger.error('获取游戏用户列表错误:', error)
-    ctx.status = 500
+    logger.error('获取游戏用户列表错误:', error);
+    ctx.status = 500;
     ctx.body = {
       code: 500,
       message: '服务器内部错误',
       data: null
-    }
+    };
   }
-}
+};
 
 // 获取单个游戏用户数据
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin')
+    const res = await validateRole(ctx, 'admin');
     if (!res) {
-      return
+      return;
     }
 
-    const body = await parseJsonBody(ctx)
-    const { userId } = body as { userId?: string }
+    const body = await parseJsonBody(ctx);
+    const { userId } = body as { userId?: string };
 
     if (!userId) {
-      ctx.status = 400
+      ctx.status = 400;
       ctx.body = {
         code: 400,
         message: '用户ID不能为空',
         data: null
-      }
-      return
+      };
+      return;
     }
 
-    const playerData = await redis.get(`${__PATH.player_path}:${userId}`)
+    const playerData = await redis.get(`${__PATH.player_path}:${userId}`);
 
     if (!playerData) {
-      ctx.status = 404
+      ctx.status = 404;
       ctx.body = {
         code: 404,
         message: '用户不存在',
         data: null
-      }
-      return
+      };
+      return;
     }
 
-    const player = JSON.parse(playerData)
+    const player = JSON.parse(playerData);
 
-    ctx.status = 200
+    ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取游戏用户数据成功',
@@ -295,159 +287,153 @@ export const POST = async (ctx: Context) => {
         id: userId,
         ...player
       }
-    }
+    };
   } catch (error) {
-    logger.error('获取游戏用户数据错误:', error)
-    ctx.status = 500
+    logger.error('获取游戏用户数据错误:', error);
+    ctx.status = 500;
     ctx.body = {
       code: 500,
       message: '服务器内部错误',
       data: null
-    }
+    };
   }
-}
+};
 
 // 获取用户统计信息
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin')
+    const res = await validateRole(ctx, 'admin');
     if (!res) {
-      return
+      return;
     }
     // 获取统计参数
-    const search = (ctx.request.query.search as string) || ''
+    const search = (ctx.request.query.search as string) || '';
 
     // 使用SCAN命令获取所有keys
-    const scanPattern = `${__PATH.player_path}:*`
-    let cursor = 0
-    const allKeys = []
+    const scanPattern = `${__PATH.player_path}:*`;
+    let cursor = 0;
+    const allKeys = [];
 
     do {
-      const result = await redis.scan(
-        cursor,
-        'MATCH',
-        scanPattern,
-        'COUNT',
-        100
-      )
-      cursor = parseInt(result[0])
-      allKeys.push(...result[1])
-    } while (cursor !== 0)
+      const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
+      cursor = parseInt(result[0]);
+      allKeys.push(...result[1]);
+    } while (cursor !== 0);
 
-    let total = 0
-    let highLevel = 0
-    let mediumLevel = 0
-    let lowLevel = 0
-    let totalLingshi = 0
-    let totalShenshi = 0
-    let totalLunhui = 0
+    let total = 0;
+    let highLevel = 0;
+    let mediumLevel = 0;
+    let lowLevel = 0;
+    let totalLingshi = 0;
+    let totalShenshi = 0;
+    let totalLunhui = 0;
 
     // 如果需要搜索，需要遍历所有数据
     if (search) {
       for (const key of allKeys) {
-        const userId = key.replace(`${__PATH.player_path}:`, '')
-        const playerData = await redis.get(key)
+        const userId = key.replace(`${__PATH.player_path}:`, '');
+        const playerData = await redis.get(key);
 
         if (playerData) {
           try {
             // 先尝试解码URI
-            const player = JSON.parse(playerData)
+            const player = JSON.parse(playerData);
             const playerWithId = {
               id: userId,
               ...player
-            }
+            };
 
             // 应用搜索过滤
             const matchesSearch =
               !search ||
               playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
-              playerWithId.id.includes(search)
+              playerWithId.id.includes(search);
 
             if (matchesSearch) {
-              total++
+              total++;
 
               // 统计境界分布
               if (playerWithId.level_id > 30) {
-                highLevel++
+                highLevel++;
               } else if (playerWithId.level_id > 10) {
-                mediumLevel++
+                mediumLevel++;
               } else {
-                lowLevel++
+                lowLevel++;
               }
 
               // 统计资源
-              totalLingshi += playerWithId.灵石 || 0
-              totalShenshi += playerWithId.神石 || 0
-              totalLunhui += playerWithId.lunhui || 0
+              totalLingshi += playerWithId.灵石 || 0;
+              totalShenshi += playerWithId.神石 || 0;
+              totalLunhui += playerWithId.lunhui || 0;
             }
           } catch (error) {
-            logger.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error);
 
             // 损坏数据计入总数
-            const matchesSearch = !search || userId.includes(search)
+            const matchesSearch = !search || userId.includes(search);
             if (matchesSearch) {
-              total++
+              total++;
               // 损坏数据计入低境界统计
-              lowLevel++
+              lowLevel++;
             }
           }
         }
       }
     } else {
       // 无搜索，直接统计总数
-      total = allKeys.length
+      total = allKeys.length;
 
       // 获取部分数据进行资源统计（避免性能问题）
-      const sampleKeys = allKeys.slice(0, Math.min(100, allKeys.length))
+      const sampleKeys = allKeys.slice(0, Math.min(100, allKeys.length));
       for (const key of sampleKeys) {
-        const userId = key.replace(`${__PATH.player_path}:`, '')
-        const playerData = await redis.get(key)
+        const userId = key.replace(`${__PATH.player_path}:`, '');
+        const playerData = await redis.get(key);
 
         if (playerData) {
           try {
             // 先尝试解码URI
-            const player = JSON.parse(playerData)
+            const player = JSON.parse(playerData);
             const playerWithId = {
               id: userId,
               ...player
-            }
+            };
 
             // 统计境界分布
             if (playerWithId.level_id > 30) {
-              highLevel++
+              highLevel++;
             } else if (playerWithId.level_id > 10) {
-              mediumLevel++
+              mediumLevel++;
             } else {
-              lowLevel++
+              lowLevel++;
             }
 
             // 统计资源
-            totalLingshi += playerWithId.灵石 || 0
-            totalShenshi += playerWithId.神石 || 0
-            totalLunhui += playerWithId.lunhui || 0
+            totalLingshi += playerWithId.灵石 || 0;
+            totalShenshi += playerWithId.神石 || 0;
+            totalLunhui += playerWithId.lunhui || 0;
           } catch (error) {
-            logger.error(`解析玩家数据失败 ${userId}:`, error)
+            logger.error(`解析玩家数据失败 ${userId}:`, error);
             // 损坏数据计入总数
-            total++
+            total++;
             // 损坏数据计入低境界统计
-            lowLevel++
+            lowLevel++;
           }
         }
       }
 
       // 根据样本比例估算总数
       if (sampleKeys.length > 0) {
-        const ratio = allKeys.length / sampleKeys.length
-        highLevel = Math.round(highLevel * ratio)
-        mediumLevel = Math.round(mediumLevel * ratio)
-        lowLevel = Math.round(lowLevel * ratio)
-        totalLingshi = Math.round(totalLingshi * ratio)
-        totalShenshi = Math.round(totalShenshi * ratio)
-        totalLunhui = Math.round(totalLunhui * ratio)
+        const ratio = allKeys.length / sampleKeys.length;
+        highLevel = Math.round(highLevel * ratio);
+        mediumLevel = Math.round(mediumLevel * ratio);
+        lowLevel = Math.round(lowLevel * ratio);
+        totalLingshi = Math.round(totalLingshi * ratio);
+        totalShenshi = Math.round(totalShenshi * ratio);
+        totalLunhui = Math.round(totalLunhui * ratio);
       }
     }
 
-    ctx.status = 200
+    ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取统计信息成功',
@@ -460,14 +446,14 @@ export const PUT = async (ctx: Context) => {
         totalShenshi,
         totalLunhui
       }
-    }
+    };
   } catch (error) {
-    logger.error('获取统计信息错误:', error)
-    ctx.status = 500
+    logger.error('获取统计信息错误:', error);
+    ctx.status = 500;
     ctx.body = {
       code: 500,
       message: '服务器内部错误',
       data: null
-    }
+    };
   }
-}
+};

@@ -1,11 +1,11 @@
-import React from 'react'
-import { Table, Tooltip } from 'antd'
-import { EyeOutlined, EditOutlined, ShoppingOutlined } from '@ant-design/icons'
-import type { ColumnsType } from 'antd/es/table'
-import { Najie } from '@/types/types'
-import NajieInfo from './NajieInfo'
-import NajieEditModal from './NajieEditModal'
-import { useNajieManagerCode } from './NajieManager.code'
+import React from 'react';
+import { Table, Tooltip } from 'antd';
+import { EyeOutlined, EditOutlined, ShoppingOutlined } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
+import { Najie } from '@/types/types';
+import NajieInfo from './NajieInfo';
+import NajieEditModal from './NajieEditModal';
+import { useNajieManagerCode } from './NajieManager.code';
 
 // 导入UI组件库
 import {
@@ -15,7 +15,7 @@ import {
   XiuxianTableContainer,
   XiuxianRefreshButton,
   XiuxianTableWithPagination
-} from '@/components/ui'
+} from '@/components/ui';
 
 export default function NajieManager() {
   const {
@@ -37,13 +37,13 @@ export default function NajieManager() {
     setSelectedNajie,
     setNajieDetailVisible,
     setNajieEditVisible
-  } = useNajieManagerCode()
+  } = useNajieManagerCode();
 
   // 表格列定义
   const columns: ColumnsType<Najie> = [
     {
       title: (
-        <div className="flex items-center gap-2 text-purple-400 font-bold">
+        <div className='flex items-center gap-2 text-purple-400 font-bold'>
           <span>用户信息</span>
         </div>
       ),
@@ -51,16 +51,14 @@ export default function NajieManager() {
       width: 150,
       render: (_, record) => (
         <div>
-          <div className="font-bold text-white">用户ID: {record.userId}</div>
-          <div className="text-xs text-slate-400">
-            背包等级: {record.等级 || 1}
-          </div>
+          <div className='font-bold text-white'>用户ID: {record.userId}</div>
+          <div className='text-xs text-slate-400'>背包等级: {record.等级 || 1}</div>
         </div>
       )
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-green-400 font-bold">
+        <div className='flex items-center gap-2 text-green-400 font-bold'>
           <span>灵石信息</span>
         </div>
       ),
@@ -68,10 +66,8 @@ export default function NajieManager() {
       width: 120,
       render: (_, record) => (
         <div>
-          <div className="text-xs text-green-500">
-            当前: {record.灵石?.toLocaleString() || 0}
-          </div>
-          <div className="text-xs text-yellow-500">
+          <div className='text-xs text-green-500'>当前: {record.灵石?.toLocaleString() || 0}</div>
+          <div className='text-xs text-yellow-500'>
             上限: {record.灵石上限?.toLocaleString() || 0}
           </div>
         </div>
@@ -79,7 +75,7 @@ export default function NajieManager() {
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-blue-400 font-bold">
+        <div className='flex items-center gap-2 text-blue-400 font-bold'>
           <span>物品统计</span>
         </div>
       ),
@@ -87,62 +83,54 @@ export default function NajieManager() {
       width: 200,
       render: (_, record) => (
         <div>
-          <div className="text-xs text-slate-300">
-            总物品: {getTotalItems(record)}
-          </div>
-          <div className="text-xs text-slate-300">
-            装备: {record.装备?.length || 0}
-          </div>
-          <div className="text-xs text-slate-300">
-            丹药: {record.丹药?.length || 0}
-          </div>
-          <div className="text-xs text-slate-300">
-            道具: {record.道具?.length || 0}
-          </div>
+          <div className='text-xs text-slate-300'>总物品: {getTotalItems(record)}</div>
+          <div className='text-xs text-slate-300'>装备: {record.装备?.length || 0}</div>
+          <div className='text-xs text-slate-300'>丹药: {record.丹药?.length || 0}</div>
+          <div className='text-xs text-slate-300'>道具: {record.道具?.length || 0}</div>
         </div>
       )
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-yellow-400 font-bold">
+        <div className='flex items-center gap-2 text-yellow-400 font-bold'>
           <span>操作</span>
         </div>
       ),
       key: 'actions',
       width: 120,
       render: (_, record) => (
-        <div className="flex gap-2">
-          <Tooltip title="查看详情">
+        <div className='flex gap-2'>
+          <Tooltip title='查看详情'>
             <button
-              className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className='p-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl'
               onClick={() => {
-                setSelectedNajie(record)
-                setNajieDetailVisible(true)
+                setSelectedNajie(record);
+                setNajieDetailVisible(true);
               }}
             >
-              <EyeOutlined className="text-lg" />
+              <EyeOutlined className='text-lg' />
             </button>
           </Tooltip>
-          <Tooltip title="编辑背包">
+          <Tooltip title='编辑背包'>
             <button
-              className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className='p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl'
               onClick={() => handleEditNajie(record)}
             >
-              <EditOutlined className="text-lg" />
+              <EditOutlined className='text-lg' />
             </button>
           </Tooltip>
         </div>
       )
     }
-  ]
+  ];
 
   return (
     <XiuxianPageWrapper>
       {/* 页面标题和操作按钮 */}
       <XiuxianPageTitle
         icon={<ShoppingOutlined />}
-        title="背包管理"
-        subtitle="管理修仙界道友的背包物品"
+        title='背包管理'
+        subtitle='管理修仙界道友的背包物品'
         actions={
           <XiuxianRefreshButton
             loading={loading}
@@ -153,26 +141,26 @@ export default function NajieManager() {
 
       {/* 搜索栏 */}
       <XiuxianSearchBar
-        placeholder="搜索用户ID"
+        placeholder='搜索用户ID'
         value={searchText}
         onChange={setSearchText}
         onSearch={handleSearchAndFilter}
         onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
-        className="mb-6"
+        className='mb-6'
       />
 
       {/* 背包表格 */}
-      <XiuxianTableContainer title="背包列表" icon={<ShoppingOutlined />}>
+      <XiuxianTableContainer title='背包列表' icon={<ShoppingOutlined />}>
         <XiuxianTableWithPagination
           columns={columns}
           dataSource={najieList}
-          rowKey="userId"
+          rowKey='userId'
           loading={loading}
           rowClassName={record => {
             // 如果是损坏数据，添加黄色背景
             return record.数据状态 === 'corrupted'
               ? 'bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-l-4 border-yellow-400  bg-slate-700 hover:bg-slate-600'
-              : 'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600'
+              : 'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600';
           }}
           pagination={{
             current: pagination.current,
@@ -180,8 +168,7 @@ export default function NajieManager() {
             total: pagination.total,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
+            showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
           }}
           onPaginationChange={handleTableChange}
           scroll={{ x: 1200 }}
@@ -205,5 +192,5 @@ export default function NajieManager() {
         loading={editLoading}
       />
     </XiuxianPageWrapper>
-  )
+  );
 }

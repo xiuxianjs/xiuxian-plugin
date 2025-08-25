@@ -1,9 +1,9 @@
-import Association from '@src/config/help/association'
-import help from '@src/config/help/base'
-import help2 from '@src/config/help/extensions'
-import set from '@src/config/help/admin'
-import shituhelp from '@src/config/help/professor'
-import xiuxian from '@src/config/xiuxian'
+import Association from '@src/config/help/association';
+import help from '@src/config/help/base';
+import help2 from '@src/config/help/extensions';
+import set from '@src/config/help/admin';
+import shituhelp from '@src/config/help/professor';
+import xiuxian from '@src/config/xiuxian';
 
 // 存档存放路径
 const __PATH = {
@@ -38,10 +38,10 @@ const __PATH = {
   // 禁言
   mute: 'data:alemonjs-xiuxian:mute',
   // 副职
-  fuzhi: `xiuxian:player`
-}
+  fuzhi: 'xiuxian:player'
+};
 
-export { __PATH }
+export { __PATH };
 
 export const __PATH_CONFIG = {
   Association,
@@ -50,10 +50,10 @@ export const __PATH_CONFIG = {
   set,
   shituhelp,
   xiuxian
-}
+};
 
-import { baseKey } from './constants'
-import { getIoRedis } from '@alemonjs/db'
+import { baseKey } from './constants';
+import { getIoRedis } from '@alemonjs/db';
 
 export type ActionType =
   | 'action'
@@ -93,6 +93,7 @@ export type ActionType =
   | 'money_game'
   | 'getLastsign_Bonus'
   | 'BOSSCD'
+  | 'last_getbung_time';
 
 export const keys = {
   player: (id: string) => `${__PATH.player_path}:${id}`,
@@ -121,7 +122,7 @@ export const keys = {
   captcha: (id: string) => `${__PATH.captcha}:${id}`,
   mute: (id: string) => `${__PATH.mute}:${id}`,
   fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
-}
+};
 
 export const keysAction = {
   action: (id: string) => `${baseKey}:action:${id}`,
@@ -162,9 +163,9 @@ export const keysAction = {
   bossCD: (id: string) => `${baseKey}:BOSSCD:${id}`,
   system: (id: string) => `${baseKey}:system:${id}`,
   config: (id: string) => `${baseKey}:config:${id}`
-}
+};
 
-export type RedisKeyGenerator = typeof keys
+export type RedisKeyGenerator = typeof keys;
 
 /**
  * @param user_id
@@ -173,8 +174,8 @@ export type RedisKeyGenerator = typeof keys
  * @deprecated
  */
 export const getRedisKey = (user_id: string, action: ActionType) => {
-  return baseKey + ':' + user_id + ':' + action
-}
+  return baseKey + ':' + user_id + ':' + action;
+};
 
 /**
  * @deprecated
@@ -182,8 +183,8 @@ export const getRedisKey = (user_id: string, action: ActionType) => {
  * @returns
  */
 export const getRedisConfigKey = (name: string) => {
-  return keysAction.config(name)
-}
+  return keysAction.config(name);
+};
 
 /**
  * @deprecated
@@ -191,15 +192,15 @@ export const getRedisConfigKey = (name: string) => {
  * @returns
  */
 export const getRedisSystemKey = (name: string) => {
-  return keysAction.system(name)
-}
+  return keysAction.system(name);
+};
 
 /**
  * @param path
  * @returns
  */
 export const keysByPath = async path => {
-  const redis = getIoRedis()
-  const keys = await redis.keys(`${path}:*`)
-  return keys.map(key => key.replace(`${path}:`, ''))
-}
+  const redis = getIoRedis();
+  const keys = await redis.keys(`${path}:*`);
+  return keys.map(key => key.replace(`${path}:`, ''));
+};

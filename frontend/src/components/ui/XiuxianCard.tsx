@@ -1,22 +1,18 @@
-import React from 'react'
-import { Card, CardProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Card, CardProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianCardProps extends Omit<CardProps, 'variant'> {
-  variant?: 'default' | 'gradient'
+  variant?: 'default' | 'gradient';
 }
 
-const XiuxianCard: React.FC<XiuxianCardProps> = ({
-  className,
-  variant = 'default',
-  ...props
-}) => {
+const XiuxianCard: React.FC<XiuxianCardProps> = ({ className, variant = 'default', ...props }) => {
   const variantClasses = {
     default:
       'bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50',
     gradient:
       'bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30'
-  }
+  };
 
   return (
     <Card
@@ -30,7 +26,7 @@ const XiuxianCard: React.FC<XiuxianCardProps> = ({
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianCard
+export default XiuxianCard;

@@ -1,19 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 interface XiuxianInfoCardProps {
-  label: string
-  value: React.ReactNode
-  gradient?:
-    | 'blue'
-    | 'green'
-    | 'purple'
-    | 'yellow'
-    | 'red'
-    | 'orange'
-    | 'pink'
-    | 'indigo'
-  className?: string
-  fullWidth?: boolean
+  label: string;
+  value: React.ReactNode;
+  gradient?: 'blue' | 'green' | 'purple' | 'yellow' | 'red' | 'orange' | 'pink' | 'indigo';
+  className?: string;
+  fullWidth?: boolean;
 }
 
 const XiuxianInfoCard: React.FC<XiuxianInfoCardProps> = ({
@@ -32,16 +24,16 @@ const XiuxianInfoCard: React.FC<XiuxianInfoCardProps> = ({
     orange: 'from-orange-500/10 to-red-500/10 border-orange-500/30',
     pink: 'from-pink-500/10 to-rose-500/10 border-pink-500/30',
     indigo: 'from-indigo-500/10 to-purple-500/10 border-indigo-500/30'
-  }
+  };
 
   return (
     <div
       className={`bg-gradient-to-br ${gradientClasses[gradient]} backdrop-blur-xl border rounded-xl p-4 shadow-lg ${fullWidth ? 'col-span-2' : ''} ${className}`}
     >
-      <label className="text-sm text-slate-400">{label}</label>
-      <div className="font-medium text-white mt-1">{value}</div>
+      <label className='text-sm text-slate-400'>{label}</label>
+      <div className='font-medium text-white mt-1'>{value}</div>
     </div>
-  )
-}
+  );
+};
 
-export default XiuxianInfoCard
+export default XiuxianInfoCard;

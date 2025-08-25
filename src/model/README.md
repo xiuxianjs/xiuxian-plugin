@@ -5,17 +5,17 @@
 ## 行为
 
 ```ts
-import { keysAction } from '.'
-const redis = getIoRedis()
+import { keysAction } from '.';
+const redis = getIoRedis();
 // 使用 keysAction 获取行为/ 相关 key
-const data = await redis.get(keysAction.exchange('exchange'))
+const data = await redis.get(keysAction.exchange('exchange'));
 ```
 
 ## 存档
 
 ```ts
-import { keys } from '.'
-const redis = getIoRedis()
+import { keys } from '.';
+const redis = getIoRedis();
 // 获得存档
-const data = await redis.get(keys.player(UserId))
+const data = await redis.get(keys.player(UserId));
 ```

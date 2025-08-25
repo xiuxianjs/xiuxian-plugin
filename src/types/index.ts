@@ -5,8 +5,8 @@
 //    - task.ts 保留原名供任务逻辑使用。
 // 2. 启用 isolatedModules 时，纯类型需要使用 export type 语法重新导出。
 
-export * from './action'
-export * from './data'
+export * from './action';
+export * from './data';
 
 // data_extra 纯类型集合
 export type {
@@ -26,9 +26,9 @@ export type {
   ShopItem,
   StrengthenItem,
   DanfangItem
-} from './data_extra'
+} from './data_extra';
 
-export * from './domain'
+export * from './domain';
 
 // model.ts 选择性导出并做别名避免与 task.ts 冲突
 export type {
@@ -56,9 +56,9 @@ export type {
   FoundThing,
   ExchangeEntry as ImageExchangeEntry,
   ForumEntry as ImageForumEntry
-} from './model'
+} from './model';
 
-export * from './player'
+export * from './player';
 
 // task.ts：拆分类型与运行时守卫函数导出
 export type {
@@ -85,11 +85,11 @@ export type {
   ShopMutableSlot,
   BackupTaskMeta,
   AnyTaskActionState
-} from './task'
+} from './task';
 export {
   isRaidActionState,
   isExploreActionState,
   isSecretPlaceActionState,
   isOccupationActionState,
   isControlActionState
-} from './task'
+} from './task';

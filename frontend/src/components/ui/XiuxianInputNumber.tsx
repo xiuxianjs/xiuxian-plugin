@@ -1,15 +1,12 @@
-import React from 'react'
-import { InputNumber, InputNumberProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { InputNumber, InputNumberProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianInputNumberProps extends InputNumberProps {
-  className?: string
+  className?: string;
 }
 
-const XiuxianInputNumber: React.FC<XiuxianInputNumberProps> = ({
-  className,
-  ...props
-}) => {
+const XiuxianInputNumber: React.FC<XiuxianInputNumberProps> = ({ className, ...props }) => {
   return (
     <InputNumber
       className={classNames(
@@ -23,7 +20,7 @@ const XiuxianInputNumber: React.FC<XiuxianInputNumberProps> = ({
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianInputNumber
+export default XiuxianInputNumber;

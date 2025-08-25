@@ -1,116 +1,101 @@
-import { getRedisKey } from '@src/model/keys'
-import { Text, useSend } from 'alemonjs'
+import { getRedisKey } from '@src/model/keys';
+import { Text, useSend } from 'alemonjs';
 
-import { pushInfo, redis } from '@src/model/api'
-import {
-  existplayer,
-  readPlayer,
-  existNajieThing,
-  zdBattle,
-  writePlayer
-} from '@src/model/index'
+import { pushInfo, redis } from '@src/model/api';
+import { existplayer, readPlayer, existNajieThing, zdBattle, writePlayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw'
-import type { BattleEntity } from '@src/types/model'
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants'
-export const regular = /^(#|＃|\/)?刺杀目标.*$/
+import { selects } from '@src/response/mw';
+import type { BattleEntity } from '@src/types/model';
+import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+export const regular = /^(#|＃|\/)?刺杀目标.*$/;
 
 interface ActionState {
-  action: string
-  end_time: number
+  action: string;
+  end_time: number;
 }
 interface AssassinationTarget {
-  名号: string
-  赏金: number
-  QQ: string | number
+  名号: string;
+  赏金: number;
+  QQ: string | number;
 }
 
-function parseJson<T>(raw: string | null): T | null {
-  if (!raw) return null
+function parseJson<T> (raw: string | null): T | null {
+  if (!raw) return null;
   try {
-    return JSON.parse(raw) as T
+    return JSON.parse(raw) as T;
   } catch {
-    return null
+    return null;
   }
 }
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e)
-  const usr_qq = e.UserId
-  if (!(await existplayer(usr_qq))) return false
+  const Send = useSend(e);
+  const usr_qq = e.UserId;
+  if (!(await existplayer(usr_qq))) return false;
 
-  const actionState = parseJson<ActionState>(
-    await redis.get(getRedisKey(usr_qq, 'action'))
-  )
+  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(usr_qq, 'action')));
   if (actionState) {
-    const now = Date.now()
+    const now = Date.now();
     if (now <= actionState.end_time) {
-      const remain = actionState.end_time - now
-      const m = Math.floor(remain / 60000)
-      const s = Math.floor((remain % 60000) / 1000)
-      Send(Text(`正在${actionState.action}中,剩余时间:${m}分${s}秒`))
-      return false
+      const remain = actionState.end_time - now;
+      const m = Math.floor(remain / 60000);
+      const s = Math.floor((remain % 60000) / 1000);
+      Send(Text(`正在${actionState.action}中,剩余时间:${m}分${s}秒`));
+      return false;
     }
   }
 
-  const pool = parseJson<AssassinationTarget[]>(
-    await redis.get(getRedisKey('1', 'shangjing'))
-  )
+  const pool = parseJson<AssassinationTarget[]>(await redis.get(getRedisKey('1', 'shangjing')));
   if (!pool || pool.length === 0) {
-    Send(Text('暂无刺杀目标'))
-    return false
+    Send(Text('暂无刺杀目标'));
+    return false;
   }
 
-  const idxRaw = e.MessageText.replace(/^(#|＃|\/)?刺杀目标/, '').trim()
-  const idx = parseInt(idxRaw, 10) - 1
+  const idxRaw = e.MessageText.replace(/^(#|＃|\/)?刺杀目标/, '').trim();
+  const idx = parseInt(idxRaw, 10) - 1;
   if (isNaN(idx) || idx < 0 || idx >= pool.length) {
-    Send(Text('不要伤及无辜'))
-    return false
+    Send(Text('不要伤及无辜'));
+    return false;
   }
-  const target = pool[idx]
-  const qq = target.QQ
+  const target = pool[idx];
+  const qq = target.QQ;
   if (qq == usr_qq) {
-    Send(Text('咋的，自己干自己？'))
-    return false
+    Send(Text('咋的，自己干自己？'));
+    return false;
   }
 
-  const player = await readPlayer(usr_qq)
-  const player_B = await readPlayer(String(qq))
+  const player = await readPlayer(usr_qq);
+  const player_B = await readPlayer(String(qq));
   if (player_B.当前血量 === 0) {
-    Send(Text('对方已经没有血了,请等一段时间再刺杀他吧'))
-    return false
+    Send(Text('对方已经没有血了,请等一段时间再刺杀他吧'));
+    return false;
   }
 
-  const targetAction = parseJson<ActionState>(
-    await redis.get(getRedisKey(String(qq), 'action'))
-  )
+  const targetAction = parseJson<ActionState>(await redis.get(getRedisKey(String(qq), 'action')));
   if (targetAction) {
-    const now = Date.now()
+    const now = Date.now();
     if (now <= targetAction.end_time) {
-      const hasYinshen = await existNajieThing(usr_qq, '隐身水', '道具')
+      const hasYinshen = await existNajieThing(usr_qq, '隐身水', '道具');
       if (!hasYinshen) {
-        const remain = targetAction.end_time - now
-        const m = Math.floor(remain / 60000)
-        const s = Math.floor((remain % 60000) / 1000)
-        Send(Text(`对方正在${targetAction.action}中,剩余时间:${m}分${s}秒`))
-        return false
+        const remain = targetAction.end_time - now;
+        const m = Math.floor(remain / 60000);
+        const s = Math.floor((remain % 60000) / 1000);
+        Send(Text(`对方正在${targetAction.action}中,剩余时间:${m}分${s}秒`));
+        return false;
       }
     }
   }
 
   // 构建战斗实体（转换法球倍率为 number）
-  const buff =
-    player.occupation === '侠客'
-      ? 1 + (player.occupation_level || 0) * 0.055
-      : 1
+  const buff = player.occupation === '侠客' ? 1 + (player.occupation_level || 0) * 0.055 : 1;
   const fqA =
     typeof player.灵根.法球倍率 === 'number'
       ? player.灵根.法球倍率
-      : parseFloat(String(player.灵根.法球倍率)) || 0
+      : parseFloat(String(player.灵根.法球倍率)) || 0;
   const fqB =
     typeof player_B.灵根.法球倍率 === 'number'
       ? player_B.灵根.法球倍率
-      : parseFloat(String(player_B.灵根.法球倍率)) || 0
+      : parseFloat(String(player_B.灵根.法球倍率)) || 0;
   const player_A: BattleEntity = {
     id: player.id,
     名号: player.名号,
@@ -124,7 +109,7 @@ const res = onResponse(selects, async e => {
     神石: player.神石 || 0,
     法球倍率: fqA,
     仙宠: player.仙宠
-  }
+  };
   const player_B_entity: BattleEntity = {
     id: player_B.id,
     名号: player_B.名号,
@@ -138,36 +123,36 @@ const res = onResponse(selects, async e => {
     神石: player_B.神石 || 0,
     法球倍率: fqB,
     仙宠: player_B.仙宠
-  }
+  };
 
-  const Data_battle = await zdBattle(player_A, player_B_entity)
-  const msg: string[] = Data_battle.msg || []
-  const A_win = `${player_A.名号}击败了${player_B.名号}`
-  const B_win = `${player_B.名号}击败了${player_A.名号}`
-  let broadcast = ''
+  const Data_battle = await zdBattle(player_A, player_B_entity);
+  const msg: string[] = Data_battle.msg || [];
+  const A_win = `${player_A.名号}击败了${player_B.名号}`;
+  const B_win = `${player_B.名号}击败了${player_A.名号}`;
+  let broadcast = '';
   if (msg.includes(A_win)) {
-    player_B.当前血量 = 0
-    player_B.修为 -= target.赏金
-    await writePlayer(String(qq), player_B)
-    player.灵石 += Math.trunc(target.赏金 * 0.3)
-    await writePlayer(usr_qq, player)
-    broadcast = `【全服公告】${player_B.名号}被${player.名号}悄无声息的刺杀了`
-    pool.splice(idx, 1)
-    await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(pool))
+    player_B.当前血量 = 0;
+    player_B.修为 -= target.赏金;
+    await writePlayer(String(qq), player_B);
+    player.灵石 += Math.trunc(target.赏金 * 0.3);
+    await writePlayer(usr_qq, player);
+    broadcast = `【全服公告】${player_B.名号}被${player.名号}悄无声息的刺杀了`;
+    pool.splice(idx, 1);
+    await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(pool));
   } else if (msg.includes(B_win)) {
-    player.当前血量 = 0
-    await writePlayer(usr_qq, player)
-    broadcast = `【全服公告】${player.名号}刺杀失败,${player_B.名号}勃然大怒,单手就反杀了${player.名号}`
+    player.当前血量 = 0;
+    await writePlayer(usr_qq, player);
+    broadcast = `【全服公告】${player.名号}刺杀失败,${player_B.名号}勃然大怒,单手就反杀了${player.名号}`;
   }
-  if (msg.length > 100) logger.info('通过')
-  else Send(Text(msg.join('\n')))
+  if (msg.length > 100) logger.info('通过');
+  else Send(Text(msg.join('\n')));
 
   if (broadcast) {
-    const redisGlKey = KEY_AUCTION_GROUP_LIST
-    const groupList = await redis.smembers(redisGlKey)
-    for (const group of groupList) pushInfo(group, true, broadcast)
+    const redisGlKey = KEY_AUCTION_GROUP_LIST;
+    const groupList = await redis.smembers(redisGlKey);
+    for (const group of groupList) pushInfo(group, true, broadcast);
   }
-  return false
-})
-import mw from '@src/response/mw'
-export default onResponse(selects, [mw.current, res.current])
+  return false;
+});
+import mw from '@src/response/mw';
+export default onResponse(selects, [mw.current, res.current]);

@@ -1,9 +1,9 @@
-import React from 'react'
-import { Button, ButtonProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Button, ButtonProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianButtonProps extends Omit<ButtonProps, 'variant'> {
-  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning'
+  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning';
 }
 
 const XiuxianButton: React.FC<XiuxianButtonProps> = ({
@@ -12,17 +12,14 @@ const XiuxianButton: React.FC<XiuxianButtonProps> = ({
   ...props
 }) => {
   const variantClasses = {
-    primary:
-      'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
-    secondary:
-      'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600',
+    primary: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
+    secondary: 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600',
     success:
       'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600',
-    danger:
-      'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600',
+    danger: 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600',
     warning:
       'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600'
-  }
+  };
 
   return (
     <Button
@@ -33,7 +30,7 @@ const XiuxianButton: React.FC<XiuxianButtonProps> = ({
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianButton
+export default XiuxianButton;

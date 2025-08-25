@@ -1,97 +1,82 @@
-import { getRedisKey } from '@src/model/keys'
-import { Text, useMention, useSend } from 'alemonjs'
+import { getRedisKey } from '@src/model/keys';
+import { Text, useMention, useSend } from 'alemonjs';
 
-import { redis } from '@src/model/api'
+import { redis } from '@src/model/api';
 import {
   readAction,
   isActionRunning,
   remainingMs,
   formatRemaining
-} from '@src/response/actionHelper'
-import {
-  existplayer,
-  findQinmidu,
-  existNajieThing,
-  readPlayer
-} from '@src/model/index'
-import { chaoshi, Daolv } from '../daolv'
+} from '@src/response/actionHelper';
+import { existplayer, findQinmidu, existNajieThing, readPlayer } from '@src/model/index';
+import { chaoshi, Daolv } from '../daolv';
 
-import { selects } from '@src/response/mw'
-export const regular = /^(#|＃|\/)?^(结为道侣)$/
+import { selects } from '@src/response/mw';
+export const regular = /^(#|＃|\/)?^(结为道侣)$/;
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e)
-  const A = e.UserId
-  const ifexistplay_A = await existplayer(A)
+  const Send = useSend(e);
+  const A = e.UserId;
+  const ifexistplay_A = await existplayer(A);
   if (!ifexistplay_A) {
-    return false
+    return false;
   }
-  const A_action = await readAction(A)
+  const A_action = await readAction(A);
   if (isActionRunning(A_action)) {
-    Send(
-      Text(
-        `正在${A_action!.action}中,剩余时间:${formatRemaining(remainingMs(A_action!))}`
-      )
-    )
-    return false
+    Send(Text(`正在${A_action?.action}中,剩余时间:${formatRemaining(remainingMs(A_action!))}`));
+    return false;
   }
 
-  const [mention] = useMention(e)
-  const res = await mention.findOne()
-  const target = res?.data
-  if (!target || res.code !== 2000) return false
+  const [mention] = useMention(e);
+  const res = await mention.findOne();
+  const target = res?.data;
+  if (!target || res.code !== 2000) return false;
 
-  const B = target.UserId
+  const B = target.UserId;
   if (A == B) {
-    Send(Text('精神分裂?'))
-    return false
+    Send(Text('精神分裂?'));
+    return false;
   }
-  const ifexistplay_B = await existplayer(B)
+  const ifexistplay_B = await existplayer(B);
   if (!ifexistplay_B) {
-    Send(Text('修仙者不可对凡人出手!'))
-    return false
+    Send(Text('修仙者不可对凡人出手!'));
+    return false;
   }
-  const B_action = await readAction(B)
+  const B_action = await readAction(B);
   if (isActionRunning(B_action)) {
-    Send(
-      Text(
-        `对方正在${B_action!.action}中,剩余时间:${formatRemaining(remainingMs(B_action!))}`
-      )
-    )
-    return false
+    Send(Text(`对方正在${B_action!.action}中,剩余时间:${formatRemaining(remainingMs(B_action!))}`));
+    return false;
   }
-  const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'))
+  const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'));
   if (last_game_timeB !== null && +last_game_timeB == 0) {
-    Send(Text(`对方猜大小正在进行哦，等他结束再求婚吧!`))
-    return false
+    Send(Text('对方猜大小正在进行哦，等他结束再求婚吧!'));
+    return false;
   }
-  let pd = await findQinmidu(A, B)
-  const ishavejz = await existNajieThing(A, '定情信物', '道具')
+  let pd = await findQinmidu(A, B);
+  const ishavejz = await existNajieThing(A, '定情信物', '道具');
   if (!ishavejz) {
-    Send(Text('你没有[定情信物],无法发起求婚'))
-    return false
+    Send(Text('你没有[定情信物],无法发起求婚'));
+    return false;
   } else if (pd == false || (pd > 0 && pd < 500)) {
-    if (pd == false) pd = 0
-    Send(Text(`你们亲密度不足500,无法心意相通(当前亲密度${pd})`))
-    return false
+    if (pd == false) pd = 0;
+    Send(Text(`你们亲密度不足500,无法心意相通(当前亲密度${pd})`));
+    return false;
   } else if (pd == 0) {
-    Send(Text(`对方已有道侣`))
-    return false
+    Send(Text('对方已有道侣'));
+    return false;
   }
   if (Daolv.x == 1 || Daolv.x == 2) {
-    Send(Text(`有人缔结道侣，请稍等`))
-    return false
+    Send(Text('有人缔结道侣，请稍等'));
+    return false;
   }
-  Daolv.set_x(1)
-  Daolv.set_user_A(A)
-  Daolv.set_user_B(B)
-  const player_A = await readPlayer(A)
-  const msg = ['\n']
-  msg.push(
-    `${player_A.名号}想和你缔结道侣,你愿意吗？\n回复【我愿意】or【我拒绝】`
-  )
-  Send(Text(msg.join('\n')))
-  chaoshi(e)
-})
-import mw from '@src/response/mw'
-export default onResponse(selects, [mw.current, res.current])
+  Daolv.set_x(1);
+  Daolv.set_user_A(A);
+  Daolv.set_user_B(B);
+  const player_A = await readPlayer(A);
+  const msg = ['\n'];
+  msg.push(`${player_A.名号}想和你缔结道侣,你愿意吗？\n回复【我愿意】or【我拒绝】`);
+  Send(Text(msg.join('\n')));
+  chaoshi(e);
+});
+import mw from '@src/response/mw';
+export default onResponse(selects, [mw.current, res.current]);

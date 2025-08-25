@@ -1,14 +1,14 @@
-import React from 'react'
-import cssURL from '@src/resources/styles/tw.scss'
-import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf'
-import { LinkStyleSheet } from 'jsxp'
+import React from 'react';
+import cssURL from '@src/resources/styles/tw.scss';
+import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf';
+import { LinkStyleSheet } from 'jsxp';
 
 const Sudoku = ({ sudokuData }) => {
   return (
     <html>
       <head>
         <LinkStyleSheet src={cssURL} />
-        <meta httpEquiv="content-type" content="text/html;charset=utf-8" />
+        <meta httpEquiv='content-type' content='text/html;charset=utf-8' />
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -19,37 +19,37 @@ const Sudoku = ({ sudokuData }) => {
         />
       </head>
       <body>
-        <div className=" bg-gradient-to-b from-gray-100 to-blue-100 flex flex-col items-center py-8">
-          <div className="w-full max-w-xl mx-auto">
-            <div className="rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center">
-              <div className="flex flex-row mb-2">
+        <div className=' bg-gradient-to-b from-gray-100 to-blue-100 flex flex-col items-center py-8'>
+          <div className='w-full max-w-xl mx-auto'>
+            <div className='rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center'>
+              <div className='flex flex-row mb-2'>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
                   <div
                     key={n}
-                    className="w-12 h-8 flex items-center justify-center text-blue-700 font-bold text-lg"
+                    className='w-12 h-8 flex items-center justify-center text-blue-700 font-bold text-lg'
                   >
                     {n}
                   </div>
                 ))}
               </div>
-              <div className="flex flex-row">
-                <div className="flex flex-col mr-2">
+              <div className='flex flex-row'>
+                <div className='flex flex-col mr-2'>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
                     <div
                       key={n}
-                      className="w-8 h-12 flex items-center justify-center text-blue-700 font-bold text-lg"
+                      className='w-8 h-12 flex items-center justify-center text-blue-700 font-bold text-lg'
                     >
                       {n}
                     </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-9 grid-rows-9 gap-1">
+                <div className='grid grid-cols-9 grid-rows-9 gap-1'>
                   {sudokuData &&
                     sudokuData.map((row, rowIndex) =>
                       row.map((cell, colIndex) => (
                         <div
                           key={`${rowIndex}-${colIndex}`}
-                          className="w-12 h-12 flex items-center justify-center border border-gray-300 text-xl font-semibold bg-gray-50"
+                          className='w-12 h-12 flex items-center justify-center border border-gray-300 text-xl font-semibold bg-gray-50'
                         >
                           {cell !== 0 ? cell : ''}
                         </div>
@@ -62,7 +62,7 @@ const Sudoku = ({ sudokuData }) => {
         </div>
       </body>
     </html>
-  )
-}
+  );
+};
 
-export default Sudoku
+export default Sudoku;

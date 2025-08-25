@@ -1,8 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const instance = axios.create({
   baseURL: './api'
-})
+});
 
 /**
  *
@@ -13,16 +13,16 @@ export const request = (config: AxiosRequestConfig): Promise<any> => {
   return new Promise<AxiosResponse>((resolve, reject) => {
     instance(config)
       .then(response => {
-        resolve(response.data)
+        resolve(response.data);
       })
       .catch(error => {
-        reject(error)
-      })
-  })
-}
+        reject(error);
+      });
+  });
+};
 
 export const authRequest = (config: AxiosRequestConfig): Promise<any> => {
-  const savedToken = localStorage.getItem('token')
+  const savedToken = localStorage.getItem('token');
   return new Promise<AxiosResponse>((resolve, reject) => {
     instance({
       headers: {
@@ -31,10 +31,10 @@ export const authRequest = (config: AxiosRequestConfig): Promise<any> => {
       ...config
     })
       .then(response => {
-        resolve(response.data)
+        resolve(response.data);
       })
       .catch(error => {
-        reject(error)
-      })
-  })
-}
+        reject(error);
+      });
+  });
+};

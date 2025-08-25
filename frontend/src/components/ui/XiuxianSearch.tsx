@@ -1,17 +1,14 @@
-import React from 'react'
-import { Input } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Input } from 'antd';
+import classNames from 'classnames';
 
-const { Search } = Input
+const { Search } = Input;
 
 interface XiuxianSearchProps {
-  className?: string
+  className?: string;
 }
 
-const XiuxianSearch: React.FC<XiuxianSearchProps> = ({
-  className,
-  ...props
-}) => {
+const XiuxianSearch: React.FC<XiuxianSearchProps> = ({ className, ...props }) => {
   return (
     <Search
       className={classNames(
@@ -24,7 +21,7 @@ const XiuxianSearch: React.FC<XiuxianSearchProps> = ({
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianSearch
+export default XiuxianSearch;

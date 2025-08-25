@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'url'
-import react from '@vitejs/plugin-react'
-const NODE_ENV = process.env.NODE_ENV === 'development'
+import { defineConfig } from 'vite';
+import { fileURLToPath, URL } from 'url';
+import react from '@vitejs/plugin-react';
+const NODE_ENV = process.env.NODE_ENV === 'development';
 export default defineConfig({
   base: NODE_ENV ? '/' : './',
   plugins: [react()],
@@ -47,8 +47,8 @@ export default defineConfig({
         entryFileNames: 'js/[name]-[hash].js',
         chunkFileNames: 'js/[name]-[hash].js',
         assetFileNames: ({ name }) => {
-          if (/\.(css)$/.test(name ?? '')) return 'css/[name]-[hash][extname]'
-          return 'assets/[name]-[hash][extname]'
+          if (/\.(css)$/.test(name ?? '')) return 'css/[name]-[hash][extname]';
+          return 'assets/[name]-[hash][extname]';
         },
         manualChunks: {
           'react-vendor': [
@@ -63,4 +63,4 @@ export default defineConfig({
       }
     }
   }
-})
+});

@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react'
-import { Table, message, Tag, Form } from 'antd'
+import React, { useState, useEffect } from 'react';
+import { Table, message, Tag, Form } from 'antd';
 import {
   ClockCircleOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
   SettingOutlined
-} from '@ant-design/icons'
-import { useAuth } from '@/contexts/AuthContext'
+} from '@ant-design/icons';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   getTaskConfigAPI,
   updateTaskConfigAPI,
   restartTasksAPI,
   getTaskStatusAPI,
   taskControlAPI
-} from '@/api/auth'
-import type { ColumnsType } from 'antd/es/table'
-import { TaskInfo } from '@/types/types'
-import TaskConfig from './TaskConfig'
-import StatusTag from './StatusTag'
-import formatCron from './config'
-import classNames from 'classnames'
+} from '@/api/auth';
+import type { ColumnsType } from 'antd/es/table';
+import { TaskInfo } from '@/types/types';
+import TaskConfig from './TaskConfig';
+import StatusTag from './StatusTag';
+import formatCron from './config';
+import classNames from 'classnames';
 
 // 导入UI组件库
 import {
@@ -27,24 +27,24 @@ import {
   XiuxianPageTitle,
   XiuxianTableContainer,
   XiuxianRefreshButton
-} from '@/components/ui'
+} from '@/components/ui';
 
 // 获取类型标签
 const getTypeTag = (type: string) => {
   switch (type) {
     case 'system':
-      return <Tag color="blue">系统</Tag>
+      return <Tag color='blue'>系统</Tag>;
     case 'game':
-      return <Tag color="green">游戏</Tag>
+      return <Tag color='green'>游戏</Tag>;
     case 'maintenance':
-      return <Tag color="purple">维护</Tag>
+      return <Tag color='purple'>维护</Tag>;
     default:
-      return <Tag color="default">其他</Tag>
+      return <Tag color='default'>其他</Tag>;
   }
-}
+};
 
 const taskNames: {
-  [key: string]: string
+  [key: string]: string;
 } = {
   ShopTask: '商店刷新',
   ExchangeTask: '冲水堂清理',
@@ -63,54 +63,53 @@ const taskNames: {
   SecretPlaceTask: '秘境任务',
   TiandibangTask: '天地榜任务',
   Xijietask: '仙界任务'
-}
+};
 
 export default function TaskManager() {
-  const { user } = useAuth()
-  const [loading] = useState(false)
-  const [tasks, setTasks] = useState<TaskInfo[]>([])
-  const [taskConfig, setTaskConfig] = useState<{ [key: string]: string }>({})
-  const [configDrawerVisible, setConfigDrawerVisible] = useState(false)
-  const [configForm] = Form.useForm()
+  const { user } = useAuth();
+  const [loading] = useState(false);
+  const [tasks, setTasks] = useState<TaskInfo[]>([]);
+  const [taskConfig, setTaskConfig] = useState<{ [key: string]: string }>({});
+  const [configDrawerVisible, setConfigDrawerVisible] = useState(false);
+  const [configForm] = Form.useForm();
 
   // 根据实际配置生成任务数据
   const generateTasksFromConfig = (
     config: { [key: string]: string },
     taskStatus?: {
-      [key: string]: { running: boolean; nextInvocation?: string }
+      [key: string]: { running: boolean; nextInvocation?: string };
     }
   ): TaskInfo[] => {
     const taskDescriptions: {
       [key: string]: {
-        description: string
-        type: 'system' | 'game' | 'maintenance'
-      }
-    } = {}
+        description: string;
+        type: 'system' | 'game' | 'maintenance';
+      };
+    } = {};
 
     return Object.entries(config).map(([name, schedule]) => {
       const taskInfo = taskDescriptions[name] || {
         description: name,
         type: 'system' as const
-      }
-      const status = taskStatus?.[name]
+      };
+      const status = taskStatus?.[name];
       return {
         name,
         description: taskInfo.description,
         schedule,
         status: status?.running ? 'running' : 'stopped',
         lastRun: new Date().toISOString(),
-        nextRun:
-          status?.nextInvocation || new Date(Date.now() + 60000).toISOString(),
+        nextRun: status?.nextInvocation || new Date(Date.now() + 60000).toISOString(),
         type: taskInfo.type
-      }
-    })
-  }
+      };
+    });
+  };
 
   // 表格列定义
   const columns: ColumnsType<TaskInfo> = [
     {
       title: (
-        <div className="flex items-center gap-2 text-purple-400 font-bold">
+        <div className='flex items-center gap-2 text-purple-400 font-bold'>
           <span>任务名称</span>
         </div>
       ),
@@ -118,16 +117,14 @@ export default function TaskManager() {
       width: 200,
       render: (_, record) => (
         <div>
-          <div className="font-bold text-white">
-            {taskNames[record.name] || record.name}
-          </div>
-          <div className="text-xs text-slate-400">{record.description}</div>
+          <div className='font-bold text-white'>{taskNames[record.name] || record.name}</div>
+          <div className='text-xs text-slate-400'>{record.description}</div>
         </div>
       )
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-blue-400 font-bold">
+        <div className='flex items-center gap-2 text-blue-400 font-bold'>
           <span>任务类型</span>
         </div>
       ),
@@ -137,7 +134,7 @@ export default function TaskManager() {
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-green-400 font-bold">
+        <div className='flex items-center gap-2 text-green-400 font-bold'>
           <span>执行计划</span>
         </div>
       ),
@@ -145,16 +142,14 @@ export default function TaskManager() {
       width: 200,
       render: (_, record) => (
         <div>
-          <div className="text-sm font-medium text-white">
-            {formatCron(record.schedule)}
-          </div>
-          <div className="text-xs text-slate-400">{record.schedule}</div>
+          <div className='text-sm font-medium text-white'>{formatCron(record.schedule)}</div>
+          <div className='text-xs text-slate-400'>{record.schedule}</div>
         </div>
       )
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-yellow-400 font-bold">
+        <div className='flex items-center gap-2 text-yellow-400 font-bold'>
           <span>运行状态</span>
         </div>
       ),
@@ -164,212 +159,207 @@ export default function TaskManager() {
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-cyan-400 font-bold">
+        <div className='flex items-center gap-2 text-cyan-400 font-bold'>
           <span>上次执行</span>
         </div>
       ),
       key: 'lastRun',
       width: 180,
       render: (_, record) => (
-        <div className="text-sm text-slate-300">
-          {record.lastRun
-            ? new Date(record.lastRun).toLocaleString('zh-CN')
-            : '未执行'}
+        <div className='text-sm text-slate-300'>
+          {record.lastRun ? new Date(record.lastRun).toLocaleString('zh-CN') : '未执行'}
         </div>
       )
     },
     {
       title: (
-        <div className="flex items-center gap-2 text-orange-400 font-bold">
+        <div className='flex items-center gap-2 text-orange-400 font-bold'>
           <span>下次执行</span>
         </div>
       ),
       key: 'nextRun',
       width: 180,
       render: (_, record) => (
-        <div className="text-sm text-slate-300">
-          {record.nextRun
-            ? new Date(record.nextRun).toLocaleString('zh-CN')
-            : '未计划'}
+        <div className='text-sm text-slate-300'>
+          {record.nextRun ? new Date(record.nextRun).toLocaleString('zh-CN') : '未计划'}
         </div>
       )
     }
-  ]
+  ];
 
   // 获取任务配置
   const fetchTaskConfig = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        message.error('未找到登录令牌')
-        return
+        message.error('未找到登录令牌');
+        return;
       }
 
-      const result = await getTaskConfigAPI(token)
+      const result = await getTaskConfigAPI(token);
       if (result.success && result.data) {
-        setTaskConfig(result.data)
-        setTasks(generateTasksFromConfig(result.data))
+        setTaskConfig(result.data);
+        setTasks(generateTasksFromConfig(result.data));
       } else {
-        message.error(result.message || '获取配置失败')
+        message.error(result.message || '获取配置失败');
       }
     } catch (error) {
-      console.error('获取任务配置失败:', error)
-      message.error('获取任务配置失败')
+      console.error('获取任务配置失败:', error);
+      message.error('获取任务配置失败');
     }
-  }
+  };
 
   // 获取任务状态
   const fetchTaskStatus = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        return
+        return;
       }
 
-      const result = await getTaskStatusAPI(token)
+      const result = await getTaskStatusAPI(token);
       if (result.success && result.data) {
         setTasks(prevTasks =>
           prevTasks.map(task => ({
             ...task,
             status: result.data![task.name]?.running ? 'running' : 'stopped',
             nextRun:
-              result.data![task.name]?.nextInvocation ||
-              new Date(Date.now() + 60000).toISOString()
+              result.data![task.name]?.nextInvocation || new Date(Date.now() + 60000).toISOString()
           }))
-        )
+        );
       }
     } catch (error) {
-      console.error('获取任务状态失败:', error)
+      console.error('获取任务状态失败:', error);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchTaskConfig()
-    fetchTaskStatus() // 启动时也获取一次状态
-  }, [user])
+    fetchTaskConfig();
+    fetchTaskStatus(); // 启动时也获取一次状态
+  }, [user]);
 
   // 启动所有任务
   const handleStartAllTasks = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        message.error('未找到登录令牌')
-        return
+        message.error('未找到登录令牌');
+        return;
       }
 
-      message.loading('正在启动所有任务...', 0)
-      const result = await taskControlAPI(token, 'startAll')
-      message.destroy()
+      message.loading('正在启动所有任务...', 0);
+      const result = await taskControlAPI(token, 'startAll');
+      message.destroy();
 
       if (result.success && result.data?.success) {
-        message.success('所有任务启动成功')
+        message.success('所有任务启动成功');
         // 重新获取配置
-        fetchTaskConfig()
+        fetchTaskConfig();
       } else {
-        message.error(result.message || '启动失败')
+        message.error(result.message || '启动失败');
       }
     } catch (error) {
-      message.destroy()
-      console.error('启动任务失败:', error)
-      message.error('启动任务失败')
+      message.destroy();
+      console.error('启动任务失败:', error);
+      message.error('启动任务失败');
     }
-  }
+  };
 
   // 停止所有任务
   const handleStopAllTasks = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        message.error('未找到登录令牌')
-        return
+        message.error('未找到登录令牌');
+        return;
       }
 
-      message.loading('正在停止所有任务...', 0)
-      const result = await taskControlAPI(token, 'stopAll')
-      message.destroy()
+      message.loading('正在停止所有任务...', 0);
+      const result = await taskControlAPI(token, 'stopAll');
+      message.destroy();
 
       if (result.success && result.data?.success) {
-        message.success('所有任务停止成功')
+        message.success('所有任务停止成功');
         // 重新获取配置
-        fetchTaskConfig()
+        fetchTaskConfig();
       } else {
-        message.error(result.message || '停止失败')
+        message.error(result.message || '停止失败');
       }
     } catch (error) {
-      message.destroy()
-      console.error('停止任务失败:', error)
-      message.error('停止任务失败')
+      message.destroy();
+      console.error('停止任务失败:', error);
+      message.error('停止任务失败');
     }
-  }
+  };
 
   // 重启所有任务
   const handleRestartTasks = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        message.error('未找到登录令牌')
-        return
+        message.error('未找到登录令牌');
+        return;
       }
 
-      message.loading('正在重启所有任务...', 0)
-      const result = await restartTasksAPI(token)
-      message.destroy()
+      message.loading('正在重启所有任务...', 0);
+      const result = await restartTasksAPI(token);
+      message.destroy();
 
       if (result.success && result.data?.success) {
-        message.success('所有任务重启成功')
+        message.success('所有任务重启成功');
         // 重新获取配置
-        fetchTaskConfig()
+        fetchTaskConfig();
       } else {
-        message.error(result.message || '重启失败')
+        message.error(result.message || '重启失败');
       }
     } catch (error) {
-      message.destroy()
-      console.error('重启任务失败:', error)
-      message.error('重启任务失败')
+      message.destroy();
+      console.error('重启任务失败:', error);
+      message.error('重启任务失败');
     }
-  }
+  };
 
   // 打开配置编辑
   const handleOpenConfig = () => {
-    setConfigDrawerVisible(true)
-  }
+    setConfigDrawerVisible(true);
+  };
 
   // 保存配置
   const handleSaveConfig = async (values: { [key: string]: string }) => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        message.error('未找到登录令牌')
-        return
+        message.error('未找到登录令牌');
+        return;
       }
 
-      message.loading('正在保存配置...', 0)
-      const result = await updateTaskConfigAPI(token, values)
-      message.destroy()
+      message.loading('正在保存配置...', 0);
+      const result = await updateTaskConfigAPI(token, values);
+      message.destroy();
 
       if (result.success) {
-        message.success('配置保存成功')
-        setConfigDrawerVisible(false)
-        fetchTaskConfig()
+        message.success('配置保存成功');
+        setConfigDrawerVisible(false);
+        fetchTaskConfig();
       } else {
-        message.error(result.message || '保存失败')
+        message.error(result.message || '保存失败');
       }
     } catch (error) {
-      message.destroy()
-      console.error('保存配置失败:', error)
-      message.error('保存配置失败')
+      message.destroy();
+      console.error('保存配置失败:', error);
+      message.error('保存配置失败');
     }
-  }
+  };
 
   return (
     <XiuxianPageWrapper>
       {/* 页面标题和操作按钮 */}
       <XiuxianPageTitle
         icon={<ClockCircleOutlined />}
-        title="定时任务"
-        subtitle="系统定时任务和配置"
+        title='定时任务'
+        subtitle='系统定时任务和配置'
         actions={
-          <div className="flex flex-wrap gap-2">
+          <div className='flex flex-wrap gap-2'>
             {[
               {
                 lable: '启动所有任务',
@@ -405,16 +395,12 @@ export default function TaskManager() {
                 className:
                   'px-2 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
                 onClick: () => {
-                  fetchTaskConfig()
-                  message.success('数据已刷新')
+                  fetchTaskConfig();
+                  message.success('数据已刷新');
                 }
               }
             ].map((item, index) => (
-              <button
-                key={index}
-                className={item.className}
-                onClick={item.onClick}
-              >
+              <button key={index} className={item.className} onClick={item.onClick}>
                 {item.icon}
                 {item.lable}
               </button>
@@ -424,19 +410,16 @@ export default function TaskManager() {
       />
 
       {/* 任务表格 */}
-      <XiuxianTableContainer
-        title="定时任务列表"
-        icon={<ClockCircleOutlined />}
-      >
+      <XiuxianTableContainer title='定时任务列表' icon={<ClockCircleOutlined />}>
         <Table
           columns={columns}
           dataSource={tasks}
-          rowKey="name"
+          rowKey='name'
           loading={loading}
           pagination={false}
           scroll={{ x: 1200 }}
           rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-          className="bg-transparent xiuxian-table"
+          className='bg-transparent xiuxian-table'
         />
       </XiuxianTableContainer>
 
@@ -449,5 +432,5 @@ export default function TaskManager() {
         handleSaveConfig={handleSaveConfig}
       />
     </XiuxianPageWrapper>
-  )
+  );
 }

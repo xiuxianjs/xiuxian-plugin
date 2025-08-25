@@ -1,12 +1,12 @@
-import config from './Config'
-import data from './XiuxianData'
-import { getIoRedis } from '@alemonjs/db'
-import { Image, sendToChannel, sendToUser, Text } from 'alemonjs'
-import type { MessageEnumsArray, MessageInput } from '../types/model'
+import config from './Config';
+import data from './XiuxianData';
+import { getIoRedis } from '@alemonjs/db';
+import { Image, sendToChannel, sendToUser, Text } from 'alemonjs';
+import type { MessageEnumsArray, MessageInput } from '../types/model';
 
-export { data, config }
+export { data, config };
 
-export const redis = getIoRedis()
+export const redis = getIoRedis();
 
 /**
  *
@@ -17,27 +17,22 @@ export const redis = getIoRedis()
  * @returns
  */
 // alemonjs 的 format(Text(..), ...) 返回内部统一的 DataEnums[]，这里用宽松别名
-export async function pushInfo(
-  guild_id: string,
-  isGroup: boolean,
-  msg: MessageInput
-) {
-  let message: MessageEnumsArray = []
-  if (typeof msg == 'string') message = format(Text(msg)) as MessageEnumsArray
-  else if (Buffer.isBuffer(msg))
-    message = format(Image(msg)) as MessageEnumsArray
+export async function pushInfo (guild_id: string, isGroup: boolean, msg: MessageInput) {
+  let message: MessageEnumsArray = [];
+  if (typeof msg == 'string') message = format(Text(msg)) as MessageEnumsArray;
+  else if (Buffer.isBuffer(msg)) message = format(Image(msg)) as MessageEnumsArray;
   else if (Array.isArray(msg)) {
-    const list = msg.map(item => (typeof item == 'string' ? Text(item) : item))
-    message = format(...list) as MessageEnumsArray
+    const list = msg.map(item => (typeof item == 'string' ? Text(item) : item));
+    message = format(...list) as MessageEnumsArray;
   }
   if (message.length === 0) {
-    return
+    return;
   }
   if (isGroup) {
     // 向指定频道发送消息 。SpaceId 从消息中获得，注意这可能不是 ChannelId
-    sendToChannel(String(guild_id), message)
-    return
+    sendToChannel(String(guild_id), message);
+    return;
   }
   // 向指定用户发送消息  OpenID 从消息中获得，注意这可能不是 UserId
-  sendToUser(String(guild_id), message)
+  sendToUser(String(guild_id), message);
 }

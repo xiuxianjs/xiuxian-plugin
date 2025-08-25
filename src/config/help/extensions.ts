@@ -1,12 +1,12 @@
 export interface HelpItem {
-  icon: string
-  title: string
-  desc: string
+  icon: string;
+  title: string;
+  desc: string;
 }
 
 export interface HelpGroup {
-  group?: string
-  list: HelpItem[]
+  group?: string;
+  list: HelpItem[];
 }
 
 const advancedHelpConfig: HelpGroup[] = [
@@ -227,5 +227,5 @@ const advancedHelpConfig: HelpGroup[] = [
       { icon: 'help-icon_17', title: '#神兵榜', desc: '玩家顶级装备排行' }
     ]
   }
-]
-export default advancedHelpConfig
+];
+export default advancedHelpConfig;

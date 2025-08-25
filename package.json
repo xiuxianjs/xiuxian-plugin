@@ -18,12 +18,18 @@
     "bundle-dev": "yarn --cwd frontend dev",
     "bundle": "yarn --cwd frontend build",
     "eslint": "eslint src --fix",
+    "eslint:check": "eslint src --ext .ts,.tsx,.js",
+    "eslint:fix": "eslint src --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
+    "eslint:fix-all": "eslint . --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "check-format": "git diff --exit-code",
     "lint:staged": "git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",
     "lint:changed": "git diff origin/main...HEAD --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint --cache --cache-location .eslintcache",
     "lint:fix": "eslint src --ext .ts,.tsx,.js --fix --cache --cache-location .eslintcache",
-    "lint:baseline": "eslint -f json src > eslint-baseline.json || true"
+    "lint:baseline": "eslint -f json src > eslint-baseline.json || true",
+    "code:check": "npm run eslint:check && npm run format:check",
+    "code:fix": "npm run eslint:fix && npm run format"
   },
   "dependencies": {
     "classnames": "^2.5.1",

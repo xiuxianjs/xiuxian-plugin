@@ -1,9 +1,9 @@
-import { pushInfo } from '@src/model/api'
+import { pushInfo } from '@src/model/api';
 // 细粒度导入避免 barrel 循环
-import { readTemp, writeTemp } from '@src/model/temp'
-import { TempRecord as TempRecordLegacy } from '@src/types/model'
-import type { TempMessage } from '@src/types'
-import { screenshot } from '@src/image'
+import { readTemp, writeTemp } from '@src/model/temp';
+import { TempRecord as TempRecordLegacy } from '@src/types/model';
+import type { TempMessage } from '@src/types';
+import { screenshot } from '@src/image';
 
 /**
  * 读取临时消息（temp）列表，按群分组整理消息。
@@ -12,33 +12,33 @@ import { screenshot } from '@src/image'
  * 推送完成后，清空临时消息记录。
  */
 export const MsgTask = async () => {
-  let temp: (TempMessage & TempRecordLegacy)[] = []
+  let temp: (TempMessage & TempRecordLegacy)[] = [];
   try {
-    temp = await readTemp()
+    temp = await readTemp();
   } catch {
-    await writeTemp([])
+    await writeTemp([]);
   }
   if (temp.length > 0) {
-    const group: string[] = []
-    group.push(temp[0].qq_group)
+    const group: string[] = [];
+    group.push(temp[0].qq_group);
     f1: for (const i of temp) {
       for (const j of group) {
-        if (i.qq_group == j) continue f1
+        if (i.qq_group == j) continue f1;
       }
-      group.push(i.qq_group)
+      group.push(i.qq_group);
     }
     for (const i of group) {
-      const msg: string[] = []
+      const msg: string[] = [];
       for (const j of temp) {
         if (i == j.qq_group) {
-          msg.push(j.msg)
+          msg.push(j.msg);
         }
       }
-      const temp_data = { temp: msg }
+      const temp_data = { temp: msg };
 
-      const img = await screenshot('temp', i, temp_data)
-      if (img) await pushInfo(i, true, img)
+      const img = await screenshot('temp', i, temp_data);
+      if (img) await pushInfo(i, true, img);
     }
-    await writeTemp([])
+    await writeTemp([]);
   }
-}
+};

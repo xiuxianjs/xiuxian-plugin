@@ -1,38 +1,37 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   getGameUsersStatsAPI,
   getAssociationsStatsAPI,
   getRankingsStatsAPI,
   getTaskStatusAPI
-} from '@/api/auth'
-import { DashboardStats } from '@/types/types'
+} from '@/api/auth';
+import { DashboardStats } from '@/types/types';
 
 export const useDashboardCode = () => {
-  const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   // 获取统计数据
   const fetchStats = async () => {
-    if (!user) return
+    if (!user) return;
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       if (!token) {
-        console.error('未找到登录令牌')
-        return
+        console.error('未找到登录令牌');
+        return;
       }
 
       // 并行获取所有统计数据
-      const [userStats, associationStats, rankingStats, taskStats] =
-        await Promise.all([
-          getGameUsersStatsAPI(token),
-          getAssociationsStatsAPI(token),
-          getRankingsStatsAPI(token),
-          getTaskStatusAPI(token)
-        ])
+      const [userStats, associationStats, rankingStats, taskStats] = await Promise.all([
+        getGameUsersStatsAPI(token),
+        getAssociationsStatsAPI(token),
+        getRankingsStatsAPI(token),
+        getTaskStatusAPI(token)
+      ]);
 
       const dashboardStats: DashboardStats = {
         users: {
@@ -41,54 +40,38 @@ export const useDashboardCode = () => {
           newToday: 0
         },
         associations: {
-          total: associationStats.success
-            ? associationStats.data?.total || 0
-            : 0,
-          totalMembers: associationStats.success
-            ? associationStats.data?.totalMembers || 0
-            : 0,
-          totalPower: associationStats.success
-            ? associationStats.data?.totalPower || 0
-            : 0,
-          totalLingshi: associationStats.success
-            ? associationStats.data?.totalLingshi || 0
-            : 0
+          total: associationStats.success ? associationStats.data?.total || 0 : 0,
+          totalMembers: associationStats.success ? associationStats.data?.totalMembers || 0 : 0,
+          totalPower: associationStats.success ? associationStats.data?.totalPower || 0 : 0,
+          totalLingshi: associationStats.success ? associationStats.data?.totalLingshi || 0 : 0
         },
         rankings: {
-          lastUpdate: rankingStats.success
-            ? rankingStats.data?.lastUpdate || ''
-            : '',
-          topAssociations: rankingStats.success
-            ? rankingStats.data?.topAssociations || []
-            : [],
-          topPlayers: rankingStats.success
-            ? rankingStats.data?.topPlayers || []
-            : []
+          lastUpdate: rankingStats.success ? rankingStats.data?.lastUpdate || '' : '',
+          topAssociations: rankingStats.success ? rankingStats.data?.topAssociations || [] : [],
+          topPlayers: rankingStats.success ? rankingStats.data?.topPlayers || [] : []
         },
         system: {
           uptime: '7天 12小时 30分钟',
           lastBackup: new Date().toISOString(),
-          activeTasks: taskStats.success
-            ? Object.keys(taskStats.data || {}).length
-            : 0
+          activeTasks: taskStats.success ? Object.keys(taskStats.data || {}).length : 0
         }
-      }
+      };
 
-      setStats(dashboardStats)
+      setStats(dashboardStats);
     } catch (error) {
-      console.error('获取统计数据失败:', error)
+      console.error('获取统计数据失败:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchStats()
-  }, [user])
+    fetchStats();
+  }, [user]);
 
   return {
     loading,
     stats,
     fetchStats
-  }
-}
+  };
+};

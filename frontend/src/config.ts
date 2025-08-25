@@ -1,4 +1,4 @@
-import { ConfigCategory } from './types/types'
+import { ConfigCategory } from './types/types';
 
 export const menuItems = [
   {
@@ -56,7 +56,7 @@ export const menuItems = [
     icon: '⚙️',
     path: '/config'
   }
-]
+];
 
 export const levelNames: { [key: number]: string } = {
   1: '练气一层',
@@ -123,7 +123,7 @@ export const levelNames: { [key: number]: string } = {
   62: '道帝',
   63: '神王',
   64: '凡人'
-}
+};
 
 // 配置分类定义
 export const configCategories: ConfigCategory[] = [
@@ -468,9 +468,7 @@ export const configCategories: ConfigCategory[] = [
       {
         key: 'najie_num',
         name: '纳戒存储量',
-        value: [
-          50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000
-        ],
+        value: [50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000],
         type: 'array',
         description: '各级纳戒存储量',
         category: 'najie'
@@ -507,7 +505,7 @@ export const configCategories: ConfigCategory[] = [
       }
     ]
   }
-]
+];
 
-export const AssociationManagerPageSize = 10
-export const pageSize = 10
+export const AssociationManagerPageSize = 10;
+export const pageSize = 10;

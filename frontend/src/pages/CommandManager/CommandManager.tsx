@@ -1,11 +1,7 @@
-import React from 'react'
-import { Breadcrumb, Spin, Empty, List, Avatar } from 'antd'
-import {
-  ArrowLeftOutlined,
-  FolderOutlined,
-  FileOutlined
-} from '@ant-design/icons'
-import { useCommandManagerCode } from './CommandManager.code'
+import React from 'react';
+import { Breadcrumb, Spin, Empty, List, Avatar } from 'antd';
+import { ArrowLeftOutlined, FolderOutlined, FileOutlined } from '@ant-design/icons';
+import { useCommandManagerCode } from './CommandManager.code';
 
 // 导入UI组件库
 import {
@@ -14,7 +10,7 @@ import {
   XiuxianTableContainer,
   XiuxianRefreshButton,
   XiuxianEmptyState
-} from '@/components/ui'
+} from '@/components/ui';
 
 export default function CommandManager() {
   const {
@@ -26,19 +22,19 @@ export default function CommandManager() {
     handleNavigateToPath,
     handleToggleStatus,
     handleRefresh
-  } = useCommandManagerCode()
+  } = useCommandManagerCode();
 
   return (
     <XiuxianPageWrapper>
       {/* 页面标题和操作按钮 */}
       <XiuxianPageTitle
         icon={<FolderOutlined />}
-        title="指令开关"
-        subtitle="管理和控制修仙插件的各种响应体功能"
+        title='指令开关'
+        subtitle='管理和控制修仙插件的各种响应体功能'
         actions={
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <button
-              className="px-2 py-1 rounded-md bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+              className='px-2 py-1 rounded-md bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2'
               onClick={handleBackToParent}
               disabled={currentPath.length === 0}
             >
@@ -51,9 +47,9 @@ export default function CommandManager() {
       />
 
       {/* 面包屑导航 */}
-      <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <FolderOutlined className="text-purple-400" />
+      <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6'>
+        <h3 className='text-xl font-bold text-white mb-4 flex items-center gap-2'>
+          <FolderOutlined className='text-purple-400' />
           路径导航
         </h3>
         <Breadcrumb
@@ -61,7 +57,7 @@ export default function CommandManager() {
             {
               title: (
                 <span
-                  className="text-slate-200 font-medium cursor-pointer hover:text-white"
+                  className='text-slate-200 font-medium cursor-pointer hover:text-white'
                   onClick={() => handleNavigateToPath([])}
                 >
                   根目录
@@ -71,17 +67,15 @@ export default function CommandManager() {
             ...currentPath.map((item, index) => ({
               title: (
                 <span
-                  className="text-slate-300 cursor-pointer hover:text-white"
-                  onClick={() =>
-                    handleNavigateToPath(currentPath.slice(0, index + 1))
-                  }
+                  className='text-slate-300 cursor-pointer hover:text-white'
+                  onClick={() => handleNavigateToPath(currentPath.slice(0, index + 1))}
                 >
                   {item}
                 </span>
               )
             }))
           ]}
-          className="text-slate-300"
+          className='text-slate-300'
         />
       </div>
 
@@ -91,16 +85,16 @@ export default function CommandManager() {
         icon={<FolderOutlined />}
       >
         {loading ? (
-          <div className="flex justify-center items-center py-12">
-            <Spin size="large" />
+          <div className='flex justify-center items-center py-12'>
+            <Spin size='large' />
           </div>
         ) : currentItems.length > 0 ? (
           <List
             dataSource={currentItems}
             renderItem={item => (
-              <List.Item className="border-b border-slate-700/30 last:border-b-0 hover:bg-slate-700/20 rounded-lg p-4 transition-colors">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-3">
+              <List.Item className='border-b border-slate-700/30 last:border-b-0 hover:bg-slate-700/20 rounded-lg p-4 transition-colors'>
+                <div className='flex items-center justify-between w-full'>
+                  <div className='flex items-center gap-3'>
                     <Avatar
                       icon={item.isDir ? <FolderOutlined /> : <FileOutlined />}
                       className={`${
@@ -115,7 +109,7 @@ export default function CommandManager() {
                       }`}
                       onClick={() => {
                         if (item.isDir) {
-                          handleEnterDirectory(item.path)
+                          handleEnterDirectory(item.path);
                         }
                       }}
                     >
@@ -124,7 +118,7 @@ export default function CommandManager() {
                   </div>
 
                   {item.isFile && (
-                    <div className="flex items-center gap-4">
+                    <div className='flex items-center gap-4'>
                       <span
                         className={`text-sm font-medium ${
                           item.status === true
@@ -141,9 +135,7 @@ export default function CommandManager() {
                             : '未知状态'}
                       </span>
                       <button
-                        onClick={() =>
-                          handleToggleStatus(item.path, !item.status)
-                        }
+                        onClick={() => handleToggleStatus(item.path, !item.status)}
                         className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
                           item.status === true
                             ? 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30'
@@ -159,12 +151,9 @@ export default function CommandManager() {
             )}
           />
         ) : (
-          <XiuxianEmptyState
-            title="当前目录为空"
-            description="该目录下没有任何文件或文件夹"
-          />
+          <XiuxianEmptyState title='当前目录为空' description='该目录下没有任何文件或文件夹' />
         )}
       </XiuxianTableContainer>
     </XiuxianPageWrapper>
-  )
+  );
 }

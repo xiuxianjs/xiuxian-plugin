@@ -1,13 +1,13 @@
-import { InitWorldBoss } from '../../../../model/boss'
+import { InitWorldBoss } from '../../../../model/boss';
 
-export const selects = onSelects(['message.create'])
-export const regular = /^(#|＃|\/)?开启妖王$/
+export const selects = onSelects(['message.create']);
+export const regular = /^(#|＃|\/)?开启妖王$/;
 
 const res = onResponse(selects, async e => {
   if (!e || e.IsMaster) {
-    await InitWorldBoss()
-    return false
+    await InitWorldBoss();
+    return false;
   }
-})
-import mw from '@src/response/mw'
-export default onResponse(selects, [mw.current, res.current])
+});
+import mw from '@src/response/mw';
+export default onResponse(selects, [mw.current, res.current]);

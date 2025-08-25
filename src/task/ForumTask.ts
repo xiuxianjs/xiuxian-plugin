@@ -1,5 +1,5 @@
-import { readForum, writeForum } from '@src/model/trade'
-import { addCoin } from '@src/model/economy'
+import { readForum, writeForum } from '@src/model/trade';
+import { addCoin } from '@src/model/economy';
 
 /**
  * 读取论坛奖励记录（Forum）。
@@ -8,24 +8,24 @@ import { addCoin } from '@src/model/economy'
  * @returns
  */
 export const ForumTask = async () => {
-  let Forum
+  let Forum;
   try {
-    Forum = await readForum()
+    Forum = await readForum();
   } catch {
     //没有表要先建立一个！
-    await writeForum([])
-    Forum = await readForum()
+    await writeForum([]);
+    Forum = await readForum();
   }
-  const now_time = Date.now()
+  const now_time = Date.now();
   for (let i = 0; i < Forum.length; i++) {
-    const time = (now_time - Forum[i].now_time) / 24 / 60 / 60 / 1000
-    if (time < 3) break
-    const usr_qq = Forum[i].qq
-    const lingshi = Forum[i].whole
-    await addCoin(usr_qq, lingshi)
-    Forum.splice(i, 1)
-    i--
+    const time = (now_time - Forum[i].now_time) / 24 / 60 / 60 / 1000;
+    if (time < 3) break;
+    const usr_qq = Forum[i].qq;
+    const lingshi = Forum[i].whole;
+    await addCoin(usr_qq, lingshi);
+    Forum.splice(i, 1);
+    i--;
   }
-  await writeForum(Forum)
-  return false
-}
+  await writeForum(Forum);
+  return false;
+};

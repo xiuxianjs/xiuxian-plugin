@@ -1,61 +1,55 @@
-import { Image, Text, useSend } from 'alemonjs'
+import { Image, Text, useSend } from 'alemonjs';
 
-import {
-  __PATH,
-  existplayer,
-  keysByPath,
-  readPlayer,
-  sortBy
-} from '@src/model/index'
+import { __PATH, existplayer, keysByPath, readPlayer, sortBy } from '@src/model/index';
 
-import { selects } from '@src/response/mw'
-import { screenshot } from '@src/image'
-export const regular = /^(#|＃|\/)?强化榜$/
+import { selects } from '@src/response/mw';
+import { screenshot } from '@src/image';
+export const regular = /^(#|＃|\/)?强化榜$/;
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e)
-  const usr_qq = e.UserId
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
+  const Send = useSend(e);
+  const usr_qq = e.UserId;
+  const ifexistplay = await existplayer(usr_qq);
+  if (!ifexistplay) return false;
 
-  const playerList = await keysByPath(__PATH.player_path)
+  const playerList = await keysByPath(__PATH.player_path);
   //数组
-  const temp = []
+  const temp = [];
 
-  let i = 0
+  let i = 0;
   for (const player_id of playerList) {
     //(攻击+防御+生命*0.5)*暴击率=理论战力
-    const player = await readPlayer(player_id)
+    const player = await readPlayer(player_id);
     //计算并保存到数组
-    let power = player.攻击加成 + player.防御加成 + player.生命加成
-    power = Math.trunc(power)
+    let power = player.攻击加成 + player.防御加成 + player.生命加成;
+    power = Math.trunc(power);
     temp[i] = {
       power: power,
       qq: player_id,
       name: player.名号,
       level_id: player.level_id
-    }
-    i++
+    };
+    i++;
   }
   //根据力量排序
-  temp.sort(sortBy('power'))
+  temp.sort(sortBy('power'));
 
   //取前10名
-  const top = temp.slice(0, 10)
+  const top = temp.slice(0, 10);
   const image = await screenshot('immortal_genius', usr_qq, {
     allplayer: top,
     title: '强化榜',
     label: '强化'
-  })
+  });
 
   if (Buffer.isBuffer(image)) {
-    Send(Image(image))
-    return
+    Send(Image(image));
+    return;
   }
 
-  Send(Text('图片生产失败'))
+  Send(Text('图片生产失败'));
 
-  return
-})
-import mw from '@src/response/mw'
-export default onResponse(selects, [mw.current, res.current])
+  return;
+});
+import mw from '@src/response/mw';
+export default onResponse(selects, [mw.current, res.current]);

@@ -1,17 +1,13 @@
-import React from 'react'
-import {
-  UserOutlined,
-  HistoryOutlined,
-  BarChartOutlined
-} from '@ant-design/icons'
+import React from 'react';
+import { UserOutlined, HistoryOutlined, BarChartOutlined } from '@ant-design/icons';
 
 // 导入UI组件库
-import { XiuxianTabGroup } from '@/components/ui'
+import { XiuxianTabGroup } from '@/components/ui';
 
 interface TabNavigationProps {
-  selectedTab: string
-  onTabChange: (tab: string) => void
-  onRecordsTabClick: () => void
+  selectedTab: string;
+  onTabChange: (tab: string) => void;
+  onRecordsTabClick: () => void;
 }
 
 export default function TabNavigation({
@@ -35,19 +31,19 @@ export default function TabNavigation({
       icon: <BarChartOutlined />,
       content: null
     }
-  ]
+  ];
 
   const handleTabChange = (tabName: string) => {
     if (tabName === 'records') {
-      onRecordsTabClick()
+      onRecordsTabClick();
     } else {
-      onTabChange(tabName)
+      onTabChange(tabName);
     }
-  }
+  };
 
   return (
-    <div className="mb-6">
-      <div className="flex gap-4">
+    <div className='mb-6'>
+      <div className='flex gap-4'>
         {tabs.map(tab => (
           <button
             key={tab.name}
@@ -66,5 +62,5 @@ export default function TabNavigation({
         ))}
       </div>
     </div>
-  )
+  );
 }

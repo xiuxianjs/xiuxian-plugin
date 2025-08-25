@@ -1,9 +1,9 @@
-import React from 'react'
-import { Table, TableProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Table, TableProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianTableProps extends TableProps {
-  className?: string
+  className?: string;
 }
 
 const XiuxianTable: React.FC<XiuxianTableProps> = ({
@@ -26,7 +26,7 @@ const XiuxianTable: React.FC<XiuxianTableProps> = ({
       rowClassName={rowClassName}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianTable
+export default XiuxianTable;

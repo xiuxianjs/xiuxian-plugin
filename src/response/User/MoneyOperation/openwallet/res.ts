@@ -1,99 +1,64 @@
-import { Text, useSend } from 'alemonjs'
+import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api'
-import {
-  existplayer,
-  existNajieThing,
-  addNajieThing,
-  addCoin
-} from '@src/model/index'
+import { data } from '@src/model/api';
+import { existplayer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
-import { selects } from '@src/response/mw'
-import mw from '@src/response/mw'
-export const regular = /^(#|＃|\/)?打开钱包$/
+import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+export const regular = /^(#|＃|\/)?打开钱包$/;
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e)
-  const usr_qq = e.UserId
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const player = await await data.getData('player', usr_qq)
-  const thing_name = '水脚脚的钱包'
+  const Send = useSend(e);
+  const usr_qq = e.UserId;
+  const ifexistplay = await existplayer(usr_qq);
+  if (!ifexistplay) return false;
+  const player = await await data.getData('player', usr_qq);
+  const thing_name = '水脚脚的钱包';
   //x是纳戒内有的数量
-  const acount = await existNajieThing(usr_qq, thing_name, '装备')
+  const acount = await existNajieThing(usr_qq, thing_name, '装备');
   //没有
   if (!acount) {
-    Send(Text(`你没有[${thing_name}]这样的装备`))
-    return false
+    Send(Text(`你没有[${thing_name}]这样的装备`));
+    return false;
   }
   //扣掉装备
-  await addNajieThing(usr_qq, thing_name, '装备', -1)
+  await addNajieThing(usr_qq, thing_name, '装备', -1);
   //获得随机
-  const x = 0.4
-  const random1 = Math.random()
-  const y = 0.3
-  const random2 = Math.random()
-  const z = 0.2
-  const random3 = Math.random()
-  const p = 0.1
-  const random4 = Math.random()
-  let m = ''
-  let lingshi = 0
+  const x = 0.4;
+  const random1 = Math.random();
+  const y = 0.3;
+  const random2 = Math.random();
+  const z = 0.2;
+  const random3 = Math.random();
+  const p = 0.1;
+  const random4 = Math.random();
+  let m = '';
+  let lingshi = 0;
   // 获得灵石
   if (random1 < x) {
     if (random2 < y) {
       if (random3 < z) {
         if (random4 < p) {
-          lingshi = 2000000
-          m =
-            player.名号 +
-            '打开了[' +
-            thing_name +
-            ']金光一现！' +
-            lingshi +
-            '颗灵石！'
+          lingshi = 2000000;
+          m = player.名号 + '打开了[' + thing_name + ']金光一现！' + lingshi + '颗灵石！';
         } else {
-          lingshi = 1000000
-          m =
-            player.名号 +
-            '打开了[' +
-            thing_name +
-            ']金光一现!' +
-            lingshi +
-            '颗灵石！'
+          lingshi = 1000000;
+          m = player.名号 + '打开了[' + thing_name + ']金光一现!' + lingshi + '颗灵石！';
         }
       } else {
-        lingshi = 400000
-        m =
-          player.名号 +
-          '打开了[' +
-          thing_name +
-          ']你很开心的得到了' +
-          lingshi +
-          '颗灵石！'
+        lingshi = 400000;
+        m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
       }
     } else {
-      lingshi = 180000
-      m =
-        player.名号 +
-        '打开了[' +
-        thing_name +
-        ']你很开心的得到了' +
-        lingshi +
-        '颗灵石！'
+      lingshi = 180000;
+      m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
     }
   } else {
-    lingshi = 100000
-    m =
-      player.名号 +
-      '打开了[' +
-      thing_name +
-      ']你很开心的得到了' +
-      lingshi +
-      '颗灵石！'
+    lingshi = 100000;
+    m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
   }
-  await addCoin(usr_qq, lingshi)
-  Send(Text(m))
-  return false
-})
-export default onResponse(selects, [mw.current, res.current])
+  await addCoin(usr_qq, lingshi);
+  Send(Text(m));
+  return false;
+});
+export default onResponse(selects, [mw.current, res.current]);

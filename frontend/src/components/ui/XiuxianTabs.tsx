@@ -1,9 +1,9 @@
-import React from 'react'
-import { Tabs, TabsProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Tabs, TabsProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianTabsProps extends TabsProps {
-  className?: string
+  className?: string;
 }
 
 const XiuxianTabs: React.FC<XiuxianTabsProps> = ({ className, ...props }) => {
@@ -23,7 +23,7 @@ const XiuxianTabs: React.FC<XiuxianTabsProps> = ({ className, ...props }) => {
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianTabs
+export default XiuxianTabs;

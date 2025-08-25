@@ -1,14 +1,14 @@
-import React from 'react'
-import { ReloadOutlined } from '@ant-design/icons'
-import classNames from 'classnames'
+import React from 'react';
+import { ReloadOutlined } from '@ant-design/icons';
+import classNames from 'classnames';
 
 interface XiuxianRefreshButtonProps {
-  loading: boolean
-  onClick: () => void
-  text?: string
-  loadingText?: string
-  className?: string
-  disabled?: boolean
+  loading: boolean;
+  onClick: () => void;
+  text?: string;
+  loadingText?: string;
+  className?: string;
+  disabled?: boolean;
 }
 
 const XiuxianRefreshButton: React.FC<XiuxianRefreshButtonProps> = ({
@@ -28,12 +28,10 @@ const XiuxianRefreshButton: React.FC<XiuxianRefreshButtonProps> = ({
       onClick={onClick}
       disabled={loading || disabled}
     >
-      <ReloadOutlined
-        className={classNames('text-lg', { 'animate-spin': loading })}
-      />
+      <ReloadOutlined className={classNames('text-lg', { 'animate-spin': loading })} />
       {loading ? loadingText : text}
     </button>
-  )
-}
+  );
+};
 
-export default XiuxianRefreshButton
+export default XiuxianRefreshButton;

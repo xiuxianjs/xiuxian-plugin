@@ -1,17 +1,14 @@
-import React from 'react'
-import { Input } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Input } from 'antd';
+import classNames from 'classnames';
 
-const { TextArea } = Input
+const { TextArea } = Input;
 
 interface XiuxianTextAreaProps {
-  className?: string
+  className?: string;
 }
 
-const XiuxianTextArea: React.FC<XiuxianTextAreaProps> = ({
-  className,
-  ...props
-}) => {
+const XiuxianTextArea: React.FC<XiuxianTextAreaProps> = ({ className, ...props }) => {
   return (
     <TextArea
       className={classNames(
@@ -22,7 +19,7 @@ const XiuxianTextArea: React.FC<XiuxianTextAreaProps> = ({
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianTextArea
+export default XiuxianTextArea;

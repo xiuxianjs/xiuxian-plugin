@@ -1,21 +1,20 @@
-import React from 'react'
-import { Table, TableProps } from 'antd'
-import { XiuxianPagination } from './index'
+import React from 'react';
+import { Table, TableProps } from 'antd';
+import { XiuxianPagination } from './index';
 
-interface XiuxianTableWithPaginationProps
-  extends Omit<TableProps<any>, 'pagination'> {
+interface XiuxianTableWithPaginationProps extends Omit<TableProps<any>, 'pagination'> {
   pagination?: {
-    current: number
-    pageSize: number
-    total: number
-    showSizeChanger?: boolean
-    showQuickJumper?: boolean
-    showTotal?: (total: number, range: [number, number]) => string
-    pageSizeOptions?: string[]
-  }
-  onPaginationChange?: (page: number, pageSize: number) => void
-  onShowSizeChange?: (current: number, size: number) => void
-  className?: string
+    current: number;
+    pageSize: number;
+    total: number;
+    showSizeChanger?: boolean;
+    showQuickJumper?: boolean;
+    showTotal?: (total: number, range: [number, number]) => string;
+    pageSizeOptions?: string[];
+  };
+  onPaginationChange?: (page: number, pageSize: number) => void;
+  onShowSizeChange?: (current: number, size: number) => void;
+  className?: string;
 }
 
 const XiuxianTableWithPagination: React.FC<XiuxianTableWithPaginationProps> = ({
@@ -27,22 +26,22 @@ const XiuxianTableWithPagination: React.FC<XiuxianTableWithPaginationProps> = ({
 }) => {
   const handlePaginationChange = (page: number, pageSize: number) => {
     if (onPaginationChange) {
-      onPaginationChange(page, pageSize)
+      onPaginationChange(page, pageSize);
     }
-  }
+  };
 
   const handleShowSizeChange = (current: number, size: number) => {
     if (onShowSizeChange) {
-      onShowSizeChange(current, size)
+      onShowSizeChange(current, size);
     }
-  }
+  };
 
   return (
     <div className={className}>
-      <Table {...tableProps} pagination={false} className="xiuxian-table" />
+      <Table {...tableProps} pagination={false} className='xiuxian-table' />
 
       {pagination && (
-        <div className="mt-4">
+        <div className='mt-4'>
           <XiuxianPagination
             current={pagination.current}
             pageSize={pagination.pageSize}
@@ -57,7 +56,7 @@ const XiuxianTableWithPagination: React.FC<XiuxianTableWithPaginationProps> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default XiuxianTableWithPagination
+export default XiuxianTableWithPagination;

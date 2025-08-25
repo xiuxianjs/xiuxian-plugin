@@ -1,15 +1,12 @@
-import React from 'react'
-import { Select, SelectProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Select, SelectProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianSelectProps extends SelectProps {
-  className?: string
+  className?: string;
 }
 
-const XiuxianSelect: React.FC<XiuxianSelectProps> = ({
-  className,
-  ...props
-}) => {
+const XiuxianSelect: React.FC<XiuxianSelectProps> = ({ className, ...props }) => {
   return (
     <Select
       className={classNames(
@@ -27,7 +24,7 @@ const XiuxianSelect: React.FC<XiuxianSelectProps> = ({
       }}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianSelect
+export default XiuxianSelect;

@@ -1,9 +1,9 @@
-import React from 'react'
-import { Input, InputProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Input, InputProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianInputProps extends InputProps {
-  className?: string
+  className?: string;
 }
 
 const XiuxianInput: React.FC<XiuxianInputProps> = ({ className, ...props }) => {
@@ -17,7 +17,7 @@ const XiuxianInput: React.FC<XiuxianInputProps> = ({ className, ...props }) => {
       )}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default XiuxianInput
+export default XiuxianInput;

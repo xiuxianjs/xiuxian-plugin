@@ -1,19 +1,19 @@
-import { Image, useSend } from 'alemonjs'
-import { selects } from '@src/response/mw'
-import { getValuablesImage } from '@src/model/image'
-import { existplayer } from '@src/model'
+import { Image, useSend } from 'alemonjs';
+import { selects } from '@src/response/mw';
+import { getValuablesImage } from '@src/model/image';
+import { existplayer } from '@src/model';
 
-export const regular = /^(#|＃|\/)?万宝楼$/
+export const regular = /^(#|＃|\/)?万宝楼$/;
 const res = onResponse(selects, async e => {
-  const Send = useSend(e)
+  const Send = useSend(e);
 
-  const usr_qq = e.UserId
-  const ifexistplay = await existplayer(usr_qq)
-  if (!ifexistplay) return false
-  const img = await getValuablesImage(e)
+  const usr_qq = e.UserId;
+  const ifexistplay = await existplayer(usr_qq);
+  if (!ifexistplay) return false;
+  const img = await getValuablesImage(e);
   if (Buffer.isBuffer(img)) {
-    Send(Image(img))
+    Send(Image(img));
   }
-})
-import mw from '@src/response/mw'
-export default onResponse(selects, [mw.current, res.current])
+});
+import mw from '@src/response/mw';
+export default onResponse(selects, [mw.current, res.current]);

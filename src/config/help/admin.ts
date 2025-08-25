@@ -1,12 +1,12 @@
 export interface HelpItem {
-  icon: string
-  title: string
-  desc: string
+  icon: string;
+  title: string;
+  desc: string;
 }
 
 export interface HelpGroup {
-  group: string
-  list: HelpItem[]
+  group: string;
+  list: HelpItem[];
 }
 
 const helpConfig: HelpGroup[] = [
@@ -105,5 +105,5 @@ const helpConfig: HelpGroup[] = [
       }
     ]
   }
-]
-export default helpConfig
+];
+export default helpConfig;

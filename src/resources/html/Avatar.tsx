@@ -1,6 +1,6 @@
-import React from 'react'
-import user_stateURL from '@src/resources/img/user_state.png'
-import classnames from 'classnames'
+import React from 'react';
+import user_stateURL from '@src/resources/img/user_state.png';
+import classnames from 'classnames';
 /**
  *
  * @param param0
@@ -11,20 +11,17 @@ export const Avatar = ({
   rootClassName,
   className
 }: {
-  src: string
-  rootClassName?: string
-  className?: string
+  src: string;
+  rootClassName?: string;
+  className?: string;
 }) => {
   return (
     <div
-      className={classnames(
-        rootClassName,
-        'relative flex items-center justify-center w-40 h-40'
-      )}
+      className={classnames(rootClassName, 'relative flex items-center justify-center w-40 h-40')}
     >
       {/* 头饰图层 */}
       <div
-        className="absolute inset-0 w-full h-full rounded-full bg-cover bg-center z-10"
+        className='absolute inset-0 w-full h-full rounded-full bg-cover bg-center z-10'
         style={{ backgroundImage: `url(${user_stateURL})` }}
       />
       {/* 头像图层（更小） */}
@@ -36,5 +33,5 @@ export const Avatar = ({
         style={{ backgroundImage: `url(${src})` }}
       />
     </div>
-  )
-}
+  );
+};

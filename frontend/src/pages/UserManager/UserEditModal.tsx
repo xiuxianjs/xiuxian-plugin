@@ -1,35 +1,25 @@
-import React, { useState, useEffect } from 'react'
-import {
-  Modal,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  Button,
-  Tabs,
-  Row,
-  Col
-} from 'antd'
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, InputNumber, Select, Button, Tabs, Row, Col } from 'antd';
 import {
   SaveOutlined,
   UserOutlined,
   SafetyOutlined,
   GoldOutlined,
   CrownOutlined
-} from '@ant-design/icons'
-import { GameUser } from '@/types/types'
-import { levelNames } from '@/config'
+} from '@ant-design/icons';
+import { GameUser } from '@/types/types';
+import { levelNames } from '@/config';
 
-const { Option } = Select
+const { Option } = Select;
 
 interface UserEditModalProps {
-  visible: boolean
-  onCancel: () => void
-  onSave: (user: GameUser) => void
-  user: GameUser | null
-  loading?: boolean
-  getSexDisplay: (sex: string) => string
-  getLinggenColor: (linggen: unknown) => string
+  visible: boolean;
+  onCancel: () => void;
+  onSave: (user: GameUser) => void;
+  user: GameUser | null;
+  loading?: boolean;
+  getSexDisplay: (sex: string) => string;
+  getLinggenColor: (linggen: unknown) => string;
 }
 
 export default function UserEditModal({
@@ -39,12 +29,12 @@ export default function UserEditModal({
   user,
   loading = false
 }: UserEditModalProps) {
-  const [form] = Form.useForm()
-  const [editingUser, setEditingUser] = useState<GameUser | null>(null)
+  const [form] = Form.useForm();
+  const [editingUser, setEditingUser] = useState<GameUser | null>(null);
 
   useEffect(() => {
     if (visible && user) {
-      setEditingUser({ ...user })
+      setEditingUser({ ...user });
       form.setFieldsValue({
         id: user.id,
         名号: user.名号,
@@ -69,31 +59,31 @@ export default function UserEditModal({
         lunhui: user.lunhui,
         连续签到天数: user.连续签到天数,
         幸运: user.幸运
-      })
+      });
     }
-  }, [visible, user, form])
+  }, [visible, user, form]);
 
   const handleSave = async () => {
     try {
-      const values = await form.validateFields()
+      const values = await form.validateFields();
       if (editingUser) {
         const updatedUser: GameUser = {
           ...editingUser,
           ...values
-        }
-        onSave(updatedUser)
+        };
+        onSave(updatedUser);
       }
     } catch (error) {
-      console.error('表单验证失败:', error)
+      console.error('表单验证失败:', error);
     }
-  }
+  };
 
   return (
     <Modal
       title={
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold text-white">编辑用户</span>
-          <span className="text-slate-300">用户ID: {user?.id}</span>
+        <div className='flex items-center gap-2'>
+          <span className='text-xl font-bold text-white'>编辑用户</span>
+          <span className='text-slate-300'>用户ID: {user?.id}</span>
         </div>
       }
       open={visible}
@@ -101,30 +91,30 @@ export default function UserEditModal({
       width={1200}
       footer={[
         <Button
-          key="cancel"
+          key='cancel'
           onClick={onCancel}
-          className="bg-slate-600 border-slate-500 text-white"
+          className='bg-slate-600 border-slate-500 text-white'
         >
           取消
         </Button>,
         <Button
-          key="save"
-          type="primary"
+          key='save'
+          type='primary'
           icon={<SaveOutlined />}
           onClick={handleSave}
           loading={loading}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 border-0"
+          className='bg-gradient-to-r from-purple-500 to-pink-500 border-0'
         >
           保存
         </Button>
       ]}
-      className="user-edit-modal xiuxian-modal"
+      className='user-edit-modal xiuxian-modal'
     >
-      <div className="space-y-6">
-        <Form form={form} layout="vertical">
+      <div className='space-y-6'>
+        <Form form={form} layout='vertical'>
           <Tabs
-            type="card"
-            className="xiuxian-tabs"
+            type='card'
+            className='xiuxian-tabs'
             tabBarStyle={{
               backgroundColor: 'rgba(30, 41, 59, 0.8)',
               borderBottom: '1px solid rgba(71, 85, 105, 0.5)'
@@ -133,49 +123,46 @@ export default function UserEditModal({
               {
                 key: 'basic',
                 label: (
-                  <span className="text-white hover:text-purple-300 transition-colors flex items-center gap-2">
+                  <span className='text-white hover:text-purple-300 transition-colors flex items-center gap-2'>
                     <UserOutlined />
                     基础信息
                   </span>
                 ),
                 children: (
-                  <div className="p-4">
+                  <div className='p-4'>
                     <Row gutter={16}>
                       <Col span={8}>
                         <Form.Item
-                          label={<span className="text-slate-200">用户ID</span>}
-                          name="id"
+                          label={<span className='text-slate-200'>用户ID</span>}
+                          name='id'
                           rules={[{ required: true, message: '请输入用户ID' }]}
                         >
-                          <Input className="xiuxian-input" disabled />
+                          <Input className='xiuxian-input' disabled />
                         </Form.Item>
                       </Col>
                       <Col span={8}>
                         <Form.Item
-                          label={<span className="text-slate-200">名号</span>}
-                          name="名号"
+                          label={<span className='text-slate-200'>名号</span>}
+                          name='名号'
                           rules={[{ required: true, message: '请输入名号' }]}
                         >
-                          <Input className="xiuxian-input" />
+                          <Input className='xiuxian-input' />
                         </Form.Item>
                       </Col>
                       <Col span={8}>
-                        <Form.Item
-                          label={<span className="text-slate-200">性别</span>}
-                          name="sex"
-                        >
-                          <Select className="xiuxian-select">
-                            <Option value="男">男</Option>
-                            <Option value="女">女</Option>
+                        <Form.Item label={<span className='text-slate-200'>性别</span>} name='sex'>
+                          <Select className='xiuxian-select'>
+                            <Option value='男'>男</Option>
+                            <Option value='女'>女</Option>
                           </Select>
                         </Form.Item>
                       </Col>
                       <Col span={8}>
                         <Form.Item
-                          label={<span className="text-slate-200">境界</span>}
-                          name="level_id"
+                          label={<span className='text-slate-200'>境界</span>}
+                          name='level_id'
                         >
-                          <Select className="xiuxian-select">
+                          <Select className='xiuxian-select'>
                             {Object.entries(levelNames).map(([id, name]) => (
                               <Option key={id} value={parseInt(id)}>
                                 {name}
@@ -185,11 +172,8 @@ export default function UserEditModal({
                         </Form.Item>
                       </Col>
                       <Col span={16}>
-                        <Form.Item
-                          label={<span className="text-slate-200">宣言</span>}
-                          name="宣言"
-                        >
-                          <Input.TextArea rows={2} className="xiuxian-input" />
+                        <Form.Item label={<span className='text-slate-200'>宣言</span>} name='宣言'>
+                          <Input.TextArea rows={2} className='xiuxian-input' />
                         </Form.Item>
                       </Col>
                     </Row>
@@ -199,21 +183,21 @@ export default function UserEditModal({
               {
                 key: 'combat',
                 label: (
-                  <span className="text-white hover:text-purple-300 transition-colors flex items-center gap-2">
+                  <span className='text-white hover:text-purple-300 transition-colors flex items-center gap-2'>
                     <SafetyOutlined />
                     战斗属性
                   </span>
                 ),
                 children: (
-                  <div className="p-4">
+                  <div className='p-4'>
                     <Row gutter={16}>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">攻击力</span>}
-                          name="攻击"
+                          label={<span className='text-slate-200'>攻击力</span>}
+                          name='攻击'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             formatter={(value: number | string | undefined) =>
                               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -226,11 +210,11 @@ export default function UserEditModal({
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">防御力</span>}
-                          name="防御"
+                          label={<span className='text-slate-200'>防御力</span>}
+                          name='防御'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             formatter={(value: number | string | undefined) =>
                               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -243,13 +227,11 @@ export default function UserEditModal({
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">当前血量</span>
-                          }
-                          name="当前血量"
+                          label={<span className='text-slate-200'>当前血量</span>}
+                          name='当前血量'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             formatter={(value: number | string | undefined) =>
                               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -262,13 +244,11 @@ export default function UserEditModal({
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">血量上限</span>
-                          }
-                          name="血量上限"
+                          label={<span className='text-slate-200'>血量上限</span>}
+                          name='血量上限'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             formatter={(value: number | string | undefined) =>
                               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -281,11 +261,11 @@ export default function UserEditModal({
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">暴击率</span>}
-                          name="暴击率"
+                          label={<span className='text-slate-200'>暴击率</span>}
+                          name='暴击率'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             max={1}
                             step={0.01}
@@ -293,29 +273,21 @@ export default function UserEditModal({
                               `${(Number(value) * 100).toFixed(2)}%`
                             }
                             parser={(value: string | undefined) =>
-                              value?.replace('%', '')
-                                ? Number(value?.replace('%', '')) / 100
-                                : 0
+                              value?.replace('%', '') ? Number(value?.replace('%', '')) / 100 : 0
                             }
                           />
                         </Form.Item>
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">暴击伤害</span>
-                          }
-                          name="暴击伤害"
+                          label={<span className='text-slate-200'>暴击伤害</span>}
+                          name='暴击伤害'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
-                            formatter={(value: number | string | undefined) =>
-                              `${value}%`
-                            }
-                            parser={(value: string | undefined) =>
-                              value?.replace('%', '') || 0
-                            }
+                            formatter={(value: number | string | undefined) => `${value}%`}
+                            parser={(value: string | undefined) => value?.replace('%', '') || 0}
                           />
                         </Form.Item>
                       </Col>
@@ -326,21 +298,32 @@ export default function UserEditModal({
               {
                 key: 'resources',
                 label: (
-                  <span className="text-white hover:text-purple-300 transition-colors flex items-center gap-2">
+                  <span className='text-white hover:text-purple-300 transition-colors flex items-center gap-2'>
                     <GoldOutlined />
                     修仙资源
                   </span>
                 ),
                 children: (
-                  <div className="p-4">
+                  <div className='p-4'>
                     <Row gutter={16}>
                       <Col span={6}>
-                        <Form.Item
-                          label={<span className="text-slate-200">灵石</span>}
-                          name="灵石"
-                        >
+                        <Form.Item label={<span className='text-slate-200'>灵石</span>} name='灵石'>
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
+                            min={0}
+                            formatter={(value: number | string | undefined) =>
+                              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                            }
+                            parser={(value: string | undefined) =>
+                              value?.replace(/\$\s?|(,*)/g, '') || ''
+                            }
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={6}>
+                        <Form.Item label={<span className='text-slate-200'>神石</span>} name='神石'>
+                          <InputNumber
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             formatter={(value: number | string | undefined) =>
                               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -353,11 +336,33 @@ export default function UserEditModal({
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">神石</span>}
-                          name="神石"
+                          label={<span className='text-slate-200'>轮回点</span>}
+                          name='轮回点'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
+                            min={0}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={6}>
+                        <Form.Item label={<span className='text-slate-200'>修为</span>} name='修为'>
+                          <InputNumber
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
+                            min={0}
+                            formatter={(value: number | string | undefined) =>
+                              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                            }
+                            parser={(value: string | undefined) =>
+                              value?.replace(/\$\s?|(,*)/g, '') || ''
+                            }
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={6}>
+                        <Form.Item label={<span className='text-slate-200'>血气</span>} name='血气'>
+                          <InputNumber
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                             formatter={(value: number | string | undefined) =>
                               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -370,56 +375,11 @@ export default function UserEditModal({
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">轮回点</span>}
-                          name="轮回点"
+                          label={<span className='text-slate-200'>好感度</span>}
+                          name='favorability'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
-                            min={0}
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={6}>
-                        <Form.Item
-                          label={<span className="text-slate-200">修为</span>}
-                          name="修为"
-                        >
-                          <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
-                            min={0}
-                            formatter={(value: number | string | undefined) =>
-                              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                            }
-                            parser={(value: string | undefined) =>
-                              value?.replace(/\$\s?|(,*)/g, '') || ''
-                            }
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={6}>
-                        <Form.Item
-                          label={<span className="text-slate-200">血气</span>}
-                          name="血气"
-                        >
-                          <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
-                            min={0}
-                            formatter={(value: number | string | undefined) =>
-                              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                            }
-                            parser={(value: string | undefined) =>
-                              value?.replace(/\$\s?|(,*)/g, '') || ''
-                            }
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={6}>
-                        <Form.Item
-                          label={<span className="text-slate-200">好感度</span>}
-                          name="favorability"
-                        >
-                          <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
@@ -431,84 +391,76 @@ export default function UserEditModal({
               {
                 key: 'achievements',
                 label: (
-                  <span className="text-white hover:text-purple-300 transition-colors flex items-center gap-2">
+                  <span className='text-white hover:text-purple-300 transition-colors flex items-center gap-2'>
                     <CrownOutlined />
                     修仙成就
                   </span>
                 ),
                 children: (
-                  <div className="p-4">
+                  <div className='p-4'>
                     <Row gutter={16}>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">镇妖塔层数</span>
-                          }
-                          name="镇妖塔层数"
+                          label={<span className='text-slate-200'>镇妖塔层数</span>}
+                          name='镇妖塔层数'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">神魄段数</span>
-                          }
-                          name="神魄段数"
+                          label={<span className='text-slate-200'>神魄段数</span>}
+                          name='神魄段数'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">魔道值</span>}
-                          name="魔道值"
+                          label={<span className='text-slate-200'>魔道值</span>}
+                          name='魔道值'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">轮回次数</span>
-                          }
-                          name="lunhui"
+                          label={<span className='text-slate-200'>轮回次数</span>}
+                          name='lunhui'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={
-                            <span className="text-slate-200">连续签到天数</span>
-                          }
-                          name="连续签到天数"
+                          label={<span className='text-slate-200'>连续签到天数</span>}
+                          name='连续签到天数'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
                       </Col>
                       <Col span={6}>
                         <Form.Item
-                          label={<span className="text-slate-200">幸运值</span>}
-                          name="幸运"
+                          label={<span className='text-slate-200'>幸运值</span>}
+                          name='幸运'
                         >
                           <InputNumber
-                            className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900"
+                            className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                             min={0}
                           />
                         </Form.Item>
@@ -522,5 +474,5 @@ export default function UserEditModal({
         </Form>
       </div>
     </Modal>
-  )
+  );
 }

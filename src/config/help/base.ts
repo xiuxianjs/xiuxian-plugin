@@ -1,12 +1,12 @@
 export interface HelpItem {
-  icon: string
-  title: string
-  desc: string
+  icon: string;
+  title: string;
+  desc: string;
 }
 
 export interface HelpGroup {
-  group: string
-  list: HelpItem[]
+  group: string;
+  list: HelpItem[];
 }
 
 const mainHelpConfig: HelpGroup[] = [
@@ -247,5 +247,5 @@ const mainHelpConfig: HelpGroup[] = [
       { icon: 'help-icon_14', title: '#更新日志', desc: '查看更新日志' }
     ]
   }
-]
-export default mainHelpConfig
+];
+export default mainHelpConfig;

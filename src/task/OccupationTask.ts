@@ -1,14 +1,10 @@
-import { notUndAndNull } from '@src/model/common'
-import { readPlayer } from '@src/model/xiuxian_impl'
-import { __PATH, keysByPath } from '@src/model/keys'
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis'
-import { safeParse } from '@src/model/utils/safe'
-import type { ActionState, Player } from '@src/types'
-import {
-  mine_jiesuan,
-  plant_jiesuan,
-  calcEffectiveMinutes
-} from '@src/response/Occupation/api'
+import { notUndAndNull } from '@src/model/common';
+import { readPlayer } from '@src/model/xiuxian_impl';
+import { __PATH, keysByPath } from '@src/model/keys';
+import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
+import { safeParse } from '@src/model/utils/safe';
+import type { ActionState, Player } from '@src/types';
+import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
 
 /**
  * 遍历所有玩家，检查每个玩家的当前动作（如闭关、采集等）。
@@ -18,67 +14,65 @@ import {
 通过推送消息通知玩家或群组结算结果。
  */
 export const OccupationTask = async () => {
-  const playerList = await keysByPath(__PATH.player_path)
+  const playerList = await keysByPath(__PATH.player_path);
   for (const player_id of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(player_id, 'action')
-    const action = safeParse<ActionState | null>(actionRaw, null)
+    const actionRaw = await getDataByUserId(player_id, 'action');
+    const action = safeParse<ActionState | null>(actionRaw, null);
     // 不为空，存在动作
-    if (!action) continue
+    if (!action) continue;
 
-    let push_address: string | undefined // 消息推送地址
+    let push_address: string | undefined; // 消息推送地址
     if ('group_id' in action && notUndAndNull(action.group_id)) {
-      push_address = action.group_id as string
+      push_address = action.group_id as string;
     }
 
     // 动作结束时间（预处理提前量）
-    const now_time = Date.now()
+    const now_time = Date.now();
 
     // 闭关状态结算
     if (action.plant === '0') {
-      const end_time = action.end_time - 60000 * 2 // 提前 2 分钟
+      const end_time = action.end_time - 60000 * 2; // 提前 2 分钟
       if (now_time > end_time) {
         // 若已结算，跳过
-        if (action.is_jiesuan === 1) continue
+        if (action.is_jiesuan === 1) continue;
 
         // 计算开始时间和有效时间（使用统一的时间槽计算逻辑）
-        const start_time = action.end_time - Number(action.time)
-        const now = Date.now()
-        const timeMin = calcEffectiveMinutes(start_time, action.end_time, now)
+        const start_time = action.end_time - Number(action.time);
+        const now = Date.now();
+        const timeMin = calcEffectiveMinutes(start_time, action.end_time, now);
 
         // 使用统一的采药结算函数
-        await plant_jiesuan(player_id, timeMin, push_address)
+        await plant_jiesuan(player_id, timeMin, push_address);
 
         // 状态复位
-        const arr = { ...action }
+        const arr = { ...action };
         // 设为已结算
-        arr.is_jiesuan = 1
-        arr.plant = 1
-        arr.shutup = 1
-        arr.working = 1
-        arr.power_up = 1
-        arr.Place_action = 1
-        arr.Place_actionplus = 1
-        delete (arr as Partial<ActionState>).group_id
-        await setDataByUserId(player_id, 'action', JSON.stringify(arr))
+        arr.is_jiesuan = 1;
+        arr.plant = 1;
+        arr.shutup = 1;
+        arr.working = 1;
+        arr.power_up = 1;
+        arr.Place_action = 1;
+        arr.Place_actionplus = 1;
+        delete (arr as Partial<ActionState>).group_id;
+        await setDataByUserId(player_id, 'action', JSON.stringify(arr));
       }
     }
 
     // 采矿状态结算
     if (action.mine === '0') {
-      const end_time = action.end_time - 60000 * 2
+      const end_time = action.end_time - 60000 * 2;
       if (now_time > end_time) {
-        const playerRaw = await readPlayer(player_id)
-        if (!playerRaw || Array.isArray(playerRaw)) continue
-        const player = playerRaw as Player
-        if (!notUndAndNull(player.level_id)) continue
+        const playerRaw = await readPlayer(player_id);
+        if (!playerRaw || Array.isArray(playerRaw)) continue;
+        const player = playerRaw as Player;
+        if (!notUndAndNull(player.level_id)) continue;
         const rawTime2 =
-          typeof action.time === 'string'
-            ? parseInt(action.time)
-            : Number(action.time)
-        const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60
+          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;
 
-        await mine_jiesuan(player_id, timeMin, push_address)
+        await mine_jiesuan(player_id, timeMin, push_address);
 
         // const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * timeMin)
         // const occRow = data.occupation_exp_list.find(
@@ -128,15 +122,15 @@ export const OccupationTask = async () => {
         // )
         // msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
         // 状态复位
-        const arr = { ...action }
-        arr.mine = 1
-        arr.shutup = 1
-        arr.working = 1
-        arr.power_up = 1
-        arr.Place_action = 1
-        arr.Place_actionplus = 1
-        delete (arr as Partial<ActionState>).group_id
-        await setDataByUserId(player_id, 'action', JSON.stringify(arr))
+        const arr = { ...action };
+        arr.mine = 1;
+        arr.shutup = 1;
+        arr.working = 1;
+        arr.power_up = 1;
+        arr.Place_action = 1;
+        arr.Place_actionplus = 1;
+        delete (arr as Partial<ActionState>).group_id;
+        await setDataByUserId(player_id, 'action', JSON.stringify(arr));
         // if (is_group && push_address) {
         //   await pushInfo(push_address, is_group, msg)
         // } else {
@@ -145,4 +139,4 @@ export const OccupationTask = async () => {
       }
     }
   }
-}
+};

@@ -1,95 +1,82 @@
-import { Text, useSend } from 'alemonjs'
-import { keys, notUndAndNull } from '@src/model/index'
-import mw from '@src/response/mw'
-import {
-  getDataJSONParseByKey,
-  setDataJSONStringifyByKey
-} from '@src/model/DataControl'
-import { selects } from '@src/response/mw'
+import { Text, useSend } from 'alemonjs';
+import { keys, notUndAndNull } from '@src/model/index';
+import mw from '@src/response/mw';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { selects } from '@src/response/mw';
 
-export const regular = /^(#|＃|\/)?召唤神兽$/
+export const regular = /^(#|＃|\/)?召唤神兽$/;
 
 interface PlayerGuildRef {
-  宗门名称: string
-  职位: string
+  宗门名称: string;
+  职位: string;
 }
 
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v
+function isPlayerGuildRef (v): v is PlayerGuildRef {
+  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
 }
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e)
-  const usr_qq = e.UserId
-  const player = await getDataJSONParseByKey(keys.player(usr_qq))
+  const Send = useSend(e);
+  const usr_qq = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
   if (!player) {
-    return false
+    return false;
   }
-  if (
-    !player ||
-    !notUndAndNull(player.宗门) ||
-    !isPlayerGuildRef(player.宗门)
-  ) {
-    Send(Text('你尚未加入宗门'))
-    return false
+  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+    Send(Text('你尚未加入宗门'));
+    return false;
   }
   if (player.宗门.职位 !== '宗主') {
-    Send(Text('只有宗主可以操作'))
-    return false
+    Send(Text('只有宗主可以操作'));
+    return false;
   }
-  const assRaw = await getDataJSONParseByKey(
-    keys.association(player.宗门.宗门名称)
-  )
+  const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
   if (!assRaw) {
-    Send(Text('宗门数据不存在'))
-    return false
+    Send(Text('宗门数据不存在'));
+    return false;
   }
-  const ass = assRaw
-  const level = Math.max(0, Number(ass.宗门等级 || 0))
-  const buildLevel = Math.max(0, Number(ass.宗门建设等级 || 0))
-  const site = ass.宗门驻地
-  const pool = Math.max(0, Number(ass.灵石池 || 0))
-  const beast = ass.宗门神兽
+  const ass = assRaw;
+  const level = Math.max(0, Number(ass.宗门等级 || 0));
+  const buildLevel = Math.max(0, Number(ass.宗门建设等级 || 0));
+  const site = ass.宗门驻地;
+  const pool = Math.max(0, Number(ass.灵石池 || 0));
+  const beast = ass.宗门神兽;
 
-  const cost = 2_000_000
+  const cost = 2_000_000;
   if (level < 8) {
-    Send(Text('宗门等级不足，尚不具备召唤神兽的资格'))
-    return false
+    Send(Text('宗门等级不足，尚不具备召唤神兽的资格'));
+    return false;
   }
   if (buildLevel < 50) {
-    Send(Text('宗门建设等级不足, 先提升建设度再来吧'))
-    return false
+    Send(Text('宗门建设等级不足, 先提升建设度再来吧'));
+    return false;
   }
   if (!site || site === 0) {
-    Send(Text('驻地都没有，让神兽跟你流浪啊？'))
-    return false
+    Send(Text('驻地都没有，让神兽跟你流浪啊？'));
+    return false;
   }
   if (pool < cost) {
-    Send(Text('宗门就这点钱，还想神兽跟着你干活？'))
-    return false
+    Send(Text('宗门就这点钱，还想神兽跟着你干活？'));
+    return false;
   }
   if (beast && beast !== 0 && beast !== '0' && beast !== '无') {
-    Send(Text('你的宗门已经有神兽了'))
-    return false
+    Send(Text('你的宗门已经有神兽了'));
+    return false;
   }
 
   // 随机选择神兽
-  const r = Math.random()
-  let newBeast: string
-  if (r > 0.8) newBeast = '麒麟'
-  else if (r > 0.6) newBeast = '青龙'
-  else if (r > 0.4) newBeast = '玄武'
-  else if (r > 0.2) newBeast = '朱雀'
-  else newBeast = '白虎'
+  const r = Math.random();
+  let newBeast: string;
+  if (r > 0.8) newBeast = '麒麟';
+  else if (r > 0.6) newBeast = '青龙';
+  else if (r > 0.4) newBeast = '玄武';
+  else if (r > 0.2) newBeast = '朱雀';
+  else newBeast = '白虎';
 
-  ass.宗门神兽 = newBeast
-  ass.灵石池 = pool - cost
-  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass)
-  Send(
-    Text(
-      `召唤成功，神兽 ${newBeast} 投下一道分身，开始守护你的宗门，绑定神兽后不可更换哦`
-    )
-  )
-  return false
-})
-export default onResponse(selects, [mw.current, res.current])
+  ass.宗门神兽 = newBeast;
+  ass.灵石池 = pool - cost;
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
+  Send(Text(`召唤成功，神兽 ${newBeast} 投下一道分身，开始守护你的宗门，绑定神兽后不可更换哦`));
+  return false;
+});
+export default onResponse(selects, [mw.current, res.current]);

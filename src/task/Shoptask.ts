@@ -1,5 +1,5 @@
-import { getDataList } from '@src/model/DataList'
-import { readShop, writeShop } from '@src/model/shop'
+import { getDataList } from '@src/model/DataList';
+import { readShop, writeShop } from '@src/model/shop';
 
 /**
  * 读取当前商店数据（shop）。
@@ -7,11 +7,11 @@ import { readShop, writeShop } from '@src/model/shop'
 更新后的商店数据写回存储。
  */
 export const Shoptask = async () => {
-  const shop = await readShop()
-  const shopList = await getDataList('Shop')
+  const shop = await readShop();
+  const shopList = await getDataList('Shop');
   for (let i = 0; i < shop.length; i++) {
-    shop[i].one = shopList[i].one
-    shop[i].price = shopList[i].price
+    shop[i].one = shopList[i].one;
+    shop[i].price = shopList[i].price;
   }
-  await writeShop(shop)
-}
+  await writeShop(shop);
+};

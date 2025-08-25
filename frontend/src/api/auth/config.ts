@@ -1,5 +1,5 @@
-import { ApiResponse } from '@/types/types'
-import { authRequest } from '../base'
+import { ApiResponse } from '@/types/types';
+import { authRequest } from '../base';
 
 // 获取配置
 export const getConfig = async (app: string) => {
@@ -7,14 +7,14 @@ export const getConfig = async (app: string) => {
     const result = (await authRequest({
       url: '/config',
       params: { app }
-    })) as ApiResponse
+    })) as ApiResponse;
 
-    return result
+    return result;
   } catch (error) {
-    console.error('获取配置失败:', error)
-    return null
+    console.error('获取配置失败:', error);
+    return null;
   }
-}
+};
 
 // 保存配置
 export const saveConfig = async (app: string, data: unknown) => {
@@ -26,11 +26,11 @@ export const saveConfig = async (app: string, data: unknown) => {
         name: app,
         data
       }
-    })) as ApiResponse
+    })) as ApiResponse;
 
-    return result
+    return result;
   } catch (error) {
-    console.error('保存配置失败:', error)
-    return null
+    console.error('保存配置失败:', error);
+    return null;
   }
-}
+};

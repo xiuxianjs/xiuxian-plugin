@@ -1,53 +1,53 @@
-import 灵根列表 from '../resources/data/item/灵根列表.json'
-import 怪物列表 from '../resources/data/item/怪物列表.json'
-import 商品列表 from '../resources/data/item/商品列表.json'
-import 练气境界 from '../resources/data/Level/练气境界.json'
-import 积分商城 from '../resources/data/item/积分商城.json'
-import 炼体境界 from '../resources/data/Level/炼体境界.json'
-import 装备列表 from '../resources/data/item/装备列表.json'
-import 丹药列表 from '../resources/data/item/丹药列表.json'
-import 炼丹师丹药 from '../resources/data/item/炼丹师丹药.json'
-import 道具列表 from '../resources/data/item/道具列表.json'
-import 功法列表 from '../resources/data/item/功法列表.json'
-import 草药列表 from '../resources/data/item/草药列表.json'
-import 地点列表 from '../resources/data/item/地点列表.json'
-import 洞天福地 from '../resources/data/item/洞天福地.json'
-import 宗门秘境 from '../resources/data/item/宗门秘境.json'
-import 禁地列表 from '../resources/data/item/禁地列表.json'
-import 仙境列表 from '../resources/data/item/仙境列表.json'
-import 限定仙府 from '../resources/data/Timelimit/限定仙府.json'
-import 限定功法 from '../resources/data/Timelimit/限定功法.json'
-import 限定装备 from '../resources/data/Timelimit/限定装备.json'
-import 限定丹药 from '../resources/data/Timelimit/限定丹药.json'
-import 职业列表 from '../resources/data/occupation/职业列表.json'
-import experience from '../resources/data/occupation/experience.json'
-import 炼丹配方 from '../resources/data/occupation/炼丹配方.json'
-import 装备图纸 from '../resources/data/occupation/装备图纸.json'
-import 八品 from '../resources/data/item/八品.json'
-import 星阁拍卖行列表 from '../resources/data/item/星阁拍卖行列表.json'
-import 天地堂 from '../resources/data/item/天地堂.json'
-import 常驻仙宠 from '../resources/data/item/常驻仙宠.json'
-import 仙宠列表 from '../resources/data/item/仙宠列表.json'
-import 仙宠口粮列表 from '../resources/data/item/仙宠口粮列表.json'
-import npc列表 from '../resources/data/item/npc列表.json'
-import shop列表 from '../resources/data/item/shop列表.json'
-import 青龙 from '../resources/data/Timelimit/青龙.json'
-import 麒麟 from '../resources/data/Timelimit/麒麟.json'
-import 玄武朱雀白虎 from '../resources/data/Timelimit/玄武朱雀白虎.json'
-import 魔界列表 from '../resources/data/item/魔界列表.json'
-import 兑换列表 from '../resources/data/item/兑换列表.json'
-import 神界列表 from '../resources/data/item/神界列表.json'
-import 技能列表1 from '../resources/data/item/技能列表1.json'
-import 技能列表2 from '../resources/data/item/技能列表2.json'
-import 强化列表 from '../resources/data/item/强化列表.json'
-import 锻造材料 from '../resources/data/item/锻造材料.json'
-import 锻造武器 from '../resources/data/item/锻造武器.json'
-import 锻造护具 from '../resources/data/item/锻造护具.json'
-import 锻造宝物 from '../resources/data/item/锻造宝物.json'
-import 隐藏灵根 from '../resources/data/item/隐藏灵根.json'
-import 锻造杂类 from '../resources/data/item/锻造杂类.json'
-import 技能列表 from '../resources/data/item/技能列表.json'
-import updateRecord from '../resources/data/updateRecord.json'
+import 灵根列表 from '../resources/data/item/灵根列表.json';
+import 怪物列表 from '../resources/data/item/怪物列表.json';
+import 商品列表 from '../resources/data/item/商品列表.json';
+import 练气境界 from '../resources/data/Level/练气境界.json';
+import 积分商城 from '../resources/data/item/积分商城.json';
+import 炼体境界 from '../resources/data/Level/炼体境界.json';
+import 装备列表 from '../resources/data/item/装备列表.json';
+import 丹药列表 from '../resources/data/item/丹药列表.json';
+import 炼丹师丹药 from '../resources/data/item/炼丹师丹药.json';
+import 道具列表 from '../resources/data/item/道具列表.json';
+import 功法列表 from '../resources/data/item/功法列表.json';
+import 草药列表 from '../resources/data/item/草药列表.json';
+import 地点列表 from '../resources/data/item/地点列表.json';
+import 洞天福地 from '../resources/data/item/洞天福地.json';
+import 宗门秘境 from '../resources/data/item/宗门秘境.json';
+import 禁地列表 from '../resources/data/item/禁地列表.json';
+import 仙境列表 from '../resources/data/item/仙境列表.json';
+import 限定仙府 from '../resources/data/Timelimit/限定仙府.json';
+import 限定功法 from '../resources/data/Timelimit/限定功法.json';
+import 限定装备 from '../resources/data/Timelimit/限定装备.json';
+import 限定丹药 from '../resources/data/Timelimit/限定丹药.json';
+import 职业列表 from '../resources/data/occupation/职业列表.json';
+import experience from '../resources/data/occupation/experience.json';
+import 炼丹配方 from '../resources/data/occupation/炼丹配方.json';
+import 装备图纸 from '../resources/data/occupation/装备图纸.json';
+import 八品 from '../resources/data/item/八品.json';
+import 星阁拍卖行列表 from '../resources/data/item/星阁拍卖行列表.json';
+import 天地堂 from '../resources/data/item/天地堂.json';
+import 常驻仙宠 from '../resources/data/item/常驻仙宠.json';
+import 仙宠列表 from '../resources/data/item/仙宠列表.json';
+import 仙宠口粮列表 from '../resources/data/item/仙宠口粮列表.json';
+import npc列表 from '../resources/data/item/npc列表.json';
+import shop列表 from '../resources/data/item/shop列表.json';
+import 青龙 from '../resources/data/Timelimit/青龙.json';
+import 麒麟 from '../resources/data/Timelimit/麒麟.json';
+import 玄武朱雀白虎 from '../resources/data/Timelimit/玄武朱雀白虎.json';
+import 魔界列表 from '../resources/data/item/魔界列表.json';
+import 兑换列表 from '../resources/data/item/兑换列表.json';
+import 神界列表 from '../resources/data/item/神界列表.json';
+import 技能列表1 from '../resources/data/item/技能列表1.json';
+import 技能列表2 from '../resources/data/item/技能列表2.json';
+import 强化列表 from '../resources/data/item/强化列表.json';
+import 锻造材料 from '../resources/data/item/锻造材料.json';
+import 锻造武器 from '../resources/data/item/锻造武器.json';
+import 锻造护具 from '../resources/data/item/锻造护具.json';
+import 锻造宝物 from '../resources/data/item/锻造宝物.json';
+import 隐藏灵根 from '../resources/data/item/隐藏灵根.json';
+import 锻造杂类 from '../resources/data/item/锻造杂类.json';
+import 技能列表 from '../resources/data/item/技能列表.json';
+import updateRecord from '../resources/data/updateRecord.json';
 import type {
   TalentItem,
   LevelStageItem,
@@ -57,7 +57,7 @@ import type {
   EquipmentTuzhiItem,
   PetItem,
   PetFoodItem
-} from '../types/data'
+} from '../types/data';
 import type {
   MonsterItem,
   PlaceItem,
@@ -68,7 +68,7 @@ import type {
   NPCGroupItem,
   ShopItem,
   RealmShopGroupItem
-} from '../types/data_extra'
+} from '../types/data_extra';
 import type {
   ScoreShopItem,
   LimitedEquipItem,
@@ -78,9 +78,9 @@ import type {
   HallItem,
   PermanentPetItem,
   SkillItem
-} from '../types/data_extra'
-import { __PATH } from './keys.js'
-import { getIoRedis } from '@alemonjs/db'
+} from '../types/data_extra';
+import { __PATH } from './keys.js';
+import { getIoRedis } from '@alemonjs/db';
 
 export const DATA_LIST = {
   // 使用英文名
@@ -134,50 +134,48 @@ export const DATA_LIST = {
   Zalei: 锻造杂类,
   Jineng: 技能列表,
   UpdateRecord: updateRecord
-}
+};
 
-export type DataList = typeof DATA_LIST
+export type DataList = typeof DATA_LIST;
 
-export type DataListKeys = keyof typeof DATA_LIST
+export type DataListKeys = keyof typeof DATA_LIST;
 
 export const hasDataList = (key: DataListKeys) => {
-  return !!DATA_LIST[key]
-}
+  return !!DATA_LIST[key];
+};
 
 /**
  *
  * @param key
  * @returns
  */
-export const getDataList = async <T extends DataListKeys>(
-  key: T
-): Promise<DataList[T]> => {
-  const redis = getIoRedis()
+export const getDataList = async <T extends DataListKeys>(key: T): Promise<DataList[T]> => {
+  const redis = getIoRedis();
   // 先判断 redis 有无，没有则读本地的
-  const size = await redis.exists(key)
+  const size = await redis.exists(key);
   if (size > 0) {
     try {
-      const redisData = await redis.get(key)
-      return JSON.parse(redisData)
+      const redisData = await redis.get(key);
+      return JSON.parse(redisData);
     } catch (error) {
-      logger.warn(`Failed to parse redis data for key ${key}: ${error}`)
-      return DATA_LIST[key]
+      logger.warn(`Failed to parse redis data for key ${key}: ${error}`);
+      return DATA_LIST[key];
     }
   }
-  return DATA_LIST[key]
-}
+  return DATA_LIST[key];
+};
 
 /**
  * 写入则是直接写进 redis
  */
 export const setDataList = async (key: keyof typeof DATA_LIST, data) => {
-  const redis = getIoRedis()
+  const redis = getIoRedis();
   try {
-    await redis.set(key, JSON.stringify(data))
+    await redis.set(key, JSON.stringify(data));
   } catch (error) {
-    logger.error(`Failed to set redis data for key ${key}: ${error}`)
+    logger.error(`Failed to set redis data for key ${key}: ${error}`);
   }
-}
+};
 
 export default {
   player: __PATH.player_path,
@@ -218,10 +216,10 @@ export default {
   timedanyao_list: 限定丹药 as DanyaoFullItem[],
   occupation_list: 职业列表 as OccupationItem[],
   occupation_exp_list: experience as Array<{
-    id: number
-    name: string
-    experience: number
-    rate: number
+    id: number;
+    name: string;
+    experience: number;
+    rate: number;
   }>,
   danfang_list: 炼丹配方 as DanfangItem[],
   tuzhi_list: 装备图纸 as EquipmentTuzhiItem[],
@@ -246,4 +244,4 @@ export default {
   jineng1: 技能列表1 as SkillItem[],
   jineng2: 技能列表2 as SkillItem[],
   jineng: 技能列表 as SkillItem[]
-}
+};

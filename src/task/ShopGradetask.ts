@@ -1,5 +1,5 @@
-import { readShop, writeShop } from '@src/model/shop'
-import type { ShopData, ShopSlot } from '@src/types'
+import { readShop, writeShop } from '@src/model/shop';
+import type { ShopData, ShopSlot } from '@src/types';
 
 /**
  * 读取商店数据（shop）。
@@ -7,11 +7,11 @@ import type { ShopData, ShopSlot } from '@src/types'
 更新后的商店数据写回存储。
  */
 export const ShopGradetask = async () => {
-  const shop = (await readShop()) as ShopData
+  const shop = (await readShop()) as ShopData;
   for (const slot of shop as Array<ShopSlot & { Grade?: number }>) {
-    const current = Number(slot.Grade || 1)
-    slot.Grade = current - 1
-    if (slot.Grade < 1) slot.Grade = 1
+    const current = Number(slot.Grade || 1);
+    slot.Grade = current - 1;
+    if (slot.Grade < 1) slot.Grade = 1;
   }
-  await writeShop(shop)
-}
+  await writeShop(shop);
+};

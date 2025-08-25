@@ -1,17 +1,13 @@
-import React from 'react'
-import { Form, FormItemProps } from 'antd'
-import classNames from 'classnames'
+import React from 'react';
+import { Form, FormItemProps } from 'antd';
+import classNames from 'classnames';
 
 interface XiuxianFormFieldProps extends FormItemProps {
-  children: React.ReactNode
-  className?: string
+  children: React.ReactNode;
+  className?: string;
 }
 
-const XiuxianFormField: React.FC<XiuxianFormFieldProps> = ({
-  children,
-  className,
-  ...props
-}) => {
+const XiuxianFormField: React.FC<XiuxianFormFieldProps> = ({ children, className, ...props }) => {
   return (
     <Form.Item
       className={classNames(
@@ -23,7 +19,7 @@ const XiuxianFormField: React.FC<XiuxianFormFieldProps> = ({
     >
       {children}
     </Form.Item>
-  )
-}
+  );
+};
 
-export default XiuxianFormField
+export default XiuxianFormField;

@@ -1,20 +1,20 @@
-const cdCache = {}
+const cdCache = {};
 
 /**
  * @param UID
  * @returns
  */
 export const operationLocalLock = (UID: string) => {
-  const Now = Date.now()
+  const Now = Date.now();
   // 2300
   if (cdCache[UID] && Number(cdCache[UID]) + 2300 > Now) {
-    return false
+    return false;
   }
-  cdCache[UID] = Now
-  return true
-}
+  cdCache[UID] = Now;
+  return true;
+};
 
-const testCache = {}
+const testCache = {};
 
 /**
  * @param UID
@@ -25,7 +25,7 @@ const testCache = {}
  * @returns
  */
 export const testTip = (UID: string) => {
-  if (testCache) return true
-  testCache[UID] = true
-  return false
-}
+  if (testCache) return true;
+  testCache[UID] = true;
+  return false;
+};

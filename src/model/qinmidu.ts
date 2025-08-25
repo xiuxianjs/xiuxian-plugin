@@ -1,107 +1,98 @@
 // 亲密度与婚姻逻辑抽离
-import { __PATH } from './keys.js'
-import type { QinmiduRecord } from '../types/model'
-import { keys } from './keys.js'
-import {
-  getDataJSONParseByKey,
-  setDataJSONStringifyByKey
-} from './DataControl.js'
+import { __PATH } from './keys.js';
+import type { QinmiduRecord } from '../types/model';
+import { keys } from './keys.js';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
-export async function readQinmidu(): Promise<QinmiduRecord[]> {
-  const data = await getDataJSONParseByKey(keys.qinmidu('qinmidu'))
-  return data || []
+export async function readQinmidu (): Promise<QinmiduRecord[]> {
+  const data = await getDataJSONParseByKey(keys.qinmidu('qinmidu'));
+  return data || [];
 }
 
-export async function writeQinmidu(qinmidu: QinmiduRecord[]) {
-  await setDataJSONStringifyByKey(keys.qinmidu('qinmidu'), qinmidu)
+export async function writeQinmidu (qinmidu: QinmiduRecord[]) {
+  await setDataJSONStringifyByKey(keys.qinmidu('qinmidu'), qinmidu);
 }
 
-export async function fstaddQinmidu(A: string, B: string) {
-  let list: QinmiduRecord[] = []
+export async function fstaddQinmidu (A: string, B: string) {
+  let list: QinmiduRecord[] = [];
   try {
-    list = await readQinmidu()
+    list = await readQinmidu();
   } catch {
-    await writeQinmidu([])
+    await writeQinmidu([]);
   }
-  const rec: QinmiduRecord = { QQ_A: A, QQ_B: B, 亲密度: 0, 婚姻: 0 }
-  list.push(rec)
-  await writeQinmidu(list)
+  const rec: QinmiduRecord = { QQ_A: A, QQ_B: B, 亲密度: 0, 婚姻: 0 };
+  list.push(rec);
+  await writeQinmidu(list);
 }
 
-export async function addQinmidu(A: string, B: string, qinmi: number) {
-  let list: QinmiduRecord[] = []
+export async function addQinmidu (A: string, B: string, qinmi: number) {
+  let list: QinmiduRecord[] = [];
   try {
-    list = await readQinmidu()
+    list = await readQinmidu();
   } catch {
-    await writeQinmidu([])
+    await writeQinmidu([]);
   }
-  let i: number
+  let i: number;
   for (i = 0; i < list.length; i++) {
-    if (
-      (list[i].QQ_A == A && list[i].QQ_B == B) ||
-      (list[i].QQ_A == B && list[i].QQ_B == A)
-    ) {
-      break
+    if ((list[i].QQ_A == A && list[i].QQ_B == B) || (list[i].QQ_A == B && list[i].QQ_B == A)) {
+      break;
     }
   }
   if (i == list.length) {
-    await fstaddQinmidu(A, B)
-    list = await readQinmidu()
+    await fstaddQinmidu(A, B);
+    list = await readQinmidu();
   }
-  list[i].亲密度 += qinmi
-  await writeQinmidu(list)
+  list[i].亲密度 += qinmi;
+  await writeQinmidu(list);
 }
 
-export async function findQinmidu(A: string, B: string) {
-  let list: QinmiduRecord[] = []
+export async function findQinmidu (A: string, B: string) {
+  let list: QinmiduRecord[] = [];
   try {
-    list = await readQinmidu()
+    list = await readQinmidu();
   } catch {
-    await writeQinmidu([])
+    await writeQinmidu([]);
   }
-  let i: number
-  const QQ: string[] = []
+  let i: number;
+  const QQ: string[] = [];
   for (i = 0; i < list.length; i++) {
     if (list[i].QQ_A == A || list[i].QQ_A == B) {
       if (list[i].婚姻 != 0) {
         // 原逻辑是错误地把 push 当作属性赋值，这里直接 push
-        QQ.push(list[i].QQ_B)
-        break
+        QQ.push(list[i].QQ_B);
+        break;
       }
     } else if (list[i].QQ_B == A || list[i].QQ_B == B) {
       if (list[i].婚姻 != 0) {
-        QQ.push(list[i].QQ_A)
-        break
+        QQ.push(list[i].QQ_A);
+        break;
       }
     }
   }
   for (i = 0; i < list.length; i++) {
-    if (
-      (list[i].QQ_A == A && list[i].QQ_B == B) ||
-      (list[i].QQ_A == B && list[i].QQ_B == A)
-    ) {
-      break
+    if ((list[i].QQ_A == A && list[i].QQ_B == B) || (list[i].QQ_A == B && list[i].QQ_B == A)) {
+      break;
     }
   }
-  if (i == list.length) return false
-  else if (QQ.length != 0) return 0
-  else return list[i].亲密度
+  if (i == list.length) return false;
+  else if (QQ.length != 0) return 0;
+  else return list[i].亲密度;
 }
 
 // 查询道侣亲密度
-export async function findDaolvQinmidu(A: string) {
-  let list: QinmiduRecord[] = []
+export async function findDaolvQinmidu (A: string) {
+  let list: QinmiduRecord[] = [];
   try {
-    list = await readQinmidu()
+    list = await readQinmidu();
   } catch {
-    await writeQinmidu([])
+    await writeQinmidu([]);
   }
   for (let i = 0; i < list.length; i++) {
     if ((list[i].QQ_A == A || list[i].QQ_B == A) && list[i].婚姻 != 0) {
-      return list[i].亲密度
+      return list[i].亲密度;
     }
   }
-  return 0
+  return 0;
 }
 
 /**
@@ -109,21 +100,21 @@ export async function findDaolvQinmidu(A: string) {
  * @param A
  * @returns 有婚返回对方QQ，无婚返回空字符串
  */
-export async function existHunyin(A: string) {
-  let list: QinmiduRecord[] = []
+export async function existHunyin (A: string) {
+  let list: QinmiduRecord[] = [];
   try {
-    list = await readQinmidu()
+    list = await readQinmidu();
   } catch {
-    await writeQinmidu([])
+    await writeQinmidu([]);
   }
   for (let i = 0; i < list.length; i++) {
     if (list[i].QQ_A == A) {
-      if (list[i].婚姻 != 0) return list[i].QQ_B
+      if (list[i].婚姻 != 0) return list[i].QQ_B;
     } else if (list[i].QQ_B == A) {
-      if (list[i].婚姻 != 0) return list[i].QQ_A
+      if (list[i].婚姻 != 0) return list[i].QQ_A;
     }
   }
-  return ''
+  return '';
 }
 
 export default {
@@ -133,4 +124,4 @@ export default {
   addQinmidu,
   findQinmidu,
   existHunyin
-}
+};

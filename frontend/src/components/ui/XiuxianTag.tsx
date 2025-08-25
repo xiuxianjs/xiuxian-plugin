@@ -1,19 +1,14 @@
-import React from 'react'
-import { Tag } from 'antd'
+import React from 'react';
+import { Tag } from 'antd';
 
 interface XiuxianTagProps {
-  color: string
-  children: React.ReactNode
-  icon?: React.ReactNode
-  className?: string
+  color: string;
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  className?: string;
 }
 
-const XiuxianTag: React.FC<XiuxianTagProps> = ({
-  color,
-  children,
-  icon,
-  className = ''
-}) => {
+const XiuxianTag: React.FC<XiuxianTagProps> = ({ color, children, icon, className = '' }) => {
   return (
     <Tag
       color={color}
@@ -24,10 +19,10 @@ const XiuxianTag: React.FC<XiuxianTagProps> = ({
         border: `1px solid ${color}30`
       }}
     >
-      {icon && <span className="mr-1">{icon}</span>}
+      {icon && <span className='mr-1'>{icon}</span>}
       {children}
     </Tag>
-  )
-}
+  );
+};
 
-export default XiuxianTag
+export default XiuxianTag;

@@ -1,11 +1,11 @@
-import React from 'react'
-import { Input, Select } from 'antd'
-import { SearchOutlined, EditOutlined } from '@ant-design/icons'
-import { useDataQueryCode } from './DataQuery.code'
-import DataEditModal from './DataEditModal'
+import React from 'react';
+import { Input, Select } from 'antd';
+import { SearchOutlined, EditOutlined } from '@ant-design/icons';
+import { useDataQueryCode } from './DataQuery.code';
+import DataEditModal from './DataEditModal';
 
-const { Option } = Select
-const { Search } = Input
+const { Option } = Select;
+const { Search } = Input;
 
 // 导入UI组件库
 import {
@@ -15,7 +15,7 @@ import {
   XiuxianRefreshButton,
   XiuxianTableWithPagination,
   XiuxianSearchBar
-} from '@/components/ui'
+} from '@/components/ui';
 
 export default function DataQuery() {
   const {
@@ -36,19 +36,19 @@ export default function DataQuery() {
     handleEditSuccess,
     handleEditCancel,
     getDataTypeDisplayName
-  } = useDataQueryCode()
+  } = useDataQueryCode();
 
   return (
     <XiuxianPageWrapper>
       {/* 页面标题和操作按钮 */}
       <XiuxianPageTitle
         icon={<SearchOutlined />}
-        title="数据查询"
-        subtitle="查询和浏览游戏中的各种数据列表"
+        title='数据查询'
+        subtitle='查询和浏览游戏中的各种数据列表'
         actions={
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <button
-              className="px-2 py-1 rounded-md bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+              className='px-2 py-1 rounded-md bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2'
               onClick={handleEdit}
               disabled={!selectedDataType}
             >
@@ -61,22 +61,20 @@ export default function DataQuery() {
       />
 
       {/* 查询控制区域 */}
-      <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <SearchOutlined className="text-purple-400" />
+      <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6'>
+        <h3 className='text-xl font-bold text-white mb-4 flex items-center gap-2'>
+          <SearchOutlined className='text-purple-400' />
           查询条件
         </h3>
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          <div className="flex-1 min-w-0">
-            <label className="block text-slate-300 text-sm font-medium mb-2">
-              数据类型
-            </label>
+        <div className='flex flex-col md:flex-row gap-4 items-center'>
+          <div className='flex-1 min-w-0'>
+            <label className='block text-slate-300 text-sm font-medium mb-2'>数据类型</label>
             <Select
               value={selectedDataType}
               onChange={handleDataTypeChange}
-              placeholder="请选择数据类型"
-              className="w-full xiuxian-select"
-              size="large"
+              placeholder='请选择数据类型'
+              className='w-full xiuxian-select'
+              size='large'
             >
               {dataTypes.map(type => (
                 <Option key={type} value={type}>
@@ -85,17 +83,15 @@ export default function DataQuery() {
               ))}
             </Select>
           </div>
-          <div className="flex-1 min-w-0">
-            <label className="block text-slate-300 text-sm font-medium mb-2">
-              搜索关键词
-            </label>
+          <div className='flex-1 min-w-0'>
+            <label className='block text-slate-300 text-sm font-medium mb-2'>搜索关键词</label>
             <Search
-              placeholder="输入关键词搜索..."
+              placeholder='输入关键词搜索...'
               value={searchText}
               onChange={e => handleSearch(e.target.value)}
               onSearch={handleSearch}
-              size="large"
-              className="w-full xiuxian-input"
+              size='large'
+              className='w-full xiuxian-input'
             />
           </div>
         </div>
@@ -103,11 +99,7 @@ export default function DataQuery() {
 
       {/* 数据表格 */}
       <XiuxianTableContainer
-        title={
-          selectedDataType
-            ? getDataTypeDisplayName(selectedDataType)
-            : '数据列表'
-        }
+        title={selectedDataType ? getDataTypeDisplayName(selectedDataType) : '数据列表'}
         icon={<SearchOutlined />}
       >
         <XiuxianTableWithPagination
@@ -122,8 +114,7 @@ export default function DataQuery() {
             total: pagination.total,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
+            showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
           }}
           onPaginationChange={handleTableChange}
           scroll={{ x: 1200 }}
@@ -136,11 +127,9 @@ export default function DataQuery() {
         onCancel={handleEditCancel}
         onSuccess={handleEditSuccess}
         dataType={selectedDataType}
-        dataTypeName={
-          selectedDataType ? getDataTypeDisplayName(selectedDataType) : ''
-        }
+        dataTypeName={selectedDataType ? getDataTypeDisplayName(selectedDataType) : ''}
         originalData={originalData}
       />
     </XiuxianPageWrapper>
-  )
+  );
 }

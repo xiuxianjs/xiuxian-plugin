@@ -1,34 +1,34 @@
-import { getIoRedis } from '@alemonjs/db'
-import { __PATH } from './keys.js'
-import type { JSONData, FilePathType } from '../types/model'
-import { filePathMap } from './settions.js'
+import { getIoRedis } from '@alemonjs/db';
+import { __PATH } from './keys.js';
+import type { JSONData, FilePathType } from '../types/model';
+import { filePathMap } from './settions.js';
 
 /**
  * @param key
  * @returns
  */
 export const getDataJSONParseByKey = async (key: string) => {
-  const redis = getIoRedis()
-  const ext = await redis.exists(key)
+  const redis = getIoRedis();
+  const ext = await redis.exists(key);
   if (!ext) {
-    return null
+    return null;
   }
-  const res = await redis.get(key)
+  const res = await redis.get(key);
   if (!res) {
-    return null
+    return null;
   }
-  let data = null
+  let data = null;
   try {
-    data = JSON.parse(res)
+    data = JSON.parse(res);
   } catch (error) {
-    logger.warn(error)
-    return null
+    logger.warn(error);
+    return null;
   }
   if (!data) {
-    return null
+    return null;
   }
-  return data
-}
+  return data;
+};
 
 /**
  *
@@ -36,42 +36,42 @@ export const getDataJSONParseByKey = async (key: string) => {
  * @returns
  */
 export const getDataByKey = async (key: string) => {
-  const redis = getIoRedis()
-  const exists = await redis.exists(key)
+  const redis = getIoRedis();
+  const exists = await redis.exists(key);
   if (!exists) {
-    return null
+    return null;
   }
-  const res = await redis.get(key)
+  const res = await redis.get(key);
   if (!res) {
-    return null
+    return null;
   }
-  return res
-}
+  return res;
+};
 
 /**
  * @param key
  * @param data
  */
 export const setDataJSONStringifyByKey = async (key: string, data: unknown) => {
-  const redis = getIoRedis()
+  const redis = getIoRedis();
   try {
-    await redis.set(key, JSON.stringify(data))
-    return true
+    await redis.set(key, JSON.stringify(data));
+    return true;
   } catch (error) {
-    logger.warn(error)
-    return false
+    logger.warn(error);
+    return false;
   }
-}
+};
 
 /**
  * @param key
  * @returns
  */
 export const existDataByKey = async (key: string) => {
-  const redis = getIoRedis()
-  const exists = await redis.exists(key)
-  return exists === 1
-}
+  const redis = getIoRedis();
+  const exists = await redis.exists(key);
+  return exists === 1;
+};
 
 /**
  * @param key
@@ -79,14 +79,10 @@ export const existDataByKey = async (key: string) => {
  * @param name
  * @returns
  */
-export const existDataByPath = (
-  key: keyof typeof __PATH,
-  from: string,
-  name: string
-) => {
-  const dir = `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
-  return existDataByKey(dir)
-}
+export const existDataByPath = (key: keyof typeof __PATH, from: string, name: string) => {
+  const dir = `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`;
+  return existDataByKey(dir);
+};
 
 /**
  * @param key
@@ -94,15 +90,11 @@ export const existDataByPath = (
  * @param name
  * @returns
  */
-export const readDataByPath = async (
-  key: keyof typeof __PATH,
-  from: string,
-  name: string
-) => {
+export const readDataByPath = async (key: keyof typeof __PATH, from: string, name: string) => {
   return await getDataJSONParseByKey(
     `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`
-  )
-}
+  );
+};
 
 /**
  *
@@ -120,18 +112,8 @@ export const writeDataByPath = (
   setDataJSONStringifyByKey(
     `${__PATH[key]}${from ? `:${from}` : ''}${name ? `:${name}` : ''}`,
     data
-  )
-}
-
-/**
- * 检测存档存在
- * @param file_path_type ["player" , "association" ]
- * @param file_name
- * @deprecated
- */
-async function existData(file_path_type: FilePathType, file_name: string) {
-  return existDataByKey(`${filePathMap[file_path_type]}:${file_name}`)
-}
+  );
+};
 
 /**
  * 获取文件数据(user_qq为空查询item下的file_name文件)
@@ -139,11 +121,11 @@ async function existData(file_path_type: FilePathType, file_name: string) {
  * @param user_qq
  * @deprecated
  */
-async function getData(file_name: FilePathType | string, user_qq?: string) {
+async function getData (file_name: FilePathType | string, user_qq?: string) {
   if (user_qq) {
-    return await getDataJSONParseByKey(`${filePathMap[file_name]}:${user_qq}`)
+    return await getDataJSONParseByKey(`${filePathMap[file_name]}:${user_qq}`);
   } else {
-    return await getDataJSONParseByKey(`${filePathMap[file_name]}`)
+    return await getDataJSONParseByKey(`${filePathMap[file_name]}`);
   }
 }
 
@@ -154,19 +136,11 @@ async function getData(file_name: FilePathType | string, user_qq?: string) {
  * @param data
  * @deprecated
  */
-function setData(
-  file_name: FilePathType | string,
-  user_qq: string | null,
-  data: JSONData
-): void {
-  setDataJSONStringifyByKey(
-    `${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`,
-    data
-  )
-  return
+function setData (file_name: FilePathType | string, user_qq: string | null, data: JSONData): void {
+  setDataJSONStringifyByKey(`${filePathMap[file_name]}${user_qq ? `:${user_qq}` : ''}`, data);
+  return;
 }
 export default {
-  existData,
   getData,
   setData
-}
+};

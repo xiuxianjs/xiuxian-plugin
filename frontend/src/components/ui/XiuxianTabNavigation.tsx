@@ -1,19 +1,19 @@
-import React from 'react'
-import classNames from 'classnames'
+import React from 'react';
+import classNames from 'classnames';
 
 interface TabItem {
-  key: string
-  label: string
-  icon?: React.ReactNode
+  key: string;
+  label: string;
+  icon?: React.ReactNode;
 }
 
 interface XiuxianTabNavigationProps {
-  tabs: TabItem[]
-  selectedTab: string
-  onTabChange: (tab: string) => void
-  title?: string
-  titleIcon?: React.ReactNode
-  className?: string
+  tabs: TabItem[];
+  selectedTab: string;
+  onTabChange: (tab: string) => void;
+  title?: string;
+  titleIcon?: React.ReactNode;
+  className?: string;
 }
 
 const XiuxianTabNavigation: React.FC<XiuxianTabNavigationProps> = ({
@@ -32,12 +32,12 @@ const XiuxianTabNavigation: React.FC<XiuxianTabNavigationProps> = ({
       )}
     >
       {title && (
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          {titleIcon && <span className="text-purple-400">{titleIcon}</span>}
+        <h3 className='text-xl font-bold text-white mb-4 flex items-center gap-2'>
+          {titleIcon && <span className='text-purple-400'>{titleIcon}</span>}
           {title}
         </h3>
       )}
-      <div className="flex gap-4">
+      <div className='flex gap-4'>
         {tabs.map(tab => (
           <button
             key={tab.key}
@@ -55,7 +55,7 @@ const XiuxianTabNavigation: React.FC<XiuxianTabNavigationProps> = ({
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default XiuxianTabNavigation
+export default XiuxianTabNavigation;
