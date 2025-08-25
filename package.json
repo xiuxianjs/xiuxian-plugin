@@ -1,6 +1,6 @@
 {
   "name": "alemonjs-xiuxian",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "凡人修仙文字游戏",
   "author": "ningmengchongshui",
   "type": "module",
@@ -24,5 +24,21 @@
     "web": {
       "root": "dist"
     }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write"
+    ],
+    "*.{jsx,tsx}": [
+      "eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,scss,html}": [
+      "prettier --write"
+    ],
+    "*.{png,jpg,jpeg,gif,svg}": [
+      "git add"
+    ]
   }
 }
