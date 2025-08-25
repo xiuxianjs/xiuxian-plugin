@@ -35,16 +35,16 @@ function normPinji(v): Parameters<typeof addNajieThing>[4] {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const najie = (await data.getData('najie', usr_qq)) as NajieData | null;
+  const najie = (await data.getData('najie', userId)) as NajieData | null;
 
   if (!najie) {
-    Send(Text('纳戒数据异常'));
+    void Send(Text('纳戒数据异常'));
 
     return false;
   }
@@ -101,23 +101,23 @@ const res = onResponse(selects, async e => {
         continue;
       }
       // 材料/草药 1 倍，其它 2 倍
-      const multiplier
-        = normalizeCat(item.class) === '材料' || normalizeCat(item.class) === '草药' ? 1 : 2;
+      const multiplier =
+        normalizeCat(item.class) === '材料' || normalizeCat(item.class) === '草药' ? 1 : 2;
 
       total += salePrice * qty * multiplier;
-      await addNajieThing(usr_qq, item.name, normAddCat(item.class), -qty, normPinji(item.pinji));
+      await addNajieThing(userId, item.name, normAddCat(item.class), -qty, normPinji(item.pinji));
       soldCount += qty;
     }
   }
 
   if (total <= 0) {
-    Send(Text('没有可回收的物品'));
+    void Send(Text('没有可回收的物品'));
 
     return false;
   }
 
-  await addCoin(usr_qq, total);
-  Send(Text(`回收成功，出售 ${soldCount} 件物品，获得 ${total} 灵石`));
+  await addCoin(userId, total);
+  void Send(Text(`回收成功，出售 ${soldCount} 件物品，获得 ${total} 灵石`));
 
   return false;
 });

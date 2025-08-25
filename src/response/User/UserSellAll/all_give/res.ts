@@ -10,9 +10,9 @@ const ALL_TYPES = ['装备', '丹药', '道具', '功法', '草药', '材料', '
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const A_qq = e.UserId;
+  const UserIdA = e.UserId;
 
-  if (!(await existplayer(A_qq))) {
+  if (!(await existplayer(UserIdA))) {
     return false;
   }
 
@@ -24,16 +24,16 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const B_qq = target.UserId;
+  const userIdB = target.UserId;
 
-  if (!(await existplayer(B_qq))) {
-    Send(Text('此人尚未踏入仙途'));
+  if (!(await existplayer(userIdB))) {
+    void Send(Text('此人尚未踏入仙途'));
 
     return false;
   }
 
   // 解析类型参数（支持多个类型，或不填则为全部）
-  const typeArg = (e.MessageText.match(/一键赠送([\u4e00-\u9fa5]+)?$/) || [])[1];
+  const typeArg = (e.MessageText.match(/一键赠送([\u4e00-\u9fa5]+)?$/) ?? [])[1];
   let targetTypes: string[];
 
   if (!typeArg) {
@@ -45,35 +45,43 @@ const res = onResponse(selects, async e => {
       .filter(t => ALL_TYPES.includes(t) || ALL_TYPES.includes(t + '宠口粮')); // 兼容“仙宠口粮”
     // 检查是否有非法类型
     if (targetTypes.length === 0) {
-      Send(Text('物品类型错误，仅支持：' + ALL_TYPES.join('、')));
+      void Send(Text('物品类型错误，仅支持：' + ALL_TYPES.join('、')));
 
       return false;
     }
   }
 
-  const A_najie = await data.getData('najie', A_qq);
+  const najieDataA = await data.getData('najie', UserIdA);
+
+  if (!najieDataA) {
+    return;
+  }
   const sendTypes: string[] = [];
   const nothingToSend: string[] = [];
 
   for (const type of targetTypes) {
-    const items = A_najie[type];
+    const items: unknown[] = najieDataA[type];
 
-    if (!Array.isArray(items) || !items.length) {
+    if (!Array.isArray(items)) {
+      continue;
+    }
+
+    if (!items.length) {
       nothingToSend.push(type);
       continue;
     }
     let sent = false;
 
     for (const l of items) {
-      if (l && l.islockd == 0 && Number(l.数量) > 0) {
+      if (l && l.islockd === 0 && Number(l.数量) > 0) {
         const quantity = Number(l.数量);
 
         if (type === '装备' || type === '仙宠') {
-          await addNajieThing(B_qq, l, l.class, quantity, l.pinji);
-          await addNajieThing(A_qq, l, l.class, -quantity, l.pinji);
+          await addNajieThing(userIdB, l, l.class, quantity, l.pinji);
+          await addNajieThing(UserIdA, l, l.class, -quantity, l.pinji);
         } else {
-          await addNajieThing(A_qq, l.name, l.class, -quantity);
-          await addNajieThing(B_qq, l.name, l.class, quantity);
+          await addNajieThing(UserIdA, l.name, l.class, -quantity);
+          await addNajieThing(userIdB, l.name, l.class, quantity);
         }
         sent = true;
       }
@@ -93,7 +101,7 @@ const res = onResponse(selects, async e => {
   if (nothingToSend.length) {
     msg += `无可赠送：${nothingToSend.join('、')}`;
   }
-  Send(Text(msg.trim() || '一键赠送完成'));
+  void Send(Text(msg.trim() || '一键赠送完成'));
 });
 
 import mw from '@src/response/mw';

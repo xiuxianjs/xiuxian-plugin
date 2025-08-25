@@ -1,4 +1,4 @@
-// 动作统一辅助方法，减少各 response 模块对 redis key / JSON 解析的重复代码
+import { ActionType } from '@src/model';
 import { getJSON, setValue, userKey } from '@src/model/utils/redisHelper';
 
 // 约定：字符串 '0' 表示开启中的状态；'1' 表示关闭或空闲（保持与现有代码一致）
@@ -25,15 +25,15 @@ export interface ActionRecord {
 }
 
 // 默认动作 key；支持自定义 suffix 以兼容特殊场景（如锻造使用 action10）
-export function actionRedisKey(userId: string | number, suffix = 'action') {
+export function actionRedisKey(userId: string | number, suffix: ActionType = 'action') {
   return userKey(userId, suffix);
 }
 
-export async function readAction(userId: string | number) {
+export function readAction(userId: string | number) {
   return getJSON<ActionRecord>(actionRedisKey(userId));
 }
 
-export async function readActionWithSuffix(userId: string | number, suffix: string) {
+export function readActionWithSuffix(userId: string | number, suffix: ActionType) {
   return getJSON<ActionRecord>(actionRedisKey(userId, suffix));
 }
 
@@ -43,7 +43,7 @@ export async function writeAction(userId: string | number, record: ActionRecord)
 
 export async function writeActionWithSuffix(
   userId: string | number,
-  suffix: string,
+  suffix: ActionType,
   record: ActionRecord
 ) {
   await setValue(actionRedisKey(userId, suffix), record);
@@ -58,7 +58,7 @@ export function isActionRunning(record: ActionRecord | null | undefined, now = D
 }
 
 // 通用启动：传入动作名与持续时长（毫秒）以及附加 flag
-export async function startAction(
+export function startAction(
   userId: string | number,
   name: string,
   durationMs: number,
@@ -69,7 +69,7 @@ export async function startAction(
 
 export async function startActionWithSuffix(
   userId: string | number,
-  suffix: string,
+  suffix: ActionType,
   name: string,
   durationMs: number,
   flags: Partial<ActionRecord>
@@ -145,6 +145,7 @@ export function remainingMs(record: ActionRecord, now = Date.now()): number {
 export function formatRemaining(ms: number) {
   const total = Math.floor(ms / 1000);
   const m = Math.floor(total / 60);
+  // eslint-disable-next-line no-mixed-operators
   const s = total - m * 60;
 
   return `${m}分${s}秒`;
@@ -181,7 +182,7 @@ export async function updateActionWithSuffix(
 }
 
 // 提前结束当前动作（若存在），可附加额外字段覆盖；返回更新后的记录
-export async function stopAction(userId: string | number, extra: Partial<ActionRecord & {}> = {}) {
+export function stopAction(userId: string | number, extra: Partial<ActionRecord & {}> = {}) {
   return updateAction(userId, prev => {
     if (!prev) {
       return null;
@@ -195,7 +196,7 @@ export async function stopAction(userId: string | number, extra: Partial<ActionR
   });
 }
 
-export async function stopActionWithSuffix(
+export function stopActionWithSuffix(
   userId: string | number,
   suffix: string,
   extra: Partial<ActionRecord & {}> = {}

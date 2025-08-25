@@ -2,7 +2,8 @@
   "compilerOptions": {
     "jsx": "react",
     "strict": true,
-    "strictNullChecks":false,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"]

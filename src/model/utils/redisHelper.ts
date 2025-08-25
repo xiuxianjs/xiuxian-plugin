@@ -3,7 +3,7 @@ import { getRedisKey } from '../keys';
 import type { ActionType, RedisScalar } from '../../types/model';
 
 // 通用获取：保留字符串或 null
-export async function getString(key: string): Promise<RedisScalar> {
+export function getString(key: string): Promise<RedisScalar> {
   return redis.get(key);
 }
 
@@ -11,7 +11,7 @@ export async function getString(key: string): Promise<RedisScalar> {
 export async function getNumber(key: string): Promise<number | null> {
   const v = await redis.get(key);
 
-  if (v == null) {
+  if (v === null) {
     return null;
   }
   const n = Number(v);
@@ -23,7 +23,7 @@ export async function getNumber(key: string): Promise<number | null> {
 export async function getJSON<T = unknown>(key: string): Promise<T | null> {
   const v = await redis.get(key);
 
-  if (v == null) {
+  if (v === null) {
     return null;
   }
   try {
@@ -58,7 +58,7 @@ export function userKey(userId: string | number, suffix: ActionType) {
 }
 
 // 读取带时间戳并返回 number
-export async function getTimestamp(userId: string | number, suffix: ActionType) {
+export function getTimestamp(userId: string | number, suffix: ActionType) {
   return getNumber(userKey(userId, suffix));
 }
 
