@@ -7,7 +7,7 @@ import { createNajieRepository } from './repository/najieRepository.js'
 import { keys } from './keys.js'
 import { getDataList } from './DataList.js'
 
-const experienceList = (await getDataList('Occupation')) as Array<{
+const experienceList = (await getDataList('experience')) as Array<{
   id: number
   name: string
   experience: number
