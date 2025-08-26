@@ -65,7 +65,7 @@ export async function getPlayerAction(usrId: string): Promise<PlayerActionData> 
 }
 
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
-  return !!obj;
+  return !(obj === null || obj === undefined);
 }
 
 /**
