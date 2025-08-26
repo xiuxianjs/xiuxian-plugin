@@ -25,7 +25,7 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
     // 是否存在宗门信息
     Assoc_efficiency = 0; // 不存在，宗门效率为0
   } else {
-    const ass = await getDataJSONParseByKey(keys.association(player.宗门['宗门名称']));
+    const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
     if (ass) {
       return null;

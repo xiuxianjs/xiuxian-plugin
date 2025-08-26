@@ -1,6 +1,6 @@
 import { useSend, Text } from 'alemonjs';
 import { safeParse } from './utils/safe.js';
-import type { LastSignTime, PlayerActionData } from '../types/model';
+import type { LastSignTime, PlayerActionData } from '../types/model.js';
 import { convert2integer } from './utils/number.js';
 import { getIoRedis } from '@alemonjs/db';
 import { getRedisKey, keys, keysAction } from './keys.js';
@@ -65,7 +65,7 @@ export async function getPlayerAction(usrId: string): Promise<PlayerActionData> 
 }
 
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
-  return !(obj === null);
+  return !!obj;
 }
 
 /**

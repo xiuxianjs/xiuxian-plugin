@@ -22,7 +22,7 @@ const res = onResponse(selects, async e => {
   }
   const action = await getDataJSONParseByKey(keys.fuzhi(usrId));
 
-  if (action) {
+  if (!action) {
     return;
   }
   const a = action.职业名;
