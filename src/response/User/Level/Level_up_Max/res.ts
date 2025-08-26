@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
   // 境界
   const levelList = await getDataList('Level1');
-  const now_level = levelList.find(item => item.level_id == player.level_id).level;
+  const now_level = levelList.find(item => item.level_id == player.level_id)?.level;
 
   if (now_level != '渡劫期') {
     Send(Text('你非渡劫期修士！'));

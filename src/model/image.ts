@@ -921,13 +921,14 @@ export async function getAssociationImage(e: EventsMessageCreateEnum): Promise<S
   }
   // 有加入宗门
   const zongmenName = typeof player.宗门 === 'string' ? player.宗门 : player.宗门?.宗门名称;
-  const assRaw = getDataJSONParseByKey(keys.association(zongmenName || ''));
+  const assRaw = await getDataJSONParseByKey(keys.association(zongmenName || ''));
 
   if (!assRaw) {
     Send(Text('宗门数据获取失败'));
 
     return;
   }
+
   if (!isAssociationInfo(assRaw)) {
     Send(Text('宗门数据结构异常'));
 

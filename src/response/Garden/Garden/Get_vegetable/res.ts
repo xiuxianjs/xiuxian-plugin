@@ -34,17 +34,21 @@ const res = onResponse(selects, async e => {
   const usr_qq = e.UserId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (player) {
+  if (!player) {
     return;
   }
   const guildName = player?.宗门?.宗门名称;
 
   if (!guildName) {
+    Send(Text('您未加入宗门，无法拔苗助长'));
+
     return false;
   }
   const ass = await getDataJSONParseByKey(keys.association(guildName));
 
-  if (ass) {
+  if (!ass) {
+    Send(Text('宗门不存在, 如有必要可聊系管理员!'));
+
     return;
   }
   // 兼容药园结构（可能未定义）
