@@ -7,7 +7,7 @@ import type { AuctionSession, CoreNajieCategory as NajieCategory } from '@src/ty
 import { getConfig } from '@src/model';
 import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants';
 
-export const AuctionofficialTask = async() => {
+export const AuctionofficialTask = async () => {
   const set = await getConfig('xiuxian', 'xiuxian');
   const wupinStr = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
 
@@ -81,8 +81,8 @@ export const AuctionofficialTask = async() => {
 
       return (list as string[]).includes(raw) ? (raw as NajieCategory) : '道具';
     })();
-    const pinji
-      = typeof wupin.thing.pinji === 'number'
+    const pinji =
+      typeof wupin.thing.pinji === 'number'
         ? wupin.thing.pinji
         : typeof wupin.thing.pinji === 'string'
           ? Number(wupin.thing.pinji)

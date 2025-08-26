@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs';
 
 import { existplayer } from '@src/model/index';
-import { readTiandibang, Write_tiandibang } from '../tian';
+import { readTiandibang, writeTiandibang } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -23,7 +23,7 @@ const res = onResponse(selects, async e => {
     tiandibang = await readTiandibang();
   } catch {
     // 没有表要先建立一个！
-    await Write_tiandibang([]);
+    await writeTiandibang([]);
   }
   // 查找用户是否报名
   const userIndex = tiandibang.findIndex(p => p.qq == usr_qq);

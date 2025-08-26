@@ -25,7 +25,9 @@ const res = onResponse(selects, async e => {
       continue;
     }
     // 计算并保存到数组
-    const power = Math.trunc((player.攻击 + player.防御 * 0.8 + player.血量上限 * 0.6) * (player.暴击率 + 1));
+    const power = Math.trunc(
+      (player.攻击 + player.防御 * 0.8 + player.血量上限 * 0.6) * (player.暴击率 + 1)
+    );
 
     temp.push({
       power: power,

@@ -34,7 +34,7 @@ export default onResponse(selects, async event => {
     const count = replyCount[userId] || 0;
 
     if (count < 2) {
-      message.send(format(Text(`你的修仙功能已被禁言，限制将于${unlockTime}解除。`)));
+      void message.send(format(Text(`你的修仙功能已被禁言，限制将于${unlockTime}解除。`)));
       replyCount[userId] = count + 1;
     }
 
@@ -57,7 +57,7 @@ export default onResponse(selects, async event => {
     const success = await verifyCaptcha(userId, text);
 
     if (success) {
-      message.send(format(Text('验证码正确！'), Mention(userId)));
+      void message.send(format(Text('验证码正确！'), Mention(userId)));
       // 清理验证码与禁言数据
       await redis.del(keys.captcha(userId));
       await redis.del(keys.mute(userId));
@@ -81,19 +81,19 @@ export default onResponse(selects, async event => {
     } else {
       captchaTries[userId] = (captchaTries[userId] || 0) + 1;
       if (captchaTries[userId] >= MAX_CAPTCHA_TRIES) {
-        message.send(format(Text('错误次数过多，你已被临时禁言6小时！'), Mention(userId)));
+        void message.send(format(Text('错误次数过多，你已被临时禁言6小时！'), Mention(userId)));
         // 设置禁言，仅用过期，value为'1'
         await redis.setex(keys.mute(userId), 60 * 60 * 6, '1');
         // 清理验证码
         await redis.del(keys.captcha(userId));
         captchaTries[userId] = 0;
       } else {
-        const { svg, text } = await generateCaptcha();
+        const { svg, text } = generateCaptcha();
 
         await redis.setex(keys.captcha(userId), 60 * 60 * 6, text.toLowerCase());
         const img = await svgToPngBuffer(svg);
 
-        message.send(format(Image(img), Mention(userId)));
+        void message.send(format(Image(img), Mention(userId)));
       }
     }
   }

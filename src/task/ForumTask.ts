@@ -7,7 +7,7 @@ import { addCoin } from '@src/model/economy';
  * 最后将更新后的论坛记录写回存储。
  * @returns
  */
-export const ForumTask = async() => {
+export const ForumTask = async () => {
   let Forum;
 
   try {

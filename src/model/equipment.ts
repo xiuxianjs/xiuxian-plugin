@@ -18,8 +18,8 @@ export async function writeEquipment(usrId: string, equipment: Equipment): Promi
   }
   const levelList = await getDataList('Level1');
   const physiqueList = await getDataList('Level2');
-  const levelInfo = levelList.find(item => item.level_id == player.level_id);
-  const physiqueInfo = physiqueList.find(item => item.level_id == player.Physique_id);
+  const levelInfo = levelList.find(item => item.level_id === player.level_id);
+  const physiqueInfo = physiqueList.find(item => item.level_id === player.Physique_id);
 
   player.攻击 =
     Number(levelInfo?.基础攻击 ?? 0) +
@@ -58,7 +58,7 @@ export async function writeEquipment(usrId: string, equipment: Equipment): Promi
   if (player.暴击伤害 > 2.5) {
     player.暴击伤害 = 2.5;
   }
-  if (player.仙宠.type == '暴伤') {
+  if (player.仙宠.type === '暴伤') {
     player.暴击伤害 += player.仙宠.加成;
   }
   await writePlayer(usrId, player);

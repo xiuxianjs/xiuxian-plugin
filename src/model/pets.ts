@@ -5,17 +5,17 @@ import type { OwnedPetItem, PetList } from '../types/model';
 import { getDataList } from './DataList.js';
 
 export async function addPet(
-  usr_qq: string,
-  thing_name: string,
+  usrId: string,
+  thingName: string,
   n: number,
-  thing_level: number | null = null
+  thingLevel: number | null = null
 ): Promise<void> {
   const x = Number(n);
 
   if (x === 0) {
     return;
   }
-  const najie: Najie | null = await readNajie(usr_qq);
+  const najie: Najie | null = await readNajie(usrId);
 
   if (!najie) {
     return;
@@ -35,7 +35,7 @@ export async function addPet(
     };
   });
   const trr = petList.find(
-    (item: OwnedPetItem) => item.name == thing_name && item.等级 == thing_level
+    (item: OwnedPetItem) => item.name === thingName && item.等级 === thingLevel
   );
 
   if (x > 0 && !notUndAndNull(trr)) {
@@ -48,7 +48,7 @@ export async function addPet(
     }
     const data = await getDataList('Xianchon');
     const base = Array.isArray(data)
-      ? (data as SourcePetLike[]).find(item => item.name == thing_name)
+      ? (data as SourcePetLike[]).find(item => item.name === thingName)
       : undefined;
 
     if (!notUndAndNull(base)) {
@@ -66,33 +66,33 @@ export async function addPet(
       islockd: 0
     };
 
-    if (thing_level != null) {
-      newthing.等级 = thing_level;
+    if (thingLevel != null) {
+      newthing.等级 = thingLevel;
     }
     petList.push(newthing);
     // 回写
     najie.仙宠 = petList;
-    const target = petList.find(item => item.name == thing_name && item.等级 == newthing.等级);
+    const target = petList.find(item => item.name === thingName && item.等级 === newthing.等级);
 
     target.数量 = x;
     target.加成 = target.等级 * target.每级增加;
     target.islockd = 0;
-    await writeNajie(usr_qq, najie);
+    await writeNajie(usrId, najie);
 
     return;
   }
   if (!trr) {
     return;
   }
-  const target = petList.find(item => item.name == thing_name && item.等级 == trr.等级);
+  const target = petList.find(item => item.name === thingName && item.等级 === trr.等级);
 
   target.数量 += x;
   if (target.数量 < 1) {
-    const next = petList.filter(item => item.name != thing_name || item.等级 != trr.等级);
+    const next = petList.filter(item => item.name !== thingName || item.等级 !== trr.等级);
 
     najie.仙宠 = next;
   }
-  await writeNajie(usr_qq, najie);
+  await writeNajie(usrId, najie);
 }
 
 export default { addPet };

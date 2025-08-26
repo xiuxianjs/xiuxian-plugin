@@ -247,7 +247,8 @@ const FAIL_PROB = 1 / 9;
 
 // 辅助扩展类型与工具函数（放置在文件顶部下方，集中管理）
 type PlayerEx = Player & {};
-const numVal = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const numVal = (v, d = 0) =>
+  typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
 const setNum = (p: PlayerEx, k: string, v: number) => {
   p[k] = v;
 };
@@ -278,9 +279,13 @@ const res = onResponse(selects, async e => {
   const lhFlag = Number(lhxqRaw) || 0;
 
   if (lhFlag !== 1) {
-    Send(Text('轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n'
-          + '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n'
-          + '再次输入 #轮回 继续，或忽略退出。'));
+    Send(
+      Text(
+        '轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n' +
+          '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n' +
+          '再次输入 #轮回 继续，或忽略退出。'
+      )
+    );
     await redis.set(key, 1);
 
     return;
@@ -309,7 +314,11 @@ const res = onResponse(selects, async e => {
   const points = numVal(player.轮回点);
 
   if (points <= 0) {
-    Send(Text('此生轮回点已消耗殆尽，未能躲过天机！\n被天庭发现，但因为没有轮回点未被关入天牢，\n仅被警告一次，轮回失败！'));
+    Send(
+      Text(
+        '此生轮回点已消耗殆尽，未能躲过天机！\n被天庭发现，但因为没有轮回点未被关入天牢，\n仅被警告一次，轮回失败！'
+      )
+    );
     player.当前血量 = 10;
     await writePlayer(usr_qq, player);
 
@@ -319,7 +328,11 @@ const res = onResponse(selects, async e => {
 
   // 随机失败判定 (1/9)
   if (Math.random() <= FAIL_PROB) {
-    Send(Text('本次轮回的最后关头，终究还是未能躲过天机！\n被天庭搜捕归案，关入天牢受尽折磨，轮回失败！'));
+    Send(
+      Text(
+        '本次轮回的最后关头，终究还是未能躲过天机！\n被天庭搜捕归案，关入天牢受尽折磨，轮回失败！'
+      )
+    );
     player.当前血量 = 1;
     player.修为 = Math.max(0, numVal(player.修为) - 10_000_000);
     player.血气 = numVal(player.血气) + 5_141_919; // 原逻辑：血气 += 5141919

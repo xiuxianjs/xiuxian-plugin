@@ -1,12 +1,7 @@
 import { Text, Image, useSend } from 'alemonjs';
 
 import { getString, userKey } from '@src/model/utils/redisHelper';
-import {
-  readAction,
-  isActionRunning,
-  remainingMs,
-  formatRemaining
-} from '@src/response/actionHelper';
+import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { existplayer, readShop, writeShop, readPlayer, addCoin, existshop } from '@src/model/index';
 
 import mw, { selects } from '@src/response/mw';
@@ -82,23 +77,23 @@ const res = onResponse(selects, async e => {
   let state = shop[i].state;
 
   switch (level) {
-  case 1:
-    level = '松懈';
-    break;
-  case 2:
-    level = '戒备';
-    break;
-  case 3:
-    level = '恐慌';
-    break;
+    case 1:
+      level = '松懈';
+      break;
+    case 2:
+      level = '戒备';
+      break;
+    case 3:
+      level = '恐慌';
+      break;
   }
   switch (state) {
-  case 0:
-    state = '营业';
-    break;
-  case 1:
-    state = '打烊';
-    break;
+    case 0:
+      state = '营业';
+      break;
+    case 1:
+      state = '打烊';
+      break;
   }
   const didian_data = { name: shop[i].name, level, state, thing };
 

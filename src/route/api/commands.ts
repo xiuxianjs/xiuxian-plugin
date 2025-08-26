@@ -23,7 +23,7 @@ const relativePath = path.relative(cwd, __filename);
 const isInNodeModules = /node_modules/.test(relativePath);
 const commandPrefix = !isInNodeModules ? 'main' : pkg.name;
 
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -109,7 +109,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 指令状态更新
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs';
 
-
 import {
   existplayer,
   looktripod,
@@ -17,7 +16,7 @@ import {
 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import { readActionWithSuffix, stopActionWithSuffix } from '@src/response/actionHelper';
+import { readActionWithSuffix, stopActionWithSuffix } from '@src/model/actionHelper';
 import { userKey, setValue } from '@src/model/utils/redisHelper';
 export const regular = /^(#|＃|\/)?开炉/;
 

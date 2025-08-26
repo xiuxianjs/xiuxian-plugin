@@ -2,7 +2,7 @@ import { getRedisKey } from '@src/model/keys';
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { startAction } from '@src/response/actionHelper';
+import { startAction } from '@src/model/actionHelper';
 import {
   Go,
   convert2integer,
@@ -69,7 +69,9 @@ const res = onResponse(selects, async e => {
     return false;
   }
   player = await readPlayer(usr_qq);
-  const now_level_id = (await getDataList('Level1')).find(item => item.level_id == player.level_id).level_id;
+  const now_level_id = (await getDataList('Level1')).find(
+    item => item.level_id == player.level_id
+  ).level_id;
 
   if (now_level_id < 42 && player.lunhui == 0) {
     return false;

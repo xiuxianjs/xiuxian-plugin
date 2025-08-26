@@ -80,9 +80,15 @@ const res = onResponse(selects, async e => {
       await setDataJSONStringifyByKey(keys.player(usr_qq), player);
       addCoin(usr_qq, game.yazhu[usr_qq]);
       if (y == 1) {
-        Send(Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`));
+        Send(
+          Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`)
+        );
       } else {
-        Send(Text(`骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`));
+        Send(
+          Text(
+            `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`
+          )
+        );
       }
     } else {
       // 输了
@@ -122,7 +128,11 @@ const res = onResponse(selects, async e => {
       }
       await setDataJSONStringifyByKey(keys.player(usr_qq), player);
       addCoin(usr_qq, winAmount);
-      Send(Text(`骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`));
+      Send(
+        Text(
+          `骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`
+        )
+      );
     } else {
       if (notUndAndNull(player.金银坊败场)) {
         player.金银坊败场 = ensureNumber(player.金银坊败场) + 1;

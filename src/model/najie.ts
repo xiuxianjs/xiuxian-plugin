@@ -286,20 +286,20 @@ export async function addNajieThing(
   await writeNajie(usr_qq, najie);
 }
 
-export async function insteadEquipment(usr_qq: string, equipment_data: EquipmentLike) {
-  await addNajieThing(usr_qq, equipment_data, '装备', -1, equipment_data.pinji);
+export async function insteadEquipment(usrId: string, equipmentData: EquipmentLike) {
+  await addNajieThing(usrId, equipmentData, '装备', -1, equipmentData.pinji);
   const { readEquipment, writeEquipment } = await import('./equipment.js');
-  const equipment: Equipment | null = await readEquipment(usr_qq);
+  const equipment: Equipment | null = await readEquipment(usrId);
 
   if (!equipment) {
     return;
   }
-  if (equipment_data.type == '武器') {
+  if (equipmentData.type === '武器') {
     await addNajieThing(
-      usr_qq,
+      usrId,
       {
         ...equipment.武器,
-        name: equipment.武器.name || '武器',
+        name: equipment.武器.name ?? '武器',
         class: '装备',
         数量: 1
       },
@@ -307,17 +307,17 @@ export async function insteadEquipment(usr_qq: string, equipment_data: Equipment
       1,
       equipment.武器.pinji
     );
-    equipment.武器 = equipment_data as EquipmentItem;
-    await writeEquipment(usr_qq, equipment);
+    equipment.武器 = equipmentData as EquipmentItem;
+    await writeEquipment(usrId, equipment);
 
     return;
   }
-  if (equipment_data.type == '护具') {
+  if (equipmentData.type === '护具') {
     await addNajieThing(
-      usr_qq,
+      usrId,
       {
         ...equipment.护具,
-        name: equipment.护具.name || '护具',
+        name: equipment.护具.name ?? '护具',
         class: '装备',
         数量: 1
       },
@@ -325,17 +325,17 @@ export async function insteadEquipment(usr_qq: string, equipment_data: Equipment
       1,
       equipment.护具.pinji
     );
-    equipment.护具 = equipment_data as EquipmentItem;
-    await writeEquipment(usr_qq, equipment);
+    equipment.护具 = equipmentData as EquipmentItem;
+    await writeEquipment(usrId, equipment);
 
     return;
   }
-  if (equipment_data.type == '法宝') {
+  if (equipmentData.type === '法宝') {
     await addNajieThing(
-      usr_qq,
+      usrId,
       {
         ...equipment.法宝,
-        name: equipment.法宝.name || '法宝',
+        name: equipment.法宝.name ?? '法宝',
         class: '装备',
         数量: 1
       },
@@ -343,8 +343,8 @@ export async function insteadEquipment(usr_qq: string, equipment_data: Equipment
       1,
       equipment.法宝.pinji
     );
-    equipment.法宝 = equipment_data as EquipmentItem;
-    await writeEquipment(usr_qq, equipment);
+    equipment.法宝 = equipmentData as EquipmentItem;
+    await writeEquipment(usrId, equipment);
   }
 }
 

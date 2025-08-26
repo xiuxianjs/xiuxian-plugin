@@ -11,7 +11,7 @@ import { screenshot } from '@src/image';
  * 通过 pushInfo 方法将截图推送到对应群。
  * 推送完成后，清空临时消息记录。
  */
-export const MsgTask = async() => {
+export const MsgTask = async () => {
   let temp: (TempMessage & TempRecordLegacy)[] = [];
 
   try {

@@ -7,7 +7,7 @@ import { __PATH } from '@src/model/keys';
 const redis = getIoRedis();
 
 // 获取游戏用户数据（支持分页）
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -52,10 +52,10 @@ export const GET = async(ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || playerWithId.名号?.toLowerCase().includes(search.toLowerCase())
-              || playerWithId.id.includes(search);
+            const matchesSearch =
+              !search ||
+              playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
+              playerWithId.id.includes(search);
 
             if (matchesSearch) {
               total++;
@@ -122,10 +122,10 @@ export const GET = async(ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase())
-              || corruptedPlayer.id.includes(search);
+            const matchesSearch =
+              !search ||
+              corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase()) ||
+              corruptedPlayer.id.includes(search);
 
             if (matchesSearch) {
               total++;
@@ -251,7 +251,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 获取单个游戏用户数据
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -309,7 +309,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 获取用户统计信息
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -355,10 +355,10 @@ export const PUT = async(ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || playerWithId.名号?.toLowerCase().includes(search.toLowerCase())
-              || playerWithId.id.includes(search);
+            const matchesSearch =
+              !search ||
+              playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) ||
+              playerWithId.id.includes(search);
 
             if (matchesSearch) {
               total++;

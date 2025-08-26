@@ -108,10 +108,12 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await Send(Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择'));
+  await Send(
+    Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择')
+  );
   const [subscribe] = useSubscribe(e, selects);
   const sub = subscribe.mount(
-    async(event, next) => {
+    async (event, next) => {
       const [message] = useMessage(event);
       const choice = event.MessageText.trim();
 

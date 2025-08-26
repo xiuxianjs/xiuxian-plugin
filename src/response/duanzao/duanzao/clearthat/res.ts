@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existplayer, looktripod, readTripod, writeDuanlu } from '@src/model/index';
-import { stopActionWithSuffix } from '@src/response/actionHelper';
+import { stopActionWithSuffix } from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';

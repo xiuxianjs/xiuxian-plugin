@@ -25,11 +25,11 @@ const res = onResponse(selects, async e => {
     // (攻击+防御*0.8+生命*0.5)*暴击率=理论战力
     const player = await readPlayer(player_id);
     // 计算并保存到数组
-    let power
-      = player.攻击 * 0.9
-      + player.防御 * 1.1
-      + player.血量上限 * 0.6
-      + player.暴击率 * player.攻击 * 0.5;
+    let power =
+      player.攻击 * 0.9 +
+      player.防御 * 1.1 +
+      player.血量上限 * 0.6 +
+      player.暴击率 * player.攻击 * 0.5;
 
     if (player.level_id < 42) {
       // 跳过凡人

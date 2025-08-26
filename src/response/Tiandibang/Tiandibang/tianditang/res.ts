@@ -1,7 +1,7 @@
 import { Text, Image, useSend } from 'alemonjs';
 
 import { existplayer } from '@src/model/index';
-import { readTiandibang, Write_tiandibang, get_tianditang_img } from '../tian';
+import { readTiandibang, writeTiandibang, getTianditangImage } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -22,7 +22,7 @@ const res = onResponse(selects, async e => {
     tiandibang = await readTiandibang();
   } catch {
     // 没有表要先建立一个！
-    await Write_tiandibang([]);
+    await writeTiandibang([]);
   }
   let m = tiandibang.length;
 
@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const img = await get_tianditang_img(e, tiandibang[m].积分);
+  const img = await getTianditangImage(e, tiandibang[m].积分);
 
   if (Buffer.isBuffer(img)) {
     Send(Image(img));

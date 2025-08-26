@@ -13,7 +13,7 @@ import {
   normalizeDurationMinutes,
   remainingMs,
   formatRemaining
-} from '@src/response/actionHelper';
+} from '@src/model/actionHelper';
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {

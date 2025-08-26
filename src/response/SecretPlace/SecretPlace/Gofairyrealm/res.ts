@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis, config } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { getRedisKey } from '@src/model/keys';
-import { startAction } from '@src/response/actionHelper';
+import { startAction } from '@src/model/actionHelper';
 import {
   Go,
   readPlayer,
@@ -63,18 +63,18 @@ const res = onResponse(selects, async e => {
   let dazhe = 1;
 
   if (
-    (await existNajieThing(usr_qq, '杀神崖通行证', '道具'))
-    && player.魔道值 < 1
-    && (player.灵根.type == '转生' || player.level_id > 41)
-    && didian == '杀神崖'
+    (await existNajieThing(usr_qq, '杀神崖通行证', '道具')) &&
+    player.魔道值 < 1 &&
+    (player.灵根.type == '转生' || player.level_id > 41) &&
+    didian == '杀神崖'
   ) {
     dazhe = 0;
     Send(Text(player.名号 + '使用了道具杀神崖通行证,本次仙境免费'));
     await addNajieThing(usr_qq, '杀神崖通行证', '道具', -1);
   } else if (
-    (await existNajieThing(usr_qq, '仙境优惠券', '道具'))
-    && player.魔道值 < 1
-    && (player.灵根.type == '转生' || player.level_id > 41)
+    (await existNajieThing(usr_qq, '仙境优惠券', '道具')) &&
+    player.魔道值 < 1 &&
+    (player.灵根.type == '转生' || player.level_id > 41)
   ) {
     dazhe = 0.5;
     Send(Text(player.名号 + '使用了道具仙境优惠券,本次消耗减少50%'));

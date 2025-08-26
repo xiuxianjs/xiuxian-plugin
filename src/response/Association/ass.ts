@@ -34,7 +34,7 @@ export function notUndAndNull(obj) {
 // 对象数组排序
 export function sortBy(field) {
   // 从大到小,b和a反一下就是从小到大
-  return function(b, a) {
+  return function (b, a) {
     return a[field] - b[field];
   };
 }

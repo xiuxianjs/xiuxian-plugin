@@ -1,11 +1,11 @@
-// 通用玩家状态与工具函数抽离
-import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs';
+import { useSend, Text } from 'alemonjs';
 import { safeParse } from './utils/safe.js';
 import type { LastSignTime, PlayerActionData } from '../types/model';
 import { convert2integer } from './utils/number.js';
 import { getIoRedis } from '@alemonjs/db';
 import { getRedisKey, keys, keysAction } from './keys.js';
 import { existDataByKey } from './DataControl.js';
+import dayjs from 'dayjs';
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length);
@@ -18,15 +18,7 @@ export function sleep(time: number): Promise<void> {
 }
 
 export function timestampToTime(timestamp: number) {
-  const date = new Date(timestamp);
-  const Y = date.getFullYear() + '-';
-  const M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-  const D = date.getDate() + ' ';
-  const h = date.getHours() + ':';
-  const m = date.getMinutes() + ':';
-  const s = date.getSeconds();
-
-  return Y + M + D + h + m + s;
+  return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss');
 }
 
 export function shijianc(time: number) {
@@ -72,27 +64,10 @@ export async function getPlayerAction(usrId: string): Promise<PlayerActionData> 
   return { action: '空闲' };
 }
 
-export async function dataverification(e: EventsMessageCreateEnum) {
-  if (e.name !== 'message.create') {
-    return 1;
-  }
-  const usr_qq = e.UserId;
-  const ext = await existDataByKey(keys.player(usr_qq));
-
-  if (!ext) {
-    return 1;
-  }
-
-  return 0;
-}
-
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
   return !(obj === null);
 }
 
-export function isNotBlank(value): boolean {
-  return !(value === null || value === undefined || value === '');
-}
 /**
  * todo
  * @param e
@@ -143,9 +118,7 @@ export default {
   shijianc,
   getLastsign,
   getPlayerAction,
-  dataverification,
   notUndAndNull,
-  isNotBlank,
   Go,
   convert2integer
 };

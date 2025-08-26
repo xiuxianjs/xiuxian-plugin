@@ -15,21 +15,21 @@ const STRIKE_DELAY_MS = 60_000; // 每道雷间隔 60s
 
 function buildLinggenFactor(type: string): number {
   switch (type) {
-  case '伪灵根':
-    return 3;
-  case '真灵根':
-    return 6;
-  case '天灵根':
-    return 9;
-  case '体质':
-    return 10;
-  case '转生':
-  case '魔头':
-    return 21;
-  case '转圣':
-    return 26;
-  default:
-    return 12;
+    case '伪灵根':
+      return 3;
+    case '真灵根':
+      return 6;
+    case '天灵根':
+      return 9;
+    case '体质':
+      return 10;
+    case '转生':
+    case '魔头':
+      return 21;
+    case '转圣':
+      return 26;
+    default:
+      return 12;
   }
 }
 
@@ -120,12 +120,16 @@ const res = onResponse(selects, async e => {
   const percent = lRatio.toFixed(2);
 
   Send(Text('天道：就你，也敢逆天改命？'));
-  Send(Text(`【${player.名号}】\n雷抗：${x}\n成功率：${percent}%\n灵根：${player.灵根.type}\n需渡${y}道雷劫\n将在1分钟后落下\n[温馨提示]\n请把其他渡劫期打死后再渡劫！`));
+  Send(
+    Text(
+      `【${player.名号}】\n雷抗：${x}\n成功率：${percent}%\n灵根：${player.灵根.type}\n需渡${y}道雷劫\n将在1分钟后落下\n[温馨提示]\n请把其他渡劫期打死后再渡劫！`
+    )
+  );
 
   let strikeIndex = 1;
   let active = true;
 
-  const doStrike = async() => {
+  const doStrike = async () => {
     if (!active) {
       return;
     }

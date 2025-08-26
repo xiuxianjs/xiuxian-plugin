@@ -30,9 +30,7 @@ export {
   shijianc,
   getLastsign,
   getPlayerAction,
-  dataverification,
   notUndAndNull,
-  isNotBlank,
   Go
 } from './common.js';
 export {

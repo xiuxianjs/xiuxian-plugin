@@ -18,38 +18,38 @@ const Ranking = ({
 }) => {
   const getRankStyles = (index: number) => {
     switch (index) {
-    case 0: // 第一名 - 金属金色至尊
-      return {
-        container:
+      case 0: // 第一名 - 金属金色至尊
+        return {
+          container:
             'border-yellow-400/60 bg-gradient-to-r from-yellow-900/40 to-amber-900/30 shadow-yellow-500/30 shadow-lg',
-        rank: 'bg-gradient-to-r from-yellow-400 to-amber-300 text-yellow-900',
-        glow: 'shadow-yellow-400/50',
-        icon: 'text-yellow-400'
-      };
-    case 1: // 第二名 - 紫色仙君
-      return {
-        container:
+          rank: 'bg-gradient-to-r from-yellow-400 to-amber-300 text-yellow-900',
+          glow: 'shadow-yellow-400/50',
+          icon: 'text-yellow-400'
+        };
+      case 1: // 第二名 - 紫色仙君
+        return {
+          container:
             'border-purple-300/60 bg-gradient-to-r from-purple-800/40 to-violet-800/30 shadow-purple-400/30 shadow-lg',
-        rank: 'bg-gradient-to-r from-purple-300 to-violet-200 text-purple-800',
-        glow: 'shadow-purple-300/50',
-        icon: 'text-purple-300'
-      };
-    case 2: // 第三名 - 青色真人
-      return {
-        container:
+          rank: 'bg-gradient-to-r from-purple-300 to-violet-200 text-purple-800',
+          glow: 'shadow-purple-300/50',
+          icon: 'text-purple-300'
+        };
+      case 2: // 第三名 - 青色真人
+        return {
+          container:
             'border-cyan-600/60 bg-gradient-to-r from-cyan-900/40 to-blue-900/30 shadow-cyan-600/30 shadow-lg',
-        rank: 'bg-gradient-to-r from-cyan-400 to-blue-300 text-cyan-900',
-        glow: 'shadow-cyan-400/50',
-        icon: 'text-cyan-400'
-      };
-    default: // 其他名次 - 蓝玉修士
-      return {
-        container:
+          rank: 'bg-gradient-to-r from-cyan-400 to-blue-300 text-cyan-900',
+          glow: 'shadow-cyan-400/50',
+          icon: 'text-cyan-400'
+        };
+      default: // 其他名次 - 蓝玉修士
+        return {
+          container:
             'border-blue-500/40 bg-gradient-to-r from-blue-900/30 to-indigo-900/20 shadow-blue-500/20 shadow-md',
-        rank: 'bg-gradient-to-r from-blue-400 to-indigo-300 text-blue-900',
-        glow: 'shadow-blue-400/30',
-        icon: 'text-blue-400'
-      };
+          rank: 'bg-gradient-to-r from-blue-400 to-indigo-300 text-blue-900',
+          glow: 'shadow-blue-400/30',
+          icon: 'text-blue-400'
+        };
     }
   };
 

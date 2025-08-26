@@ -12,7 +12,7 @@ import {
 } from '@src/task/index';
 import { TaskMap } from '@src/model/task';
 // 获取定时任务配置
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -42,7 +42,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 更新定时任务配置
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -93,7 +93,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 获取任务状态
-export const PATCH = async(ctx: Context) => {
+export const PATCH = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -131,7 +131,7 @@ export const PATCH = async(ctx: Context) => {
 };
 
 // 任务控制接口
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     // 验证管理员权限
     const token = ctx.request.headers.authorization?.replace('Bearer ', '');
@@ -172,89 +172,89 @@ export const PUT = async(ctx: Context) => {
     let data: Record<string, unknown> = {};
 
     switch (action) {
-    case 'start': {
-      if (!taskName) {
+      case 'start': {
+        if (!taskName) {
+          ctx.status = 400;
+          ctx.body = {
+            code: 400,
+            message: '启动任务需要指定任务名称',
+            data: null
+          };
+
+          return;
+        }
+        const startResult = await startSingleTask(taskName);
+
+        success = startResult.success;
+        message = startResult.message;
+        data = { taskName, action: 'start' };
+        break;
+      }
+
+      case 'stop': {
+        if (!taskName) {
+          ctx.status = 400;
+          ctx.body = {
+            code: 400,
+            message: '停止任务需要指定任务名称',
+            data: null
+          };
+
+          return;
+        }
+        success = stopTask(taskName);
+        message = success ? `任务 ${taskName} 停止成功` : `任务 ${taskName} 停止失败`;
+        data = { taskName, action: 'stop' };
+        break;
+      }
+
+      case 'restart': {
+        if (!taskName) {
+          ctx.status = 400;
+          ctx.body = {
+            code: 400,
+            message: '重启任务需要指定任务名称',
+            data: null
+          };
+
+          return;
+        }
+        success = await restartTask(taskName);
+        message = success ? `任务 ${taskName} 重启成功` : `任务 ${taskName} 重启失败`;
+        data = { taskName, action: 'restart' };
+        break;
+      }
+
+      case 'startAll': {
+        const startAllResult = await startAllTasks();
+
+        success = startAllResult.success;
+        message = startAllResult.message;
+        data = { action: 'startAll', ...startAllResult.data };
+        break;
+      }
+
+      case 'stopAll': {
+        const stoppedTasks = stopAllTasks();
+
+        success = true;
+        message = `已停止所有任务: ${stoppedTasks.join(', ')}`;
+        data = { action: 'stopAll', stoppedTasks };
+        break;
+      }
+
+      case 'restartAll': {
+        success = await restartAllTasks();
+        message = success ? '所有定时任务重启成功' : '定时任务重启失败';
+        data = { action: 'restartAll' };
+        break;
+      }
+
+      default:
         ctx.status = 400;
-        ctx.body = {
-          code: 400,
-          message: '启动任务需要指定任务名称',
-          data: null
-        };
+        ctx.body = { code: 400, message: '无效的操作类型', data: null };
 
         return;
-      }
-      const startResult = await startSingleTask(taskName);
-
-      success = startResult.success;
-      message = startResult.message;
-      data = { taskName, action: 'start' };
-      break;
-    }
-
-    case 'stop': {
-      if (!taskName) {
-        ctx.status = 400;
-        ctx.body = {
-          code: 400,
-          message: '停止任务需要指定任务名称',
-          data: null
-        };
-
-        return;
-      }
-      success = stopTask(taskName);
-      message = success ? `任务 ${taskName} 停止成功` : `任务 ${taskName} 停止失败`;
-      data = { taskName, action: 'stop' };
-      break;
-    }
-
-    case 'restart': {
-      if (!taskName) {
-        ctx.status = 400;
-        ctx.body = {
-          code: 400,
-          message: '重启任务需要指定任务名称',
-          data: null
-        };
-
-        return;
-      }
-      success = await restartTask(taskName);
-      message = success ? `任务 ${taskName} 重启成功` : `任务 ${taskName} 重启失败`;
-      data = { taskName, action: 'restart' };
-      break;
-    }
-
-    case 'startAll': {
-      const startAllResult = await startAllTasks();
-
-      success = startAllResult.success;
-      message = startAllResult.message;
-      data = { action: 'startAll', ...startAllResult.data };
-      break;
-    }
-
-    case 'stopAll': {
-      const stoppedTasks = stopAllTasks();
-
-      success = true;
-      message = `已停止所有任务: ${stoppedTasks.join(', ')}`;
-      data = { action: 'stopAll', stoppedTasks };
-      break;
-    }
-
-    case 'restartAll': {
-      success = await restartAllTasks();
-      message = success ? '所有定时任务重启成功' : '定时任务重启失败';
-      data = { action: 'restartAll' };
-      break;
-    }
-
-    default:
-      ctx.status = 400;
-      ctx.body = { code: 400, message: '无效的操作类型', data: null };
-
-      return;
     }
 
     ctx.status = 200;

@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs';
 
-
 import {
   existplayer,
   looktripod,

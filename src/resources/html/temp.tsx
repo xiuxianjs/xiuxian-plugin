@@ -15,8 +15,8 @@ const Temp = ({ temp = [] }) => {
         <div className='w-full max-w-4xl mx-auto px-4 relative z-10'>
           {/* 消息容器 */}
           <div className='space-y-4'>
-            {temp
-              && temp.map((item, index) => (
+            {temp &&
+              temp.map((item, index) => (
                 <div key={index} className='relative group'>
                   {/* 消息气泡 */}
                   <div className='xiuxian-message bg-gradient-to-br from-white/90 via-amber-50/95 to-orange-50/90 backdrop-blur-md rounded-2xl px-4 py-3 shadow-2xl border border-amber-300/50 overflow-hidden'>

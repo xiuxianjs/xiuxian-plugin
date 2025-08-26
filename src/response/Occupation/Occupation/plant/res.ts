@@ -8,7 +8,7 @@ import {
   normalizeDurationMinutes,
   remainingMs,
   formatRemaining
-} from '@src/response/actionHelper';
+} from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';
@@ -75,5 +75,7 @@ export default onResponse(selects, [mw.current, res.current]);
 
 // 兼容读取 game_action 标志（保持旧 key）
 async function getGameFlag(userId: string | number) {
-  return await import('@src/model/utils/redisHelper').then(m => m.getString(userKey(userId, 'game_action')));
+  return await import('@src/model/utils/redisHelper').then(m =>
+    m.getString(userKey(userId, 'game_action'))
+  );
 }

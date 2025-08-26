@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existplayer, readPlayer } from '@src/model/index';
-import { readTiandibang, Write_tiandibang } from '../tian';
+import { readTiandibang, writeTiandibang } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -23,7 +23,7 @@ const res = onResponse(selects, async e => {
     tiandibang = await readTiandibang();
   } catch {
     // 没有表要先建立一个！
-    await Write_tiandibang([]);
+    await writeTiandibang([]);
   }
 
   if (!tiandibang.find(item => item.qq === usr_qq)) {
@@ -46,7 +46,7 @@ const res = onResponse(selects, async e => {
     };
 
     tiandibang.push(A_player);
-    await Write_tiandibang(tiandibang);
+    await writeTiandibang(tiandibang);
     Send(Text('参赛成功!'));
   } else {
     Send(Text('你已经参赛了!'));

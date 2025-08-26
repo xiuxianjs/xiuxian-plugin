@@ -39,8 +39,8 @@ export async function found(A, B) {
 
   for (i = 0; i < qinmidu.length; i++) {
     if (
-      (qinmidu[i].QQ_A == A && qinmidu[i].QQ_B == B)
-      || (qinmidu[i].QQ_A == B && qinmidu[i].QQ_B == A)
+      (qinmidu[i].QQ_A == A && qinmidu[i].QQ_B == B) ||
+      (qinmidu[i].QQ_A == B && qinmidu[i].QQ_B == A)
     ) {
       break;
     }

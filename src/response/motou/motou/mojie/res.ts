@@ -7,7 +7,7 @@ import {
   startAction,
   remainingMs,
   formatRemaining
-} from '@src/response/actionHelper';
+} from '@src/model/actionHelper';
 import { getString, userKey, setValue } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';

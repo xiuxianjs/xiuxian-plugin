@@ -4,7 +4,7 @@ import { keys, validateRole } from '@src/model';
 import { parseJsonBody } from '../core/bodyParser';
 
 // 获取禁言列表
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -60,7 +60,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 添加禁言
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -107,15 +107,15 @@ export const POST = async(ctx: Context) => {
         const unit = match[2];
 
         switch (unit) {
-        case 'h':
-          seconds = value * 3600;
-          break;
-        case 'm':
-          seconds = value * 60;
-          break;
-        case 's':
-          seconds = value;
-          break;
+          case 'h':
+            seconds = value * 3600;
+            break;
+          case 'm':
+            seconds = value * 60;
+            break;
+          case 's':
+            seconds = value;
+            break;
         }
       } else {
         seconds = parseInt(duration) * 60; // 默认按分钟处理
@@ -186,7 +186,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 解除禁言
-export const DELETE = async(ctx: Context) => {
+export const DELETE = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -256,7 +256,7 @@ export const DELETE = async(ctx: Context) => {
 };
 
 // 批量解除禁言
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

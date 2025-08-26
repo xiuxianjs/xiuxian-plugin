@@ -1037,18 +1037,12 @@ export async function getQquipmentImage(e: EventsMessageCreateEnum): Promise<Scr
   }
 
   const bao = Math.trunc(Math.floor(player.暴击率 * 100));
-  const ifexistplayEquipment = (await redis.exists(keys.equipment(usr_qq))) > 0;
 
-  if (!ifexistplayEquipment) {
+  const equipment = await getDataJSONParseByKey(keys.equipment(usr_qq));
+
+  if (!equipment) {
     return;
   }
-  const equipmentDataStr = await redis.get(keys.equipment(usr_qq));
-  const equipmentData = JSON.parse(equipmentDataStr || '{}');
-
-  if (equipmentData === 'error' || Array.isArray(equipmentData)) {
-    return;
-  }
-  const equipment = equipmentData as Equipment;
   const player_data = {
     user_id: usr_qq,
     mdz: player.魔道值,
@@ -1187,34 +1181,33 @@ export async function getStatezhiyeImage(
  */
 export async function getStatemaxImage(
   e: EventsMessageCreateEnum,
-  all_level: boolean
+  allLevel: boolean
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const usrId = e.UserId;
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(usrId));
 
   if (!player) {
     return;
   }
-  const Level_id = player.Physique_id;
+  const levelId = player.Physique_id;
   const LevelMaxList = await getDataList('Level2');
-  let LevelMax_list = LevelMaxList;
+  let levelMaxList = LevelMaxList;
 
   // 循环删除表信息
-  if (!all_level) {
+  if (!allLevel) {
     for (let i = 1; i <= 60; i++) {
-      if (i > Level_id - 6 && i < Level_id + 6) {
+      if (i > levelId - 6 && i < levelId + 6) {
         continue;
       }
-      LevelMax_list = LevelMax_list.filter(item => item.level_id != i);
+      levelMaxList = levelMaxList.filter(item => item.level_id !== i);
     }
   }
-  const statemax_data = {
-    user_id: usr_qq,
-    LevelMax_list: LevelMax_list
-  };
 
-  return await screenshot('statemax', e.UserId, statemax_data);
+  return await screenshot('statemax', e.UserId, {
+    user_id: usrId,
+    LevelMax_list: levelMaxList
+  });
 }
 
 /**

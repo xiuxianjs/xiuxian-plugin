@@ -41,12 +41,18 @@ const res = onResponse(selects, async e => {
     return false;
   }
   /** 回复 */
-  message.send(format(Text('请发送宗门名字,一旦设立,无法再改,请慎重取名,(宗门名字最多6个中文字符)\n想改变主意请回复:【取消】')));
+  message.send(
+    format(
+      Text(
+        '请发送宗门名字,一旦设立,无法再改,请慎重取名,(宗门名字最多6个中文字符)\n想改变主意请回复:【取消】'
+      )
+    )
+  );
   /** 设置上下文 */
   const [subscribe] = useSubscribe(e, selects);
 
   const sub = subscribe.mount(
-    async(event, next) => {
+    async (event, next) => {
       const association_name = event.MessageText;
 
       if (/^(#|＃|\/)?取消$/.test(association_name)) {
@@ -63,7 +69,9 @@ const res = onResponse(selects, async e => {
         return;
       }
       if (association_name.length > 6) {
-        message.send(format(Text('宗门名字最多只能设置6个字符,请重新输入:\n想改变主意请回复:【取消】')));
+        message.send(
+          format(Text('宗门名字最多只能设置6个字符,请重新输入:\n想改变主意请回复:【取消】'))
+        );
         next();
 
         return;

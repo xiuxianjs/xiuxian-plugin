@@ -9,7 +9,12 @@ import {
   zdBattle,
   addCoin
 } from '@src/model/index';
-import { readTiandibang, Write_tiandibang, getLastbisai, TiandibangRow } from '../tian';
+import {
+  readTiandibang,
+  writeTiandibang,
+  getLastbisai,
+  TiandibangRow
+} from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -33,7 +38,8 @@ interface BattlePlayer {
   血量上限: number;
   法球倍率?: number;
 }
-const toNum = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const toNum = (v, d = 0) =>
+  typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
 
 import { getRedisKey } from '@src/model/keys';
 const randomScale = () => 0.8 + 0.4 * Math.random();
@@ -74,9 +80,11 @@ function settleWin(
   self.次数 -= 1;
   const lingshi = self.积分 * (isWild ? (win ? 8 : 6) : win ? 4 : 2);
 
-  lastMsg.push(win
-    ? `${self.名号}击败了[${opponentName}],当前积分[${self.积分}],获得了[${lingshi}]灵石`
-    : `${self.名号}被[${opponentName}]打败了,当前积分[${self.积分}],获得了[${lingshi}]灵石`);
+  lastMsg.push(
+    win
+      ? `${self.名号}击败了[${opponentName}],当前积分[${self.积分}],获得了[${lingshi}]灵石`
+      : `${self.名号}被[${opponentName}]打败了,当前积分[${self.积分}],获得了[${lingshi}]灵石`
+  );
 
   return lingshi;
 }
@@ -127,7 +135,7 @@ const res = onResponse(selects, async e => {
     tiandibang = await readTiandibang();
   } catch {
     // 没有表要先建立一个！
-    await Write_tiandibang([]);
+    await writeTiandibang([]);
   }
   const x = tiandibang.findIndex(item => String(item.qq) === usr_qq);
 
@@ -150,18 +158,18 @@ const res = onResponse(selects, async e => {
     tiandibang[x].次数 = 3;
   }
   if (
-    lastbisai_time
-    && (Today.Y != lastbisai_time.Y || Today.M != lastbisai_time.M || Today.D != lastbisai_time.D)
+    lastbisai_time &&
+    (Today.Y != lastbisai_time.Y || Today.M != lastbisai_time.M || Today.D != lastbisai_time.D)
   ) {
     await redis.set(getRedisKey(usr_qq, 'lastbisai_time'), nowTime); // redis设置签到时间
     tiandibang[x].次数 = 3;
   }
   if (
-    lastbisai_time
-    && Today.Y == lastbisai_time.Y
-    && Today.M == lastbisai_time.M
-    && Today.D == lastbisai_time.D
-    && tiandibang[x].次数 < 1
+    lastbisai_time &&
+    Today.Y == lastbisai_time.Y &&
+    Today.M == lastbisai_time.M &&
+    Today.D == lastbisai_time.D &&
+    tiandibang[x].次数 < 1
   ) {
     const zbl = await existNajieThing(usr_qq, '摘榜令', '道具');
 
@@ -175,7 +183,7 @@ const res = onResponse(selects, async e => {
       return false;
     }
   }
-  await Write_tiandibang(tiandibang);
+  await writeTiandibang(tiandibang);
   let lingshi = 0;
 
   tiandibang = await readTiandibang();
@@ -227,10 +235,10 @@ const res = onResponse(selects, async e => {
 
     if (msg.includes(A_win)) {
       lingshi = settleWin(tiandibang[x], k == -1, last_msg, B_player.名号, true);
-      await Write_tiandibang(tiandibang);
+      await writeTiandibang(tiandibang);
     } else if (msg.includes(B_win)) {
       lingshi = settleWin(tiandibang[x], k == -1, last_msg, B_player.名号, false);
-      await Write_tiandibang(tiandibang);
+      await writeTiandibang(tiandibang);
     } else {
       Send(Text('战斗过程出错'));
 
@@ -276,10 +284,10 @@ const res = onResponse(selects, async e => {
 
     if (msg.includes(A_win)) {
       lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, true);
-      await Write_tiandibang(tiandibang);
+      await writeTiandibang(tiandibang);
     } else if (msg.includes(B_win)) {
       lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, false);
-      await Write_tiandibang(tiandibang);
+      await writeTiandibang(tiandibang);
     } else {
       Send(Text('战斗过程出错'));
 
@@ -312,7 +320,7 @@ const res = onResponse(selects, async e => {
   }
   tiandibang = await readTiandibang();
   tiandibang.sort((a, b) => b.积分 - a.积分);
-  await Write_tiandibang(tiandibang);
+  await writeTiandibang(tiandibang);
 });
 
 export default onResponse(selects, [mw.current, res.current]);

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis, config } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { getRedisKey } from '@src/model/keys';
-import { startAction } from '@src/response/actionHelper';
+import { startAction } from '@src/model/actionHelper';
 import { Go, readPlayer, notUndAndNull, addCoin, addExp } from '@src/model/index';
 
 import { selects } from '@src/response/mw';

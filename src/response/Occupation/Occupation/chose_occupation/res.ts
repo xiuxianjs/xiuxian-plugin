@@ -102,16 +102,17 @@ const res = onResponse(selects, async e => {
     职业等级: Number(player.occupation_level) || 1
   };
 
-  await redis.set(keys.fuzhi(usr_qq), JSON.stringify(fuzhi));
+  await setDataJSONStringifyByKey(keys.fuzhi(usr_qq), fuzhi);
   player.occupation = occupation;
   player.occupation_level = 1;
   player.occupation_exp = 0;
   await writePlayer(usr_qq, player);
-  Send(Text(`恭喜${player.名号}转职为[${occupation}], 你的副职为${fuzhi.职业名}`));
+  void Send(Text(`恭喜${player.名号}转职为[${occupation}], 你的副职为${fuzhi.职业名}`));
 
   return false;
 });
 
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
+import { setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

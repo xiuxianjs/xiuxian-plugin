@@ -15,6 +15,7 @@ import type { AssociationDetailData, Player, JSONValue } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?加入宗门.*$/;
 
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27];
@@ -72,7 +73,9 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const levelList = await getDataList('Level1');
-  const levelEntry = levelList.find((item: { level_id: number }) => item.level_id == player.level_id);
+  const levelEntry = levelList.find(
+    (item: { level_id: number }) => item.level_id == player.level_id
+  );
 
   if (!levelEntry) {
     Send(Text('境界数据缺失'));
@@ -95,31 +98,13 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const assData = await redis.get(keys.association(association_name));
+  const ass = await getDataJSONParseByKey(keys.association(association_name));
 
-  if (!assData) {
-    Send(Text('没有这个宗门'));
+  if (!ass) {
+    void Send(Text('没有这个宗门'));
 
-    return false;
+    return;
   }
-  let assRaw: AssociationDetailData | 'error';
-
-  try {
-    assRaw = JSON.parse(assData) as AssociationDetailData;
-  } catch (_error) {
-    assRaw = 'error';
-  }
-  if (assRaw === 'error') {
-    Send(Text('没有这个宗门'));
-
-    return false;
-  }
-  if (!isGuildInfo(assRaw)) {
-    Send(Text('宗门数据格式错误'));
-
-    return false;
-  }
-  const ass = assRaw;
 
   ass.所有成员 = Array.isArray(ass.所有成员) ? ass.所有成员 : [];
   ass.外门弟子 = Array.isArray(ass.外门弟子) ? ass.外门弟子 : [];
@@ -138,7 +123,9 @@ const res = onResponse(selects, async e => {
 
   if (Number(ass.最低加入境界 || 0) > now_level_id) {
     const levelList = await getDataList('Level1');
-    const levelEntry = levelList.find((item: { level_id: number }) => item.level_id === ass.最低加入境界);
+    const levelEntry = levelList.find(
+      (item: { level_id: number }) => item.level_id === ass.最低加入境界
+    );
     const level = levelEntry?.level || '未知境界';
 
     Send(Text(`${association_name}招收弟子的最低加入境界要求为:${level},当前未达到要求`));
@@ -166,8 +153,8 @@ const res = onResponse(selects, async e => {
   ass.外门弟子.push(usr_qq);
   await playerEfficiency(usr_qq);
   await writePlayer(usr_qq, serializePlayer(player) as unknown as Player);
-  await redis.set(keys.association(association_name), JSON.stringify(ass));
-  Send(Text(`恭喜你成功加入${association_name}`));
+  await setDataJSONStringifyByKey(keys.association(association_name), ass);
+  void Send(Text(`恭喜你成功加入${association_name}`));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

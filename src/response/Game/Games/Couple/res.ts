@@ -3,7 +3,8 @@ import { Text, useMention, useSend } from 'alemonjs';
 
 import { config, redis } from '@src/model/api';
 import { addExp } from '@src/model/economy';
-import { findQinmidu, existHunyin, fstaddQinmidu, addQinmidu } from '@src/model/qinmidu';
+import { existHunyin, fstaddQinmidu, addQinmidu } from '@src/model/qinmidu';
+import { findQinmidu } from '@src/types/player';
 import { existplayer } from '@src/model/xiuxian_impl';
 
 import { selects } from '@src/response/mw';

@@ -127,8 +127,8 @@ const res = onResponse(selects, async e => {
   action.power_up = 1;
   action.Place_action = 1;
   action.end_time = now;
-  action.time
-    = (action.time && action.end_time && action.time) || action.duration || minutes * 60000; // 记录原始或推导时长
+  action.time =
+    (action.time && action.end_time && action.time) || action.duration || minutes * 60000; // 记录原始或推导时长
   delete action.group_id;
 
   redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action));

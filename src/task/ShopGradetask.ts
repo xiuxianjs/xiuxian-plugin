@@ -6,7 +6,7 @@ import type { ShopSlot } from '@src/types';
 遍历每个商品（slot），将其 Grade（等级）减1，最低不低于1。
 更新后的商店数据写回存储。
  */
-export const ShopGradetask = async() => {
+export const ShopGradetask = async () => {
   const shop = await readShop();
 
   for (const slot of shop as Array<ShopSlot & { Grade?: number }>) {

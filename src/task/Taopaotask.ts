@@ -40,7 +40,7 @@ interface ShopSlotLike {
 推送结算消息到玩家或群组。
  * @returns
  */
-export const Taopaotask = async() => {
+export const Taopaotask = async () => {
   // 获取缓存中人物列表
   const playerList = await keysByPath(__PATH.player_path);
 
@@ -74,8 +74,8 @@ export const Taopaotask = async() => {
       // 有洗劫状态:这个直接结算即可
       if (action.xijie == '-2') {
         // 5分钟后开始结算阶段一
-        const actTime
-          = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const actTime =
+          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
 
         end_time = end_time - (isNaN(actTime) ? 0 : actTime) + 60000 * 5;
         // 时间过了
@@ -120,18 +120,24 @@ export const Taopaotask = async() => {
           const B_player = {
             名号: monster.name,
             攻击: Math.floor(Number(monster.atk || 0) * Number(A_player.攻击 || 0)),
-            防御: Math.floor((Number(monster.def || 0) * Number(A_player.防御 || 0))
-                / (1 + Number(weizhi.Grade || 0) * 0.05)),
-            当前血量: Math.floor((Number(monster.blood || 0) * Number(A_player.当前血量 || 0))
-                / (1 + Number(weizhi.Grade || 0) * 0.05)),
+            防御: Math.floor(
+              (Number(monster.def || 0) * Number(A_player.防御 || 0)) /
+                (1 + Number(weizhi.Grade || 0) * 0.05)
+            ),
+            当前血量: Math.floor(
+              (Number(monster.blood || 0) * Number(A_player.当前血量 || 0)) /
+                (1 + Number(weizhi.Grade || 0) * 0.05)
+            ),
             暴击率: Number(monster.baoji || 0),
             灵根: monster.灵根 || { name: '野怪', type: '普通', 法球倍率: 0.1 },
             法球倍率: Number(monster.灵根?.法球倍率 || 0.1)
           };
           const Random = Math.random();
-          const npc_damage = Math.trunc(Harm(B_player.攻击 * 0.85, Number(A_player.防御 || 0))
-              + Math.trunc(B_player.攻击 * B_player.法球倍率)
-              + B_player.防御 * 0.1);
+          const npc_damage = Math.trunc(
+            Harm(B_player.攻击 * 0.85, Number(A_player.防御 || 0)) +
+              Math.trunc(B_player.攻击 * B_player.法球倍率) +
+              B_player.防御 * 0.1
+          );
           let last_msg = '';
 
           if (Random < 0.1) {

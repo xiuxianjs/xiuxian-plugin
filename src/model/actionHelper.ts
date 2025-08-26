@@ -145,7 +145,7 @@ export function remainingMs(record: ActionRecord, now = Date.now()): number {
 export function formatRemaining(ms: number) {
   const total = Math.floor(ms / 1000);
   const m = Math.floor(total / 60);
-  // eslint-disable-next-line no-mixed-operators
+
   const s = total - m * 60;
 
   return `${m}分${s}秒`;
@@ -168,7 +168,7 @@ export async function updateAction(
 
 export async function updateActionWithSuffix(
   userId: string | number,
-  suffix: string,
+  suffix: ActionType,
   updater: (prev: ActionRecord | null) => ActionRecord | null
 ) {
   const prev = await readActionWithSuffix(userId, suffix);
@@ -198,7 +198,7 @@ export function stopAction(userId: string | number, extra: Partial<ActionRecord 
 
 export function stopActionWithSuffix(
   userId: string | number,
-  suffix: string,
+  suffix: ActionType,
   extra: Partial<ActionRecord & {}> = {}
 ) {
   return updateActionWithSuffix(userId, suffix, prev => {

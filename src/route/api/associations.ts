@@ -3,11 +3,12 @@ import { validateRole } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 
 const redis = getIoRedis();
 
 // 获取宗门列表（支持分页）
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -50,10 +51,10 @@ export const GET = async(ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase())
-              || associationName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch =
+              !search ||
+              associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase()) ||
+              associationName.toLowerCase().includes(search.toLowerCase());
 
             if (matchesSearch) {
               total++;
@@ -125,7 +126,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 获取单个宗门详情
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -147,9 +148,9 @@ export const POST = async(ctx: Context) => {
       return;
     }
 
-    const associationData = await redis.get(keys.association(associationName));
+    const ass = await getDataJSONParseByKey(keys.association(associationName));
 
-    if (!associationData) {
+    if (!ass) {
       ctx.status = 404;
       ctx.body = {
         code: 404,
@@ -160,15 +161,13 @@ export const POST = async(ctx: Context) => {
       return;
     }
 
-    const association = JSON.parse(associationData);
-
     ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取宗门详情成功',
       data: {
         name: associationName,
-        ...association
+        ...(typeof ass === 'object' ? ass : {})
       }
     };
   } catch (error) {
@@ -183,7 +182,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 获取宗门统计信息
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -228,10 +227,10 @@ export const PUT = async(ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase())
-              || associationName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch =
+              !search ||
+              associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase()) ||
+              associationName.toLowerCase().includes(search.toLowerCase());
 
             if (matchesSearch) {
               total++;

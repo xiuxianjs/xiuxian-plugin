@@ -55,7 +55,7 @@ interface MonsterLike {
 结算后关闭相关状态。
 兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
  */
-export const SecretPlaceplusTask = async() => {
+export const SecretPlaceplusTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const player_id of playerList) {

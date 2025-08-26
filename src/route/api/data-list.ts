@@ -8,7 +8,7 @@ import { parseJsonBody } from '../core/bodyParser';
  * @param ctx
  * @returns
  */
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -52,8 +52,10 @@ export const GET = async(ctx: Context) => {
     }
     const filteredData = search
       ? data.filter(item => {
-        return Object.values(item).some(value => String(value).toLowerCase().includes(search.toLowerCase()));
-      })
+          return Object.values(item).some(value =>
+            String(value).toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : data;
 
     // 分页处理
@@ -93,7 +95,7 @@ export const GET = async(ctx: Context) => {
  * @param ctx
  * @returns
  */
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -182,7 +184,7 @@ export const PUT = async(ctx: Context) => {
  * @param ctx
  * @returns
  */
-export const PATCH = async(ctx: Context) => {
+export const PATCH = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

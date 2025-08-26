@@ -31,7 +31,7 @@ function isNajieCategory(v): v is NajieCategory {
 结算后关闭相关状态。
 兼容多种奖励类型和探索地点，支持丰富的探索体验。
  */
-export const ShenjieTask = async() => {
+export const ShenjieTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const player_id of playerList) {

@@ -1,6 +1,6 @@
 import { redis } from '../../model/api';
-import { getRedisKey } from '../keys';
-import type { ActionType, RedisScalar } from '../../types/model';
+import { ActionType, getRedisKey } from '../keys';
+import type { RedisScalar } from '../../types/model';
 import { getDataJSONParseByKey, setDataByKey, setDataJSONStringifyByKey } from '../DataControl';
 
 // 通用获取：保留字符串或 null

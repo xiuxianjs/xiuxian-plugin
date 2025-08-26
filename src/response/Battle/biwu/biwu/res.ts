@@ -317,41 +317,41 @@ async function battle(e, num: number) {
       const sk = action_A.技能[action_A.use];
 
       switch (sk.name) {
-      case '四象封印':
-        buff_A.四象封印 = sk.last || 0;
-        break;
-      case '桃园结义':
-        if (sk.pr) {
-          B_player.当前血量 += Math.trunc(B_player.当前血量 * sk.pr);
-          A_player.当前血量 += Math.trunc(A_player.当前血量 * sk.pr);
-        }
-        break;
-      case '长生诀':
-        if (sk.pr) {
-          A_player.当前血量 += Math.trunc(A_player.血量上限 * sk.pr);
-        }
-        break;
-      case '祝水咒':
-        buff_A.祝水咒 = sk.last || 0;
-        break;
-      case '阴风蚀骨':
-        buff_A.阴风蚀骨 = sk.last || 0;
-        break;
-      case '万年俱灰':
-        buff_A.万年俱灰 = sk.last || 0;
-        break;
-      case '心烦意乱':
-        buff_A.心烦意乱 = sk.last || 0;
-        break;
-      case '失魂落魄':
-        buff_A.失魂落魄 = sk.last || 0;
-        break;
-      case '玄冰封印':
-        buff_A.玄冰封印 = sk.last || 0;
-        break;
-      case '诛仙三剑':
-        buff_A.诛仙三剑 = sk.last || 0;
-        break;
+        case '四象封印':
+          buff_A.四象封印 = sk.last || 0;
+          break;
+        case '桃园结义':
+          if (sk.pr) {
+            B_player.当前血量 += Math.trunc(B_player.当前血量 * sk.pr);
+            A_player.当前血量 += Math.trunc(A_player.当前血量 * sk.pr);
+          }
+          break;
+        case '长生诀':
+          if (sk.pr) {
+            A_player.当前血量 += Math.trunc(A_player.血量上限 * sk.pr);
+          }
+          break;
+        case '祝水咒':
+          buff_A.祝水咒 = sk.last || 0;
+          break;
+        case '阴风蚀骨':
+          buff_A.阴风蚀骨 = sk.last || 0;
+          break;
+        case '万年俱灰':
+          buff_A.万年俱灰 = sk.last || 0;
+          break;
+        case '心烦意乱':
+          buff_A.心烦意乱 = sk.last || 0;
+          break;
+        case '失魂落魄':
+          buff_A.失魂落魄 = sk.last || 0;
+          break;
+        case '玄冰封印':
+          buff_A.玄冰封印 = sk.last || 0;
+          break;
+        case '诛仙三剑':
+          buff_A.诛仙三剑 = sk.last || 0;
+          break;
       }
       if (sk.msg) {
         roundMsgs.push(`${A_player.名号}${sk.msg}`);
@@ -366,7 +366,9 @@ async function battle(e, num: number) {
       buff_A.诛仙三剑--;
     }
     B_player.当前血量 -= A_harm;
-    roundMsgs.push(`第${cnt}回合,${A_player.名号}普通攻击，${ifbaoji(A_baoji)}造成伤害${A_harm}，${B_player.名号}剩余血量${B_player.当前血量}`);
+    roundMsgs.push(
+      `第${cnt}回合,${A_player.名号}普通攻击，${ifbaoji(A_baoji)}造成伤害${A_harm}，${B_player.名号}剩余血量${B_player.当前血量}`
+    );
     if (B_player.当前血量 <= 0) {
       history.push(roundMsgs);
       break;
@@ -481,41 +483,41 @@ async function battle(e, num: number) {
       const sk = action_B.技能[action_B.use];
 
       switch (sk.name) {
-      case '四象封印':
-        buff_B.四象封印 = sk.last || 0;
-        break;
-      case '桃园结义':
-        if (sk.pr) {
-          B_player.当前血量 += Math.trunc(B_player.当前血量 * sk.pr);
-          A_player.当前血量 += Math.trunc(A_player.当前血量 * (1 + sk.pr));
-        }
-        break;
-      case '长生诀':
-        if (sk.pr) {
-          B_player.当前血量 += Math.trunc(B_player.血量上限 * sk.pr);
-        }
-        break;
-      case '祝水咒':
-        buff_B.祝水咒 = sk.last || 0;
-        break;
-      case '阴风蚀骨':
-        buff_B.阴风蚀骨 = sk.last || 0;
-        break;
-      case '万年俱灰':
-        buff_B.万年俱灰 = sk.last || 0;
-        break;
-      case '心烦意乱':
-        buff_B.心烦意乱 = sk.last || 0;
-        break;
-      case '失魂落魄':
-        buff_B.失魂落魄 = sk.last || 0;
-        break;
-      case '玄冰封印':
-        buff_B.玄冰封印 = sk.last || 0;
-        break;
-      case '诛仙三剑':
-        buff_B.诛仙三剑 = sk.last || 0;
-        break;
+        case '四象封印':
+          buff_B.四象封印 = sk.last || 0;
+          break;
+        case '桃园结义':
+          if (sk.pr) {
+            B_player.当前血量 += Math.trunc(B_player.当前血量 * sk.pr);
+            A_player.当前血量 += Math.trunc(A_player.当前血量 * (1 + sk.pr));
+          }
+          break;
+        case '长生诀':
+          if (sk.pr) {
+            B_player.当前血量 += Math.trunc(B_player.血量上限 * sk.pr);
+          }
+          break;
+        case '祝水咒':
+          buff_B.祝水咒 = sk.last || 0;
+          break;
+        case '阴风蚀骨':
+          buff_B.阴风蚀骨 = sk.last || 0;
+          break;
+        case '万年俱灰':
+          buff_B.万年俱灰 = sk.last || 0;
+          break;
+        case '心烦意乱':
+          buff_B.心烦意乱 = sk.last || 0;
+          break;
+        case '失魂落魄':
+          buff_B.失魂落魄 = sk.last || 0;
+          break;
+        case '玄冰封印':
+          buff_B.玄冰封印 = sk.last || 0;
+          break;
+        case '诛仙三剑':
+          buff_B.诛仙三剑 = sk.last || 0;
+          break;
       }
       if (sk.msg) {
         roundMsgs.push(`${B_player.名号}${sk.msg}`);
@@ -530,7 +532,9 @@ async function battle(e, num: number) {
       buff_B.诛仙三剑--;
     }
     A_player.当前血量 -= B_harm;
-    roundMsgs.push(`第${cnt}回合,${B_player.名号}普通攻击，${ifbaoji(B_baoji)}造成伤害${B_harm}，${A_player.名号}剩余血量${A_player.当前血量}`);
+    roundMsgs.push(
+      `第${cnt}回合,${B_player.名号}普通攻击，${ifbaoji(B_baoji)}造成伤害${B_harm}，${A_player.名号}剩余血量${A_player.当前血量}`
+    );
 
     cnt++;
     pushInfo(A_QQ[num].QQ, false, roundMsgs);

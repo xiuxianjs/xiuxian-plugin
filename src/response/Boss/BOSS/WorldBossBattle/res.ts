@@ -218,11 +218,15 @@ const res = onResponse(selects, async e => {
   const bossWin = msg.includes(B_win);
 
   if (playerWin) {
-    TotalDamage = Math.trunc(WorldBossStatus.Healthmax * 0.05 + Harm(player.攻击 * 0.85, Boss.防御) * 6);
+    TotalDamage = Math.trunc(
+      WorldBossStatus.Healthmax * 0.05 + Harm(player.攻击 * 0.85, Boss.防御) * 6
+    );
     WorldBossStatus.Health -= TotalDamage;
     Send(Text(`${player.名号}击败了[${Boss.名号}],重创[妖王],造成伤害${TotalDamage}`));
   } else if (bossWin) {
-    TotalDamage = Math.trunc(WorldBossStatus.Healthmax * 0.03 + Harm(player.攻击 * 0.85, Boss.防御) * 4);
+    TotalDamage = Math.trunc(
+      WorldBossStatus.Healthmax * 0.03 + Harm(player.攻击 * 0.85, Boss.防御) * 4
+    );
     WorldBossStatus.Health -= TotalDamage;
     Send(Text(`${player.名号}被[${Boss.名号}]击败了,只对[妖王]造成了${TotalDamage}伤害`));
   }
@@ -264,7 +268,9 @@ const res = onResponse(selects, async e => {
 
     const PlayerList = await SortPlayer(PlayerRecordJSON);
 
-    Send(Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'));
+    Send(
+      Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')
+    );
 
     const Rewardmsg: string[] = ['****妖王周本贡献排行榜****'];
     const showMax = Math.min(PlayerList.length, 20);
@@ -286,12 +292,16 @@ const res = onResponse(selects, async e => {
         continue;
       }
       if (i < showMax) {
-        let reward = Math.trunc((PlayerRecordJSON.TotalDamage[idx] / topDamageSum) * WorldBossStatus.Reward);
+        let reward = Math.trunc(
+          (PlayerRecordJSON.TotalDamage[idx] / topDamageSum) * WorldBossStatus.Reward
+        );
 
         if (!Number.isFinite(reward) || reward < 200000) {
           reward = 200000;
         }
-        Rewardmsg.push(`第${i + 1}名:\n名号:${CurrentPlayer.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`);
+        Rewardmsg.push(
+          `第${i + 1}名:\n名号:${CurrentPlayer.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`
+        );
         CurrentPlayer.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), CurrentPlayer);
         logger.info(`[妖王周本] 结算:${qq}增加奖励${reward}`);

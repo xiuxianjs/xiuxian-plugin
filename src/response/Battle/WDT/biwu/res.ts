@@ -111,7 +111,11 @@ const res = onResponse(selects, async e => {
     const hasHide = await existNajieThing(A, '剑xx', '道具');
 
     if (!hasHide) {
-      Send(Text(`对方正在${B_action.action}中,剩余时间:${formatRemain(B_action.end_time - Date.now())}`));
+      Send(
+        Text(
+          `对方正在${B_action.action}中,剩余时间:${formatRemain(B_action.end_time - Date.now())}`
+        )
+      );
 
       return false;
     }
@@ -221,7 +225,9 @@ const res = onResponse(selects, async e => {
       pA.魔道值 = (Number(pA.魔道值) || 0) + 1;
       await import('@src/model/xiuxian_impl').then(m => m.writePlayer(A, pA));
     }
-    final_msg.push(` 经过一番大战,${A_win}获得了胜利,${A_player.名号}获得${qixueA}气血，${B_player.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`);
+    final_msg.push(
+      ` 经过一番大战,${A_win}获得了胜利,${A_player.名号}获得${qixueA}气血，${B_player.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`
+    );
   } else if (bWin) {
     const qixueA = Math.trunc(500 * levelB);
     const qixueB = Math.trunc(1000 * levelA);
@@ -237,7 +243,9 @@ const res = onResponse(selects, async e => {
       pB.魔道值 = (Number(pB.魔道值) || 0) + 1;
       await import('@src/model/xiuxian_impl').then(m => m.writePlayer(B, pB));
     }
-    final_msg.push(`经过一番大战,${B_win}获得了胜利,${B_player.名号}获得${qixueB}气血，${A_player.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`);
+    final_msg.push(
+      `经过一番大战,${B_win}获得了胜利,${B_player.名号}获得${qixueB}气血，${A_player.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`
+    );
   }
 
   Send(Text(final_msg.join('')));

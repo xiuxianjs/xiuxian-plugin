@@ -178,10 +178,10 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (
-    playerAFull?.宗门
-    && playerBFull?.宗门
-    && isPlayerGuildRef(playerAFull.宗门)
-    && isPlayerGuildRef(playerBFull.宗门)
+    playerAFull?.宗门 &&
+    playerBFull?.宗门 &&
+    isPlayerGuildRef(playerAFull.宗门) &&
+    isPlayerGuildRef(playerBFull.宗门)
   ) {
     const assA = await getDataJSONParseByKey(keys.association(playerAFull.宗门.宗门名称));
     const assB = await getDataJSONParseByKey(keys.association(playerBFull.宗门.宗门名称));
@@ -190,11 +190,11 @@ const res = onResponse(selects, async e => {
       return false;
     }
     if (
-      assA !== 'error'
-      && assB !== 'error'
-      && isExtAss(assA)
-      && isExtAss(assB)
-      && assA.宗门名称 === assB.宗门名称
+      assA !== 'error' &&
+      assB !== 'error' &&
+      isExtAss(assA) &&
+      isExtAss(assB) &&
+      assA.宗门名称 === assB.宗门名称
     ) {
       Send(Text('门派禁止内讧'));
 
@@ -303,7 +303,9 @@ const res = onResponse(selects, async e => {
   const final_msg: string[] = [];
 
   if (isBbusy) {
-    final_msg.push(`${B_player.名号}正在${B_action?.action}，${A_player.名号}利用隐身水悄然接近，但被发现。`);
+    final_msg.push(
+      `${B_player.名号}正在${B_action?.action}，${A_player.名号}利用隐身水悄然接近，但被发现。`
+    );
     await addNajieThing(A, '隐身水', '道具', -1);
   } else {
     final_msg.push(`${A_player.名号}向${B_player.名号}发起了打劫。`);
@@ -369,9 +371,9 @@ const res = onResponse(selects, async e => {
     const hasDoll = await existNajieThing(B, '替身人偶', '道具');
 
     if (
-      hasDoll
-      && B_player.魔道值 < 1
-      && (B_player.灵根?.type === '转生' || (B_player.level_id ?? 0) > 41)
+      hasDoll &&
+      B_player.魔道值 < 1 &&
+      (B_player.灵根?.type === '转生' || (B_player.level_id ?? 0) > 41)
     ) {
       Send(Text(`${B_player.名号}使用了道具替身人偶,躲过了此次打劫`));
       await addNajieThing(B, '替身人偶', '道具', -1);
@@ -412,7 +414,9 @@ const res = onResponse(selects, async e => {
       } catch {
         /* ignore */
       }
-      final_msg.push(`经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号}被关禁闭60分钟`);
+      final_msg.push(
+        `经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号}被关禁闭60分钟`
+      );
     } else {
       let lingshi = Math.trunc(A_player.灵石 / 4);
 
@@ -424,7 +428,9 @@ const res = onResponse(selects, async e => {
       B_player.血气 += qixue;
       await writePlayer(A, A_player);
       await writePlayer(B, B_player);
-      final_msg.push(`经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号}被劫走${lingshi}灵石`);
+      final_msg.push(
+        `经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号}被劫走${lingshi}灵石`
+      );
     }
   } else {
     Send(Text('战斗过程出错'));

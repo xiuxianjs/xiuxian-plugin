@@ -274,7 +274,9 @@ const res = onResponse(selects, async e => {
 
     const PlayerList = await SortPlayer(PlayerRecordJSON);
 
-    Send(Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'));
+    Send(
+      Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')
+    );
     const showMax = Math.min(PlayerList.length, 20);
     let topSum = 0;
 
@@ -293,12 +295,16 @@ const res = onResponse(selects, async e => {
       const cur = await getDataJSONParseByKey(keys.player(qq));
 
       if (i < showMax) {
-        let reward = Math.trunc((PlayerRecordJSON.TotalDamage[idx] / topSum) * WorldBossStatus.Reward);
+        let reward = Math.trunc(
+          (PlayerRecordJSON.TotalDamage[idx] / topSum) * WorldBossStatus.Reward
+        );
 
         if (!Number.isFinite(reward) || reward < 200000) {
           reward = 200000;
         }
-        Rewardmsg.push(`第${i + 1}名:\n名号:${cur.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`);
+        Rewardmsg.push(
+          `第${i + 1}名:\n名号:${cur.名号}\n伤害:${PlayerRecordJSON.TotalDamage[idx]}\n获得灵石奖励${reward}`
+        );
         cur.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
         logger.info(`[金角大王周本] 结算:${qq}增加奖励${reward}`);

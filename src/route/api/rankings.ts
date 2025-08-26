@@ -6,7 +6,7 @@ import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 
 // 获取排名数据
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -37,193 +37,193 @@ export const GET = async(ctx: Context) => {
     }> = [];
 
     switch (type) {
-    case 'ASSOCIATION_POWER': {
-      // 宗门综合实力排名
-      const associationList = await keysByPath(__PATH.association);
+      case 'ASSOCIATION_POWER': {
+        // 宗门综合实力排名
+        const associationList = await keysByPath(__PATH.association);
 
-      for (const assName of associationList) {
-        const ass = await getDataJSONParseByKey(keys.association(assName));
+        for (const assName of associationList) {
+          const ass = await getDataJSONParseByKey(keys.association(assName));
 
-        if (ass) {
-          const power = ass.power || 0;
-          const level = ass.宗门等级 || 1;
-          const members = ass.所有成员?.length || 0;
-          const lingshi = ass.宗门灵石池 || 0;
+          if (ass) {
+            const power = ass.power || 0;
+            const level = ass.宗门等级 || 1;
+            const members = ass.所有成员?.length || 0;
+            const lingshi = ass.宗门灵石池 || 0;
 
-          // 综合实力计算：等级 * 1000 + 成员数 * 100 + 灵石池 / 10000 + 仙界加成
-          const totalPower
-              = level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
+            // 综合实力计算：等级 * 1000 + 成员数 * 100 + 灵石池 / 10000 + 仙界加成
+            const totalPower =
+              level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
 
-          rankingData.push({
-            id: assName,
-            name: ass.宗门名称 || assName,
-            value: totalPower,
-            extra: {
-              level,
-              members,
-              lingshi,
-              power: power === 1 ? '仙界' : '凡界'
-            }
-          });
+            rankingData.push({
+              id: assName,
+              name: ass.宗门名称 || assName,
+              value: totalPower,
+              extra: {
+                level,
+                members,
+                lingshi,
+                power: power === 1 ? '仙界' : '凡界'
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    case 'ASSOCIATION_MEMBERS': {
-      // 宗门成员数排名
-      const associationList = await keysByPath(__PATH.association);
+      case 'ASSOCIATION_MEMBERS': {
+        // 宗门成员数排名
+        const associationList = await keysByPath(__PATH.association);
 
-      for (const assName of associationList) {
-        const ass = await getDataJSONParseByKey(keys.association(assName));
+        for (const assName of associationList) {
+          const ass = await getDataJSONParseByKey(keys.association(assName));
 
-        if (ass) {
-          const members = ass.所有成员?.length || 0;
+          if (ass) {
+            const members = ass.所有成员?.length || 0;
 
-          rankingData.push({
-            id: assName,
-            name: ass.宗门名称 || assName,
-            value: members,
-            extra: {
-              level: ass.宗门等级 || 1,
-              power: ass.power === 1 ? '仙界' : '凡界'
-            }
-          });
+            rankingData.push({
+              id: assName,
+              name: ass.宗门名称 || assName,
+              value: members,
+              extra: {
+                level: ass.宗门等级 || 1,
+                power: ass.power === 1 ? '仙界' : '凡界'
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    case 'ASSOCIATION_LINGSHI': {
-      // 宗门灵石池排名
-      const associationList = await keysByPath(__PATH.association);
+      case 'ASSOCIATION_LINGSHI': {
+        // 宗门灵石池排名
+        const associationList = await keysByPath(__PATH.association);
 
-      for (const assName of associationList) {
-        const ass = await getDataJSONParseByKey(keys.association(assName));
+        for (const assName of associationList) {
+          const ass = await getDataJSONParseByKey(keys.association(assName));
 
-        if (ass) {
-          const lingshi = ass.宗门灵石池 || 0;
+          if (ass) {
+            const lingshi = ass.宗门灵石池 || 0;
 
-          rankingData.push({
-            id: assName,
-            name: ass.宗门名称 || assName,
-            value: lingshi,
-            extra: {
-              level: ass.宗门等级 || 1,
-              members: ass.所有成员?.length || 0
-            }
-          });
+            rankingData.push({
+              id: assName,
+              name: ass.宗门名称 || assName,
+              value: lingshi,
+              extra: {
+                level: ass.宗门等级 || 1,
+                members: ass.所有成员?.length || 0
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    case 'ASSOCIATION_LEVEL': {
-      // 宗门等级排名
-      const associationList = await keysByPath(__PATH.association);
+      case 'ASSOCIATION_LEVEL': {
+        // 宗门等级排名
+        const associationList = await keysByPath(__PATH.association);
 
-      for (const assName of associationList) {
-        const ass = await getDataJSONParseByKey(keys.association(assName));
+        for (const assName of associationList) {
+          const ass = await getDataJSONParseByKey(keys.association(assName));
 
-        if (ass) {
-          const level = ass.宗门等级 || 1;
+          if (ass) {
+            const level = ass.宗门等级 || 1;
 
-          rankingData.push({
-            id: assName,
-            name: ass.宗门名称 || assName,
-            value: level,
-            extra: {
-              members: ass.所有成员?.length || 0,
-              power: ass.power === 1 ? '仙界' : '凡界'
-            }
-          });
+            rankingData.push({
+              id: assName,
+              name: ass.宗门名称 || assName,
+              value: level,
+              extra: {
+                members: ass.所有成员?.length || 0,
+                power: ass.power === 1 ? '仙界' : '凡界'
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    case 'PLAYER_LEVEL': {
-      // 玩家境界排名
-      const playerList = await keysByPath(__PATH.player_path);
+      case 'PLAYER_LEVEL': {
+        // 玩家境界排名
+        const playerList = await keysByPath(__PATH.player_path);
 
-      for (const qq of playerList) {
-        const player = await readPlayer(qq);
+        for (const qq of playerList) {
+          const player = await readPlayer(qq);
 
-        if (player) {
-          const levelList = await getDataList('Level1');
-          const level = levelList.find(item => item.level_id === player.level_id);
+          if (player) {
+            const levelList = await getDataList('Level1');
+            const level = levelList.find(item => item.level_id === player.level_id);
 
-          rankingData.push({
-            id: qq,
-            name: player.名号 || `玩家${qq}`,
-            value: player.level_id || 0,
-            extra: {
-              level: level?.level || '未知',
-              exp: player.修为 || 0
-            }
-          });
+            rankingData.push({
+              id: qq,
+              name: player.名号 || `玩家${qq}`,
+              value: player.level_id || 0,
+              extra: {
+                level: level?.level || '未知',
+                exp: player.修为 || 0
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    case 'PLAYER_ATTACK': {
-      // 玩家攻击力排名
-      const playerList = await keysByPath(__PATH.player_path);
+      case 'PLAYER_ATTACK': {
+        // 玩家攻击力排名
+        const playerList = await keysByPath(__PATH.player_path);
 
-      for (const qq of playerList) {
-        const player = await readPlayer(qq);
+        for (const qq of playerList) {
+          const player = await readPlayer(qq);
 
-        if (player) {
-          const attack = player.攻击 || 0;
+          if (player) {
+            const attack = player.攻击 || 0;
 
-          rankingData.push({
-            id: qq,
-            name: player.名号 || `玩家${qq}`,
-            value: attack,
-            extra: {
-              level: player.level_id || 0,
-              defense: player.防御 || 0
-            }
-          });
+            rankingData.push({
+              id: qq,
+              name: player.名号 || `玩家${qq}`,
+              value: attack,
+              extra: {
+                level: player.level_id || 0,
+                defense: player.防御 || 0
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    case 'PLAYER_DEFENSE': {
-      // 玩家防御力排名
-      const playerList = await keysByPath(__PATH.player_path);
+      case 'PLAYER_DEFENSE': {
+        // 玩家防御力排名
+        const playerList = await keysByPath(__PATH.player_path);
 
-      for (const qq of playerList) {
-        const player = await readPlayer(qq);
+        for (const qq of playerList) {
+          const player = await readPlayer(qq);
 
-        if (player) {
-          const defense = player.防御 || 0;
+          if (player) {
+            const defense = player.防御 || 0;
 
-          rankingData.push({
-            id: qq,
-            name: player.名号 || `玩家${qq}`,
-            value: defense,
-            extra: {
-              level: player.level_id || 0,
-              attack: player.攻击 || 0
-            }
-          });
+            rankingData.push({
+              id: qq,
+              name: player.名号 || `玩家${qq}`,
+              value: defense,
+              extra: {
+                level: player.level_id || 0,
+                attack: player.攻击 || 0
+              }
+            });
+          }
         }
+        break;
       }
-      break;
-    }
 
-    default:
-      ctx.status = 400;
-      ctx.body = {
-        code: 400,
-        message: '不支持的排名类型',
-        data: null
-      };
+      default:
+        ctx.status = 400;
+        ctx.body = {
+          code: 400,
+          message: '不支持的排名类型',
+          data: null
+        };
 
-      return;
+        return;
     }
 
     // 按数值降序排序
@@ -253,7 +253,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 获取排名统计信息
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -319,8 +319,8 @@ export const POST = async(ctx: Context) => {
         const members = ass.所有成员?.length || 0;
         const lingshi = ass.宗门灵石池 || 0;
 
-        const totalPower
-          = level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
+        const totalPower =
+          level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
 
         topAssociations.push({
           id: assName,
@@ -367,7 +367,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 手动触发排名计算
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

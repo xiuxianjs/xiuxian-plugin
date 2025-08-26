@@ -23,7 +23,9 @@ const res = onResponse(selects, async e => {
       if (j.QQ == e.UserId) {
         code = code.slice(0, 3);
         for (const m in code) {
-          j['选择技能'].push(JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1]))));
+          j['选择技能'].push(
+            JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1])))
+          );
           msg.push(j.技能[+code[m] - 1]);
         }
       }
@@ -36,7 +38,9 @@ const res = onResponse(selects, async e => {
       if (j.QQ == e.UserId) {
         code = code.slice(0, 3);
         for (const m in code) {
-          j['选择技能'].push(JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1]))));
+          j['选择技能'].push(
+            JSON.parse(JSON.stringify(data.Jineng.find(item => item.name == j.技能[+code[m] - 1])))
+          );
           msg.push(j.技能[+code[m] - 1]);
         }
       }

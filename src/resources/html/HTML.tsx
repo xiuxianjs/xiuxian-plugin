@@ -3,9 +3,11 @@ import { LinkStyleSheet } from 'jsxp';
 import cssURL from '@src/resources/styles/tw.scss';
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf';
 
-const HTML = (props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement> & {
+const HTML = (
+  props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement> & {
     linkStyleSheets?: string[];
-  }) => {
+  }
+) => {
   const { linkStyleSheets = [], dangerouslySetInnerHTML, ...reSet } = props;
 
   return (

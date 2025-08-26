@@ -110,7 +110,11 @@ export interface ExchangeRecord {
   price: number;
   amount: number;
   qq: string;
+  start_price: number;
+  last_price: number;
+  last_offer_price: number;
   last_offer_player: number;
+  groupList: string[];
 }
 export type ForumRecord = ExchangeRecord;
 // 新增：Image 视图层扩展条目类型
@@ -350,15 +354,6 @@ export interface FoundThing {
 
 // === 新增：Pub 模块 ===
 export type CustomRecord = Array<Record<string, unknown>> | Record<string, unknown>;
-
-// === 新增：Redis 模块 ===
-export type ActionType =
-  | 'action10'
-  | 'shangjing'
-  | 'lastsign_time'
-  | 'action'
-  | 'game_action'
-  | 'lastxijie_time';
 
 // === 新增：DataControl 文件路径类型 ===
 export type FilePathType =

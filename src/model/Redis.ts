@@ -1,6 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import type { ActionType } from '../types/model';
-import { getRedisKey } from './keys';
+import { ActionType, getRedisKey } from './keys';
 
 /**
  * @param user_id
