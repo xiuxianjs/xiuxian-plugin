@@ -34,7 +34,9 @@ export async function addPet(
       islockd: typeof base.islockd === 'number' ? base.islockd : 0
     };
   });
-  const trr = petList.find((item: OwnedPetItem) => item.name == thing_name && item.等级 == thing_level);
+  const trr = petList.find(
+    (item: OwnedPetItem) => item.name == thing_name && item.等级 == thing_level
+  );
 
   if (x > 0 && !notUndAndNull(trr)) {
     interface SourcePetLike {
@@ -44,7 +46,7 @@ export async function addPet(
       每级增加?: number;
       加成?: number;
     }
-    const data = getDataList('Xianchon');
+    const data = await getDataList('Xianchon');
     const base = Array.isArray(data)
       ? (data as SourcePetLike[]).find(item => item.name == thing_name)
       : undefined;

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data, redis, config } from '@src/model/api';
+import { redis, config } from '@src/model/api';
 import { getRedisKey } from '@src/model/keys';
 import {
   Go,
@@ -65,7 +65,9 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
-    Send(Text('价格为5w,你觉得特别特别便宜,赶紧全款拿下了,历经九九八十天,到了后发现居然是仙湖游乐场！'));
+    Send(
+      Text('价格为5w,你觉得特别特别便宜,赶紧全款拿下了,历经九九八十天,到了后发现居然是仙湖游乐场！')
+    );
     await addCoin(usr_qq, -FAIL_PRICE);
 
     return false;
@@ -87,7 +89,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const place = (data.timeplace_list as Timeplace[]).find(t => t.name === selectedName);
+  const timeplaceList = await getDataList('TimePlace');
+  const place = (timeplaceList as Timeplace[]).find(t => t.name === selectedName);
 
   if (!place || !notUndAndNull(place.Price)) {
     Send(Text('报错！地点错误，请找群主反馈'));
@@ -151,12 +154,12 @@ const res = onResponse(selects, async e => {
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(actionRecord));
   await addExp(usr_qq, -MIN_REQ_EXP);
 
-  const baseMsg
-    = `你买下了那份地图,历经九九八十一天,终于到达了地图上的${selectedName === '无欲天仙' ? '仙府' : '地点'},`
-    + (selectedName === '无欲天仙'
+  const baseMsg =
+    `你买下了那份地图,历经九九八十一天,终于到达了地图上的${selectedName === '无欲天仙' ? '仙府' : '地点'},` +
+    (selectedName === '无欲天仙'
       ? `洞府上模糊得刻着[${place.name}仙府]`
-      : '这座洞府仿佛是上个末法时代某个仙人留下的遗迹')
-    + `,你兴奋地冲进去探索机缘,被强大的仙气压制，消耗了${MIN_REQ_EXP}修为成功突破封锁闯了进去${minutes}分钟后归来!`;
+      : '这座洞府仿佛是上个末法时代某个仙人留下的遗迹') +
+    `,你兴奋地冲进去探索机缘,被强大的仙气压制，消耗了${MIN_REQ_EXP}修为成功突破封锁闯了进去${minutes}分钟后归来!`;
 
   Send(Text(baseMsg));
 

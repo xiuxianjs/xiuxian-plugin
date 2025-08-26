@@ -1,4 +1,4 @@
-import { config, data, pushInfo } from '@src/model/api';
+import { config, pushInfo } from '@src/model/api';
 import { getPlayerAction, keys, notUndAndNull, setFileValue } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
 

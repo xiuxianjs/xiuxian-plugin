@@ -1,5 +1,5 @@
 import { readShop, writeShop } from '@src/model/shop';
-import type { ShopData, ShopSlot } from '@src/types';
+import type { ShopSlot } from '@src/types';
 
 /**
  * 读取商店数据（shop）。

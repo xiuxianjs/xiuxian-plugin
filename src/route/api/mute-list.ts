@@ -16,7 +16,7 @@ export const GET = async(ctx: Context) => {
     const mutePattern = keys.mute('*');
     const muteKeys = await redis.keys(mutePattern);
 
-    const muteList = [];
+    const muteList: any[] = [];
 
     for (const key of muteKeys) {
       const userId = key.replace(keys.mute(''), '');
@@ -291,7 +291,7 @@ export const PUT = async(ctx: Context) => {
     }
 
     const redis = getIoRedis();
-    const results = [];
+    const results: any[] = [];
 
     for (const userId of userIds) {
       const muteExists = await redis.exists(keys.mute(userId));

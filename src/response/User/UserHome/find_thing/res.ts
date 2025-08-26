@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
+import { getDataList } from '@src/model/DataList';
 import { foundthing, existNajieThing, addNajieThing, existplayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
@@ -19,15 +19,15 @@ interface AreaLike {
 }
 
 const AREA_COLLECTION_KEYS = [
-  'guildSecrets_list',
-  'forbiddenarea_list',
-  'Fairyrealm_list',
-  'timeplace_list',
-  'didian_list',
-  'shenjie',
-  'mojie',
-  'xingge',
-  'shop_list'
+  'GuildSecrets',
+  'ForbiddenArea',
+  'FairyRealm',
+  'TimePlace',
+  'Didian',
+  'Shenjie',
+  'Mojie',
+  'Xingge',
+  'Shop'
 ] as const;
 const ITEM_LEVEL_KEYS: (keyof AreaLike)[] = ['one', 'two', 'three'];
 
@@ -77,8 +77,7 @@ const res = onResponse(selects, async e => {
   const seen = new Set<string>();
 
   for (const key of AREA_COLLECTION_KEYS) {
-    const root: Record<string, unknown> = data;
-    const collection = root[key];
+    const collection = await getDataList(key);
 
     if (!Array.isArray(collection)) {
       continue;

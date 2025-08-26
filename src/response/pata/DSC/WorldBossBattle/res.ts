@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data, redis } from '@src/model/api';
+import { redis } from '@src/model/api';
 import { existplayer, Harm, ifbaoji, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';

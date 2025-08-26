@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { redis, data } from '@src/model/api';
+import { redis } from '@src/model/api';
 import {
   existplayer,
   shijianc,

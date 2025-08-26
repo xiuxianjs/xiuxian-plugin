@@ -20,13 +20,13 @@ export const GET = async(ctx: Context) => {
     const pageSize = parseInt(ctx.request.query.pageSize as string) || 20;
     const search = (ctx.request.query.search as string) || '';
 
-    const associations = [];
+    const associations: any[] = [];
     let total = 0;
 
     // 使用SCAN命令获取所有宗门keys
     const scanPattern = `${__PATH.association}:*`;
     let cursor = 0;
-    const allKeys = [];
+    const allKeys: string[] = [];
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);

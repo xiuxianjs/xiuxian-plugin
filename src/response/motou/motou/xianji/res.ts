@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
+import { getDataList } from '@src/model/DataList';
 import { existplayer, readPlayer, existNajieThing, addNajieThing } from '@src/model/index';
 import { NajieCategory } from '@src/types/model';
 
@@ -53,7 +53,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const pool = data?.xingge?.[0]?.one as PrizeItem[] | undefined;
+  const xinggeList = await getDataList('Xingge');
+  const pool = xinggeList[0]?.one as PrizeItem[] | undefined;
 
   if (!Array.isArray(pool) || pool.length === 0) {
     Send(Text('奖励配置缺失'));

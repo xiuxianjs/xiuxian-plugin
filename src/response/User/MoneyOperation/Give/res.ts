@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs';
 
-import { data, redis, config } from '@src/model/api';
+import { redis, config } from '@src/model/api';
 import {
   existplayer,
   addCoin,

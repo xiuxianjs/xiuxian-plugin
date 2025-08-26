@@ -22,13 +22,13 @@ export const GET = async(ctx: Context) => {
     const category = (ctx.request.query.category as string) || 'all';
     const stats = ctx.request.query.stats === 'true';
 
-    const najieList = [];
+    const najieList: any[] = [];
     let total = 0;
 
     // 使用SCAN命令获取所有背包keys
     const scanPattern = `${__PATH.najie_path}:*`;
     let cursor = 0;
-    const allKeys = [];
+    const allKeys: string[] = [];
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);

@@ -20,13 +20,13 @@ export const GET = async(ctx: Context) => {
     const pageSize = parseInt(ctx.request.query.pageSize as string) || 20;
     const search = (ctx.request.query.search as string) || '';
 
-    const players = [];
+    const players: any[] = [];
     let total = 0;
 
     // 使用SCAN命令分页获取keys，避免一次性获取所有keys
     const scanPattern = `${__PATH.player_path}:*`;
     let cursor = 0;
-    const allKeys = [];
+    const allKeys: string[] = [];
 
     do {
       const result = await redis.scan(cursor, 'MATCH', scanPattern, 'COUNT', 100);
@@ -118,7 +118,7 @@ export const GET = async(ctx: Context) => {
               暴击伤害: 0,
               数据状态: 'corrupted',
               原始数据: playerData,
-              错误信息: error.message
+              错误信息: (error as Error).message
             };
 
             // 应用搜索过滤
@@ -215,7 +215,7 @@ export const GET = async(ctx: Context) => {
               暴击伤害: 0,
               数据状态: 'corrupted',
               原始数据: playerData,
-              错误信息: error.message
+              错误信息: (error as Error).message
             };
 
             players.push(corruptedPlayer);

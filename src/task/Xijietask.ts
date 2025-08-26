@@ -47,7 +47,7 @@ export const Xijietask = async() => {
       }
 
       // 最后发送的消息
-      const msg = [];
+      const msg: string[] = [];
       // 动作结束时间
       let end_time = action.end_time;
       // 现在的时间
@@ -248,7 +248,7 @@ export const Xijietask = async() => {
           let thing = await existshop(weizhi.name);
           const arr = action;
           let last_msg = '';
-          const thing_name = [];
+          const thing_name: any[] = [];
           let shop = await readShop();
           let i;
 

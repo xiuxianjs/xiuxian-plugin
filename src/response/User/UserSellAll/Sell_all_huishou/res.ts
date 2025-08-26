@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
+
 import { existplayer, foundthing, addNajieThing, addCoin, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
@@ -13,9 +13,7 @@ interface BagItem {
   出售价?: number;
   pinji?: number | string;
 }
-interface NajieData {
-  [k: string]: BagItem[] | unknown;
-}
+
 const CATEGORIES = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'] as const;
 
 function num(v, d = 0) {

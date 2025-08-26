@@ -1,6 +1,6 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs';
 
-import { data } from '@src/model/api';
+
 import { existplayer, addNajieThing, addCoin, sleep, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';

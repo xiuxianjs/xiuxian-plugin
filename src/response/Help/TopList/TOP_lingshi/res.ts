@@ -14,7 +14,7 @@ const res = onResponse(selects, async e => {
   }
   // 计算排名
   const playerList = await keysByPath(__PATH.player_path);
-  const temp = [];
+  const temp: any[] = [];
 
   for (let i = 0; i < playerList.length; i++) {
     const player = await readPlayer(playerList[i]);
@@ -27,7 +27,7 @@ const res = onResponse(selects, async e => {
   let File_length = temp.length;
 
   temp.sort(sortBy('灵石'));
-  const Data = [];
+  const Data: any[] = [];
   const usr_paiming = temp.findIndex(temp => temp.qq === usr_qq) + 1;
 
   if (File_length > 10) {

@@ -1,4 +1,4 @@
-import { config, data, pushInfo } from '@src/model/api';
+import { config, pushInfo } from '@src/model/api';
 import { getJSON, userKey } from '@src/model/utils/redisHelper';
 import type { ActionState } from '@src/types';
 import {

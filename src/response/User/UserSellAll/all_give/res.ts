@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs';
 
-import { data } from '@src/model/api';
+
 import { existplayer, addNajieThing, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';

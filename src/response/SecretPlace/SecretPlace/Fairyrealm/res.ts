@@ -1,7 +1,7 @@
-import { data } from '@src/model/api';
 import { Goweizhi } from '@src/model/image';
 import { selects } from '@src/response/mw';
 import { existplayer } from '@src/model/index';
+import { getDataList } from '@src/model/DataList';
 import type { NamedItem } from '@src/types/model';
 
 export const regular = /^(#|＃|\/)?仙境$/;
@@ -11,7 +11,7 @@ const res = onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) {
     return false;
   }
-  const list = (data.Fairyrealm_list || []) as NamedItem[];
+  const list = (await getDataList('FairyRealm') || []) as NamedItem[];
 
   if (!Array.isArray(list) || list.length === 0) {
     return false;

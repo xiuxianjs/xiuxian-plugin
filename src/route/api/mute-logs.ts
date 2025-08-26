@@ -14,7 +14,7 @@ export const GET = async(ctx: Context) => {
     const { type = 'mute', limit = 100 } = ctx.query;
     const redis = getIoRedis();
 
-    const logs = [];
+    const logs: any[] = [];
     const logKey = type === 'unmute' ? 'unmute_logs' : 'mute_logs';
 
     // 获取日志列表

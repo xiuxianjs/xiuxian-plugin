@@ -239,7 +239,7 @@ export const PATCH = async(ctx: Context) => {
     const currentData = await getDataList(name);
 
     // 分块处理更新
-    const chunks = [];
+    const chunks: Array<{ index: number; data: Record<string, unknown> }[]> = [];
 
     for (let i = 0; i < updates.length; i += chunkSize) {
       chunks.push(updates.slice(i, i + chunkSize));
