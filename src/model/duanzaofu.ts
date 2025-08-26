@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import { __PATH, keysByPath } from './keys.js';
+import { __PATH } from './keys.js';
 import { writePlayer } from './pub.js';
 import { safeParse } from './utils/safe.js';
 import type { Tripod, TalentInfo } from '../types/player.js';
@@ -48,7 +48,8 @@ export async function settripod(qq: string): Promise<string> {
   const a = await readAll('隐藏灵根');
   const newa = Math.floor(Math.random() * a.length);
   const candidate = a[newa];
-  const isTalentInfo = (x): x is TalentInfo => !!x && typeof x === 'object' && 'type' in x && 'name' in x;
+  const isTalentInfo = (x): x is TalentInfo =>
+    !!x && typeof x === 'object' && 'type' in x && 'name' in x;
 
   if (isTalentInfo(candidate)) {
     player.隐藏灵根 = candidate;
@@ -106,7 +107,7 @@ export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
   await setDataJSONStringifyByKey(keys.duanlu('duanlu'), duanlu);
 }
 // 数量矫正, 违规数量改成1
-export async function jiaozheng(value): Promise<number> {
+export function jiaozheng(value): number {
   let size: number;
 
   if (typeof value === 'string') {
@@ -134,7 +135,7 @@ export async function jiaozheng(value): Promise<number> {
 
 // 读取item 中某个json文件中的属性
 export async function readThat(
-  thing_name: string,
+  thingName: string,
   weizhi: LibHumanReadable
 ): Promise<unknown | undefined> {
   const key = LIB_MAP[weizhi];
@@ -142,7 +143,7 @@ export async function readThat(
 
   if (Array.isArray(arr)) {
     for (const item of arr) {
-      if (item && typeof item === 'object' && 'name' in item && item.name === thing_name) {
+      if (item && typeof item === 'object' && 'name' in item && item.name === thingName) {
         return item;
       }
     }
@@ -193,23 +194,23 @@ export async function getxuanze(
   return false;
 }
 
-export async function mainyuansu(shuju: number[]): Promise<string | undefined> {
+export function mainyuansu(shuju: number[]): string | undefined {
   const B = ['金', '木', '土', '水', '火'];
 
   for (const item in shuju) {
-    if (shuju[item] != 0) {
+    if (shuju[item] !== 0) {
       return B[item];
     }
   }
 }
 // 判断相生相克只有两个值不为0
-export async function restraint(shuju: number[], main: string): Promise<[string, number]> {
+export function restraint(shuju: number[], main: string): [string, number] {
   const newshuzu: string[] = [];
   const shuju2: number[] = [];
   const shuzu = ['金', '木', '土', '水', '火', '金', '木', '土', '水', '火'];
 
   for (const item in shuju) {
-    if (shuju[item] != 0) {
+    if (shuju[item] !== 0) {
       newshuzu.push(shuzu[item]);
       shuju2.push(shuju[item]);
     }
@@ -220,8 +221,8 @@ export async function restraint(shuju: number[], main: string): Promise<[string,
   // [ '木', '水']
   for (const item in shuzu) {
     if (
-      (shuzu[item] == newshuzu[0] && shuzu[Number(item) + 1] == newshuzu[1])
-      || (shuzu[item] == newshuzu[1] && shuzu[Number(item) + 1] == newshuzu[0])
+      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 1] == newshuzu[1]) ||
+      (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 1] == newshuzu[0])
     ) {
       houzui = `毁${main}灭灵`;
       jiaceng = 0.5;
@@ -230,8 +231,8 @@ export async function restraint(shuju: number[], main: string): Promise<[string,
     }
 
     if (
-      (shuzu[item] == newshuzu[0] && shuzu[Number(item) + 2] == newshuzu[1])
-      || (shuzu[item] == newshuzu[1] && shuzu[Number(item) + 2] == newshuzu[0])
+      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 2] == newshuzu[1]) ||
+      (shuzu[item] == newshuzu[1] && shuzu[Number(item) + 2] == newshuzu[0])
     ) {
       if (main == newshuzu[0]) {
         houzui = `神${main}相生`;
@@ -268,11 +269,5 @@ export async function readIt(): Promise<unknown> {
 export async function readItTyped(): Promise<CustomRecord[]> {
   const data = await getDataJSONParseByKey(keys.custom('custom'));
 
-  return (data || []).filter(r => typeof r === 'object' && r) as CustomRecord[];
-}
-
-export async function alluser(): Promise<string[]> {
-  const B = await keysByPath(__PATH.player_path);
-
-  return B;
+  return (data ?? []).filter(r => typeof r === 'object' && r) as CustomRecord[];
 }

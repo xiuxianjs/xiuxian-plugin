@@ -158,6 +158,10 @@ export const getDataList = async <T extends DataListKeys>(key: T): Promise<DataL
     try {
       const redisData = await redis.get(key);
 
+      if (!redisData) {
+        return DATA_LIST[key];
+      }
+
       return JSON.parse(redisData);
     } catch (error) {
       logger.warn(`Failed to parse redis data for key ${key}: ${error}`);

@@ -10,16 +10,12 @@ export async function writeShop(shop: ShopData) {
 export async function readShop(): Promise<ShopData> {
   const shop = await getDataJSONParseByKey(keys.shop('shop'));
 
-  if (!shop) {
-    return [];
-  }
-
-  return shop;
+  return shop ?? [];
 }
 
 export async function existshop(didian: string): Promise<ShopThing[] | false> {
   const shop = await readShop();
-  const slot = shop.find(s => s.name == didian);
+  const slot = shop.find(s => s.name === didian);
 
   if (!slot) {
     return false;

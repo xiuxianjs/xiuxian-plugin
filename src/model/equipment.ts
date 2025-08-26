@@ -6,12 +6,12 @@ import { keys } from './keys.js';
 import { getDataList } from './DataList.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
-export async function readEquipment(usr_qq: string): Promise<Equipment | null> {
-  return await getDataJSONParseByKey(keys.equipment(usr_qq));
+export async function readEquipment(usrId: string): Promise<Equipment | null> {
+  return await getDataJSONParseByKey(keys.equipment(usrId));
 }
 
-export async function writeEquipment(usr_qq: string, equipment: Equipment): Promise<void> {
-  const player: Player = await readPlayer(usr_qq);
+export async function writeEquipment(usrId: string, equipment: Equipment): Promise<void> {
+  const player: Player = await readPlayer(usrId);
 
   if (!player) {
     return;
@@ -21,18 +21,18 @@ export async function writeEquipment(usr_qq: string, equipment: Equipment): Prom
   const levelInfo = levelList.find(item => item.level_id == player.level_id);
   const physiqueInfo = physiqueList.find(item => item.level_id == player.Physique_id);
 
-  player.攻击
-    = Number(levelInfo?.基础攻击 ?? 0)
-    + Number(player.攻击加成 ?? 0)
-    + Number(physiqueInfo?.基础攻击 ?? 0);
-  player.防御
-    = Number(levelInfo?.基础防御 ?? 0)
-    + Number(player.防御加成 ?? 0)
-    + Number(physiqueInfo?.基础防御 ?? 0);
-  player.血量上限
-    = Number(levelInfo?.基础血量 ?? 0)
-    + Number(player.生命加成 ?? 0)
-    + Number(physiqueInfo?.基础血量 ?? 0);
+  player.攻击 =
+    Number(levelInfo?.基础攻击 ?? 0) +
+    Number(player.攻击加成 ?? 0) +
+    Number(physiqueInfo?.基础攻击 ?? 0);
+  player.防御 =
+    Number(levelInfo?.基础防御 ?? 0) +
+    Number(player.防御加成 ?? 0) +
+    Number(physiqueInfo?.基础防御 ?? 0);
+  player.血量上限 =
+    Number(levelInfo?.基础血量 ?? 0) +
+    Number(player.生命加成 ?? 0) +
+    Number(physiqueInfo?.基础血量 ?? 0);
   player.暴击率 = Number(levelInfo?.基础暴击 ?? 0) + Number(physiqueInfo?.基础暴击 ?? 0);
 
   const types = ['武器', '护具', '法宝'] as const;
@@ -61,9 +61,9 @@ export async function writeEquipment(usr_qq: string, equipment: Equipment): Prom
   if (player.仙宠.type == '暴伤') {
     player.暴击伤害 += player.仙宠.加成;
   }
-  await writePlayer(usr_qq, player);
-  await addHP(usr_qq, 0);
-  await setDataJSONStringifyByKey(keys.equipment(usr_qq), equipment);
+  await writePlayer(usrId, player);
+  await addHP(usrId, 0);
+  await setDataJSONStringifyByKey(keys.equipment(usrId), equipment);
 }
 
 export default { readEquipment, writeEquipment };

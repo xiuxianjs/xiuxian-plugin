@@ -1,31 +1,23 @@
-import { getIoRedis } from '@alemonjs/db';
-import type { Player } from '../../types/player.js';
 import { keys } from '../keys.js';
 import type { PlayerRepository, OccupationExpRow } from '../../types/model';
+import {
+  existDataByKey,
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '../DataControl.js';
 
-const redis = getIoRedis();
-
-export function createPlayerRepository(getOccupationTable: () => OccupationExpRow[]): PlayerRepository {
+export function createPlayerRepository(
+  getOccupationTable: () => OccupationExpRow[]
+): PlayerRepository {
   return {
-    async get(id) {
-      const raw = await redis.get(keys.player(id));
-
-      if (!raw) {
-        return null;
-      }
-      try {
-        return JSON.parse(raw) as Player;
-      } catch {
-        return null;
-      }
+    get(id) {
+      return getDataJSONParseByKey(keys.player(id));
     },
     async save(id, player) {
-      await redis.set(keys.player(id), JSON.stringify(player));
+      await setDataJSONStringifyByKey(keys.player(id), player);
     },
     async exists(id) {
-      const n = await redis.exists(keys.player(id));
-
-      return n === 1;
+      return await existDataByKey(keys.player(id));
     },
     async addOccupationExp(id, delta) {
       if (delta === 0) {

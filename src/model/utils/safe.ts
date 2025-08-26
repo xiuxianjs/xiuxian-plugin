@@ -1,5 +1,5 @@
-import { getIoRedis } from '@alemonjs/db';
 import { keys } from '../keys.js';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '../DataControl.js';
 
 export function safeParse<T>(s: string | null | undefined, fallback: T): T {
   if (!s) {
@@ -13,9 +13,8 @@ export function safeParse<T>(s: string | null | undefined, fallback: T): T {
 }
 
 export class PlayerRepo {
-  private redis = getIoRedis();
   getRaw(id: string) {
-    return this.redis.get(keys.player(id));
+    return getDataJSONParseByKey(keys.player(id));
   }
   async getObject<T>(id: string): Promise<T | null> {
     const raw = await this.getRaw(id);
@@ -27,7 +26,7 @@ export class PlayerRepo {
     return safeParse<T | null>(raw, null);
   }
   async setObject<T extends object | unknown>(id: string, obj: T) {
-    await this.redis.set(keys.player(id), JSON.stringify(obj));
+    await setDataJSONStringifyByKey(keys.player(id), obj);
   }
   async atomicAdjust(id: string, field: string, delta: number): Promise<number | null> {
     if (!delta) {

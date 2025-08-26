@@ -5,6 +5,7 @@ import { getAvatar } from '@src/model/utils/utilsx.js';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { screenshot } from '@src/image';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?以武会友$/;
 function extractFaQiu(lg): number | undefined {
   if (!lg || typeof lg !== 'object') {
@@ -44,31 +45,25 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const dataA = await redis.get(keys.player(A));
+  const player = await getDataJSONParseByKey(keys.player(A));
 
-  if (!dataA) {
+  if (!player) {
     Send(Text('你的数据不存在'));
 
     return;
   }
-  const dataB = await redis.get(keys.player(B));
 
-  if (!dataB) {
+  const playerB = await getDataJSONParseByKey(keys.player(B));
+
+  if (!playerB) {
     Send(Text('对方数据不存在'));
 
     return;
   }
-  let A_player: Player;
-  let B_player: Player;
 
-  try {
-    A_player = JSON.parse(dataA);
-    B_player = JSON.parse(dataB);
-  } catch (_err) {
-    Send(Text('数据解析错误'));
+  const A_player: Player = player;
+  const B_player: Player = playerB;
 
-    return;
-  }
   // 复制（避免副作用）
   const a = { ...A_player };
   const b = { ...B_player };

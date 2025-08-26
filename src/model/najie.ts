@@ -4,8 +4,6 @@ import type { Najie, NajieItem, Equipment, EquipmentItem } from '../types/player
 import type { EquipmentLike, XianchongLike, XianchongSource, NajieCategory } from '../types/model';
 import { getDataList } from './DataList.js';
 
-// 类型已集中到 src/types/model.ts
-
 /**
  * 更新纳戒物品
  * @param usr_qq 玩家QQ
@@ -192,7 +190,9 @@ export async function addNajieThing(
         return;
       }
     }
-    const fb = najie[thing_class].find(item => item.name == ((name as NajieItem).name || name) && item.pinji == pinji);
+    const fb = najie[thing_class].find(
+      item => item.name == ((name as NajieItem).name || name) && item.pinji == pinji
+    );
 
     if (fb) {
       fb.数量 = (fb.数量 || 0) + x;

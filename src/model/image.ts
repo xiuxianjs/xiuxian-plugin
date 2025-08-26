@@ -257,19 +257,11 @@ function Strand(
 export async function getXianChongImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   let i: number;
   const usr_qq = e.UserId;
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!ifexistplay) {
+  if (!player) {
     return;
   }
-  const data = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(data);
-
-  if (!playerData || Array.isArray(playerData)) {
-    return;
-  }
-  const player = playerData as Player;
   const najie: Najie | null = await readNajie(usr_qq);
 
   if (!najie) {
@@ -309,20 +301,13 @@ export async function getXianChongImage(e: EventsMessageCreateEnum): Promise<Scr
  */
 export async function getDaojuImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   const usr_qq = e.UserId;
-  //
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
 
-  if (!ifexistplay) {
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
+  if (!player) {
     return;
   }
-  const data = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(data);
 
-  if (!playerData || Array.isArray(playerData)) {
-    return;
-  }
-  const player = playerData as Player;
   const najie: Najie | null = await readNajie(usr_qq);
 
   if (!najie) {
@@ -1044,15 +1029,13 @@ export async function getAssociationImage(e: EventsMessageCreateEnum): Promise<S
  */
 export async function getQquipmentImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   const usr_qq = e.UserId;
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
 
-  if (!ifexistplay) {
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+
+  if (!player) {
     return;
   }
-  const dataStr = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(dataStr || '{}');
-  const player = playerData as Player;
+
   const bao = Math.trunc(Math.floor(player.暴击率 * 100));
   const ifexistplayEquipment = (await redis.exists(keys.equipment(usr_qq))) > 0;
 
@@ -1090,19 +1073,12 @@ export async function getQquipmentImage(e: EventsMessageCreateEnum): Promise<Scr
 export async function getNajieImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   const usr_qq = e.UserId;
 
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!ifexistplay) {
+  if (!player) {
     return;
   }
-  const dataStr = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(dataStr || '{}');
 
-  if (!playerData || Array.isArray(playerData)) {
-    return;
-  }
-  const player = playerData as Player;
   const najie: Najie | null = await readNajie(usr_qq);
 
   if (!najie) {
@@ -1147,19 +1123,11 @@ export async function getStateImage(
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId;
 
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!ifexistplay) {
+  if (!player) {
     return;
   }
-  const dataStr = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(dataStr || '{}');
-
-  if (!playerData || Array.isArray(playerData)) {
-    return;
-  }
-  const player = playerData as Player;
   const Level_id = player.level_id;
   const LevelList = await getDataList('Level1');
   let Level_list = LevelList;
@@ -1187,19 +1155,11 @@ export async function getStatezhiyeImage(
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId;
 
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!ifexistplay) {
+  if (!player) {
     return;
   }
-  const dataStr = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(dataStr || '{}');
-
-  if (!playerData || Array.isArray(playerData)) {
-    return;
-  }
-  const player = playerData as Player;
   const Level_id = player.occupation_level || 0;
   const LevelList = await getDataList('experience');
   let Level_list = LevelList;
@@ -1231,19 +1191,11 @@ export async function getStatemaxImage(
 ): Promise<ScreenshotResult> {
   const usr_qq = e.UserId;
 
-  const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
-  if (!ifexistplay) {
+  if (!player) {
     return;
   }
-  const dataStr = await redis.get(keys.player(usr_qq));
-  const playerData = JSON.parse(dataStr || '{}');
-
-  if (!playerData || Array.isArray(playerData)) {
-    return;
-  }
-  const player = playerData as Player;
   const Level_id = player.Physique_id;
   const LevelMaxList = await getDataList('Level2');
   let LevelMax_list = LevelMaxList;

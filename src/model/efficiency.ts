@@ -8,13 +8,13 @@ import { notUndAndNull } from './common.js';
 import { keys } from './keys.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
-export async function playerEfficiency(userId: string): Promise<null> {
+export async function playerEfficiency(userId: string): Promise<null | undefined> {
   // 这里有问题
   const usr_qq = userId;
   const player = await getDataJSONParseByKey(keys.player(usr_qq));
 
   if (!player) {
-    return;
+    return null;
   }
   let Assoc_efficiency; // 宗门效率加成
   let linggen_efficiency = 0; // 灵根效率加成
@@ -28,7 +28,7 @@ export async function playerEfficiency(userId: string): Promise<null> {
     const ass = await getDataJSONParseByKey(keys.association(player.宗门['宗门名称']));
 
     if (ass) {
-      return;
+      return null;
     }
     if (ass.宗门驻地 == 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05;
@@ -50,7 +50,9 @@ export async function playerEfficiency(userId: string): Promise<null> {
 
     // 这里是查看了功法表
     for (const j of gongfa) {
-      const ifexist = ((await getDataList(j as 'Gongfa' | 'TimeGongfa')) as GongfaItem[]).find(item => item.name == player.学习的功法[i]);
+      const ifexist = ((await getDataList(j as 'Gongfa' | 'TimeGongfa')) as GongfaItem[]).find(
+        item => item.name == player.学习的功法[i]
+      );
 
       if (ifexist) {
         gongfa_efficiency += ifexist.修炼加成 as number;
@@ -66,8 +68,8 @@ export async function playerEfficiency(userId: string): Promise<null> {
   const dy = await readDanyao(usr_qq);
   const bgdan = dy.biguanxl || 0;
 
-  player.修炼效率提升
-    = linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
+  player.修炼效率提升 =
+    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
   await setDataJSONStringifyByKey(keys.player(usr_qq), player);
 }
 

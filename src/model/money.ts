@@ -3,9 +3,6 @@ import { getIoRedis } from '@alemonjs/db';
 import type { DiceGameResult, RiskProfile } from '../types/model';
 import { GAME_KEY } from './constants';
 
-// 内部风控参数（根据投入金额动态判定）
-// 移除本地 interface RiskProfile，使用集中类型
-
 function buildRiskProfile(inputMoney: number): RiskProfile {
   const minMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000;
 

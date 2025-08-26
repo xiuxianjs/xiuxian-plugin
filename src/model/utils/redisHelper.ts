@@ -1,6 +1,7 @@
 import { redis } from '../../model/api';
 import { getRedisKey } from '../keys';
 import type { ActionType, RedisScalar } from '../../types/model';
+import { getDataJSONParseByKey, setDataByKey, setDataJSONStringifyByKey } from '../DataControl';
 
 // 通用获取：保留字符串或 null
 export function getString(key: string): Promise<RedisScalar> {
@@ -20,25 +21,16 @@ export async function getNumber(key: string): Promise<number | null> {
 }
 
 // 获取并 JSON.parse（失败返回 null）
-export async function getJSON<T = unknown>(key: string): Promise<T | null> {
-  const v = await redis.get(key);
-
-  if (v === null) {
-    return null;
-  }
-  try {
-    return JSON.parse(v) as T;
-  } catch {
-    return null;
-  }
+export function getJSON<T = unknown>(key: string): Promise<T | null> {
+  return getDataJSONParseByKey(key);
 }
 
 // set：自动 stringify 对象
 export async function setValue(key: string, value): Promise<void> {
   if (typeof value === 'string') {
-    await redis.set(key, value);
+    await setDataByKey(key, value);
   } else {
-    await redis.set(key, JSON.stringify(value));
+    await setDataJSONStringifyByKey(key, value);
   }
 }
 

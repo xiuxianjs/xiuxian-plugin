@@ -240,7 +240,7 @@ const initGlobalRechargeStats: GlobalRechargeStats = {
 /**
  * 获取下一个充值记录ID（使用原子操作避免并发问题）
  */
-export const getNextRechargeRecordId = async(): Promise<string> => {
+export const getNextRechargeRecordId = async (): Promise<string> => {
   try {
     const redis = getIoRedis();
     // 使用原子操作递增ID
@@ -260,7 +260,7 @@ export const getNextRechargeRecordId = async(): Promise<string> => {
  * @param userId 用户ID
  * @returns 用户充值信息
  */
-export const findUserRechargeInfo = async(userId: string): Promise<UserCurrencyData> => {
+export const findUserRechargeInfo = async (userId: string): Promise<UserCurrencyData> => {
   // 输入验证
   if (!userId || typeof userId !== 'string') {
     throw new Error('Invalid user ID');
@@ -292,7 +292,7 @@ export const findUserRechargeInfo = async(userId: string): Promise<UserCurrencyD
  * @param rechargeData 充值数据
  * @returns 充值记录
  */
-export const createRechargeRecord = async(
+export const createRechargeRecord = async (
   userId: string,
   rechargeData: {
     type: RechargeType;
@@ -334,13 +334,13 @@ export const createRechargeRecord = async(
       user_id: userId,
       type: rechargeData.type,
       tier: rechargeData.tier,
-      currency_gained: rechargeData.currency_gained || 0,
-      month_card_days: rechargeData.month_card_days || 0,
-      month_card_type: rechargeData.month_card_type || '',
-      payment_method: rechargeData.payment_method || '',
-      ip_address: rechargeData.ip_address || '',
-      device_info: rechargeData.device_info || '',
-      remark: rechargeData.remark || '',
+      currency_gained: rechargeData.currency_gained ?? 0,
+      month_card_days: rechargeData.month_card_days ?? 0,
+      month_card_type: rechargeData.month_card_type ?? '',
+      payment_method: rechargeData.payment_method ?? '',
+      ip_address: rechargeData.ip_address ?? '',
+      device_info: rechargeData.device_info ?? '',
+      remark: rechargeData.remark ?? '',
       is_first_recharge: isFirstRecharge,
       first_recharge_bonus: isFirstRecharge ? calculateFirstRechargeBonus(amount) : 0,
       created_at: Date.now()
@@ -367,7 +367,7 @@ export const createRechargeRecord = async(
  * @param paymentMethod 支付方式
  * @returns 更新后的充值记录
  */
-export const completeRechargePayment = async(
+export const completeRechargePayment = async (
   recordId: string,
   transactionId: string,
   paymentMethod = 'unknown'
@@ -428,32 +428,32 @@ export const completeRechargePayment = async(
 
     // 根据充值类型处理
     switch (record.type) {
-    case RechargeType.CURRENCY:
-      userInfo.currency += record.currency_gained;
-      if (record.is_first_recharge) {
-        userInfo.currency += record.first_recharge_bonus;
-      }
-      break;
+      case RechargeType.CURRENCY:
+        userInfo.currency += record.currency_gained;
+        if (record.is_first_recharge) {
+          userInfo.currency += record.first_recharge_bonus;
+        }
+        break;
 
-    case RechargeType.SMALL_MONTH_CARD:
-      userInfo.small_month_card_days += record.month_card_days;
-      break;
-
-    case RechargeType.BIG_MONTH_CARD:
-      userInfo.big_month_card_days += record.month_card_days;
-      break;
-
-    case RechargeType.COMBO:
-      userInfo.currency += record.currency_gained;
-      if (record.month_card_type === 'small') {
+      case RechargeType.SMALL_MONTH_CARD:
         userInfo.small_month_card_days += record.month_card_days;
-      } else if (record.month_card_type === 'big') {
+        break;
+
+      case RechargeType.BIG_MONTH_CARD:
         userInfo.big_month_card_days += record.month_card_days;
-      }
-      if (record.is_first_recharge) {
-        userInfo.currency += record.first_recharge_bonus;
-      }
-      break;
+        break;
+
+      case RechargeType.COMBO:
+        userInfo.currency += record.currency_gained;
+        if (record.month_card_type === 'small') {
+          userInfo.small_month_card_days += record.month_card_days;
+        } else if (record.month_card_type === 'big') {
+          userInfo.big_month_card_days += record.month_card_days;
+        }
+        if (record.is_first_recharge) {
+          userInfo.currency += record.first_recharge_bonus;
+        }
+        break;
     }
 
     await redis.set(REDIS_KEYS.PLAYER_CURRENCY(userId), JSON.stringify(userInfo));
@@ -477,7 +477,7 @@ export const completeRechargePayment = async(
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserCurrency = async(
+export const rechargeUserCurrency = async (
   userId: string,
   tier: string,
   paymentMethod = 'unknown',
@@ -515,7 +515,7 @@ export const rechargeUserCurrency = async(
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserSmallMonthCard = async(
+export const rechargeUserSmallMonthCard = async (
   userId: string,
   paymentMethod = 'unknown',
   ipAddress = '',
@@ -550,7 +550,7 @@ export const rechargeUserSmallMonthCard = async(
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserBigMonthCard = async(
+export const rechargeUserBigMonthCard = async (
   userId: string,
   paymentMethod = 'unknown',
   ipAddress = '',
@@ -584,7 +584,7 @@ export const rechargeUserBigMonthCard = async(
  * @param offset 偏移量
  * @returns 充值记录列表
  */
-export const getUserRechargeRecords = async(userId: string, limit = 20, offset = 0) => {
+export const getUserRechargeRecords = async (userId: string, limit = 20, offset = 0) => {
   try {
     const redis = getIoRedis();
     const userInfo = await findUserRechargeInfo(userId);
@@ -616,7 +616,7 @@ export const getUserRechargeRecords = async(userId: string, limit = 20, offset =
  * @param type 充值类型过滤
  * @returns 充值记录列表
  */
-export const getAllRechargeRecords = async(
+export const getAllRechargeRecords = async (
   limit = 50,
   offset = 0,
   status?: PaymentStatus,
@@ -654,7 +654,7 @@ export const getAllRechargeRecords = async(
  * @param recordId 充值记录ID
  * @returns 充值记录详情
  */
-export const getRechargeRecordDetail = async(recordId: string) => {
+export const getRechargeRecordDetail = async (recordId: string) => {
   try {
     const redis = getIoRedis();
     const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId));
@@ -672,7 +672,7 @@ export const getRechargeRecordDetail = async(recordId: string) => {
  * @param amount 充值金额
  * @param isFirstRecharge 是否首充
  */
-const updateGlobalRechargeStats = async(amount: number, isFirstRecharge: boolean) => {
+const updateGlobalRechargeStats = async (amount: number, isFirstRecharge: boolean) => {
   try {
     const redis = getIoRedis();
     const statsKey = REDIS_KEYS.GLOBAL_STATS();
@@ -706,7 +706,7 @@ const updateGlobalRechargeStats = async(amount: number, isFirstRecharge: boolean
  * @param transactionId 交易号
  * @returns 是否已存在
  */
-export const isTransactionIdExists = async(transactionId: string): Promise<boolean> => {
+export const isTransactionIdExists = async (transactionId: string): Promise<boolean> => {
   try {
     const redis = getIoRedis();
     const transactionKey = REDIS_KEYS.TRANSACTION(transactionId);
@@ -729,7 +729,7 @@ export const isTransactionIdExists = async(transactionId: string): Promise<boole
  * 获取全局充值统计
  * @returns 全局充值统计
  */
-export const getGlobalRechargeStats = async() => {
+export const getGlobalRechargeStats = async () => {
   try {
     const redis = getIoRedis();
     const statsKey = REDIS_KEYS.GLOBAL_STATS();
@@ -748,7 +748,7 @@ export const getGlobalRechargeStats = async() => {
  * @param userId 用户ID
  * @returns 月卡状态信息
  */
-export const checkUserMonthCardStatus = async(userId: string) => {
+export const checkUserMonthCardStatus = async (userId: string) => {
   try {
     const userInfo = await findUserRechargeInfo(userId);
 
@@ -776,7 +776,7 @@ export const checkUserMonthCardStatus = async(userId: string) => {
  * @param days 消费天数
  * @returns 是否成功
  */
-export const consumeMonthCardDays = async(
+export const consumeMonthCardDays = async (
   userId: string,
   cardType: 'small' | 'big',
   days = 1
@@ -825,7 +825,7 @@ export const consumeMonthCardDays = async(
  * @param amount 消费金额
  * @returns 是否成功
  */
-export const consumeUserCurrency = async(userId: string, amount: number): Promise<boolean> => {
+export const consumeUserCurrency = async (userId: string, amount: number): Promise<boolean> => {
   // 输入验证
   if (!userId || typeof userId !== 'string') {
     throw new Error('Invalid user ID');
@@ -860,7 +860,7 @@ export const consumeUserCurrency = async(userId: string, amount: number): Promis
  * @param offset 偏移量，默认0
  * @returns 用户货币信息列表
  */
-export const getAllUsersCurrencyInfo = async(
+export const getAllUsersCurrencyInfo = async (
   limit = 100,
   offset = 0
 ): Promise<UserCurrencyData[]> => {
@@ -878,10 +878,10 @@ export const getAllUsersCurrencyInfo = async(
 
       // 只返回有充值记录的用户
       if (
-        userInfo.total_recharge_count > 0
-        || userInfo.currency > 0
-        || userInfo.small_month_card_days > 0
-        || userInfo.big_month_card_days > 0
+        userInfo.total_recharge_count > 0 ||
+        userInfo.currency > 0 ||
+        userInfo.small_month_card_days > 0 ||
+        userInfo.big_month_card_days > 0
       ) {
         users.push(userInfo);
       }

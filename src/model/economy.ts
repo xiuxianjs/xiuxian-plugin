@@ -1,6 +1,5 @@
 // 经济/资源增减逻辑（增加原子操作）
 import { readPlayer } from './xiuxian_impl.js';
-import type { Player } from '../types/player.js';
 import { playerRepo } from './utils/safe.js';
 
 export async function addCoin(userId: string, delta: number) {

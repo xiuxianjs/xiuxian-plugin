@@ -24,7 +24,6 @@ export async function clearCaptchaRecords(userId?: string) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function clearUserCaptchaRecords(redis: any, userId: string) {
   // 清理验证码
   await redis.del(keys.captcha(userId));
@@ -46,7 +45,6 @@ async function clearUserCaptchaRecords(redis: any, userId: string) {
   await redis.del(`${baseKey}:captcha_passed:${userId}`);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function clearAllCaptchaRecords(redis: any) {
   // 获取所有验证码相关的key
   const captchaPattern = keys.captcha('*');
@@ -77,5 +75,3 @@ async function clearAllCaptchaRecords(redis: any) {
     console.log(`清理了 ${opKeys.length} 个操作计数记录`);
   }
 }
-
-// 注意：此文件仅作为模块导出，如需直接运行请使用 scripts/clear-captcha-standalone.js

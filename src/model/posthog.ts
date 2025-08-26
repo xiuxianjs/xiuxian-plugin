@@ -2,7 +2,7 @@ import { getConfigValue } from 'alemonjs';
 import { EventMessage, PostHog } from 'posthog-node';
 import { pkg } from './settions';
 
-let log: typeof PostHog.prototype = null;
+let log: typeof PostHog.prototype | null = null;
 
 export const LOG_EVENT_NAME = {
   // 机器人启动
@@ -27,15 +27,15 @@ export const postLog = (props: EventMessage) => {
 
 export const initPostlog = () => {
   const values = getConfigValue();
-  const value = values[pkg.name] || {};
-  const postlog = value?.postlog || {};
-  const api_key = postlog.api_key || '';
+  const value = values[pkg.name] ?? {};
+  const postlog = value?.postlog ?? {};
+  const apiKey = postlog.api_key ?? '';
 
-  if (!api_key) {
+  if (!apiKey) {
     return;
   }
-  const options = postlog.options || {};
-  const host = postlog.host || 'https://us.i.posthog.com';
+  const options = postlog.options ?? {};
+  const host = postlog.host ?? 'https://us.i.posthog.com';
 
   log = new PostHog(postlog.api_key, {
     ...options,
@@ -72,7 +72,7 @@ export const postLogCommand = (props: {
   if (process.env.NODE_ENV === 'development') {
     return;
   }
-  const ext = props.ext || {};
+  const ext = props.ext ?? {};
 
   postLog({
     distinctId: props.id,

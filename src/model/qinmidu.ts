@@ -7,7 +7,7 @@ import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.
 export async function readQinmidu(): Promise<QinmiduRecord[]> {
   const data = await getDataJSONParseByKey(keys.qinmidu('qinmidu'));
 
-  return data || [];
+  return data ?? [];
 }
 
 export async function writeQinmidu(qinmidu: QinmiduRecord[]) {

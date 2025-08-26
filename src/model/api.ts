@@ -1,10 +1,9 @@
 import config from './Config';
-import data from './XiuxianData';
 import { getIoRedis } from '@alemonjs/db';
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs';
 import type { MessageEnumsArray, MessageInput } from '../types/model';
 
-export { data, config };
+export { config };
 
 export const redis = getIoRedis();
 
@@ -17,7 +16,7 @@ export const redis = getIoRedis();
  * @returns
  */
 // alemonjs 的 format(Text(..), ...) 返回内部统一的 DataEnums[]，这里用宽松别名
-export function pushInfo(guild_id: string, isGroup: boolean, msg: MessageInput) {
+export function pushInfo(guildId: string, isGroup: boolean, msg: MessageInput) {
   let message: MessageEnumsArray = [];
 
   if (typeof msg === 'string') {
@@ -34,10 +33,10 @@ export function pushInfo(guild_id: string, isGroup: boolean, msg: MessageInput) 
   }
   if (isGroup) {
     // 向指定频道发送消息 。SpaceId 从消息中获得，注意这可能不是 ChannelId
-    sendToChannel(String(guild_id), message);
+    void sendToChannel(String(guildId), message);
 
     return;
   }
   // 向指定用户发送消息  OpenID 从消息中获得，注意这可能不是 UserId
-  sendToUser(String(guild_id), message);
+  void sendToUser(String(guildId), message);
 }

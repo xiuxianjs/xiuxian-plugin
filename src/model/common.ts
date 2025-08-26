@@ -29,7 +29,7 @@ export function timestampToTime(timestamp: number) {
   return Y + M + D + h + m + s;
 }
 
-export async function shijianc(time: number) {
+export function shijianc(time: number) {
   const date = new Date(time);
 
   return {
@@ -42,20 +42,20 @@ export async function shijianc(time: number) {
   };
 }
 
-export async function getLastsign(usr_qq: string): Promise<LastSignTime | false> {
+export async function getLastsign(usrId: string): Promise<LastSignTime | false> {
   const redis = getIoRedis();
-  const time = await redis.get(getRedisKey(usr_qq, 'lastsign_time'));
+  const time = await redis.get(getRedisKey(usrId, 'lastsign_time'));
 
-  if (time != null) {
-    return await shijianc(parseInt(time));
+  if (time !== null) {
+    return shijianc(parseInt(time));
   }
 
   return false;
 }
 
-export async function getPlayerAction(usr_qq: string): Promise<PlayerActionData> {
+export async function getPlayerAction(usrId: string): Promise<PlayerActionData> {
   const redis = getIoRedis();
-  const raw = await redis.get(getRedisKey(usr_qq, 'action'));
+  const raw = await redis.get(getRedisKey(usrId, 'action'));
   const parsed = safeParse(raw, null) as Partial<PlayerActionData> | null;
 
   if (parsed) {
@@ -87,7 +87,7 @@ export async function dataverification(e: EventsMessageCreateEnum) {
 }
 
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
-  return !(obj == null);
+  return !(obj === null);
 }
 
 export function isNotBlank(value): boolean {
@@ -110,7 +110,7 @@ export async function Go(e): Promise<boolean | 0> {
   const game_action = await redis.get(keysAction.gameAction(usr_qq));
 
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return 0;
   }
@@ -125,7 +125,7 @@ export async function Go(e): Promise<boolean | 0> {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60);
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000);
 
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
+      void Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
 
       return 0;
     }

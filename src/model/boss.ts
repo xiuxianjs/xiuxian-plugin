@@ -108,8 +108,8 @@ export async function InitWorldBoss2() {
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
   const groupList = await redis.smembers(redisGlKey);
 
-  for (const group_id of groupList) {
-    await pushInfo(group_id, true, msg);
+  for (const groupId of groupList) {
+    pushInfo(groupId, true, msg);
   }
 
   return false;
@@ -120,34 +120,23 @@ export async function GetAverageDamage() {
   const temp = [];
   let TotalPlayer = 0;
 
-  await Promise.all(playerList.map(async p => {
-    const exs = await redis.exists(keys.player(p));
+  await Promise.all(
+    playerList.map(async p => {
+      const player = await readPlayer(p);
 
-    if (exs == 0) {
-      return;
-    }
-    const data = await redis.get(keys.player(p));
-
-    if (!data) {
-      return;
-    }
-    let player = null;
-
-    try {
-      player = JSON.parse(data);
-    } catch {
-      //
-      return;
-    }
-    if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
-      temp[TotalPlayer] = parseInt(player.攻击);
-      logger.debug(`[金角大王] ${p}玩家攻击:${temp[TotalPlayer]}`);
-      TotalPlayer++;
-    }
-  }));
+      if (!player) {
+        return;
+      }
+      if (player.level_id > 21 && player.level_id < 42 && player.lunhui == 0) {
+        temp[TotalPlayer] = parseInt(player.攻击);
+        logger.debug(`[金角大王] ${p}玩家攻击:${temp[TotalPlayer]}`);
+        TotalPlayer++;
+      }
+    })
+  );
 
   // 排序
-  temp.sort(function(a, b) {
+  temp.sort(function (a, b) {
     return b - a;
   });
   let AverageDamage = 0;
@@ -161,8 +150,8 @@ export async function GetAverageDamage() {
       AverageDamage += temp[i];
     }
   }
-  AverageDamage
-    = TotalPlayer > 15
+  AverageDamage =
+    TotalPlayer > 15
       ? AverageDamage / (temp.length - 6)
       : temp.length == 0
         ? 0
@@ -222,7 +211,7 @@ export async function SortPlayer(PlayerRecordJSON) {
     const Temp = Temp0.TotalDamage;
     const SortResult = [];
 
-    Temp.sort(function(a, b) {
+    Temp.sort(function (a, b) {
       return b - a;
     });
     for (let i = 0; i < PlayerRecordJSON.TotalDamage.length; i++) {
@@ -399,11 +388,15 @@ export async function WorldBossBattle(e) {
       return false;
     }
     if (msg.find(item => item == A_win)) {
-      TotalDamage = Math.trunc(WorldBossStatus.Healthmax * 0.05 + Harm(player.攻击 * 0.85, Boss.防御) * 6);
+      TotalDamage = Math.trunc(
+        WorldBossStatus.Healthmax * 0.05 + Harm(player.攻击 * 0.85, Boss.防御) * 6
+      );
       WorldBossStatus.Health -= TotalDamage;
       send(Text(`${player.名号}击败了[${Boss.名号}],重创[妖王],造成伤害${TotalDamage}`));
     } else if (msg.find(item => item == B_win)) {
-      TotalDamage = Math.trunc(WorldBossStatus.Healthmax * 0.03 + Harm(player.攻击 * 0.85, Boss.防御) * 4);
+      TotalDamage = Math.trunc(
+        WorldBossStatus.Healthmax * 0.03 + Harm(player.攻击 * 0.85, Boss.防御) * 4
+      );
       WorldBossStatus.Health -= TotalDamage;
       send(Text(`${player.名号}被[${Boss.名号}]击败了,只对[妖王]造成了${TotalDamage}伤害`));
     }
@@ -417,7 +410,11 @@ export async function WorldBossBattle(e) {
     } else if (random > 0.95 && msg.find(item => item == B_win)) {
       TotalDamage += Math.trunc(WorldBossStatus.Health * 0.15);
       WorldBossStatus.Health -= Math.trunc(WorldBossStatus.Health * 0.15);
-      send(Text(`危及时刻,万先盟-韩立前来助阵,对[妖王]造成${Math.trunc(WorldBossStatus.Health * 0.15)}伤害,并治愈了你的伤势`));
+      send(
+        Text(
+          `危及时刻,万先盟-韩立前来助阵,对[妖王]造成${Math.trunc(WorldBossStatus.Health * 0.15)}伤害,并治愈了你的伤势`
+        )
+      );
       await addHP(usr_qq, player.血量上限);
     }
     await sleep(1000);
@@ -427,8 +424,8 @@ export async function WorldBossBattle(e) {
     if (WorldBossStatus.Health <= 0) {
       send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'));
       await sleep(1000);
-      const msg2
-        = '【全服公告】' + player.名号 + '亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！';
+      const msg2 =
+        '【全服公告】' + player.名号 + '亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！';
       const redisGlKey = KEY_AUCTION_GROUP_LIST;
       const groupList = await redis.smembers(redisGlKey);
 
@@ -442,7 +439,9 @@ export async function WorldBossBattle(e) {
       redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
       const PlayerList = await SortPlayer(PlayerRecordJSON);
 
-      send(Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励'));
+      send(
+        Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')
+      );
       for (let i = 0; i < PlayerList.length; i++) {
         await readPlayer(PlayerRecordJSON.QQ[PlayerList[i]]);
       }
@@ -463,17 +462,21 @@ export async function WorldBossBattle(e) {
         const CurrentPlayer = await readPlayer(PlayerRecordJSON.QQ[PlayerList[i]]);
 
         if (i < Show_MAX) {
-          let Reward = Math.trunc((PlayerRecordJSON.TotalDamage[PlayerList[i]] / TotalDamage) * WorldBossStatus.Reward);
+          let Reward = Math.trunc(
+            (PlayerRecordJSON.TotalDamage[PlayerList[i]] / TotalDamage) * WorldBossStatus.Reward
+          );
 
           Reward = Reward < 200000 ? 200000 : Reward;
-          Rewardmsg.push('第'
-              + `${i + 1}`
-              + '名:\n'
-              + `名号:${CurrentPlayer.名号}`
-              + '\n'
-              + `伤害:${PlayerRecordJSON.TotalDamage[PlayerList[i]]}`
-              + '\n'
-              + `获得灵石奖励${Reward}`);
+          Rewardmsg.push(
+            '第' +
+              `${i + 1}` +
+              '名:\n' +
+              `名号:${CurrentPlayer.名号}` +
+              '\n' +
+              `伤害:${PlayerRecordJSON.TotalDamage[PlayerList[i]]}` +
+              '\n' +
+              `获得灵石奖励${Reward}`
+          );
           CurrentPlayer.灵石 += Reward;
           writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
           logger.info(`[妖王周本] 结算:${PlayerRecordJSON.QQ[PlayerList[i]]}增加奖励${Reward}`);

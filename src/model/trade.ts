@@ -49,17 +49,17 @@ export async function openAU(): Promise<ExchangeRecord> {
   }
   const redis = getIoRedis();
   const random = Math.floor(Math.random() * oneList.length);
-  const thing_data = oneList[random];
-  const thing_value = Math.floor(Number(thing_data.出售价) || 0);
-  const thing_amount = 1;
-  const now_time = Date.now();
+  const thingData = oneList[random];
+  const thingValue = Math.floor(Number(thingData.出售价) || 0);
+  const thingAmount = 1;
+  const nowTime = Date.now();
   const groupList = await redis.smembers(redisGlKey);
   const wupin: ExchangeRecord = {
-    thing: thing_data,
-    start_price: thing_value,
-    last_price: thing_value,
-    amount: thing_amount,
-    last_offer_price: now_time,
+    thing: thingData,
+    start_price: thingValue,
+    last_price: thingValue,
+    amount: thingAmount,
+    last_offer_price: nowTime,
     last_offer_player: 0,
     groupList
   };

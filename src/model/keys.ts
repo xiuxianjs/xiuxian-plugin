@@ -173,8 +173,8 @@ export type RedisKeyGenerator = typeof keys;
  * @returns
  * @deprecated
  */
-export const getRedisKey = (user_id: string, action: ActionType) => {
-  return baseKey + ':' + user_id + ':' + action;
+export const getRedisKey = (userId: string, action: ActionType) => {
+  return `${baseKey}:${userId}:${action}`;
 };
 
 /**

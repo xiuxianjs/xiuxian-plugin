@@ -353,6 +353,7 @@ export type CustomRecord = Array<Record<string, unknown>> | Record<string, unkno
 
 // === 新增：Redis 模块 ===
 export type ActionType =
+  | 'action10'
   | 'shangjing'
   | 'lastsign_time'
   | 'action'

@@ -12,21 +12,21 @@ import { keys } from './keys.js';
 import { getDataList } from './DataList.js';
 import { setDataJSONStringifyByKey } from './DataControl.js';
 
-export async function dujie(user_qq: string): Promise<number> {
-  const player: Player | null = await readPlayer(user_qq);
+export async function dujie(userId: string): Promise<number> {
+  const player: Player | null = await readPlayer(userId);
 
   if (!player) {
     return 0;
   }
-  let new_blood = player.当前血量 / 100000;
-  let new_defense = player.防御 / 100000;
-  let new_attack = player.攻击 / 100000;
+  let newBlood = player.当前血量 / 100000;
+  let newDefense = player.防御 / 100000;
+  let newAttack = player.攻击 / 100000;
 
-  new_blood = (new_blood * 4) / 10;
-  new_defense = (new_defense * 6) / 10;
-  new_attack = (new_attack * 2) / 10;
-  const N = new_blood + new_defense;
-  let x = N * new_attack;
+  newBlood = (newBlood * 4) / 10;
+  newDefense = (newDefense * 6) / 10;
+  newAttack = (newAttack * 2) / 10;
+  const N = newBlood + newDefense;
+  let x = N * newAttack;
 
   if (player.灵根.type == '真灵根') {
     x = x * 1.5;
@@ -84,7 +84,9 @@ export async function LevelTask(
 
         player.当前血量 = Math.trunc(player.当前血量 - player.当前血量 * act);
         await writePlayer(usr_qq, player);
-        msg.push(`\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`);
+        msg.push(
+          `\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`
+        );
         Send(Text(msg.join('')));
 
         return 1;
@@ -94,7 +96,9 @@ export async function LevelTask(
       player.修为 = Math.trunc(player.修为 * 0.5);
       player.power_place = 1;
       await writePlayer(usr_qq, player);
-      msg.push(`\n本次雷伤${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n第${aconut}道雷劫落下了，可惜${player.名号}未能抵挡，渡劫失败了！`);
+      msg.push(
+        `\n本次雷伤${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n第${aconut}道雷劫落下了，可惜${player.名号}未能抵挡，渡劫失败了！`
+      );
       Send(Text(msg.join('')));
 
       return 0;
@@ -105,7 +109,7 @@ export async function LevelTask(
 }
 
 export function sortBy<T extends Record<string, number>>(field: keyof T) {
-  return function(b: T, a: T) {
+  return function (b: T, a: T) {
     return (a[field] as number) - (b[field] as number);
   };
 }
@@ -172,15 +176,15 @@ export async function setFileValue(user_qq: string, num: number, type: string): 
   if (!player) {
     return;
   }
-  const current_raw = player[type];
-  const current_num = typeof current_raw === 'number' ? current_raw : 0;
-  let new_num = current_num + num;
+  const currentRaw = player[type];
+  const currentNum = typeof currentRaw === 'number' ? currentRaw : 0;
+  let newNum = currentNum + num;
 
-  if (type == '当前血量' && new_num > player.血量上限) {
-    new_num = player.血量上限;
+  if (type == '当前血量' && newNum > player.血量上限) {
+    newNum = player.血量上限;
   }
-  player[type] = new_num;
-  setDataJSONStringifyByKey(keys.player(user_qq), player);
+  player[type] = newNum;
+  void setDataJSONStringifyByKey(keys.player(user_qq), player);
 }
 
 export type FoundThing = {
@@ -188,7 +192,7 @@ export type FoundThing = {
   name: string;
 };
 
-export async function foundthing(thing_name: string): Promise<FoundThing | false> {
+export async function foundthing(thingName: string): Promise<FoundThing | false> {
   const primaryGroups = [
     'equipment_list',
     'danyao_list',
@@ -219,14 +223,15 @@ export async function foundthing(thing_name: string): Promise<FoundThing | false
     duanzhaocailiao: await getDataList('Duanzhaocailiao'),
     zalei: await getDataList('Zalei')
   };
-  const hasName = (obj): obj is FoundThing => typeof obj === 'object' && obj !== null && 'name' in obj;
+  const hasName = (obj): obj is FoundThing =>
+    typeof obj === 'object' && obj !== null && 'name' in obj;
 
   for (const key of primaryGroups) {
     const arr = data[key];
 
     if (Array.isArray(arr)) {
       for (const j of arr) {
-        if (hasName(j) && j.name === thing_name) {
+        if (hasName(j) && j.name === thingName) {
           return j;
         }
       }
@@ -242,12 +247,12 @@ export async function foundthing(thing_name: string): Promise<FoundThing | false
   }
   if (Array.isArray(customList)) {
     for (const j of customList) {
-      if (hasName(j) && j.name === thing_name) {
+      if (hasName(j) && j.name === thingName) {
         return j;
       }
     }
   }
-  const simplifiedName = thing_name.replace(/[0-9]+/g, '');
+  const simplifiedName = thingName.replace(/[0-9]+/g, '');
   const secondaryGroups = ['duanzhaowuqi', 'duanzhaohuju', 'duanzhaobaowu', 'zalei'] as const;
 
   for (const key of secondaryGroups) {

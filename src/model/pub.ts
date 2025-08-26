@@ -7,6 +7,6 @@ export async function writeIt(custom: CustomRecord): Promise<void> {
   await setDataJSONStringifyByKey(keys.custom('custom'), custom);
 }
 
-export async function writePlayer(usr_qq: string, player: Player): Promise<void> {
-  await setDataJSONStringifyByKey(keys.player(usr_qq), player);
+export async function writePlayer(usrQQ: string, player: Player): Promise<void> {
+  await setDataJSONStringifyByKey(keys.player(usrQQ), player);
 }

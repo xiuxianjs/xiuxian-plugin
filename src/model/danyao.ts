@@ -1,10 +1,9 @@
 // 丹药存取逻辑抽离
-import { getIoRedis } from '@alemonjs/db';
 import { __PATH } from './keys.js';
 import { readAll } from './duanzaofu.js';
 import { DanyaoStatus } from '@src/types/player.js';
 import { keys } from './keys.js';
-import { getDataJSONParseByKey } from './DataControl.js';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
 const baseData = {
   biguan: 0, // 闭关状态
@@ -26,15 +25,13 @@ const baseData = {
  * 如果解析结果不是数组，则包装为数组；若是 null/其它类型，返回空数组。
  */
 export async function readDanyao(userId: string): Promise<DanyaoStatus> {
-  const data = await await getDataJSONParseByKey(keys.danyao(userId));
+  const data = await getDataJSONParseByKey(keys.danyao(userId));
 
-  return data || baseData;
+  return data ?? baseData;
 }
 
 export async function writeDanyao(userId: string, data: DanyaoStatus) {
-  const redis = getIoRedis();
-
-  await redis.set(keys.danyao(userId), JSON.stringify(data));
+  await setDataJSONStringifyByKey(keys.danyao(userId), data);
 }
 
 export { readAll };

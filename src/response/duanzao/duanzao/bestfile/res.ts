@@ -5,11 +5,12 @@ import { getDataJSONParseByKey } from '@src/model/DataControl';
 import {
   readItTyped,
   writeIt,
-  alluser,
   readNajie,
   readEquipment,
   existplayer,
-  keys
+  keys,
+  keysByPath,
+  __PATH
 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
@@ -65,7 +66,7 @@ const res = onResponse(selects, async e => {
 
   if (needRebuild) {
     await redis.set(CACHE_KEY_TIME, String(now));
-    const all = await alluser();
+    const all = await keysByPath(__PATH.player_path);
     const playerCache = new Map<string, PlayerLite | null>();
 
     async function getPlayer(qq: string): Promise<PlayerLite | null> {

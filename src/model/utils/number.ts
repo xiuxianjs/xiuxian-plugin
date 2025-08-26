@@ -2,7 +2,7 @@
  * 校验并转换正整数（原实现为异步，保持兼容仍返回 Promise）
  * 合法范围: 1~13 位非 0 开头数字；非法输入统一返回 1
  */
-export async function convert2integer(amount: string | number): Promise<number> {
+export function convert2integer(amount: string | number): number {
   const fallback = 1;
   const reg = /^[1-9][0-9]{0,12}$/;
 
@@ -51,7 +51,7 @@ export function GetPower(atk: number, def: number, hp: number, bao: number): num
 /**
  * 简单数值转化（保留旧接口行为）
  */
-export async function datachange(data: number): Promise<string> {
+export function datachange(data: number): string {
   if (data / 1_000_000_000_000 > 1) {
     return Math.floor((data * 100) / 1_000_000_000_000) / 100 + '万亿';
   } else if (data / 100_000_000 > 1) {
