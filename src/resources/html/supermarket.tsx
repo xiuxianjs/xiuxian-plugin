@@ -197,13 +197,15 @@ const Supermarket = ({ Exchange_list }) => {
                             <div className='w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center'>
                               <span className='text-xs'>📦</span>
                             </div>
-                            <span className='text-sm text-green-200'>数量：{item.aconut}</span>
+                            <span className='text-sm text-green-200'>数量：{item.amount}</span>
                           </div>
                           <div className='flex items-center gap-2'>
                             <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center'>
                               <span className='text-xs'>💎</span>
                             </div>
-                            <span className='text-sm text-yellow-200'>总价：{item.whole}</span>
+                            <span className='text-sm text-yellow-200'>
+                              总价：{item.price * item.amount}
+                            </span>
                           </div>
                           <div className='flex items-center gap-2'>
                             <div className='w-6 h-6 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center'>

@@ -17,7 +17,7 @@ export const regular = /^(#|＃|\/)?下架[1-9]\d*$/;
 interface LegacyRecord {
   qq: string;
   name: { name: string; class: NajieCategory } | string;
-  aconut?: number;
+  amount?: number;
   pinji2?: number;
   class?: NajieCategory;
 }
@@ -33,6 +33,7 @@ function mapRecord(r): LegacyRecord | null {
   }
   const rec = r as LegacyRecord;
 
+  console.log('rec:', rec, 'qq' in rec, rec.name);
   if ('qq' in rec && rec.name) {
     return rec;
   }
@@ -44,7 +45,7 @@ function mapRecord(r): LegacyRecord | null {
       class: (er.thing.class || '道具') as NajieCategory
     };
 
-    return { qq: String(er.last_offer_player || ''), name, aconut: er.amount };
+    return { qq: String(er.qq || ''), name, aconut: er.amount };
   }
 
   return null;
@@ -93,6 +94,7 @@ const res = onResponse(selects, async e => {
   }
   const list: LegacyRecord[] = rawList.map(mapRecord).filter(Boolean);
 
+  console.log('list:', list);
   if (idx >= list.length) {
     Send(Text(`没有编号为${idx + 1}的物品`));
 
@@ -122,7 +124,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const amount = toInt(rec.aconut, 1);
+  const amount = toInt(rec.amount, 1);
   const cate: NajieCategory = thingClass || '道具';
 
   if (cate === '装备' || cate === '仙宠') {

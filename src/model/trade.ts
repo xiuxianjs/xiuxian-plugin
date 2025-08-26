@@ -20,6 +20,10 @@ export async function readExchange(): Promise<ExchangeRecord[]> {
   if (!Exchange) {
     return [];
   }
+  // 如果Exchange是数组，直接返回
+  if (Array.isArray(Exchange)) {
+    return Exchange;
+  }
 
   return safeParse<ExchangeRecord[]>(Exchange, []);
 }

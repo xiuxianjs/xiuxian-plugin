@@ -36,7 +36,11 @@ const res = onResponse(selects, async e => {
     const ExchangeCDm = Math.trunc((ExchangeCD + transferTimeout - now_time) / 60 / 1000);
     const ExchangeCDs = Math.trunc(((ExchangeCD + transferTimeout - now_time) % 60000) / 1000);
 
-    Send(Text(`每${transferTimeout / 1000 / 60}分钟操作一次，` + `CD: ${ExchangeCDm}分${ExchangeCDs}秒`));
+    Send(
+      Text(
+        `每${transferTimeout / 1000 / 60}分钟操作一次，` + `CD: ${ExchangeCDm}分${ExchangeCDs}秒`
+      )
+    );
 
     // 存在CD。直接返回
     return false;
@@ -53,6 +57,18 @@ const res = onResponse(selects, async e => {
     await writeExchange([]);
   }
   const t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*');
+
+  // 如果t[0]或t[1]不是非0开头的数字, 发送提示并返回
+  if (!/^[1-9]\d*$/.test(t[0])) {
+    Send(Text(`请输入正确的编号,${t[0]}不是合法的数字`));
+
+    return false;
+  }
+  if (!/^[1-9]\d*$/.test(t[1])) {
+    Send(Text(`请输入正确的数量,${t[1]}不是合法的数字`));
+
+    return false;
+  }
   const x = (await convert2integer(t[0])) - 1;
 
   if (x >= Exchange.length) {
@@ -94,10 +110,9 @@ const res = onResponse(selects, async e => {
     await addCoin(usr_qq, -money);
     // 加钱
     await addCoin(thingqq, money);
-    Exchange[x].aconut = Exchange[x].aconut - n;
-    Exchange[x].whole = Exchange[x].whole - money;
+    Exchange[x].amount = Exchange[x].amount - n;
     // 删除该位置信息
-    Exchange = Exchange.filter(item => item.aconut > 0);
+    Exchange = Exchange.filter(item => item.amount > 0);
     await writeExchange(Exchange);
     Send(Text(`${player.名号}在冲水堂购买了${n}个【${thing_name}】！`));
   } else {
