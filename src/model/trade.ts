@@ -1,6 +1,5 @@
 /* 交易/拍卖相关函数抽离 */
 import { getIoRedis } from '@alemonjs/db';
-import { safeParse } from './utils/safe.js';
 import type { AuctionItem } from '../types/data_extra';
 import type { ExchangeRecord, ForumRecord } from '../types/model';
 import { keys } from './keys.js';
@@ -17,24 +16,22 @@ export async function writeForum(wupin: ForumRecord[]): Promise<void> {
 export async function readExchange(): Promise<ExchangeRecord[]> {
   const Exchange = await getDataJSONParseByKey(keys.exchange('Exchange'));
 
-  if (!Exchange) {
-    return [];
-  }
-  // 如果Exchange是数组，直接返回
   if (Array.isArray(Exchange)) {
     return Exchange;
   }
 
-  return safeParse<ExchangeRecord[]>(Exchange, []);
+  // 如果不是数组，返回空数组
+  return [];
 }
 export async function readForum(): Promise<ForumRecord[]> {
   const Forum = await getDataJSONParseByKey(keys.exchange('Forum'));
 
-  if (!Forum) {
-    return [];
+  if (Array.isArray(Forum)) {
+    return Forum;
   }
 
-  return safeParse<ForumRecord[]>(Forum, []);
+  // 如果不是数组，返回空数组
+  return [];
 }
 export async function openAU(): Promise<ExchangeRecord> {
   const redisGlKey = KEY_AUCTION_GROUP_LIST;

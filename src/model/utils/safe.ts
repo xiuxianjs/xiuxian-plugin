@@ -1,5 +1,5 @@
 import { keys } from '../keys.js';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '../DataControl.js';
+import { getDataByKey, setDataJSONStringifyByKey } from '../DataControl.js';
 
 export function safeParse<T>(s: string | null | undefined, fallback: T): T {
   if (!s) {
@@ -13,9 +13,20 @@ export function safeParse<T>(s: string | null | undefined, fallback: T): T {
 }
 
 export class PlayerRepo {
-  getRaw(id: string) {
-    return getDataJSONParseByKey(keys.player(id));
+  /**
+   * 获取玩家原始字符串数据
+   * @param id 玩家ID
+   * @returns 原始字符串数据或null
+   */
+  async getRaw(id: string): Promise<string | null> {
+    return getDataByKey(keys.player(id));
   }
+  
+  /**
+   * 获取玩家对象数据
+   * @param id 玩家ID
+   * @returns 解析后的对象或null
+   */
   async getObject<T>(id: string): Promise<T | null> {
     const raw = await this.getRaw(id);
 
