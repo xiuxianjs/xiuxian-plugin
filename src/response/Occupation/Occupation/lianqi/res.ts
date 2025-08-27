@@ -69,10 +69,10 @@ const res = onResponse(selects, async e => {
   const tuzhi = tuzhiCandidate as Partial<TuzhiItem> | undefined;
 
   if (
-    !tuzhi
-    || typeof tuzhi.rate !== 'number'
-    || !Array.isArray(tuzhi.exp)
-    || !Array.isArray(tuzhi.materials)
+    !tuzhi ||
+    typeof tuzhi.rate !== 'number' ||
+    !Array.isArray(tuzhi.exp) ||
+    !Array.isArray(tuzhi.materials)
   ) {
     Send(Text(`世界上没有[${equipment_name}]的图纸或配置不完整`));
 

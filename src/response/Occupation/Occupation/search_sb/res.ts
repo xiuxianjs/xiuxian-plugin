@@ -53,13 +53,15 @@ const res = onResponse(selects, async e => {
     if (players.魔道值 > 999 && this_qq != usr_qq) {
       mubiao[i] = {
         名号: players.名号,
-        赏金: Math.trunc((1000000
-            * (1.2 + 0.05 * player.occupation_level)
-            * player.level_id
-            * player.Physique_id)
-            / 42
-            / 42
-            / 4),
+        赏金: Math.trunc(
+          (1000000 *
+            (1.2 + 0.05 * player.occupation_level) *
+            player.level_id *
+            player.Physique_id) /
+            42 /
+            42 /
+            4
+        ),
         QQ: this_qq
       };
       i++;
@@ -69,10 +71,12 @@ const res = onResponse(selects, async e => {
   while (i < 4) {
     mubiao[i] = {
       名号: 'DD大妖王',
-      赏金: Math.trunc((1000000 * (1.2 + 0.05 * player.occupation_level) * player.level_id * player.Physique_id)
-          / 42
-          / 42
-          / 4),
+      赏金: Math.trunc(
+        (1000000 * (1.2 + 0.05 * player.occupation_level) * player.level_id * player.Physique_id) /
+          42 /
+          42 /
+          4
+      ),
       QQ: 1
     };
     i++;

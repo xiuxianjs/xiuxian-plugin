@@ -141,7 +141,11 @@ const res = onResponse(selects, async e => {
       delete (player as Player & { 宗门? }).宗门;
       await writePlayer(usr_qq, serializePlayer(player));
       await playerEfficiency(usr_qq);
-      Send(Text('退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
+      Send(
+        Text(
+          '退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'
+        )
+      );
     } else {
       ass.所有成员 = ass.所有成员.filter(item => item !== usr_qq);
       delete (player as Player & { 宗门? }).宗门;

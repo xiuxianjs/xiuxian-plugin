@@ -35,7 +35,7 @@ function isNajieCategory(v): v is NajieCategory {
 兼容多种奖励类型和探索地点，支持多样化的探索体验。
  * @returns
  */
-export const SecretPlaceTask = async() => {
+export const SecretPlaceTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const player_id of playerList) {
@@ -258,26 +258,26 @@ export const SecretPlaceTask = async() => {
                 const index = Math.trunc(Math.random() * length);
                 const kouliang = xianchonkouliangList[index];
 
-                last_msg
-                  += '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
+                last_msg +=
+                  '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
                 await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1);
               }
             }
             if (random > 0.1 && random < 0.1002) {
-              last_msg
-                += '\n'
-                + B_player.名号
-                + '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
+              last_msg +=
+                '\n' +
+                B_player.名号 +
+                '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
               await addNajieThing(player_id, '长相奇怪的小石头', '道具', 1);
             }
           } else if (msgg.find(item => item == B_win)) {
             xiuwei = 800;
-            last_msg
-              = '不巧撞见['
-              + B_player.名号
-              + '],经过一番战斗,败下阵来,还好跑得快,只获得了修为'
-              + xiuwei
-              + ']';
+            last_msg =
+              '不巧撞见[' +
+              B_player.名号 +
+              '],经过一番战斗,败下阵来,还好跑得快,只获得了修为' +
+              xiuwei +
+              ']';
           }
           msg.push('\n' + player.名号 + last_msg);
           const arr: ActionState = action;

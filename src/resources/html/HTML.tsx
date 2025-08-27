@@ -3,9 +3,11 @@ import { LinkStyleSheet } from 'jsxp';
 import cssURL from '@src/resources/styles/tw.scss';
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf';
 
-const HTML = (props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement> & {
+const HTML = (
+  props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement> & {
     linkStyleSheets?: string[];
-  }) => {
+  }
+) => {
   const { linkStyleSheets = [], dangerouslySetInnerHTML, ...reSet } = props;
 
   return (
@@ -19,8 +21,16 @@ const HTML = (props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLBodyElemen
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              @font-face { font-family: 'tttgbnumber'; src: url('${tttgbnumberURL}'); font-weight: normal; font-style: normal; }
-              body { font-family: 'tttgbnumber', system-ui, sans-serif; }
+              @font-face {
+                font-family: 'tttgbnumber';
+                src: url('${tttgbnumberURL}'); 
+                font-weight: normal; 
+                font-style: normal; 
+              }
+              body { 
+                font-family: 'tttgbnumber', 
+                system-ui, sans-serif; 
+              }
             `
           }}
         />

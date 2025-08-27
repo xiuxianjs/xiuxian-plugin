@@ -1,6 +1,5 @@
 import { Image, Text, useSend } from 'alemonjs';
 
-
 import { existplayer, readPlayer, foundthing, insteadEquipment, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';

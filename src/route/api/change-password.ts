@@ -3,7 +3,7 @@ import { setUserPassword, validateToken } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 
 // 修改密码接口
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     // 验证token
     const token = ctx.request.headers.authorization?.replace('Bearer ', '');

@@ -86,7 +86,9 @@ const res = onResponse(selects, async e => {
 
   // 查询所有宗门，判断洞天是否被占据
   const guildNames = await keysByPath(__PATH.association);
-  const assDatas = await Promise.all(guildNames.map(n => getDataJSONParseByKey(keys.association(n))));
+  const assDatas = await Promise.all(
+    guildNames.map(n => getDataJSONParseByKey(keys.association(n)))
+  );
   const assListRaw = assDatas.filter(Boolean);
 
   for (const other of assListRaw) {
@@ -153,10 +155,18 @@ const res = onResponse(selects, async e => {
       other.大阵血量 = 0;
       await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
       await setDataJSONStringifyByKey(keys.association(other.宗门名称), other);
-      Send(Text(`洞天被占据！${ass.宗门名称} 发动进攻 (战力${attackPower}) 攻破 ${other.宗门名称} (防御${defendPower})，夺取了 ${dongTan.name}`));
+      Send(
+        Text(
+          `洞天被占据！${ass.宗门名称} 发动进攻 (战力${attackPower}) 攻破 ${other.宗门名称} (防御${defendPower})，夺取了 ${dongTan.name}`
+        )
+      );
     } else {
       await setDataJSONStringifyByKey(keys.association(other.宗门名称), other);
-      Send(Text(`${ass.宗门名称} 进攻 ${other.宗门名称} 失败 (进攻${attackPower} / 防御${defendPower})`));
+      Send(
+        Text(
+          `${ass.宗门名称} 进攻 ${other.宗门名称} 失败 (进攻${attackPower} / 防御${defendPower})`
+        )
+      );
     }
 
     return false;

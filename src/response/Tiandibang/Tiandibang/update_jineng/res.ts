@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { existplayer, readPlayer } from '@src/model/index';
-import { readTiandibang, Write_tiandibang } from '../tian';
+import { readTiandibang, writeTiandibang } from '../../../../model/tian';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import type { TalentInfo } from '@src/types';
@@ -41,7 +41,7 @@ const res = onResponse(selects, async e => {
     tiandibang = await readTiandibang();
   } catch {
     // 没有表要先建立一个！
-    await Write_tiandibang([]);
+    await writeTiandibang([]);
   }
   const index = tiandibang.findIndex(item => item.qq === usr_qq);
 
@@ -75,26 +75,26 @@ const res = onResponse(selects, async e => {
   row.学习的功法 = player.学习的功法;
   row.灵根 = player.灵根;
   row.法球倍率 = player.灵根.法球倍率;
-  await Write_tiandibang(tiandibang);
+  await writeTiandibang(tiandibang);
   tiandibang = await readTiandibang(); // 重新读取最新榜单
   const refreshed = tiandibang[index];
 
   refreshed.暴击率 = Math.trunc(refreshed.暴击率 * 100);
   const msg = [
-    '名次：'
-      + (index + 1)
-      + '\n名号：'
-      + refreshed.名号
-      + '\n攻击：'
-      + refreshed.攻击
-      + '\n防御：'
-      + refreshed.防御
-      + '\n血量：'
-      + refreshed.当前血量
-      + '\n暴击：'
-      + refreshed.暴击率
-      + '%\n积分：'
-      + refreshed.积分
+    '名次：' +
+      (index + 1) +
+      '\n名号：' +
+      refreshed.名号 +
+      '\n攻击：' +
+      refreshed.攻击 +
+      '\n防御：' +
+      refreshed.防御 +
+      '\n血量：' +
+      refreshed.当前血量 +
+      '\n暴击：' +
+      refreshed.暴击率 +
+      '%\n积分：' +
+      refreshed.积分
   ];
 
   Send(Text(msg.join('')));

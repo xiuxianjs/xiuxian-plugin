@@ -159,7 +159,9 @@ export async function zdBattle(
         if (ran < 0.35) {
           A_player.攻击 += Math.trunc(A_player.攻击 * A_player.仙宠.加成);
           A_player.防御 += Math.trunc(A_player.防御 * A_player.仙宠.加成);
-          msg.push(`仙宠【${A_player.仙宠.name}】辅佐了[${A_player.名号}]，使其伤害增加了[${Math.trunc(A_player.仙宠.加成 * 100)}%]`);
+          msg.push(
+            `仙宠【${A_player.仙宠.name}】辅佐了[${A_player.名号}]，使其伤害增加了[${Math.trunc(A_player.仙宠.加成 * 100)}%]`
+          );
         }
       }
     }
@@ -187,23 +189,25 @@ export async function zdBattle(
 
     for (let i = 0; i < jineng1.length; i++) {
       if (
-        (jineng1[i].class == '常驻'
-          && (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1)
-          && Random < jineng1[i].pr)
-        || (A_player.学习的功法
-          && jineng1[i].class == '功法'
-          && A_player.学习的功法.indexOf(jineng1[i].name) > -1
-          && (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1)
-          && Random < jineng1[i].pr)
-        || (A_player.灵根
-          && jineng1[i].class == '灵根'
-          && A_player.灵根.name == jineng1[i].name
-          && (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1)
-          && Random < jineng1[i].pr)
+        (jineng1[i].class == '常驻' &&
+          (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1) &&
+          Random < jineng1[i].pr) ||
+        (A_player.学习的功法 &&
+          jineng1[i].class == '功法' &&
+          A_player.学习的功法.indexOf(jineng1[i].name) > -1 &&
+          (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1) &&
+          Random < jineng1[i].pr) ||
+        (A_player.灵根 &&
+          jineng1[i].class == '灵根' &&
+          A_player.灵根.name == jineng1[i].name &&
+          (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1) &&
+          Random < jineng1[i].pr)
       ) {
-        msg.push(jineng1[i].msg2 == ''
-          ? A_player.名号 + jineng1[i].msg1
-          : A_player.名号 + jineng1[i].msg1 + B_player.名号 + jineng1[i].msg2);
+        msg.push(
+          jineng1[i].msg2 == ''
+            ? A_player.名号 + jineng1[i].msg1
+            : A_player.名号 + jineng1[i].msg1 + B_player.名号 + jineng1[i].msg2
+        );
         伤害 = 伤害 * jineng1[i].beilv + jineng1[i].other;
         count++;
       }
@@ -213,20 +217,22 @@ export async function zdBattle(
     }
     for (let i = 0; i < jineng2.length; i++) {
       if (
-        (B_player.学习的功法
-          && jineng2[i].class == '功法'
-          && B_player.学习的功法.indexOf(jineng2[i].name) > -1
-          && (cnt2 == jineng2[i].cnt || jineng2[i].cnt == -1)
-          && random < jineng2[i].pr)
-        || (B_player.灵根
-          && jineng2[i].class == '灵根'
-          && B_player.灵根.name == jineng2[i].name
-          && (cnt2 == jineng2[i].cnt || jineng2[i].cnt == -1)
-          && random < jineng2[i].pr)
+        (B_player.学习的功法 &&
+          jineng2[i].class == '功法' &&
+          B_player.学习的功法.indexOf(jineng2[i].name) > -1 &&
+          (cnt2 == jineng2[i].cnt || jineng2[i].cnt == -1) &&
+          random < jineng2[i].pr) ||
+        (B_player.灵根 &&
+          jineng2[i].class == '灵根' &&
+          B_player.灵根.name == jineng2[i].name &&
+          (cnt2 == jineng2[i].cnt || jineng2[i].cnt == -1) &&
+          random < jineng2[i].pr)
       ) {
-        msg.push(jineng2[i].msg2 == ''
-          ? B_player.名号 + jineng2[i].msg1
-          : B_player.名号 + jineng2[i].msg1 + A_player.名号 + jineng2[i].msg2);
+        msg.push(
+          jineng2[i].msg2 == ''
+            ? B_player.名号 + jineng2[i].msg1
+            : B_player.名号 + jineng2[i].msg1 + A_player.名号 + jineng2[i].msg2
+        );
         伤害 = 伤害 * jineng2[i].beilv + jineng2[i].other;
       }
     }
@@ -262,7 +268,9 @@ export async function zdBattle(
       A_player.攻击 = BB_player.攻击;
       A_player.防御 = BB_player.防御;
     }
-    msg.push(`第${cnt2 + 1}回合：\n  ${A_player.名号}攻击了${B_player.名号}，${ifbaoji(baoji)}造成伤害${伤害}，${B_player.名号}剩余血量${B_player.当前血量}`);
+    msg.push(
+      `第${cnt2 + 1}回合：\n  ${A_player.名号}攻击了${B_player.名号}，${ifbaoji(baoji)}造成伤害${伤害}，${B_player.名号}剩余血量${B_player.当前血量}`
+    );
     cnt++;
   }
   if (cnt % 2 == 0) {

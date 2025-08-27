@@ -39,11 +39,11 @@ export async function addQinmidu(A: string, B: string, qinmi: number) {
   let i: number;
 
   for (i = 0; i < list.length; i++) {
-    if ((list[i].QQ_A == A && list[i].QQ_B == B) || (list[i].QQ_A == B && list[i].QQ_B == A)) {
+    if ((list[i].QQ_A === A && list[i].QQ_B === B) || (list[i].QQ_A === B && list[i].QQ_B === A)) {
       break;
     }
   }
-  if (i == list.length) {
+  if (i === list.length) {
     await fstaddQinmidu(A, B);
     list = await readQinmidu();
   }
@@ -63,27 +63,27 @@ export async function findQinmidu(A: string, B: string) {
   const QQ: string[] = [];
 
   for (i = 0; i < list.length; i++) {
-    if (list[i].QQ_A == A || list[i].QQ_A == B) {
-      if (list[i].婚姻 != 0) {
+    if (list[i].QQ_A === A || list[i].QQ_A === B) {
+      if (list[i].婚姻 !== 0) {
         // 原逻辑是错误地把 push 当作属性赋值，这里直接 push
         QQ.push(list[i].QQ_B);
         break;
       }
-    } else if (list[i].QQ_B == A || list[i].QQ_B == B) {
-      if (list[i].婚姻 != 0) {
+    } else if (list[i].QQ_B === A || list[i].QQ_B === B) {
+      if (list[i].婚姻 !== 0) {
         QQ.push(list[i].QQ_A);
         break;
       }
     }
   }
   for (i = 0; i < list.length; i++) {
-    if ((list[i].QQ_A == A && list[i].QQ_B == B) || (list[i].QQ_A == B && list[i].QQ_B == A)) {
+    if ((list[i].QQ_A === A && list[i].QQ_B === B) || (list[i].QQ_A === B && list[i].QQ_B === A)) {
       break;
     }
   }
-  if (i == list.length) {
+  if (i === list.length) {
     return false;
-  } else if (QQ.length != 0) {
+  } else if (QQ.length !== 0) {
     return 0;
   } else {
     return list[i].亲密度;
@@ -100,7 +100,7 @@ export async function findDaolvQinmidu(A: string) {
     await writeQinmidu([]);
   }
   for (let i = 0; i < list.length; i++) {
-    if ((list[i].QQ_A == A || list[i].QQ_B == A) && list[i].婚姻 != 0) {
+    if ((list[i].QQ_A === A || list[i].QQ_B === A) && list[i].婚姻 !== 0) {
       return list[i].亲密度;
     }
   }
@@ -122,12 +122,12 @@ export async function existHunyin(A: string) {
     await writeQinmidu([]);
   }
   for (let i = 0; i < list.length; i++) {
-    if (list[i].QQ_A == A) {
-      if (list[i].婚姻 != 0) {
+    if (list[i].QQ_A === A) {
+      if (list[i].婚姻 !== 0) {
         return list[i].QQ_B;
       }
-    } else if (list[i].QQ_B == A) {
-      if (list[i].婚姻 != 0) {
+    } else if (list[i].QQ_B === A) {
+      if (list[i].婚姻 !== 0) {
         return list[i].QQ_A;
       }
     }

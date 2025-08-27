@@ -3,7 +3,7 @@ import { validateRole } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { Player } from '@src/types';
 
 const redis = getIoRedis();
@@ -63,7 +63,7 @@ export const PUT = async (ctx: Context) => {
     };
 
     // 保存更新后的数据
-    await redis.set(keys.player(String(id)), JSON.stringify(updatedUser));
+    await setDataJSONStringifyByKey(keys.player(String(id)), updatedUser);
 
     ctx.status = 200;
     ctx.body = {

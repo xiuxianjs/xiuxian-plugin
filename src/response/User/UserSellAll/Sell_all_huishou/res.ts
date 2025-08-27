@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs';
 
-
 import { existplayer, foundthing, addNajieThing, addCoin, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';

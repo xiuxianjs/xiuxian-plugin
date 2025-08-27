@@ -2,12 +2,7 @@ import { getRedisKey } from '@src/model/keys';
 import { Text, useMention, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  readAction,
-  isActionRunning,
-  remainingMs,
-  formatRemaining
-} from '@src/response/actionHelper';
+import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { existplayer, findQinmidu, existNajieThing, readPlayer } from '@src/model/index';
 import { chaoshi, Daolv } from '../daolv';
 

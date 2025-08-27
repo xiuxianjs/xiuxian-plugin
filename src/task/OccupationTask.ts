@@ -13,7 +13,7 @@ import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response
 根据玩家等级和职业等级，计算采集草药的数量并发放到纳戒。
 通过推送消息通知玩家或群组结算结果。
  */
-export const OccupationTask = async() => {
+export const OccupationTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const player_id of playerList) {
@@ -84,8 +84,8 @@ export const OccupationTask = async() => {
         if (!notUndAndNull(player.level_id)) {
           continue;
         }
-        const rawTime2
-          = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const rawTime2 =
+          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
         const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;
 
         await mine_jiesuan(player_id, timeMin, push_address);

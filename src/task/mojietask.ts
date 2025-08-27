@@ -19,7 +19,7 @@ function isExploreAction(a): a is ExploreActionState {
  * 结算时会处理经验、物品发放、状态变更等，并通过推送消息通知玩家或群组。
  * 该任务确保玩家的“魔劫”或探索等行为能在到达指定时间后自动结算和反馈。
  */
-export const MojiTask = async() => {
+export const MojiTask = async () => {
   // 获取缓存中人物列表
   const playerList = await keysByPath(__PATH.player_path);
 
@@ -61,8 +61,8 @@ export const MojiTask = async() => {
       // 有洗劫状态:这个直接结算即可
       if (String(act.mojie) == '0') {
         // 5分钟后开始结算阶段一
-        const baseDuration
-          = typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+        const baseDuration =
+          typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
 
         end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
         // 时间过了
@@ -163,8 +163,8 @@ export const MojiTask = async() => {
           if (thing_name != '' || thing_class != '') {
             await addNajieThing(player_id, thing_name, thing_class, n);
           }
-          last_msg
-            += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu || 0) - 1);
+          last_msg +=
+            m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu || 0) - 1);
           msg.push('\n' + player.名号 + last_msg + fyd_msg);
           const arr: ExploreActionState = {
             ...act

@@ -158,7 +158,11 @@ const res = onResponse(selects, async e => {
     );
   }
 
-  Send(Text(`发放成功, 当前${playerCount}人, 每人增加 ${name}${itemMeta.class === '装备' ? `(品质${quality})` : ''} x ${amount}`));
+  Send(
+    Text(
+      `发放成功, 当前${playerCount}人, 每人增加 ${name}${itemMeta.class === '装备' ? `(品质${quality})` : ''} x ${amount}`
+    )
+  );
 
   return false;
 });

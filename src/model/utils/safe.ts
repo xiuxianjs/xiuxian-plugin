@@ -54,7 +54,7 @@ export class PlayerRepo {
       return null;
     }
 
-    const current = Number(obj[field] || 0);
+    const current = Number(obj[field] ?? 0);
     const newValue = current + delta;
 
     obj[field] = newValue;

@@ -54,11 +54,11 @@ export async function Level_up(e, luck = false) {
 
   // 真仙突破
   if (
-    now_level_id >= 51
-    && player.灵根.name != '天五灵根'
-    && player.灵根.name != '垃圾五灵根'
-    && player.灵根.name != '九转轮回体'
-    && player.灵根.name != '九重魔功'
+    now_level_id >= 51 &&
+    player.灵根.name != '天五灵根' &&
+    player.灵根.name != '垃圾五灵根' &&
+    player.灵根.name != '九转轮回体' &&
+    player.灵根.name != '九重魔功'
   ) {
     Send(Text('你灵根不齐，无成帝的资格！请先夺天地之造化，修补灵根后再来突破吧'));
 
@@ -113,9 +113,13 @@ export async function Level_up(e, luck = false) {
     if (bad_time > 0.9) {
       await addExp(usr_qq, -1 * need_exp * 0.4);
       await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
-      Send(Text('突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了'
-            + need_exp * 0.4
-            + '修为'));
+      Send(
+        Text(
+          '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了' +
+            need_exp * 0.4 +
+            '修为'
+        )
+      );
 
       return false;
     } else if (bad_time > 0.8) {
@@ -127,9 +131,13 @@ export async function Level_up(e, luck = false) {
     } else if (bad_time > 0.7) {
       await addExp(usr_qq, -1 * need_exp * 0.1);
       await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
-      Send(Text('突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了'
-            + need_exp * 0.1
-            + '修为'));
+      Send(
+        Text(
+          '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了' +
+            need_exp * 0.1 +
+            '修为'
+        )
+      );
 
       return false;
     } else if (bad_time > 0.1) {
@@ -140,9 +148,13 @@ export async function Level_up(e, luck = false) {
     } else {
       await addExp(usr_qq, -1 * need_exp * 0.2);
       await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
-      Send(Text('突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了'
-            + need_exp * 0.2
-            + '修为'));
+      Send(
+        Text(
+          '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了' +
+            need_exp * 0.2 +
+            '修为'
+        )
+      );
 
       return false;
     }
@@ -157,9 +169,13 @@ export async function Level_up(e, luck = false) {
       let random2 = Math.trunc(Math.random() * changzhuxianchonList.length);
 
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
-      Send(Text('修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'));
+      Send(
+        Text(
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
+        )
+      );
       await addNajieThing(usr_qq, changzhuxianchonList[random2].name, '仙宠', 1);
     }
   } else {
@@ -169,9 +185,13 @@ export async function Level_up(e, luck = false) {
       let random2 = Math.trunc(Math.random() * changzhuxianchonList.length);
 
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
-      Send(Text('修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'));
+      Send(
+        Text(
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
+        )
+      );
       await addNajieThing(usr_qq, changzhuxianchonList[random2].name, '仙宠', 1);
     }
   }
@@ -261,9 +281,13 @@ export async function LevelMax_up(e, luck) {
     if (bad_time > 0.9) {
       await addExp2(usr_qq, -1 * need_exp * 0.4);
       await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
-      Send(Text('突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了'
-            + need_exp * 0.4
-            + '血气'));
+      Send(
+        Text(
+          '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了' +
+            need_exp * 0.4 +
+            '血气'
+        )
+      );
 
       return false;
     } else if (bad_time > 0.8) {
@@ -275,9 +299,13 @@ export async function LevelMax_up(e, luck) {
     } else if (bad_time > 0.7) {
       await addExp2(usr_qq, -1 * need_exp * 0.1);
       await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
-      Send(Text('突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了'
-            + need_exp * 0.1
-            + '血气'));
+      Send(
+        Text(
+          '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了' +
+            need_exp * 0.1 +
+            '血气'
+        )
+      );
 
       return false;
     } else if (bad_time > 0.1) {
@@ -288,9 +316,13 @@ export async function LevelMax_up(e, luck) {
     } else {
       await addExp2(usr_qq, -1 * need_exp * 0.2);
       await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
-      Send(Text('突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了'
-            + need_exp * 0.2
-            + '血气'));
+      Send(
+        Text(
+          '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了' +
+            need_exp * 0.2 +
+            '血气'
+        )
+      );
 
       return false;
     }
@@ -305,9 +337,13 @@ export async function LevelMax_up(e, luck) {
       let random2 = Math.trunc(Math.random() * changzhuxianchonList2.length);
 
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
-      Send(Text('修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList2[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'));
+      Send(
+        Text(
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList2[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
+        )
+      );
       await addNajieThing(usr_qq, changzhuxianchonList2[random2].name, '仙宠', 1);
     }
   } else {
@@ -317,9 +353,13 @@ export async function LevelMax_up(e, luck) {
       let random2 = Math.trunc(Math.random() * changzhuxianchonList2.length);
 
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
-      Send(Text('修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList2[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'));
+      Send(
+        Text(
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList2[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
+        )
+      );
       await addNajieThing(usr_qq, changzhuxianchonList2[random2].name, '仙宠', 1);
     }
   }

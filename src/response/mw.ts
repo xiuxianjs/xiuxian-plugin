@@ -44,7 +44,7 @@ const mw = onResponse(selects, async event => {
     const count = replyCount[userId] || 0;
 
     if (count < 2) {
-      message.send(format(Text(`你的修仙功能已被禁言，限制将于${unlockTime}解除。`)));
+      void message.send(format(Text(`你的修仙功能已被禁言，限制将于${unlockTime}解除。`)));
       replyCount[userId] = count + 1;
     }
 
@@ -82,12 +82,12 @@ const mw = onResponse(selects, async event => {
     const captchaPassed = await redis.exists(`${baseKey}:captcha_passed:${userId}`);
 
     if (!captchaPassed) {
-      const { svg, text } = await generateCaptcha();
+      const { svg, text } = generateCaptcha();
 
       await redis.setex(keys.captcha(userId), 60 * 60 * 6, text.toLowerCase());
       const img = await svgToPngBuffer(svg);
 
-      message.send(format(Image(img), Mention(userId)));
+      void message.send(format(Image(img), Mention(userId)));
 
       // 结束。即不放行，也不跳过指令。
       return;

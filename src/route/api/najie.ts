@@ -3,11 +3,12 @@ import { validateRole } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 
 const redis = getIoRedis();
 
 // 获取玩家背包列表（支持分页）
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -241,7 +242,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 获取单个玩家背包详情
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -263,9 +264,9 @@ export const POST = async(ctx: Context) => {
       return;
     }
 
-    const najieData = await redis.get(keys.najie(userId));
+    const najie = await getDataJSONParseByKey(keys.najie(userId));
 
-    if (!najieData) {
+    if (!najie) {
       ctx.status = 404;
       ctx.body = {
         code: 404,
@@ -276,15 +277,13 @@ export const POST = async(ctx: Context) => {
       return;
     }
 
-    const najie = JSON.parse(najieData);
-
     ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取背包详情成功',
       data: {
         userId,
-        ...najie
+        ...(typeof najie === 'object' ? najie : {})
       }
     };
   } catch (error) {
@@ -299,7 +298,7 @@ export const POST = async(ctx: Context) => {
 };
 
 // 更新背包数据
-export const PUT = async(ctx: Context) => {
+export const PUT = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -308,8 +307,8 @@ export const PUT = async(ctx: Context) => {
     }
 
     const body = await parseJsonBody(ctx);
-    const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 }
-      = body as {
+    const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 } =
+      body as {
         userId: string;
         [key: string]: unknown;
       };
@@ -341,7 +340,7 @@ export const PUT = async(ctx: Context) => {
     };
 
     // 保存到Redis
-    await redis.set(keys.najie(userId), JSON.stringify(najieData));
+    await setDataJSONStringifyByKey(keys.najie(userId), najieData);
 
     ctx.status = 200;
     ctx.body = {

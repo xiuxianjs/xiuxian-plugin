@@ -14,7 +14,7 @@ import {
   startActionWithSuffix,
   remainingMs,
   formatRemaining
-} from '@src/response/actionHelper';
+} from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';

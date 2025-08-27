@@ -118,10 +118,10 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const resultMsg
-    = `【${thingName}】可能出现在:\n`
-    + foundPlaces.map(n => `- ${n}`).join('\n')
-    + '\n(已消耗1张寻物纸)';
+  const resultMsg =
+    `【${thingName}】可能出现在:\n` +
+    foundPlaces.map(n => `- ${n}`).join('\n') +
+    '\n(已消耗1张寻物纸)';
 
   Send(Text(resultMsg));
 

@@ -8,7 +8,7 @@ import {
   isActionRunning,
   startAction,
   normalizeBiguanMinutes
-} from '@src/response/actionHelper';
+} from '@src/model/actionHelper';
 
 import { selects } from '@src/response/mw';
 import { setDataByUserId } from '@src/model/Redis';

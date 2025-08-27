@@ -9,7 +9,7 @@ import { ExchangeRecord } from '@src/types';
  * 最后将更新后的兑换记录写回存储。
  * @returns
  */
-export const ExchangeTask = async() => {
+export const ExchangeTask = async () => {
   console.log('ExchangeTask');
   let Exchange: ExchangeRecord[] = [];
 

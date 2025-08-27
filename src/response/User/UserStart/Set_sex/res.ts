@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs';
 
-
 import { existplayer, keys, readPlayer } from '@src/model/index';
 import type { Player, JSONValue } from '@src/types';
 

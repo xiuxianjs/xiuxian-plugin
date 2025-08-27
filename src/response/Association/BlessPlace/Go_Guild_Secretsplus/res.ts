@@ -130,7 +130,11 @@ const res = onResponse(selects, async e => {
   };
 
   redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(arr));
-  Send(Text(`开始沉迷探索 ${didian} 宗门秘境 * ${i} 次，共耗时 ${time} 分钟 (消耗${Price}灵石，上缴宗门${guildGain}灵石)`));
+  Send(
+    Text(
+      `开始沉迷探索 ${didian} 宗门秘境 * ${i} 次，共耗时 ${time} 分钟 (消耗${Price}灵石，上缴宗门${guildGain}灵石)`
+    )
+  );
 
   return false;
 });

@@ -70,42 +70,44 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                               <div className='w-10 h-10 bg-gradient-to-br from-red-400 to-orange-600 rounded-lg flex items-center justify-center border border-red-300/50 shadow-md'>
                                 <span className='text-sm'>
                                   {typeof item.Grade === 'number' && item.Grade <= 10 && '🌱'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 10
-                                    && item.Grade <= 20
-                                    && '🌿'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 20
-                                    && item.Grade <= 30
-                                    && '🌳'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 30
-                                    && item.Grade <= 40
-                                    && '🌲'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 40
-                                    && item.Grade <= 50
-                                    && '🌟'}
+                                  {typeof item.Grade === 'number' &&
+                                    item.Grade > 10 &&
+                                    item.Grade <= 20 &&
+                                    '🌿'}
+                                  {typeof item.Grade === 'number' &&
+                                    item.Grade > 20 &&
+                                    item.Grade <= 30 &&
+                                    '🌳'}
+                                  {typeof item.Grade === 'number' &&
+                                    item.Grade > 30 &&
+                                    item.Grade <= 40 &&
+                                    '🌲'}
+                                  {typeof item.Grade === 'number' &&
+                                    item.Grade > 40 &&
+                                    item.Grade <= 50 &&
+                                    '🌟'}
                                   {typeof item.Grade === 'number' && item.Grade > 50 && '💎'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('初级')
-                                    && '🌱'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('中级')
-                                    && '🌿'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('高级')
-                                    && '🌳'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('顶级')
-                                    && '🌲'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('传说')
-                                    && '🌟'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('神话')
-                                    && '💎'}
-                                  {!['🌱', '🌿', '🌳', '🌲', '🌟', '💎'].includes(item.Grade as string) && '⚠️'}
+                                  {typeof item.Grade === 'string' &&
+                                    item.Grade.includes('初级') &&
+                                    '🌱'}
+                                  {typeof item.Grade === 'string' &&
+                                    item.Grade.includes('中级') &&
+                                    '🌿'}
+                                  {typeof item.Grade === 'string' &&
+                                    item.Grade.includes('高级') &&
+                                    '🌳'}
+                                  {typeof item.Grade === 'string' &&
+                                    item.Grade.includes('顶级') &&
+                                    '🌲'}
+                                  {typeof item.Grade === 'string' &&
+                                    item.Grade.includes('传说') &&
+                                    '🌟'}
+                                  {typeof item.Grade === 'string' &&
+                                    item.Grade.includes('神话') &&
+                                    '💎'}
+                                  {!['🌱', '🌿', '🌳', '🌲', '🌟', '💎'].includes(
+                                    item.Grade as string
+                                  ) && '⚠️'}
                                 </span>
                               </div>
                               <div>

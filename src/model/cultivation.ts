@@ -76,7 +76,7 @@ export async function LevelTask(
         player.power_place = 0;
         await writePlayer(usr_qq, player);
         msg.push(`\n${player.名号}成功度过了第${aconut}道雷劫！可以#登仙，飞升仙界啦！`);
-        Send(Text(msg.join('')));
+        void Send(Text(msg.join('')));
 
         return 0;
       } else {

@@ -68,6 +68,20 @@ export const setDataByKey = async (key: string, data: string) => {
   }
 };
 
+export const delDataByKey = async (key: string) => {
+  const redis = getIoRedis();
+
+  try {
+    await redis.del(key);
+
+    return true;
+  } catch (error) {
+    logger.warn(error);
+
+    return false;
+  }
+};
+
 /**
  * @param key
  * @param data

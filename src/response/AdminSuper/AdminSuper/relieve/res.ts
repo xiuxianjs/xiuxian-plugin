@@ -2,7 +2,7 @@ import { Text, useMention, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { existplayer } from '@src/model/index';
-import { readAction, stopAction } from '@src/response/actionHelper';
+import { readAction, stopAction } from '@src/model/actionHelper';
 import { userKey } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';

@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { getRedisKey } from '@src/model/keys';
-import { startAction } from '@src/response/actionHelper';
+import { startAction } from '@src/model/actionHelper';
 import {
   Go,
   convert2integer,
@@ -44,11 +44,11 @@ const res = onResponse(selects, async e => {
   const placeUnknown = weizhi;
 
   if (
-    !placeUnknown
-    || typeof placeUnknown !== 'object'
-    || !('Price' in placeUnknown)
-    || !('name' in placeUnknown)
-    || typeof placeUnknown.Price !== 'number'
+    !placeUnknown ||
+    typeof placeUnknown !== 'object' ||
+    !('Price' in placeUnknown) ||
+    !('name' in placeUnknown) ||
+    typeof placeUnknown.Price !== 'number'
   ) {
     return false;
   }

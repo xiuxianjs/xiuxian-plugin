@@ -2,7 +2,7 @@ import { ConfigKey, getConfig, setConfig, validateRole } from '@src/model';
 import { Context } from 'koa';
 import { parseJsonBody } from '@src/route/core/bodyParser';
 
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -24,7 +24,7 @@ export const GET = async(ctx: Context) => {
   }
 };
 
-export const POST = async(ctx: Context) => {
+export const POST = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

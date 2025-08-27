@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existplayer } from '@src/model/index';
-import { readAction, stopAction } from '@src/response/actionHelper';
+import { readAction, stopAction } from '@src/model/actionHelper';
 import { userKey, getString } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';
@@ -28,8 +28,8 @@ const res = onResponse(selects, async e => {
   const action = await readAction(usr_qq);
 
   if (
-    action
-    && (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')
+    action &&
+    (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')
   ) {
     await stopAction(usr_qq, {
       is_jiesuan: 1,

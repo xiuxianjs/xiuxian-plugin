@@ -36,7 +36,7 @@ const generateToken = (): string => {
 };
 
 // 创建用户
-export const createUser = async(
+export const createUser = async (
   username: string,
   password: string,
   role = 'admin'
@@ -70,7 +70,7 @@ export const createUser = async(
 };
 
 // 根据用户名获取用户
-export const getUserByUsername = async(username: string): Promise<User | null> => {
+export const getUserByUsername = async (username: string): Promise<User | null> => {
   try {
     const userId = await redis.get(`${KEY_USER_PREFIX}username:${username}`);
 
@@ -93,7 +93,7 @@ export const getUserByUsername = async(username: string): Promise<User | null> =
 };
 
 // 根据ID获取用户
-export const getUserById = async(id: string): Promise<User | null> => {
+export const getUserById = async (id: string): Promise<User | null> => {
   try {
     const userData = await redis.get(`${KEY_USER_PREFIX}${id}`);
 
@@ -110,7 +110,7 @@ export const getUserById = async(id: string): Promise<User | null> => {
 };
 
 // 验证用户登录
-export const validateLogin = async(username: string, password: string): Promise<LoginResponse> => {
+export const validateLogin = async (username: string, password: string): Promise<LoginResponse> => {
   try {
     const user = await getUserByUsername(username);
 
@@ -164,7 +164,7 @@ export const validateLogin = async(username: string, password: string): Promise<
 };
 
 // 验证token
-export const validateToken = async(token: string): Promise<User | null> => {
+export const validateToken = async (token: string): Promise<User | null> => {
   try {
     const sessionData = await redis.get(`${KEY_SESSION_PREFIX}${token}`);
 
@@ -191,7 +191,7 @@ export const validateToken = async(token: string): Promise<User | null> => {
 };
 
 // 登出
-export const logout = async(token: string): Promise<boolean> => {
+export const logout = async (token: string): Promise<boolean> => {
   try {
     await redis.del(`${KEY_SESSION_PREFIX}${token}`);
 
@@ -204,7 +204,7 @@ export const logout = async(token: string): Promise<boolean> => {
 };
 
 // 获取所有用户
-export const getAllUsers = async(): Promise<User[]> => {
+export const getAllUsers = async (): Promise<User[]> => {
   try {
     const keys = await redis.keys(`${KEY_USER_PREFIX}*`);
     const users: User[] = [];
@@ -229,7 +229,7 @@ export const getAllUsers = async(): Promise<User[]> => {
 };
 
 // 更新用户密码
-export const setUserPassword = async(userId: string, password: string): Promise<boolean> => {
+export const setUserPassword = async (userId: string, password: string): Promise<boolean> => {
   try {
     const user = await getUserById(userId);
 
@@ -248,7 +248,7 @@ export const setUserPassword = async(userId: string, password: string): Promise<
 };
 
 // 删除用户
-export const deleteUser = async(userId: string): Promise<boolean> => {
+export const deleteUser = async (userId: string): Promise<boolean> => {
   try {
     const user = await getUserById(userId);
 
@@ -269,7 +269,7 @@ export const deleteUser = async(userId: string): Promise<boolean> => {
 };
 
 // 初始化默认管理员账户
-export const initDefaultAdmin = async(): Promise<void> => {
+export const initDefaultAdmin = async (): Promise<void> => {
   try {
     const adminUser = await getUserByUsername('lemonade');
 
@@ -282,7 +282,7 @@ export const initDefaultAdmin = async(): Promise<void> => {
   }
 };
 
-export const validateRole = async(ctx: Context, role: string) => {
+export const validateRole = async (ctx: Context, role: string) => {
   // 验证管理员权限
   const token = ctx.request.headers.authorization?.replace('Bearer ', '');
 

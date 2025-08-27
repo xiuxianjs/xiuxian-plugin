@@ -20,7 +20,11 @@ import type { AssociationData } from '@src/types/domain';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import {
+  delDataByKey,
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?轮回$/;
 
 // === 配置：各转轮回灵根与提示 ===
@@ -196,7 +200,7 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
     ass3.所有成员 = [];
   }
   if ((ass3.所有成员 as string[]).length < 2) {
-    await redis.del(`${__PATH.association}:${guild.宗门名称}`);
+    await delDataByKey(keys.association(guild.宗门名称));
     delete player.宗门;
     await writePlayer(usr_qq, player);
     await playerEfficiency(usr_qq);
@@ -215,7 +219,7 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
       break;
     }
   }
-  const randmember_qq = await getRandomFromARR(succList);
+  const randmember_qq = getRandomFromARR(succList);
 
   if (randmember_qq) {
     const randmember = (await getDataJSONParseByKey(keys.player(randmember_qq))) as PlayerEx;
@@ -247,7 +251,8 @@ const FAIL_PROB = 1 / 9;
 
 // 辅助扩展类型与工具函数（放置在文件顶部下方，集中管理）
 type PlayerEx = Player & {};
-const numVal = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const numVal = (v, d = 0) =>
+  typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
 const setNum = (p: PlayerEx, k: string, v: number) => {
   p[k] = v;
 };
@@ -278,9 +283,13 @@ const res = onResponse(selects, async e => {
   const lhFlag = Number(lhxqRaw) || 0;
 
   if (lhFlag !== 1) {
-    Send(Text('轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n'
-          + '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n'
-          + '再次输入 #轮回 继续，或忽略退出。'));
+    void Send(
+      Text(
+        '轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n' +
+          '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n' +
+          '再次输入 #轮回 继续，或忽略退出。'
+      )
+    );
     await redis.set(key, 1);
 
     return;
@@ -290,26 +299,30 @@ const res = onResponse(selects, async e => {
 
   // 基本前置校验
   if (numVal(player.lunhui) >= 9) {
-    Send(Text('你已经轮回完结！'));
+    void Send(Text('你已经轮回完结！'));
 
     return false;
   }
   if (player.level_id < 42) {
-    Send(Text('法境未到仙无法轮回！'));
+    void Send(Text('法境未到仙无法轮回！'));
 
     return false;
   }
   const equipment = await readEquipment(usr_qq);
 
   if (equipment && equipment.武器 && equipment.武器.HP < 0) {
-    Send(Text(`身上携带邪祟之物，无法进行轮回,请将[${equipment.武器.name}]放下后再进行轮回`));
+    void Send(Text(`身上携带邪祟之物，无法进行轮回,请将[${equipment.武器.name}]放下后再进行轮回`));
 
     return false;
   }
   const points = numVal(player.轮回点);
 
   if (points <= 0) {
-    Send(Text('此生轮回点已消耗殆尽，未能躲过天机！\n被天庭发现，但因为没有轮回点未被关入天牢，\n仅被警告一次，轮回失败！'));
+    void Send(
+      Text(
+        '此生轮回点已消耗殆尽，未能躲过天机！\n被天庭发现，但因为没有轮回点未被关入天牢，\n仅被警告一次，轮回失败！'
+      )
+    );
     player.当前血量 = 10;
     await writePlayer(usr_qq, player);
 
@@ -319,7 +332,11 @@ const res = onResponse(selects, async e => {
 
   // 随机失败判定 (1/9)
   if (Math.random() <= FAIL_PROB) {
-    Send(Text('本次轮回的最后关头，终究还是未能躲过天机！\n被天庭搜捕归案，关入天牢受尽折磨，轮回失败！'));
+    void Send(
+      Text(
+        '本次轮回的最后关头，终究还是未能躲过天机！\n被天庭搜捕归案，关入天牢受尽折磨，轮回失败！'
+      )
+    );
     player.当前血量 = 1;
     player.修为 = Math.max(0, numVal(player.修为) - 10_000_000);
     player.血气 = numVal(player.血气) + 5_141_919; // 原逻辑：血气 += 5141919
@@ -341,11 +358,11 @@ const res = onResponse(selects, async e => {
     await addNajieThing(usr_qq, cfg.gongfa, '功法', 1);
     await applyRebirthCommon(usr_qq, player);
     await writePlayer(usr_qq, player);
-    Send(Text(`你已打破规则，轮回成功，现在你为${cfg.msg}`));
+    void Send(Text(`你已打破规则，轮回成功，现在你为${cfg.msg}`));
 
     return false;
   }
-  Send(Text('轮回阶段配置缺失，等待更新'));
+  void Send(Text('轮回阶段配置缺失，等待更新'));
 
   return false;
 });

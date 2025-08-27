@@ -1,5 +1,6 @@
 import { screenshot } from '@src/image';
 import { redis } from '@src/model/api';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
 import { __PATH, shijianc, readPlayer } from '@src/model/index';
 import { getRedisKey, keys, keysByPath } from '@src/model/keys';
@@ -23,30 +24,21 @@ export interface TiandibangRow {
   积分: number;
 }
 
-export async function Write_tiandibang(wupin: TiandibangRow[]) {
-  await redis.set(keys.tiandibang('tiandibang'), JSON.stringify(wupin, null, '\t'));
-
-  return false;
+export async function writeTiandibang(wupin: TiandibangRow[]) {
+  await setDataJSONStringifyByKey(keys.tiandibang('tiandibang'), wupin);
 }
 
 export async function readTiandibang() {
-  const tiandibang = await redis.get(keys.tiandibang('tiandibang'));
+  const data = await getDataJSONParseByKey(keys.tiandibang('tiandibang'));
 
-  if (!tiandibang) {
-    // 如果没有天鼎数据，返回空数组
-    return [];
-  }
-  // 将字符串数据转变成数组格式
-  const data = JSON.parse(tiandibang);
-
-  return data;
+  return data ?? [];
 }
 
-export async function getLastbisai(usr_qq: string | number) {
-  const timeStr = await redis.get(getRedisKey(String(usr_qq), 'lastbisai_time'));
+export async function getLastbisai(usrId: string | number) {
+  const timeStr = await redis.get(getRedisKey(String(usrId), 'lastbisai_time'));
 
-  if (timeStr != null) {
-    const details = await shijianc(parseInt(timeStr, 10));
+  if (timeStr !== null) {
+    const details = shijianc(parseInt(timeStr, 10));
 
     return details;
   }
@@ -54,7 +46,7 @@ export async function getLastbisai(usr_qq: string | number) {
   return false;
 }
 
-export async function get_tianditang_img(e, jifen) {
+export async function getTianditangImage(e, jifen) {
   const usr_qq = e.UserId;
   const player = await readPlayer(usr_qq);
   const commodities_list = await getDataList('Tianditang');
@@ -69,7 +61,7 @@ export async function get_tianditang_img(e, jifen) {
   return img;
 }
 
-export async function re_bangdang() {
+export async function reBangdang() {
   const playerList = await keysByPath(__PATH.player_path);
   const temp: TiandibangRow[] = [];
 
@@ -101,7 +93,7 @@ export async function re_bangdang() {
   }
   // 按积分排序（冒泡替换为内置排序）
   temp.sort((a, b) => b.积分 - a.积分);
-  await Write_tiandibang(temp);
+  await writeTiandibang(temp);
 
   return false;
 }

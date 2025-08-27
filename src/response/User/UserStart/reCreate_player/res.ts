@@ -15,7 +15,11 @@ import { selects } from '@src/response/mw';
 import type { AssociationDetailData } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
 import mw from '@src/response/mw';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import {
+  delDataByKey,
+  getDataJSONParseByKey,
+  setDataJSONStringifyByKey
+} from '@src/model/DataControl';
 
 export const regular = /^(#|＃|\/)?再入仙途$/;
 
@@ -75,12 +79,12 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据异常'));
+    void Send(Text('玩家数据异常'));
 
     return false;
   }
   if (parseNum(player.灵石) <= 0) {
-    Send(Text('负债无法再入仙途'));
+    void Send(Text('负债无法再入仙途'));
 
     return false;
   }
@@ -103,26 +107,28 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`每${rebornTime / 60000}分钟只能转世一次 剩余cd:${m}分 ${s}秒`));
+    void Send(Text(`每${rebornTime / 60000}分钟只能转世一次 剩余cd:${m}分 ${s}秒`));
 
     return false;
   }
 
-  await Send(Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择'));
+  await Send(
+    Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择')
+  );
   const [subscribe] = useSubscribe(e, selects);
   const sub = subscribe.mount(
-    async(event, next) => {
+    async (event, next) => {
       const [message] = useMessage(event);
       const choice = event.MessageText.trim();
 
       if (choice === '再继仙缘') {
-        message.send([Text('重拾道心,继续修行')]);
+        void message.send([Text('重拾道心,继续修行')]);
         clearTimeout(timeout);
 
         return;
       }
       if (choice !== '断绝此生') {
-        message.send([Text('请回复:【断绝此生】或者【再继仙缘】进行选择')]);
+        void message.send([Text('请回复:【断绝此生】或者【再继仙缘】进行选择')]);
         next();
 
         return;
@@ -132,7 +138,7 @@ const res = onResponse(selects, async e => {
       let acountVal = parseNum(acountValRaw, 1);
 
       if (acountVal >= 15) {
-        message.send([Text('灵魂虚弱，已不可转世！')]);
+        void message.send([Text('灵魂虚弱，已不可转世！')]);
 
         return;
       }
@@ -157,10 +163,7 @@ const res = onResponse(selects, async e => {
           } else {
             if ((ass.所有成员 || []).length < 2) {
               try {
-                // 注意：这里原本是文件系统操作，但现在数据存储在Redis中
-                // fs.rmSync(`${__PATH.association}/${ass.宗门名称}.json`)
-                // 改为删除Redis中的数据
-                await redis.del(`${__PATH.association}:${ass.宗门名称}`);
+                await delDataByKey(keys.association(ass.宗门名称));
               } catch {
                 /* ignore */
               }
@@ -194,7 +197,7 @@ const res = onResponse(selects, async e => {
       await redis.del(getRedisKey(usr_qq, 'last_dajie_time'));
       await redis.set(lastKey, String(Date.now()));
       await redis.set(rebornKey, String(acountVal));
-      message.send([Text('来世，信则有，不信则无，岁月悠悠……')]);
+      void message.send([Text('来世，信则有，不信则无，岁月悠悠……')]);
     },
     ['UserId']
   );
@@ -202,7 +205,7 @@ const res = onResponse(selects, async e => {
   const timeout = setTimeout(() => {
     try {
       subscribe.cancel(sub);
-      Send(Text('超时自动取消操作'));
+      void Send(Text('超时自动取消操作'));
     } catch {
       /* ignore */
     }

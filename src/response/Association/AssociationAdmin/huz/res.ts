@@ -26,8 +26,8 @@ const res = onResponse(selects, async e => {
   }
   if (
     // !player ||
-    !notUndAndNull(player.宗门)
-    || !isPlayerGuildRef(player.宗门)
+    !notUndAndNull(player.宗门) ||
+    !isPlayerGuildRef(player.宗门)
   ) {
     Send(Text('你尚未加入宗门'));
 

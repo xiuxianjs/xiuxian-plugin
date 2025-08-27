@@ -6,7 +6,7 @@ import { readShop, writeShop } from '@src/model/shop';
 遍历每个商品，将其 one（商品内容）和 price（价格）字段，刷新为 getDataList('Shop') 中的最新配置。
 更新后的商店数据写回存储。
  */
-export const Shoptask = async() => {
+export const Shoptask = async () => {
   const shop = await readShop();
   const shopList = await getDataList('Shop');
 

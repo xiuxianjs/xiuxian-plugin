@@ -40,9 +40,13 @@ const res = onResponse(selects, async e => {
   najie.灵石上限 = najie_num[najie.等级];
   najie.等级 += 1;
   await writeNajie(usr_qq, najie);
-  Send(Text(`你的纳戒升级成功,花了${
-    najie_price[najie.等级 - 1]
-  }灵石,目前纳戒灵石存储上限为${najie.灵石上限},可以使用【#我的纳戒】来查看`));
+  Send(
+    Text(
+      `你的纳戒升级成功,花了${
+        najie_price[najie.等级 - 1]
+      }灵石,目前纳戒灵石存储上限为${najie.灵石上限},可以使用【#我的纳戒】来查看`
+    )
+  );
 });
 
 import mw from '@src/response/mw';

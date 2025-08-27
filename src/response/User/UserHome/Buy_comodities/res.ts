@@ -110,7 +110,11 @@ const res = onResponse(selects, async e => {
 
   await addNajieThing(usr_qq, thing_name, commodity.class as NajieCategory, qty);
   await addCoin(usr_qq, -totalPrice);
-  Send(Text(`购买成功! 获得[${thing_name}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`));
+  Send(
+    Text(
+      `购买成功! 获得[${thing_name}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`
+    )
+  );
 
   return false;
 });

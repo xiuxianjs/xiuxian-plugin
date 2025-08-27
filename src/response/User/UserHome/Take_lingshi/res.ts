@@ -68,7 +68,9 @@ const res = onResponse(selects, async e => {
     }
     await addBagCoin(usr_qq, lingshi);
     await addCoin(usr_qq, -lingshi);
-    Send(Text(`储存完毕,你目前还有${player_lingshi - lingshi}灵石,纳戒内有${najie.灵石 + lingshi}灵石`));
+    Send(
+      Text(`储存完毕,你目前还有${player_lingshi - lingshi}灵石,纳戒内有${najie.灵石 + lingshi}灵石`)
+    );
 
     return false;
   }

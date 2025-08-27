@@ -6,12 +6,7 @@ import { zdBattle, Harm } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { addHP, addCoin } from '@src/model/economy';
 import { __PATH, keys, keysByPath } from '@src/model/keys';
-import {
-  readAction,
-  isActionRunning,
-  remainingMs,
-  formatRemaining
-} from '@src/response/actionHelper';
+import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { existplayer } from '@src/model';
 import {
   KEY_RECORD,

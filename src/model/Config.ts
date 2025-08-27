@@ -11,7 +11,7 @@ export type ConfigKey = keyof Data;
  * @param name
  * @returns
  */
-export const hasConfig = async(name: ConfigKey) => {
+export const hasConfig = async (name: ConfigKey) => {
   const redis = getIoRedis();
   const exists = await redis.exists(keysAction.config(name));
 
@@ -24,7 +24,7 @@ export const hasConfig = async(name: ConfigKey) => {
  * @param data
  * @returns
  */
-export const setConfig = async(name: ConfigKey, data) => {
+export const setConfig = async (name: ConfigKey, data) => {
   try {
     console.log(`Setting config for ${name}:`, data);
     const redis = getIoRedis();

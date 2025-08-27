@@ -12,7 +12,7 @@ import {
 } from '@src/model/currency';
 
 // 获取配置信息
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

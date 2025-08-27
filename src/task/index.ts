@@ -80,7 +80,7 @@ export const stopAllTasks = () => {
 };
 
 // 启动指定任务
-export const startSingleTask = async(taskName: string) => {
+export const startSingleTask = async (taskName: string) => {
   try {
     // 检查任务是否已经启动
     if (TaskMap.has(taskName)) {
@@ -120,7 +120,7 @@ export const startSingleTask = async(taskName: string) => {
 };
 
 // 启动所有任务
-export const startAllTasks = async() => {
+export const startAllTasks = async () => {
   try {
     // 获取任务配置
     const taskConfig = (await getConfig('', 'xiuxian'))?.task;
@@ -158,7 +158,7 @@ export const startAllTasks = async() => {
 };
 
 // 重启指定任务
-export const restartTask = async(taskName: string) => {
+export const restartTask = async (taskName: string) => {
   try {
     logger.debug(`开始重启任务: ${taskName}`);
 
@@ -177,7 +177,7 @@ export const restartTask = async(taskName: string) => {
 };
 
 // 重启所有任务
-export const restartAllTasks = async() => {
+export const restartAllTasks = async () => {
   try {
     logger.debug('开始重启所有定时任务...');
 

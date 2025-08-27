@@ -41,7 +41,7 @@ const res = onResponse(selects, async e => {
 
   // 防止继续其他娱乐行为
   if (game_action == 1) {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -52,7 +52,7 @@ const res = onResponse(selects, async e => {
   const now_level = levelList.find(item => item.level_id == player.level_id)?.level;
 
   if (now_level != '渡劫期') {
-    Send(Text('你非渡劫期修士！'));
+    void Send(Text('你非渡劫期修士！'));
 
     return false;
   }
@@ -75,13 +75,13 @@ const res = onResponse(selects, async e => {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60);
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000);
 
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
+      void Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
 
       return false;
     }
   }
   if (player.power_place != 0) {
-    Send(Text('请先渡劫！'));
+    void Send(Text('请先渡劫！'));
 
     return false;
   }
@@ -89,7 +89,7 @@ const res = onResponse(selects, async e => {
   let now_level_id;
 
   if (!notUndAndNull(player.level_id)) {
-    Send(Text('请先#刷新信息'));
+    void Send(Text('请先#刷新信息'));
 
     return false;
   }
@@ -99,13 +99,13 @@ const res = onResponse(selects, async e => {
   const need_exp = levelList.find(item => item.level_id == player.level_id).exp;
 
   if (now_exp < need_exp) {
-    Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可成仙！`));
+    void Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可成仙！`));
 
     return false;
   }
   // 零，开仙门
   if (player.power_place == 0) {
-    Send(
+    void Send(
       Text(
         '天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，' +
           player.名号 +
@@ -158,7 +158,7 @@ const res = onResponse(selects, async e => {
         delete player.宗门;
         await writePlayer(usr_qq, player);
         await playerEfficiency(usr_qq);
-        Send(Text('退出宗门成功'));
+        void Send(Text('退出宗门成功'));
       } else {
         const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
@@ -169,11 +169,11 @@ const res = onResponse(selects, async e => {
         const allList = (association.所有成员 as string[] | undefined) || [];
 
         if (allList.length < 2) {
-          await redis.del(`${__PATH.association}:${player.宗门.宗门名称}`);
+          await delDataByKey(keys.association(player.宗门.宗门名称));
           delete player.宗门; // 删除存档里的宗门信息
           await writePlayer(usr_qq, player);
           await playerEfficiency(usr_qq);
-          Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
+          void Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
         } else {
           association['所有成员'] = allList.filter(item => item != usr_qq); // 剔除原成员
           delete player.宗门; // 删除这个B存档里的宗门信息
@@ -209,7 +209,7 @@ const res = onResponse(selects, async e => {
             `${__PATH.association}:${association.宗门名称}`,
             JSON.stringify(association)
           ); // 记录到宗门
-          Send(Text(`飞升前,遵循你的嘱托,${randmember.名号}将继承你的衣钵,成为新一任的宗主`));
+          void Send(Text(`飞升前,遵循你的嘱托,${randmember.名号}将继承你的衣钵,成为新一任的宗主`));
         }
       }
     }
@@ -220,5 +220,5 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { delDataByKey, getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

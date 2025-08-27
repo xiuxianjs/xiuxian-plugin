@@ -9,7 +9,7 @@ import {
 } from '@src/model/currency';
 
 // 获取所有充值记录
-export const GET = async(ctx: Context) => {
+export const GET = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 
@@ -48,7 +48,7 @@ export const GET = async(ctx: Context) => {
 };
 
 // 获取指定充值记录详情
-export const GET_DETAIL = async(ctx: Context) => {
+export const GET_DETAIL = async (ctx: Context) => {
   try {
     const res = await validateRole(ctx, 'admin');
 

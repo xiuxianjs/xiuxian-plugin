@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
-import { stopAction, readAction } from '@src/response/actionHelper';
+import { stopAction, readAction } from '@src/model/actionHelper';
 import { userKey } from '@src/model/utils/redisHelper';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

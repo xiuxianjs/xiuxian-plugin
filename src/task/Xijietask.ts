@@ -22,7 +22,7 @@ import { getDataList } from '@src/model/DataList';
 兼容多种奖励类型和探索地点，支持多样化的探索体验。
 简言之，该任务脚本实现了“秘境探索”玩法的自动结算，包括战斗、奖励、特殊事件和状态管理，是游戏自动化和奖励分发的关键逻辑之一。
  */
-export const Xijietask = async() => {
+export const Xijietask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const player_id of playerList) {
@@ -56,8 +56,8 @@ export const Xijietask = async() => {
       // 有洗劫状态:这个直接结算即可
       if (action.xijie == '0') {
         // 10分钟后开始结算阶段一
-        const durRaw
-          = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
+        const durRaw =
+          typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
         const dur = isNaN(durRaw) ? 0 : durRaw;
 
         end_time = end_time - dur + 60000 * 10;
@@ -108,15 +108,18 @@ export const Xijietask = async() => {
           let last_msg = '';
           // 构造满足 BattleEntity 最小字段的参战对象（填补缺失字段的默认值）
           const talent = A_player.灵根;
-          const getTalentName = (t): string => typeof t === 'object' && t != null && 'name' in t
-            ? String((t as { name }).name)
-            : '凡灵根';
-          const getTalentType = (t): string => typeof t === 'object' && t != null && 'type' in t
-            ? String((t as { type }).type)
-            : '普通';
-          const getTalentRate = (t): number => typeof t === 'object' && t != null && '法球倍率' in t
-            ? Number((t as { 法球倍率 }).法球倍率) || 1
-            : 1;
+          const getTalentName = (t): string =>
+            typeof t === 'object' && t != null && 'name' in t
+              ? String((t as { name }).name)
+              : '凡灵根';
+          const getTalentType = (t): string =>
+            typeof t === 'object' && t != null && 'type' in t
+              ? String((t as { type }).type)
+              : '普通';
+          const getTalentRate = (t): number =>
+            typeof t === 'object' && t != null && '法球倍率' in t
+              ? Number((t as { 法球倍率 }).法球倍率) || 1
+              : 1;
           const A_battle = {
             名号: A_player.名号,
             攻击: A_player.攻击,
@@ -215,12 +218,12 @@ export const Xijietask = async() => {
             arr.end_time = Date.now() + action_time;
             const redisGlKey = KEY_AUCTION_GROUP_LIST;
             const groupList = await redis.smembers(redisGlKey);
-            const xx
-              = '【全服公告】'
-              + A_player.名号
-              + '被'
-              + B_player.名号
-              + '抓进了地牢,希望大家遵纪守法,引以为戒';
+            const xx =
+              '【全服公告】' +
+              A_player.名号 +
+              '被' +
+              B_player.名号 +
+              '抓进了地牢,希望大家遵纪守法,引以为戒';
 
             for (const group_id of groupList) {
               pushInfo(group_id, true, xx);
@@ -237,8 +240,8 @@ export const Xijietask = async() => {
         }
       } else if (action.xijie == '-1') {
         // 5分钟后开始结算阶段二
-        const dur2Raw
-          = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
+        const dur2Raw =
+          typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
         const dur2 = isNaN(dur2Raw) ? 0 : dur2Raw;
 
         end_time = end_time - dur2 + 60000 * 5;

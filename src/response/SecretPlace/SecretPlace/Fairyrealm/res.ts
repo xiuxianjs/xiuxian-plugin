@@ -11,7 +11,7 @@ const res = onResponse(selects, async e => {
   if (!(await existplayer(usr_qq))) {
     return false;
   }
-  const list = (await getDataList('FairyRealm') || []) as NamedItem[];
+  const list = ((await getDataList('FairyRealm')) || []) as NamedItem[];
 
   if (!Array.isArray(list) || list.length === 0) {
     return false;

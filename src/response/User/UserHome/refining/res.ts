@@ -84,7 +84,9 @@ const res = onResponse(selects, async e => {
   if (!najie) {
     return false;
   }
-  const equips = (najie.装备 || []).filter(i => i.name === thingName && (i.pinji ?? -1) === pinjiInput);
+  const equips = (najie.装备 || []).filter(
+    i => i.name === thingName && (i.pinji ?? -1) === pinjiInput
+  );
   const count = equips.length;
 
   if (count < 3) {

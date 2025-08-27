@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { getDataList } from '@src/model/DataList';
 import { existplayer, addNajieThing } from '@src/model/index';
-import { readTiandibang, Write_tiandibang, TiandibangRow } from '../tian';
+import { readTiandibang, writeTiandibang, TiandibangRow } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -83,7 +83,7 @@ const res = onResponse(selects, async e => {
 
   row.积分 -= needPoint;
   await addNajieThing(usr_qq, thingName, item.class as NajieCategory, 1);
-  await Write_tiandibang(rank);
+  await writeTiandibang(rank);
 
   Send(Text(`兑换成功! 获得[${thingName}], 剩余[${row.积分}]积分\n可以在【我的纳戒】中查看`));
 

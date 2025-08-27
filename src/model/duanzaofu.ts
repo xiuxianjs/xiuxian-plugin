@@ -69,7 +69,7 @@ export async function looktripod(qq: string): Promise<number> {
     await writeDuanlu([]);
   }
   for (const item of tripod) {
-    if (qq == item.qq) {
+    if (qq === item.qq) {
       return 1;
     }
   }
@@ -93,14 +93,9 @@ export async function readMytripod(qq: string): Promise<Tripod | undefined> {
   }
 }
 export async function readTripod(): Promise<Tripod[]> {
-  const redis = getIoRedis();
-  const data = await redis.get(keys.duanlu('duanlu'));
+  const data = await getDataJSONParseByKey(keys.duanlu('duanlu'));
 
-  if (!data) {
-    return [];
-  }
-
-  return safeParse<Tripod[] | []>(data, []);
+  return data ?? [];
 }
 
 export async function writeDuanlu(duanlu: Tripod[]): Promise<void> {
@@ -254,16 +249,9 @@ export function restraint(shuju: number[], main: string): [string, number] {
 }
 
 export async function readIt(): Promise<unknown> {
-  const redis = getIoRedis();
-  const custom = await redis.get(keys.custom('custom'));
+  const data = await getDataJSONParseByKey(keys.custom('custom'));
 
-  if (!custom) {
-    // 如果没有自定义数据，返回空对象
-    return [];
-  }
-  const customData = safeParse(custom, []);
-
-  return customData;
+  return data ?? [];
 }
 
 export async function readItTyped(): Promise<CustomRecord[]> {

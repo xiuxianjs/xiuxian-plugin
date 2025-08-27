@@ -80,7 +80,7 @@ const MAGIC_STAGES: MagicStage[] = [
   { from: '八重魔功', to: '九重魔功', cost: 50, prob: 0.2, eff: 1.2, rate: 1.2 }
 ];
 
-const Res = onResponse(selects, async(e, next) => {
+const Res = onResponse(selects, async (e, next) => {
   const Send = useSend(e);
   const usr_qq = e.UserId;
   const player = await readPlayer(usr_qq);

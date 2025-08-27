@@ -1,5 +1,8 @@
 // 玩家相关类型定义
 
+import { readQinmidu, writeQinmidu } from '@src/model/qinmidu';
+import type { QinmiduRecord } from './model';
+
 export interface TalentInfo {
   type: string;
   name: string;
@@ -136,4 +139,43 @@ export interface DanyaoStatus {
   beiyong3: number;
   beiyong4: number;
   beiyong5: number;
+}
+
+export async function findQinmidu(A: string, B: string) {
+  let list: QinmiduRecord[] = [];
+
+  try {
+    list = await readQinmidu();
+  } catch {
+    await writeQinmidu([]);
+  }
+  let i: number;
+  const QQ: string[] = [];
+
+  for (i = 0; i < list.length; i++) {
+    if (list[i].QQ_A === A || list[i].QQ_A == B) {
+      if (list[i].婚姻 !== 0) {
+        // 原逻辑是错误地把 push 当作属性赋值，这里直接 push
+        QQ.push(list[i].QQ_B);
+        break;
+      }
+    } else if (list[i].QQ_B == A || list[i].QQ_B == B) {
+      if (list[i].婚姻 != 0) {
+        QQ.push(list[i].QQ_A);
+        break;
+      }
+    }
+  }
+  for (i = 0; i < list.length; i++) {
+    if ((list[i].QQ_A == A && list[i].QQ_B == B) || (list[i].QQ_A == B && list[i].QQ_B == A)) {
+      break;
+    }
+  }
+  if (i == list.length) {
+    return false;
+  } else if (QQ.length != 0) {
+    return 0;
+  } else {
+    return list[i].亲密度;
+  }
 }

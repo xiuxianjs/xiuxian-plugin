@@ -28,7 +28,7 @@ import { getDataList } from '@src/model/DataList';
 兼容旧版数据结构，处理炼丹师丹药、特殊道具等逻辑。
  * @returns
  */
-export const PlayerControlTask = async() => {
+export const PlayerControlTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
   const cf = await getConfig('xiuxian', 'xiuxian');
 
@@ -77,8 +77,8 @@ export const PlayerControlTask = async() => {
           const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1)); // 增加的修为
           const blood = Math.floor(player.血量上限 * 0.02);
           const rawTime = action.time;
-          const time
-            = (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
+          const time =
+            (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
           let rand = Math.random();
           let xueqi = 0;
           let other_xiuwei = 0;
@@ -113,7 +113,9 @@ export const PlayerControlTask = async() => {
             other_xiuwei = -1 * rand * time;
             xueqi = Math.trunc(rand * time * dy.beiyong4);
             if (transformation == '血气') {
-              msg.push('\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi);
+              msg.push(
+                '\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi
+              );
             } else {
               msg.push('\n由于你闭关时隔壁装修,导致你差点走火入魔,修为下降' + rand * time);
             }
@@ -128,9 +130,9 @@ export const PlayerControlTask = async() => {
             await addExp(player_id, other_x);
           }
           if (
-            (await existNajieThing(player_id, '神界秘宝', '道具'))
-            && player.魔道值 < 1
-            && (player.灵根.type == '转生' || player.level_id > 41)
+            (await existNajieThing(player_id, '神界秘宝', '道具')) &&
+            player.魔道值 < 1 &&
+            (player.灵根.type == '转生' || player.level_id > 41)
           ) {
             qixue = Math.trunc(xiuwei * 0.1 * time);
             await addNajieThing(player_id, '神界秘宝', '道具', -1);
@@ -197,8 +199,8 @@ export const PlayerControlTask = async() => {
           const size = cf.work.size;
           const lingshi = Math.floor(size * now_level_id * (1 + player.修炼效率提升) * 0.5);
           const rawTime2 = action.time;
-          const time
-            = (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
+          const time =
+            (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
           let other_lingshi = 0;
           let other_xueqi = 0;
           let rand = Math.random();
@@ -210,16 +212,20 @@ export const PlayerControlTask = async() => {
           } else if (rand > 0.8) {
             rand = Math.trunc(rand * 10) + 5;
             other_lingshi = -1 * rand * time;
-            msg.push('\n途径盗宝团营地，由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少' + rand * time);
+            msg.push(
+              '\n途径盗宝团营地，由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少' + rand * time
+            );
           } else if (rand > 0.5 && rand < 0.6) {
             rand = Math.trunc(rand * 10) + 20;
             other_lingshi = -1 * rand * time;
             other_xueqi = -2 * rand * time;
-            msg.push('\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了'
-                + rand * time
-                + '灵石，'
-                + '早上醒来，气血消耗了'
-                + 2 * rand * time);
+            msg.push(
+              '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了' +
+                rand * time +
+                '灵石，' +
+                '早上醒来，气血消耗了' +
+                2 * rand * time
+            );
           }
           //
           player.血气 += other_xueqi;
