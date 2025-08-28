@@ -8,7 +8,7 @@ import { addExp, addExp2, addHP } from '@src/model/economy';
 import { addNajieThing } from '@src/model/najie';
 import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
 
-export async function Level_up(e, luck = false) {
+export async function useLevelUp(e, luck = false) {
   const userId = e.UserId;
   const Send = useSend(e);
   // 有无账号
@@ -30,6 +30,10 @@ export async function Level_up(e, luck = false) {
   const player = await readPlayer(userId);
   // 境界
   const levelList = await getDataList('Level1');
+
+  if (!levelList) {
+    return;
+  }
   const now_level = levelList.find(item => item.level_id === player.level_id).level;
 
   // 拦截渡劫期
@@ -88,7 +92,7 @@ export async function Level_up(e, luck = false) {
     const Couple_m = Math.trunc((last_time + shuangxiuTimeout - now_Time) / 60 / 1000);
     const Couple_s = Math.trunc(((last_time + shuangxiuTimeout - now_Time) % 60000) / 1000);
 
-    void Send(Text('突破正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
+    void Send(Text(`突破正在CD中，剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
 
     return false;
   }
@@ -214,7 +218,7 @@ export async function Level_up(e, luck = false) {
 
   return false;
 }
-export async function LevelMax_up(e, luck) {
+export async function userLevelMaxUp(e, luck) {
   const userId = e.UserId;
   const Send = useSend(e);
   const ifexistplay = await existplayer(userId);
@@ -262,7 +266,7 @@ export async function LevelMax_up(e, luck) {
     const Couple_m = Math.trunc((last_time + shuangxiuTimeout - now_Time) / 60 / 1000);
     const Couple_s = Math.trunc(((last_time + shuangxiuTimeout - now_Time) % 60000) / 1000);
 
-    void Send(Text('突破正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
+    void Send(Text(`突破正在CD中，剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
 
     return false;
   }

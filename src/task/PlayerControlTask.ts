@@ -32,9 +32,9 @@ export const PlayerControlTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
   const cf = await getConfig('xiuxian', 'xiuxian');
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(player_id, 'action');
+    const actionRaw = await getDataByUserId(playerId, 'action');
     let action: ActionState | null = null;
 
     try {
@@ -54,7 +54,7 @@ export const PlayerControlTask = async () => {
         }
       }
       // 最后发送的消息
-      const msg: Array<DataMention | string> = [Mention(player_id)];
+      const msg: Array<DataMention | string> = [Mention(playerId)];
       // 动作结束时间
       let end_time = action.end_time;
       // 现在的时间
@@ -66,7 +66,7 @@ export const PlayerControlTask = async () => {
         // 时间过了
         end_time = end_time - 60000 * 2;
         if (now_time > end_time) {
-          const player = await readPlayer(player_id);
+          const player = await readPlayer(playerId);
 
           if (!notUndAndNull(player.level_id)) {
             return false;
@@ -86,7 +86,7 @@ export const PlayerControlTask = async () => {
           let transformation = '修为';
           // 兼容旧版：readDanyao 现在返回数组，但老逻辑期望对象包含 biguan/biguanxl/lianti/beiyong4 等字段
           // 若未来需要，可引入独立的炼神状态存储结构
-          const dy = await readDanyao(player_id);
+          const dy = await readDanyao(playerId);
 
           if (dy.biguan > 0) {
             dy.biguan--;
@@ -123,24 +123,24 @@ export const PlayerControlTask = async () => {
           let other_x = 0;
           let qixue = 0;
 
-          if ((await existNajieThing(player_id, '魔界秘宝', '道具')) && player.魔道值 > 999) {
+          if ((await existNajieThing(playerId, '魔界秘宝', '道具')) && player.魔道值 > 999) {
             other_x += Math.trunc(xiuwei * 0.15 * time);
-            await addNajieThing(player_id, '魔界秘宝', '道具', -1);
+            await addNajieThing(playerId, '魔界秘宝', '道具', -1);
             msg.push('\n消耗了道具[魔界秘宝],额外增加' + other_x + '修为');
-            await addExp(player_id, other_x);
+            await addExp(playerId, other_x);
           }
           if (
-            (await existNajieThing(player_id, '神界秘宝', '道具'))
+            (await existNajieThing(playerId, '神界秘宝', '道具'))
             && player.魔道值 < 1
             && (player.灵根.type === '转生' || player.level_id > 41)
           ) {
             qixue = Math.trunc(xiuwei * 0.1 * time);
-            await addNajieThing(player_id, '神界秘宝', '道具', -1);
+            await addNajieThing(playerId, '神界秘宝', '道具', -1);
             msg.push('\n消耗了道具[神界秘宝],额外增加' + qixue + '血气');
-            await addExp2(player_id, qixue);
+            await addExp2(playerId, qixue);
           }
 
-          await setFileValue(player_id, blood * time, '当前血量');
+          await setFileValue(playerId, blood * time, '当前血量');
 
           if (action.acount === null) {
             action.acount = 0;
@@ -154,20 +154,20 @@ export const PlayerControlTask = async () => {
           arr.Place_action = 1; // 秘境
           arr.Place_actionplus = 1; // 沉迷状态
           delete arr.group_id; // 结算完去除group_id
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
           xueqi = Math.trunc(xiuwei * time * dy.beiyong4);
           if (transformation === '血气') {
-            await setFileValue(player_id, (xiuwei * time + otherEXP) * dy.beiyong4, transformation);
+            await setFileValue(playerId, (xiuwei * time + otherEXP) * dy.beiyong4, transformation);
             msg.push('\n受到炼神之力的影响,增加气血:' + xueqi, '血量增加:' + blood * time);
           } else {
-            await setFileValue(player_id, xiuwei * time + otherEXP, transformation);
+            await setFileValue(playerId, xiuwei * time + otherEXP, transformation);
             msg.push('\n增加修为:' + xiuwei * time, '血量增加:' + blood * time);
           }
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
           if (isGroup) {
             pushInfo(push_address, isGroup, msg);
           } else {
-            pushInfo(player_id, isGroup, msg);
+            pushInfo(playerId, isGroup, msg);
           }
 
           if (dy.lianti <= 0) {
@@ -175,7 +175,7 @@ export const PlayerControlTask = async () => {
             dy.beiyong4 = 0;
           }
           // 仍按旧结构写回：若接口需要数组，后续可实现 fromStatus(dy)
-          await writeDanyao(player_id, dy);
+          await writeDanyao(playerId, dy);
         }
       } // 炼丹师修正结束
       // 降妖
@@ -185,7 +185,7 @@ export const PlayerControlTask = async () => {
         // 时间过了
         if (now_time > end_time) {
           // 现在大于结算时间，即为结算
-          const player = await readPlayer(player_id);
+          const player = await readPlayer(playerId);
 
           if (!notUndAndNull(player.level_id)) {
             return false;
@@ -225,11 +225,11 @@ export const PlayerControlTask = async () => {
           }
           //
           player.血气 += other_xueqi;
-          await writePlayer(player_id, player);
+          await writePlayer(playerId, player);
           const get_lingshi = Math.trunc(lingshi * time + otherLingshi); // 最后获取到的灵石
 
           //
-          await setFileValue(player_id, get_lingshi, '灵石'); // 添加灵石
+          await setFileValue(playerId, get_lingshi, '灵石'); // 添加灵石
           // redis动作
           if (action.acount === null) {
             action.acount = 0;
@@ -243,12 +243,12 @@ export const PlayerControlTask = async () => {
           arr.Place_action = 1; // 秘境
           arr.Place_actionplus = 1; // 沉迷状态
           delete arr.group_id; // 结算完去除group_id
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
           msg.push('\n降妖得到' + get_lingshi + '灵石');
           if (isGroup) {
             pushInfo(push_address, isGroup, msg);
           } else {
-            pushInfo(player_id, isGroup, msg);
+            pushInfo(playerId, isGroup, msg);
           }
         }
       }

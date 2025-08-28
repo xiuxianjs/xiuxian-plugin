@@ -27,7 +27,7 @@ const res = onResponse(selects, async e => {
   const totalRounds = victory + defeated;
   const shenglv = totalRounds > 0 ? ((victory / totalRounds) * 100).toFixed(2) : '0';
   const img = await screenshot('moneyCheck', e.UserId, {
-    user_qq: qq,
+    userId: qq,
     victory,
     victory_num,
     defeated,

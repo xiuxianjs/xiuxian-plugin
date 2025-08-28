@@ -3,7 +3,7 @@ import { readPlayer } from '@src/model/xiuxian_impl';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import { safeParse } from '@src/model/utils/safe';
-import type { ActionState, Player } from '@src/types';
+import type { ActionState } from '@src/types';
 import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
 
 /**
@@ -16,9 +16,9 @@ import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response
 export const OccupationTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(player_id, 'action');
+    const actionRaw = await getDataByUserId(playerId, 'action');
     const action = safeParse<ActionState | null>(actionRaw, null);
 
     // 不为空，存在动作
@@ -51,7 +51,7 @@ export const OccupationTask = async () => {
         const timeMin = calcEffectiveMinutes(start_time, action.end_time, now);
 
         // 使用统一的采药结算函数
-        await plant_jiesuan(player_id, timeMin, push_address);
+        await plant_jiesuan(playerId, timeMin, push_address);
 
         // 状态复位
         const arr = { ...action };
@@ -65,7 +65,7 @@ export const OccupationTask = async () => {
         arr.Place_action = 1;
         arr.Place_actionplus = 1;
         delete (arr as Partial<ActionState>).group_id;
-        await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+        await setDataByUserId(playerId, 'action', JSON.stringify(arr));
       }
     }
 
@@ -74,7 +74,7 @@ export const OccupationTask = async () => {
       const end_time = action.end_time - 60000 * 2;
 
       if (now_time > end_time) {
-        const playerRaw = await readPlayer(player_id);
+        const playerRaw = await readPlayer(playerId);
 
         if (!playerRaw || Array.isArray(playerRaw)) {
           continue;
@@ -88,7 +88,7 @@ export const OccupationTask = async () => {
           = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
         const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;
 
-        await mine_jiesuan(player_id, timeMin, push_address);
+        await mine_jiesuan(playerId, timeMin, push_address);
 
         // const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * timeMin)
         // const occRow = data.occupation_exp_list.find(
@@ -128,11 +128,11 @@ export const OccupationTask = async () => {
         // ] as const
         // const xuanze = Math.trunc(Math.random() * A.length)
         // end_amount = Math.floor(end_amount * (player.level_id / 40))
-        // await addNajieThing(player_id, '庚金', '材料', end_amount)
-        // await addNajieThing(player_id, '玄土', '材料', end_amount)
-        // await addNajieThing(player_id, A[xuanze], '材料', num)
-        // await addNajieThing(player_id, B[xuanze], '材料', Math.trunc(num / 48))
-        // await addExp4(player_id, exp)
+        // await addNajieThing(playerId, '庚金', '材料', end_amount)
+        // await addNajieThing(playerId, '玄土', '材料', end_amount)
+        // await addNajieThing(playerId, A[xuanze], '材料', num)
+        // await addNajieThing(playerId, B[xuanze], '材料', Math.trunc(num / 48))
+        // await addExp4(playerId, exp)
         // msg.push(
         //   `\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`
         // )
@@ -147,11 +147,11 @@ export const OccupationTask = async () => {
         arr.Place_action = 1;
         arr.Place_actionplus = 1;
         delete (arr as Partial<ActionState>).group_id;
-        await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+        await setDataByUserId(playerId, 'action', JSON.stringify(arr));
         // if (isGroup && push_address) {
         //   pushInfo(push_address, isGroup, msg)
         // } else {
-        //   pushInfo(player_id, isGroup, msg)
+        //   pushInfo(playerId, isGroup, msg)
         // }
       }
     }

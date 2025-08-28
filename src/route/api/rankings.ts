@@ -45,10 +45,10 @@ export const GET = async (ctx: Context) => {
           const ass = await getDataJSONParseByKey(keys.association(assName));
 
           if (ass) {
-            const power = ass.power || 0;
-            const level = ass.宗门等级 || 1;
-            const members = ass.所有成员?.length || 0;
-            const lingshi = ass.宗门灵石池 || 0;
+            const power = ass.power ?? 0;
+            const level = ass.宗门等级 ?? 1;
+            const members = ass.所有成员?.length ?? 0;
+            const lingshi = ass.宗门灵石池 ?? 0;
 
             // 综合实力计算：等级 * 1000 + 成员数 * 100 + 灵石池 / 10000 + 仙界加成
             const totalPower

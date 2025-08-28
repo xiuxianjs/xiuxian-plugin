@@ -22,12 +22,12 @@ export const regular = /^(#|＃|\/)?开始炼制/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const A = await looktripod(user_qq);
+  const A = await looktripod(userId);
 
   if (A !== 1) {
     void Send(Text('请先去#炼器师能力评测,再来锻造吧'));
@@ -43,13 +43,13 @@ const res = onResponse(selects, async e => {
     await writeDuanlu([]);
   }
   for (const item of newtripod) {
-    if (user_qq === item.qq) {
+    if (userId === item.qq) {
       if (item.材料.length === 0) {
         void Send(Text('炉子为空,无法炼制'));
 
         return false;
       }
-      const action = await readActionWithSuffix(user_qq, 'action10');
+      const action = await readActionWithSuffix(userId, 'action10');
 
       if (isActionRunning(action)) {
         void Send(Text(`正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`));
@@ -60,8 +60,8 @@ const res = onResponse(selects, async e => {
       item.TIME = Date.now();
       await writeDuanlu(newtripod);
       const action_time = 180 * 60 * 1000; // 持续时间，单位毫秒
-      const arr = await startActionWithSuffix(user_qq, 'action10', '锻造', action_time, {});
-      const dy = await readDanyao(user_qq);
+      const arr = await startActionWithSuffix(userId, 'action10', '锻造', action_time, {});
+      const dy = await readDanyao(userId);
 
       if (dy.xingyun >= 1) {
         dy.xingyun--;
@@ -69,8 +69,8 @@ const res = onResponse(selects, async e => {
           dy.beiyong5 = 0;
         }
       }
-      await writeDanyao(user_qq, dy);
-      await setValue(userKey(user_qq, 'action10'), arr);
+      await writeDanyao(userId, dy);
+      await setValue(userKey(userId, 'action10'), arr);
       void Send(Text('现在开始锻造武器,最少需锻造30分钟,高级装备需要更多温养时间'));
 
       return false;

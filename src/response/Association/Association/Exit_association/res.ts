@@ -157,13 +157,13 @@ const res = onResponse(selects, async e => {
       let randmemberId: string;
 
       if (fz.length > 0) {
-        randmemberId = await getRandomFromARR(fz);
+        randmemberId = getRandomFromARR(fz);
       } else if (zl.length > 0) {
-        randmemberId = await getRandomFromARR(zl);
+        randmemberId = getRandomFromARR(zl);
       } else if (nmdz.length > 0) {
-        randmemberId = await getRandomFromARR(nmdz);
+        randmemberId = getRandomFromARR(nmdz);
       } else {
-        randmemberId = await getRandomFromARR(ass.所有成员);
+        randmemberId = getRandomFromARR(ass.所有成员);
       }
 
       const randmember = await readPlayer(randmemberId);

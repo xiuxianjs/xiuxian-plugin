@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const fairyrealmList = await getDataList('FairyRealm');
-  const weizhiRaw = await fairyrealmList.find(item => item.name === didian);
+  const weizhiRaw = fairyrealmList.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhiRaw)) {
     return false;
@@ -69,9 +69,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
   player = await readPlayer(userId);
-  const now_level_id = (await getDataList('Level1')).find(
-    item => item.level_id === player.level_id
-  ).level_id;
+  const levelData = await getDataList('Level1');
+  const now_level_id = levelData.find(item => item.level_id === player.level_id).level_id;
 
   if (now_level_id < 42 && player.lunhui === 0) {
     return false;

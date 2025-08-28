@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existNajieThing, existplayer } from '@src/model/index';
-import { Level_up } from '../level';
+import { useLevelUp } from '../level';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?幸运突破$/;
@@ -10,10 +10,10 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
 
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -24,7 +24,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  Level_up(e, true);
+  void useLevelUp(e, true);
 });
 
 import mw from '@src/response/mw';

@@ -38,7 +38,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  let didian = await e.MessageText.replace(/^(#|＃|\/)?前往禁地/, '');
+  let didian = e.MessageText.replace(/^(#|＃|\/)?前往禁地/, '');
 
   didian = didian.trim();
   const forbiddenAreaList = await getDataList('ForbiddenArea');

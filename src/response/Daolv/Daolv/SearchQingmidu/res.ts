@@ -7,10 +7,10 @@ export const regular = /^(#|＃|\/)?查询亲密度$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 

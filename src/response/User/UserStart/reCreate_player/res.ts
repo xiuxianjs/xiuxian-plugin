@@ -172,11 +172,11 @@ const res = onResponse(selects, async e => {
               let randmemberId: string | undefined;
 
               if ((ass.长老 || []).length > 0) {
-                randmemberId = await getRandomFromARR(ass.长老);
+                randmemberId = getRandomFromARR(ass.长老);
               } else if ((ass.内门弟子 || []).length > 0) {
-                randmemberId = await getRandomFromARR(ass.内门弟子);
+                randmemberId = getRandomFromARR(ass.内门弟子);
               } else {
-                randmemberId = await getRandomFromARR(ass.所有成员 || []);
+                randmemberId = getRandomFromARR(ass.所有成员 || []);
               }
               if (randmemberId) {
                 const randmember = await readPlayer(randmemberId);

@@ -3,13 +3,13 @@ import HTML from './HTML';
 import ningmenghomeBgURL from '@src/resources/img/fairyrealm.jpg';
 
 const MoneyCheck = ({
-  user_qq,
+  userId,
   victory,
   victory_num,
   defeated,
   defeated_num
 }: {
-  user_qq: string | number;
+  userId: string | number;
   victory: number | string;
   victory_num: number | string;
   defeated: number | string;
@@ -35,7 +35,7 @@ const MoneyCheck = ({
         </h1>
 
         <div className='text-lg text-blue-800 font-semibold tracking-wide select-none'>
-          账号：{user_qq}
+          账号：{userId}
         </div>
 
         <div className='w-full grid grid-cols-2 gap-6 text-blue-900 font-semibold text-xl'>

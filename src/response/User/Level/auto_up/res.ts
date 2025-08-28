@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existplayer, readPlayer } from '@src/model/index';
-import { Level_up } from '../level';
+import { useLevelUp } from '../level';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -23,7 +23,7 @@ const res = onResponse(selects, async e => {
   void Send(Text('已为你开启10次自动突破'));
   let num = 1;
   const time = setInterval(() => {
-    Level_up(e);
+    void useLevelUp(e);
     num++;
     if (num > 10) {
       clearInterval(time);

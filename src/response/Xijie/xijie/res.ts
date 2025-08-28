@@ -21,7 +21,6 @@ import { getString, userKey, setValue } from '@src/model/utils/redisHelper';
 
 import mw, { selects } from '@src/response/mw';
 import { setDataByUserId } from '@src/model/Redis';
-import type { Player } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?洗劫.*$/;
 

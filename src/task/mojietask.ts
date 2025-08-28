@@ -23,10 +23,10 @@ export const MojiTask = async () => {
   // 获取缓存中人物列表
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     // 查询当前人物动作（日志变量已移除以减 lint 噪声）
     // 得到动作
-    const rawAction = await getDataByUserId(player_id, 'action');
+    const rawAction = await getDataByUserId(playerId, 'action');
     let action;
 
     try {
@@ -36,7 +36,7 @@ export const MojiTask = async () => {
     }
     // 不为空，存在动作
     if (action !== null) {
-      let push_address = player_id; // 消息推送地址
+      let push_address = playerId; // 消息推送地址
       let isGroup = false; // 是否推送到群
 
       if (isExploreAction(action) && notUndAndNull(action.group_id)) {
@@ -56,7 +56,7 @@ export const MojiTask = async () => {
       // 现在的时间
       const now_time = Date.now();
       // 用户信息
-      const player = await readPlayer(player_id);
+      const player = await readPlayer(playerId);
 
       // 有洗劫状态:这个直接结算即可
       if (String(act.mojie) === '0') {
@@ -139,7 +139,7 @@ export const MojiTask = async () => {
               player.幸运 -= player.addluckyNo;
               player.addluckyNo = 0;
             }
-            await redis.set(dataKeys.player(player_id), JSON.stringify(player));
+            await redis.set(dataKeys.player(playerId), JSON.stringify(player));
           }
           // 默认结算装备数
           const now_level_id = player.level_id;
@@ -150,18 +150,18 @@ export const MojiTask = async () => {
 
           xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
           qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
-          if (await existNajieThing(player_id, '修魔丹', '道具')) {
+          if (await existNajieThing(playerId, '修魔丹', '道具')) {
             xiuwei *= 100;
             xiuwei = Math.trunc(xiuwei);
-            await addNajieThing(player_id, '修魔丹', '道具', -1);
+            await addNajieThing(playerId, '修魔丹', '道具', -1);
           }
-          if (await existNajieThing(player_id, '血魔丹', '道具')) {
+          if (await existNajieThing(playerId, '血魔丹', '道具')) {
             qixue *= 18;
             qixue = Math.trunc(qixue);
-            await addNajieThing(player_id, '血魔丹', '道具', -1);
+            await addNajieThing(playerId, '血魔丹', '道具', -1);
           }
           if (thingName !== '' || thingClass !== '') {
-            await addNajieThing(player_id, thingName, thingClass, n);
+            await addNajieThing(playerId, thingName, thingClass, n);
           }
           lastMessage
             += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
@@ -183,10 +183,10 @@ export const MojiTask = async () => {
             // 结算完去除group_id
             delete arr.group_id;
             // 写入redis
-            await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+            await setDataByUserId(playerId, 'action', JSON.stringify(arr));
             // 先完结再结算
-            await addExp2(player_id, qixue);
-            await addExp(player_id, xiuwei);
+            await addExp2(playerId, qixue);
+            await addExp(playerId, xiuwei);
             // 发送消息
             pushInfo(push_address, isGroup, msg.join(''));
           } else {
@@ -194,10 +194,10 @@ export const MojiTask = async () => {
               arr.cishu--;
             }
 
-            await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+            await setDataByUserId(playerId, 'action', JSON.stringify(arr));
             // 先完结再结算
-            await addExp2(player_id, qixue);
-            await addExp(player_id, xiuwei);
+            await addExp2(playerId, qixue);
+            await addExp(playerId, xiuwei);
             try {
               const temp = await readTemp();
               const p = {
@@ -211,7 +211,7 @@ export const MojiTask = async () => {
               const temp: { msg: string; qq?: string; qq_group: string }[] = [];
               const p = {
                 msg: player.名号 + lastMessage + fyd_msg,
-                qq: player_id,
+                qq: playerId,
                 qq_group: push_address
               };
 

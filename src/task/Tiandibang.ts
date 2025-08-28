@@ -19,8 +19,8 @@ export const TiandibangTask = async () => {
   let k: number;
 
   await Promise.all(
-    playerList.map(async user_qq => {
-      const player = await getDataJSONParseByKey(keys.player(user_qq));
+    playerList.map(async userId => {
+      const player = await getDataJSONParseByKey(keys.player(userId));
 
       if (!player) {
         return;
@@ -46,7 +46,7 @@ export const TiandibangTask = async () => {
         学习的功法: player.学习的功法,
         魔道值: player.魔道值,
         神石: player.神石,
-        qq: user_qq,
+        qq: userId,
         次数: 3,
         积分: 0
       };

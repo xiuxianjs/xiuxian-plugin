@@ -49,8 +49,8 @@ const res = onResponse(selects, async e => {
     lingshi = convert2integer(lingshi);
   }
   if (func === '存') {
-    const player_info = await readPlayer(userId);
-    const player_lingshi = player_info.灵石;
+    const playerInfo = await readPlayer(userId);
+    const player_lingshi = playerInfo.灵石;
 
     if (player_lingshi < lingshi) {
       void Send(Text(`灵石不足,你目前只有${player_lingshi}灵石`));

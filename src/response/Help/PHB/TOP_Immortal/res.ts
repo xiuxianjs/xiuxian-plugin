@@ -21,16 +21,16 @@ const res = onResponse(selects, async e => {
 
   let i = 0;
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     // (攻击+防御*0.8+生命*0.5)*暴击率=理论战力
-    const player = await readPlayer(player_id);
+    const player = await readPlayer(playerId);
     // 计算并保存到数组
     let power = player.魔道值;
 
     power = Math.trunc(power);
     temp[i] = {
       power: power,
-      qq: player_id,
+      qq: playerId,
       name: player.名号,
       level_id: player.level_id
     };

@@ -1,10 +1,10 @@
-import { LevelMax_up } from '../level';
+import { userLevelMaxUp } from '../level';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?破体$/;
 
-const res = onResponse(selects, async e => {
-  LevelMax_up(e, false);
+const res = onResponse(selects, e => {
+  void userLevelMaxUp(e, false);
 });
 
 import mw from '@src/response/mw';

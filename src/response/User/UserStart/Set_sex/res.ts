@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existplayer, keys, readPlayer } from '@src/model/index';
-import type { Player, JSONValue } from '@src/types';
 
 import mw, { selects } from '@src/response/mw';
 import { setDataJSONStringifyByKey } from '@src/model/DataControl';
@@ -16,22 +15,6 @@ function normalizeGender(input: string): Gender | null {
   }
 
   return null;
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {};
-
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') {
-      continue;
-    }
-    if (v && typeof v === 'object') {
-      r[k] = JSON.parse(JSON.stringify(v));
-    } else {
-      r[k] = v as JSONValue;
-    }
-  }
-
-  return r;
 }
 
 const res = onResponse(selects, async e => {

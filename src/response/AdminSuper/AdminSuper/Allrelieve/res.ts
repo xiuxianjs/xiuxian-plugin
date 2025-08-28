@@ -15,13 +15,13 @@ const res = onResponse(selects, async e => {
   void Send(Text('开始行动！'));
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     // 清除游戏状态
-    await redis.del(userKey(player_id, 'game_action'));
-    const action = await readAction(player_id);
+    await redis.del(userKey(playerId, 'game_action'));
+    const action = await readAction(playerId);
 
     if (action) {
-      await stopAction(player_id, {
+      await stopAction(playerId, {
         is_jiesuan: 1,
         shutup: '1',
         working: '1',

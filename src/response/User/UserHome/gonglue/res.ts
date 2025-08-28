@@ -4,7 +4,7 @@ import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 export const regular = /^(#|＃|\/)?修仙攻略$/;
 
-const res = onResponse(selects, async e => {
+const res = onResponse(selects, e => {
   const Send = useSend(e);
 
   void Send(Text('修仙攻略\nhttps://docs.qq.com/doc/DTHhuVnRLWlhjclhC'));

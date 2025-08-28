@@ -186,15 +186,13 @@ const res = onResponse(selects, async e => {
           const list_n = (association.内门弟子 as string[] | undefined) || [];
 
           if (list_v.length > 0) {
-            randmemberId = await getRandomFromARR(list_v);
+            randmemberId = getRandomFromARR(list_v);
           } else if (list_l.length > 0) {
-            randmemberId = await getRandomFromARR(list_l);
+            randmemberId = getRandomFromARR(list_l);
           } else if (list_n.length > 0) {
-            randmemberId = await getRandomFromARR(list_n);
+            randmemberId = getRandomFromARR(list_n);
           } else {
-            randmemberId = await getRandomFromARR(
-              (association.所有成员 as string[] | undefined) || []
-            );
+            randmemberId = getRandomFromARR((association.所有成员 as string[] | undefined) || []);
           }
           const randmember = await readPlayer(randmemberId); // 获取幸运儿的存档
           const rPos = randmember.宗门.职位 as string;

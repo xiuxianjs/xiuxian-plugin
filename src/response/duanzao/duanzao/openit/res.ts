@@ -22,13 +22,13 @@ export const regular = /^(#|＃|\/)?开炉/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId;
+  const userId = e.UserId;
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const A = await looktripod(user_qq);
+  const A = await looktripod(userId);
 
   if (A !== 1) {
     void Send(Text('请先去#炼器师能力评测,再来锻造吧'));
@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   let newtripod = [];
-  const player = await getDataJSONParseByKey(keys.player(user_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -52,7 +52,7 @@ const res = onResponse(selects, async e => {
     await writeDuanlu([]);
   }
   for (const item of newtripod) {
-    if (user_qq === item.qq) {
+    if (userId === item.qq) {
       if (item.TIME === 0) {
         void Send(Text('煅炉里面空空如也,也许自己还没有启动它'));
 
@@ -70,21 +70,13 @@ const res = onResponse(selects, async e => {
       }
       // 关闭状态
 
-      const action = await readActionWithSuffix(user_qq, 'action10');
+      const action = await readActionWithSuffix(userId, 'action10');
 
       if (!action) {
         void Send(Text('未开始锻造或未达到最短锻造时间'));
 
         return false;
       }
-      // if (isActionRunning(action)) {
-      //  void Send(
-      //     Text(
-      //       `正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`
-      //     )
-      //   )
-      //   return false
-      // }
 
       // 判断属性九维值
       let cailiao;
@@ -225,7 +217,7 @@ const res = onResponse(selects, async e => {
         出售价: Math.floor(1000000 * sum)
       };
 
-      await addNajieThing(user_qq, zhuangbei, '装备', 1);
+      await addNajieThing(userId, zhuangbei, '装备', 1);
       // 计算经验收益
 
       // 灵根影响值
@@ -243,7 +235,7 @@ const res = onResponse(selects, async e => {
       if (player.仙宠.type === '炼器') {
         z = Math.floor(z * (1 + (player.仙宠.等级 / 25) * 0.1));
       }
-      addExp4(user_qq, z);
+      void addExp4(userId, z);
       // 关闭所有状态
       item.状态 = 0;
       item.TIME = 0;
@@ -252,9 +244,9 @@ const res = onResponse(selects, async e => {
       await writeDuanlu(newtripod);
       // 清除时间
       // 结束标记：已在上面 stopActionWithSuffix 写入
-      await stopActionWithSuffix(user_qq, 'action10');
+      await stopActionWithSuffix(userId, 'action10');
       // 标记结束时间戳（可选：写入当前时间覆盖 key）
-      await setValue(userKey(user_qq, 'action10'), Date.now());
+      await setValue(userKey(userId, 'action10'), Date.now());
       void Send(Text(`恭喜你获得了[${wuqiname}·${houzhui}],炼器经验增加了[${z}]`));
 
       return false;

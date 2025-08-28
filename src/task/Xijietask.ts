@@ -25,8 +25,8 @@ import { getDataList } from '@src/model/DataList';
 export const Xijietask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
-    const raw = await getDataByUserId(player_id, 'action');
+  for (const playerId of playerList) {
+    const raw = await getDataByUserId(playerId, 'action');
     let action: RaidActionState | null = null;
 
     try {
@@ -149,9 +149,9 @@ export const Xijietask = async () => {
 
           try {
             const playerA = {
-              id: player_id,
+              id: playerId,
               name: dataBattleA?.名号,
-              avatar: getAvatar(player_id),
+              avatar: getAvatar(playerId),
               power: dataBattleA?.战力 ?? 0,
               hp: dataBattleA?.当前血量 ?? 0,
               maxHp: dataBattleA?.血量上限 ?? 0
@@ -164,7 +164,7 @@ export const Xijietask = async () => {
               hp: playerB?.当前血量 ?? 0,
               maxHp: playerB?.血量上限 ?? 0
             };
-            const img = await screenshot('CombatResult', player_id, {
+            const img = await screenshot('CombatResult', playerId, {
               msg: msgg,
               playerA: playerA,
               playerB: playerB,
@@ -195,7 +195,7 @@ export const Xijietask = async () => {
             const num = weizhi.Grade;
 
             lastMessage += ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' + num;
-            await addNajieThing(player_id, '秘境之匙', '道具', num);
+            await addNajieThing(playerId, '秘境之匙', '道具', num);
             // 结算完去除
             delete arr.group_id;
             const shop = await readShop();
@@ -227,12 +227,12 @@ export const Xijietask = async () => {
             }
           }
           // 写入redis
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
           msg.push('\n' + lastMessage);
           if (isGroup) {
             pushInfo(push_address, isGroup, msg.join('\n'));
           } else {
-            pushInfo(player_id, isGroup, msg.join('\n'));
+            pushInfo(playerId, isGroup, msg.join('\n'));
           }
         }
       } else if (action.xijie === '-1') {
@@ -302,13 +302,13 @@ export const Xijietask = async () => {
 
           arr.cishu = gradeNumFinal + 1;
           // 写入redis
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
 
           msg.push('\n' + lastMessage);
           if (isGroup) {
             pushInfo(push_address, isGroup, msg.join('\n'));
           } else {
-            pushInfo(player_id, isGroup, msg.join('\n'));
+            pushInfo(playerId, isGroup, msg.join('\n'));
           }
         }
       }

@@ -38,17 +38,17 @@ function normalizeAction(raw): PlayerAction {
   const r = raw;
   const action: PlayerAction = {
     action: typeof r.action === 'string' ? r.action : '空闲',
-    mine: toInt(r.mine, undefined as number),
-    end_time: toInt(r.end_time, undefined as number),
-    time: toInt(r.time, undefined as number),
-    start: toInt(r.start, undefined as number),
-    duration: toInt(r.duration, undefined as number),
-    is_jiesuan: toInt(r.is_jiesuan, undefined as number),
-    plant: toInt(r.plant, undefined as number),
-    shutup: toInt(r.shutup, undefined as number),
-    working: toInt(r.working, undefined as number),
-    power_up: toInt(r.power_up, undefined as number),
-    Place_action: toInt(r.Place_action, undefined as number),
+    mine: toInt(r.mine),
+    end_time: toInt(r.end_time),
+    time: toInt(r.time),
+    start: toInt(r.start),
+    duration: toInt(r.duration),
+    is_jiesuan: toInt(r.is_jiesuan),
+    plant: toInt(r.plant),
+    shutup: toInt(r.shutup),
+    working: toInt(r.working),
+    power_up: toInt(r.power_up),
+    Place_action: toInt(r.Place_action),
     group_id: typeof r.group_id === 'string' ? r.group_id : undefined
   };
 
@@ -131,7 +131,7 @@ const res = onResponse(selects, async e => {
     = (action.time && action.end_time && action.time) || action.duration || minutes * 60000; // 记录原始或推导时长
   delete action.group_id;
 
-  redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action));
+  void redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action));
 
   return false;
 });

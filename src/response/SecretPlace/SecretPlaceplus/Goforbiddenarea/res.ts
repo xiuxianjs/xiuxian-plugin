@@ -46,7 +46,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  let didian = await e.MessageText.replace(/^(#|＃|\/)?沉迷禁地/, '');
+  let didian = e.MessageText.replace(/^(#|＃|\/)?沉迷禁地/, '');
   const code = didian.split('*');
 
   didian = code[0];
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const forbiddenareaList = await getDataList('ForbiddenArea');
-  const weizhiRaw = await forbiddenareaList.find(item => item.name === didian);
+  const weizhiRaw = forbiddenareaList.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhiRaw)) {
     return false;

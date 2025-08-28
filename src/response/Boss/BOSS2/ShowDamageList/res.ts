@@ -32,10 +32,10 @@ function parseJson<T>(raw: string | null): T | null {
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -120,7 +120,7 @@ const res = onResponse(selects, async e => {
 
   // 取前10名
   const top = temp.slice(0, 10);
-  const image = await screenshot('immortal_genius', user_qq, {
+  const image = await screenshot('immortal_genius', userId, {
     allplayer: top,
     title: '金角大王贡献榜',
     label: '伤害'

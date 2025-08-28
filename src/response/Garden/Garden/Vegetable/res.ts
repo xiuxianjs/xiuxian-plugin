@@ -106,7 +106,7 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-async function createGarden(association_name: string, user_qq: string, level: number) {
+async function createGarden(association_name: string, userId: string, level: number) {
   const now = Date.now();
   const cropTemplates: GardenCrop[] = [
     { name: '凝血草', ts: 1, desc: '汲取了地脉灵气形成的草' },
@@ -134,7 +134,7 @@ async function createGarden(association_name: string, user_qq: string, level: nu
   const count = levelMap[level] || 1;
   const crops = cropTemplates
     .slice(0, count)
-    .map(c => ({ ...c, start_time: now, who_plant: user_qq }));
+    .map(c => ({ ...c, start_time: now, who_plant: userId }));
   const garden: GardenData = { 药园等级: level, 作物: crops };
   const ass: AssociationLike = await getDataJSONParseByKey(keys.association(association_name));
 

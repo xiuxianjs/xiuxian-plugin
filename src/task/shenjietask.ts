@@ -29,8 +29,8 @@ function isNajieCategory(v): v is NajieCategory {
 export const ShenjieTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
-    const actionRaw = await getDataByUserId(player_id, 'action');
+  for (const playerId of playerList) {
+    const actionRaw = await getDataByUserId(playerId, 'action');
     const action = safeParse<ActionState | null>(actionRaw, null);
 
     if (!action) {
@@ -43,10 +43,10 @@ export const ShenjieTask = async () => {
       isGroup = true;
       push_address = String(action.group_id);
     }
-    const msg: Array<DataMention | string> = [Mention(player_id)];
+    const msg: Array<DataMention | string> = [Mention(playerId)];
     let end_time = Number(action.end_time) || 0;
     const now_time = Date.now();
-    const player = await readPlayer(player_id);
+    const player = await readPlayer(playerId);
 
     if (!player) {
       continue;
@@ -139,7 +139,7 @@ export const ShenjieTask = async () => {
             player.幸运 = Number(player.幸运 ?? 0) - Number(player.addluckyNo ?? 0);
             player.addluckyNo = 0;
           }
-          await writePlayer(player_id, player);
+          await writePlayer(playerId, player);
         }
         const now_level_id = player.level_id ?? 0;
         const now_physique_id = player.Physique_id ?? 0;
@@ -147,7 +147,7 @@ export const ShenjieTask = async () => {
         const qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
 
         if (thingName && thingClass) {
-          await addNajieThing(player_id, thingName, thingClass, n);
+          await addNajieThing(playerId, thingName, thingClass, n);
         }
         lastMessage += `${m},获得修为${xiuwei},气血${qixue},剩余次数${(Number(action.cishu) || 0) - 1}`;
         msg.push('\n' + player.名号 + lastMessage + fyd_msg);
@@ -163,19 +163,19 @@ export const ShenjieTask = async () => {
           arr.mojie = 1;
           arr.end_time = Date.now();
           delete arr.group_id;
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-          await addExp2(player_id, qixue);
-          await addExp(player_id, xiuwei);
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await addExp2(playerId, qixue);
+          await addExp(playerId, xiuwei);
           if (isGroup && push_address) {
             pushInfo(push_address, isGroup, msg);
           } else {
-            pushInfo(player_id, isGroup, msg);
+            pushInfo(playerId, isGroup, msg);
           }
         } else {
           arr.cishu = remain - 1;
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-          await addExp2(player_id, qixue);
-          await addExp(player_id, xiuwei);
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await addExp2(playerId, qixue);
+          await addExp(playerId, xiuwei);
           try {
             const temp = await readTemp();
             const p: { msg: string; qq_group?: string } = {
@@ -189,7 +189,7 @@ export const ShenjieTask = async () => {
             const temp: Array<{ msg: string; qq: string; qq_group?: string }> = [];
             const p = {
               msg: player.名号 + lastMessage + fyd_msg,
-              qq: player_id,
+              qq: playerId,
               qq_group: push_address
             };
 

@@ -162,10 +162,10 @@ export const BossIsAlive = Boss2IsAlive;
 export async function LookUpWorldBossStatus(e: EventsMessageCreateEnum) {
   const Send = useSend(e);
 
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -224,10 +224,10 @@ export async function SortPlayer(PlayerRecordJSON) {
 export async function WorldBossBattle(e) {
   const Send = useSend(e);
 
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 

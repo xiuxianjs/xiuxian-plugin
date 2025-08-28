@@ -4,7 +4,7 @@ import { notUndAndNull } from '@src/model/common';
 import { addPet } from '@src/model/pets';
 import { readNajie, writePlayer, readPlayer, existplayer } from '@src/model/xiuxian_impl';
 import { getDataList } from '@src/model/DataList';
-import type { Player, NajieItem, XianchongInfo } from '@src/types/player';
+import type { XianchongInfo } from '@src/types/player';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?出战仙宠.*$/;

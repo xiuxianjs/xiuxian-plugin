@@ -170,8 +170,8 @@ export async function getRandomTalent(): Promise<TalentInfo> {
   return getRandomFromARR<TalentInfo>(talent as TalentInfo[]);
 }
 
-export async function setFileValue(user_qq: string, num: number, type: string): Promise<void> {
-  const player = await readPlayer(user_qq);
+export async function setFileValue(userId: string, num: number, type: string): Promise<void> {
+  const player = await readPlayer(userId);
 
   if (!player) {
     return;
@@ -184,7 +184,7 @@ export async function setFileValue(user_qq: string, num: number, type: string): 
     newNum = player.血量上限;
   }
   player[type] = newNum;
-  void setDataJSONStringifyByKey(keys.player(user_qq), player);
+  void setDataJSONStringifyByKey(keys.player(userId), player);
 }
 
 export type FoundThing = {

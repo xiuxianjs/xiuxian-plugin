@@ -222,7 +222,7 @@ async function exitAssociationIfNeed(userId: string, player: PlayerEx, Send: (t)
   const randmemberId = getRandomFromARR(succList);
 
   if (randmemberId) {
-    const randmember = (await getDataJSONParseByKey(keys.player(randmemberId))) as PlayerEx;
+    const randmember = await getDataJSONParseByKey(keys.player(randmemberId));
 
     if (!randmember) {
       return;
@@ -309,7 +309,7 @@ const res = onResponse(selects, async e => {
   }
   const equipment = await readEquipment(userId);
 
-  if (equipment && equipment.武器 && equipment.武器.HP < 0) {
+  if (equipment?.武器 && equipment.武器.HP < 0) {
     void Send(Text(`身上携带邪祟之物，无法进行轮回,请将[${equipment.武器.name}]放下后再进行轮回`));
 
     return false;

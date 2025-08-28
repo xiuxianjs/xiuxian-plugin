@@ -89,7 +89,7 @@ const res = onResponse(selects, async e => {
     await writePlayer(userId, player);
     await redis.set(lastKey, String(now));
     if (isMessageEvent(e)) {
-      showSlayer(e);
+      void showSlayer(e);
     }
 
     return false;
@@ -127,7 +127,7 @@ const res = onResponse(selects, async e => {
   await writePlayer(userId, player);
   await redis.set(lastKey, String(now));
   if (isMessageEvent(e)) {
-    showSlayer(e);
+    void showSlayer(e);
   }
 
   return false;

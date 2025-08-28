@@ -5,16 +5,6 @@ import { existplayer, existNajieThing, addNajieThing, addExp2, keys } from '@src
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键服用血气丹$/;
 
-interface DanYaoItem {
-  name: string;
-  type: string;
-  class: string | number;
-  xueqi?: number;
-}
-interface NajieLike {
-  丹药?: DanYaoItem[];
-}
-
 function num(v, d = 0) {
   const n = Number(v);
 

@@ -44,13 +44,13 @@ export const Taopaotask = async () => {
   // 获取缓存中人物列表
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     let log_mag = ''; // 查询当前人物动作日志信息
 
-    log_mag = log_mag + '查询' + player_id + '是否有动作,';
+    log_mag = log_mag + '查询' + playerId + '是否有动作,';
     // 得到动作
 
-    const actionRaw = await getDataByUserId(player_id, 'action');
+    const actionRaw = await getDataByUserId(playerId, 'action');
     const action = safeParse<ActionState | null>(actionRaw, null);
 
     if (action) {
@@ -65,7 +65,7 @@ export const Taopaotask = async () => {
       }
 
       // 最后发送的消息
-      const msg: Array<DataMention | string> = [Mention(player_id)];
+      const msg: Array<DataMention | string> = [Mention(playerId)];
       // 动作结束时间
       let end_time = action.end_time;
       // 现在的时间
@@ -178,7 +178,7 @@ export const Taopaotask = async () => {
             const num = Number(weizhi.Grade ?? 0) + 1;
 
             lastMessage += `\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x${num}`;
-            await addNajieThing(player_id, '秘境之匙', '道具', num);
+            await addNajieThing(playerId, '秘境之匙', '道具', num);
             delete arr.group_id;
             if (slot) {
               slot.state = 0;
@@ -213,7 +213,7 @@ export const Taopaotask = async () => {
                 const count = t.数量 ?? 0;
 
                 if (tn && count > 0) {
-                  await addNajieThing(player_id, tn, tc, count);
+                  await addNajieThing(playerId, tn, tc, count);
                 }
               }
             }
@@ -226,12 +226,12 @@ export const Taopaotask = async () => {
             }
           }
           // 写入redis
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
           msg.push('\n' + lastMessage);
           if (isGroup && push_address) {
             pushInfo(push_address, isGroup, msg.join('\n'));
           } else {
-            pushInfo(player_id, isGroup, msg.join('\n'));
+            pushInfo(playerId, isGroup, msg.join('\n'));
           }
         }
       }

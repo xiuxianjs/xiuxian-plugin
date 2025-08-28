@@ -18,15 +18,15 @@ export const regular = /^(#|＃|\/)?熔炼.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   // 不开放私聊
   // （已弃用 game_action 直接 redis 检查，若需要应接入统一状态辅助工具）
-  const A = await looktripod(user_qq);
+  const A = await looktripod(userId);
 
   if (A !== 1) {
     void Send(Text('请先去#炼器师能力评测,再来煅炉吧'));
@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const player = await getDataJSONParseByKey(keys.player(user_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -59,7 +59,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const mynumRaw = await existNajieThing(user_qq, thingName, '材料');
+  const mynumRaw = await existNajieThing(userId, thingName, '材料');
   const mynum = typeof mynumRaw === 'number' ? mynumRaw : 0;
 
   if (mynum < thing_acount) {
@@ -70,7 +70,7 @@ const res = onResponse(selects, async e => {
 
   // 开始放入
 
-  const tripod = await readMytripod(user_qq);
+  const tripod = await readMytripod(userId);
 
   if (tripod.状态 === 1) {
     void Send(Text('正在炼制中,无法熔炼更多材料'));
@@ -103,11 +103,11 @@ const res = onResponse(selects, async e => {
     await writeDuanlu([]);
   }
   for (const item of newtripod) {
-    if (user_qq === item.qq) {
+    if (userId === item.qq) {
       item.材料.push(thingName);
       item.数量.push(thing_acount);
       await writeDuanlu(newtripod);
-      await addNajieThing(user_qq, thingName, '材料', -thing_acount);
+      await addNajieThing(userId, thingName, '材料', -thing_acount);
       const yongyou = num + Number(thing_acount);
 
       void Send(

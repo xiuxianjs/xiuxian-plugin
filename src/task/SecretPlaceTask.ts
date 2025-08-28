@@ -38,9 +38,9 @@ function isNajieCategory(v): v is NajieCategory {
 export const SecretPlaceTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
+  for (const playerId of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(player_id, 'action');
+    const actionRaw = await getDataByUserId(playerId, 'action');
     const action = safeParse<ActionState | null>(actionRaw, null);
 
     // 不为空，存在动作
@@ -55,13 +55,13 @@ export const SecretPlaceTask = async () => {
         }
       }
       // 最后发送的消息
-      const msg: Array<DataMention | string> = [Mention(player_id)];
+      const msg: Array<DataMention | string> = [Mention(playerId)];
       // 动作结束时间
       let end_time = action.end_time;
       // 现在的时间
       const now_time = Date.now();
       // 用户信息
-      const player = await readPlayer(player_id);
+      const player = await readPlayer(playerId);
 
       if (!player) {
         continue;
@@ -189,7 +189,7 @@ export const SecretPlaceTask = async () => {
             }
           } else {
             m = '走在路上看见了一只蚂蚁！蚂蚁大仙送了你[起死回生丹';
-            await addNajieThing(player_id, '起死回生丹', '丹药', 1);
+            await addNajieThing(playerId, '起死回生丹', '丹药', 1);
             t1 = 0.5 + Math.random() * 0.5;
             t2 = 0.5 + Math.random() * 0.5;
           }
@@ -215,7 +215,7 @@ export const SecretPlaceTask = async () => {
                 player.幸运 -= player.addluckyNo;
                 player.addluckyNo = 0;
               }
-              await writePlayer(player_id, player);
+              await writePlayer(playerId, player);
             }
           }
           m += `]×${n}个。`;
@@ -230,7 +230,7 @@ export const SecretPlaceTask = async () => {
             xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
             qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
             if (thingName && thingClass) {
-              await addNajieThing(player_id, thingName, thingClass, n);
+              await addNajieThing(playerId, thingName, thingClass, n);
             }
             lastMessage += `${m}不巧撞见[${
               playerB.名号
@@ -239,7 +239,7 @@ export const SecretPlaceTask = async () => {
             }`;
             const random = Math.random(); // 万分之一出神迹
             let newrandom = 0.995;
-            const dy = await readDanyao(player_id);
+            const dy = await readDanyao(playerId);
 
             newrandom -= Number(dy.beiyong1 || 0);
             if (dy.ped > 0) {
@@ -249,7 +249,7 @@ export const SecretPlaceTask = async () => {
               dy.ped = 0;
             }
             // 旧逻辑写回：无法直接存储状态对象，只能原样写回列表（保持兼容）
-            await writeDanyao(player_id, dy);
+            await writeDanyao(playerId, dy);
             if (random > newrandom) {
               const xianchonkouliangList = await getDataList('Xianchonkouliang');
               const length = xianchonkouliangList.length;
@@ -260,7 +260,7 @@ export const SecretPlaceTask = async () => {
 
                 lastMessage
                   += '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
-                await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1);
+                await addNajieThing(playerId, kouliang.name, '仙宠口粮', 1);
               }
             }
             if (random > 0.1 && random < 0.1002) {
@@ -268,7 +268,7 @@ export const SecretPlaceTask = async () => {
                 += '\n'
                 + playerB.名号
                 + '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
-              await addNajieThing(player_id, '长相奇怪的小石头', '道具', 1);
+              await addNajieThing(playerId, '长相奇怪的小石头', '道具', 1);
             }
           } else if (msgg.find(item => item === winB)) {
             xiuwei = 800;
@@ -290,14 +290,14 @@ export const SecretPlaceTask = async () => {
           arr.Place_actionplus = 1;
           arr.end_time = Date.now();
           delete arr.group_id;
-          await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-          await addExp2(player_id, qixue);
-          await addExp(player_id, xiuwei);
-          await addHP(player_id, dataBattle.A_xue);
+          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await addExp2(playerId, qixue);
+          await addExp(playerId, xiuwei);
+          await addHP(playerId, dataBattle.A_xue);
           if (isGroup && push_address) {
             pushInfo(push_address, isGroup, msg);
           } else {
-            pushInfo(player_id, isGroup, msg);
+            pushInfo(playerId, isGroup, msg);
           }
         }
       }

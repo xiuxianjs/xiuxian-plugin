@@ -15,9 +15,9 @@ const res = onResponse(selects, async e => {
   await writeDuanlu([]);
   const playerList = await keysByPath(__PATH.player_path);
 
-  for (const player_id of playerList) {
-    await stopActionWithSuffix(player_id, 'action10');
-    await setValue(userKey(player_id, 'action10'), null);
+  for (const playerId of playerList) {
+    await stopActionWithSuffix(playerId, 'action10');
+    await setValue(userKey(playerId, 'action10'), null);
   }
   void Send(Text('清除完成'));
 });

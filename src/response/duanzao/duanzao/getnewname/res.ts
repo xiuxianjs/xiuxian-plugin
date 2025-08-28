@@ -48,9 +48,9 @@ function calcCanName(item: { atk: number; def: number; HP: number; type?: string
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -61,28 +61,28 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const [thingNameRaw, new_nameRaw] = raw.split('*');
+  const [thingNameRaw, newNameRaw] = raw.split('*');
   const thingName = toStr(thingNameRaw).trim();
-  const new_name = toStr(new_nameRaw).trim();
+  const newName = toStr(newNameRaw).trim();
 
-  if (!thingName || !new_name) {
+  if (!thingName || !newName) {
     void Send(Text('格式错误，应: 赋名旧名*新名'));
 
     return false;
   }
-  if (new_name.length > 8) {
+  if (newName.length > 8) {
     void Send(Text('字符超出最大限制(<=8)，请重新赋名'));
 
     return false;
   }
-  if (new_name === thingName) {
+  if (newName === thingName) {
     void Send(Text('新旧名称相同，无需赋名'));
 
     return false;
   }
 
   // 是否拥有该装备
-  const hasEquip = await existNajieThing(user_qq, thingName, '装备');
+  const hasEquip = await existNajieThing(userId, thingName, '装备');
 
   if (!hasEquip) {
     void Send(Text('你没有这件装备'));
@@ -91,7 +91,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 全局重名检查
-  if (await foundthing(new_name)) {
+  if (await foundthing(newName)) {
     void Send(Text('这个世间已经拥有这把武器了'));
 
     return false;
@@ -108,13 +108,13 @@ const res = onResponse(selects, async e => {
   }
 
   // 防止重复赋名（用旧名或已改名后的新名都算）
-  if (records.some(r => r.name === thingName || r.name === new_name)) {
+  if (records.some(r => r.name === thingName || r.name === newName)) {
     void Send(Text('一个装备只能赋名一次'));
 
     return false;
   }
 
-  const najie = await readNajie(user_qq);
+  const najie = await readNajie(userId);
 
   if (!najie) {
     void Send(Text('纳戒数据异常'));
@@ -142,21 +142,21 @@ const res = onResponse(selects, async e => {
   }
 
   // 执行赋名
-  target.name = new_name;
+  target.name = newName;
   records.push({
-    name: new_name,
+    name: newName,
     type: target.type || '武器',
     atk,
     def,
     HP,
-    author_name: user_qq
+    author_name: userId
   });
 
-  await writeNajie(user_qq, najie);
+  await writeNajie(userId, najie);
   // 写回记录（转为通用结构数组）
   await writeIt(records.map(r => ({ ...r })));
 
-  void Send(Text(`附名成功,您的${thingName}更名为${new_name}`));
+  void Send(Text(`附名成功,您的${thingName}更名为${newName}`));
 
   return false;
 });

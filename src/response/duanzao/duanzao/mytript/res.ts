@@ -7,12 +7,12 @@ export const regular = /^(#|＃|\/)?我的锻炉/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const A = await looktripod(user_qq);
+  const A = await looktripod(userId);
 
   if (A !== 1) {
     void Send(Text('请先去#炼器师能力评测,再来煅炉吧'));
@@ -20,7 +20,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const a = await readMytripod(user_qq);
+  const a = await readMytripod(userId);
 
   if (a.材料.length === 0) {
     void Send(Text('锻炉里空空如也,没什么好看的'));

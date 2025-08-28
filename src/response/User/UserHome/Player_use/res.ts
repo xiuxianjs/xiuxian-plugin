@@ -208,7 +208,7 @@ const res = onResponse(selects, async e => {
 
       player.islucky = 10 * quantity;
       player.addluckyNo = xingyun;
-      player.幸运 = (player.幸运 || 0) + xingyun;
+      player.幸运 = (player.幸运 ?? 0) + xingyun;
       await writePlayer(userId, player);
       void message.send(
         format(
@@ -558,7 +558,7 @@ const res = onResponse(selects, async e => {
       player.linggenshow = 0;
       await writePlayer(userId, player);
       void message.send(
-        format(Text('你眼前一亮，看到了自己的灵根,' + `"${player.灵根.type}"：${player.灵根.name}`))
+        format(Text(`你眼前一亮，看到了自己的灵根,"${player.灵根.type}"：${player.灵根.name}`))
       );
 
       return;

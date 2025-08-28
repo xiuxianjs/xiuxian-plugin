@@ -7,13 +7,13 @@ export const regular = /^(#|＃|\/)?炼器师能力评测/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const user_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(user_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(user_qq);
+  const player = await readPlayer(userId);
 
   if (player.occupation !== '炼器师') {
     void Send(Text('你还不是炼器师哦,宝贝'));
@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const b = await settripod(user_qq);
+  const b = await settripod(userId);
 
   void Send(Text(b));
 });

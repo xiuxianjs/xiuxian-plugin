@@ -159,9 +159,7 @@ async function biguanJiesuan(userId, time, isRandom, group_id?) {
       } else {
         msg.push('\n本次闭关顿悟,额外增加修为:' + rand * time);
       }
-    }
-    // 走火入魔
-    else if (rand > 0.8) {
+    } else if (rand > 0.8) {
       rand = Math.trunc(rand * 10) + 5;
       otherEXP = -1 * rand * time;
       xueqi = Math.trunc(rand * time * dy.beiyong4);

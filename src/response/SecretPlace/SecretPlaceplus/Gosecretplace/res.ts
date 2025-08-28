@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const diDianList = await getDataList('Didian');
-  const weizhi = await diDianList.find(item => item.name === didian);
+  const weizhi = diDianList.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhi)) {
     return false;
