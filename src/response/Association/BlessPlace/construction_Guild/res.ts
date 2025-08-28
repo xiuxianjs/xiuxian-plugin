@@ -15,8 +15,8 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
 
   ass.宗门建设等级 = level + add;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  await setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  await setDataJSONStringifyByKey(keys.player(userId), player);
   void Send(
     Text(
       `成功消耗 宗门${cost}灵石 建设宗门，增加了${add}点建设度,当前宗门建设等级为${ass.宗门建设等级}`

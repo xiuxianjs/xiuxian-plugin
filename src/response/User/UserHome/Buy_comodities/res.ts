@@ -31,9 +31,9 @@ const MAX_QTY = 9999;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   if (!(await Go(e))) {
@@ -48,24 +48,24 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const [rawName, rawQty] = raw.split('*');
-  const thing_name = rawName?.trim();
+  const thingName = rawName?.trim();
 
-  if (!thing_name) {
+  if (!thingName) {
     void Send(Text('物品名称不能为空'));
 
     return false;
   }
 
   const commodityData = await getDataList('Commodity');
-  const commodity = (commodityData as Commodity[]).find(item => item.name === thing_name);
+  const commodity = (commodityData as Commodity[]).find(item => item.name === thingName);
 
   if (!commodity) {
-    void Send(Text(`柠檬堂还没有这样的东西: ${thing_name}`));
+    void Send(Text(`柠檬堂还没有这样的东西: ${thingName}`));
 
     return false;
   }
 
-  let qty = toInt(await convert2integer(rawQty), 1);
+  let qty = toInt(convert2integer(rawQty), 1);
 
   if (!Number.isFinite(qty) || qty <= 0) {
     qty = 1;
@@ -74,7 +74,7 @@ const res = onResponse(selects, async e => {
     qty = MAX_QTY;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('存档异常'));
@@ -103,16 +103,16 @@ const res = onResponse(selects, async e => {
   }
 
   if (lingshi < totalPrice) {
-    void Send(Text(`口袋里的灵石不足以支付 ${thing_name}, 还需要 ${totalPrice - lingshi} 灵石`));
+    void Send(Text(`口袋里的灵石不足以支付 ${thingName}, 还需要 ${totalPrice - lingshi} 灵石`));
 
     return false;
   }
 
-  await addNajieThing(usr_qq, thing_name, commodity.class as NajieCategory, qty);
-  await addCoin(usr_qq, -totalPrice);
+  await addNajieThing(userId, thingName, commodity.class as NajieCategory, qty);
+  await addCoin(userId, -totalPrice);
   void Send(
     Text(
-      `购买成功! 获得[${thing_name}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`
+      `购买成功! 获得[${thingName}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`
     )
   );
 

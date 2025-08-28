@@ -19,13 +19,13 @@ const CD_MS = 10 * 1000; // 10秒冷却，避免频繁截图占用资源
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   // 冷却判断
-  const cdKey = getRedisKey(usr_qq, 'showNajieCD');
+  const cdKey = getRedisKey(userId, 'showNajieCD');
   const lastTs = toInt(await redis.get(cdKey));
   const now = Date.now();
 

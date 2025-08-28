@@ -45,11 +45,11 @@ export const PlayerControlTask = async () => {
     // 不为空，存在动作
     if (action !== null) {
       let push_address; // 消息推送地址
-      let is_group = false; // 是否推送到群
+      let isGroup = false; // 是否推送到群
 
       if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
         if (notUndAndNull(action.group_id)) {
-          is_group = true;
+          isGroup = true;
           push_address = action.group_id;
         }
       }
@@ -81,7 +81,7 @@ export const PlayerControlTask = async () => {
             = (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
           let rand = Math.random();
           let xueqi = 0;
-          let other_xiuwei = 0;
+          let otherEXP = 0;
           // 炼丹师丹药修正
           let transformation = '修为';
           // 兼容旧版：readDanyao 现在返回数组，但老逻辑期望对象包含 biguan/biguanxl/lianti/beiyong4 等字段
@@ -101,7 +101,7 @@ export const PlayerControlTask = async () => {
 
           if (rand < 0.2) {
             rand = Math.trunc(rand * 10) + 45;
-            other_xiuwei = rand * time;
+            otherEXP = rand * time;
             xueqi = Math.trunc(rand * time * dy.beiyong4);
             if (transformation === '血气') {
               msg.push('\n本次闭关顿悟,受到炼神之力修正,额外增加血气:' + xueqi);
@@ -110,7 +110,7 @@ export const PlayerControlTask = async () => {
             }
           } else if (rand > 0.8) {
             rand = Math.trunc(rand * 10) + 5;
-            other_xiuwei = -1 * rand * time;
+            otherEXP = -1 * rand * time;
             xueqi = Math.trunc(rand * time * dy.beiyong4);
             if (transformation === '血气') {
               msg.push(
@@ -157,21 +157,17 @@ export const PlayerControlTask = async () => {
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           xueqi = Math.trunc(xiuwei * time * dy.beiyong4);
           if (transformation === '血气') {
-            await setFileValue(
-              player_id,
-              (xiuwei * time + other_xiuwei) * dy.beiyong4,
-              transformation
-            );
+            await setFileValue(player_id, (xiuwei * time + otherEXP) * dy.beiyong4, transformation);
             msg.push('\n受到炼神之力的影响,增加气血:' + xueqi, '血量增加:' + blood * time);
           } else {
-            await setFileValue(player_id, xiuwei * time + other_xiuwei, transformation);
+            await setFileValue(player_id, xiuwei * time + otherEXP, transformation);
             msg.push('\n增加修为:' + xiuwei * time, '血量增加:' + blood * time);
           }
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-          if (is_group) {
-            await pushInfo(push_address, is_group, msg);
+          if (isGroup) {
+            pushInfo(push_address, isGroup, msg);
           } else {
-            await pushInfo(player_id, is_group, msg);
+            pushInfo(player_id, isGroup, msg);
           }
 
           if (dy.lianti <= 0) {
@@ -201,23 +197,23 @@ export const PlayerControlTask = async () => {
           const rawTime2 = action.time;
           const time
             = (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
-          let other_lingshi = 0;
+          let otherLingshi = 0;
           let other_xueqi = 0;
           let rand = Math.random();
 
           if (rand < 0.2) {
             rand = Math.trunc(rand * 10) + 40;
-            other_lingshi = rand * time;
+            otherLingshi = rand * time;
             msg.push('\n降妖路上途径金银坊，一时手痒入场一掷：6 6 6，额外获得灵石' + rand * time);
           } else if (rand > 0.8) {
             rand = Math.trunc(rand * 10) + 5;
-            other_lingshi = -1 * rand * time;
+            otherLingshi = -1 * rand * time;
             msg.push(
               '\n途径盗宝团营地，由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少' + rand * time
             );
           } else if (rand > 0.5 && rand < 0.6) {
             rand = Math.trunc(rand * 10) + 20;
-            other_lingshi = -1 * rand * time;
+            otherLingshi = -1 * rand * time;
             other_xueqi = -2 * rand * time;
             msg.push(
               '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了'
@@ -230,7 +226,7 @@ export const PlayerControlTask = async () => {
           //
           player.血气 += other_xueqi;
           await writePlayer(player_id, player);
-          const get_lingshi = Math.trunc(lingshi * time + other_lingshi); // 最后获取到的灵石
+          const get_lingshi = Math.trunc(lingshi * time + otherLingshi); // 最后获取到的灵石
 
           //
           await setFileValue(player_id, get_lingshi, '灵石'); // 添加灵石
@@ -249,10 +245,10 @@ export const PlayerControlTask = async () => {
           delete arr.group_id; // 结算完去除group_id
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           msg.push('\n降妖得到' + get_lingshi + '灵石');
-          if (is_group) {
-            await pushInfo(push_address, is_group, msg);
+          if (isGroup) {
+            pushInfo(push_address, isGroup, msg);
           } else {
-            await pushInfo(player_id, is_group, msg);
+            pushInfo(player_id, isGroup, msg);
           }
         }
       }

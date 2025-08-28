@@ -45,7 +45,7 @@ export interface ActionState {
   mine?: string | number;
   cishu?: number;
   xijie?: string | number;
-  A_player?: ActionPlayerLite;
+  playerA?: ActionPlayerLite;
   thing?: PlaceThing[];
   is_jiesuan?: number;
 }

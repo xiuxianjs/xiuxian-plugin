@@ -53,13 +53,13 @@ interface PlayerGuildEntry {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return false;
@@ -149,10 +149,10 @@ const res = onResponse(selects, async e => {
     职位: '外门弟子',
     time: [date, nowTime]
   } as PlayerGuildEntry;
-  ass.所有成员.push(usr_qq);
-  ass.外门弟子.push(usr_qq);
-  await playerEfficiency(usr_qq);
-  await writePlayer(usr_qq, serializePlayer(player) as unknown as Player);
+  ass.所有成员.push(userId);
+  ass.外门弟子.push(userId);
+  await playerEfficiency(userId);
+  await writePlayer(userId, serializePlayer(player) as unknown as Player);
   await setDataJSONStringifyByKey(keys.association(association_name), ass);
   void Send(Text(`恭喜你成功加入${association_name}`));
 });

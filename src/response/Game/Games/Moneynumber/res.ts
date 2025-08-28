@@ -10,10 +10,10 @@ export const regular = /^(#|＃|\/)?金银坊$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   // 基础进入校验
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -31,7 +31,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 玩家数据
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -52,11 +52,11 @@ const res = onResponse(selects, async e => {
   if (playerCoin < BASE_COST) {
     const now_time = Date.now();
 
-    await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time);
-    await redis.del(getRedisKey(usr_qq, 'game_action'));
-    game.yazhu[usr_qq] = 0;
-    if (game.game_time[usr_qq]) {
-      clearTimeout(game.game_time[usr_qq]);
+    await redis.set(getRedisKey(userId, 'last_game_time'), now_time);
+    await redis.del(getRedisKey(userId, 'game_action'));
+    game.yazhu[userId] = 0;
+    if (game.game_time[userId]) {
+      clearTimeout(game.game_time[userId]);
     }
     void Send(Text('媚娘：钱不够也想玩？'));
 
@@ -64,7 +64,7 @@ const res = onResponse(selects, async e => {
   }
 
   const now_time = Date.now();
-  const last_game_time_raw = await redis.get(getRedisKey(usr_qq, 'last_game_time'));
+  const last_game_time_raw = await redis.get(getRedisKey(userId, 'last_game_time'));
   let last_game_time = Number(last_game_time_raw);
 
   if (!Number.isFinite(last_game_time)) {
@@ -83,9 +83,9 @@ const res = onResponse(selects, async e => {
   }
 
   // 记录本次时间
-  await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time);
+  await redis.set(getRedisKey(userId, 'last_game_time'), now_time);
 
-  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
+  const game_action = await redis.get(getRedisKey(userId, 'game_action'));
 
   if (Number(game_action) === 1) {
     void Send(Text('媚娘：猜大小正在进行哦!'));
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
   }
 
   void Send(Text('媚娘：发送[#投入+数字]或[#梭哈]'));
-  await redis.set(getRedisKey(usr_qq, 'game_action'), 1);
+  await redis.set(getRedisKey(userId, 'game_action'), 1);
 
   return false;
 });

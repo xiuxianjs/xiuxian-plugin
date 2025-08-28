@@ -9,9 +9,9 @@ export const regular = /^(#|＃|\/)?天地堂/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 查看存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -27,7 +27,7 @@ const res = onResponse(selects, async e => {
   let m = tiandibang.length;
 
   for (m = 0; m < tiandibang.length; m++) {
-    if (tiandibang[m].qq === usr_qq) {
+    if (tiandibang[m].qq === userId) {
       break;
     }
   }

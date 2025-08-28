@@ -9,29 +9,29 @@ export const regular = /^(#|＃|\/)?打开钱包$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
   }
-  const thing_name = '水脚脚的钱包';
+  const thingName = '水脚脚的钱包';
   // x是纳戒内有的数量
-  const acount = await existNajieThing(usr_qq, thing_name, '装备');
+  const acount = await existNajieThing(userId, thingName, '装备');
 
   // 没有
   if (!acount) {
-    void Send(Text(`你没有[${thing_name}]这样的装备`));
+    void Send(Text(`你没有[${thingName}]这样的装备`));
 
     return false;
   }
   // 扣掉装备
-  await addNajieThing(usr_qq, thing_name, '装备', -1);
+  await addNajieThing(userId, thingName, '装备', -1);
   // 获得随机
   const x = 0.4;
   const random1 = Math.random();
@@ -50,24 +50,24 @@ const res = onResponse(selects, async e => {
       if (random3 < z) {
         if (random4 < p) {
           lingshi = 2000000;
-          m = player.名号 + '打开了[' + thing_name + ']金光一现！' + lingshi + '颗灵石！';
+          m = player.名号 + '打开了[' + thingName + ']金光一现！' + lingshi + '颗灵石！';
         } else {
           lingshi = 1000000;
-          m = player.名号 + '打开了[' + thing_name + ']金光一现!' + lingshi + '颗灵石！';
+          m = player.名号 + '打开了[' + thingName + ']金光一现!' + lingshi + '颗灵石！';
         }
       } else {
         lingshi = 400000;
-        m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
+        m = player.名号 + '打开了[' + thingName + ']你很开心的得到了' + lingshi + '颗灵石！';
       }
     } else {
       lingshi = 180000;
-      m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
+      m = player.名号 + '打开了[' + thingName + ']你很开心的得到了' + lingshi + '颗灵石！';
     }
   } else {
     lingshi = 100000;
-    m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
+    m = player.名号 + '打开了[' + thingName + ']你很开心的得到了' + lingshi + '颗灵石！';
   }
-  await addCoin(usr_qq, lingshi);
+  await addCoin(userId, lingshi);
   void Send(Text(m));
 
   return false;

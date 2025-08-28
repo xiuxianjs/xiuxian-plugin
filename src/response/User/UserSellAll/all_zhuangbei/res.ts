@@ -19,9 +19,7 @@ interface EquipItem {
   HP: number;
   [k: string]: unknown;
 }
-interface NajieEquipBag {
-  装备?: EquipItem[];
-}
+
 interface EquipmentSlots {
   武器?: EquipItem;
   护具?: EquipItem;
@@ -76,19 +74,19 @@ function toEquipLike(item: EquipItem, cls: string): EquipmentLike {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+  const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
     return;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return;
@@ -101,7 +99,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const equipment = await getDataJSONParseByKey(keys.equipment(usr_qq));
+  const equipment = await getDataJSONParseByKey(keys.equipment(userId));
 
   if (!equipment) {
     void Send(Text('当前装备数据异常'));
@@ -144,7 +142,7 @@ const res = onResponse(selects, async e => {
       if (defThing) {
         const equipArg = toEquipLike(best, defThing.class);
 
-        await insteadEquipment(usr_qq, equipArg);
+        await insteadEquipment(userId, equipArg);
       }
     }
   }

@@ -197,7 +197,7 @@ const res = onResponse(selects, async e => {
         houzhui = '三灵共堂';
         xishu += 0.05;
       } else if (qianzhui === 2) {
-        const shuzufu = await restraint(wuwei, maxTuple[0]);
+        const shuzufu = restraint(wuwei, maxTuple[0]);
 
         houzhui = shuzufu[0];
         xishu += shuzufu[1];
@@ -205,7 +205,7 @@ const res = onResponse(selects, async e => {
           fangyuxuejian = 0.5;
         }
       } else if (qianzhui === 1) {
-        const mu = await mainyuansu(wuwei);
+        const mu = mainyuansu(wuwei);
 
         houzhui = '纯' + mu;
         xishu += 0.15;

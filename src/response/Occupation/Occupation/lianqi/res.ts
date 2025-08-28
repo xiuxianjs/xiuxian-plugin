@@ -19,12 +19,12 @@ interface TuzhiItem {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -127,7 +127,7 @@ const res = onResponse(selects, async e => {
   const expGainPer = tuzhi.exp[0];
 
   for (const m of tuzhi.materials) {
-    const owned = await existNajieThing(usr_qq, m.name, '材料');
+    const owned = await existNajieThing(userId, m.name, '材料');
     const need = m.amount * count;
 
     if (typeof owned !== 'number' || owned < need) {
@@ -142,7 +142,7 @@ const res = onResponse(selects, async e => {
     const need = m.amount * count;
 
     costMsg += `${m.name}×${need}，`;
-    await addNajieThing(usr_qq, m.name, '材料', -need);
+    await addNajieThing(userId, m.name, '材料', -need);
   }
 
   const pinjiName = ['劣', '普', '优', '精', '极', '绝', '顶'];
@@ -158,7 +158,7 @@ const res = onResponse(selects, async e => {
       const pjName = pinjiName[pinji];
 
       pinjiStat[pjName] = (pinjiStat[pjName] || 0) + 1;
-      await addNajieThing(usr_qq, equipment_name, '装备', 1, pinji);
+      await addNajieThing(userId, equipment_name, '装备', 1, pinji);
     }
   }
 
@@ -176,7 +176,7 @@ const res = onResponse(selects, async e => {
 
   const totalExp = expGainPer * success;
 
-  await addExp4(usr_qq, totalExp);
+  await addExp4(userId, totalExp);
 
   let pjSummary = Object.entries(pinjiStat)
     .sort((a, b) => pinjiName.indexOf(b[0]) - pinjiName.indexOf(a[0]))

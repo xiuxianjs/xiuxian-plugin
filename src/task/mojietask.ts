@@ -37,10 +37,10 @@ export const MojiTask = async () => {
     // 不为空，存在动作
     if (action !== null) {
       let push_address = player_id; // 消息推送地址
-      let is_group = false; // 是否推送到群
+      let isGroup = false; // 是否推送到群
 
       if (isExploreAction(action) && notUndAndNull(action.group_id)) {
-        is_group = true;
+        isGroup = true;
         push_address = action.group_id!;
       }
 
@@ -67,8 +67,8 @@ export const MojiTask = async () => {
         end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
         // 时间过了
         if (now_time > end_time) {
-          let thing_name;
-          let thing_class;
+          let thingName;
+          let thingClass;
           const x = 0.98;
           const random1 = Math.random();
           const y = 0.4;
@@ -80,7 +80,7 @@ export const MojiTask = async () => {
           let n = 1;
           let t1: number;
           let t2: number;
-          let last_msg = '';
+          let lastMessage = '';
           let fyd_msg = '';
 
           const data = {
@@ -91,30 +91,30 @@ export const MojiTask = async () => {
             if (random2 <= y) {
               if (random3 <= z) {
                 random4 = Math.floor(Math.random() * data.mojie[0].three.length);
-                thing_name = data.mojie[0].three[random4].name;
-                thing_class = data.mojie[0].three[random4].class;
-                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thing_name}]`;
+                thingName = data.mojie[0].three[random4].name;
+                thingClass = data.mojie[0].three[random4].class;
+                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thingName}]`;
                 t1 = 2 + Math.random();
                 t2 = 2 + Math.random();
               } else {
                 random4 = Math.floor(Math.random() * data.mojie[0].two.length);
-                thing_name = data.mojie[0].two[random4].name;
-                thing_class = data.mojie[0].two[random4].class;
-                m = `在洞穴中拿到[${thing_name}]`;
+                thingName = data.mojie[0].two[random4].name;
+                thingClass = data.mojie[0].two[random4].class;
+                m = `在洞穴中拿到[${thingName}]`;
                 t1 = 1 + Math.random();
                 t2 = 1 + Math.random();
               }
             } else {
               random4 = Math.floor(Math.random() * data.mojie[0].one.length);
-              thing_name = data.mojie[0].one[random4].name;
-              thing_class = data.mojie[0].one[random4].class;
-              m = `捡到了[${thing_name}]`;
+              thingName = data.mojie[0].one[random4].name;
+              thingClass = data.mojie[0].one[random4].class;
+              m = `捡到了[${thingName}]`;
               t1 = 0.5 + Math.random() * 0.5;
               t2 = 0.5 + Math.random() * 0.5;
             }
           } else {
-            thing_name = '';
-            thing_class = '';
+            thingName = '';
+            thingClass = '';
             m = '走在路上都没看见一只蚂蚁！';
             t1 = 2 + Math.random();
             t2 = 2 + Math.random();
@@ -123,12 +123,12 @@ export const MojiTask = async () => {
 
           if (random < player.幸运) {
             if (random < player.addluckyNo) {
-              last_msg += '福源丹生效，所以在';
+              lastMessage += '福源丹生效，所以在';
             } else if (player.仙宠.type === '幸运') {
-              last_msg += '仙宠使你在探索中欧气满满，所以在';
+              lastMessage += '仙宠使你在探索中欧气满满，所以在';
             }
             n++;
-            last_msg += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
+            lastMessage += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
           }
           if (player.islucky > 0) {
             player.islucky--;
@@ -160,12 +160,12 @@ export const MojiTask = async () => {
             qixue = Math.trunc(qixue);
             await addNajieThing(player_id, '血魔丹', '道具', -1);
           }
-          if (thing_name !== '' || thing_class !== '') {
-            await addNajieThing(player_id, thing_name, thing_class, n);
+          if (thingName !== '' || thingClass !== '') {
+            await addNajieThing(player_id, thingName, thingClass, n);
           }
-          last_msg
+          lastMessage
             += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
-          msg.push('\n' + player.名号 + last_msg + fyd_msg);
+          msg.push('\n' + player.名号 + lastMessage + fyd_msg);
           const arr: ExploreActionState = {
             ...act
           };
@@ -188,7 +188,7 @@ export const MojiTask = async () => {
             await addExp2(player_id, qixue);
             await addExp(player_id, xiuwei);
             // 发送消息
-            await pushInfo(push_address, is_group, msg.join(''));
+            pushInfo(push_address, isGroup, msg.join(''));
           } else {
             if (typeof arr.cishu === 'number') {
               arr.cishu--;
@@ -201,7 +201,7 @@ export const MojiTask = async () => {
             try {
               const temp = await readTemp();
               const p = {
-                msg: player.名号 + last_msg + fyd_msg,
+                msg: player.名号 + lastMessage + fyd_msg,
                 qq_group: push_address
               };
 
@@ -210,7 +210,7 @@ export const MojiTask = async () => {
             } catch {
               const temp: { msg: string; qq?: string; qq_group: string }[] = [];
               const p = {
-                msg: player.名号 + last_msg + fyd_msg,
+                msg: player.名号 + lastMessage + fyd_msg,
                 qq: player_id,
                 qq_group: push_address
               };

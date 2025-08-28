@@ -70,10 +70,10 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const now = Date.now();
   const fightCdMs = 5 * 60000;
-  const lastTimeRaw = await redis.get(getRedisKey(usr_qq, 'BOSSCD'));
+  const lastTimeRaw = await redis.get(getRedisKey(userId, 'BOSSCD'));
   const lastTime = toInt(lastTimeRaw);
 
   if (now < lastTime + fightCdMs) {
@@ -85,7 +85,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     void Send(Text('区区凡人，也想参与此等战斗中吗？'));
@@ -104,7 +104,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'));
+  const actionRaw = await redis.get(getRedisKey(userId, 'action'));
   const action = parseJson<ActionState | null>(actionRaw, null);
 
   if (action?.end_time && Date.now() <= action.end_time) {
@@ -121,8 +121,8 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (WorldBossBattleInfo.CD[usr_qq]) {
-    const seconds = Math.trunc((300000 - (Date.now() - WorldBossBattleInfo.CD[usr_qq])) / 1000);
+  if (WorldBossBattleInfo.CD[userId]) {
+    const seconds = Math.trunc((300000 - (Date.now() - WorldBossBattleInfo.CD[userId])) / 1000);
 
     if (seconds <= 300 && seconds >= 0) {
       void Send(Text(`刚刚一战消耗了太多气力，还是先歇息一会儿吧~(剩余${seconds}秒)`));
@@ -157,16 +157,16 @@ const res = onResponse(selects, async e => {
   let userIdx = 0;
 
   if (!recordStr || recordStr === '0') {
-    PlayerRecordJSON = { QQ: [usr_qq], TotalDamage: [0], Name: [player.名号] };
+    PlayerRecordJSON = { QQ: [userId], TotalDamage: [0], Name: [player.名号] };
   } else {
     PlayerRecordJSON = parseJson<PlayerRecordData>(recordStr, {
       QQ: [],
       TotalDamage: [],
       Name: []
     });
-    userIdx = PlayerRecordJSON.QQ.indexOf(usr_qq);
+    userIdx = PlayerRecordJSON.QQ.indexOf(userId);
     if (userIdx === -1) {
-      PlayerRecordJSON.QQ.push(usr_qq);
+      PlayerRecordJSON.QQ.push(userId);
       PlayerRecordJSON.Name.push(player.名号);
       PlayerRecordJSON.TotalDamage.push(0);
       userIdx = PlayerRecordJSON.QQ.length - 1;
@@ -199,10 +199,10 @@ const res = onResponse(selects, async e => {
   }
   WorldBossBattleInfo.setLock(1);
 
-  const Data_battle = await zdBattle(player, Boss);
-  const msg = Data_battle.msg;
-  const A_win = `${player.名号}击败了${Boss.名号}`;
-  const B_win = `${Boss.名号}击败了${player.名号}`;
+  const dataBattle = await zdBattle(player, Boss);
+  const msg = dataBattle.msg;
+  const winA = `${player.名号}击败了${Boss.名号}`;
+  const winB = `${Boss.名号}击败了${player.名号}`;
 
   if (msg.length <= 60) {
     void Send(Text(msg.join('\n')));
@@ -223,8 +223,8 @@ const res = onResponse(selects, async e => {
   }
 
   let dealt = 0;
-  const playerWin = msg.includes(A_win);
-  const bossWin = msg.includes(B_win);
+  const playerWin = msg.includes(winA);
+  const bossWin = msg.includes(winB);
 
   if (playerWin) {
     dealt = Math.trunc(WorldBossStatus.Healthmax * 0.06 + Harm(player.攻击 * 0.85, Boss.防御) * 10);
@@ -235,7 +235,7 @@ const res = onResponse(selects, async e => {
     WorldBossStatus.Health -= dealt;
     void Send(Text(`${player.名号}被[${Boss.名号}]击败了,只对[金角大王]造成了${dealt}伤害`));
   }
-  await addHP(usr_qq, Data_battle.A_xue);
+  await addHP(userId, dataBattle.A_xue);
   await sleep(1000);
   const random = Math.random();
 
@@ -248,7 +248,7 @@ const res = onResponse(selects, async e => {
     dealt += extra;
     WorldBossStatus.Health -= extra;
     void Send(Text(`危及时刻,万先盟-韩立前来助阵,对[金角大王]造成${extra}伤害,并治愈了你的伤势`));
-    await addHP(usr_qq, player.血量上限);
+    await addHP(userId, player.血量上限);
   }
 
   await sleep(1000);
@@ -264,10 +264,10 @@ const res = onResponse(selects, async e => {
     const groups = await redis.smembers(glKey);
 
     for (const g of groups) {
-      await pushInfo(g, true, killMsg);
+      pushInfo(g, true, killMsg);
     }
-    await addCoin(usr_qq, 500000);
-    logger.info(`[金角大王] 结算:${usr_qq}增加奖励500000`);
+    await addCoin(userId, 500000);
+    logger.info(`[金角大王] 结算:${userId}增加奖励500000`);
 
     WorldBossStatus.KilledTime = Date.now();
     await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus));
@@ -320,7 +320,7 @@ const res = onResponse(selects, async e => {
     void Send(Text(Rewardmsg.join('\n')));
   }
 
-  WorldBossBattleInfo.setCD(usr_qq, Date.now());
+  WorldBossBattleInfo.setCD(userId, Date.now());
   WorldBossBattleInfo.setLock(0);
 
   return false;

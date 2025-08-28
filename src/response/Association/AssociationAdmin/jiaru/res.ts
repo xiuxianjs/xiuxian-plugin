@@ -9,8 +9,8 @@ export const regular = /^(#|＃|\/)?设置门槛.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;

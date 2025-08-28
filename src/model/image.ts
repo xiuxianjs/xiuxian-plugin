@@ -44,11 +44,11 @@ function isAssociationInfo(v): v is AssociationInfo {
 
 export async function getSupermarketImage(
   e: EventsMessageCreateEnum,
-  thing_class?: string
+  thingClass?: string
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
@@ -67,12 +67,12 @@ export async function getSupermarketImage(
   } catch {
     await writeExchange([]);
   }
-  if (thing_class) {
-    Exchange_list = Exchange_list.filter(item => item.name.class === thing_class);
+  if (thingClass) {
+    Exchange_list = Exchange_list.filter(item => item.name.class === thingClass);
   }
   Exchange_list.sort((a, b) => a.now_time - b.now_time);
   const supermarket_data = {
-    user_id: usr_qq,
+    user_id: userId,
     Exchange_list
   };
   const img = await screenshot('supermarket', e.UserId, supermarket_data);
@@ -82,11 +82,11 @@ export async function getSupermarketImage(
 
 export async function getForumImage(
   e: EventsMessageCreateEnum,
-  thing_class?: string
+  thingClass?: string
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
@@ -104,12 +104,12 @@ export async function getForumImage(
   } catch {
     await writeForum([]);
   }
-  if (thing_class) {
-    Forum = Forum.filter(item => item.thing.class === thing_class);
+  if (thingClass) {
+    Forum = Forum.filter(item => item.thing.class === thingClass);
   }
   Forum.sort((a, b) => b.now_time - a.now_time);
   const forum_data = {
-    user_id: usr_qq,
+    user_id: userId,
     Forum
   };
   const img = await screenshot('forum', e.UserId, forum_data);
@@ -118,9 +118,9 @@ export async function getForumImage(
 }
 
 export async function getdanfangImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
@@ -129,7 +129,7 @@ export async function getdanfangImage(e: EventsMessageCreateEnum): Promise<Scree
   const danfang_list = await getDataList('Danfang');
 
   const danfang_data = {
-    user_id: usr_qq,
+    user_id: userId,
     danfang_list: danfang_list
   };
   const img = await screenshot('danfang', e.UserId, danfang_data);
@@ -138,10 +138,10 @@ export async function getdanfangImage(e: EventsMessageCreateEnum): Promise<Scree
 }
 
 export async function getTuzhiImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
@@ -150,7 +150,7 @@ export async function getTuzhiImage(e: EventsMessageCreateEnum): Promise<Screens
   const tuzhi_list = await getDataList('Tuzhi');
 
   const tuzhi_data = {
-    user_id: usr_qq,
+    user_id: userId,
     tuzhi_list: tuzhi_list
   };
   const img = await screenshot('tuzhi', e.UserId, tuzhi_data);
@@ -166,9 +166,9 @@ export async function getNingmenghomeImage(
   e: EventsMessageCreateEnum,
   thing_type?: string
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
@@ -197,7 +197,7 @@ export async function getNingmenghomeImage(
     }
   }
   const ningmenghome_data = {
-    user_id: usr_qq,
+    user_id: userId,
     commodities_list: commodities_list
   };
   const img = await screenshot('ningmenghome', e.UserId, ningmenghome_data);
@@ -209,15 +209,15 @@ export async function getNingmenghomeImage(
  * @return image
  */
 export async function getValuablesImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
   }
   const valuables_data = {
-    user_id: usr_qq
+    user_id: userId
   };
   const img = await screenshot('valuables', e.UserId, valuables_data);
 
@@ -256,13 +256,13 @@ function Strand(
  */
 export async function getXianChongImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   let i: number;
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
   }
-  const najie: Najie | null = await readNajie(usr_qq);
+  const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
     return;
@@ -300,15 +300,15 @@ export async function getXianChongImage(e: EventsMessageCreateEnum): Promise<Scr
  * @return image
  */
 export async function getDaojuImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
   }
 
-  const najie: Najie | null = await readNajie(usr_qq);
+  const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
     return;
@@ -325,7 +325,7 @@ export async function getDaojuImage(e: EventsMessageCreateEnum): Promise<Screens
     }
   }
   const player_data = {
-    user_id: usr_qq,
+    user_id: userId,
     nickname: player.名号,
     daoju_have,
     daoju_need
@@ -339,24 +339,24 @@ export async function getDaojuImage(e: EventsMessageCreateEnum): Promise<Screens
  * @return image
  */
 export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
   }
-  const player = await getPlayerDataSafe(usr_qq);
+  const player = await getPlayerDataSafe(userId);
 
   if (!player) {
     return;
   }
-  const najie: Najie | null = await readNajie(usr_qq);
+  const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
     return;
   }
-  const equipment = await readEquipment(usr_qq);
+  const equipment = await readEquipment(userId);
 
   if (!equipment) {
     return;
@@ -404,7 +404,7 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
   }
 
   const player_data = {
-    user_id: usr_qq,
+    user_id: userId,
     nickname: player.名号,
     wuqi_have,
     wuqi_need
@@ -418,13 +418,13 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
  * @return image
  */
 export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
-  const player: Player | null = await readPlayer(usr_qq);
+  const userId = e.UserId;
+  const player: Player | null = await readPlayer(userId);
 
   if (!player) {
     return;
   }
-  const najie = await readNajie(usr_qq);
+  const najie = await readNajie(userId);
 
   if (!najie) {
     return;
@@ -457,7 +457,7 @@ export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<Screen
     }
   }
   const player_data = {
-    user_id: usr_qq,
+    user_id: userId,
     nickname: player.名号,
     danyao_have,
     danyao_need
@@ -471,9 +471,9 @@ export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<Screen
  * @return image
  */
 export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  const player = await getPlayerDataSafe(usr_qq);
+  const player = await getPlayerDataSafe(userId);
 
   if (!player) {
     return;
@@ -506,7 +506,7 @@ export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<Screen
     }
   }
   const player_data = {
-    user_id: usr_qq,
+    user_id: userId,
     nickname: player.名号,
     gongfa_have,
     gongfa_need
@@ -520,9 +520,9 @@ export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<Screen
  * @return image
  */
 export async function getPowerImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Send: SendFn = useSend(e) as SendFn;
-  const player = await getPlayerDataSafe(usr_qq);
+  const player = await getPlayerDataSafe(userId);
 
   if (!player) {
     void Send(Text('玩家数据获取失败'));
@@ -534,7 +534,7 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
   if (player.灵石 > 999999999999) {
     lingshi = 999999999999;
   }
-  await playerEfficiency(usr_qq);
+  await playerEfficiency(userId);
   if (!notUndAndNull(player.level_id)) {
     void Send(Text('请先#同步信息'));
 
@@ -555,7 +555,7 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
   const levelMax = physiqueList.find(item => item.level_id === player.Physique_id).level;
   const need_xueqi = physiqueList.find(item => item.level_id === player.Physique_id).exp;
   const playercopy = {
-    user_id: usr_qq,
+    user_id: userId,
     nickname: player.名号,
     need_xueqi: need_xueqi,
     xueqi: player.血气,
@@ -582,15 +582,15 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   let 法宝评级;
   let 护具评级;
   let 武器评级;
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
   }
-  const player = await getPlayerDataSafe(usr_qq);
+  const player = await getPlayerDataSafe(userId);
 
   if (!player) {
     void Send(Text('玩家数据获取失败'));
@@ -604,14 +604,14 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     ? rawXuexi.filter(v => typeof v === 'string')
     : [];
 
-  const equipment = await getEquipmentDataSafe(usr_qq);
+  const equipment = await getEquipmentDataSafe(userId);
 
   if (!equipment) {
     void Send(Text('装备数据获取失败'));
 
     return;
   }
-  const player_status_raw = await getPlayerAction(usr_qq);
+  const player_status_raw = await getPlayerAction(userId);
   const player_status: PlayerStatus = {
     action: String(player_status_raw.action),
     time:
@@ -635,7 +635,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   if (player.灵根 === null || player.灵根 === undefined) {
     player.灵根 = await getRandomTalent();
   }
-  await playerEfficiency(usr_qq); // 注意这里刷新了修炼效率提升
+  await playerEfficiency(userId); // 注意这里刷新了修炼效率提升
   if ((await player.linggenshow) !== 0) {
     player.灵根.type = '无';
     player.灵根.name = '未知';
@@ -691,19 +691,19 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   ).toFixed(2);
   const power2 = ((player.攻击 + player.防御 * 1.1 + player.血量上限 * 0.5) / 10000).toFixed(2);
   const level2 = physiqueList.find(item => item.level_id === player.Physique_id).level;
-  const need_exp = levelList.find(item => item.level_id === player.level_id).exp;
-  const need_exp2 = physiqueList.find(item => item.level_id === player.Physique_id).exp;
+  const needEXP = levelList.find(item => item.level_id === player.level_id).exp;
+  const needEXP2 = physiqueList.find(item => item.level_id === player.Physique_id).exp;
   let occupation = player.occupation;
   let occupation_level;
   let occupation_level_name;
   let occupation_exp;
-  let occupation_need_exp;
+  let occupation_needEXP;
 
   if (!notUndAndNull(player.occupation)) {
     occupation = '无';
     occupation_level_name = '-';
     occupation_exp = 0;
-    occupation_need_exp = 1;
+    occupation_needEXP = 1;
   } else {
     occupation_level = player.occupation_level;
     occupation_exp = player.occupation_exp;
@@ -711,7 +711,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     const level = list.find(item => item.id === occupation_level) || {};
 
     occupation_level_name = level?.name || '无';
-    occupation_need_exp = level?.experience || 0;
+    occupation_needEXP = level?.experience || 0;
   }
   let this_association;
 
@@ -752,9 +752,9 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   const rank_lianqi = levelList.find(item => item.level_id === player.level_id).level;
   const expmax_lianqi = levelList.find(item => item.level_id === player.level_id).exp;
   const rank_llianti = physiqueList.find(item => item.level_id === player.Physique_id).level;
-  const expmax_llianti = need_exp2;
+  const expmax_llianti = needEXP2;
   const rank_liandan = occupation_level_name;
-  const expmax_liandan = occupation_need_exp;
+  const expmax_liandan = occupation_needEXP;
   const strand_hp = Strand(player.当前血量, player.血量上限);
   const strand_lianqi = Strand(player.修为, expmax_lianqi);
   const strand_llianti = Strand(player.血气, expmax_llianti);
@@ -779,7 +779,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   };
   const lingshiDisplay = bigNumberTransform(lingshi);
   let hunyin = '未知';
-  const A = usr_qq;
+  const A = userId;
   let qinmidu: Array<{ QQ_A: string; QQ_B: string; 婚姻: number }> = [];
 
   try {
@@ -808,7 +808,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   const player_data = {
     neidan: nd,
     pifu: action,
-    user_id: usr_qq,
+    user_id: userId,
     player, // 玩家数据
     rank_lianqi, // 练气境界
     expmax_lianqi, // 练气需求经验
@@ -829,8 +829,8 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     nickname: player.名号,
     linggen: player.灵根, //
     declaration: player.宣言,
-    need_exp: need_exp,
-    need_exp2: need_exp2,
+    needEXP: needEXP,
+    needEXP2: needEXP2,
     exp: player.修为,
     exp2: player.血气,
     zdl: power,
@@ -859,7 +859,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     occupation: occupation,
     occupation_level: occupation_level_name,
     occupation_exp: occupation_exp,
-    occupation_need_exp: occupation_need_exp,
+    occupation_needEXP: occupation_needEXP,
     arms: equipmentCopy.武器,
     armor: equipmentCopy.护具,
     treasure: equipmentCopy.法宝,
@@ -869,7 +869,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     武器评级: 武器评级,
     护具评级: 护具评级,
     法宝评级: 法宝评级,
-    avatar: getAvatar(usr_qq)
+    avatar: getAvatar(userId)
   };
 
   return await screenshot('player', e.UserId, player_data);
@@ -881,18 +881,18 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
  */
 export async function getAssociationImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   let item;
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Send: SendFn = useSend(e) as SendFn;
   // 无存档
 
   const redis = getIoRedis();
-  const ifexistplay = (await redis.exists(keys.player(usr_qq))) > 0;
+  const ifexistplay = (await redis.exists(keys.player(userId))) > 0;
 
   if (!ifexistplay) {
     return;
   }
   // 门派
-  const player = await getPlayerDataSafe(usr_qq);
+  const player = await getPlayerDataSafe(userId);
 
   if (!player || !notUndAndNull(player.宗门)) {
     return;
@@ -1005,7 +1005,7 @@ export async function getAssociationImage(e: EventsMessageCreateEnum): Promise<S
     ass.宗门神兽 = '无';
   }
   const association_data = {
-    user_id: usr_qq,
+    user_id: userId,
     ass: ass,
     mainname: mainqq.名号,
     mainqq: ass.宗主,
@@ -1028,9 +1028,9 @@ export async function getAssociationImage(e: EventsMessageCreateEnum): Promise<S
  * @return image
  */
 export async function getQquipmentImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -1038,13 +1038,13 @@ export async function getQquipmentImage(e: EventsMessageCreateEnum): Promise<Scr
 
   const bao = Math.trunc(Math.floor(player.暴击率 * 100));
 
-  const equipment = await getDataJSONParseByKey(keys.equipment(usr_qq));
+  const equipment = await getDataJSONParseByKey(keys.equipment(userId));
 
   if (!equipment) {
     return;
   }
   const player_data = {
-    user_id: usr_qq,
+    user_id: userId,
     mdz: player.魔道值,
     nickname: player.名号,
     arms: equipment.武器,
@@ -1065,15 +1065,15 @@ export async function getQquipmentImage(e: EventsMessageCreateEnum): Promise<Scr
  * @return image
  */
 export async function getNajieImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
   }
 
-  const najie: Najie | null = await readNajie(usr_qq);
+  const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
     return;
@@ -1083,7 +1083,7 @@ export async function getNajieImage(e: EventsMessageCreateEnum): Promise<Screens
   const strand_hp: StrandResult = Strand(player.当前血量, player.血量上限);
   const strand_lingshi: StrandResult = Strand(najie.灵石, najie.灵石上限 || 0);
   const player_data = {
-    user_id: usr_qq,
+    user_id: userId,
     player: player,
     najie: najie,
     mdz: player.魔道值,
@@ -1115,9 +1115,9 @@ export async function getStateImage(
   e: EventsMessageCreateEnum,
   all_level: boolean
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -1136,7 +1136,7 @@ export async function getStateImage(
     }
   }
   const state_data = {
-    user_id: usr_qq,
+    user_id: userId,
     Level_list: Level_list
   };
 
@@ -1147,9 +1147,9 @@ export async function getStatezhiyeImage(
   e: EventsMessageCreateEnum,
   all_level: boolean
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -1168,7 +1168,7 @@ export async function getStatezhiyeImage(
     }
   }
   const state_data = {
-    user_id: usr_qq,
+    user_id: userId,
     Level_list: Level_list
   };
 
@@ -1268,11 +1268,11 @@ export async function getRankingPowerImage(
   usr_paiming: number,
   thisplayer: Player
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Level_List = await getDataList('Level1');
   const level = Level_List.find(item => item.level_id === thisplayer.level_id)?.level;
   const ranking_power_data = {
-    user_id: usr_qq,
+    user_id: userId,
     mdz: thisplayer.魔道值,
     nickname: thisplayer.名号,
     exp: thisplayer.修为,
@@ -1291,11 +1291,11 @@ export async function getRankingMoneyImage(
   thisplayer: Player,
   thisnajie: Najie
 ): Promise<ScreenshotResult> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const najie_lingshi = Math.trunc(thisnajie.灵石);
   const lingshi = Math.trunc(thisplayer.灵石 + thisnajie.灵石);
   const ranking_money_data = {
-    user_id: usr_qq,
+    user_id: userId,
     nickname: thisplayer.名号,
     lingshi: lingshi,
     najie_lingshi: najie_lingshi,

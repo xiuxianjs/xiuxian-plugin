@@ -29,13 +29,13 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     return false;
@@ -43,7 +43,7 @@ const res = onResponse(selects, async e => {
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
   if (!assData) {
-   void Send(Text('宗门数据异常'));
+    void Send(Text('宗门数据异常'));
 
     return;
   }
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
   const members = Array.isArray(ass.所有成员) ? ass.所有成员 : [];
 
   if (members.length === 0) {
-   void Send(Text('宗门暂无成员'));
+    void Send(Text('宗门暂无成员'));
 
     return false;
   }
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
     });
   }
   if (donate_list.length === 0) {
-   void Send(Text('暂无捐献记录'));
+    void Send(Text('暂无捐献记录'));
 
     return false;
   }
@@ -89,7 +89,7 @@ const res = onResponse(selects, async e => {
   donate_list.forEach((row, idx) => {
     msg.push(`第${idx + 1}名  ${row.name}  捐赠灵石:${row.lingshi_donate}`);
   });
-  awaitvoid Send(Text(msg.join('\n')));
+  void Send(Text(msg.join('\n')));
 
   return false;
 });

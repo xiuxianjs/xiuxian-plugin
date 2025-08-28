@@ -74,22 +74,22 @@ export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
  * @returns
  */
 export async function Go(e): Promise<boolean | 0> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Send = useSend(e);
-  const ext = await existDataByKey(keys.player(usr_qq));
+  const ext = await existDataByKey(keys.player(userId));
 
   if (!ext) {
     return 0;
   }
   const redis = getIoRedis();
-  const game_action = await redis.get(keysAction.gameAction(usr_qq));
+  const game_action = await redis.get(keysAction.gameAction(userId));
 
   if (game_action === '1') {
     void Send(Text('修仙：游戏进行中...'));
 
     return 0;
   }
-  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'));
+  const actionRaw = await redis.get(getRedisKey(userId, 'action'));
   const action = safeParse(actionRaw, null) as PlayerActionData | null;
 
   if (action) {

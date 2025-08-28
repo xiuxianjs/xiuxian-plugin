@@ -53,13 +53,13 @@ function normalizeCategory(v): NajieCategory {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const najie: Najie | null = await readNajie(usr_qq);
+  const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
     return false;
@@ -142,8 +142,8 @@ const res = onResponse(selects, async e => {
     amountRaw = parts[2];
   }
 
-  const price = await convert2integer(priceRaw);
-  const amount = await convert2integer(amountRaw);
+  const price = convert2integer(priceRaw);
+  const amount = convert2integer(amountRaw);
 
   if (!isPositive(price) || !isPositive(amount)) {
     void Send(Text('价格与数量需为正整数'));
@@ -190,7 +190,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const ownedCount = await existNajieThing(usr_qq, thingName, itemClass, finalPinji);
+  const ownedCount = await existNajieThing(userId, thingName, itemClass, finalPinji);
 
   if (!ownedCount || ownedCount < amount) {
     void Send(Text(`你没有那么多[${thingName}]`));
@@ -211,14 +211,14 @@ const res = onResponse(selects, async e => {
     fee = 100000;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.灵石 < fee) {
     void Send(Text(`就这点灵石还想上架，需要手续费 ${fee}`));
 
     return false;
   }
-  await addCoin(usr_qq, -fee);
+  await addCoin(userId, -fee);
 
   let exchange: ExchangeRecord[] = [];
 
@@ -253,19 +253,19 @@ const res = onResponse(selects, async e => {
       },
       price,
       amount,
-      qq: usr_qq,
+      qq: userId,
       now_time: nowTime
     } as ExchangeRecord;
-    await addNajieThing(usr_qq, selected.name, itemClass, -amount, finalPinji);
+    await addNajieThing(userId, selected.name, itemClass, -amount, finalPinji);
   } else {
     newRecord = {
       thing: { name: thingName, class: itemClass },
       price,
       amount,
-      qq: usr_qq,
+      qq: userId,
       now_time: nowTime
     } as ExchangeRecord;
-    await addNajieThing(usr_qq, thingName, itemClass, -amount);
+    await addNajieThing(userId, thingName, itemClass, -amount);
   }
 
   exchange.push(newRecord);

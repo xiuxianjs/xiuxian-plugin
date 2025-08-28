@@ -1,12 +1,9 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
 import { parseJsonBody } from '@src/route/core/bodyParser';
-import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { Player } from '@src/types';
-
-const redis = getIoRedis();
 
 // 更新游戏用户数据
 export const PUT = async (ctx: Context) => {

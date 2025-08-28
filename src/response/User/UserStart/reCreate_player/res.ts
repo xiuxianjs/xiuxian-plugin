@@ -56,12 +56,12 @@ function removeFromRole(ass: ExtAss, role: string, qq: string) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const rebornKey = getRedisKey(usr_qq, 'reCreate_acount');
+  const rebornKey = getRedisKey(userId, 'reCreate_acount');
 
   let acountRaw = await redis.get(rebornKey);
 
@@ -76,7 +76,7 @@ const res = onResponse(selects, async e => {
     await redis.set(rebornKey, '1');
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据异常'));
@@ -93,7 +93,7 @@ const res = onResponse(selects, async e => {
   }
 
   const nowTime = Date.now();
-  const lastKey = getRedisKey(usr_qq, 'last_reCreate_time');
+  const lastKey = getRedisKey(userId, 'last_reCreate_time');
   const lastRestartRaw = await redis.get(lastKey);
   const lastRestart = parseNum(lastRestartRaw);
   const cf = (await getConfig('xiuxian', 'xiuxian')) as Partial<{
@@ -112,7 +112,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  awaitvoid Send(
+  void Send(
     Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择')
   );
   const [subscribe] = useSubscribe(e, selects);
@@ -122,13 +122,13 @@ const res = onResponse(selects, async e => {
       const choice = event.MessageText.trim();
 
       if (choice === '再继仙缘') {
-         void  message.send([Text('重拾道心,继续修行')]);
+        void message.send([Text('重拾道心,继续修行')]);
         clearTimeout(timeout);
 
         return;
       }
       if (choice !== '断绝此生') {
-         void  message.send([Text('请回复:【断绝此生】或者【再继仙缘】进行选择')]);
+        void message.send([Text('请回复:【断绝此生】或者【再继仙缘】进行选择')]);
         next();
 
         return;
@@ -138,13 +138,13 @@ const res = onResponse(selects, async e => {
       let acountVal = parseNum(acountValRaw, 1);
 
       if (acountVal >= 15) {
-         void  message.send([Text('灵魂虚弱，已不可转世！')]);
+        void message.send([Text('灵魂虚弱，已不可转世！')]);
 
         return;
       }
       acountVal += 1;
 
-      const playerNow = await readPlayer(usr_qq);
+      const playerNow = await readPlayer(userId);
 
       if (playerNow && notUndAndNull(playerNow.宗门) && isPlayerGuildRef(playerNow.宗门)) {
         const assRaw = await getDataJSONParseByKey(keys.association(playerNow.宗门.宗门名称));
@@ -153,13 +153,13 @@ const res = onResponse(selects, async e => {
           const ass = assRaw;
 
           if (playerNow.宗门.职位 !== '宗主') {
-            removeFromRole(ass, playerNow.宗门.职位, usr_qq);
-            ass.所有成员 = (ass.所有成员 || []).filter(q => q !== usr_qq);
+            removeFromRole(ass, playerNow.宗门.职位, userId);
+            ass.所有成员 = (ass.所有成员 || []).filter(q => q !== userId);
             if ('宗门' in playerNow) {
               delete (playerNow as { 宗门?: PlayerGuildRef }).宗门;
             }
             await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-            await writePlayer(usr_qq, playerNow);
+            await writePlayer(userId, playerNow);
           } else {
             if ((ass.所有成员 || []).length < 2) {
               try {
@@ -168,24 +168,24 @@ const res = onResponse(selects, async e => {
                 /* ignore */
               }
             } else {
-              ass.所有成员 = (ass.所有成员 || []).filter(q => q !== usr_qq);
-              let randmember_qq: string | undefined;
+              ass.所有成员 = (ass.所有成员 || []).filter(q => q !== userId);
+              let randmemberId: string | undefined;
 
               if ((ass.长老 || []).length > 0) {
-                randmember_qq = await getRandomFromARR(ass.长老);
+                randmemberId = await getRandomFromARR(ass.长老);
               } else if ((ass.内门弟子 || []).length > 0) {
-                randmember_qq = await getRandomFromARR(ass.内门弟子);
+                randmemberId = await getRandomFromARR(ass.内门弟子);
               } else {
-                randmember_qq = await getRandomFromARR(ass.所有成员 || []);
+                randmemberId = await getRandomFromARR(ass.所有成员 || []);
               }
-              if (randmember_qq) {
-                const randmember = await readPlayer(randmember_qq);
+              if (randmemberId) {
+                const randmember = await readPlayer(randmemberId);
 
                 if (randmember?.宗门 && isPlayerGuildRef(randmember.宗门)) {
-                  removeFromRole(ass, randmember.宗门.职位, randmember_qq);
-                  ass.宗主 = randmember_qq;
+                  removeFromRole(ass, randmember.宗门.职位, randmemberId);
+                  ass.宗主 = randmemberId;
                   randmember.宗门.职位 = '宗主';
-                  await writePlayer(randmember_qq, randmember);
+                  await writePlayer(randmemberId, randmember);
                   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
                 }
               }
@@ -194,10 +194,10 @@ const res = onResponse(selects, async e => {
         }
       }
 
-      await redis.del(getRedisKey(usr_qq, 'last_dajie_time'));
+      await redis.del(getRedisKey(userId, 'last_dajie_time'));
       await redis.set(lastKey, String(Date.now()));
       await redis.set(rebornKey, String(acountVal));
-       void  message.send([Text('来世，信则有，不信则无，岁月悠悠……')]);
+      void message.send([Text('来世，信则有，不信则无，岁月悠悠……')]);
     },
     ['UserId']
   );

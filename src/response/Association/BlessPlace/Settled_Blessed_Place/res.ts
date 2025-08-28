@@ -34,12 +34,12 @@ function isBlessPlace(v): v is BlessPlace {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     void Send(Text('你尚未加入宗门'));

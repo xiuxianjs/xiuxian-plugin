@@ -27,13 +27,13 @@ function toInt(v, d = 0) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const cdKey = getRedisKey(usr_qq, 'forumShowCD');
+  const cdKey = getRedisKey(userId, 'forumShowCD');
   const now = Date.now();
   const lastTs = toInt(await redis.get(cdKey));
 

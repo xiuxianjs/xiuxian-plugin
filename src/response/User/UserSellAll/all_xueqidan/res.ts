@@ -27,13 +27,13 @@ function normalizeCategory(v): Parameters<typeof existNajieThing>[2] {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+  const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
     return;
@@ -54,7 +54,7 @@ const res = onResponse(selects, async e => {
       continue;
     }
     const category = normalizeCategory(pill.class);
-    const qty = num(await existNajieThing(usr_qq, pill.name, category), 0);
+    const qty = num(await existNajieThing(userId, pill.name, category), 0);
 
     if (qty <= 0) {
       continue;
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
     const gain = num(pill.xueqi, 0) * qty;
 
     if (gain > 0) {
-      await addNajieThing(usr_qq, pill.name, category, -qty);
+      await addNajieThing(userId, pill.name, category, -qty);
       totalGain += gain;
     }
   }
@@ -71,7 +71,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  await addExp2(usr_qq, totalGain);
+  await addExp2(userId, totalGain);
   void Send(Text(`服用成功，血气增加${totalGain}`));
 
   return false;

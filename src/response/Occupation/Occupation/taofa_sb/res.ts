@@ -31,13 +31,13 @@ function parseJson<T>(raw: string | null): T | null {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(usr_qq, 'action')));
+  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(userId, 'action')));
 
   if (actionState) {
     const now_time = Date.now();
@@ -54,7 +54,7 @@ const res = onResponse(selects, async e => {
     }
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.occupation !== '侠客') {
     void Send(Text('侠客资质不足,需要进行训练'));
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const task = parseJson<ShangjingTask>(await redis.get(getRedisKey(usr_qq, 'shangjing')));
+  const task = parseJson<ShangjingTask>(await redis.get(getRedisKey(userId, 'shangjing')));
 
   if (!task) {
     void Send(Text('还没有接取到悬赏,请查看后再来吧'));
@@ -86,7 +86,7 @@ const res = onResponse(selects, async e => {
   const target = task.arm[num];
   const qq = target.QQ;
 
-  let last_msg = '';
+  let lastMessage = '';
 
   if (qq !== 1) {
     const player_B = await readPlayer(String(qq));
@@ -126,30 +126,30 @@ const res = onResponse(selects, async e => {
       仙宠: player_B.仙宠,
       神石: player_B.神石 || 0
     };
-    const Data_battle = await zdBattle(player_A, player_B_entity);
-    const msg = Data_battle.msg || [];
-    const A_win = `${player_A.名号}击败了${player_B.名号}`;
-    const B_win = `${player_B.名号}击败了${player_A.名号}`;
+    const dataBattle = await zdBattle(player_A, player_B_entity);
+    const msg = dataBattle.msg || [];
+    const winA = `${player_A.名号}击败了${player_B.名号}`;
+    const winB = `${player_B.名号}击败了${player_A.名号}`;
 
-    if (msg.includes(A_win)) {
+    if (msg.includes(winA)) {
       player_B.魔道值 = (player_B.魔道值 || 0) - 50;
       player_B.灵石 -= 1000000;
       player_B.当前血量 = 0;
       await writePlayer(String(qq), player_B);
       player.灵石 += target.赏金;
       player.魔道值 = (player.魔道值 || 0) - 5;
-      await writePlayer(usr_qq, player);
-      await addExp4(usr_qq, 2255);
-      last_msg = `【全服公告】${player_B.名号}失去了1000000灵石,罪恶得到了洗刷,魔道值-50,无名侠客获得了部分灵石,自己的正气提升了,同时获得了更多的悬赏加成`;
-    } else if (msg.includes(B_win)) {
+      await writePlayer(userId, player);
+      await addExp4(userId, 2255);
+      lastMessage = `【全服公告】${player_B.名号}失去了1000000灵石,罪恶得到了洗刷,魔道值-50,无名侠客获得了部分灵石,自己的正气提升了,同时获得了更多的悬赏加成`;
+    } else if (msg.includes(winB)) {
       const shangjing = Math.trunc(target.赏金 * 0.8);
 
       player.当前血量 = 0;
       player.灵石 += shangjing;
       player.魔道值 = (player.魔道值 || 0) - 5;
-      await writePlayer(usr_qq, player);
-      await addExp4(usr_qq, 1100);
-      last_msg = `${player_B.名号}反杀了你,只获得了部分辛苦钱`;
+      await writePlayer(userId, player);
+      await addExp4(userId, 1100);
+      lastMessage = `${player_B.名号}反杀了你,只获得了部分辛苦钱`;
     }
     if (msg.length > 100) {
       logger.info('通过');
@@ -159,23 +159,23 @@ const res = onResponse(selects, async e => {
   } else {
     player.灵石 += target.赏金;
     player.魔道值 = (player.魔道值 || 0) - 5;
-    await writePlayer(usr_qq, player);
-    await addExp4(usr_qq, 2255);
-    last_msg = '你惩戒了仙路窃贼,获得了部分灵石';
+    await writePlayer(userId, player);
+    await addExp4(userId, 2255);
+    lastMessage = '你惩戒了仙路窃贼,获得了部分灵石';
   }
   task.arm.splice(num, 1);
-  await redis.set(getRedisKey(usr_qq, 'shangjing'), JSON.stringify(task));
+  await redis.set(getRedisKey(userId, 'shangjing'), JSON.stringify(task));
   if (
-    last_msg === '你惩戒了仙路窃贼,获得了部分灵石'
-    || last_msg.endsWith('反杀了你,只获得了部分辛苦钱')
+    lastMessage === '你惩戒了仙路窃贼,获得了部分灵石'
+    || lastMessage.endsWith('反杀了你,只获得了部分辛苦钱')
   ) {
-    void Send(Text(last_msg));
-  } else if (last_msg) {
+    void Send(Text(lastMessage));
+  } else if (lastMessage) {
     const redisGlKey = KEY_AUCTION_GROUP_LIST;
     const groupList = await redis.smembers(redisGlKey);
 
     for (const group of groupList) {
-      pushInfo(group, true, last_msg);
+      pushInfo(group, true, lastMessage);
     }
   }
 });

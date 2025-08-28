@@ -17,34 +17,34 @@ export const regular = /^(#|＃|\/)?发布.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   // 固定写法
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   const thing = e.MessageText.replace(/^(#|＃|\/)?发布/, '');
   const code = thing.split('*');
-  const thing_name = code[0]; // 物品
+  const thingName = code[0]; // 物品
   const value = code[1]; // 价格
   const amount = code[2]; // 数量
   // 判断列表中是否存在，不存在不能卖,并定位是什么物品
-  const thing_exist = await foundthing(thing_name);
+  const thingExist = await foundthing(thingName);
 
-  if (!thing_exist) {
-    void Send(Text(`这方世界没有[${thing_name}]`));
+  if (!thingExist) {
+    void Send(Text(`这方世界没有[${thingName}]`));
 
     return false;
   }
-  if (thing_exist.class === '装备' || thing_exist.class === '仙宠') {
+  if (thingExist.class === '装备' || thingExist.class === '仙宠') {
     void Send(Text('暂不支持该类型物品交易'));
 
     return false;
   }
-  const thing_value = await convert2integer(value);
-  const thing_amount = await convert2integer(amount);
+  const thing_value = convert2integer(value);
+  const thing_amount = convert2integer(amount);
   let Forum = [];
 
   try {
@@ -59,19 +59,19 @@ const res = onResponse(selects, async e => {
   if (off < 100000) {
     off = 100000;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.灵石 < off + whole) {
     void Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`));
 
     return false;
   }
-  await addCoin(usr_qq, -(off + whole));
+  await addCoin(userId, -(off + whole));
   const wupin = {
-    qq: usr_qq,
-    name: thing_name,
+    qq: userId,
+    name: thingName,
     price: thing_value,
-    class: thing_exist.class,
+    class: thingExist.class,
     aconut: thing_amount,
     whole: whole,
     now_time: now_time

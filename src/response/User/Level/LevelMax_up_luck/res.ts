@@ -8,7 +8,7 @@ export const regular = /^(#|＃|\/)?幸运破体$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   const user_qq = e.UserId; // 用户qq
 
@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const x = await existNajieThing(usr_qq, '幸运草', '道具');
+  const x = await existNajieThing(userId, '幸运草', '道具');
 
   if (!x) {
     void Send(Text('醒醒，你没有道具【幸运草】!'));

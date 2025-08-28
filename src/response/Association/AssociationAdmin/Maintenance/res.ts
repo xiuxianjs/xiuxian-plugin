@@ -16,8 +16,8 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -44,7 +44,7 @@ const res = onResponse(selects, async e => {
   const nextMaintainTs = lastMaintain + 60000 * time;
 
   if (lastMaintain && lastMaintain > nowTime - 1000 * 60 * 60 * 24 * 7) {
-    const nextmt_time = await shijianc(nextMaintainTs);
+    const nextmt_time = shijianc(nextMaintainTs);
 
     void Send(
       Text(
@@ -66,8 +66,8 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool - need;
   ass.维护时间 = nowTime;
   setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  setDataJSONStringifyByKey(keys.player(usr_qq), player);
-  const nextmt_time = await shijianc(ass.维护时间 + 60000 * time);
+  setDataJSONStringifyByKey(keys.player(userId), player);
+  const nextmt_time = shijianc(ass.维护时间 + 60000 * time);
 
   void Send(
     Text(

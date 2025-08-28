@@ -13,8 +13,8 @@ const res = onResponse(selects, async e => {
   if (!e.IsMaster) {
     return false;
   }
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;

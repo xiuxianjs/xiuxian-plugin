@@ -82,62 +82,62 @@ const MAGIC_STAGES: MagicStage[] = [
 
 const Res = onResponse(selects, async (e, next) => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await readPlayer(usr_qq);
+  const userId = e.UserId;
+  const player = await readPlayer(userId);
   const choice = e.MessageText;
 
   if (choice === '放弃魔根') {
-    awaitvoid Send(Text('重拾道心,继续修行'));
+    void Send(Text('重拾道心,继续修行'));
   } else if (choice === '转世魔根') {
-    const x = await existNajieThing(usr_qq, '魔石', '道具');
+    const x = await existNajieThing(userId, '魔石', '道具');
 
     if (!x) {
-     void Send(Text('你没有魔石'));
+      void Send(Text('你没有魔石'));
 
       return;
     }
     if (x < 10) {
-     void Send(Text('你魔石不足10个'));
+      void Send(Text('你魔石不足10个'));
 
       return;
     }
-    await addNajieThing(usr_qq, '魔石', '道具', -10);
+    await addNajieThing(userId, '魔石', '道具', -10);
     player.灵根 = {
       name: '一重魔功',
       type: '魔头',
       eff: 0.36,
       法球倍率: 0.23
     };
-    await writePlayer(usr_qq, player);
-   void Send(Text('恭喜你,转世魔头成功!'));
+    await writePlayer(userId, player);
+    void Send(Text('恭喜你,转世魔头成功!'));
   } else {
-   void Send(Text('输入错误,请重新输入'));
+    void Send(Text('输入错误,请重新输入'));
     next();
   }
 });
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if ((player.魔道值 || 0) < 1000) {
-   void Send(Text('你不是魔头'));
+    void Send(Text('你不是魔头'));
 
     return;
   }
-  const x = await existNajieThing(usr_qq, '魔石', '道具');
+  const x = await existNajieThing(userId, '魔石', '道具');
 
   if (!x) {
-   void Send(Text('你没有魔石'));
+    void Send(Text('你没有魔石'));
 
     return;
   }
   if (player.灵根.type !== '魔头') {
-    awaitvoid Send(Text('一旦转为魔根,将会舍弃当前灵根。回复:【放弃魔根】或者【转世魔根】进行选择'));
+    void Send(Text('一旦转为魔根,将会舍弃当前灵根。回复:【放弃魔根】或者【转世魔根】进行选择'));
     const [Observer] = useObserver(e, 'message.create');
 
     Observer(Res.current, ['UserId']);
@@ -148,16 +148,16 @@ const res = onResponse(selects, async e => {
   const stage = MAGIC_STAGES.find(s => s.from === player.灵根.name);
 
   if (!stage) {
-   void Send(Text('当前灵根已达最高或无法突破'));
+    void Send(Text('当前灵根已达最高或无法突破'));
 
     return;
   }
   if (x < stage.cost) {
-   void Send(Text(`魔石不足${stage.cost}个,当前魔石数量${x}个`));
+    void Send(Text(`魔石不足${stage.cost}个,当前魔石数量${x}个`));
 
     return;
   }
-  await addNajieThing(usr_qq, '魔石', '道具', -stage.cost);
+  await addNajieThing(userId, '魔石', '道具', -stage.cost);
   const random = Math.random();
 
   if (random < stage.prob) {
@@ -167,10 +167,10 @@ const res = onResponse(selects, async e => {
       eff: stage.eff,
       法球倍率: stage.rate
     };
-    await writePlayer(usr_qq, player);
-   void Send(Text(`恭喜你,灵根突破成功,当前灵根${stage.to}!`));
+    await writePlayer(userId, player);
+    void Send(Text(`恭喜你,灵根突破成功,当前灵根${stage.to}!`));
   } else {
-   void Send(Text('灵根突破失败'));
+    void Send(Text('灵根突破失败'));
   }
 });
 

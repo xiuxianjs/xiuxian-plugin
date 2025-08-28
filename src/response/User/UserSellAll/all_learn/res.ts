@@ -7,28 +7,28 @@ export const regular = /^(#|＃|\/)?一键学习$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   // 检索方法
-  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+  const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
     return;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   let name = '';
 
   for (const l of najie.功法) {
     const islearned = player.学习的功法.find(item => item === l.name);
 
     if (!islearned) {
-      await addNajieThing(usr_qq, l.name, '功法', -1);
-      await addConFaByUser(usr_qq, l.name);
+      await addNajieThing(userId, l.name, '功法', -1);
+      await addConFaByUser(userId, l.name);
       name = name + ' ' + l.name;
     }
   }

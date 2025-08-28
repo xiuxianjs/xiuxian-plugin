@@ -61,12 +61,12 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  const A_player: Player = player;
-  const B_player: Player = playerB;
+  const playerA: Player = player;
+  const playerB: Player = playerB;
 
   // 复制（避免副作用）
-  const a = { ...A_player };
-  const b = { ...B_player };
+  const a = { ...playerA };
+  const b = { ...playerB };
 
   if (a.灵根) {
     const v = extractFaQiu(a.灵根);
@@ -86,40 +86,40 @@ const res = onResponse(selects, async e => {
   b.当前血量 = b.血量上限;
 
   try {
-    const Data_battle = await zdBattle(a, b);
+    const dataBattle = await zdBattle(a, b);
 
-    const header = `${A_player.名号}向${B_player.名号}发起了切磋。\n`;
+    const header = `${playerA.名号}向${playerB.名号}发起了切磋。\n`;
 
-    const A_win = `${A_player.名号}击败了${B_player.名号}`;
-    const B_win = `${B_player.名号}击败了${A_player.名号}`;
+    const winA = `${playerA.名号}击败了${playerB.名号}`;
+    const winB = `${playerB.名号}击败了${playerA.名号}`;
 
     const img = await screenshot('CombatResult', A, {
-      msg: [header, ...(Data_battle.msg || [])],
+      msg: [header, ...(dataBattle.msg || [])],
       playerA: {
         id: A,
-        name: A_player.名号,
+        name: playerA.名号,
         avatar: getAvatar(A),
-        power: A_player.战力,
-        hp: A_player.当前血量,
-        maxHp: A_player.血量上限
+        power: playerA.战力,
+        hp: playerA.当前血量,
+        maxHp: playerA.血量上限
       },
       playerB: {
         id: B,
-        name: B_player.名号,
+        name: playerB.名号,
         avatar: getAvatar(B),
-        power: B_player.战力,
-        hp: B_player.当前血量,
-        maxHp: B_player.血量上限
+        power: playerB.战力,
+        hp: playerB.当前血量,
+        maxHp: playerB.血量上限
       },
-      result: Data_battle.msg.includes(A_win) ? 'A' : Data_battle.msg.includes(B_win) ? 'B' : 'draw'
+      result: dataBattle.msg.includes(winA) ? 'A' : dataBattle.msg.includes(winB) ? 'B' : 'draw'
     });
 
     if (Buffer.isBuffer(img)) {
       void Send(Image(img));
     } else {
-      const result = Data_battle.msg.includes(A_win)
+      const result = dataBattle.msg.includes(winA)
         ? 'A'
-        : Data_battle.msg.includes(B_win)
+        : dataBattle.msg.includes(winB)
           ? 'B'
           : 'draw';
 

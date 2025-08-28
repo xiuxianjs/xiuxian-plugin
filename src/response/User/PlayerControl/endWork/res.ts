@@ -88,15 +88,15 @@ export default onResponse(selects, [mw.current, res.current]);
 
 /**
  * 降妖结算
- * @param usr_qq
+ * @param userId
  * @param time持续时间(单位用分钟)
- * @param is_random是否触发随机事件  true,false
+ * @param isRandom是否触发随机事件  true,false
  * @param group_id  回复消息的地址，如果为空，则私聊
  * @return  falses {Promise<void>}
  */
-async function dagong_jiesuan(user_id, time, is_random, group_id?) {
-  const usr_qq = user_id;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+async function dagong_jiesuan(user_id, time, isRandom, group_id?) {
+  const userId = user_id;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -111,40 +111,40 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const size = cf.work.size;
   const lingshi = Math.floor(size * now_level_id * (1 + player.修炼效率提升) * 0.5);
-  let other_lingshi = 0; // 额外的灵石
+  let otherLingshi = 0; // 额外的灵石
   const Time = time;
-  const msg: Array<DataMention | string> = [Mention(usr_qq)];
+  const msg: Array<DataMention | string> = [Mention(userId)];
 
-  if (is_random) {
+  if (isRandom) {
     // 随机事件预留空间
     let rand = Math.random();
 
     if (rand < 0.2) {
       rand = Math.trunc(rand * 10) + 40;
-      other_lingshi = rand * Time;
+      otherLingshi = rand * Time;
       msg.push('\n本次增加灵石' + rand * Time);
     } else if (rand > 0.8) {
       rand = Math.trunc(rand * 10) + 5;
-      other_lingshi = -1 * rand * Time;
+      otherLingshi = -1 * rand * Time;
       msg.push('\n由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少' + rand * Time);
     }
   }
-  const get_lingshi = Math.trunc(lingshi * time + other_lingshi * 1.5); // 最后获取到的灵石
+  const get_lingshi = Math.trunc(lingshi * time + otherLingshi * 1.5); // 最后获取到的灵石
 
   // 设置灵石
-  await setFileValue(usr_qq, get_lingshi, '灵石');
+  await setFileValue(userId, get_lingshi, '灵石');
 
   // 给出消息提示
-  if (is_random) {
+  if (isRandom) {
     msg.push('\n增加灵石' + get_lingshi);
   } else {
     msg.push('\n增加灵石' + get_lingshi);
   }
 
   if (group_id) {
-    await pushInfo(group_id, true, msg);
+    pushInfo(group_id, true, msg);
   } else {
-    await pushInfo(usr_qq, false, msg);
+    pushInfo(userId, false, msg);
   }
 
   return false;

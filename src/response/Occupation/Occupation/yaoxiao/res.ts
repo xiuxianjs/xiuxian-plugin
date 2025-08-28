@@ -7,13 +7,13 @@ export const regular = /^(#|＃|\/)?我的药效$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const dy = await readDanyao(usr_qq);
-  const player = await readPlayer(usr_qq);
+  const dy = await readDanyao(userId);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));

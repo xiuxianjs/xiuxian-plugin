@@ -37,11 +37,11 @@ export const Xijietask = async () => {
     // 不为空，存在动作
     if (action !== null) {
       let push_address; // 消息推送地址
-      let is_group = false; // 是否推送到群
+      let isGroup = false; // 是否推送到群
 
       if (Object.prototype.hasOwnProperty.call(action, 'group_id')) {
         if (notUndAndNull(action.group_id)) {
-          is_group = true;
+          isGroup = true;
           push_address = action.group_id;
         }
       }
@@ -76,38 +76,38 @@ export const Xijietask = async () => {
               break;
             }
           }
-          const A_player = action.A_player;
-          let monster_length;
-          let monster_index;
+          const playerA = action.playerA;
+          let monsterLength;
+          let monsterIndex;
           let monster;
 
           if (weizhi.Grade === 1) {
-            monster_length = npc_list[i].one.length;
-            monster_index = Math.trunc(Math.random() * monster_length);
-            monster = npc_list[i].one[monster_index];
+            monsterLength = npc_list[i].one.length;
+            monsterIndex = Math.trunc(Math.random() * monsterLength);
+            monster = npc_list[i].one[monsterIndex];
           } else if (weizhi.Grade === 2) {
-            monster_length = npc_list[i].two.length;
-            monster_index = Math.trunc(Math.random() * monster_length);
-            monster = npc_list[i].two[monster_index];
+            monsterLength = npc_list[i].two.length;
+            monsterIndex = Math.trunc(Math.random() * monsterLength);
+            monster = npc_list[i].two[monsterIndex];
           } else {
-            monster_length = npc_list[i].three.length;
-            monster_index = Math.trunc(Math.random() * monster_length);
-            monster = npc_list[i].three[monster_index];
+            monsterLength = npc_list[i].three.length;
+            monsterIndex = Math.trunc(Math.random() * monsterLength);
+            monster = npc_list[i].three[monsterIndex];
           }
           // 设定npc数值
-          const B_player = {
+          const playerB = {
             名号: monster.name,
-            攻击: Math.floor(monster.atk * A_player.攻击),
-            防御: Math.floor((monster.def * A_player.防御) / (1 + weizhi.Grade * 0.05)),
-            当前血量: Math.floor((monster.blood * A_player.当前血量) / (1 + weizhi.Grade * 0.05)),
+            攻击: Math.floor(monster.atk * playerA.攻击),
+            防御: Math.floor((monster.def * playerA.防御) / (1 + weizhi.Grade * 0.05)),
+            当前血量: Math.floor((monster.blood * playerA.当前血量) / (1 + weizhi.Grade * 0.05)),
             暴击率: monster.baoji,
             灵根: monster.灵根,
             法球倍率: monster.灵根.法球倍率
           };
-          let Data_battle;
-          let last_msg = '';
+          let dataBattle;
+          let lastMessage = '';
           // 构造满足 BattleEntity 最小字段的参战对象（填补缺失字段的默认值）
-          const talent = A_player.灵根;
+          const talent = playerA.灵根;
           const getTalentName = (t): string => typeof t === 'object' && t !== null && 'name' in t
               ? String((t as { name }).name)
               : '凡灵根';
@@ -117,12 +117,12 @@ export const Xijietask = async () => {
           const getTalentRate = (t): number => typeof t === 'object' && t !== null && '法球倍率' in t
               ? Number((t as { 法球倍率 }).法球倍率) || 1
               : 1;
-          const A_battle = {
-            名号: A_player.名号,
-            攻击: A_player.攻击,
-            防御: A_player.防御,
-            当前血量: A_player.当前血量,
-            暴击率: A_player.暴击率 ?? 0.05,
+          const dataBattleA = {
+            名号: playerA.名号,
+            攻击: playerA.攻击,
+            防御: playerA.防御,
+            当前血量: playerA.当前血量,
+            暴击率: playerA.暴击率 ?? 0.05,
             灵根: {
               name: getTalentName(talent),
               type: getTalentType(talent),
@@ -130,49 +130,49 @@ export const Xijietask = async () => {
             }
           };
 
-          if ((A_player.魔值 ?? 0) === 0) {
+          if ((playerA.魔值 ?? 0) === 0) {
             // 根据魔道值决定先后手顺序 (0 视为先手)
-            Data_battle = await zdBattle(A_battle, B_player);
-            last_msg += A_player.名号 + '悄悄靠近' + B_player.名号;
-            A_player.当前血量 += Data_battle.A_xue;
+            dataBattle = await zdBattle(dataBattleA, playerB);
+            lastMessage += playerA.名号 + '悄悄靠近' + playerB.名号;
+            playerA.当前血量 += dataBattle.A_xue;
           } else {
-            Data_battle = await zdBattle(B_player, A_battle);
-            last_msg += A_player.名号 + '杀气过重,被' + B_player.名号 + '发现了';
-            A_player.当前血量 += Data_battle.B_xue;
+            dataBattle = await zdBattle(playerB, dataBattleA);
+            lastMessage += playerA.名号 + '杀气过重,被' + playerB.名号 + '发现了';
+            playerA.当前血量 += dataBattle.B_xue;
           }
-          const msgg = Data_battle.msg;
+          const msgg = dataBattle.msg;
 
           logger.info(msgg);
 
-          const A_win = `${A_player.名号}击败了${B_player.名号}`;
-          const B_win = `${B_player.名号}击败了${A_player.名号}`;
+          const winA = `${playerA.名号}击败了${playerB.名号}`;
+          const winB = `${playerB.名号}击败了${playerA.名号}`;
 
           try {
             const playerA = {
               id: player_id,
-              name: A_battle?.名号,
+              name: dataBattleA?.名号,
               avatar: getAvatar(player_id),
-              power: A_battle?.战力 ?? 0,
-              hp: A_battle?.当前血量 ?? 0,
-              maxHp: A_battle?.血量上限 ?? 0
+              power: dataBattleA?.战力 ?? 0,
+              hp: dataBattleA?.当前血量 ?? 0,
+              maxHp: dataBattleA?.血量上限 ?? 0
             };
             const playerB = {
               id: '1715713638',
-              name: B_player?.名号,
+              name: playerB?.名号,
               avatar: getAvatar('1715713638'),
-              power: B_player?.战力 || 0,
-              hp: B_player?.当前血量 || 0,
-              maxHp: B_player?.血量上限 || 0
+              power: playerB?.战力 ?? 0,
+              hp: playerB?.当前血量 ?? 0,
+              maxHp: playerB?.血量上限 ?? 0
             };
             const img = await screenshot('CombatResult', player_id, {
               msg: msgg,
               playerA: playerA,
               playerB: playerB,
-              result: msgg.includes(A_win) ? 'A' : msgg.includes(B_win) ? 'B' : 'draw'
+              result: msgg.includes(winA) ? 'A' : msgg.includes(winB) ? 'B' : 'draw'
             });
 
             if (Buffer.isBuffer(img)) {
-              pushInfo(push_address, is_group, img);
+              pushInfo(push_address, isGroup, img);
             }
           } catch (error) {
             logger.error(error);
@@ -181,20 +181,20 @@ export const Xijietask = async () => {
           const arr = action;
 
           // 后续阶段会重新以 const 定义 time / action_time
-          if (msgg.find(item => item === A_win)) {
+          if (msgg.find(item => item === winA)) {
             const time = 10; // 时间（分钟）
             const action_time = 60000 * time; // 持续时间，单位毫秒
 
-            arr.A_player = A_player;
+            arr.playerA = playerA;
             arr.action = '搜刮';
             arr.end_time = Date.now() + action_time;
             arr.time = action_time;
             arr.xijie = -1; // 进入二阶段
-            last_msg += ',经过一番战斗,击败对手,剩余' + A_player.当前血量 + '血量,开始搜刮物品';
-          } else if (msgg.find(item => item === B_win)) {
+            lastMessage += ',经过一番战斗,击败对手,剩余' + playerA.当前血量 + '血量,开始搜刮物品';
+          } else if (msgg.find(item => item === winB)) {
             const num = weizhi.Grade;
 
-            last_msg += ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' + num;
+            lastMessage += ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' + num;
             await addNajieThing(player_id, '秘境之匙', '道具', num);
             // 结算完去除
             delete arr.group_id;
@@ -217,9 +217,9 @@ export const Xijietask = async () => {
             const groupList = await redis.smembers(redisGlKey);
             const xx
               = '【全服公告】'
-              + A_player.名号
+              + playerA.名号
               + '被'
-              + B_player.名号
+              + playerB.名号
               + '抓进了地牢,希望大家遵纪守法,引以为戒';
 
             for (const group_id of groupList) {
@@ -228,11 +228,11 @@ export const Xijietask = async () => {
           }
           // 写入redis
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-          msg.push('\n' + last_msg);
-          if (is_group) {
-            await pushInfo(push_address, is_group, msg.join('\n'));
+          msg.push('\n' + lastMessage);
+          if (isGroup) {
+            pushInfo(push_address, isGroup, msg.join('\n'));
           } else {
-            await pushInfo(player_id, is_group, msg.join('\n'));
+            pushInfo(player_id, isGroup, msg.join('\n'));
           }
         }
       } else if (action.xijie === '-1') {
@@ -247,8 +247,8 @@ export const Xijietask = async () => {
           const weizhi = action.Place_address;
           let thing = await existshop(weizhi.name);
           const arr = action;
-          let last_msg = '';
-          const thing_name: any[] = [];
+          let lastMessage = '';
+          const thingName: any[] = [];
           let shop = await readShop();
           let i;
 
@@ -259,7 +259,7 @@ export const Xijietask = async () => {
           }
           if (!thing) {
             // 没有物品,进入下一阶段
-            last_msg += '已经被搬空了';
+            lastMessage += '已经被搬空了';
           } else {
             const gradeNum = Number(shop[i].Grade ?? 0) || 0;
             let x = gradeNum * 2;
@@ -271,7 +271,7 @@ export const Xijietask = async () => {
                 return thing[thing_index];
               })(); // 临时存储物品名
 
-              thing_name.push(t);
+              thingName.push(t);
               shop = await readShop();
               for (let j = 0; j < shop[i].one.length; j++) {
                 if (shop[i].one[j].name === t.name && shop[i].one[j].数量 > 0) {
@@ -283,11 +283,12 @@ export const Xijietask = async () => {
               thing = await existshop(weizhi.name);
               x--;
             }
-            last_msg += '经过一番搜寻' + arr.A_player.名号 + '找到了';
-            for (let j = 0; j < thing_name.length; j++) {
-              last_msg += '\n' + thing_name[j].name + ' x ' + thing_name[j].数量;
+            lastMessage += '经过一番搜寻' + arr.playerA.名号 + '找到了';
+            for (let j = 0; j < thingName.length; j++) {
+              lastMessage += '\n' + thingName[j].name + ' x ' + thingName[j].数量;
             }
-            last_msg += '\n刚出门就被万仙盟的人盯上了,他们仗着人多，你一人无法匹敌，于是撒腿就跑';
+            lastMessage
+              += '\n刚出门就被万仙盟的人盯上了,他们仗着人多，你一人无法匹敌，于是撒腿就跑';
           }
           arr.action = '逃跑';
           const time = 30; // 时间（分钟）
@@ -296,18 +297,18 @@ export const Xijietask = async () => {
           arr.end_time = Date.now() + action_time;
           arr.time = action_time;
           arr.xijie = -2; // 进入三阶段
-          arr.thing = thing_name;
+          arr.thing = thingName;
           const gradeNumFinal = Number(action.Place_address?.Grade ?? 0) || 0;
 
           arr.cishu = gradeNumFinal + 1;
           // 写入redis
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
 
-          msg.push('\n' + last_msg);
-          if (is_group) {
-            await pushInfo(push_address, is_group, msg.join('\n'));
+          msg.push('\n' + lastMessage);
+          if (isGroup) {
+            pushInfo(push_address, isGroup, msg.join('\n'));
           } else {
-            await pushInfo(player_id, is_group, msg.join('\n'));
+            pushInfo(player_id, isGroup, msg.join('\n'));
           }
         }
       }

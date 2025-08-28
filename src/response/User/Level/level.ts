@@ -9,16 +9,16 @@ import { addNajieThing } from '@src/model/najie';
 import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
 
 export async function Level_up(e, luck = false) {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Send = useSend(e);
   // 有无账号
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   // 获取游戏状态
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
@@ -27,7 +27,7 @@ export async function Level_up(e, luck = false) {
     return false;
   }
   // 读取信息
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   // 境界
   const levelList = await getDataList('Level1');
   const now_level = levelList.find(item => item.level_id === player.level_id).level;
@@ -70,10 +70,10 @@ export async function Level_up(e, luck = false) {
   }
   const now_exp = player.修为;
   // 修为
-  const need_exp = levelList.find(item => item.level_id === player.level_id).exp;
+  const needEXP = levelList.find(item => item.level_id === player.level_id).exp;
 
-  if (now_exp < need_exp) {
-    void Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可突破`));
+  if (now_exp < needEXP) {
+    void Send(Text(`修为不足,再积累${needEXP - now_exp}修为后方可突破`));
 
     return false;
   }
@@ -81,7 +81,7 @@ export async function Level_up(e, luck = false) {
   const Time = cf.CD.level_up;
   const now_Time = Date.now(); // 获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time);
-  const last_time_raw = await getString(userKey(usr_qq, 'last_Levelup_time'));
+  const last_time_raw = await getString(userKey(userId, 'last_Levelup_time'));
   const last_time = last_time_raw ? parseInt(last_time_raw, 10) : 0;
 
   if (now_Time < last_time + shuangxiuTimeout) {
@@ -99,59 +99,59 @@ export async function Level_up(e, luck = false) {
   if (luck) {
     void Send(Text('你使用了幸运草，减少50%失败概率。'));
     prob = prob + (1 - prob) * 0.5;
-    await addNajieThing(usr_qq, '幸运草', '道具', -1);
+    await addNajieThing(userId, '幸运草', '道具', -1);
   }
   // 突破失败了！
   if (player.breakthrough) {
     prob += 0.2;
     player.breakthrough = false;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
   }
   if (rand > prob) {
     const bad_time = Math.random(); // 增加多种突破失败情况，顺滑突破丢失修为曲线
 
     if (bad_time > 0.9) {
-      await addExp(usr_qq, -1 * need_exp * 0.4);
-      await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
+      await addExp(userId, -1 * needEXP * 0.4);
+      await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(
         Text(
           '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了'
-            + need_exp * 0.4
+            + needEXP * 0.4
             + '修为'
         )
       );
 
       return false;
     } else if (bad_time > 0.8) {
-      await addExp(usr_qq, -1 * need_exp * 0.2);
-      await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
-      void Send(Text('突破瓶颈时想到树脂满了,险些走火入魔，丧失了' + need_exp * 0.2 + '修为'));
+      await addExp(userId, -1 * needEXP * 0.2);
+      await setTimestamp(userId, 'last_Levelup_time', now_Time);
+      void Send(Text('突破瓶颈时想到树脂满了,险些走火入魔，丧失了' + needEXP * 0.2 + '修为'));
 
       return false;
     } else if (bad_time > 0.7) {
-      await addExp(usr_qq, -1 * need_exp * 0.1);
-      await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
+      await addExp(userId, -1 * needEXP * 0.1);
+      await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(
         Text(
           '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了'
-            + need_exp * 0.1
+            + needEXP * 0.1
             + '修为'
         )
       );
 
       return false;
     } else if (bad_time > 0.1) {
-      await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
+      await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(Text(`突破失败，不要气馁,等到${Time}分钟后再尝试吧`));
 
       return false;
     } else {
-      await addExp(usr_qq, -1 * need_exp * 0.2);
-      await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
+      await addExp(userId, -1 * needEXP * 0.2);
+      await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(
         Text(
           '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了'
-            + need_exp * 0.2
+            + needEXP * 0.2
             + '修为'
         )
       );
@@ -176,7 +176,7 @@ export async function Level_up(e, luck = false) {
             + '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
-      await addNajieThing(usr_qq, changzhuxianchonList[random2].name, '仙宠', 1);
+      await addNajieThing(userId, changzhuxianchonList[random2].name, '仙宠', 1);
     }
   } else {
     const random = Math.random();
@@ -192,44 +192,44 @@ export async function Level_up(e, luck = false) {
             + '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
-      await addNajieThing(usr_qq, changzhuxianchonList[random2].name, '仙宠', 1);
+      await addNajieThing(userId, changzhuxianchonList[random2].name, '仙宠', 1);
     }
   }
   // 境界提升,修为扣除,攻防血重新加载,当前血量拉满
   player.level_id = now_level_id + 1;
-  player.修为 -= need_exp;
-  await writePlayer(usr_qq, player);
+  player.修为 -= needEXP;
+  await writePlayer(userId, player);
   // 刷新装备
-  const equipment = await readEquipment(usr_qq);
+  const equipment = await readEquipment(userId);
 
-  await writeEquipment(usr_qq, equipment);
+  await writeEquipment(userId, equipment);
   // 补血
-  await addHP(usr_qq, 999999999999);
+  await addHP(userId, 999999999999);
   // 查境界名
   const level = levelList.find(item => item.level_id === player.level_id).level;
 
   void Send(Text(`突破成功,当前境界为${level}`));
   // 记录cd
-  await setTimestamp(usr_qq, 'last_Levelup_time', now_Time);
+  await setTimestamp(userId, 'last_Levelup_time', now_Time);
 
   return false;
 }
 export async function LevelMax_up(e, luck) {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Send = useSend(e);
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   if (game_action === '1') {
     void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!notUndAndNull(player.Physique_id)) {
     void Send(Text('请先#刷新信息'));
@@ -239,10 +239,10 @@ export async function LevelMax_up(e, luck) {
   const levelMaxList = await getDataList('Level2');
   const now_level_id = levelMaxList.find(item => item.level_id === player.Physique_id).level_id;
   const now_exp = player.血气;
-  const need_exp = levelMaxList.find(item => item.level_id === player.Physique_id).exp;
+  const needEXP = levelMaxList.find(item => item.level_id === player.Physique_id).exp;
 
-  if (now_exp < need_exp) {
-    void Send(Text(`血气不足,再积累${need_exp - now_exp}血气后方可突破`));
+  if (now_exp < needEXP) {
+    void Send(Text(`血气不足,再积累${needEXP - now_exp}血气后方可突破`));
 
     return false;
   }
@@ -255,7 +255,7 @@ export async function LevelMax_up(e, luck) {
   const Time = cf.CD.level_up;
   const now_Time = Date.now(); // 获取当前时间戳
   const shuangxiuTimeout = Math.floor(60000 * Time);
-  const last_time_raw2 = await getString(userKey(usr_qq, 'last_LevelMaxup_time'));
+  const last_time_raw2 = await getString(userKey(userId, 'last_LevelMaxup_time'));
   const last_time = last_time_raw2 ? Math.floor(Number(last_time_raw2)) : 0;
 
   if (now_Time < last_time + shuangxiuTimeout) {
@@ -272,54 +272,54 @@ export async function LevelMax_up(e, luck) {
   if (luck) {
     void Send(Text('你使用了幸运草，减少50%失败概率。'));
     prob = prob + (1 - prob) * 0.5;
-    await addNajieThing(usr_qq, '幸运草', '道具', -1);
+    await addNajieThing(userId, '幸运草', '道具', -1);
   }
   // 失败了
   if (rand > prob) {
     const bad_time = Math.random(); // 增加多种突破失败情况，顺滑突破丢失修为曲线
 
     if (bad_time > 0.9) {
-      await addExp2(usr_qq, -1 * need_exp * 0.4);
-      await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
+      await addExp2(userId, -1 * needEXP * 0.4);
+      await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(
         Text(
           '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了'
-            + need_exp * 0.4
+            + needEXP * 0.4
             + '血气'
         )
       );
 
       return false;
     } else if (bad_time > 0.8) {
-      await addExp2(usr_qq, -1 * need_exp * 0.2);
-      await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
-      void Send(Text('突破瓶颈时想到树脂满了,险些走火入魔，丧失了' + need_exp * 0.2 + '血气'));
+      await addExp2(userId, -1 * needEXP * 0.2);
+      await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
+      void Send(Text('突破瓶颈时想到树脂满了,险些走火入魔，丧失了' + needEXP * 0.2 + '血气'));
 
       return false;
     } else if (bad_time > 0.7) {
-      await addExp2(usr_qq, -1 * need_exp * 0.1);
-      await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
+      await addExp2(userId, -1 * needEXP * 0.1);
+      await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(
         Text(
           '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了'
-            + need_exp * 0.1
+            + needEXP * 0.1
             + '血气'
         )
       );
 
       return false;
     } else if (bad_time > 0.1) {
-      await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
+      await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(Text(`破体失败，不要气馁,等到${Time}分钟后再尝试吧`));
 
       return false;
     } else {
-      await addExp2(usr_qq, -1 * need_exp * 0.2);
-      await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
+      await addExp2(userId, -1 * needEXP * 0.2);
+      await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(
         Text(
           '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了'
-            + need_exp * 0.2
+            + needEXP * 0.2
             + '血气'
         )
       );
@@ -344,7 +344,7 @@ export async function LevelMax_up(e, luck) {
             + '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
-      await addNajieThing(usr_qq, changzhuxianchonList2[random2].name, '仙宠', 1);
+      await addNajieThing(userId, changzhuxianchonList2[random2].name, '仙宠', 1);
     }
   } else {
     const random = Math.random();
@@ -360,20 +360,20 @@ export async function LevelMax_up(e, luck) {
             + '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
-      await addNajieThing(usr_qq, changzhuxianchonList2[random2].name, '仙宠', 1);
+      await addNajieThing(userId, changzhuxianchonList2[random2].name, '仙宠', 1);
     }
   }
   player.Physique_id = now_level_id + 1;
-  player.血气 -= need_exp;
-  await writePlayer(usr_qq, player);
-  const equipment = await readEquipment(usr_qq);
+  player.血气 -= needEXP;
+  await writePlayer(userId, player);
+  const equipment = await readEquipment(userId);
 
-  await writeEquipment(usr_qq, equipment);
-  await addHP(usr_qq, 999999999999);
+  await writeEquipment(userId, equipment);
+  await addHP(userId, 999999999999);
   const level = levelMaxList.find(item => item.level_id === player.Physique_id).level;
 
   void Send(Text(`突破成功至${level}`));
-  await setTimestamp(usr_qq, 'last_LevelMaxup_time', now_Time);
+  await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
 
   return false;
 }

@@ -107,17 +107,17 @@ function buildTalent(cfg: RebirthConfigMeta): TalentInfo {
   return { name: cfg.name, type: '转生', eff: cfg.eff, 法球倍率: cfg.ratio };
 }
 
-async function applyRebirthCommon(usr_qq: string, player: PlayerEx) {
+async function applyRebirthCommon(userId: string, player: PlayerEx) {
   // 通用结算（补血、等级场所）
   player.level_id = 9;
   player.power_place = 1;
-  await writePlayer(usr_qq, player);
-  const eq = await readEquipment(usr_qq);
+  await writePlayer(userId, player);
+  const eq = await readEquipment(userId);
 
   if (eq) {
-    await writeEquipment(usr_qq, eq);
+    await writeEquipment(userId, eq);
   }
-  await addHP(usr_qq, 99_999_999);
+  await addHP(userId, 99_999_999);
   // 根据是否有轮回阵旗效果减少惩罚
   const lunhuiBH = numVal(player.lunhuiBH, 0);
 
@@ -130,14 +130,14 @@ async function applyRebirthCommon(usr_qq: string, player: PlayerEx) {
     player.血气 = Math.max(0, numVal(player.血气) - 10_000_000);
     setNum(player, 'lunhuiBH', 0);
   }
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
 }
 
 function isAssociation(obj): obj is AssociationData & { 所有成员?: string[] } {
   return !!obj && typeof obj === 'object' && '宗门名称' in obj;
 }
 
-async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t) => unknown) {
+async function exitAssociationIfNeed(userId: string, player: PlayerEx, Send: (t) => unknown) {
   if (!notUndAndNull(player.宗门)) {
     return;
   }
@@ -168,16 +168,16 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
       const ass2 = ass2Raw;
 
       if (Array.isArray(ass2[guild.职位])) {
-        (ass2[guild.职位] as string[]) = (ass2[guild.职位] as string[]).filter(q => q !== usr_qq);
+        (ass2[guild.职位] as string[]) = (ass2[guild.职位] as string[]).filter(q => q !== userId);
       }
       if (Array.isArray(ass2['所有成员'])) {
-        ass2['所有成员'] = ass2['所有成员'].filter(q => q !== usr_qq);
+        ass2['所有成员'] = ass2['所有成员'].filter(q => q !== userId);
       }
       await setDataJSONStringifyByKey(keys.association(guild.宗门名称), ass2Raw);
     }
     delete player.宗门;
-    await writePlayer(usr_qq, player);
-    await playerEfficiency(usr_qq);
+    await writePlayer(userId, player);
+    await playerEfficiency(userId);
     void Send(Text('退出宗门成功'));
 
     return;
@@ -202,8 +202,8 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
   if ((ass3.所有成员 as string[]).length < 2) {
     await delDataByKey(keys.association(guild.宗门名称));
     delete player.宗门;
-    await writePlayer(usr_qq, player);
-    await playerEfficiency(usr_qq);
+    await writePlayer(userId, player);
+    await playerEfficiency(userId);
     void Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,仙界中再无半分痕迹'));
 
     return;
@@ -219,10 +219,10 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
       break;
     }
   }
-  const randmember_qq = getRandomFromARR(succList);
+  const randmemberId = getRandomFromARR(succList);
 
-  if (randmember_qq) {
-    const randmember = (await getDataJSONParseByKey(keys.player(randmember_qq))) as PlayerEx;
+  if (randmemberId) {
+    const randmember = (await getDataJSONParseByKey(keys.player(randmemberId))) as PlayerEx;
 
     if (!randmember) {
       return;
@@ -232,19 +232,19 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
       const arr = ass3[pos];
 
       if (Array.isArray(arr)) {
-        ass3[pos] = (arr as string[]).filter(q => q !== randmember_qq);
+        ass3[pos] = (arr as string[]).filter(q => q !== randmemberId);
       }
-      ass3['宗主'] = randmember_qq;
+      ass3['宗主'] = randmemberId;
       (randmember.宗门 as AssociationData).职位 = '宗主';
-      await writePlayer(randmember_qq, randmember);
+      await writePlayer(randmemberId, randmember);
     }
   }
-  ass3['所有成员'] = (ass3['所有成员'] as string[]).filter(q => q !== usr_qq);
+  ass3['所有成员'] = (ass3['所有成员'] as string[]).filter(q => q !== userId);
   delete player.宗门;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
   await setDataJSONStringifyByKey(keys.association(ass3.宗门名称), ass3);
-  await playerEfficiency(usr_qq);
-  void Send(Text(`轮回前,遵循你的嘱托,${randmember_qq}将继承你的衣钵,成为新一任的宗主`));
+  await playerEfficiency(userId);
+  void Send(Text(`轮回前,遵循你的嘱托,${randmemberId}将继承你的衣钵,成为新一任的宗主`));
 }
 
 const FAIL_PROB = 1 / 9;
@@ -259,25 +259,25 @@ const setNum = (p: PlayerEx, k: string, v: number) => {
 // 主逻辑
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return;
   }
   if (!notUndAndNull(player.lunhui)) {
     setNum(player, 'lunhui', 0);
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
   }
   if (!notUndAndNull(player.轮回点)) {
     setNum(player, '轮回点', 0);
   }
 
-  const key = KEY_LH(usr_qq);
+  const key = KEY_LH(userId);
   const lhxqRaw = await redis.get(key);
   const lhFlag = Number(lhxqRaw) || 0;
 
@@ -307,7 +307,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const equipment = await readEquipment(usr_qq);
+  const equipment = await readEquipment(userId);
 
   if (equipment && equipment.武器 && equipment.武器.HP < 0) {
     void Send(Text(`身上携带邪祟之物，无法进行轮回,请将[${equipment.武器.name}]放下后再进行轮回`));
@@ -323,7 +323,7 @@ const res = onResponse(selects, async e => {
       )
     );
     player.当前血量 = 10;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
 
     return false;
   }
@@ -340,23 +340,23 @@ const res = onResponse(selects, async e => {
     player.修为 = Math.max(0, numVal(player.修为) - 10_000_000);
     player.血气 = numVal(player.血气) + 5_141_919; // 原逻辑：血气 += 5141919
     player.灵石 = Math.max(0, numVal(player.灵石) - 10_000_000);
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
 
     return false;
   }
 
   // 轮回成功：阶段提升
   setNum(player, 'lunhui', numVal(player.lunhui) + 1);
-  await exitAssociationIfNeed(usr_qq, player, Send);
+  await exitAssociationIfNeed(userId, player, Send);
 
   const stage = numVal(player.lunhui);
   const cfg = REBIRTH_MAP[stage];
 
   if (cfg) {
     player.灵根 = buildTalent(cfg);
-    await addNajieThing(usr_qq, cfg.gongfa, '功法', 1);
-    await applyRebirthCommon(usr_qq, player);
-    await writePlayer(usr_qq, player);
+    await addNajieThing(userId, cfg.gongfa, '功法', 1);
+    await applyRebirthCommon(userId, player);
+    await writePlayer(userId, player);
     void Send(Text(`你已打破规则，轮回成功，现在你为${cfg.msg}`));
 
     return false;

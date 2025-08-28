@@ -8,8 +8,8 @@ export const regular = /^(#|＃|\/)?道具楼$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;

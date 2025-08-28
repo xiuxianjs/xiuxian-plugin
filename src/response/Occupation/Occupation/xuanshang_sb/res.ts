@@ -11,13 +11,13 @@ export const regular = /^(#|＃|\/)?悬赏.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -39,7 +39,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  let money = await convert2integer(code[1]);
+  let money = convert2integer(code[1]);
 
   if (!Number.isFinite(money)) {
     money = 0;
@@ -92,7 +92,7 @@ const res = onResponse(selects, async e => {
   list.push(bountyRecord);
 
   player.灵石 = (player.灵石 || 0) - money;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
   await redis.set(actionKey, JSON.stringify(list));
 
   void Send(Text('悬赏成功!'));

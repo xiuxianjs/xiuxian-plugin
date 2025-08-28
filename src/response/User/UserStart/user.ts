@@ -4,9 +4,9 @@ import { getPlayerImage } from '@src/model/image';
 
 export async function showSlayer(e: EventsMessageCreateEnum | PrivateEventMessageCreate) {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   try {

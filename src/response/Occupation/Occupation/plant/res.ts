@@ -17,15 +17,15 @@ export const regular = /^(#|＃|\/)?(采药$)|(采药(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   // 不开放私聊
 
   // 获取游戏状态
-  const game_action = await getGameFlag(usr_qq);
+  const game_action = await getGameFlag(userId);
 
   // 防止继续其他娱乐行为
   if (+game_action === 1) {
@@ -33,7 +33,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.occupation !== '采药师') {
     void Send(Text('您采药，您配吗?'));
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
   const time = normalizeDurationMinutes(timeRaw, 15, 48, 30);
 
   // 查询redis中的人物动作
-  const current = await readAction(usr_qq);
+  const current = await readAction(userId);
 
   if (isActionRunning(current)) {
     void Send(Text(`正在${current?.action}中，剩余时间:${formatRemaining(remainingMs(current))}`));
@@ -54,7 +54,7 @@ const res = onResponse(selects, async e => {
   }
 
   const action_time = time * 60 * 1000;
-  const arr = await startAction(usr_qq, '采药', action_time, {
+  const arr = await startAction(userId, '采药', action_time, {
     plant: '0',
     shutup: '1',
     working: '1',
@@ -67,7 +67,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
-  await setValue(userKey(usr_qq, 'action'), arr);
+  await setValue(userKey(userId, 'action'), arr);
   void Send(Text(`现在开始采药${time}分钟`));
 });
 

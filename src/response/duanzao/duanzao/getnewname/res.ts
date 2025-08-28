@@ -61,11 +61,11 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const [thing_nameRaw, new_nameRaw] = raw.split('*');
-  const thing_name = toStr(thing_nameRaw).trim();
+  const [thingNameRaw, new_nameRaw] = raw.split('*');
+  const thingName = toStr(thingNameRaw).trim();
   const new_name = toStr(new_nameRaw).trim();
 
-  if (!thing_name || !new_name) {
+  if (!thingName || !new_name) {
     void Send(Text('格式错误，应: 赋名旧名*新名'));
 
     return false;
@@ -75,14 +75,14 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (new_name === thing_name) {
+  if (new_name === thingName) {
     void Send(Text('新旧名称相同，无需赋名'));
 
     return false;
   }
 
   // 是否拥有该装备
-  const hasEquip = await existNajieThing(user_qq, thing_name, '装备');
+  const hasEquip = await existNajieThing(user_qq, thingName, '装备');
 
   if (!hasEquip) {
     void Send(Text('你没有这件装备'));
@@ -108,7 +108,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 防止重复赋名（用旧名或已改名后的新名都算）
-  if (records.some(r => r.name === thing_name || r.name === new_name)) {
+  if (records.some(r => r.name === thingName || r.name === new_name)) {
     void Send(Text('一个装备只能赋名一次'));
 
     return false;
@@ -122,7 +122,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const target = najie.装备.find(it => it.name === thing_name);
+  const target = najie.装备.find(it => it.name === thingName);
 
   if (!target) {
     void Send(Text('未找到该装备，可能已被移动或重命名'));
@@ -156,7 +156,7 @@ const res = onResponse(selects, async e => {
   // 写回记录（转为通用结构数组）
   await writeIt(records.map(r => ({ ...r })));
 
-  void Send(Text(`附名成功,您的${thing_name}更名为${new_name}`));
+  void Send(Text(`附名成功,您的${thingName}更名为${new_name}`));
 
   return false;
 });

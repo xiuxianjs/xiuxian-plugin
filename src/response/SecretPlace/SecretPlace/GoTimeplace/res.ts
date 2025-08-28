@@ -31,13 +31,13 @@ function pickRandom<T>(arr: T[]): T {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   if (!(await Go(e))) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据不存在'));
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
     void Send(
       Text('价格为5w,你觉得特别特别便宜,赶紧全款拿下了,历经九九八十天,到了后发现居然是仙湖游乐场！')
     );
-    await addCoin(usr_qq, -FAIL_PRICE);
+    await addCoin(userId, -FAIL_PRICE);
 
     return false;
   }
@@ -113,18 +113,18 @@ const res = onResponse(selects, async e => {
 
   // 折扣券逻辑
   let discountFactor = 1;
-  const hasTicket = await existNajieThing(usr_qq, '仙府通行证', '道具');
+  const hasTicket = await existNajieThing(userId, '仙府通行证', '道具');
 
   if (hasTicket && player.魔道值 < 1 && (player.灵根.type === '转生' || player.level_id > 41)) {
     discountFactor = 0;
     void Send(Text(`${player.名号}使用了道具仙府通行证,本次仙府免费`));
-    await addNajieThing(usr_qq, '仙府通行证', '道具', -1);
+    await addNajieThing(userId, '仙府通行证', '道具', -1);
   }
 
   const priceToPay = Math.trunc(place.Price * discountFactor);
 
   if (priceToPay > 0) {
-    await addCoin(usr_qq, -priceToPay);
+    await addCoin(userId, -priceToPay);
   }
 
   const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {
@@ -153,8 +153,8 @@ const res = onResponse(selects, async e => {
     actionRecord.group_id = e.ChannelId;
   }
 
-  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(actionRecord));
-  await addExp(usr_qq, -MIN_REQ_EXP);
+  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(actionRecord));
+  await addExp(userId, -MIN_REQ_EXP);
 
   const baseMsg
     = `你买下了那份地图,历经九九八十一天,终于到达了地图上的${selectedName === '无欲天仙' ? '仙府' : '地点'},`

@@ -11,14 +11,14 @@ export const regular = /^(#|＃|\/)?探查.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 查看存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
@@ -27,7 +27,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 查询redis中的人物动作
-  const action = await readAction(usr_qq);
+  const action = await readAction(userId);
 
   if (isActionRunning(action)) {
     void Send(Text(`正在${action.action}中,剩余时间:${formatRemaining(remainingMs(action))}`));
@@ -63,7 +63,7 @@ const res = onResponse(selects, async e => {
   if (i === shop.length) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   const Price = shop[i].price * 0.3;
 
   if (player.灵石 < Price) {
@@ -71,7 +71,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  await addCoin(usr_qq, -Price);
+  await addCoin(userId, -Price);
   const thing = await existshop(didian);
   let level = shop[i].Grade;
   let state = shop[i].state;

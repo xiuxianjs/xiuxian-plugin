@@ -18,13 +18,13 @@ export const regular = /^(#|＃|\/)?镇守仙境.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   let didian = e.MessageText.replace(/^(#|＃|\/)?镇守仙境/, '');
 
   didian = didian.trim();
@@ -63,30 +63,30 @@ const res = onResponse(selects, async e => {
   let dazhe = 1;
 
   if (
-    (await existNajieThing(usr_qq, '杀神崖通行证', '道具'))
+    (await existNajieThing(userId, '杀神崖通行证', '道具'))
     && player.魔道值 < 1
     && (player.灵根.type === '转生' || player.level_id > 41)
     && didian === '杀神崖'
   ) {
     dazhe = 0;
     void Send(Text(player.名号 + '使用了道具杀神崖通行证,本次仙境免费'));
-    await addNajieThing(usr_qq, '杀神崖通行证', '道具', -1);
+    await addNajieThing(userId, '杀神崖通行证', '道具', -1);
   } else if (
-    (await existNajieThing(usr_qq, '仙境优惠券', '道具'))
+    (await existNajieThing(userId, '仙境优惠券', '道具'))
     && player.魔道值 < 1
     && (player.灵根.type === '转生' || player.level_id > 41)
   ) {
     dazhe = 0.5;
     void Send(Text(player.名号 + '使用了道具仙境优惠券,本次消耗减少50%'));
-    await addNajieThing(usr_qq, '仙境优惠券', '道具', -1);
+    await addNajieThing(userId, '仙境优惠券', '道具', -1);
   }
   const Price = weizhi.Price * dazhe;
 
-  await addCoin(usr_qq, -Price);
+  await addCoin(userId, -Price);
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const time = cf.CD.secretplace; // 时间（分钟）
   const action_time = 60000 * time; // 持续时间，单位毫秒
-  const arr = await startAction(usr_qq, '历练', action_time, {
+  const arr = await startAction(userId, '历练', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '0',
@@ -100,7 +100,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
-  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
+  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
   void Send(Text('开始镇守' + didian + ',' + time + '分钟后归来!'));
 });
 

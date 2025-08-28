@@ -16,8 +16,8 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -60,8 +60,8 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool - need;
   ass.宗门等级 = level + 1;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  await setDataJSONStringifyByKey(keys.player(usr_qq), player);
-  await playerEfficiency(usr_qq);
+  await setDataJSONStringifyByKey(keys.player(userId), player);
+  await playerEfficiency(userId);
   const newCapIndex = Math.max(0, Math.min(宗门人数上限.length - 1, ass.宗门等级 - 1));
 
   void Send(

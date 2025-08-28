@@ -37,7 +37,7 @@ function normalizeName(raw: string): string {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   const user_qq = e.UserId; // 用户qq
 
@@ -65,7 +65,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 检查寻物纸数量
-  const paperCount = await existNajieThing(usr_qq, '寻物纸', '道具');
+  const paperCount = await existNajieThing(userId, '寻物纸', '道具');
 
   if (!paperCount || paperCount <= 0) {
     void Send(Text('查找物品需要【寻物纸】'));
@@ -110,7 +110,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 消耗寻物纸 (无论是否找到，以保持原逻辑的一致资源消耗，但向玩家说明)
-  await addNajieThing(usr_qq, '寻物纸', '道具', -1);
+  await addNajieThing(userId, '寻物纸', '道具', -1);
 
   if (foundPlaces.length === 0) {
     void Send(Text('天地没有回应......(已消耗1张寻物纸)'));

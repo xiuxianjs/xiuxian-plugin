@@ -12,7 +12,6 @@ import {
 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import type { Player } from '@src/types';
 import { getRedisKey, keys } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?修仙签到$/;
 
@@ -36,16 +35,16 @@ const isSameDay = (a: LastSignStruct, b: LastSignStruct) => a.Y === b.Y && a.M =
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
   const nowTime = Date.now();
-  const yesterdayStruct = await shijianc(nowTime - 24 * 60 * 60 * 1000);
-  const todayStruct = await shijianc(nowTime);
-  const lastSignStruct = await getLastsign(usr_qq);
+  const yesterdayStruct = shijianc(nowTime - 24 * 60 * 60 * 1000);
+  const todayStruct = shijianc(nowTime);
+  const lastSignStruct = await getLastsign(userId);
 
   if (
     isLastSignStruct(lastSignStruct)
@@ -61,9 +60,9 @@ const res = onResponse(selects, async e => {
     && isLastSignStruct(yesterdayStruct)
     && isSameDay(yesterdayStruct, lastSignStruct);
 
-  await redis.set(getRedisKey(usr_qq, 'lastsign_time'), String(nowTime));
+  await redis.set(getRedisKey(userId, 'lastsign_time'), String(nowTime));
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     void Send(Text('玩家数据异常'));
@@ -82,16 +81,16 @@ const res = onResponse(selects, async e => {
   newStreak += 1;
   record.连续签到天数 = newStreak;
 
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
 
   const cf = (await getConfig('xiuxian', 'xiuxian')) as SignConfig | undefined;
   const ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0));
   const gift_xiuwei = newStreak * 3000;
 
   if (ticketNum > 0) {
-    await addNajieThing(usr_qq, '秘境之匙', '道具', ticketNum);
+    await addNajieThing(userId, '秘境之匙', '道具', ticketNum);
   }
-  await addExp(usr_qq, gift_xiuwei);
+  await addExp(userId, gift_xiuwei);
 
   void Send(
     Text(

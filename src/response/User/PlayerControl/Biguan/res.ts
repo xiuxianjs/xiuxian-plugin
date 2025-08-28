@@ -16,12 +16,12 @@ export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
@@ -39,7 +39,7 @@ const res = onResponse(selects, async e => {
   const time = normalizeBiguanMinutes(Number.isNaN(parsed) ? undefined : parsed);
 
   // 查询redis中的人物动作
-  const action = await readAction(usr_qq);
+  const action = await readAction(userId);
 
   if (isActionRunning(action)) {
     const now = Date.now();
@@ -54,7 +54,7 @@ const res = onResponse(selects, async e => {
 
   const action_time = time * 60 * 1000; // 持续时间，单位毫秒
 
-  await startAction(usr_qq, '闭关', action_time, {
+  await startAction(userId, '闭关', action_time, {
     plant: '1',
     shutup: '0',
     working: '1',
@@ -66,10 +66,10 @@ const res = onResponse(selects, async e => {
     mine: '1'
   });
   // 保持 setDataByUserId 兼容写入
-  const mirror = await readAction(usr_qq);
+  const mirror = await readAction(userId);
 
   if (mirror) {
-    await setDataByUserId(usr_qq, 'action', JSON.stringify(mirror));
+    await setDataByUserId(userId, 'action', JSON.stringify(mirror));
   }
   void Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`));
 });

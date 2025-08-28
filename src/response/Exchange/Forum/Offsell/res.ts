@@ -8,15 +8,15 @@ export const regular = /^(#|＃|\/)?取消[1-9]d*/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   // 固定写法
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   let Forum = [];
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   const x = parseInt(e.MessageText.replace(/^(#|＃|\/)?取消/, '')) - 1;
 
   try {
@@ -31,12 +31,12 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 对比qq是否相等
-  if (Forum[x].qq !== usr_qq) {
+  if (Forum[x].qq !== userId) {
     void Send(Text('不能取消别人的宝贝需求'));
 
     return false;
   }
-  await addCoin(usr_qq, Forum[x].whole);
+  await addCoin(userId, Forum[x].whole);
   void Send(Text(player.名号 + '取消' + Forum[x].name + '成功,返还' + Forum[x].whole + '灵石'));
   Forum.splice(x, 1);
   await writeForum(Forum);

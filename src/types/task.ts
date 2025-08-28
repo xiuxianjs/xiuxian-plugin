@@ -63,13 +63,13 @@ export type RaidPhase = '-2' | '-1' | '0' | '1' | -2 | -1 | 0 | 1 | number;
 export interface RaidLoot extends PlaceThing {
   数量: number;
 }
-// 使用交叉+局部重定义以兼容 ActionState 中宽泛 A_player.灵根 定义
-export interface RaidActionState extends Omit<ActionState, 'A_player'> {
+// 使用交叉+局部重定义以兼容 ActionState 中宽泛 playerA.灵根 定义
+export interface RaidActionState extends Omit<ActionState, 'playerA'> {
   xijie?: RaidPhase;
   /** 当前目标据点简单信息 */
   Place_address?: { name: string; Grade: number };
-  /** 参与战斗的玩家快照（与任务中构造的 A_player 一致） */
-  A_player?: {
+  /** 参与战斗的玩家快照（与任务中构造的 playerA 一致） */
+  playerA?: {
     名号: string;
     攻击: number;
     防御: number;

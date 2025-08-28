@@ -52,9 +52,9 @@ function normalizeCategory(c: string | undefined): NajieCategory {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -75,7 +75,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const key = getRedisKey(usr_qq, 'duihuan');
+  const key = getRedisKey(userId, 'duihuan');
   const usedList = parseJson<string[]>(await redis.get(key)) || [];
 
   if (usedList.includes(codeInput)) {
@@ -98,7 +98,7 @@ const res = onResponse(selects, async e => {
     }
     const cate = normalizeCategory(t.class);
 
-    await addNajieThing(usr_qq, t.name, cate, qty);
+    await addNajieThing(userId, t.name, cate, qty);
     msg.push(`\n${t.name}x${qty}`);
   }
   if (!msg.length) {

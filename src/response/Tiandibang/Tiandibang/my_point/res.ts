@@ -10,9 +10,9 @@ export const regular = /^(#|＃|\/)?天地榜$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 查看存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -26,7 +26,7 @@ const res = onResponse(selects, async e => {
     await writeTiandibang([]);
   }
   // 查找用户是否报名
-  const userIndex = tiandibang.findIndex(p => p.qq === usr_qq);
+  const userIndex = tiandibang.findIndex(p => p.qq === userId);
 
   if (userIndex === -1) {
     void Send(Text('请先报名!'));
@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 生成图片，传递实际排行榜数据
-  const image = await screenshot('immortal_genius', usr_qq, {
+  const image = await screenshot('immortal_genius', userId, {
     allplayer: tiandibang
       .sort((a, b) => b.积分 - a.积分)
       .slice(0, 10)

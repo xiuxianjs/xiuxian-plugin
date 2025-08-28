@@ -10,12 +10,12 @@ export const regular = /^(#|＃|\/)?星阁出价.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   // 固定写法
   // 判断是否为匿名创建存档
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -37,13 +37,13 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   const auctionData = JSON.parse(auction);
   // let start_price = auction.start_price;
   const last_price = auctionData.last_price;
   const reg = e.MessageText.replace(/^(#|＃|\/)?星阁出价/, '');
 
-  if (auctionData.last_offer_player === usr_qq) {
+  if (auctionData.last_offer_player === userId) {
     void Send(Text('不能自己给自己抬价哦!'));
 
     return false;
@@ -78,7 +78,7 @@ const res = onResponse(selects, async e => {
   // ↑新的：RetuEase
 
   auctionData.last_price = new_price;
-  auctionData.last_offer_player = usr_qq;
+  auctionData.last_offer_player = userId;
   auctionData.last_offer_price = Date.now(); // NOTE: Big SB
   await redis.set(KEY_AUCTION_OFFICIAL_TASK, JSON.stringify(auctionData));
 });

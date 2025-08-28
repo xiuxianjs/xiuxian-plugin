@@ -41,9 +41,9 @@ const PINJI_MAP: Record<string, number> = {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -67,7 +67,7 @@ const res = onResponse(selects, async e => {
   let thingName = parts[0];
   let qualityToken = parts[1] || '';
 
-  const najieRaw = await readNajie(usr_qq);
+  const najieRaw = await readNajie(userId);
   const najie = najieRaw as NajieLike;
 
   const index = Number(thingName);
@@ -110,7 +110,7 @@ const res = onResponse(selects, async e => {
 
   const category = String(thingDef.class) as NajieCategory;
   const lockFlag = action === '锁定' ? 1 : 0;
-  const updated = await updateBagThing(usr_qq, thingName, category, pinjiNum, lockFlag);
+  const updated = await updateBagThing(userId, thingName, category, pinjiNum, lockFlag);
 
   if (updated) {
     void Send(Text(`${category}:${thingName}${action === '锁定' ? '已锁定' : '已解锁'}`));

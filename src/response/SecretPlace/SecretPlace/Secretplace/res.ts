@@ -4,9 +4,9 @@ import { existplayer } from '@src/model/index';
 
 export const regular = /^(#|＃|\/)?秘境$/;
 const res = onResponse(selects, async e => {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   const didian = await getDataList('Didian');

@@ -8,14 +8,11 @@ export { config };
 export const redis = getIoRedis();
 
 /**
- *
- * @param platform
  * @param guild_id
  * @param isGroup
  * @param msg
  * @returns
  */
-// alemonjs 的 format(Text(..), ...) 返回内部统一的 DataEnums[]，这里用宽松别名
 export function pushInfo(guildId: string, isGroup: boolean, msg: MessageInput) {
   let message: MessageEnumsArray = [];
 

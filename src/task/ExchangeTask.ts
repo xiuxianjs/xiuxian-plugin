@@ -35,11 +35,11 @@ export const ExchangeTask = async () => {
       if (time < 3) {
         break;
       }
-      const usr_qq = rec.qq;
+      const userId = rec.qq;
       const nm = rec.thing as ExchangeEntry['name'];
       const quanity = rec.aconut;
 
-      await addNajieThing(usr_qq, nm.name, nm.class, quanity, Number(nm.pinji));
+      await addNajieThing(userId, nm.name, nm.class, quanity, Number(nm.pinji));
       list.splice(i, 1);
       i--;
     }

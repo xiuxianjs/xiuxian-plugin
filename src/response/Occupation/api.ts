@@ -49,8 +49,8 @@ async function calcOccupationFactor(occupation_level: number) {
 }
 
 export async function plant_jiesuan(user_id: string, time: number, group_id?: string) {
-  const usr_qq = user_id;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = user_id;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -93,7 +93,7 @@ export async function plant_jiesuan(user_id: string, time: number, group_id?: st
   const mult = 1 + occFactor * 0.3;
   const amounts = baseVec.map(p => p * sum * mult);
 
-  const msg: Array<DataMention | string> = [Mention(usr_qq)];
+  const msg: Array<DataMention | string> = [Mention(userId)];
 
   msg.push(`\n恭喜你获得了经验${exp},草药:`);
   for (let i = 0; i < amounts.length; i++) {
@@ -103,22 +103,22 @@ export async function plant_jiesuan(user_id: string, time: number, group_id?: st
       continue;
     }
     msg.push(`\n${names[i]}${val}个`);
-    await addNajieThing(usr_qq, names[i], '草药', val);
+    await addNajieThing(userId, names[i], '草药', val);
   }
-  await addExp4(usr_qq, exp);
+  await addExp4(userId, exp);
 
   if (group_id) {
-    await pushInfo(group_id, true, msg);
+    pushInfo(group_id, true, msg);
   } else {
-    await pushInfo(usr_qq, false, msg);
+    pushInfo(userId, false, msg);
   }
 
   return false;
 }
 
 export async function mine_jiesuan(user_id: string, time: number, group_id?: string) {
-  const usr_qq = user_id;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = user_id;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -163,19 +163,19 @@ export async function mine_jiesuan(user_id: string, time: number, group_id?: str
 
   end_amount *= player.level_id / 40;
   end_amount = Math.floor(end_amount);
-  await addNajieThing(usr_qq, '庚金', '材料', end_amount);
-  await addNajieThing(usr_qq, '玄土', '材料', end_amount);
-  await addNajieThing(usr_qq, A[xuanze], '材料', num);
-  await addNajieThing(usr_qq, B[xuanze], '材料', Math.trunc(num / 48));
-  await addExp4(usr_qq, exp);
-  const msg: Array<DataMention | string> = [Mention(usr_qq)];
+  await addNajieThing(userId, '庚金', '材料', end_amount);
+  await addNajieThing(userId, '玄土', '材料', end_amount);
+  await addNajieThing(userId, A[xuanze], '材料', num);
+  await addNajieThing(userId, B[xuanze], '材料', Math.trunc(num / 48));
+  await addExp4(userId, exp);
+  const msg: Array<DataMention | string> = [Mention(userId)];
 
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`);
   msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`);
   if (group_id) {
-    await pushInfo(group_id, true, msg);
+    pushInfo(group_id, true, msg);
   } else {
-    await pushInfo(usr_qq, false, msg);
+    pushInfo(userId, false, msg);
   }
 
   return false;

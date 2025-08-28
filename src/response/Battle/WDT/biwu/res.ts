@@ -83,15 +83,15 @@ const res = onResponse(selects, async e => {
   }
 
   // 读取双方玩家
-  const A_player = await readPlayer(A);
-  const B_player = await readPlayer(B);
+  const playerA = await readPlayer(A);
+  const playerB = await readPlayer(B);
 
-  if (!A_player || !B_player) {
+  if (!playerA || !playerB) {
     return false;
   }
 
   // 境界校验
-  if (!notUndAndNull(A_player.level_id) || !notUndAndNull(B_player.level_id)) {
+  if (!notUndAndNull(playerA.level_id) || !notUndAndNull(playerB.level_id)) {
     void Send(Text('请先#同步信息 / 对方为错误存档'));
 
     return false;
@@ -166,12 +166,12 @@ const res = onResponse(selects, async e => {
   // 血量必须接近满 (使用 5/6 ≈ 83%)
   const hpThreshold = 5 / 6;
 
-  if (B_player.当前血量 <= B_player.血量上限 * hpThreshold) {
-    void Send(Text(`${B_player.名号} 血量未满，不能趁人之危哦`));
+  if (playerB.当前血量 <= playerB.血量上限 * hpThreshold) {
+    void Send(Text(`${playerB.名号} 血量未满，不能趁人之危哦`));
 
     return false;
   }
-  if (A_player.当前血量 <= A_player.血量上限 * hpThreshold) {
+  if (playerA.当前血量 <= playerA.血量上限 * hpThreshold) {
     void Send(Text('你血量未满，对方不想趁人之危'));
 
     return false;
@@ -183,24 +183,24 @@ const res = onResponse(selects, async e => {
 
   const final_msg: string[] = [];
 
-  final_msg.push(`${A_player.名号}向${B_player.名号}发起了比武！`);
+  final_msg.push(`${playerA.名号}向${playerB.名号}发起了比武！`);
 
-  A_player.法球倍率 = Number(A_player.灵根.法球倍率) || 0;
-  B_player.法球倍率 = Number(B_player.灵根.法球倍率) || 0;
+  playerA.法球倍率 = Number(playerA.灵根.法球倍率) || 0;
+  playerB.法球倍率 = Number(playerB.灵根.法球倍率) || 0;
 
-  const Data_battle = await zdBattle(A_player, B_player);
-  const msg = Data_battle.msg;
+  const dataBattle = await zdBattle(playerA, playerB);
+  const msg = dataBattle.msg;
 
   if (msg.length <= 35) {
     void Send(Text(msg.join('\n')));
   }
-  await addHP(A, Data_battle.A_xue);
-  await addHP(B, Data_battle.B_xue);
+  await addHP(A, dataBattle.A_xue);
+  await addHP(B, dataBattle.B_xue);
 
-  const A_win = `${A_player.名号}击败了${B_player.名号}`;
-  const B_win = `${B_player.名号}击败了${A_player.名号}`;
-  const aWin = msg.includes(A_win);
-  const bWin = msg.includes(B_win);
+  const winA = `${playerA.名号}击败了${playerB.名号}`;
+  const winB = `${playerB.名号}击败了${playerA.名号}`;
+  const aWin = msg.includes(winA);
+  const bWin = msg.includes(winB);
 
   if (!aWin && !bWin) {
     void Send(Text('战斗过程出错'));
@@ -209,8 +209,8 @@ const res = onResponse(selects, async e => {
   }
 
   const levelList = await getDataList('Level1');
-  const levelA = levelList.find(l => l.level_id === A_player.level_id)?.level_id || 1;
-  const levelB = levelList.find(l => l.level_id === B_player.level_id)?.level_id || 1;
+  const levelA = levelList.find(l => l.level_id === playerA.level_id)?.level_id || 1;
+  const levelB = levelList.find(l => l.level_id === playerB.level_id)?.level_id || 1;
 
   if (aWin) {
     const qixueA = Math.trunc(1000 * levelB);
@@ -228,7 +228,7 @@ const res = onResponse(selects, async e => {
       await import('@src/model/xiuxian_impl').then(m => m.writePlayer(A, pA));
     }
     final_msg.push(
-      ` 经过一番大战,${A_win}获得了胜利,${A_player.名号}获得${qixueA}气血，${B_player.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`
+      ` 经过一番大战,${winA}获得了胜利,${playerA.名号}获得${qixueA}气血，${playerB.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`
     );
   } else if (bWin) {
     const qixueA = Math.trunc(500 * levelB);
@@ -246,7 +246,7 @@ const res = onResponse(selects, async e => {
       await import('@src/model/xiuxian_impl').then(m => m.writePlayer(B, pB));
     }
     final_msg.push(
-      `经过一番大战,${B_win}获得了胜利,${B_player.名号}获得${qixueB}气血，${A_player.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`
+      `经过一番大战,${winB}获得了胜利,${playerB.名号}获得${qixueB}气血，${playerA.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`
     );
   }
 

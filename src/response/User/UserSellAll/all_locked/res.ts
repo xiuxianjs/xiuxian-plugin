@@ -7,14 +7,14 @@ export const regular = /^(#|＃|\/)?一键锁定(.*)$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+  const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
     return;
@@ -48,7 +48,7 @@ const res = onResponse(selects, async e => {
       l.islockd = 1;
     }
   }
-  await writeNajie(usr_qq, najie);
+  await writeNajie(userId, najie);
   void Send(Text('一键锁定完成'));
 });
 

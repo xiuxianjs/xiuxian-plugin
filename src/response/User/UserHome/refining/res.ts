@@ -29,9 +29,9 @@ function parsePinji(raw: string | undefined): number | undefined {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const najie = await readNajie(usr_qq);
+  const najie = await readNajie(userId);
 
   if (!najie) {
     return false;
@@ -96,8 +96,8 @@ const res = onResponse(selects, async e => {
   }
 
   // 扣除 3 件，增加下一品级 1 件
-  await addNajieThing(usr_qq, thingName, '装备', -3, pinjiInput);
-  await addNajieThing(usr_qq, thingName, '装备', 1, pinjiInput + 1);
+  await addNajieThing(userId, thingName, '装备', -3, pinjiInput);
+  await addNajieThing(userId, thingName, '装备', 1, pinjiInput + 1);
   void Send(Text(`打磨成功！${thingName} 品级 ${parts[1]} -> ${pinjiInput + 1}`));
 
   return false;

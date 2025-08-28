@@ -7,8 +7,8 @@ export const regular = /^(#|＃|\/)?我的炼体$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   // 查看存档
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;

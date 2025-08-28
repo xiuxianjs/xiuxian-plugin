@@ -40,13 +40,13 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) {
     return false;
@@ -108,7 +108,7 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool + lingshi;
   player.宗门.lingshi_donate = (player.宗门.lingshi_donate || 0) + lingshi;
   player.灵石 -= lingshi;
-  await writePlayer(usr_qq, serializePlayer(player));
+  await writePlayer(userId, serializePlayer(player));
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
   void Send(Text(`捐赠成功,你身上还有${player.灵石}灵石,宗门灵石池目前有${ass.灵石池}灵石`));
 

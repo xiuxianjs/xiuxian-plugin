@@ -8,15 +8,15 @@ export const regular = /^(#|＃|\/)?一键出售(.*)$/;
 
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   let commoditiesPrice = 0;
-  const najie = await getDataJSONParseByKey(keys.najie(usr_qq));
+  const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
     return false;
@@ -57,12 +57,12 @@ const res = onResponse(selects, async e => {
           const price = typeof l.出售价 === 'number' ? l.出售价 : 0;
           const cls = (l.class as NajieCategory) || i;
 
-          await addNajieThing(usr_qq, l.name, cls, -quantity, l.pinji);
+          await addNajieThing(userId, l.name, cls, -quantity, l.pinji);
           commoditiesPrice += price * quantity;
         }
       }
     }
-    await addCoin(usr_qq, commoditiesPrice);
+    await addCoin(userId, commoditiesPrice);
     void message.send(format(Text(`出售成功!  获得${commoditiesPrice}灵石 `)));
 
     return false;
@@ -114,8 +114,8 @@ const res = onResponse(selects, async e => {
 
         return;
       }
-      const usr_qq = event.UserId;
-      const najie2 = await getDataJSONParseByKey(keys.najie(usr_qq));
+      const userId = event.UserId;
+      const najie2 = await getDataJSONParseByKey(keys.najie(userId));
 
       if (!najie2) {
         void message.send(format(Text('数据缺失，出售失败')));
@@ -153,12 +153,12 @@ const res = onResponse(selects, async e => {
             const price = typeof l.出售价 === 'number' ? l.出售价 : 0;
             const cls = (l.class as NajieCategory) || i;
 
-            await addNajieThing(usr_qq, l.name, cls, -quantity, l.pinji);
+            await addNajieThing(userId, l.name, cls, -quantity, l.pinji);
             commoditiesPrice += price * quantity;
           }
         }
       }
-      await addCoin(usr_qq, commoditiesPrice);
+      await addCoin(userId, commoditiesPrice);
       void message.send(format(Text(`出售成功!  获得${commoditiesPrice}灵石 `)));
     },
     ['UserId']

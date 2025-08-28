@@ -26,7 +26,7 @@ function isAppointment(v: string): v is Appointment {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   const [mention] = useMention(e);
   const res = await mention.findOne();
@@ -35,7 +35,7 @@ const res = onResponse(selects, async e => {
   if (!target || res.code !== 2000) {
     return false;
   }
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -52,7 +52,7 @@ const res = onResponse(selects, async e => {
   }
   const member_qq = target.UserId;
 
-  if (usr_qq === member_qq) {
+  if (userId === member_qq) {
     void Send(Text('不能对自己任命'));
 
     return false;

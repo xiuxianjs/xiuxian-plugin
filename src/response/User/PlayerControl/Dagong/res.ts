@@ -18,14 +18,14 @@ export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId; // 用户qq
+  const userId = e.UserId; // 用户qq
 
   // 有无存档
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   // 获取游戏状态
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
@@ -39,7 +39,7 @@ const res = onResponse(selects, async e => {
   timeStr = timeStr.replace('降妖', '').replace('分', '').replace('钟', '');
   const time = normalizeDurationMinutes(timeStr, 15, 48, 15);
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.当前血量 < 200) {
     void Send(Text('你都伤成这样了,先去疗伤吧'));
@@ -48,7 +48,7 @@ const res = onResponse(selects, async e => {
   }
   // 查询redis中的人物动作
 
-  const current = await readAction(usr_qq);
+  const current = await readAction(userId);
 
   if (isActionRunning(current)) {
     void Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const action_time = time * 60 * 1000;
-  const arr = await startAction(usr_qq, '降妖', action_time, {
+  const arr = await startAction(userId, '降妖', action_time, {
     plant: '1',
     shutup: '1',
     working: '0',
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
     mine: '1'
   });
 
-  await setDataByUserId(usr_qq, 'action', JSON.stringify(arr));
+  await setDataByUserId(userId, 'action', JSON.stringify(arr));
   void Send(Text(`现在开始降妖${time}分钟`));
 });
 

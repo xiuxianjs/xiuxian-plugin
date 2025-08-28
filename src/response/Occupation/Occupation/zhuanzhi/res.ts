@@ -5,13 +5,13 @@ import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?猎户转.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.occupation !== '猎户') {
     void Send(Text('你不是猎户,无法自选职业'));
@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   player.occupation = occupation;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
   void Send(Text(`恭喜${player.名号}转职为[${occupation}]`));
 });
 

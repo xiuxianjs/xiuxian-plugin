@@ -36,12 +36,12 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.sex && player.sex !== '0') {
     void Send(Text('每个存档仅可设置一次性别！'));
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
   }
   // 约定: sex 2=男 1=女 0=未设置
   player.sex = gender === '男' ? '2' : '1';
-  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  void setDataJSONStringifyByKey(keys.player(userId), player);
   void Send(Text(`${player.名号}的性别已成功设置为 ${gender}。`));
 
   return false;

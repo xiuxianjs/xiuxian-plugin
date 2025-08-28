@@ -19,13 +19,13 @@ export const regular = /^(#|＃|\/)?沉迷禁地.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
@@ -50,7 +50,7 @@ const res = onResponse(selects, async e => {
   const code = didian.split('*');
 
   didian = code[0];
-  const i = await convert2integer(code[1]);
+  const i = convert2integer(code[1]);
 
   if (i > 12) {
     return false;
@@ -89,10 +89,10 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const number = await existNajieThing(usr_qq, '秘境之匙', '道具');
+  const number = await existNajieThing(userId, '秘境之匙', '道具');
 
   if (typeof number === 'number' && number >= i) {
-    await addNajieThing(usr_qq, '秘境之匙', '道具', -i);
+    await addNajieThing(userId, '秘境之匙', '道具', -i);
   } else {
     void Send(Text('你没有足够数量的秘境之匙'));
 
@@ -101,11 +101,11 @@ const res = onResponse(selects, async e => {
   const Price = weizhi.Price * 10 * i;
   const Exp = weizhi.experience * 10 * i;
 
-  await addCoin(usr_qq, -Price);
-  await addExp(usr_qq, -Exp);
+  await addCoin(userId, -Price);
+  await addExp(userId, -Exp);
   const time = i * 10 * 5 + 10; // 时间（分钟）
   const action_time = 60000 * time; // 持续时间，单位毫秒
-  const arr = await startAction(usr_qq, '禁地', action_time, {
+  const arr = await startAction(userId, '禁地', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '1',
@@ -120,7 +120,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
-  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
+  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
   void Send(Text('正在前往' + weizhi.name + ',' + time + '分钟后归来!'));
 });
 

@@ -21,13 +21,13 @@ interface EquipData {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -43,7 +43,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const equipmentRaw: EquipData | null = await getDataJSONParseByKey(keys.equipment(usr_qq));
+  const equipmentRaw: EquipData | null = await getDataJSONParseByKey(keys.equipment(userId));
 
   if (!equipmentRaw) {
     return false;
@@ -100,7 +100,7 @@ const res = onResponse(selects, async e => {
 
   const CD_MIN = 2;
   const now = Date.now();
-  const cdKey = getRedisKey(String(usr_qq), 'zyt_cd');
+  const cdKey = getRedisKey(String(userId), 'zyt_cd');
   const last_time_raw = await redis.get(cdKey);
   const lastNum = Number(last_time_raw);
   const cdMs = CD_MIN * 60 * 1000;
@@ -199,7 +199,7 @@ const res = onResponse(selects, async e => {
     void Send(Text(`\n你未能通过此层镇妖塔！灵石-${lose}`));
   }
 
-  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  void setDataJSONStringifyByKey(keys.player(userId), player);
 
   return false;
 });

@@ -6,8 +6,8 @@ import { getRankingMoneyImage } from '@src/model/image';
 export const regular = /^(#|＃|\/)?灵榜$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -28,7 +28,7 @@ const res = onResponse(selects, async e => {
 
   temp.sort(sortBy('灵石'));
   const Data: any[] = [];
-  const usr_paiming = temp.findIndex(temp => temp.qq === usr_qq) + 1;
+  const usr_paiming = temp.findIndex(temp => temp.qq === userId) + 1;
 
   if (File_length > 10) {
     File_length = 10;
@@ -38,8 +38,8 @@ const res = onResponse(selects, async e => {
     Data[i] = temp[i];
   }
   await sleep(500);
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
-  const thisnajie = await getDataJSONParseByKey(keys.najie(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
+  const thisnajie = await getDataJSONParseByKey(keys.najie(userId));
   const img = await getRankingMoneyImage(e, Data, usr_paiming, player, thisnajie);
 
   if (Buffer.isBuffer(img)) {

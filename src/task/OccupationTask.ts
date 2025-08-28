@@ -148,10 +148,10 @@ export const OccupationTask = async () => {
         arr.Place_actionplus = 1;
         delete (arr as Partial<ActionState>).group_id;
         await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-        // if (is_group && push_address) {
-        //   await pushInfo(push_address, is_group, msg)
+        // if (isGroup && push_address) {
+        //   pushInfo(push_address, isGroup, msg)
         // } else {
-        //   await pushInfo(player_id, is_group, msg)
+        //   pushInfo(player_id, isGroup, msg)
         // }
       }
     }

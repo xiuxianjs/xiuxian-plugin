@@ -71,9 +71,9 @@ const res = onResponse(selects, async e => {
   }
 
   if (e.name === 'message.create' || e.name === 'interaction.create') {
-    await biguan_jiesuan(e.UserId, time, false, e.ChannelId); // 提前闭关结束不会触发随机事件
+    await biguanJiesuan(e.UserId, time, false, e.ChannelId); // 提前闭关结束不会触发随机事件
   } else {
-    await biguan_jiesuan(e.UserId, time, false); // 提前闭关结束不会触发随机事件
+    await biguanJiesuan(e.UserId, time, false); // 提前闭关结束不会触发随机事件
   }
   const arr = action;
 
@@ -88,8 +88,8 @@ const res = onResponse(selects, async e => {
   await setDataByUserId(e.UserId, 'game_action', 0);
 });
 
-async function getPlayerAction(usr_qq: string): Promise<ActionState | false> {
-  const raw = await getJSON<ActionState>(userKey(usr_qq, 'action'));
+async function getPlayerAction(userId: string): Promise<ActionState | false> {
+  const raw = await getJSON<ActionState>(userKey(userId, 'action'));
 
   if (!raw) {
     return false;
@@ -99,17 +99,15 @@ async function getPlayerAction(usr_qq: string): Promise<ActionState | false> {
 }
 /**
  * 闭关结算
- * @param usr_qq
+ * @param userId
  * @param time持续时间(单位用分钟)
- * @param is_random是否触发随机事件  true,false
+ * @param isRandom是否触发随机事件  true,false
  * @param group_id  回复消息的地址，如果为空，则私聊
  * @return  falses {Promise<void>}
  */
-async function biguan_jiesuan(user_id, time, is_random, group_id?) {
-  const usr_qq = user_id;
-
-  await playerEfficiency(usr_qq);
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+async function biguanJiesuan(userId, time, isRandom, group_id?) {
+  await playerEfficiency(userId);
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -128,13 +126,13 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   // 恢复的血量
   const blood = Math.floor(player.血量上限 * 0.02);
   // 额外修为
-  let other_xiuwei = 0;
+  let otherEXP = 0;
 
-  const msg: Array<DataMention | string> = [Mention(usr_qq)];
+  const msg: Array<DataMention | string> = [Mention(userId)];
   // 炼丹师丹药修正
   let transformation = '修为';
   let xueqi = 0;
-  const dy = await readDanyao(usr_qq);
+  const dy = await readDanyao(userId);
 
   console.log('dy', dy);
   if (dy.biguan > 0) {
@@ -148,13 +146,13 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     dy.lianti--;
   }
   // 随机事件预留空间
-  if (is_random) {
+  if (isRandom) {
     let rand = Math.random();
 
     // 顿悟
     if (rand < 0.2) {
       rand = Math.trunc(rand * 10) + 45;
-      other_xiuwei = rand * time;
+      otherEXP = rand * time;
       xueqi = Math.trunc(rand * time * dy.beiyong4);
       if (transformation === '血气') {
         msg.push('\n本次闭关顿悟,受到炼神之力修正,额外增加血气:' + xueqi);
@@ -165,7 +163,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     // 走火入魔
     else if (rand > 0.8) {
       rand = Math.trunc(rand * 10) + 5;
-      other_xiuwei = -1 * rand * time;
+      otherEXP = -1 * rand * time;
       xueqi = Math.trunc(rand * time * dy.beiyong4);
       if (transformation === '血气') {
         msg.push('\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi);
@@ -177,36 +175,36 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   let other_x = 0;
   let qixue = 0;
 
-  if ((await existNajieThing(usr_qq, '魔界秘宝', '道具')) && player.魔道值 > 999) {
+  if ((await existNajieThing(userId, '魔界秘宝', '道具')) && player.魔道值 > 999) {
     other_x = Math.trunc(xiuwei * 0.15 * time);
-    await addNajieThing(usr_qq, '魔界秘宝', '道具', -1);
+    await addNajieThing(userId, '魔界秘宝', '道具', -1);
     msg.push('\n消耗了道具[魔界秘宝],额外增加' + other_x + '修为');
-    await addExp(usr_qq, other_x);
+    await addExp(userId, other_x);
   }
   if (
-    (await existNajieThing(usr_qq, '神界秘宝', '道具'))
+    (await existNajieThing(userId, '神界秘宝', '道具'))
     && player.魔道值 < 1
     && (player.灵根.type === '转生' || player.level_id > 41)
   ) {
     qixue = Math.trunc(xiuwei * 0.1 * time);
-    await addNajieThing(usr_qq, '神界秘宝', '道具', -1);
+    await addNajieThing(userId, '神界秘宝', '道具', -1);
     msg.push('\n消耗了道具[神界秘宝],额外增加' + qixue + '血气');
-    await addExp2(usr_qq, qixue);
+    await addExp2(userId, qixue);
   }
   // 设置修为，设置血量
 
-  await setFileValue(usr_qq, blood * time, '当前血量');
+  await setFileValue(userId, blood * time, '当前血量');
 
   // 给出消息提示
   if (transformation === '血气') {
-    await setFileValue(usr_qq, (xiuwei * time + other_xiuwei) * dy.beiyong4, transformation); // 丹药修正
+    await setFileValue(userId, (xiuwei * time + otherEXP) * dy.beiyong4, transformation); // 丹药修正
     msg.push(
       '\n受到炼神之力的影响,增加血气:' + xiuwei * time * dy.beiyong4,
       '  获得治疗,血量增加:' + blood * time
     );
   } else {
-    await setFileValue(usr_qq, xiuwei * time + other_xiuwei, transformation);
-    if (is_random) {
+    await setFileValue(userId, xiuwei * time + otherEXP, transformation);
+    if (isRandom) {
       msg.push(
         '\n增加气血:' + xiuwei * time,
         ',获得治疗,血量增加:' + blood * time + '炼神之力消散了'
@@ -217,9 +215,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   }
 
   if (group_id) {
-    await pushInfo(group_id, true, msg);
+    pushInfo(group_id, true, msg);
   } else {
-    await pushInfo(usr_qq, false, msg);
+    pushInfo(userId, false, msg);
   }
   if (dy.lianti <= 0) {
     dy.lianti = 0;
@@ -227,7 +225,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   }
   // 炼丹师修正结束
   // 写回当前丹药状态
-  await writeDanyao(usr_qq, dy);
+  await writeDanyao(userId, dy);
 
   return false;
 }

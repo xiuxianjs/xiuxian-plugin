@@ -75,22 +75,22 @@ export type NajieCategory =
 
 export interface NajieServiceAPI {
   updateBagThing(
-    usr_qq: string,
-    thing_name: string,
-    thing_class: NajieCategory,
+    userId: string,
+    thingName: string,
+    thingClass: NajieCategory,
     thing_pinji: number | undefined,
     lock: number
   ): Promise<boolean>;
   existNajieThing(
-    usr_qq: string,
-    thing_name: string,
-    thing_class: NajieCategory,
+    userId: string,
+    thingName: string,
+    thingClass: NajieCategory,
     thing_pinji?: number
   ): Promise<number | false>;
   addNajieThing(
-    usr_qq: string,
+    userId: string,
     name: string | NajieItem,
-    thing_class: NajieCategory,
+    thingClass: NajieCategory,
     x: number,
     pinji?: number
   ): Promise<void>;

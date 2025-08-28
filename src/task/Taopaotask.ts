@@ -55,11 +55,11 @@ export const Taopaotask = async () => {
 
     if (action) {
       let push_address: string | undefined;
-      let is_group = false; // 是否推送到群
+      let isGroup = false; // 是否推送到群
 
       if ('group_id' in action) {
         if (notUndAndNull(action.group_id)) {
-          is_group = true;
+          isGroup = true;
           push_address = action.group_id;
         }
       }
@@ -93,39 +93,39 @@ export const Taopaotask = async () => {
               break;
             }
           }
-          const A_player = action.A_player;
+          const playerA = action.playerA;
 
-          if (!A_player) {
+          if (!playerA) {
             return;
           }
           let monster: MonsterSlot;
 
           if (weizhi.Grade === 1) {
-            const monster_length = npcList[i].one.length;
-            const monster_index = Math.trunc(Math.random() * monster_length);
+            const monsterLength = npcList[i].one.length;
+            const monsterIndex = Math.trunc(Math.random() * monsterLength);
 
-            monster = npcList[i].one[monster_index];
+            monster = npcList[i].one[monsterIndex];
           } else if (weizhi.Grade === 2) {
-            const monster_length = npcList[i].two.length;
-            const monster_index = Math.trunc(Math.random() * monster_length);
+            const monsterLength = npcList[i].two.length;
+            const monsterIndex = Math.trunc(Math.random() * monsterLength);
 
-            monster = npcList[i].two[monster_index];
+            monster = npcList[i].two[monsterIndex];
           } else {
-            const monster_length = npcList[i].three.length;
-            const monster_index = Math.trunc(Math.random() * monster_length);
+            const monsterLength = npcList[i].three.length;
+            const monsterIndex = Math.trunc(Math.random() * monsterLength);
 
-            monster = npcList[i].three[monster_index];
+            monster = npcList[i].three[monsterIndex];
           }
           // 设定npc数值
-          const B_player = {
+          const playerB = {
             名号: monster.name,
-            攻击: Math.floor(Number(monster.atk || 0) * Number(A_player.攻击 || 0)),
+            攻击: Math.floor(Number(monster.atk || 0) * Number(playerA.攻击 || 0)),
             防御: Math.floor(
-              (Number(monster.def || 0) * Number(A_player.防御 || 0))
+              (Number(monster.def || 0) * Number(playerA.防御 || 0))
                 / (1 + Number(weizhi.Grade ?? 0) * 0.05)
             ),
             当前血量: Math.floor(
-              (Number(monster.blood || 0) * Number(A_player.当前血量 || 0))
+              (Number(monster.blood || 0) * Number(playerA.当前血量 || 0))
                 / (1 + Number(weizhi.Grade ?? 0) * 0.05)
             ),
             暴击率: Number(monster.baoji || 0),
@@ -134,33 +134,33 @@ export const Taopaotask = async () => {
           };
           const Random = Math.random();
           const npc_damage = Math.trunc(
-            Harm(B_player.攻击 * 0.85, Number(A_player.防御 || 0))
-              + Math.trunc(B_player.攻击 * B_player.法球倍率)
-              + B_player.防御 * 0.1
+            Harm(playerB.攻击 * 0.85, Number(playerA.防御 || 0))
+              + Math.trunc(playerB.攻击 * playerB.法球倍率)
+              + playerB.防御 * 0.1
           );
-          let last_msg = '';
+          let lastMessage = '';
 
           if (Random < 0.1) {
-            A_player.当前血量 = Number(A_player.当前血量 || 0) - npc_damage;
-            last_msg += `${B_player.名号}似乎不屑追你,只是随手丢出神通,剩余血量${A_player.当前血量}`;
+            playerA.当前血量 = Number(playerA.当前血量 || 0) - npc_damage;
+            lastMessage += `${playerB.名号}似乎不屑追你,只是随手丢出神通,剩余血量${playerA.当前血量}`;
           } else if (Random < 0.25) {
-            A_player.当前血量 = Number(A_player.当前血量 || 0) - Math.trunc(npc_damage * 0.3);
-            last_msg += `你引起了${B_player.名号}的兴趣,${B_player.名号}决定试探你,只用了三分力,剩余血量${A_player.当前血量}`;
+            playerA.当前血量 = Number(playerA.当前血量 || 0) - Math.trunc(npc_damage * 0.3);
+            lastMessage += `你引起了${playerB.名号}的兴趣,${playerB.名号}决定试探你,只用了三分力,剩余血量${playerA.当前血量}`;
           } else if (Random < 0.5) {
-            A_player.当前血量 = Number(A_player.当前血量 || 0) - Math.trunc(npc_damage * 1.5);
-            last_msg += `你的逃跑让${B_player.名号}愤怒,${B_player.名号}使用了更加强大的一次攻击,剩余血量${A_player.当前血量}`;
+            playerA.当前血量 = Number(playerA.当前血量 || 0) - Math.trunc(npc_damage * 1.5);
+            lastMessage += `你的逃跑让${playerB.名号}愤怒,${playerB.名号}使用了更加强大的一次攻击,剩余血量${playerA.当前血量}`;
           } else if (Random < 0.7) {
-            A_player.当前血量 = Number(A_player.当前血量 || 0) - Math.trunc(npc_damage * 1.3);
-            last_msg += `你成功的吸引了所有的仇恨,${B_player.名号}已经快要抓到你了,强大的攻击已经到了你的面前,剩余血量${A_player.当前血量}`;
+            playerA.当前血量 = Number(playerA.当前血量 || 0) - Math.trunc(npc_damage * 1.3);
+            lastMessage += `你成功的吸引了所有的仇恨,${playerB.名号}已经快要抓到你了,强大的攻击已经到了你的面前,剩余血量${playerA.当前血量}`;
           } else if (Random < 0.9) {
-            A_player.当前血量 = Number(A_player.当前血量 || 0) - Math.trunc(npc_damage * 1.8);
-            last_msg += `你们近乎贴脸飞行,${B_player.名号}的攻势愈加猛烈,已经快招架不住了,剩余血量${A_player.当前血量}`;
+            playerA.当前血量 = Number(playerA.当前血量 || 0) - Math.trunc(npc_damage * 1.8);
+            lastMessage += `你们近乎贴脸飞行,${playerB.名号}的攻势愈加猛烈,已经快招架不住了,剩余血量${playerA.当前血量}`;
           } else {
-            A_player.当前血量 = Number(A_player.当前血量 || 0) - Math.trunc(npc_damage * 0.5);
-            last_msg += `身体快到极限了嘛,你暗暗问道,脚下逃跑的步伐更加迅速,剩余血量${A_player.当前血量}`;
+            playerA.当前血量 = Number(playerA.当前血量 || 0) - Math.trunc(npc_damage * 0.5);
+            lastMessage += `身体快到极限了嘛,你暗暗问道,脚下逃跑的步伐更加迅速,剩余血量${playerA.当前血量}`;
           }
-          if (A_player.当前血量 < 0) {
-            A_player.当前血量 = 0;
+          if (playerA.当前血量 < 0) {
+            playerA.当前血量 = 0;
           }
           const arr: ActionState = action;
           const shop = await readShop();
@@ -169,15 +169,15 @@ export const Taopaotask = async () => {
           if (slot) {
             slot.state = 0;
           }
-          if (A_player.当前血量 > 0) {
-            arr.A_player = A_player;
+          if (playerA.当前血量 > 0) {
+            arr.playerA = playerA;
             if (typeof arr.cishu === 'number') {
               arr.cishu -= 1;
             }
           } else {
             const num = Number(weizhi.Grade ?? 0) + 1;
 
-            last_msg += `\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x${num}`;
+            lastMessage += `\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x${num}`;
             await addNajieThing(player_id, '秘境之匙', '道具', num);
             delete arr.group_id;
             if (slot) {
@@ -192,14 +192,14 @@ export const Taopaotask = async () => {
             arr.end_time = Date.now() + action_time;
             const redisGlKey = KEY_AUCTION_GROUP_LIST;
             const groupList = await redis.smembers(redisGlKey);
-            const notice = `【全服公告】${A_player.名号}被${B_player.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
+            const notice = `【全服公告】${playerA.名号}被${playerB.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
 
             for (const gid of groupList) {
               pushInfo(gid, true, notice);
             }
           }
           if ((arr.cishu ?? 0) === 0) {
-            last_msg += '\n你成功躲过了万仙盟的追杀,躲进了宗门';
+            lastMessage += '\n你成功躲过了万仙盟的追杀,躲进了宗门';
             arr.xijie = 1;
             arr.end_time = Date.now();
             delete arr.group_id;
@@ -227,11 +227,11 @@ export const Taopaotask = async () => {
           }
           // 写入redis
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
-          msg.push('\n' + last_msg);
-          if (is_group && push_address) {
-            pushInfo(push_address, is_group, msg.join('\n'));
+          msg.push('\n' + lastMessage);
+          if (isGroup && push_address) {
+            pushInfo(push_address, isGroup, msg.join('\n'));
           } else {
-            pushInfo(player_id, is_group, msg.join('\n'));
+            pushInfo(player_id, isGroup, msg.join('\n'));
           }
         }
       }

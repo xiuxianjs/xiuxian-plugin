@@ -31,8 +31,8 @@ interface GardenCrop {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -65,7 +65,7 @@ const res = onResponse(selects, async e => {
   const cdMinutes = toInt((await config.getConfig('xiuxian', 'xiuxian'))?.CD?.garden);
   const cdMs = cdMinutes * 60000;
   const now = Date.now();
-  const lastKey = getRedisKey(usr_qq, 'last_garden_time');
+  const lastKey = getRedisKey(userId, 'last_garden_time');
   const lastTime = toInt(await redis.get(lastKey));
   const remain = lastTime + cdMs - now;
 
@@ -125,8 +125,8 @@ const res = onResponse(selects, async e => {
   }
 
   // 否则视为已成熟 -> 采摘
-  void Send(Text(`作物${rawName}已成熟，被${usr_qq}${player?.名号 || ''}摘取, 放入纳戒了`));
-  await addNajieThing(usr_qq, rawName, '草药', 1);
+  void Send(Text(`作物${rawName}已成熟，被${userId}${player?.名号 || ''}摘取, 放入纳戒了`));
+  await addNajieThing(userId, rawName, '草药', 1);
   const nextMature = now + 24 * 60 * 60 * 1000 * ts;
 
   crop.start_time = now;

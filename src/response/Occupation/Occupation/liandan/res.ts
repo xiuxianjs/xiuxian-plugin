@@ -38,12 +38,12 @@ function toInt(v, d = 0) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return false;
@@ -66,7 +66,7 @@ const res = onResponse(selects, async e => {
     .map(s => s.trim())
     .filter(Boolean);
   const danyao = seg[0];
-  let n = toInt(await convert2integer(seg[1]), 1);
+  let n = toInt(convert2integer(seg[1]), 1);
 
   if (n <= 0) {
     n = 1;
@@ -99,7 +99,7 @@ const res = onResponse(selects, async e => {
 
   // 材料校验
   for (const m of materials) {
-    const have = (await existNajieThing(usr_qq, m.name, '草药')) || 0;
+    const have = (await existNajieThing(userId, m.name, '草药')) || 0;
     const need = m.amount * n;
 
     if (have < need) {
@@ -116,7 +116,7 @@ const res = onResponse(selects, async e => {
     const need = m.amount * n;
 
     consumeParts.push(`${m.name}×${need}`);
-    await addNajieThing(usr_qq, m.name, '草药', -need);
+    await addNajieThing(userId, m.name, '草药', -need);
   }
   const consumeMsg = '消耗' + consumeParts.join('，');
 
@@ -141,7 +141,7 @@ const res = onResponse(selects, async e => {
   let resultMsg = '';
 
   if (SPECIAL_PILLS.has(danyao)) {
-    await addNajieThing(usr_qq, danyao, '丹药', finalQty);
+    await addNajieThing(userId, danyao, '丹药', finalQty);
     resultMsg = `${consumeMsg} 得到 ${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`;
   } else {
     const lvl = player.occupation_level;
@@ -150,18 +150,18 @@ const res = onResponse(selects, async e => {
 
     // 成品质量判定（保持原阈值公式）
     if (r1 >= 0.1 + (lvl * 3) / 100) {
-      await addNajieThing(usr_qq, '凡品' + danyao, '丹药', finalQty);
+      await addNajieThing(userId, '凡品' + danyao, '丹药', finalQty);
       resultMsg = `${consumeMsg} 得到 "凡品"${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`;
     } else if (r2 >= 0.4) {
-      await addNajieThing(usr_qq, '极品' + danyao, '丹药', finalQty);
+      await addNajieThing(userId, '极品' + danyao, '丹药', finalQty);
       resultMsg = `${consumeMsg} 得到 "极品"${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`;
     } else {
-      await addNajieThing(usr_qq, '仙品' + danyao, '丹药', finalQty);
+      await addNajieThing(userId, '仙品' + danyao, '丹药', finalQty);
       resultMsg = `${consumeMsg} 得到 "仙品"${danyao} ${finalQty} 颗，获得炼丹经验 ${totalExp}`;
     }
   }
 
-  await addExp4(usr_qq, totalExp);
+  await addExp4(userId, totalExp);
   void Send(Text(resultMsg));
 
   return false;

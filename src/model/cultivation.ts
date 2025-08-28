@@ -46,26 +46,26 @@ export async function LevelTask(
   power_Grade: number,
   aconut: number
 ): Promise<number> {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const Send = useSend(e);
-  const msg: string[] = [Number(usr_qq).toString()];
-  const player: Player | null = await readPlayer(usr_qq);
+  const msg: string[] = [Number(userId).toString()];
+  const player: Player | null = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据不存在'));
 
     return 0;
   }
-  let power_distortion = await dujie(usr_qq);
+  let power_distortion = await dujie(userId);
   const yaocaolist = ['凝血草', '小吉祥草', '大吉祥草'];
 
   for (const j in yaocaolist) {
-    const num = await existNajieThing(usr_qq, yaocaolist[j], '草药');
+    const num = await existNajieThing(userId, yaocaolist[j], '草药');
 
     if (num) {
       msg.push(`[${yaocaolist[j]}]为你提高了雷抗\n`);
       power_distortion = Math.trunc(power_distortion * (1 + 0.2 * Number(j)));
-      await addNajieThing(usr_qq, yaocaolist[j], '草药', -1);
+      await addNajieThing(userId, yaocaolist[j], '草药', -1);
     }
     let variable = Math.random() * (power_m - power_n) + power_n;
 
@@ -74,7 +74,7 @@ export async function LevelTask(
     if (power_distortion >= variable) {
       if (aconut >= power_Grade) {
         player.power_place = 0;
-        await writePlayer(usr_qq, player);
+        await writePlayer(userId, player);
         msg.push(`\n${player.名号}成功度过了第${aconut}道雷劫！可以#登仙，飞升仙界啦！`);
         void Send(Text(msg.join('')));
 
@@ -83,7 +83,7 @@ export async function LevelTask(
         const act = (variable - power_n) / (power_m - power_n);
 
         player.当前血量 = Math.trunc(player.当前血量 - player.当前血量 * act);
-        await writePlayer(usr_qq, player);
+        await writePlayer(userId, player);
         msg.push(
           `\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`
         );
@@ -95,7 +95,7 @@ export async function LevelTask(
       player.当前血量 = 1;
       player.修为 = Math.trunc(player.修为 * 0.5);
       player.power_place = 1;
-      await writePlayer(usr_qq, player);
+      await writePlayer(userId, player);
       msg.push(
         `\n本次雷伤${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n第${aconut}道雷劫落下了，可惜${player.名号}未能抵挡，渡劫失败了！`
       );
@@ -114,8 +114,8 @@ export function sortBy<T extends Record<string, number>>(field: keyof T) {
   };
 }
 
-export async function getAllExp(usr_qq: string) {
-  const player = await readPlayer(usr_qq);
+export async function getAllExp(userId: string) {
+  const player = await readPlayer(userId);
   let sum_exp = 0;
 
   if (!notUndAndNull(player?.level_id)) {

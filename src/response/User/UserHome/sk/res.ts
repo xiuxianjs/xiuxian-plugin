@@ -8,9 +8,9 @@ export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -20,32 +20,32 @@ const res = onResponse(selects, async e => {
 
   thing = thing.replace('抽', '');
   if (thing === '天地卡池') {
-    const x = await existNajieThing(usr_qq, '天罗地网', '道具');
+    const x = await existNajieThing(userId, '天罗地网', '道具');
 
     if (!x) {
       void Send(Text('你没有【天罗地网】'));
 
       return false;
     }
-    await addNajieThing(usr_qq, '天罗地网', '道具', -1);
+    await addNajieThing(userId, '天罗地网', '道具', -1);
   } else if (thing === '灵界卡池') {
-    const x = await existNajieThing(usr_qq, '金丝仙网', '道具');
+    const x = await existNajieThing(userId, '金丝仙网', '道具');
 
     if (!x) {
       void Send(Text('你没有【金丝仙网】'));
 
       return false;
     }
-    await addNajieThing(usr_qq, '金丝仙网', '道具', -1);
+    await addNajieThing(userId, '金丝仙网', '道具', -1);
   } else if (thing === '凡界卡池') {
-    const x = await existNajieThing(usr_qq, '银丝仙网', '道具');
+    const x = await existNajieThing(userId, '银丝仙网', '道具');
 
     if (!x) {
       void Send(Text('你没有【银丝仙网】'));
 
       return false;
     }
-    await addNajieThing(usr_qq, '银丝仙网', '道具', -1);
+    await addNajieThing(userId, '银丝仙网', '道具', -1);
   }
   const changzhuxianchonData = await getDataList('Changzhuxianchon');
 
@@ -61,7 +61,7 @@ const res = onResponse(selects, async e => {
         + changzhuxianchonData[tianluoRandom].name
     )
   );
-  await addPet(usr_qq, changzhuxianchonData[tianluoRandom].name, 1);
+  await addPet(userId, changzhuxianchonData[tianluoRandom].name, 1);
   void Send(Text('恭喜获得' + changzhuxianchonData[tianluoRandom].name));
 });
 

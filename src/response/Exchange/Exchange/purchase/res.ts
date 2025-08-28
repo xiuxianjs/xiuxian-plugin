@@ -17,7 +17,7 @@ export const regular = /^(#|＃|\/)?选购.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 全局状态判断
   const flag = await Go(e);
 
@@ -28,7 +28,7 @@ const res = onResponse(selects, async e => {
   const time0 = 0.5; // 分钟cd
   // 获取当前时间
   const now_time = Date.now();
-  const Exchange_res = await redis.get(getRedisKey(usr_qq, 'ExchangeCD'));
+  const Exchange_res = await redis.get(getRedisKey(userId, 'ExchangeCD'));
   const ExchangeCD = parseInt(Exchange_res);
   const transferTimeout = Math.floor(60000 * time0);
 
@@ -46,8 +46,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 记录本次执行时间
-  await redis.set(getRedisKey(usr_qq, 'ExchangeCD'), String(now_time));
-  const player = await readPlayer(usr_qq);
+  await redis.set(getRedisKey(userId, 'ExchangeCD'), String(now_time));
+  const player = await readPlayer(userId);
   let Exchange = [];
 
   try {
@@ -69,30 +69,30 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const x = (await convert2integer(t[0])) - 1;
+  const x = convert2integer(t[0]) - 1;
 
   if (x >= Exchange.length) {
     return false;
   }
   const thingqq = Exchange[x].qq;
 
-  if (thingqq === usr_qq) {
+  if (thingqq === userId) {
     void Send(Text('自己买自己的东西？我看你是闲得蛋疼！'));
 
     return false;
   }
   // 根据qq得到物品
-  const thing_name = Exchange[x].thing.name;
-  const thing_class = Exchange[x].thing.class;
+  const thingName = Exchange[x].thing.name;
+  const thingClass = Exchange[x].thing.class;
   const thing_amount = Exchange[x].amount;
   const thing_price = Exchange[x].price;
-  let n = await convert2integer(t[1]);
+  let n = convert2integer(t[1]);
 
   if (!t[1]) {
     n = thing_amount;
   }
   if (n > thing_amount) {
-    void Send(Text(`冲水堂没有这么多【${thing_name}】!`));
+    void Send(Text(`冲水堂没有这么多【${thingName}】!`));
 
     return false;
   }
@@ -101,20 +101,20 @@ const res = onResponse(selects, async e => {
   // 查灵石
   if (player.灵石 > money) {
     // 加物品
-    if (thing_class === '装备' || thing_class === '仙宠') {
-      await addNajieThing(usr_qq, Exchange[x].thing.name, thing_class, n, Exchange[x].pinji2);
+    if (thingClass === '装备' || thingClass === '仙宠') {
+      await addNajieThing(userId, Exchange[x].thing.name, thingClass, n, Exchange[x].pinji2);
     } else {
-      await addNajieThing(usr_qq, thing_name, thing_class, n);
+      await addNajieThing(userId, thingName, thingClass, n);
     }
     // 扣钱
-    await addCoin(usr_qq, -money);
+    await addCoin(userId, -money);
     // 加钱
     await addCoin(thingqq, money);
     Exchange[x].amount = Exchange[x].amount - n;
     // 删除该位置信息
     Exchange = Exchange.filter(item => item.amount > 0);
     await writeExchange(Exchange);
-    void Send(Text(`${player.名号}在冲水堂购买了${n}个【${thing_name}】！`));
+    void Send(Text(`${player.名号}在冲水堂购买了${n}个【${thingName}】！`));
   } else {
     void Send(Text('醒醒，你没有那么多钱！'));
 

@@ -43,7 +43,7 @@ export const MsgTask = async () => {
       const img = await screenshot('temp', i, temp_data);
 
       if (img) {
-        await pushInfo(i, true, img);
+        pushInfo(i, true, img);
       }
     }
     await writeTemp([]);

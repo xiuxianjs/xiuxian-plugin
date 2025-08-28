@@ -19,13 +19,13 @@ export const regular = /^(#|＃|\/)?降临秘境.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   let didian = e.MessageText.replace(/^(#|＃|\/)?降临秘境/, '');
 
   didian = didian.trim();
@@ -56,29 +56,29 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (didian === '桃花岛') {
-    const exist_B = await existHunyin(usr_qq);
+    const exist_B = await existHunyin(userId);
 
     if (!exist_B) {
       void Send(Text('还请少侠找到道侣之后再来探索吧'));
 
       return false;
     }
-    const qinmidu = await findDaolvQinmidu(usr_qq);
+    const qinmidu = await findDaolvQinmidu(userId);
 
     if (typeof qinmidu === 'number' && qinmidu < 550) {
       void Send(Text('少侠还是先和道侣再联络联络感情吧'));
 
       return false;
     }
-    await addQinmidu(usr_qq, exist_B, -50);
+    await addQinmidu(userId, exist_B, -50);
   }
   const Price = weizhi.Price;
 
-  await addCoin(usr_qq, -Price);
+  await addCoin(userId, -Price);
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const time = cf.CD.secretplace; // 时间（分钟）
   const action_time = 60000 * time; // 持续时间，单位毫秒
-  const arr = await startAction(usr_qq, '历练', action_time, {
+  const arr = await startAction(userId, '历练', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '0',
@@ -92,7 +92,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
-  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
+  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
   void Send(Text('开始降临' + didian + ',' + time + '分钟后归来!'));
 });
 

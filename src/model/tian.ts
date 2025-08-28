@@ -47,8 +47,8 @@ export async function getLastbisai(usrId: string | number) {
 }
 
 export async function getTianditangImage(e, jifen) {
-  const usr_qq = e.UserId;
-  const player = await readPlayer(usr_qq);
+  const userId = e.UserId;
+  const player = await readPlayer(userId);
   const commodities_list = await getDataList('Tianditang');
   const tianditang_data = {
     name: player.名号,

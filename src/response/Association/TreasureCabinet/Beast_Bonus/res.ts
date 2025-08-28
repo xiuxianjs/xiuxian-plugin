@@ -58,8 +58,8 @@ function toNamedList(arr): NamedClassItem[] {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -85,8 +85,8 @@ const res = onResponse(selects, async e => {
   }
 
   const nowTime = Date.now();
-  const Today = await shijianc(nowTime);
-  const lastsign_time = await getLastsign_Bonus(usr_qq);
+  const Today = shijianc(nowTime);
+  const lastsign_time = await getLastsign_Bonus(userId);
 
   if (isDateParts(Today) && isDateParts(lastsign_time)) {
     if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
@@ -96,7 +96,7 @@ const res = onResponse(selects, async e => {
     }
   }
 
-  await redis.set(getRedisKey(usr_qq, 'getLastsign_Bonus'), String(nowTime));
+  await redis.set(getRedisKey(userId, 'getLastsign_Bonus'), String(nowTime));
 
   const random = Math.random();
 
@@ -162,7 +162,7 @@ const res = onResponse(selects, async e => {
     item.class && typeof item.class === 'string' ? item.class : '道具'
   ) as import('@src/types').NajieCategory;
 
-  await addNajieThing(usr_qq, item.name, category, 1);
+  await addNajieThing(userId, item.name, category, 1);
   if (randomB > 0.9) {
     void Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`));
   } else {
@@ -172,11 +172,11 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-async function getLastsign_Bonus(usr_qq: string): Promise<DateParts | null> {
-  const time = await redis.get(getRedisKey(usr_qq, 'getLastsign_Bonus'));
+async function getLastsign_Bonus(userId: string): Promise<DateParts | null> {
+  const time = await redis.get(getRedisKey(userId, 'getLastsign_Bonus'));
 
   if (time) {
-    const parts = await shijianc(parseInt(time, 10));
+    const parts = shijianc(parseInt(time, 10));
 
     if (isDateParts(parts)) {
       return parts;

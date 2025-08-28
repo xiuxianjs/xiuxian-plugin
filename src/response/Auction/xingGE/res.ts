@@ -10,8 +10,8 @@ export const regular = /^(#|＃|\/)?星阁拍卖行$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -19,7 +19,7 @@ const res = onResponse(selects, async e => {
   const res = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
 
   if (!notUndAndNull(res)) {
-   void Send(Text('目前没有拍卖正在进行'));
+    void Send(Text('目前没有拍卖正在进行'));
 
     return false;
   }
@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
 
     msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
   }
-  awaitvoid Send(Text(msg));
+  void Send(Text(msg));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

@@ -9,10 +9,10 @@ export const regular = /^(#|＃|\/)?更新属性$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   // 查看存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -43,14 +43,14 @@ const res = onResponse(selects, async e => {
     // 没有表要先建立一个！
     await writeTiandibang([]);
   }
-  const index = tiandibang.findIndex(item => item.qq === usr_qq);
+  const index = tiandibang.findIndex(item => item.qq === userId);
 
   if (index === -1) {
     void Send(Text('请先报名!'));
 
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   // 若缺失补全默认字段
   if (typeof tiandibang[index].魔道值 !== 'number') {

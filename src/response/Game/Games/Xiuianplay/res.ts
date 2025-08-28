@@ -16,12 +16,12 @@ const res = onResponse(selects, async e => {
   if (switchgame !== true) {
     return false;
   }
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -80,19 +80,19 @@ const res = onResponse(selects, async e => {
           + '!'
       )
     );
-    await addExp(usr_qq, addlevel);
-    await addCoin(usr_qq, -money);
+    await addExp(userId, addlevel);
+    await addCoin(userId, -money);
 
     return false;
   } else if (rand > 0.7) {
-    await addCoin(usr_qq, -money);
+    await addCoin(userId, -money);
     ql1 = '花了';
     ql2 = '灵石,本想好好放肆一番,却赶上了扫黄,无奈在衙门被教育了一晚上,最终大彻大悟,下次还来！';
     void Send(Text(ql1 + money + ql2));
 
     return false;
   } else {
-    await addCoin(usr_qq, -money);
+    await addCoin(userId, -money);
     ql1
       = '这一次，你进了一个奇怪的小巷子，那里衣衫褴褛的漂亮姐姐说要找你玩点有刺激的，你想都没想就进屋了。\n';
     ql2

@@ -42,13 +42,13 @@ const num = (v, d = 0) => {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   if (game_action === '1') {
     void Send(Text('修仙：游戏进行中...'));
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const current = await readAction(usr_qq);
+  const current = await readAction(userId);
 
   if (isActionRunning(current)) {
     void Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
@@ -65,7 +65,7 @@ const res = onResponse(selects, async e => {
   }
 
   const now_time = Date.now();
-  const lastxijie_raw = await redis.get(getRedisKey(usr_qq, 'lastxijie_time'));
+  const lastxijie_raw = await redis.get(getRedisKey(userId, 'lastxijie_time'));
   const lastxijie_time = lastxijie_raw ? parseInt(lastxijie_raw, 10) : 0;
   const cdMs = 120 * 60 * 1000; // 120 分钟
 
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const Today = await shijianc(now_time);
+  const Today = shijianc(now_time);
 
   if (Today.h > 19 && Today.h < 21) {
     void Send(Text('每日20-21点商店修整中,请过会再来'));
@@ -130,7 +130,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据异常'));
@@ -153,7 +153,7 @@ const res = onResponse(selects, async e => {
   let msg = `你消费了${Price}灵石,防御力和生命值提高了${Math.trunc((buff - buff / (1 + grade * 0.05)) * 100)}%`;
 
   player.魔道值 = num(player.魔道值) + 25 * grade;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
 
   target.state = 1;
   await writeShop(shop);
@@ -162,7 +162,7 @@ const res = onResponse(selects, async e => {
   const linggen = linggenRaw && typeof linggenRaw === 'object' ? linggenRaw : null;
   const faqiu = linggen ? num(linggen['法球倍率'], 0) : 0;
   const pRec = player;
-  const A_player = {
+  const playerA = {
     名号: String(pRec['名号'] ?? ''),
     攻击: num(pRec['攻击']),
     防御: Math.floor(num(pRec['防御']) * buff),
@@ -175,7 +175,7 @@ const res = onResponse(selects, async e => {
 
   const timeMin = 15;
   const action_time = timeMin * 60 * 1000;
-  const arr = await startAction(usr_qq, '洗劫', action_time, {
+  const arr = await startAction(userId, '洗劫', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '1',
@@ -187,11 +187,11 @@ const res = onResponse(selects, async e => {
     mine: '1',
     group_id: e.name === 'message.create' ? e.ChannelId : undefined,
     Place_address: target,
-    A_player
+    playerA
   });
 
-  await setValue(userKey(usr_qq, 'action'), arr);
-  await setDataByUserId(usr_qq, 'lastxijie_time', now_time);
+  await setValue(userKey(userId, 'action'), arr);
+  await setDataByUserId(userId, 'lastxijie_time', now_time);
   msg += `\n开始前往${didian},祝你好运!`;
   void Send(Text(msg));
 

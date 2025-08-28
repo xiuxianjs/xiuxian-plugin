@@ -10,8 +10,8 @@ import { getRankingPowerImage } from '@src/model/image';
 export const regular = /^(#|＃|\/)?天榜$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -44,7 +44,7 @@ const res = onResponse(selects, async e => {
 
   // 排序
   temp.sort(sortBy('总修为'));
-  const usr_paiming = temp.findIndex(temp => temp.qq === usr_qq) + 1;
+  const usr_paiming = temp.findIndex(temp => temp.qq === userId) + 1;
   const Data = [];
 
   if (File_length > 10) {
@@ -54,7 +54,7 @@ const res = onResponse(selects, async e => {
     temp[i].名次 = i + 1;
     Data[i] = temp[i];
   }
-  const thisplayer = await readPlayer(usr_qq);
+  const thisplayer = await readPlayer(userId);
   const img = await getRankingPowerImage(e, Data, usr_paiming, thisplayer);
 
   if (Buffer.isBuffer(img)) {

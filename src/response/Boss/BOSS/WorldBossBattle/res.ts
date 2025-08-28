@@ -66,15 +66,15 @@ const res = onResponse(selects, async e => {
   }
 
   if (!(await BossIsAlive())) {
-   void Send(Text('妖王未开启！'));
+    void Send(Text('妖王未开启！'));
 
     return false;
   }
 
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const now_Time = Date.now();
   const cdMs = 5 * 60000;
-  const last_time_raw = await redis.get(getRedisKey(usr_qq, 'BOSSCD'));
+  const last_time_raw = await redis.get(getRedisKey(userId, 'BOSSCD'));
   const last_time = toInt(last_time_raw);
 
   if (now_Time < last_time + cdMs) {
@@ -82,23 +82,23 @@ const res = onResponse(selects, async e => {
     const Couple_m = Math.trunc(remain / 60000);
     const Couple_s = Math.trunc((remain % 60000) / 1000);
 
-   void Send(Text(`正在CD中，剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
+    void Send(Text(`正在CD中，剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
 
     return false;
   }
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
-   void Send(Text('区区凡人，也想参与此等战斗中吗？'));
+    void Send(Text('区区凡人，也想参与此等战斗中吗？'));
 
     return false;
   }
   if (player.level_id < 42 && player.lunhui === 0) {
-   void Send(Text('你在仙界吗'));
+    void Send(Text('你在仙界吗'));
 
     return false;
   }
-  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'));
+  const actionRaw = await redis.get(getRedisKey(userId, 'action'));
   const action = parseJson<ActionState | null>(actionRaw, null);
 
   if (action?.end_time && Date.now() <= action.end_time) {
@@ -106,20 +106,20 @@ const res = onResponse(selects, async e => {
     const m = Math.floor(remain / 60000);
     const s = Math.floor((remain % 60000) / 1000);
 
-   void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
+    void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
 
     return false;
   }
   if (player.当前血量 <= player.血量上限 * 0.1) {
-   void Send(Text('还是先疗伤吧，别急着参战了'));
+    void Send(Text('还是先疗伤吧，别急着参战了'));
 
     return false;
   }
-  if (WorldBossBattleInfo.CD[usr_qq]) {
-    const Seconds = Math.trunc((300000 - (Date.now() - WorldBossBattleInfo.CD[usr_qq])) / 1000);
+  if (WorldBossBattleInfo.CD[userId]) {
+    const Seconds = Math.trunc((300000 - (Date.now() - WorldBossBattleInfo.CD[userId])) / 1000);
 
     if (Seconds <= 300 && Seconds >= 0) {
-     void Send(Text(`刚刚一战消耗了太多气力，还是先歇息一会儿吧~(剩余${Seconds}秒)`));
+      void Send(Text(`刚刚一战消耗了太多气力，还是先歇息一会儿吧~(剩余${Seconds}秒)`));
 
       return false;
     }
@@ -130,12 +130,12 @@ const res = onResponse(selects, async e => {
   const WorldBossStatus = parseJson<WorldBossStatusInfo | null>(WorldBossStatusStr, null);
 
   if (!WorldBossStatus) {
-   void Send(Text('状态数据缺失, 请联系管理员重新开启!'));
+    void Send(Text('状态数据缺失, 请联系管理员重新开启!'));
 
     return false;
   }
   if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
-   void Send(Text('妖王正在刷新,21点开启'));
+    void Send(Text('妖王正在刷新,21点开启'));
 
     return false;
   } else if (WorldBossStatus.KilledTime !== -1) {
@@ -150,7 +150,7 @@ const res = onResponse(selects, async e => {
   let Userid = 0;
 
   if (!PlayerRecordStr || PlayerRecordStr === '0') {
-    PlayerRecordJSON = { QQ: [usr_qq], TotalDamage: [0], Name: [player.名号] };
+    PlayerRecordJSON = { QQ: [userId], TotalDamage: [0], Name: [player.名号] };
     Userid = 0;
   } else {
     PlayerRecordJSON = parseJson<PlayerRecordData>(PlayerRecordStr, {
@@ -159,9 +159,9 @@ const res = onResponse(selects, async e => {
       Name: []
     });
     // 查找或追加
-    Userid = PlayerRecordJSON.QQ.indexOf(usr_qq);
+    Userid = PlayerRecordJSON.QQ.indexOf(userId);
     if (Userid === -1) {
-      PlayerRecordJSON.QQ.push(usr_qq);
+      PlayerRecordJSON.QQ.push(userId);
       PlayerRecordJSON.Name.push(player.名号);
       PlayerRecordJSON.TotalDamage.push(0);
       Userid = PlayerRecordJSON.QQ.length - 1;
@@ -187,63 +187,63 @@ const res = onResponse(selects, async e => {
   }
   SetWorldBOSSBattleUnLockTimer(e);
   if (WorldBossBattleInfo.Lock !== 0) {
-   void Send(Text('好像有人正在和妖王激战，现在去怕是有未知的凶险，还是等等吧！'));
+    void Send(Text('好像有人正在和妖王激战，现在去怕是有未知的凶险，还是等等吧！'));
 
     return false;
   }
   WorldBossBattleInfo.setLock(1);
-  const Data_battle = await zdBattle(player, Boss);
-  const msg = Data_battle.msg;
-  const A_win = `${player.名号}击败了${Boss.名号}`;
-  const B_win = `${Boss.名号}击败了${player.名号}`;
+  const dataBattle = await zdBattle(player, Boss);
+  const msg = dataBattle.msg;
+  const winA = `${player.名号}击败了${Boss.名号}`;
+  const winB = `${Boss.名号}击败了${player.名号}`;
 
   if (msg.length <= 60) {
-    awaitvoid Send(Text(msg.join('\n')));
+    void Send(Text(msg.join('\n')));
   } else {
     const msgg = _.cloneDeep(msg);
 
     msgg.length = 60;
-   void Send(Text(msgg.join('\n')));
-   void Send(Text('战斗过长，仅展示部分内容'));
+    void Send(Text(msgg.join('\n')));
+    void Send(Text('战斗过长，仅展示部分内容'));
   }
   await sleep(1000);
   if (!WorldBossStatus.Healthmax) {
-   void Send(Text('请联系管理员重新开启!'));
+    void Send(Text('请联系管理员重新开启!'));
     WorldBossBattleInfo.setLock(0);
 
     return false;
   }
   let TotalDamage = 0;
-  const playerWin = msg.includes(A_win);
-  const bossWin = msg.includes(B_win);
+  const playerWin = msg.includes(winA);
+  const bossWin = msg.includes(winB);
 
   if (playerWin) {
     TotalDamage = Math.trunc(
       WorldBossStatus.Healthmax * 0.05 + Harm(player.攻击 * 0.85, Boss.防御) * 6
     );
     WorldBossStatus.Health -= TotalDamage;
-   void Send(Text(`${player.名号}击败了[${Boss.名号}],重创[妖王],造成伤害${TotalDamage}`));
+    void Send(Text(`${player.名号}击败了[${Boss.名号}],重创[妖王],造成伤害${TotalDamage}`));
   } else if (bossWin) {
     TotalDamage = Math.trunc(
       WorldBossStatus.Healthmax * 0.03 + Harm(player.攻击 * 0.85, Boss.防御) * 4
     );
     WorldBossStatus.Health -= TotalDamage;
-   void Send(Text(`${player.名号}被[${Boss.名号}]击败了,只对[妖王]造成了${TotalDamage}伤害`));
+    void Send(Text(`${player.名号}被[${Boss.名号}]击败了,只对[妖王]造成了${TotalDamage}伤害`));
   }
-  await addHP(usr_qq, Data_battle.A_xue);
+  await addHP(userId, dataBattle.A_xue);
   await sleep(1000);
   const random = Math.random();
 
   if (random < 0.05 && playerWin) {
-   void Send(Text('这场战斗重创了[妖王]，妖王使用了古典秘籍,血量回复了20%'));
+    void Send(Text('这场战斗重创了[妖王]，妖王使用了古典秘籍,血量回复了20%'));
     WorldBossStatus.Health += Math.trunc(WorldBossStatus.Healthmax * 0.2);
   } else if (random > 0.95 && bossWin) {
     const extra = Math.trunc(WorldBossStatus.Health * 0.15);
 
     TotalDamage += extra;
     WorldBossStatus.Health -= extra;
-   void Send(Text(`危及时刻,万先盟-韩立前来助阵,对[妖王]造成${extra}伤害,并治愈了你的伤势`));
-    await addHP(usr_qq, player.血量上限);
+    void Send(Text(`危及时刻,万先盟-韩立前来助阵,对[妖王]造成${extra}伤害,并治愈了你的伤势`));
+    await addHP(userId, player.血量上限);
   }
   await sleep(1000);
   PlayerRecordJSON.TotalDamage[Userid] += TotalDamage;
@@ -251,24 +251,24 @@ const res = onResponse(selects, async e => {
   await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
 
   if (WorldBossStatus.Health <= 0) {
-   void Send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'));
+    void Send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'));
     await sleep(1000);
     const msg2 = `【全服公告】${player.名号}亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！`;
     const redisGlKey = KEY_AUCTION_GROUP_LIST;
     const groupList = await redis.smembers(redisGlKey);
 
     for (const group of groupList) {
-      await pushInfo(group, true, msg2);
+      pushInfo(group, true, msg2);
     }
-    await addCoin(usr_qq, 1000000);
-    logger.info(`[妖王] 结算:${usr_qq}增加奖励1000000`);
+    await addCoin(userId, 1000000);
+    logger.info(`[妖王] 结算:${userId}增加奖励1000000`);
 
     WorldBossStatus.KilledTime = Date.now();
     await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
 
     const PlayerList = await SortPlayer(PlayerRecordJSON);
 
-   void Send(
+    void Send(
       Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')
     );
 
@@ -314,9 +314,9 @@ const res = onResponse(selects, async e => {
         }
       }
     }
-   void Send(Text(Rewardmsg.join('\n')));
+    void Send(Text(Rewardmsg.join('\n')));
   }
-  WorldBossBattleInfo.setCD(usr_qq, Date.now());
+  WorldBossBattleInfo.setCD(userId, Date.now());
   WorldBossBattleInfo.setLock(0);
 
   return false;

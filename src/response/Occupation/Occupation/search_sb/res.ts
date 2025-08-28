@@ -9,13 +9,13 @@ export const regular = /^(#|＃|\/)?悬赏目标$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (player.occupation !== '侠客') {
     void Send(Text('只有专业的侠客才能获取悬赏'));
@@ -23,7 +23,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   let msg = [];
-  const db = await redis.get(getRedisKey(usr_qq, 'shangjing'));
+  const db = await redis.get(getRedisKey(userId, 'shangjing'));
   const action = await JSON.parse(db);
   const type = 0;
 
@@ -50,7 +50,7 @@ const res = onResponse(selects, async e => {
   for (const this_qq of playerList) {
     const players = await readPlayer(this_qq);
 
-    if (players.魔道值 > 999 && this_qq !== usr_qq) {
+    if (players.魔道值 > 999 && this_qq !== userId) {
       mubiao[i] = {
         名号: players.名号,
         赏金: Math.trunc(
@@ -89,7 +89,7 @@ const res = onResponse(selects, async e => {
     end_time: Date.now() + 60000 * 60 * 20 // 结束时间
   };
 
-  await redis.set(getRedisKey(usr_qq, 'shangjing'), JSON.stringify(arr));
+  await redis.set(getRedisKey(userId, 'shangjing'), JSON.stringify(arr));
   const msg_data = { msg, type };
   const img = await screenshot('msg', e.UserId, msg_data);
 

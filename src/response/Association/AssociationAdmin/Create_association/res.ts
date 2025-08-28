@@ -9,15 +9,15 @@ import { existDataByKey, setDataJSONStringifyByKey } from '@src/model/DataContro
 export const regular = /^(#|＃|\/)?开宗立派$/;
 
 const res = onResponse(selects, async e => {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const [message] = useMessage(e);
   // 使用existplayer检查玩家是否存在
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return false;
@@ -91,16 +91,16 @@ const res = onResponse(selects, async e => {
       const now = new Date();
       const nowTime = now.getTime(); // 获取当前时间戳
       const date = timestampToTime(nowTime);
-      const player = await readPlayer(usr_qq);
+      const player = await readPlayer(userId);
 
       player.宗门 = {
         宗门名称: association_name,
         职位: '宗主',
         time: [date, nowTime]
       };
-      await writePlayer(usr_qq, player);
-      await new_Association(association_name, usr_qq, e);
-      await setFileValue(usr_qq, -10000, '灵石');
+      await writePlayer(userId, player);
+      await new_Association(association_name, userId, e);
+      await setFileValue(userId, -10000, '灵石');
       void message.send(format(Text('宗门创建成功')));
     },
     ['UserId']
@@ -120,8 +120,8 @@ const res = onResponse(selects, async e => {
 });
 
 async function new_Association(name, holder_qq, e) {
-  const usr_qq = e.UserId;
-  const player = await readPlayer(usr_qq);
+  const userId = e.UserId;
+  const player = await readPlayer(userId);
   const levelList = await getDataList('Level1');
   const now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
   const isHigh = now_level_id > 41;

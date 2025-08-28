@@ -281,21 +281,21 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const A_player = await readPlayer(A);
-  const B_player = await readPlayer(B);
+  const playerA = await readPlayer(A);
+  const playerB = await readPlayer(B);
 
-  if (A_player.修为 < 0) {
+  if (playerA.修为 < 0) {
     void Send(Text('还是闭会关再打劫吧'));
 
     return false;
   }
-  if (B_player.当前血量 < 20000) {
-    void Send(Text(`${B_player.名号} 重伤未愈,就不要再打他了`));
+  if (playerB.当前血量 < 20000) {
+    void Send(Text(`${playerB.名号} 重伤未愈,就不要再打他了`));
 
     return false;
   }
-  if (B_player.灵石 < 30002) {
-    void Send(Text(`${B_player.名号} 太穷了,就不要再打他了`));
+  if (playerB.灵石 < 30002) {
+    void Send(Text(`${playerB.名号} 太穷了,就不要再打他了`));
 
     return false;
   }
@@ -304,31 +304,31 @@ const res = onResponse(selects, async e => {
 
   if (isBbusy) {
     final_msg.push(
-      `${B_player.名号}正在${B_action?.action}，${A_player.名号}利用隐身水悄然接近，但被发现。`
+      `${playerB.名号}正在${B_action?.action}，${playerA.名号}利用隐身水悄然接近，但被发现。`
     );
     await addNajieThing(A, '隐身水', '道具', -1);
   } else {
-    final_msg.push(`${A_player.名号}向${B_player.名号}发起了打劫。`);
+    final_msg.push(`${playerA.名号}向${playerB.名号}发起了打劫。`);
   }
   await redis.set(getRedisKey(A, 'last_dajie_time'), String(Date.now()));
 
-  const faA = extractFaQiu(A_player.灵根);
+  const faA = extractFaQiu(playerA.灵根);
 
   if (faA !== undefined) {
-    (A_player as PlayerWithFaQiu).法球倍率 = faA;
+    (playerA as PlayerWithFaQiu).法球倍率 = faA;
   }
-  const faB = extractFaQiu(B_player.灵根);
+  const faB = extractFaQiu(playerB.灵根);
 
   if (faB !== undefined) {
-    (B_player as PlayerWithFaQiu).法球倍率 = faB;
+    (playerB as PlayerWithFaQiu).法球倍率 = faB;
   }
-  A_player.当前血量 = A_player.血量上限;
-  B_player.当前血量 = B_player.血量上限;
+  playerA.当前血量 = playerA.血量上限;
+  playerB.当前血量 = playerB.血量上限;
 
   let battle: { msg: string[]; A_xue: number; B_xue: number };
 
   try {
-    battle = await zdBattle(A_player, B_player);
+    battle = await zdBattle(playerA, playerB);
   } catch {
     void Send(Text('战斗过程出错'));
 
@@ -339,68 +339,68 @@ const res = onResponse(selects, async e => {
   await addHP(A, battle.A_xue);
   await addHP(B, battle.B_xue);
 
-  const A_win = `${A_player.名号}击败了${B_player.名号}`;
-  const B_win = `${B_player.名号}击败了${A_player.名号}`;
+  const winA = `${playerA.名号}击败了${playerB.名号}`;
+  const winB = `${playerB.名号}击败了${playerA.名号}`;
 
   const img = await screenshot('CombatResult', A, {
     msg: final_msg,
     playerA: {
       id: A,
-      name: A_player.名号,
+      name: playerA.名号,
       avatar: getAvatar(A),
-      power: A_player.战力,
-      hp: A_player.当前血量,
-      maxHp: A_player.血量上限
+      power: playerA.战力,
+      hp: playerA.当前血量,
+      maxHp: playerA.血量上限
     },
     playerB: {
       id: B,
-      name: B_player.名号,
+      name: playerB.名号,
       avatar: getAvatar(B),
-      power: B_player.战力,
-      hp: B_player.当前血量,
-      maxHp: B_player.血量上限
+      power: playerB.战力,
+      hp: playerB.当前血量,
+      maxHp: playerB.血量上限
     },
-    result: msgArr.includes(A_win) ? 'A' : msgArr.includes(B_win) ? 'B' : 'draw'
+    result: msgArr.includes(winA) ? 'A' : msgArr.includes(winB) ? 'B' : 'draw'
   });
 
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));
   }
 
-  if (msgArr.includes(A_win)) {
+  if (msgArr.includes(winA)) {
     const hasDoll = await existNajieThing(B, '替身人偶', '道具');
 
     if (
       hasDoll
-      && B_player.魔道值 < 1
-      && (B_player.灵根?.type === '转生' || (B_player.level_id ?? 0) > 41)
+      && playerB.魔道值 < 1
+      && (playerB.灵根?.type === '转生' || (playerB.level_id ?? 0) > 41)
     ) {
-      void Send(Text(`${B_player.名号}使用了道具替身人偶,躲过了此次打劫`));
+      void Send(Text(`${playerB.名号}使用了道具替身人偶,躲过了此次打劫`));
       await addNajieThing(B, '替身人偶', '道具', -1);
 
       return false;
     }
-    const mdzJL = B_player.魔道值 || 0;
-    let lingshi = Math.trunc(B_player.灵石 / 5);
+    const mdzJL = playerB.魔道值 || 0;
+    let lingshi = Math.trunc(playerB.灵石 / 5);
     const qixue = Math.trunc(100 * now_level_idAA);
     const mdz = Math.trunc(lingshi / 10000);
 
-    if (lingshi >= B_player.灵石) {
-      lingshi = Math.trunc(B_player.灵石 / 2);
+    if (lingshi >= playerB.灵石) {
+      lingshi = Math.trunc(playerB.灵石 / 2);
     }
-    A_player.灵石 += lingshi + mdzJL;
-    B_player.灵石 -= lingshi;
-    A_player.血气 += qixue;
-    A_player.魔道值 = (A_player.魔道值 || 0) + mdz;
-    await writePlayer(A, A_player);
-    await writePlayer(B, B_player);
-    final_msg.push(`经过一番大战,${A_win},成功抢走${lingshi}灵石,${A_player.名号}获得${qixue}血气`);
-  } else if (msgArr.includes(B_win)) {
+    playerA.灵石 += lingshi + mdzJL;
+    playerB.灵石 -= lingshi;
+    playerA.血气 += qixue;
+    playerA.魔道值 = (playerA.魔道值 || 0) + mdz;
+    await writePlayer(A, playerA);
+    await writePlayer(B, playerB);
+    final_msg.push(`经过一番大战,${winA},成功抢走${lingshi}灵石,${playerA.名号}获得${qixue}血气`);
+  } else if (msgArr.includes(winB)) {
     const qixue = Math.trunc(100 * now_level_idBB);
 
-    if (A_player.灵石 < 30002) {
-      B_player.血气 += qixue;
-      await writePlayer(B, B_player);
+    if (playerA.灵石 < 30002) {
+      playerB.血气 += qixue;
+      await writePlayer(B, playerB);
       // 关禁闭逻辑
       const action_time2 = 60000 * 60;
 
@@ -415,21 +415,21 @@ const res = onResponse(selects, async e => {
         /* ignore */
       }
       final_msg.push(
-        `经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号}被关禁闭60分钟`
+        `经过一番大战,${playerA.名号}被${playerB.名号}击败了,${playerB.名号}获得${qixue}血气,${playerA.名号}被关禁闭60分钟`
       );
     } else {
-      let lingshi = Math.trunc(A_player.灵石 / 4);
+      let lingshi = Math.trunc(playerA.灵石 / 4);
 
       if (lingshi < 0) {
         lingshi = 0;
       }
-      A_player.灵石 -= lingshi;
-      B_player.灵石 += lingshi;
-      B_player.血气 += qixue;
-      await writePlayer(A, A_player);
-      await writePlayer(B, B_player);
+      playerA.灵石 -= lingshi;
+      playerB.灵石 += lingshi;
+      playerB.血气 += qixue;
+      await writePlayer(A, playerA);
+      await writePlayer(B, playerB);
       final_msg.push(
-        `经过一番大战,${A_player.名号}被${B_player.名号}击败了,${B_player.名号}获得${qixue}血气,${A_player.名号}被劫走${lingshi}灵石`
+        `经过一番大战,${playerA.名号}被${playerB.名号}击败了,${playerB.名号}获得${qixue}血气,${playerA.名号}被劫走${lingshi}灵石`
       );
     }
   } else {

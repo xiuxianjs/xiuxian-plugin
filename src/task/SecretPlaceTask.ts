@@ -46,11 +46,11 @@ export const SecretPlaceTask = async () => {
     // 不为空，存在动作
     if (action) {
       let push_address; // 消息推送地址
-      let is_group = false; // 是否推送到群
+      let isGroup = false; // 是否推送到群
 
       if ('group_id' in action) {
         if (notUndAndNull(action.group_id)) {
-          is_group = true;
+          isGroup = true;
           push_address = action.group_id;
         }
       }
@@ -77,7 +77,7 @@ export const SecretPlaceTask = async () => {
           if (!weizhi) {
             continue;
           }
-          const A_player = {
+          const playerA = {
             名号: player.名号,
             攻击: player.攻击,
             防御: player.防御,
@@ -97,20 +97,20 @@ export const SecretPlaceTask = async () => {
             buff = 0.6;
           }
           const monsterList = await getDataList('Monster');
-          const monster_length = monsterList.length;
+          const monsterLength = monsterList.length;
 
-          if (monster_length === 0) {
+          if (monsterLength === 0) {
             return;
           }
-          const monster_index = Math.trunc(Math.random() * monster_length);
-          const monster = monsterList[monster_index] as {
+          const monsterIndex = Math.trunc(Math.random() * monsterLength);
+          const monster = monsterList[monsterIndex] as {
             名号: string;
             攻击: number;
             防御: number;
             当前血量: number;
             暴击率: number;
           };
-          const B_player = {
+          const playerB = {
             名号: monster.名号,
             攻击: Math.floor(Number(monster.攻击 || 0) * player.攻击 * buff),
             防御: Math.floor(Number(monster.防御 || 0) * player.防御 * buff),
@@ -119,12 +119,12 @@ export const SecretPlaceTask = async () => {
             法球倍率: 0.1,
             灵根: { name: '野怪', type: '普通', 法球倍率: 0.1 }
           };
-          const Data_battle = await zdBattle(A_player, B_player);
-          const msgg = Data_battle.msg;
-          const A_win = `${A_player.名号}击败了${B_player.名号}`;
-          const B_win = `${B_player.名号}击败了${A_player.名号}`;
-          let thing_name: string | undefined;
-          let thing_class: NajieCategory | undefined;
+          const dataBattle = await zdBattle(playerA, playerB);
+          const msgg = dataBattle.msg;
+          const winA = `${playerA.名号}击败了${playerB.名号}`;
+          const winB = `${playerB.名号}击败了${playerA.名号}`;
+          let thingName: string | undefined;
+          let thingClass: NajieCategory | undefined;
           const cf = await getConfig('xiuxian', 'xiuxian');
           const x = cf.SecretPlace.one;
           const random1 = Math.random();
@@ -139,52 +139,52 @@ export const SecretPlaceTask = async () => {
           let t1 = 1;
           let t2 = 1;
           let n = 1;
-          let last_msg = '';
+          let lastMessage = '';
 
           if (random1 <= x) {
             if (random2 <= y) {
               if (random3 <= z) {
                 random4 = Math.floor(Math.random() * weizhi.three.length);
-                thing_name = weizhi.three[random4].name;
+                thingName = weizhi.three[random4].name;
                 if (isNajieCategory(weizhi.three[random4].class)) {
-                  thing_class = weizhi.three[random4].class as NajieCategory;
+                  thingClass = weizhi.three[random4].class as NajieCategory;
                 }
-                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是：[${thing_name}`;
+                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是：[${thingName}`;
                 t1 = 2 + Math.random();
                 t2 = 2 + Math.random();
               } else {
                 random4 = Math.floor(Math.random() * weizhi.two.length);
-                thing_name = weizhi.two[random4].name;
+                thingName = weizhi.two[random4].name;
                 if (isNajieCategory(weizhi.two[random4].class)) {
-                  thing_class = weizhi.two[random4].class as NajieCategory;
+                  thingClass = weizhi.two[random4].class as NajieCategory;
                 }
-                m = `在洞穴中拿到[${thing_name}`;
+                m = `在洞穴中拿到[${thingName}`;
                 t1 = 1 + Math.random();
                 t2 = 1 + Math.random();
                 if (weizhi.name === '太极之阳' || weizhi.name === '太极之阴') {
                   n = 5;
-                  m = '捡到了[' + thing_name;
+                  m = '捡到了[' + thingName;
                 }
               }
             } else {
               random4 = Math.floor(Math.random() * weizhi.one.length);
-              thing_name = weizhi.one[random4].name;
+              thingName = weizhi.one[random4].name;
               if (isNajieCategory(weizhi.one[random4].class)) {
-                thing_class = weizhi.one[random4].class as NajieCategory;
+                thingClass = weizhi.one[random4].class as NajieCategory;
               }
-              m = `捡到了[${thing_name}`;
+              m = `捡到了[${thingName}`;
               t1 = 0.5 + Math.random() * 0.5;
               t2 = 0.5 + Math.random() * 0.5;
               if (weizhi.name === '诸神黄昏·旧神界') {
                 n = 100;
-                if (thing_name === '洗根水') {
+                if (thingName === '洗根水') {
                   n = 130;
                 }
-                m = '捡到了[' + thing_name;
+                m = '捡到了[' + thingName;
               }
               if (weizhi.name === '太极之阳' || weizhi.name === '太极之阴') {
                 n = 5;
-                m = '捡到了[' + thing_name;
+                m = '捡到了[' + thingName;
               }
             }
           } else {
@@ -199,12 +199,12 @@ export const SecretPlaceTask = async () => {
 
             if (random < player.幸运) {
               if (random < player.addluckyNo) {
-                last_msg += '福源丹生效，所以在';
+                lastMessage += '福源丹生效，所以在';
               } else if (player.仙宠.type === '幸运') {
-                last_msg += '仙宠使你在探索中欧气满满，所以在';
+                lastMessage += '仙宠使你在探索中欧气满满，所以在';
               }
               n *= 2;
-              last_msg += '本次探索中获得赐福加成\n';
+              lastMessage += '本次探索中获得赐福加成\n';
             }
             if (player.islucky > 0) {
               player.islucky--;
@@ -226,16 +226,16 @@ export const SecretPlaceTask = async () => {
           // 结算
           let qixue = 0;
 
-          if (msgg.find(item => item === A_win)) {
+          if (msgg.find(item => item === winA)) {
             xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
             qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
-            if (thing_name && thing_class) {
-              await addNajieThing(player_id, thing_name, thing_class, n);
+            if (thingName && thingClass) {
+              await addNajieThing(player_id, thingName, thingClass, n);
             }
-            last_msg += `${m}不巧撞见[${
-              B_player.名号
+            lastMessage += `${m}不巧撞见[${
+              playerB.名号
             }],经过一番战斗,击败对手,获得修为${xiuwei},气血${qixue},剩余血量${
-              A_player.当前血量 + Data_battle.A_xue
+              playerA.当前血量 + dataBattle.A_xue
             }`;
             const random = Math.random(); // 万分之一出神迹
             let newrandom = 0.995;
@@ -258,28 +258,28 @@ export const SecretPlaceTask = async () => {
                 const index = Math.trunc(Math.random() * length);
                 const kouliang = xianchonkouliangList[index];
 
-                last_msg
+                lastMessage
                   += '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
                 await addNajieThing(player_id, kouliang.name, '仙宠口粮', 1);
               }
             }
             if (random > 0.1 && random < 0.1002) {
-              last_msg
+              lastMessage
                 += '\n'
-                + B_player.名号
+                + playerB.名号
                 + '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
               await addNajieThing(player_id, '长相奇怪的小石头', '道具', 1);
             }
-          } else if (msgg.find(item => item === B_win)) {
+          } else if (msgg.find(item => item === winB)) {
             xiuwei = 800;
-            last_msg
+            lastMessage
               = '不巧撞见['
-              + B_player.名号
+              + playerB.名号
               + '],经过一番战斗,败下阵来,还好跑得快,只获得了修为'
               + xiuwei
               + ']';
           }
-          msg.push('\n' + player.名号 + last_msg);
+          msg.push('\n' + player.名号 + lastMessage);
           const arr: ActionState = action;
 
           // 把状态都关了(强制置数字 1)
@@ -293,11 +293,11 @@ export const SecretPlaceTask = async () => {
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           await addExp2(player_id, qixue);
           await addExp(player_id, xiuwei);
-          await addHP(player_id, Data_battle.A_xue);
-          if (is_group && push_address) {
-            await pushInfo(push_address, is_group, msg);
+          await addHP(player_id, dataBattle.A_xue);
+          if (isGroup && push_address) {
+            pushInfo(push_address, isGroup, msg);
           } else {
-            await pushInfo(player_id, is_group, msg);
+            pushInfo(player_id, isGroup, msg);
           }
         }
       }

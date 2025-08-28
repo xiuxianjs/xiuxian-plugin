@@ -43,14 +43,14 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const A_player = await getDataJSONParseByKey(keys.player(A_qq));
+  const playerA = await getDataJSONParseByKey(keys.player(A_qq));
 
-  if (!A_player) {
+  if (!playerA) {
     return;
   }
-  const B_player = await getDataJSONParseByKey(keys.player(B_qq));
+  const playerB = await getDataJSONParseByKey(keys.player(B_qq));
 
-  if (!B_player) {
+  if (!playerB) {
     return;
   }
   const cf = await config.getConfig('xiuxian', 'xiuxian');
@@ -69,7 +69,7 @@ const res = onResponse(selects, async e => {
     const cost = cf.percentage.cost;
     const lastlingshi = lingshi + Math.trunc(lingshi * cost);
 
-    if (A_player.灵石 < lastlingshi) {
+    if (playerA.灵石 < lastlingshi) {
       void Send(Text(`你身上似乎没有${lastlingshi}灵石`));
 
       return false;
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
     }
     await addCoin(A_qq, -lastlingshi);
     await addCoin(B_qq, lingshi);
-    void Send(Text(`${B_player.名号} 获得了由 ${A_player.名号}赠送的${lingshi}灵石`));
+    void Send(Text(`${playerB.名号} 获得了由 ${playerA.名号}赠送的${lingshi}灵石`));
     await redis.set(getRedisKey(A_qq, 'last_getbung_time'), String(nowTime));
 
     return;
@@ -104,9 +104,9 @@ const res = onResponse(selects, async e => {
   // 格式支持：名称*品级*数量 或 名称*数量 或 名称
   const code = msg.split('*');
 
-  const thing_name = code[0];
+  const thingName = code[0];
 
-  if (!thing_name) {
+  if (!thingName) {
     void Send(Text('未识别名称'));
 
     return false;
@@ -139,10 +139,10 @@ const res = onResponse(selects, async e => {
   }
 
   const najie = await readNajie(A_qq);
-  const thing_exist = await foundthing(thing_name);
+  const thingExist = await foundthing(thingName);
 
-  if (!thing_exist) {
-    void Send(Text(`这方世界没有[${thing_name}]`));
+  if (!thingExist) {
+    void Send(Text(`这方世界没有[${thingName}]`));
 
     return false;
   }
@@ -160,21 +160,21 @@ const res = onResponse(selects, async e => {
   let thing_piji = pinjiStr ? pj[pinjiStr] : undefined;
   let equ: ((typeof najie.装备)[number] | (typeof najie.仙宠)[number]) | undefined;
 
-  const cls = thing_exist.class as NajieCategory | undefined;
+  const cls = thingExist.class as NajieCategory | undefined;
 
   if (cls === '装备') {
     if (thing_piji !== undefined) {
-      equ = najie.装备.find(item => item.name === thing_name && item.pinji === thing_piji);
+      equ = najie.装备.find(item => item.name === thingName && item.pinji === thing_piji);
     } else {
       const sorted = najie.装备
-        .filter(item => item.name === thing_name)
+        .filter(item => item.name === thingName)
         .sort((a, b) => b.pinji - a.pinji);
 
       equ = sorted[0];
       thing_piji = equ?.pinji;
     }
   } else if (cls === '仙宠') {
-    equ = najie.仙宠.find(item => item.name === thing_name);
+    equ = najie.仙宠.find(item => item.name === thingName);
   }
 
   if (!cls) {
@@ -183,15 +183,15 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const own = await existNajieThing(A_qq, thing_name, cls, thing_piji);
+  const own = await existNajieThing(A_qq, thingName, cls, thing_piji);
 
   if (own === false || own < quantity) {
-    void Send(Text(`你还没有这么多[${thing_name}]`));
+    void Send(Text(`你还没有这么多[${thingName}]`));
 
     return false;
   }
 
-  await addNajieThing(A_qq, thing_name, cls, -quantity, thing_piji);
+  await addNajieThing(A_qq, thingName, cls, -quantity, thing_piji);
   if (cls === '装备' || cls === '仙宠') {
     if (!equ) {
       void Send(Text('未找到可赠送的实例'));
@@ -200,9 +200,9 @@ const res = onResponse(selects, async e => {
     }
     await addNajieThing(B_qq, equ, cls, quantity, thing_piji);
   } else {
-    await addNajieThing(B_qq, thing_name, cls, quantity, thing_piji);
+    await addNajieThing(B_qq, thingName, cls, quantity, thing_piji);
   }
-  void Send(Text(`${B_player.名号} 获得了由 ${A_player.名号}赠送的[${thing_name}]×${quantity}`));
+  void Send(Text(`${playerB.名号} 获得了由 ${playerA.名号}赠送的[${thingName}]×${quantity}`));
 });
 
 import mw from '@src/response/mw';

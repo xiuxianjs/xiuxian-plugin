@@ -44,13 +44,13 @@ function parsePinji(raw: string | undefined): number | undefined {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const najie = await readNajie(usr_qq);
+  const najie = await readNajie(userId);
 
   if (!najie) {
     return false;
@@ -121,7 +121,7 @@ const res = onResponse(selects, async e => {
     amountStr = segs[1];
   }
 
-  let amount = await convert2integer(amountStr);
+  let amount = convert2integer(amountStr);
 
   if (!amount || amount <= 0) {
     amount = 1;
@@ -147,7 +147,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 数量存在性校验
-  const owned = await existNajieThing(usr_qq, thingName, itemClass, pinji);
+  const owned = await existNajieThing(userId, thingName, itemClass, pinji);
 
   if (!owned || owned < amount) {
     void Send(Text(`你只有[${thingName}]*${owned || 0}`));
@@ -156,7 +156,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 扣除物品
-  await addNajieThing(usr_qq, thingName, itemClass, -amount, pinji);
+  await addNajieThing(userId, thingName, itemClass, -amount, pinji);
 
   // 价格计算：基础出售价 * 数量；若在杂类中且是装备需按背包装备条目出售价
   let price = toInt(thingDef['出售价']) * amount;
@@ -176,9 +176,9 @@ const res = onResponse(selects, async e => {
   if (price <= 0) {
     price = 1;
   }
-  await addCoin(usr_qq, price);
+  await addCoin(userId, price);
 
-  const remain = (await existNajieThing(usr_qq, thingName, itemClass, pinji)) || 0;
+  const remain = (await existNajieThing(userId, thingName, itemClass, pinji)) || 0;
 
   void Send(Text(`出售成功! 获得${price}灵石, 剩余 ${thingName}*${remain}`));
 

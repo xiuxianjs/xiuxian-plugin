@@ -26,9 +26,9 @@ export const regular = /^(#|＃|\/)?登仙$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无账号
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
   // 不开放私聊
 
   // 获取游戏状态
-  const game_action_raw = await redis.get(getRedisKey(usr_qq, 'game_action'));
+  const game_action_raw = await redis.get(getRedisKey(userId, 'game_action'));
   const game_action = game_action_raw === null ? 0 : Number(game_action_raw);
 
   // 防止继续其他娱乐行为
@@ -46,7 +46,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 读取信息
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   // 境界
   const levelList = await getDataList('Level1');
   const now_level = levelList.find(item => item.level_id === player.level_id)?.level;
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
   }
   // 查询redis中的人物动作
 
-  const actionRaw = await getDataByUserId(usr_qq, 'action');
+  const actionRaw = await getDataByUserId(userId, 'action');
   let action: PlayerActionState | null = null;
 
   try {
@@ -96,10 +96,10 @@ const res = onResponse(selects, async e => {
   now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
   const now_exp = player.修为;
   // 修为
-  const need_exp = levelList.find(item => item.level_id === player.level_id).exp;
+  const needEXP = levelList.find(item => item.level_id === player.level_id).exp;
 
-  if (now_exp < need_exp) {
-    void Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可成仙！`));
+  if (now_exp < needEXP) {
+    void Send(Text(`修为不足,再积累${needEXP - now_exp}修为后方可成仙！`));
 
     return false;
   }
@@ -114,15 +114,15 @@ const res = onResponse(selects, async e => {
     );
     now_level_id = now_level_id + 1;
     player.level_id = now_level_id;
-    player.修为 -= need_exp;
-    await writePlayer(usr_qq, player);
-    const equipment = await readEquipment(usr_qq);
+    player.修为 -= needEXP;
+    await writePlayer(userId, player);
+    const equipment = await readEquipment(userId);
 
-    await writeEquipment(usr_qq, equipment);
-    await addHP(usr_qq, 99999999);
+    await writeEquipment(userId, equipment);
+    await addHP(userId, 99999999);
     // 突破成仙人
     if (now_level_id >= 42) {
-      const player = await getDataJSONParseByKey(keys.player(usr_qq));
+      const player = await getDataJSONParseByKey(keys.player(userId));
 
       if (!player) {
         return;
@@ -147,17 +147,17 @@ const res = onResponse(selects, async e => {
         const pos = player.宗门.职位 as string;
         const curList = (association[pos] as string[] | undefined) || [];
 
-        association[pos] = curList.filter(item => item !== usr_qq);
+        association[pos] = curList.filter(item => item !== userId);
         const allList = (association['所有成员'] as string[] | undefined) || [];
 
-        association['所有成员'] = allList.filter(item => item !== usr_qq);
+        association['所有成员'] = allList.filter(item => item !== userId);
         await redis.set(
           `${__PATH.association}:${association.宗门名称}`,
           JSON.stringify(association)
         );
         delete player.宗门;
-        await writePlayer(usr_qq, player);
-        await playerEfficiency(usr_qq);
+        await writePlayer(userId, player);
+        await playerEfficiency(userId);
         void Send(Text('退出宗门成功'));
       } else {
         const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
@@ -171,40 +171,40 @@ const res = onResponse(selects, async e => {
         if (allList.length < 2) {
           await delDataByKey(keys.association(player.宗门.宗门名称));
           delete player.宗门; // 删除存档里的宗门信息
-          await writePlayer(usr_qq, player);
-          await playerEfficiency(usr_qq);
+          await writePlayer(userId, player);
+          await playerEfficiency(userId);
           void Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
         } else {
-          association['所有成员'] = allList.filter(item => item !== usr_qq); // 剔除原成员
+          association['所有成员'] = allList.filter(item => item !== userId); // 剔除原成员
           delete player.宗门; // 删除这个B存档里的宗门信息
-          await writePlayer(usr_qq, player);
-          await playerEfficiency(usr_qq);
+          await writePlayer(userId, player);
+          await playerEfficiency(userId);
           // 随机一个幸运儿的QQ,优先挑选等级高的
-          let randmember_qq;
+          let randmemberId;
           const list_v = (association.副宗主 as string[] | undefined) || [];
           const list_l = (association.长老 as string[] | undefined) || [];
           const list_n = (association.内门弟子 as string[] | undefined) || [];
 
           if (list_v.length > 0) {
-            randmember_qq = await getRandomFromARR(list_v);
+            randmemberId = await getRandomFromARR(list_v);
           } else if (list_l.length > 0) {
-            randmember_qq = await getRandomFromARR(list_l);
+            randmemberId = await getRandomFromARR(list_l);
           } else if (list_n.length > 0) {
-            randmember_qq = await getRandomFromARR(list_n);
+            randmemberId = await getRandomFromARR(list_n);
           } else {
-            randmember_qq = await getRandomFromARR(
+            randmemberId = await getRandomFromARR(
               (association.所有成员 as string[] | undefined) || []
             );
           }
-          const randmember = await readPlayer(randmember_qq); // 获取幸运儿的存档
+          const randmember = await readPlayer(randmemberId); // 获取幸运儿的存档
           const rPos = randmember.宗门.职位 as string;
           const rList = (association[rPos] as string[] | undefined) || [];
 
-          association[rPos] = rList.filter(item => item !== randmember_qq);
-          association['宗主'] = randmember_qq; // 新的职位表加入这个幸运儿
+          association[rPos] = rList.filter(item => item !== randmemberId);
+          association['宗主'] = randmemberId; // 新的职位表加入这个幸运儿
           randmember.宗门.职位 = '宗主'; // 成员存档里改职位
-          await writePlayer(randmember_qq, randmember); // 记录到存档
-          await writePlayer(usr_qq, player);
+          await writePlayer(randmemberId, randmember); // 记录到存档
+          await writePlayer(userId, player);
           await redis.set(
             `${__PATH.association}:${association.宗门名称}`,
             JSON.stringify(association)

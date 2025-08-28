@@ -7,8 +7,8 @@ export const regular = /^(#|＃|\/)?维护护宗大阵.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
@@ -27,7 +27,7 @@ const res = onResponse(selects, async e => {
   // 获取灵石数量
   const msg = e.MessageText.replace(/^#维护护宗大阵/, '');
   // 校验输入灵石数
-  const lingshi = await convert2integer(msg);
+  const lingshi = convert2integer(msg);
   const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (!ass) {

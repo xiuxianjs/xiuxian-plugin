@@ -37,10 +37,10 @@ export const ShenjieTask = async () => {
       continue;
     }
     let push_address: string | undefined;
-    let is_group = false;
+    let isGroup = false;
 
     if ('group_id' in action && notUndAndNull(action.group_id)) {
-      is_group = true;
+      isGroup = true;
       push_address = String(action.group_id);
     }
     const msg: Array<DataMention | string> = [Mention(player_id)];
@@ -55,8 +55,8 @@ export const ShenjieTask = async () => {
     if (String(action.mojie) === '-1') {
       end_time = end_time - Number(action.time ?? 0);
       if (now_time > end_time) {
-        let thing_name: string | undefined;
-        let thing_class: NajieCategory | undefined;
+        let thingName: string | undefined;
+        let thingClass: NajieCategory | undefined;
         const x = 0.98;
         const random1 = Math.random();
         const y = 0.4;
@@ -67,7 +67,7 @@ export const ShenjieTask = async () => {
         let n = 1;
         let t1 = 1;
         let t2 = 1;
-        let last_msg = '';
+        let lastMessage = '';
         let fyd_msg = '';
         const data = {
           shenjie: await getDataList('Shenjie')
@@ -83,33 +83,33 @@ export const ShenjieTask = async () => {
               if (place.three.length) {
                 const idx = Math.floor(Math.random() * place.three.length);
 
-                thing_name = place.three[idx].name;
+                thingName = place.three[idx].name;
                 if (isNajieCategory(place.three[idx].class)) {
-                  thing_class = place.three[idx].class;
+                  thingClass = place.three[idx].class;
                 }
-                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thing_name}]`;
+                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thingName}]`;
                 t1 = 2 + Math.random();
                 t2 = 2 + Math.random();
               }
             } else if (place.two.length) {
               const idx = Math.floor(Math.random() * place.two.length);
 
-              thing_name = place.two[idx].name;
+              thingName = place.two[idx].name;
               if (isNajieCategory(place.two[idx].class)) {
-                thing_class = place.two[idx].class;
+                thingClass = place.two[idx].class;
               }
-              m = `在洞穴中拿到[${thing_name}]`;
+              m = `在洞穴中拿到[${thingName}]`;
               t1 = 1 + Math.random();
               t2 = 1 + Math.random();
             }
           } else if (place.one.length) {
             const idx = Math.floor(Math.random() * place.one.length);
 
-            thing_name = place.one[idx].name;
+            thingName = place.one[idx].name;
             if (isNajieCategory(place.one[idx].class)) {
-              thing_class = place.one[idx].class;
+              thingClass = place.one[idx].class;
             }
-            m = `捡到了[${thing_name}]`;
+            m = `捡到了[${thingName}]`;
             t1 = 0.5 + Math.random() * 0.5;
             t2 = 0.5 + Math.random() * 0.5;
           }
@@ -122,13 +122,13 @@ export const ShenjieTask = async () => {
 
         if (random < (Number(player.幸运) || 0)) {
           if (random < (Number(player.addluckyNo) || 0)) {
-            last_msg += '福源丹生效，所以在';
+            lastMessage += '福源丹生效，所以在';
           } else if (player.仙宠?.type === '幸运') {
-            last_msg += '仙宠使你在探索中欧气满满，所以在';
+            lastMessage += '仙宠使你在探索中欧气满满，所以在';
           }
           // 机缘翻倍
           n++;
-          last_msg += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
+          lastMessage += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
         }
         if ((player.islucky || 0) > 0) {
           player.islucky--;
@@ -146,11 +146,11 @@ export const ShenjieTask = async () => {
         const xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
         const qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
 
-        if (thing_name && thing_class) {
-          await addNajieThing(player_id, thing_name, thing_class, n);
+        if (thingName && thingClass) {
+          await addNajieThing(player_id, thingName, thingClass, n);
         }
-        last_msg += `${m},获得修为${xiuwei},气血${qixue},剩余次数${(Number(action.cishu) || 0) - 1}`;
-        msg.push('\n' + player.名号 + last_msg + fyd_msg);
+        lastMessage += `${m},获得修为${xiuwei},气血${qixue},剩余次数${(Number(action.cishu) || 0) - 1}`;
+        msg.push('\n' + player.名号 + lastMessage + fyd_msg);
         const arr: ActionState = action;
         const remain = Number(arr.cishu) || 0;
 
@@ -166,10 +166,10 @@ export const ShenjieTask = async () => {
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           await addExp2(player_id, qixue);
           await addExp(player_id, xiuwei);
-          if (is_group && push_address) {
-            await pushInfo(push_address, is_group, msg);
+          if (isGroup && push_address) {
+            pushInfo(push_address, isGroup, msg);
           } else {
-            await pushInfo(player_id, is_group, msg);
+            pushInfo(player_id, isGroup, msg);
           }
         } else {
           arr.cishu = remain - 1;
@@ -179,7 +179,7 @@ export const ShenjieTask = async () => {
           try {
             const temp = await readTemp();
             const p: { msg: string; qq_group?: string } = {
-              msg: player.名号 + last_msg + fyd_msg,
+              msg: player.名号 + lastMessage + fyd_msg,
               qq_group: push_address
             };
 
@@ -188,7 +188,7 @@ export const ShenjieTask = async () => {
           } catch {
             const temp: Array<{ msg: string; qq: string; qq_group?: string }> = [];
             const p = {
-              msg: player.名号 + last_msg + fyd_msg,
+              msg: player.名号 + lastMessage + fyd_msg,
               qq: player_id,
               qq_group: push_address
             };

@@ -25,14 +25,14 @@ const res = onResponse(selects, async e => {
     }
 
     for (const i of Exchange) {
-      const usr_qq = i.qq;
+      const userId = i.qq;
       let thing = i.thing.name;
       const quanity = i.aconut;
 
       if (i.thing.class === '装备' || i.thing.class === '仙宠') {
         thing = i.thing;
       }
-      await addNajieThing(usr_qq, thing, i.thing.class, quanity, i.thing.pinji);
+      await addNajieThing(userId, thing, i.thing.class, quanity, i.thing.pinji);
     }
     await writeExchange([]);
     void Send(Text('清除完成！'));

@@ -10,9 +10,9 @@ export const regular = /^(#|＃|\/)?报名比赛/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 查看存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
@@ -26,11 +26,11 @@ const res = onResponse(selects, async e => {
     await writeTiandibang([]);
   }
 
-  if (!tiandibang.find(item => item.qq === usr_qq)) {
-    const player = await readPlayer(usr_qq);
+  if (!tiandibang.find(item => item.qq === userId)) {
+    const player = await readPlayer(userId);
     const levelList = await getDataList('Level1');
     const level_id = levelList.find(item => item.level_id === player.level_id).level_id;
-    const A_player = {
+    const playerA = {
       名号: player.名号,
       境界: level_id,
       攻击: player.攻击,
@@ -40,12 +40,12 @@ const res = onResponse(selects, async e => {
       灵根: player.灵根,
       法球倍率: player.灵根.法球倍率,
       学习的功法: player.学习的功法,
-      qq: usr_qq,
+      qq: userId,
       次数: 0,
       积分: 0
     };
 
-    tiandibang.push(A_player);
+    tiandibang.push(playerA);
     await writeTiandibang(tiandibang);
     void Send(Text('参赛成功!'));
   } else {

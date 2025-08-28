@@ -20,7 +20,7 @@ export const regular = /^(#|＃|\/)?沉迷仙境.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
   const code = didian.split('*');
 
   didian = code[0];
-  const i = await convert2integer(code[1]);
+  const i = convert2integer(code[1]);
 
   if (i > 12) {
     return false;
@@ -55,7 +55,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const weizhi = weizhiUnknown;
-  let player = await readPlayer(usr_qq);
+  let player = await readPlayer(userId);
 
   if (player.灵石 < weizhi.Price * 10 * i) {
     void Send(Text('没有灵石寸步难行,攒到' + weizhi.Price * 10 * i + '灵石才够哦~'));
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  player = await readPlayer(usr_qq);
+  player = await readPlayer(userId);
   const now_level_id = (await getDataList('Level1')).find(
     item => item.level_id === player.level_id
   ).level_id;
@@ -76,10 +76,10 @@ const res = onResponse(selects, async e => {
   if (now_level_id < 42 && player.lunhui === 0) {
     return false;
   }
-  const number = await existNajieThing(usr_qq, '秘境之匙', '道具');
+  const number = await existNajieThing(userId, '秘境之匙', '道具');
 
   if (typeof number === 'number' && number >= i) {
-    await addNajieThing(usr_qq, '秘境之匙', '道具', -i);
+    await addNajieThing(userId, '秘境之匙', '道具', -i);
   } else {
     void Send(Text('你没有足够数量的秘境之匙'));
 
@@ -87,10 +87,10 @@ const res = onResponse(selects, async e => {
   }
   const Price = weizhi.Price * 10 * i;
 
-  await addCoin(usr_qq, -Price);
+  await addCoin(userId, -Price);
   const time = i * 10 * 5 + 10; // 时间（分钟）
   const action_time = 60000 * time; // 持续时间，单位毫秒
-  const arr = await startAction(usr_qq, '历练', action_time, {
+  const arr = await startAction(userId, '历练', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '1',
@@ -105,7 +105,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
-  await redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(arr));
+  await redis.set(getRedisKey(userId, 'action'), JSON.stringify(arr));
   void Send(Text('开始镇守' + didian + ',' + time + '分钟后归来!'));
 });
 

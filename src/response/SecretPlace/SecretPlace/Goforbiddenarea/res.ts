@@ -11,13 +11,13 @@ export const regular = /^(#|＃|\/)?前往禁地.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
@@ -80,12 +80,12 @@ const res = onResponse(selects, async e => {
   }
   const Price = weizhi.Price;
 
-  await addCoin(usr_qq, -Price);
-  await addExp(usr_qq, -weizhi.experience);
+  await addCoin(userId, -Price);
+  await addExp(userId, -weizhi.experience);
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const time = cf.CD.forbiddenarea; // 时间（分钟）
   const action_time = 60000 * time; // 持续时间，单位毫秒
-  const arr = await startAction(usr_qq, '禁地', action_time, {
+  const arr = await startAction(userId, '禁地', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '0',
@@ -99,7 +99,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
-  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
+  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
   void Send(Text('正在前往' + weizhi.name + ',' + time + '分钟后归来!'));
 });
 

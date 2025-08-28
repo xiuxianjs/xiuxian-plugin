@@ -40,12 +40,12 @@ export function sortBy(field) {
 }
 
 // 获取上次签到时间
-export async function getLastsign_Asso(usr_qq) {
+export async function getLastsign_Asso(userId) {
   // 查询redis中的人物动作
-  const time = await redis.get(getRedisKey(usr_qq, 'lastsign_Asso_time'));
+  const time = await redis.get(getRedisKey(userId, 'lastsign_Asso_time'));
 
   if (time !== null) {
-    const data = await shijianc(parseInt(time));
+    const data = shijianc(parseInt(time));
 
     return data;
   }

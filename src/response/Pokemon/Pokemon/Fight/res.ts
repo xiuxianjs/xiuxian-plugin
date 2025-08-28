@@ -54,12 +54,12 @@ function getPlayerPetLevel(p: XianchongInfo | (XianchongInfo & { 等级?: number
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player || typeof player !== 'object') {
     return false;
@@ -76,7 +76,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const najie = await readNajie(usr_qq);
+  const najie = await readNajie(userId);
 
   if (!najie || !Array.isArray(najie.仙宠)) {
     void Send(Text('纳戒数据异常'));
@@ -137,7 +137,7 @@ const res = onResponse(selects, async e => {
     if (player.仙宠.type === '幸运') {
       player.幸运 -= Number(player.仙宠.加成 || 0);
     }
-    await addPet(usr_qq, player.仙宠.name, 1, oldLevel);
+    await addPet(userId, player.仙宠.name, 1, oldLevel);
   }
 
   const level = getLevel(bagPet);
@@ -166,8 +166,8 @@ const res = onResponse(selects, async e => {
     player.幸运 += newPet.加成;
   }
 
-  await addPet(usr_qq, newPet.name, -1, newPet.等级);
-  await writePlayer(usr_qq, player);
+  await addPet(userId, newPet.name, -1, newPet.等级);
+  await writePlayer(userId, player);
 
   void Send(Text('成功出战' + newPet.name));
 

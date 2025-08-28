@@ -7,20 +7,20 @@ export const regular = /^(#|＃|\/)?一键挑战镇妖塔$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
 
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
   }
 
-  const equipment = await getDataJSONParseByKey(keys.equipment(usr_qq));
+  const equipment = await getDataJSONParseByKey(keys.equipment(userId));
   const type = ['武器', '护具', '法宝'];
 
   for (const j of type) {
@@ -81,49 +81,47 @@ const res = onResponse(selects, async e => {
       const Random = Math.random();
 
       if (!(BattleFrame & 1)) {
-        let Player_To_BOSS_Damage
+        let playerToBOSSDamage
           = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
         const SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1;
 
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
         if (Random > 0.5 && BattleFrame === 0) {
           msg.push('你的进攻被反手了！');
-          Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * 0.3);
+          playerToBOSSDamage = Math.trunc(playerToBOSSDamage * 0.3);
         } else if (Random > 0.94) {
           msg.push('你的攻击被破解了');
-          Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * 6);
+          playerToBOSSDamage = Math.trunc(playerToBOSSDamage * 6);
         } else if (Random > 0.9) {
           msg.push('你的攻击被挡了一部分');
-          Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * 0.8);
+          playerToBOSSDamage = Math.trunc(playerToBOSSDamage * 0.8);
         } else if (Random < 0.1) {
           msg.push('你抓到了未知妖物的破绽');
-          Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * 1.2);
+          playerToBOSSDamage = Math.trunc(playerToBOSSDamage * 1.2);
         }
-        Player_To_BOSS_Damage = Math.trunc(
-          Player_To_BOSS_Damage * SuperAttack + Math.random() * 100
-        );
-        bosszt.Health -= Player_To_BOSS_Damage;
-        _totalDamage += Player_To_BOSS_Damage;
+        playerToBOSSDamage = Math.trunc(playerToBOSSDamage * SuperAttack + Math.random() * 100);
+        bosszt.Health -= playerToBOSSDamage;
+        _totalDamage += playerToBOSSDamage;
         if (bosszt.Health < 0) {
           bosszt.Health = 0;
         }
         msg.push(
-          `${player.名号}${ifbaoji(SuperAttack)}造成伤害${Player_To_BOSS_Damage}，未知妖物剩余血量${bosszt.Health}`
+          `${player.名号}${ifbaoji(SuperAttack)}造成伤害${playerToBOSSDamage}，未知妖物剩余血量${bosszt.Health}`
         );
       } else {
-        let BOSS_To_Player_Damage = Harm(BOSSCurrentAttack, Math.trunc(player.防御 * 0.1));
+        let bOSSToPlayerDamage = Harm(BOSSCurrentAttack, Math.trunc(player.防御 * 0.1));
 
         if (Random > 0.94) {
           msg.push('未知妖物的攻击被你破解了');
-          BOSS_To_Player_Damage = Math.trunc(BOSS_To_Player_Damage * 0.6);
+          bOSSToPlayerDamage = Math.trunc(bOSSToPlayerDamage * 0.6);
         } else if (Random > 0.9) {
           msg.push('未知妖物的攻击被你挡了一部分');
-          BOSS_To_Player_Damage = Math.trunc(BOSS_To_Player_Damage * 0.8);
+          bOSSToPlayerDamage = Math.trunc(bOSSToPlayerDamage * 0.8);
         } else if (Random < 0.1) {
           msg.push('未知妖物抓到了你的破绽');
-          BOSS_To_Player_Damage = Math.trunc(BOSS_To_Player_Damage * 1.2);
+          bOSSToPlayerDamage = Math.trunc(bOSSToPlayerDamage * 1.2);
         }
-        player.当前血量 -= BOSS_To_Player_Damage;
+        player.当前血量 -= bOSSToPlayerDamage;
         if (bosszt.isAngry) {
           bosszt.isAngry--;
         }
@@ -140,7 +138,7 @@ const res = onResponse(selects, async e => {
           player.当前血量 = 0;
         }
         msg.push(
-          `未知妖物攻击了${player.名号}，造成伤害${BOSS_To_Player_Damage}，${player.名号}剩余血量${player.当前血量}`
+          `未知妖物攻击了${player.名号}，造成伤害${bOSSToPlayerDamage}，${player.名号}剩余血量${player.当前血量}`
         );
       }
       BattleFrame++;
@@ -161,7 +159,7 @@ const res = onResponse(selects, async e => {
   player.灵石 += lingshi;
   void Send(Text(`\n恭喜你获得灵石${lingshi},本次通过${cengshu}层,失去部分灵石`));
 
-  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  void setDataJSONStringifyByKey(keys.player(userId), player);
 });
 
 import mw from '@src/response/mw';

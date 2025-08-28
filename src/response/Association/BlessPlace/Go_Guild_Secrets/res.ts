@@ -28,14 +28,14 @@ function isExtAss(v): v is ExtAss {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player?.宗门 || !isPlayerGuildRef(player.宗门)) {
     void Send(Text('请先加入宗门'));
@@ -100,7 +100,7 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain;
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
 
-  await addCoin(usr_qq, -price);
+  await addCoin(userId, -price);
   interface XiuxianConfig {
     CD?: { secretplace?: number };
   }
@@ -122,7 +122,7 @@ const res = onResponse(selects, async e => {
     XF: ass.power
   };
 
-  await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
+  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
   void Send(
     Text(
       `开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`

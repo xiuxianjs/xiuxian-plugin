@@ -25,10 +25,10 @@ export const ForumTask = async () => {
     if (time < 3) {
       break;
     }
-    const usr_qq = Forum[i].qq;
+    const userId = Forum[i].qq;
     const lingshi = Forum[i].whole;
 
-    await addCoin(usr_qq, lingshi);
+    await addCoin(userId, lingshi);
     Forum.splice(i, 1);
     i--;
   }

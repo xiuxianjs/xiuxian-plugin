@@ -13,15 +13,15 @@ const res = onResponse(selects, async e => {
   if (!flag) {
     return false;
   }
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const najie = await readNajie(usr_qq);
-  const player = await readPlayer(usr_qq);
+  const najie = await readNajie(userId);
+  const player = await readPlayer(userId);
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const najie_num = cf.najie_num;
   const najie_price = cf.najie_price;
@@ -36,10 +36,10 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  await addCoin(usr_qq, -najie_price[najie.等级]);
+  await addCoin(userId, -najie_price[najie.等级]);
   najie.灵石上限 = najie_num[najie.等级];
   najie.等级 += 1;
-  await writeNajie(usr_qq, najie);
+  await writeNajie(userId, najie);
   void Send(
     Text(
       `你的纳戒升级成功,花了${

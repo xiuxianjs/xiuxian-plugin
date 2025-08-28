@@ -20,16 +20,16 @@ const CD_MS = 30 * 1000; // 30 秒发红包冷却
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   if (!(await Go(e))) {
     return false;
   }
 
-  const cdKey = getRedisKey(usr_qq, 'giveHongbaoCD');
+  const cdKey = getRedisKey(userId, 'giveHongbaoCD');
 
   const now = Date.now();
   const lastTs = toInt(await redis.get(cdKey));
@@ -54,8 +54,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  let per = toInt(await convert2integer(seg[0]), 0);
-  let count = toInt(await convert2integer(seg[1]), 0);
+  let per = toInt(convert2integer(seg[0]), 0);
+  let count = toInt(convert2integer(seg[1]), 0);
 
   if (per <= 0 || count <= 0) {
     void Send(Text('金额与个数需为正整数'));
@@ -86,7 +86,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -104,7 +104,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 并发保护: 使用 setnx 类逻辑 (简化：先检查再写入)
-  const existing = await redis.get(getRedisKey(usr_qq, 'honbaoacount'));
+  const existing = await redis.get(getRedisKey(userId, 'honbaoacount'));
 
   if (existing && Number(existing) > 0) {
     void Send(Text('你已有未被抢完的红包，稍后再发'));
@@ -112,9 +112,9 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await redis.set(getRedisKey(usr_qq, 'honbao'), String(per));
-  await redis.set(getRedisKey(usr_qq, 'honbaoacount'), String(count));
-  await addCoin(usr_qq, -total);
+  await redis.set(getRedisKey(userId, 'honbao'), String(per));
+  await redis.set(getRedisKey(userId, 'honbaoacount'), String(count));
+  await addCoin(userId, -total);
   await redis.set(cdKey, String(now));
 
   void Send(Text(`【全服公告】${player.名号}发了${count}个${per}灵石的红包！`));

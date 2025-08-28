@@ -53,15 +53,15 @@ function mapRecord(r): LegacyRecord | null {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
   const now = Date.now();
   const cdMs = Math.floor(0.5 * 60000);
-  const cdKey = getRedisKey(usr_qq, 'ExchangeCD');
+  const cdKey = getRedisKey(userId, 'ExchangeCD');
 
   const lastTs = toInt(await redis.get(cdKey));
 
@@ -103,7 +103,7 @@ const res = onResponse(selects, async e => {
 
   const rec = list[idx];
 
-  if (rec.qq !== usr_qq) {
+  if (rec.qq !== userId) {
     void Send(Text('不能下架别人上架的物品'));
 
     return false;
@@ -130,18 +130,18 @@ const res = onResponse(selects, async e => {
   if (cate === '装备' || cate === '仙宠') {
     const equipName = typeof rec.name === 'string' ? rec.name : rec.name.name;
 
-    await addNajieThing(usr_qq, equipName, cate, amount, rec.pinji2);
+    await addNajieThing(userId, equipName, cate, amount, rec.pinji2);
   } else {
-    await addNajieThing(usr_qq, thingName, cate, amount);
+    await addNajieThing(userId, thingName, cate, amount);
   }
 
   rawList.splice(idx, 1);
   await writeExchange(rawList as RawExchangeRecord[]);
-  await redis.set(getRedisKey(usr_qq, 'Exchange'), '0');
+  await redis.set(getRedisKey(userId, 'Exchange'), '0');
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
-  void Send(Text(`${player?.名号 || usr_qq}下架${thingName}成功！`));
+  void Send(Text(`${player?.名号 || userId}下架${thingName}成功！`));
 
   return false;
 });

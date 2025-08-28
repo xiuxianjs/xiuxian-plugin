@@ -9,13 +9,13 @@ export const regular = /^(#|＃|\/)?炼神魄$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
   // CD（默认 2 分钟）
   const CD_MIN = 2;
   const now = Date.now();
-  const cdKey = getRedisKey(String(usr_qq), 'dsc_cd');
+  const cdKey = getRedisKey(String(userId), 'dsc_cd');
   const lastRaw = await redis.get(cdKey);
   const lastNum = Number(lastRaw);
   const cdMs = CD_MIN * 60 * 1000;
@@ -145,7 +145,7 @@ const res = onResponse(selects, async e => {
     void Send(Text(`\n你未能通过此层锻神池！修为-${lose}`));
   }
 
-  void setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  void setDataJSONStringifyByKey(keys.player(userId), player);
 
   return false;
 });

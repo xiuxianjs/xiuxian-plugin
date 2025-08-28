@@ -26,13 +26,13 @@ interface FuzhiData {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -43,7 +43,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -68,12 +68,12 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const thing_name = occupation + '转职凭证';
-  const thing_class = '道具';
-  const thing_quantity = await existNajieThing(usr_qq, thing_name, thing_class);
+  const thingName = occupation + '转职凭证';
+  const thingClass = '道具';
+  const thing_quantity = await existNajieThing(userId, thingName, thingClass);
 
   if (!thing_quantity || thing_quantity <= 0) {
-    void Send(Text(`你没有【${thing_name}】`));
+    void Send(Text(`你没有【${thingName}】`));
 
     return false;
   }
@@ -82,14 +82,14 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  await addNajieThing(usr_qq, thing_name, thing_class, -1);
+  await addNajieThing(userId, thingName, thingClass, -1);
 
   // 如果当前没有主职业
   if (!player_occupation || player_occupation.length === 0) {
     player.occupation = occupation;
     player.occupation_level = 1;
     player.occupation_exp = 0;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
     void Send(Text(`恭喜${player.名号}转职为[${occupation}]`));
 
     return false;
@@ -102,11 +102,11 @@ const res = onResponse(selects, async e => {
     职业等级: Number(player.occupation_level) || 1
   };
 
-  await setDataJSONStringifyByKey(keys.fuzhi(usr_qq), fuzhi);
+  await setDataJSONStringifyByKey(keys.fuzhi(userId), fuzhi);
   player.occupation = occupation;
   player.occupation_level = 1;
   player.occupation_exp = 0;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
   void Send(Text(`恭喜${player.名号}转职为[${occupation}], 你的副职为${fuzhi.职业名}`));
 
   return false;

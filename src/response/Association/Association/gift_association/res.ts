@@ -43,13 +43,13 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) {
     return false;
@@ -77,8 +77,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const nowTime = Date.now();
-  const Today = await shijianc(nowTime);
-  const lastsign_time = await getLastsign_Asso(usr_qq);
+  const Today = shijianc(nowTime);
+  const lastsign_time = await getLastsign_Asso(userId);
 
   if (isDateParts(Today) && isDateParts(lastsign_time)) {
     if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
@@ -124,8 +124,8 @@ const res = onResponse(selects, async e => {
   }
   ass.灵石池 = pool - gift_lingshi;
   player.灵石 += gift_lingshi;
-  await redis.set(getRedisKey(usr_qq, 'lastsign_Asso_time'), nowTime);
-  await writePlayer(usr_qq, serializePlayer(player));
+  await redis.set(getRedisKey(userId, 'lastsign_Asso_time'), nowTime);
+  await writePlayer(userId, serializePlayer(player));
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
   void Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`));
 

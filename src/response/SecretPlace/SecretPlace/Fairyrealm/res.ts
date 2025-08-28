@@ -6,9 +6,9 @@ import type { NamedItem } from '@src/types/model';
 
 export const regular = /^(#|＃|\/)?仙境$/;
 const res = onResponse(selects, async e => {
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   const list = ((await getDataList('FairyRealm')) || []) as NamedItem[];

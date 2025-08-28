@@ -74,13 +74,13 @@ function serializePlayer(p: Player): Record<string, JSONValue> {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return false;
@@ -125,48 +125,48 @@ const res = onResponse(selects, async e => {
   const ass = assRaw as AssociationDetailData;
 
   if (role !== '宗主') {
-    const roleList = getRoleList(ass, role).filter(item => item !== usr_qq);
+    const roleList = getRoleList(ass, role).filter(item => item !== userId);
 
     setRoleList(ass, role, roleList);
-    ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== usr_qq);
+    ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== userId);
     await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
     delete (player as Player & { 宗门? }).宗门;
-    await writePlayer(usr_qq, serializePlayer(player));
-    await playerEfficiency(usr_qq);
+    await writePlayer(userId, serializePlayer(player));
+    await playerEfficiency(userId);
     void Send(Text('退出宗门成功'));
   } else {
     ass.所有成员 = ensureStringArray(ass.所有成员);
     if (ass.所有成员.length < 2) {
       await redis.del(keys.association(guildInfo.宗门名称));
       delete (player as Player & { 宗门? }).宗门;
-      await writePlayer(usr_qq, serializePlayer(player));
-      await playerEfficiency(usr_qq);
+      await writePlayer(userId, serializePlayer(player));
+      await playerEfficiency(userId);
       void Send(
         Text(
           '退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'
         )
       );
     } else {
-      ass.所有成员 = ass.所有成员.filter(item => item !== usr_qq);
+      ass.所有成员 = ass.所有成员.filter(item => item !== userId);
       delete (player as Player & { 宗门? }).宗门;
-      await writePlayer(usr_qq, serializePlayer(player));
-      await playerEfficiency(usr_qq);
+      await writePlayer(userId, serializePlayer(player));
+      await playerEfficiency(userId);
       const fz = getRoleList(ass, '副宗主');
       const zl = getRoleList(ass, '长老');
       const nmdz = getRoleList(ass, '内门弟子');
-      let randmember_qq: string;
+      let randmemberId: string;
 
       if (fz.length > 0) {
-        randmember_qq = await getRandomFromARR(fz);
+        randmemberId = await getRandomFromARR(fz);
       } else if (zl.length > 0) {
-        randmember_qq = await getRandomFromARR(zl);
+        randmemberId = await getRandomFromARR(zl);
       } else if (nmdz.length > 0) {
-        randmember_qq = await getRandomFromARR(nmdz);
+        randmemberId = await getRandomFromARR(nmdz);
       } else {
-        randmember_qq = await getRandomFromARR(ass.所有成员);
+        randmemberId = await getRandomFromARR(ass.所有成员);
       }
 
-      const randmember = await readPlayer(randmember_qq);
+      const randmember = await readPlayer(randmemberId);
 
       if (!randmember || !isPlayerGuildInfo(randmember.宗门)) {
         void Send(Text('随机继任者数据错误'));
@@ -174,19 +174,19 @@ const res = onResponse(selects, async e => {
         return false;
       }
       const rGuild = randmember.宗门;
-      const oldList = getRoleList(ass, rGuild.职位).filter(i => i !== randmember_qq);
+      const oldList = getRoleList(ass, rGuild.职位).filter(i => i !== randmemberId);
 
       setRoleList(ass, rGuild.职位, oldList);
-      setRoleList(ass, '宗主', [randmember_qq]);
+      setRoleList(ass, '宗主', [randmemberId]);
       rGuild.职位 = '宗主';
-      await writePlayer(randmember_qq, serializePlayer(randmember));
-      await writePlayer(usr_qq, serializePlayer(player));
+      await writePlayer(randmemberId, serializePlayer(randmember));
+      await writePlayer(userId, serializePlayer(player));
       await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
       void Send(Text(`退出宗门成功,退出后,宗主职位由${randmember.名号}接管`));
     }
   }
   player.favorability = 0;
-  await writePlayer(usr_qq, serializePlayer(player));
+  await writePlayer(userId, serializePlayer(player));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

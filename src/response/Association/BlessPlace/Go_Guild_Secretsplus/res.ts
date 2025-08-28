@@ -23,14 +23,14 @@ function isPlayerGuildRef(v): v is PlayerGuildRef {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const flag = await Go(e);
 
   if (!flag) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player?.宗门 || !isPlayerGuildRef(player.宗门)) {
     void Send(Text('请先加入宗门'));
@@ -59,7 +59,7 @@ const res = onResponse(selects, async e => {
   }
   const [didianRaw, timesRaw] = tail.split('*');
   const didian = (didianRaw || '').trim();
-  const i = await convert2integer(timesRaw);
+  const i = convert2integer(timesRaw);
 
   if (!didian) {
     void Send(Text('请提供秘境名称'));
@@ -80,7 +80,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const keyNum = await existNajieThing(usr_qq, '秘境之匙', '道具');
+  const keyNum = await existNajieThing(userId, '秘境之匙', '道具');
 
   if (!keyNum || keyNum < i) {
     void Send(Text('你没有足够数量的秘境之匙'));
@@ -104,14 +104,14 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await addNajieThing(usr_qq, '秘境之匙', '道具', -i);
+  await addNajieThing(userId, '秘境之匙', '道具', -i);
 
   const guildGain = Math.trunc(Price * 0.05);
 
   ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
 
-  await addCoin(usr_qq, -Price);
+  await addCoin(userId, -Price);
   const time = i * 10 * 5 + 10; // 分钟
   const action_time = 60000 * time;
   const arr = {
@@ -129,7 +129,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   };
 
-  redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(arr));
+  redis.set(getRedisKey(userId, 'action'), JSON.stringify(arr));
   void Send(
     Text(
       `开始沉迷探索 ${didian} 宗门秘境 * ${i} 次，共耗时 ${time} 分钟 (消耗${Price}灵石，上缴宗门${guildGain}灵石)`

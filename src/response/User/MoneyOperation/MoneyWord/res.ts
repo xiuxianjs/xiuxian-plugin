@@ -16,9 +16,9 @@ const MAX_TAX = 1_000_000_000_000; // 上限避免异常输入
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  let amount = toInt(await convert2integer(raw), 0);
+  let amount = toInt(convert2integer(raw), 0);
 
   if (amount < MIN_TAX) {
     void Send(Text(`至少交税 ${MIN_TAX}`));
@@ -41,7 +41,7 @@ const res = onResponse(selects, async e => {
     amount = MAX_TAX;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('存档异常'));
@@ -61,7 +61,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await addCoin(usr_qq, -amount);
+  await addCoin(userId, -amount);
   void Send(Text(`成功交税 ${amount} 灵石，剩余 ${lingshi - amount}`));
 
   return false;

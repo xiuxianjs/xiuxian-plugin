@@ -29,7 +29,7 @@ export async function getEquipmentDataSafe(usrid: string): Promise<Equipment | n
 
 /**
  * 检查玩家存档是否存在
- * @param usr_qq 玩家QQ
+ * @param userId 玩家QQ
  * @returns
  */
 export function existplayer(usrid: string): Promise<boolean> {
@@ -48,7 +48,7 @@ export async function readNajie(usrid: string): Promise<Najie | null> {
 
 /**
  * 写入纳戒信息
- * @param usr_qq 玩家QQ
+ * @param userId 玩家QQ
  * @param najie 纳戒信息
  */
 export async function writeNajie(usrid: string, najie: Najie): Promise<void> {

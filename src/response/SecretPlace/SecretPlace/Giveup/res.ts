@@ -9,14 +9,14 @@ export const regular = /^(#|＃|\/)?逃离/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   // 获取游戏状态
-  const game_action = await getString(userKey(usr_qq, 'game_action'));
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
@@ -25,13 +25,13 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 查询redis中的人物动作
-  const action = await readAction(usr_qq);
+  const action = await readAction(userId);
 
   if (
     action
     && (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')
   ) {
-    await stopAction(usr_qq, {
+    await stopAction(userId, {
       is_jiesuan: 1,
       shutup: '1',
       working: '1',

@@ -59,14 +59,14 @@ import { getRedisKey } from '@src/model/keys';
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
   // 全局娱乐占用状态
-  const gameActionRaw = await redis.get(getRedisKey(usr_qq, 'game_action'));
+  const gameActionRaw = await redis.get(getRedisKey(userId, 'game_action'));
 
   if (toInt(gameActionRaw) === 1) {
     void Send(Text('修仙：游戏进行中...'));
@@ -75,7 +75,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 当前动作占用
-  const actionRaw = await redis.get(getRedisKey(usr_qq, 'action'));
+  const actionRaw = await redis.get(getRedisKey(userId, 'action'));
   const actionObj = parseJSON<ActionState>(actionRaw);
 
   if (actionObj && toInt(actionObj.end_time) > Date.now()) {
@@ -88,20 +88,20 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  let player = await readPlayer(usr_qq);
+  let player = await readPlayer(userId);
 
   if (!player) {
     return false;
   }
 
   const now = Date.now();
-  const today = (await shijianc(now)) as DayInfo;
-  const lastTimeRaw = await redis.get(getRedisKey(usr_qq, 'lastdagong_time'));
-  const lastDay = lastTimeRaw ? ((await shijianc(toInt(lastTimeRaw))) as DayInfo) : null;
+  const today = shijianc(now) as DayInfo;
+  const lastTimeRaw = await redis.get(getRedisKey(userId, 'lastdagong_time'));
+  const lastDay = lastTimeRaw ? (shijianc(toInt(lastTimeRaw)) as DayInfo) : null;
 
   // 每日刷新神界次数：逻辑修正为任一日期字段变化即刷新
   if (isDayChanged(today, lastDay)) {
-    await redis.set(getRedisKey(usr_qq, 'lastdagong_time'), now);
+    await redis.set(getRedisKey(userId, 'lastdagong_time'), now);
     let n = 1;
     const ln = player.灵根?.name;
 
@@ -117,10 +117,10 @@ const res = onResponse(selects, async e => {
       n = 5;
     }
     player.神界次数 = n;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
   }
 
-  player = await readPlayer(usr_qq);
+  player = await readPlayer(userId);
   if (!player) {
     return false;
   }
@@ -138,9 +138,9 @@ const res = onResponse(selects, async e => {
   }
 
   player.灵石 = toInt(player.灵石) - LS_COST;
-  const todayRef = (await shijianc(now)) as DayInfo; // 重新拿一次防止 race（可选）
-  const lastDayRefRaw = await redis.get(getRedisKey(usr_qq, 'lastdagong_time'));
-  const lastDayRef = lastDayRefRaw ? ((await shijianc(toInt(lastDayRefRaw))) as DayInfo) : null;
+  const todayRef = shijianc(now) as DayInfo; // 重新拿一次防止 race（可选）
+  const lastDayRefRaw = await redis.get(getRedisKey(userId, 'lastdagong_time'));
+  const lastDayRef = lastDayRefRaw ? (shijianc(toInt(lastDayRefRaw)) as DayInfo) : null;
 
   if (!isDayChanged(todayRef, lastDayRef) && toInt(player.神界次数) === 0) {
     void Send(Text('今日次数用光了,请明日再来吧'));
@@ -148,7 +148,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   player.神界次数 = Math.max(0, toInt(player.神界次数) - 1);
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
 
   const durationMs = DURATION_MINUTES * 60000;
   const newAction: ActionState = {
@@ -170,7 +170,7 @@ const res = onResponse(selects, async e => {
   if (e.name === 'message.create') {
     newAction.group_id = e.ChannelId;
   }
-  await redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(newAction));
+  await redis.set(getRedisKey(userId, 'action'), JSON.stringify(newAction));
   void Send(Text(`开始进入神界, ${DURATION_MINUTES}分钟后归来!`));
 
   return false;

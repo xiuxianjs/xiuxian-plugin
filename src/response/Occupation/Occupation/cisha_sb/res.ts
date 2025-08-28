@@ -32,13 +32,13 @@ function parseJson<T>(raw: string | null): T | null {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(usr_qq, 'action')));
+  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(userId, 'action')));
 
   if (actionState) {
     const now = Date.now();
@@ -73,13 +73,13 @@ const res = onResponse(selects, async e => {
   const target = pool[idx];
   const qq = target.QQ;
 
-  if (qq === usr_qq) {
+  if (qq === userId) {
     void Send(Text('咋的，自己干自己？'));
 
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
   const player_B = await readPlayer(String(qq));
 
   if (player_B.当前血量 === 0) {
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
     const now = Date.now();
 
     if (now <= targetAction.end_time) {
-      const hasYinshen = await existNajieThing(usr_qq, '隐身水', '道具');
+      const hasYinshen = await existNajieThing(userId, '隐身水', '道具');
 
       if (!hasYinshen) {
         const remain = targetAction.end_time - now;
@@ -147,24 +147,24 @@ const res = onResponse(selects, async e => {
     仙宠: player_B.仙宠
   };
 
-  const Data_battle = await zdBattle(player_A, player_B_entity);
-  const msg: string[] = Data_battle.msg || [];
-  const A_win = `${player_A.名号}击败了${player_B.名号}`;
-  const B_win = `${player_B.名号}击败了${player_A.名号}`;
+  const dataBattle = await zdBattle(player_A, player_B_entity);
+  const msg: string[] = dataBattle.msg || [];
+  const winA = `${player_A.名号}击败了${player_B.名号}`;
+  const winB = `${player_B.名号}击败了${player_A.名号}`;
   let broadcast = '';
 
-  if (msg.includes(A_win)) {
+  if (msg.includes(winA)) {
     player_B.当前血量 = 0;
     player_B.修为 -= target.赏金;
     await writePlayer(String(qq), player_B);
     player.灵石 += Math.trunc(target.赏金 * 0.3);
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
     broadcast = `【全服公告】${player_B.名号}被${player.名号}悄无声息的刺杀了`;
     pool.splice(idx, 1);
     await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(pool));
-  } else if (msg.includes(B_win)) {
+  } else if (msg.includes(winB)) {
     player.当前血量 = 0;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
     broadcast = `【全服公告】${player.名号}刺杀失败,${player_B.名号}勃然大怒,单手就反杀了${player.名号}`;
   }
   if (msg.length > 100) {

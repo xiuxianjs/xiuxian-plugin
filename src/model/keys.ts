@@ -56,6 +56,7 @@ import { baseKey } from './constants';
 import { getIoRedis } from '@alemonjs/db';
 
 export type ActionType =
+  | 'action10'
   | 'action'
   | 'xijie'
   | 'last_dajie_time'

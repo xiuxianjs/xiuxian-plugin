@@ -10,8 +10,8 @@ import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.
 
 export async function playerEfficiency(userId: string): Promise<null | undefined> {
   // 这里有问题
-  const usr_qq = userId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = userId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return null;
@@ -62,12 +62,12 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
     // 是否存在修炼仙宠
     xianchong_efficiency = player.仙宠.加成; // 存在修炼仙宠，仙宠效率为仙宠效率加成
   }
-  const dy = await readDanyao(usr_qq);
+  const dy = await readDanyao(userId);
   const bgdan = dy.biguanxl || 0;
 
-  player.修炼效率提升 =
-    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
-  await setDataJSONStringifyByKey(keys.player(usr_qq), player);
+  player.修炼效率提升
+    = linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
+  await setDataJSONStringifyByKey(keys.player(userId), player);
 }
 
 export default { playerEfficiency };

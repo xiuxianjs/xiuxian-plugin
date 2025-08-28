@@ -15,20 +15,20 @@ function toInt(v, d = 0) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
   // 读取玩家（仅用于名字展示）
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
   }
   const now = Date.now();
-  const lastKey = getRedisKey(usr_qq, 'last_getbung_time');
+  const lastKey = getRedisKey(userId, 'last_getbung_time');
   const lastStr = await redis.get(lastKey);
   const lastTime = toInt(lastStr);
   const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {};
@@ -55,7 +55,7 @@ const res = onResponse(selects, async e => {
 
   const honbao_qq = target.UserId;
 
-  if (honbao_qq === usr_qq) {
+  if (honbao_qq === userId) {
     void Send(Text('不能抢自己的红包'));
 
     return false;
@@ -91,10 +91,10 @@ const res = onResponse(selects, async e => {
   }
 
   // 结算：增加用户灵石并设置CD
-  await addCoin(usr_qq, lingshi);
+  await addCoin(userId, lingshi);
   await redis.set(lastKey, now);
 
-  void Send(Text(`【全服公告】${player.名号 || usr_qq}抢到一个${lingshi}灵石的红包！`));
+  void Send(Text(`【全服公告】${player.名号 || userId}抢到一个${lingshi}灵石的红包！`));
 
   return false;
 });

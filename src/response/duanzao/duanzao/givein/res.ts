@@ -47,19 +47,19 @@ const res = onResponse(selects, async e => {
   }
   const thing = e.MessageText.replace(/^(#|＃|\/)?熔炼/, '');
   const code = thing.split('*');
-  const thing_name = code[0]; // 物品
+  const thingName = code[0]; // 物品
   const account = code[1]; // 数量
-  const parsedCount = await convert2integer(account);
+  const parsedCount = convert2integer(account);
   const thing_acount
     = typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
-  const wupintype = await foundthing(thing_name);
+  const wupintype = await foundthing(thingName);
 
   if (!wupintype || wupintype.type !== '锻造') {
     void Send(Text('凡界物品无法放入煅炉'));
 
     return false;
   }
-  const mynumRaw = await existNajieThing(user_qq, thing_name, '材料');
+  const mynumRaw = await existNajieThing(user_qq, thingName, '材料');
   const mynum = typeof mynumRaw === 'number' ? mynumRaw : 0;
 
   if (mynum < thing_acount) {
@@ -104,10 +104,10 @@ const res = onResponse(selects, async e => {
   }
   for (const item of newtripod) {
     if (user_qq === item.qq) {
-      item.材料.push(thing_name);
+      item.材料.push(thingName);
       item.数量.push(thing_acount);
       await writeDuanlu(newtripod);
-      await addNajieThing(user_qq, thing_name, '材料', -thing_acount);
+      await addNajieThing(user_qq, thingName, '材料', -thing_acount);
       const yongyou = num + Number(thing_acount);
 
       void Send(

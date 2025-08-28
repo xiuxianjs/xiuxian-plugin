@@ -50,14 +50,14 @@ const MAX_PRICE_SUM = 1e15;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   if (!(await Go(e))) {
     return false;
   }
 
   // 冷却
-  const cdKey = getRedisKey(usr_qq, 'ForumCD');
+  const cdKey = getRedisKey(userId, 'ForumCD');
   const now = Date.now();
   const last = toInt(await redis.get(cdKey), 0);
 
@@ -72,7 +72,7 @@ const res = onResponse(selects, async e => {
   }
   await redis.set(cdKey, String(now));
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('存档异常'));
@@ -100,7 +100,7 @@ const res = onResponse(selects, async e => {
   }
   const idxRaw = seg[0];
   const qtyRaw = seg[1];
-  const orderIndex = toInt(await convert2integer(idxRaw), 0) - 1;
+  const orderIndex = toInt(convert2integer(idxRaw), 0) - 1;
 
   if (orderIndex < 0) {
     void Send(Text('编号不合法'));
@@ -132,7 +132,7 @@ const res = onResponse(selects, async e => {
   };
 
   // 自己不能接自己的单
-  if (String(order.qq) === String(usr_qq)) {
+  if (String(order.qq) === String(userId)) {
     void Send(Text('没事找事做?'));
 
     return false;
@@ -154,7 +154,7 @@ const res = onResponse(selects, async e => {
   if (!qtyRaw) {
     deliverQty = remaining;
   } else {
-    deliverQty = toInt(await convert2integer(qtyRaw), 0);
+    deliverQty = toInt(convert2integer(qtyRaw), 0);
     if (deliverQty <= 0) {
       void Send(Text('数量需为正整数'));
 
@@ -169,7 +169,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 检查库存
-  const hasNum = await existNajieThing(usr_qq, order.name, order.class as NajieCategory);
+  const hasNum = await existNajieThing(userId, order.name, order.class as NajieCategory);
 
   if (!hasNum) {
     void Send(Text(`你没有【${order.name}】`));
@@ -191,8 +191,8 @@ const res = onResponse(selects, async e => {
   }
 
   // 扣除物品 & 增加灵石 & 给对方物品
-  await addNajieThing(usr_qq, order.name, order.class as NajieCategory, -deliverQty);
-  await addCoin(usr_qq, gain);
+  await addNajieThing(userId, order.name, order.class as NajieCategory, -deliverQty);
+  await addCoin(userId, gain);
   await addNajieThing(
     String(order.qq ?? order.last_offer_player ?? ''),
     order.name,

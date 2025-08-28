@@ -35,13 +35,13 @@ function buildLinggenFactor(type: string): number {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return false;
@@ -75,7 +75,7 @@ const res = onResponse(selects, async e => {
 
   if (Number(player.当前血量) < baseHpNeed * MIN_HP_RATIO) {
     player.当前血量 = 1;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
     void Send(Text(`${player.名号}血量亏损，强行渡劫后晕倒在地！`));
 
     return false;
@@ -90,7 +90,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 计算雷抗系数
-  const x = await dujie(usr_qq);
+  const x = await dujie(userId);
   const y = buildLinggenFactor(player.灵根.type);
   const n = BASE_N;
   const p = RANGE_P;
@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
     if (player.修为 < 0) {
       player.修为 = 0;
     }
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
     void Send(Text('天空一声巨响，未降下雷劫，就被天道的气势震死了。'));
 
     return false;
@@ -133,7 +133,7 @@ const res = onResponse(selects, async e => {
     if (!active) {
       return;
     }
-    const stillPlayer = await readPlayer(usr_qq);
+    const stillPlayer = await readPlayer(userId);
 
     if (!stillPlayer) {
       release('玩家数据缺失');
@@ -165,7 +165,7 @@ const res = onResponse(selects, async e => {
     }
     active = false;
     dj = 0;
-    // 可选调试: console.debug('渡劫结束:', usr_qq, reason)
+    // 可选调试: console.debug('渡劫结束:', userId, reason)
   };
 
   setTimeout(doStrike, STRIKE_DELAY_MS);

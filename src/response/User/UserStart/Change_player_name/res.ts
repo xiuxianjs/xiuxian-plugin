@@ -13,14 +13,14 @@ interface DateStruct {
   M: number;
   D: number;
 }
-async function getDayStruct(ts): Promise<DateStruct | null> {
+function getDayStruct(ts): DateStruct | null {
   const n = Number(ts);
 
   if (!Number.isFinite(n) || n <= 0) {
     return null;
   }
   try {
-    return (await shijianc(n)) as DateStruct;
+    return shijianc(n) as DateStruct;
   } catch {
     return null;
   }
@@ -37,9 +37,9 @@ function isMessageEvent(ev): ev is Parameters<typeof showSlayer>[0] {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
@@ -59,10 +59,10 @@ const res = onResponse(selects, async e => {
     }
 
     const now = Date.now();
-    const today = (await shijianc(now)) as DateStruct;
-    const lastKey = getRedisKey(usr_qq, 'last_setname_time');
+    const today = shijianc(now) as DateStruct;
+    const lastKey = getRedisKey(userId, 'last_setname_time');
     const lastRaw = await redis.get(lastKey);
-    const lastStruct = await getDayStruct(lastRaw);
+    const lastStruct = getDayStruct(lastRaw);
 
     if (sameDay(today, lastStruct)) {
       void Send(Text('每日只能改名一次'));
@@ -70,7 +70,7 @@ const res = onResponse(selects, async e => {
       return false;
     }
 
-    const player = await readPlayer(usr_qq);
+    const player = await readPlayer(userId);
 
     if (!player) {
       void Send(Text('玩家数据异常'));
@@ -86,7 +86,7 @@ const res = onResponse(selects, async e => {
     }
     player.名号 = raw;
     player.灵石 -= cost;
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
     await redis.set(lastKey, String(now));
     if (isMessageEvent(e)) {
       showSlayer(e);
@@ -105,10 +105,10 @@ const res = onResponse(selects, async e => {
   }
 
   const now = Date.now();
-  const today = (await shijianc(now)) as DateStruct;
-  const lastKey = getRedisKey(usr_qq, 'last_setxuanyan_time');
+  const today = shijianc(now) as DateStruct;
+  const lastKey = getRedisKey(userId, 'last_setxuanyan_time');
   const lastRaw = await redis.get(lastKey);
-  const lastStruct = await getDayStruct(lastRaw);
+  const lastStruct = getDayStruct(lastRaw);
 
   if (sameDay(today, lastStruct)) {
     void Send(Text('每日仅可更改一次'));
@@ -116,7 +116,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据异常'));
@@ -124,7 +124,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   player.宣言 = raw;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
   await redis.set(lastKey, String(now));
   if (isMessageEvent(e)) {
     showSlayer(e);

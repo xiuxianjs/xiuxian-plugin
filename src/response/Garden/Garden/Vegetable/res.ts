@@ -52,8 +52,8 @@ function fmtRemain(ms: number) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const player = await getDataJSONParseByKey(keys.player(usr_qq));
+  const userId = e.UserId;
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -72,7 +72,7 @@ const res = onResponse(selects, async e => {
   const guildLevel = toInt(ass.宗门等级, 1);
 
   if (!garden || toInt(garden.药园等级, 1) === 1 || toInt(garden.药园等级) !== guildLevel) {
-    await createGarden(guildName, usr_qq, guildLevel);
+    await createGarden(guildName, userId, guildLevel);
     void Send(Text('新建药园，种下了一棵草'));
     ass = (await getDataJSONParseByKey(keys.association(guildName))) as GuildData;
   }

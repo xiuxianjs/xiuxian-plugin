@@ -11,23 +11,23 @@ import { setDataJSONStringifyByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?((大|小)|([1-6]))$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
   const now_time = Date.now();
-  const ifexistplay = await existplayer(usr_qq);
-  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
+  const ifexistplay = await existplayer(userId);
+  const game_action = await redis.get(getRedisKey(userId, 'game_action'));
 
   if (!ifexistplay || !game_action) {
     return false;
   }
-  if (isNaN(game.yazhu[usr_qq])) {
+  if (isNaN(game.yazhu[userId])) {
     return false;
   }
-  if (!game.game_key_user[usr_qq]) {
+  if (!game.game_key_user[userId]) {
     void Send(Text('媚娘：公子，你还没投入呢'));
 
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     return;
@@ -42,7 +42,7 @@ const res = onResponse(selects, async e => {
   let isWin = false;
   let touzi = 0;
 
-  const inputMoney = game.yazhu[usr_qq];
+  const inputMoney = game.yazhu[userId];
 
   function ensureNumber(v): number {
     return typeof v === 'number' ? v : parseInt(String(v || 0)) || 0;
@@ -69,24 +69,24 @@ const res = onResponse(selects, async e => {
         x = cf.percentage.punishment;
         y = 0;
       }
-      game.yazhu[usr_qq] = Math.trunc(inputMoney * x);
+      game.yazhu[userId] = Math.trunc(inputMoney * x);
       if (notUndAndNull(player.金银坊胜场)) {
         player.金银坊胜场 = ensureNumber(player.金银坊胜场) + 1;
-        player.金银坊收入 = ensureNumber(player.金银坊收入) + ensureNumber(game.yazhu[usr_qq]);
+        player.金银坊收入 = ensureNumber(player.金银坊收入) + ensureNumber(game.yazhu[userId]);
       } else {
         player.金银坊胜场 = 1;
-        player.金银坊收入 = ensureNumber(game.yazhu[usr_qq]);
+        player.金银坊收入 = ensureNumber(game.yazhu[userId]);
       }
-      await setDataJSONStringifyByKey(keys.player(usr_qq), player);
-      addCoin(usr_qq, game.yazhu[usr_qq]);
+      await setDataJSONStringifyByKey(keys.player(userId), player);
+      addCoin(userId, game.yazhu[userId]);
       if (y === 1) {
         void Send(
-          Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`)
+          Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[userId]}`)
         );
       } else {
         void Send(
           Text(
-            `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`
+            `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[userId]}`
           )
         );
       }
@@ -99,8 +99,8 @@ const res = onResponse(selects, async e => {
         player.金银坊败场 = 1;
         player.金银坊支出 = inputMoney;
       }
-      await setDataJSONStringifyByKey(keys.player(usr_qq), player);
-      addCoin(usr_qq, -inputMoney);
+      await setDataJSONStringifyByKey(keys.player(userId), player);
+      addCoin(userId, -inputMoney);
       const now_money = player.灵石 - inputMoney;
       const msg = [`骰子最终为 ${touzi} 你猜错了！\n现在拥有灵石:${now_money}`];
 
@@ -126,8 +126,8 @@ const res = onResponse(selects, async e => {
         player.金银坊胜场 = 1;
         player.金银坊收入 = winAmount;
       }
-      await setDataJSONStringifyByKey(keys.player(usr_qq), player);
-      addCoin(usr_qq, winAmount);
+      await setDataJSONStringifyByKey(keys.player(userId), player);
+      addCoin(userId, winAmount);
       void Send(
         Text(
           `骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`
@@ -141,8 +141,8 @@ const res = onResponse(selects, async e => {
         player.金银坊败场 = 1;
         player.金银坊支出 = inputMoney;
       }
-      await setDataJSONStringifyByKey(keys.player(usr_qq), player);
-      addCoin(usr_qq, -inputMoney);
+      await setDataJSONStringifyByKey(keys.player(userId), player);
+      addCoin(userId, -inputMoney);
       const now_money = player.灵石 - inputMoney;
       const msg = [`骰子最终为 ${touzi}，你猜错了！\n现在拥有灵石:${now_money}`];
 
@@ -154,10 +154,10 @@ const res = onResponse(selects, async e => {
   }
 
   // 清理与结束相关逻辑
-  await redis.set(getRedisKey(usr_qq, 'last_game_time'), now_time);
-  await redis.del(getRedisKey(usr_qq, 'game_action'));
-  game.yazhu[usr_qq] = 0;
-  clearTimeout(game.game_time[usr_qq]);
+  await redis.set(getRedisKey(userId, 'last_game_time'), now_time);
+  await redis.del(getRedisKey(userId, 'game_action'));
+  game.yazhu[userId] = 0;
+  clearTimeout(game.game_time[userId]);
 
   return false;
 });

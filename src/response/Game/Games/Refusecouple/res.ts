@@ -10,19 +10,19 @@ export const regular = /^(#|＃|\/)?拒绝双修$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
 
     return false;
   }
-  redis.set(getRedisKey(usr_qq, 'couple'), 1);
+  redis.set(getRedisKey(userId, 'couple'), 1);
   void Send(Text(`${player.名号}开启了拒绝模式`));
 
   return false;

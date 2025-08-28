@@ -42,8 +42,8 @@ async function pickEquip(name: string) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ex = await redis.exists(keys.player(usr_qq));
+  const userId = e.UserId;
+  const ex = await redis.exists(keys.player(userId));
 
   if (ex > 0) {
     const img = await getPlayerImage(e as Parameters<typeof getPlayerImage>[0]);
@@ -62,8 +62,8 @@ const res = onResponse(selects, async e => {
   const n = userList.length + 1;
   const talentRaw = await getRandomTalent();
   const talent = normalizeTalent(talentRaw);
-  const new_player = {
-    id: usr_qq,
+  const newPlayer = {
+    id: userId,
     sex: '0',
     名号: `路人甲${n}号`,
     宣言: '这个人很懒还没有写',
@@ -115,15 +115,15 @@ const res = onResponse(selects, async e => {
     暴击伤害: 0
   } as Player;
 
-  await writePlayer(usr_qq, new_player);
-  const new_equipment = {
+  await writePlayer(userId, newPlayer);
+  const newQquipment = {
     武器: await pickEquip('烂铁匕首'),
     护具: await pickEquip('破铜护具'),
     法宝: await pickEquip('廉价炮仗')
   };
 
-  await writeEquipment(usr_qq, new_equipment);
-  const new_najie = {
+  await writeEquipment(userId, newQquipment);
+  const newNajie = {
     等级: 1,
     灵石上限: 5000,
     灵石: 0,
@@ -140,8 +140,8 @@ const res = onResponse(selects, async e => {
     法宝: null
   };
 
-  await writeNajie(usr_qq, new_najie);
-  await addHP(usr_qq, 999999);
+  await writeNajie(userId, newNajie);
+  await addHP(userId, 999999);
   const danyaoInit = {
     biguan: 0,
     biguanxl: 0,
@@ -156,7 +156,7 @@ const res = onResponse(selects, async e => {
     beiyong5: 0
   };
 
-  await writeDanyao(usr_qq, danyaoInit);
+  await writeDanyao(userId, danyaoInit);
   const img = await getPlayerImage(e);
 
   if (Buffer.isBuffer(img)) {

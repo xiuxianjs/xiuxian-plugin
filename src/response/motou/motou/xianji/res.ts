@@ -15,13 +15,13 @@ interface PrizeItem {
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
 
-  const player = await readPlayer(usr_qq);
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据读取失败'));
@@ -39,7 +39,7 @@ const res = onResponse(selects, async e => {
   }
 
   const COST = 8;
-  const hasCount = await existNajieThing(usr_qq, '魔石', '道具');
+  const hasCount = await existNajieThing(userId, '魔石', '道具');
   const owned = Number(hasCount) || 0;
 
   if (owned <= 0) {
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await addNajieThing(usr_qq, '魔石', '道具', -COST);
+  await addNajieThing(userId, '魔石', '道具', -COST);
 
   const idx = Math.floor(Math.random() * pool.length);
   const prize = pool[idx];
@@ -76,7 +76,7 @@ const res = onResponse(selects, async e => {
   const cls = (prize.class || '道具') as NajieCategory;
 
   void Send(Text('获得了' + name));
-  await addNajieThing(usr_qq, name, cls, 1);
+  await addNajieThing(userId, name, cls, 1);
 
   return false;
 });

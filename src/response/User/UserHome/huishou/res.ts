@@ -9,24 +9,22 @@ export const regular = /^(#|＃|\/)?回收.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   // 固定写法
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
-  let thing_name = e.MessageText.replace(/^(#|＃|\/)?回收/, '');
+  const thingName = e.MessageText.replace(/^(#|＃|\/)?回收/, '').trim();
+  const thingExist = await foundthing(thingName);
 
-  thing_name = thing_name.trim();
-  const thing_exist = await foundthing(thing_name);
-
-  if (thing_exist) {
-    void Send(Text(`${thing_name}可以使用,不需要回收`));
+  if (thingExist) {
+    void Send(Text(`${thingName}可以使用,不需要回收`));
 
     return false;
   }
   let lingshi = 0;
-  const najie = await readNajie(usr_qq);
+  const najie = await readNajie(userId);
 
   if (!najie) {
     return false;
@@ -56,7 +54,7 @@ const res = onResponse(selects, async e => {
         class?: string;
         pinji?: number;
       }>
-    ).find(item => item.name === thing_name);
+    ).find(item => item.name === thingName);
 
     if (!thing) {
       continue;
@@ -71,10 +69,10 @@ const res = onResponse(selects, async e => {
       lingshi += sell * 2 * num;
     }
     if (num !== 0) {
-      await addNajieThing(usr_qq, thing.name, cls, -num, thing.pinji);
+      await addNajieThing(userId, thing.name, cls, -num, thing.pinji);
     }
   }
-  await addCoin(usr_qq, lingshi);
+  await addCoin(userId, lingshi);
   void Send(Text(`回收成功,获得${lingshi}灵石`));
 });
 

@@ -6,9 +6,9 @@ export const regular = /^(#|＃|\/)?至尊榜$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(usr_qq))) {
+  if (!(await existplayer(userId))) {
     return false;
   }
   // 数组
@@ -43,7 +43,7 @@ const res = onResponse(selects, async e => {
 
   // 取前10名
   const top = temp.slice(0, 10);
-  const image = await screenshot('immortal_genius', usr_qq, {
+  const image = await screenshot('immortal_genius', userId, {
     allplayer: top,
     title: '至尊榜',
     label: '战力'

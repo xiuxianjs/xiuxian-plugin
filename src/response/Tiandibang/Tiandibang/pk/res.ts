@@ -90,14 +90,14 @@ function settleWin(
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const usr_qq = e.UserId;
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
+  const ifexistplay = await existplayer(userId);
 
   if (!ifexistplay) {
     return false;
   }
   // 获取游戏状态
-  const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
+  const game_action = await redis.get(getRedisKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (+game_action === 1) {
@@ -107,7 +107,7 @@ const res = onResponse(selects, async e => {
   }
   // 查询redis中的人物动作
   let action: ActionState | null = null;
-  const actionStr = await redis.get(getRedisKey(usr_qq, 'action'));
+  const actionStr = await redis.get(getRedisKey(userId, 'action'));
 
   if (actionStr) {
     try {
@@ -136,31 +136,31 @@ const res = onResponse(selects, async e => {
     // 没有表要先建立一个！
     await writeTiandibang([]);
   }
-  const x = tiandibang.findIndex(item => String(item.qq) === usr_qq);
+  const x = tiandibang.findIndex(item => String(item.qq) === userId);
 
   if (x === -1) {
     void Send(Text('请先报名!'));
 
     return;
   }
-  const last_msg: string[] = [];
+  const lastMessage: string[] = [];
   let atk = 1;
   let def = 1;
   let blood = 1;
   const now = new Date();
   const nowTime = now.getTime(); // 获取当前日期的时间戳
-  const Today = await shijianc(nowTime);
-  const lastbisai_time = await getLastbisai(usr_qq); // 获得上次签到日期
+  const Today = shijianc(nowTime);
+  const lastbisai_time = await getLastbisai(userId); // 获得上次签到日期
 
   if (!lastbisai_time) {
-    await redis.set(getRedisKey(usr_qq, 'lastbisai_time'), nowTime); // redis设置签到时间
+    await redis.set(getRedisKey(userId, 'lastbisai_time'), nowTime); // redis设置签到时间
     tiandibang[x].次数 = 3;
   }
   if (
     lastbisai_time
     && (Today.Y !== lastbisai_time.Y || Today.M !== lastbisai_time.M || Today.D !== lastbisai_time.D)
   ) {
-    await redis.set(getRedisKey(usr_qq, 'lastbisai_time'), nowTime); // redis设置签到时间
+    await redis.set(getRedisKey(userId, 'lastbisai_time'), nowTime); // redis设置签到时间
     tiandibang[x].次数 = 3;
   }
   if (
@@ -170,12 +170,12 @@ const res = onResponse(selects, async e => {
     && Today.D === lastbisai_time.D
     && tiandibang[x].次数 < 1
   ) {
-    const zbl = await existNajieThing(usr_qq, '摘榜令', '道具');
+    const zbl = await existNajieThing(userId, '摘榜令', '道具');
 
     if (typeof zbl === 'number' && zbl > 0) {
       tiandibang[x].次数 = 1;
-      await addNajieThing(usr_qq, '摘榜令', '道具', -1);
-      last_msg.push(`${tiandibang[x].名号}使用了摘榜令\n`);
+      await addNajieThing(userId, '摘榜令', '道具', -1);
+      lastMessage.push(`${tiandibang[x].名号}使用了摘榜令\n`);
     } else {
       void Send(Text('今日挑战次数用光了,请明日再来吧'));
 
@@ -200,7 +200,7 @@ const res = onResponse(selects, async e => {
         }
       }
     }
-    let B_player: BattlePlayer;
+    let playerB: BattlePlayer;
 
     if (k !== -1) {
       if (tiandibang[k].攻击 / tiandibang[x].攻击 > 2) {
@@ -216,101 +216,101 @@ const res = onResponse(selects, async e => {
         def = 1.3;
         blood = 1.3;
       }
-      B_player = buildBattlePlayer(tiandibang[k]);
+      playerB = buildBattlePlayer(tiandibang[k]);
     }
-    const A_player = buildBattlePlayer(tiandibang[x], atk, def, blood);
+    const playerA = buildBattlePlayer(tiandibang[x], atk, def, blood);
 
     if (k === -1) {
       atk = randomScale();
       def = randomScale();
       blood = randomScale();
-      B_player = buildBattlePlayer(tiandibang[x], atk, def, blood);
-      B_player.名号 = '灵修兽';
+      playerB = buildBattlePlayer(tiandibang[x], atk, def, blood);
+      playerB.名号 = '灵修兽';
     }
-    const Data_battle = await zdBattle(A_player, B_player);
-    const msg: string[] = Data_battle.msg || [];
-    const A_win = `${A_player.名号}击败了${B_player.名号}`;
-    const B_win = `${B_player.名号}击败了${A_player.名号}`;
+    const dataBattle = await zdBattle(playerA, playerB);
+    const msg: string[] = dataBattle.msg || [];
+    const winA = `${playerA.名号}击败了${playerB.名号}`;
+    const winB = `${playerB.名号}击败了${playerA.名号}`;
 
-    if (msg.includes(A_win)) {
-      lingshi = settleWin(tiandibang[x], k === -1, last_msg, B_player.名号, true);
+    if (msg.includes(winA)) {
+      lingshi = settleWin(tiandibang[x], k === -1, lastMessage, playerB.名号, true);
       await writeTiandibang(tiandibang);
-    } else if (msg.includes(B_win)) {
-      lingshi = settleWin(tiandibang[x], k === -1, last_msg, B_player.名号, false);
+    } else if (msg.includes(winB)) {
+      lingshi = settleWin(tiandibang[x], k === -1, lastMessage, playerB.名号, false);
       await writeTiandibang(tiandibang);
     } else {
       void Send(Text('战斗过程出错'));
 
       return false;
     }
-    await addCoin(usr_qq, lingshi);
-    void Send(Text(last_msg.join('\n')));
-    const img = await screenshot('CombatResult', usr_qq, {
+    await addCoin(userId, lingshi);
+    void Send(Text(lastMessage.join('\n')));
+    const img = await screenshot('CombatResult', userId, {
       msg: msg,
       playerA: {
-        id: A_player?.qq,
-        name: A_player?.名号,
-        power: A_player?.攻击,
-        hp: A_player?.当前血量,
-        maxHp: A_player?.血量上限
+        id: playerA?.qq,
+        name: playerA?.名号,
+        power: playerA?.攻击,
+        hp: playerA?.当前血量,
+        maxHp: playerA?.血量上限
       },
       playerB: {
-        id: B_player?.qq,
-        name: B_player?.名号,
-        power: B_player?.攻击,
-        hp: B_player?.当前血量,
-        maxHp: B_player?.血量上限
+        id: playerB?.qq,
+        name: playerB?.名号,
+        power: playerB?.攻击,
+        hp: playerB?.当前血量,
+        maxHp: playerB?.血量上限
       },
-      result: msg.includes(A_win) ? 'A' : msg.includes(B_win) ? 'B' : 'draw'
+      result: msg.includes(winA) ? 'A' : msg.includes(winB) ? 'B' : 'draw'
     });
 
     if (Buffer.isBuffer(img)) {
       void Send(Image(img));
     }
   } else {
-    const A_player = buildBattlePlayer(tiandibang[x]);
+    const playerA = buildBattlePlayer(tiandibang[x]);
 
     atk = randomScale();
     def = randomScale();
     blood = randomScale();
-    const B_player = buildBattlePlayer(tiandibang[x], atk, def, blood);
+    const playerB = buildBattlePlayer(tiandibang[x], atk, def, blood);
 
-    B_player.名号 = '灵修兽';
-    const Data_battle = await zdBattle(A_player, B_player);
-    const msg: string[] = Data_battle.msg || [];
-    const A_win = `${A_player.名号}击败了${B_player.名号}`;
-    const B_win = `${B_player.名号}击败了${A_player.名号}`;
+    playerB.名号 = '灵修兽';
+    const dataBattle = await zdBattle(playerA, playerB);
+    const msg: string[] = dataBattle.msg || [];
+    const winA = `${playerA.名号}击败了${playerB.名号}`;
+    const winB = `${playerB.名号}击败了${playerA.名号}`;
 
-    if (msg.includes(A_win)) {
-      lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, true);
+    if (msg.includes(winA)) {
+      lingshi = settleWin(tiandibang[x], true, lastMessage, playerB.名号, true);
       await writeTiandibang(tiandibang);
-    } else if (msg.includes(B_win)) {
-      lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, false);
+    } else if (msg.includes(winB)) {
+      lingshi = settleWin(tiandibang[x], true, lastMessage, playerB.名号, false);
       await writeTiandibang(tiandibang);
     } else {
       void Send(Text('战斗过程出错'));
 
       return false;
     }
-    await addCoin(usr_qq, lingshi);
-    void Send(Text(last_msg.join('\n')));
-    const img = await screenshot('CombatResult', usr_qq, {
+    await addCoin(userId, lingshi);
+    void Send(Text(lastMessage.join('\n')));
+    const img = await screenshot('CombatResult', userId, {
       msg: msg,
       playerA: {
-        id: A_player?.qq,
-        name: A_player?.名号,
-        power: A_player?.攻击,
-        hp: A_player?.当前血量,
-        maxHp: A_player?.血量上限
+        id: playerA?.qq,
+        name: playerA?.名号,
+        power: playerA?.攻击,
+        hp: playerA?.当前血量,
+        maxHp: playerA?.血量上限
       },
       playerB: {
-        id: B_player?.qq,
-        name: B_player?.名号,
-        power: B_player?.攻击,
-        hp: B_player?.当前血量,
-        maxHp: B_player?.血量上限
+        id: playerB?.qq,
+        name: playerB?.名号,
+        power: playerB?.攻击,
+        hp: playerB?.当前血量,
+        maxHp: playerB?.血量上限
       },
-      result: msg.includes(A_win) ? 'A' : msg.includes(B_win) ? 'B' : 'draw'
+      result: msg.includes(winA) ? 'A' : msg.includes(winB) ? 'B' : 'draw'
     });
 
     if (Buffer.isBuffer(img)) {

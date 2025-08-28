@@ -33,7 +33,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const usr_qq = e.UserId;
+  const userId = e.UserId;
 
   const thingName = e.MessageText.replace(/^(#|＃|\/)?积分兑换/, '').trim();
 
@@ -67,7 +67,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const row = rank.find(r => String(r.qq) === String(usr_qq));
+  const row = rank.find(r => String(r.qq) === String(userId));
 
   if (!row) {
     void Send(Text('请先报名!'));
@@ -82,7 +82,7 @@ const res = onResponse(selects, async e => {
   }
 
   row.积分 -= needPoint;
-  await addNajieThing(usr_qq, thingName, item.class as NajieCategory, 1);
+  await addNajieThing(userId, thingName, item.class as NajieCategory, 1);
   await writeTiandibang(rank);
 
   void Send(Text(`兑换成功! 获得[${thingName}], 剩余[${row.积分}]积分\n可以在【我的纳戒】中查看`));
