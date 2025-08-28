@@ -27,12 +27,9 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
   } else {
     const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-    if (ass) {
-      return null;
-    }
     if (ass.宗门驻地 == 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05;
-    } else {
+    } else if (ass) {
       const dongTan = (await getDataList('Bless')).find(item => item.name == ass.宗门驻地);
 
       try {
