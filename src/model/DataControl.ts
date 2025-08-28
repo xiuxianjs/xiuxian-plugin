@@ -5,7 +5,7 @@ import { __PATH } from './keys.js';
  * @param key
  * @returns
  */
-export const getDataJSONParseByKey = async (key: string) => {
+export const getDataJSONParseByKey = async <T>(key: string): Promise<T | null> => {
   const redis = getIoRedis();
   const ext = await redis.exists(key);
 
@@ -86,7 +86,7 @@ export const delDataByKey = async (key: string) => {
  * @param key
  * @param data
  */
-export const setDataJSONStringifyByKey = async (key: string, data: unknown) => {
+export const setDataJSONStringifyByKey = async <T>(key: string, data: T) => {
   const redis = getIoRedis();
 
   try {
