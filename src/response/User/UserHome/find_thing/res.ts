@@ -50,7 +50,7 @@ const res = onResponse(selects, async e => {
   const thingName = normalizeName(e.MessageText.replace(/^(#|＃|\/)?哪里有/, ''));
 
   if (!thingName) {
-    Send(Text('请输入要查找的物品名称'));
+    void Send(Text('请输入要查找的物品名称'));
 
     return false;
   }
@@ -59,7 +59,7 @@ const res = onResponse(selects, async e => {
   const exists = await foundthing(thingName);
 
   if (!exists) {
-    Send(Text(`你在瞎说啥呢?哪来的【${thingName}】?`));
+    void Send(Text(`你在瞎说啥呢?哪来的【${thingName}】?`));
 
     return false;
   }
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
   const paperCount = await existNajieThing(usr_qq, '寻物纸', '道具');
 
   if (!paperCount || paperCount <= 0) {
-    Send(Text('查找物品需要【寻物纸】'));
+    void Send(Text('查找物品需要【寻物纸】'));
 
     return false;
   }
@@ -113,17 +113,17 @@ const res = onResponse(selects, async e => {
   await addNajieThing(usr_qq, '寻物纸', '道具', -1);
 
   if (foundPlaces.length === 0) {
-    Send(Text('天地没有回应......(已消耗1张寻物纸)'));
+    void Send(Text('天地没有回应......(已消耗1张寻物纸)'));
 
     return false;
   }
 
-  const resultMsg =
-    `【${thingName}】可能出现在:\n` +
-    foundPlaces.map(n => `- ${n}`).join('\n') +
-    '\n(已消耗1张寻物纸)';
+  const resultMsg
+    = `【${thingName}】可能出现在:\n`
+    + foundPlaces.map(n => `- ${n}`).join('\n')
+    + '\n(已消耗1张寻物纸)';
 
-  Send(Text(resultMsg));
+  void Send(Text(resultMsg));
 
   return false;
 });

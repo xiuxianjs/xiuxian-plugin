@@ -28,23 +28,23 @@ const res = onResponse(selects, async e => {
     const B = playerList[i];
 
     // 如果是本人不执行查询
-    if (A == B) {
+    if (A === B) {
       continue;
     }
     // A与B的亲密度
     const pd = await findQinmidu(A, B);
 
-    if (pd == false) {
+    if (pd === false) {
       continue;
     }
     flag++;
     msg.push(`\n${B}\t ${pd}`);
   }
-  if (flag == 0) {
-    Send(Text('其实一个人也不错的'));
+  if (flag === 0) {
+    void Send(Text('其实一个人也不错的'));
   } else {
     for (let i = 0; i < msg.length; i += 8) {
-      Send(Text(msg.slice(i, i + 8).join('')));
+      void Send(Text(msg.slice(i, i + 8).join('')));
       await sleep(500);
     }
   }

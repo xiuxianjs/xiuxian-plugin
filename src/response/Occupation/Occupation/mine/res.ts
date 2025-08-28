@@ -26,14 +26,14 @@ const res = onResponse(selects, async e => {
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
   const player = await readPlayer(usr_qq);
 
-  if (player.occupation != '采矿师') {
-    Send(Text('你挖矿许可证呢？非法挖矿，罚款200灵石'));
+  if (player.occupation !== '采矿师') {
+    void Send(Text('你挖矿许可证呢？非法挖矿，罚款200灵石'));
     await addCoin(usr_qq, -200);
 
     return false;
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中，剩余时间:${formatRemaining(remainingMs(current))}`));
+    void Send(Text(`正在${current?.action}中，剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }
@@ -65,7 +65,7 @@ const res = onResponse(selects, async e => {
   });
 
   await setValue(userKey(usr_qq, 'action'), arr);
-  Send(Text(`现在开始采矿${time}分钟`));
+  void Send(Text(`现在开始采矿${time}分钟`));
 });
 
 import mw from '@src/response/mw';

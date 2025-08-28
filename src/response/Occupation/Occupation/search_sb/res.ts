@@ -17,8 +17,8 @@ const res = onResponse(selects, async e => {
   }
   const player = await readPlayer(usr_qq);
 
-  if (player.occupation != '侠客') {
-    Send(Text('只有专业的侠客才能获取悬赏'));
+  if (player.occupation !== '侠客') {
+    void Send(Text('只有专业的侠客才能获取悬赏'));
 
     return false;
   }
@@ -27,18 +27,18 @@ const res = onResponse(selects, async e => {
   const action = await JSON.parse(db);
   const type = 0;
 
-  if (action != null) {
+  if (action !== null) {
     if (action.end_time > Date.now()) {
       msg = action.arm;
       const msg_data = { msg, type };
       const img = await screenshot('msg', e.UserId, msg_data);
 
       if (Buffer.isBuffer(img)) {
-        Send(Image(img));
+        void Send(Image(img));
 
         return;
       }
-      Send(Text('图片生产失败'));
+      void Send(Text('图片生产失败'));
 
       return false;
     }
@@ -50,17 +50,17 @@ const res = onResponse(selects, async e => {
   for (const this_qq of playerList) {
     const players = await readPlayer(this_qq);
 
-    if (players.魔道值 > 999 && this_qq != usr_qq) {
+    if (players.魔道值 > 999 && this_qq !== usr_qq) {
       mubiao[i] = {
         名号: players.名号,
         赏金: Math.trunc(
-          (1000000 *
-            (1.2 + 0.05 * player.occupation_level) *
-            player.level_id *
-            player.Physique_id) /
-            42 /
-            42 /
-            4
+          (1000000
+            * (1.2 + 0.05 * player.occupation_level)
+            * player.level_id
+            * player.Physique_id)
+            / 42
+            / 42
+            / 4
         ),
         QQ: this_qq
       };
@@ -72,10 +72,10 @@ const res = onResponse(selects, async e => {
     mubiao[i] = {
       名号: 'DD大妖王',
       赏金: Math.trunc(
-        (1000000 * (1.2 + 0.05 * player.occupation_level) * player.level_id * player.Physique_id) /
-          42 /
-          42 /
-          4
+        (1000000 * (1.2 + 0.05 * player.occupation_level) * player.level_id * player.Physique_id)
+          / 42
+          / 42
+          / 4
       ),
       QQ: 1
     };
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
   const img = await screenshot('msg', e.UserId, msg_data);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

@@ -22,7 +22,7 @@ const res = onResponse(selects, async e => {
   const temp: Array<Record<string, unknown>> = [];
 
   if (assList.length === 0) {
-    Send(Text('暂时没有宗门数据'));
+    void Send(Text('暂时没有宗门数据'));
 
     return;
   }
@@ -43,8 +43,8 @@ const res = onResponse(selects, async e => {
     } else {
       const blessData = await getDataList('Bless');
       const dongTan = (blessData || []).find(item => item.name === this_ass.宗门驻地);
-      const addEff =
-        dongTan && typeof dongTan.efficiency === 'number' ? dongTan.efficiency * 100 : 5;
+      const addEff
+        = dongTan && typeof dongTan.efficiency === 'number' ? dongTan.efficiency * 100 : 5;
 
       this_ass_xiuxian = baseEff + addEff;
     }
@@ -76,7 +76,7 @@ const res = onResponse(selects, async e => {
     temp.push(arr);
   }
   if (temp.length === 0) {
-    Send(Text('暂无有效宗门数据'));
+    void Send(Text('暂无有效宗门数据'));
 
     return;
   }
@@ -86,10 +86,10 @@ const res = onResponse(selects, async e => {
     const img = await screenshot('zongmeng', e.UserId, zongmeng_data);
 
     if (Buffer.isBuffer(img)) {
-      Send(Image(img));
+      void Send(Image(img));
     }
   } catch (_err) {
-    Send(Text('生成宗门列表图片失败'));
+    void Send(Text('生成宗门列表图片失败'));
   }
 });
 

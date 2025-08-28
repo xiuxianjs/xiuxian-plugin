@@ -11,7 +11,7 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   if (!e.IsMaster) {
-    Send(Text('只有主人可以取消'));
+    void Send(Text('只有主人可以取消'));
 
     return false;
   }
@@ -19,12 +19,12 @@ const res = onResponse(selects, async e => {
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
 
   if (!redis.sismember(redisGlKey, String(e.ChannelId))) {
-    Send(Text('本来就没开取消个冒险'));
+    void Send(Text('本来就没开取消个冒险'));
 
     return false;
   }
   await redis.srem(redisGlKey, String(e.ChannelId));
-  Send(Text('星阁体系在本群取消了'));
+  void Send(Text('星阁体系在本群取消了'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

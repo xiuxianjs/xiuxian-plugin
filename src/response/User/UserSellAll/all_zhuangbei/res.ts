@@ -151,11 +151,11 @@ const res = onResponse(selects, async e => {
   const img = await getQquipmentImage(e as Parameters<typeof getQquipmentImage>[0]);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
 
     return false;
   }
-  Send(Text('图片加载失败'));
+  void Send(Text('图片加载失败'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

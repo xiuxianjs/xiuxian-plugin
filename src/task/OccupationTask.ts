@@ -84,8 +84,8 @@ export const OccupationTask = async () => {
         if (!notUndAndNull(player.level_id)) {
           continue;
         }
-        const rawTime2 =
-          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const rawTime2
+          = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
         const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;
 
         await mine_jiesuan(player_id, timeMin, push_address);
@@ -93,7 +93,7 @@ export const OccupationTask = async () => {
         // const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * timeMin)
         // const occRow = data.occupation_exp_list.find(
         //   (o: { id: number; name: string; experience: number }) =>
-        //     o.id == player.occupation_level
+        //     o.id === player.occupation_level
         // )
         // // 原代码使用 occRow.rate，不存在该字段，改为基于 experience 推导一个倍率（示例：experience / 1000）
         // const rateBase = occRow ? occRow.experience / 1000 : 0

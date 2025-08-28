@@ -56,12 +56,12 @@ const res = onResponse(selects, async e => {
   }
 
   if (totalExp <= 0) {
-    Send(Text('没有可服用的修为丹'));
+    void Send(Text('没有可服用的修为丹'));
 
     return false;
   }
   await addExp(usr_qq, totalExp);
-  Send(Text(`服用成功，修为增加${totalExp}`));
+  void Send(Text(`服用成功，修为增加${totalExp}`));
 
   return false;
 });

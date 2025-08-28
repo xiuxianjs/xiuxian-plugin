@@ -68,17 +68,17 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!notUndAndNull(player.level_id)) {
-    Send(Text('请先#同步信息'));
+    void Send(Text('请先#同步信息'));
 
     return false;
   }
   const levelList = await getDataList('Level1');
   const levelEntry = levelList.find(
-    (item: { level_id: number }) => item.level_id == player.level_id
+    (item: { level_id: number }) => item.level_id === player.level_id
   );
 
   if (!levelEntry) {
-    Send(Text('境界数据缺失'));
+    void Send(Text('境界数据缺失'));
 
     return false;
   }
@@ -86,7 +86,7 @@ const res = onResponse(selects, async e => {
   const association_name = e.MessageText.replace(/^(#|＃|\/)?加入宗门/, '').trim();
 
   if (!association_name) {
-    Send(Text('请输入宗门名称'));
+    void Send(Text('请输入宗门名称'));
 
     return false;
   }
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
   const ifexistass = await redis.exists(keys.association(association_name));
 
   if (!ifexistass) {
-    Send(Text('这方天地不存在' + association_name));
+    void Send(Text('这方天地不存在' + association_name));
 
     return false;
   }
@@ -110,13 +110,13 @@ const res = onResponse(selects, async e => {
   ass.外门弟子 = Array.isArray(ass.外门弟子) ? ass.外门弟子 : [];
   const guildLevel = Number(ass.宗门等级 ?? 1);
 
-  if (now_level_id >= 42 && ass.power == 0) {
-    Send(Text('仙人不可下界！'));
+  if (now_level_id >= 42 && ass.power === 0) {
+    void Send(Text('仙人不可下界！'));
 
     return false;
   }
-  if (now_level_id < 42 && ass.power == 1) {
-    Send(Text('你在仙界吗？就去仙界宗门'));
+  if (now_level_id < 42 && ass.power === 1) {
+    void Send(Text('你在仙界吗？就去仙界宗门'));
 
     return false;
   }
@@ -128,7 +128,7 @@ const res = onResponse(selects, async e => {
     );
     const level = levelEntry?.level || '未知境界';
 
-    Send(Text(`${association_name}招收弟子的最低加入境界要求为:${level},当前未达到要求`));
+    void Send(Text(`${association_name}招收弟子的最低加入境界要求为:${level},当前未达到要求`));
 
     return false;
   }
@@ -137,7 +137,7 @@ const res = onResponse(selects, async e => {
   const nowmem = ass.所有成员.length;
 
   if (mostmem <= nowmem) {
-    Send(Text(`${association_name}的弟子人数已经达到目前等级最大,无法加入`));
+    void Send(Text(`${association_name}的弟子人数已经达到目前等级最大,无法加入`));
 
     return false;
   }

@@ -39,14 +39,14 @@ const res = onResponse(selects, async e => {
   const occupation = e.MessageText.replace(/^(#|＃|\/)?转职/, '').trim();
 
   if (!occupation) {
-    Send(Text('格式: 转职职业名'));
+    void Send(Text('格式: 转职职业名'));
 
     return false;
   }
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
@@ -55,16 +55,16 @@ const res = onResponse(selects, async e => {
   const targetOcc = occupation_list.find(o => o.name === occupation);
 
   if (!notUndAndNull(targetOcc)) {
-    Send(Text(`没有[${occupation}]这项职业`));
+    void Send(Text(`没有[${occupation}]这项职业`));
 
     return false;
   }
   const levelList = await getDataList('Level1');
-  const levelRow = levelList.find(item => item.level_id == player.level_id);
+  const levelRow = levelList.find(item => item.level_id === player.level_id);
   const now_level_id = levelRow ? levelRow.level_id : 0;
 
   if (now_level_id < 17 && occupation === '采矿师') {
-    Send(Text('包工头:就你这小身板还来挖矿？再去修炼几年吧'));
+    void Send(Text('包工头:就你这小身板还来挖矿？再去修炼几年吧'));
 
     return false;
   }
@@ -73,12 +73,12 @@ const res = onResponse(selects, async e => {
   const thing_quantity = await existNajieThing(usr_qq, thing_name, thing_class);
 
   if (!thing_quantity || thing_quantity <= 0) {
-    Send(Text(`你没有【${thing_name}】`));
+    void Send(Text(`你没有【${thing_name}】`));
 
     return false;
   }
   if (player_occupation === occupation) {
-    Send(Text(`你已经是[${player_occupation}]了，可使用[职业转化凭证]重新转职`));
+    void Send(Text(`你已经是[${player_occupation}]了，可使用[职业转化凭证]重新转职`));
 
     return false;
   }
@@ -90,7 +90,7 @@ const res = onResponse(selects, async e => {
     player.occupation_level = 1;
     player.occupation_exp = 0;
     await writePlayer(usr_qq, player);
-    Send(Text(`恭喜${player.名号}转职为[${occupation}]`));
+    void Send(Text(`恭喜${player.名号}转职为[${occupation}]`));
 
     return false;
   }

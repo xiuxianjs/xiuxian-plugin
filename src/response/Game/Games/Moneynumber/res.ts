@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
     if (game.game_time[usr_qq]) {
       clearTimeout(game.game_time[usr_qq]);
     }
-    Send(Text('媚娘：钱不够也想玩？'));
+    void Send(Text('媚娘：钱不够也想玩？'));
 
     return false;
   }
@@ -77,7 +77,7 @@ const res = onResponse(selects, async e => {
     const left = last_game_time + transferTimeout - now_time;
     const game_s = Math.ceil(left / 1000);
 
-    Send(Text(`每${transferTimeout / 1000}秒游玩一次。\ncd: ${game_s}秒`));
+    void Send(Text(`每${transferTimeout / 1000}秒游玩一次。\ncd: ${game_s}秒`));
 
     return false;
   }
@@ -88,12 +88,12 @@ const res = onResponse(selects, async e => {
   const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
 
   if (Number(game_action) === 1) {
-    Send(Text('媚娘：猜大小正在进行哦!'));
+    void Send(Text('媚娘：猜大小正在进行哦!'));
 
     return false;
   }
 
-  Send(Text('媚娘：发送[#投入+数字]或[#梭哈]'));
+  void Send(Text('媚娘：发送[#投入+数字]或[#梭哈]'));
   await redis.set(getRedisKey(usr_qq, 'game_action'), 1);
 
   return false;

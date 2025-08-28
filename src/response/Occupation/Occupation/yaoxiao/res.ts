@@ -16,7 +16,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
   if (dy.xingyun > 0) {
     parts.push(`真器丹药力${dy.beiyong5}药效${dy.xingyun}次`);
   }
-  Send(Text(parts.join('\n')));
+  void Send(Text(parts.join('\n')));
 
   return false;
 });

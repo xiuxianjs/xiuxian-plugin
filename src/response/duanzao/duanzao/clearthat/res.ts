@@ -17,11 +17,11 @@ const res = onResponse(selects, async e => {
   }
   const A = await looktripod(user_qq);
 
-  if (A == 1) {
+  if (A === 1) {
     const newtripod = await readTripod();
 
     for (const item of newtripod) {
-      if (user_qq == item.qq) {
+      if (user_qq === item.qq) {
         item.材料 = [];
         item.数量 = [];
         item.TIME = 0;
@@ -32,7 +32,7 @@ const res = onResponse(selects, async e => {
         await stopActionWithSuffix(user_qq, 'action10');
         // 显式清空 key（兼容旧逻辑使用 null）
         await setValue(userKey(user_qq, 'action10'), null);
-        Send(Text('材料成功清除'));
+        void Send(Text('材料成功清除'));
 
         return false;
       }

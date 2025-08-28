@@ -156,7 +156,7 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
   }
 
   // assRaw 已通过类型守卫，可安全使用
-  Send(Text('轮回后降临凡界，仙宗命牌失效！'));
+  void Send(Text('轮回后降临凡界，仙宗命牌失效！'));
   // 非宗主：直接移除
   if (guild.职位 !== '宗主') {
     const ass2Raw = await getDataJSONParseByKey(keys.association(guild.宗门名称));
@@ -178,7 +178,7 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
     delete player.宗门;
     await writePlayer(usr_qq, player);
     await playerEfficiency(usr_qq);
-    Send(Text('退出宗门成功'));
+    void Send(Text('退出宗门成功'));
 
     return;
   }
@@ -204,7 +204,7 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
     delete player.宗门;
     await writePlayer(usr_qq, player);
     await playerEfficiency(usr_qq);
-    Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,仙界中再无半分痕迹'));
+    void Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,仙界中再无半分痕迹'));
 
     return;
   }
@@ -244,15 +244,14 @@ async function exitAssociationIfNeed(usr_qq: string, player: PlayerEx, Send: (t)
   await writePlayer(usr_qq, player);
   await setDataJSONStringifyByKey(keys.association(ass3.宗门名称), ass3);
   await playerEfficiency(usr_qq);
-  Send(Text(`轮回前,遵循你的嘱托,${randmember_qq}将继承你的衣钵,成为新一任的宗主`));
+  void Send(Text(`轮回前,遵循你的嘱托,${randmember_qq}将继承你的衣钵,成为新一任的宗主`));
 }
 
 const FAIL_PROB = 1 / 9;
 
 // 辅助扩展类型与工具函数（放置在文件顶部下方，集中管理）
 type PlayerEx = Player & {};
-const numVal = (v, d = 0) =>
-  typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const numVal = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
 const setNum = (p: PlayerEx, k: string, v: number) => {
   p[k] = v;
 };
@@ -285,9 +284,9 @@ const res = onResponse(selects, async e => {
   if (lhFlag !== 1) {
     void Send(
       Text(
-        '轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n' +
-          '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n' +
-          '再次输入 #轮回 继续，或忽略退出。'
+        '轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n'
+          + '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n'
+          + '再次输入 #轮回 继续，或忽略退出。'
       )
     );
     await redis.set(key, 1);

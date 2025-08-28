@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
     const addTime = joinTuple[1] + 60000 * timeCfg;
 
     if (addTime > nowTime) {
-      Send(Text(`加入宗门不满${timeCfg}分钟,无法退出`));
+      void Send(Text(`加入宗门不满${timeCfg}分钟,无法退出`));
 
       return false;
     }
@@ -111,14 +111,14 @@ const res = onResponse(selects, async e => {
   const assData = await redis.get(`${__PATH.association}:${guildInfo.宗门名称}`);
 
   if (!assData) {
-    Send(Text('宗门数据异常'));
+    void Send(Text('宗门数据异常'));
 
     return;
   }
   const assRaw = JSON.parse(assData);
 
   if (assRaw === 'error') {
-    Send(Text('宗门数据错误'));
+    void Send(Text('宗门数据错误'));
 
     return false;
   }
@@ -133,7 +133,7 @@ const res = onResponse(selects, async e => {
     delete (player as Player & { 宗门? }).宗门;
     await writePlayer(usr_qq, serializePlayer(player));
     await playerEfficiency(usr_qq);
-    Send(Text('退出宗门成功'));
+    void Send(Text('退出宗门成功'));
   } else {
     ass.所有成员 = ensureStringArray(ass.所有成员);
     if (ass.所有成员.length < 2) {
@@ -141,7 +141,7 @@ const res = onResponse(selects, async e => {
       delete (player as Player & { 宗门? }).宗门;
       await writePlayer(usr_qq, serializePlayer(player));
       await playerEfficiency(usr_qq);
-      Send(
+      void Send(
         Text(
           '退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'
         )
@@ -169,7 +169,7 @@ const res = onResponse(selects, async e => {
       const randmember = await readPlayer(randmember_qq);
 
       if (!randmember || !isPlayerGuildInfo(randmember.宗门)) {
-        Send(Text('随机继任者数据错误'));
+        void Send(Text('随机继任者数据错误'));
 
         return false;
       }
@@ -182,7 +182,7 @@ const res = onResponse(selects, async e => {
       await writePlayer(randmember_qq, serializePlayer(randmember));
       await writePlayer(usr_qq, serializePlayer(player));
       await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
-      Send(Text(`退出宗门成功,退出后,宗主职位由${randmember.名号}接管`));
+      void Send(Text(`退出宗门成功,退出后,宗主职位由${randmember.名号}接管`));
     }
   }
   player.favorability = 0;

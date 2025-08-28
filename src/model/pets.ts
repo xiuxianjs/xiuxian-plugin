@@ -4,6 +4,10 @@ import type { Najie } from '../types/player.js';
 import type { OwnedPetItem, PetList } from '../types/model';
 import { getDataList } from './DataList.js';
 
+// 宠物等级
+export const petGrade = ['仙胎', '仙仔', '仙兽', '仙道', '仙灵'];
+export const petLevel = [20, 40, 60, 80, 100];
+
 export async function addPet(
   usrId: string,
   thingName: string,
@@ -66,7 +70,7 @@ export async function addPet(
       islockd: 0
     };
 
-    if (thingLevel != null) {
+    if (thingLevel !== null) {
       newthing.等级 = thingLevel;
     }
     petList.push(newthing);

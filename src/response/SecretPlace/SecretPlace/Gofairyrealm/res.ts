@@ -29,7 +29,7 @@ const res = onResponse(selects, async e => {
 
   didian = didian.trim();
   const fairyRealmList = await getDataList('FairyRealm');
-  const weizhiRaw = fairyRealmList?.find(item => item.name == didian);
+  const weizhiRaw = fairyRealmList?.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhiRaw)) {
     return false;
@@ -50,34 +50,34 @@ const res = onResponse(selects, async e => {
   const weizhi = weizhiUnknown;
 
   if (player.灵石 < weizhi.Price) {
-    Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'));
+    void Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'));
 
     return false;
   }
   const levelList = await getDataList('Level1');
-  const now_level_id = levelList?.find(item => item.level_id == player.level_id)?.level_id;
+  const now_level_id = levelList?.find(item => item.level_id === player.level_id)?.level_id;
 
-  if (now_level_id < 42 && player.lunhui == 0) {
+  if (now_level_id < 42 && player.lunhui === 0) {
     return false;
   }
   let dazhe = 1;
 
   if (
-    (await existNajieThing(usr_qq, '杀神崖通行证', '道具')) &&
-    player.魔道值 < 1 &&
-    (player.灵根.type == '转生' || player.level_id > 41) &&
-    didian == '杀神崖'
+    (await existNajieThing(usr_qq, '杀神崖通行证', '道具'))
+    && player.魔道值 < 1
+    && (player.灵根.type === '转生' || player.level_id > 41)
+    && didian === '杀神崖'
   ) {
     dazhe = 0;
-    Send(Text(player.名号 + '使用了道具杀神崖通行证,本次仙境免费'));
+    void Send(Text(player.名号 + '使用了道具杀神崖通行证,本次仙境免费'));
     await addNajieThing(usr_qq, '杀神崖通行证', '道具', -1);
   } else if (
-    (await existNajieThing(usr_qq, '仙境优惠券', '道具')) &&
-    player.魔道值 < 1 &&
-    (player.灵根.type == '转生' || player.level_id > 41)
+    (await existNajieThing(usr_qq, '仙境优惠券', '道具'))
+    && player.魔道值 < 1
+    && (player.灵根.type === '转生' || player.level_id > 41)
   ) {
     dazhe = 0.5;
-    Send(Text(player.名号 + '使用了道具仙境优惠券,本次消耗减少50%'));
+    void Send(Text(player.名号 + '使用了道具仙境优惠券,本次消耗减少50%'));
     await addNajieThing(usr_qq, '仙境优惠券', '道具', -1);
   }
   const Price = weizhi.Price * dazhe;
@@ -97,11 +97,11 @@ const res = onResponse(selects, async e => {
     plant: '1',
     mine: '1',
     Place_address: weizhi,
-    group_id: e.name == 'message.create' ? e.ChannelId : undefined
+    group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
-  Send(Text('开始镇守' + didian + ',' + time + '分钟后归来!'));
+  void Send(Text('开始镇守' + didian + ',' + time + '分钟后归来!'));
 });
 
 import mw from '@src/response/mw';

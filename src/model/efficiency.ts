@@ -30,10 +30,10 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
     if (ass) {
       return null;
     }
-    if (ass.宗门驻地 == 0) {
+    if (ass.宗门驻地 === 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05;
     } else {
-      const dongTan = (await getDataList('Bless')).find(item => item.name == ass.宗门驻地);
+      const dongTan = (await getDataList('Bless')).find(item => item.name === ass.宗门驻地);
 
       try {
         Assoc_efficiency = ass.宗门等级 * 0.05 + dongTan.efficiency;
@@ -51,7 +51,7 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
     // 这里是查看了功法表
     for (const j of gongfa) {
       const ifexist = ((await getDataList(j as 'Gongfa' | 'TimeGongfa')) as GongfaItem[]).find(
-        item => item.name == player.学习的功法[i]
+        item => item.name === player.学习的功法[i]
       );
 
       if (ifexist) {
@@ -61,15 +61,15 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
     }
     player.学习的功法.splice(+i, 1);
   }
-  if (player.仙宠.type == '修炼') {
+  if (player.仙宠.type === '修炼') {
     // 是否存在修炼仙宠
     xianchong_efficiency = player.仙宠.加成; // 存在修炼仙宠，仙宠效率为仙宠效率加成
   }
   const dy = await readDanyao(usr_qq);
   const bgdan = dy.biguanxl || 0;
 
-  player.修炼效率提升 =
-    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
+  player.修炼效率提升
+    = linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
   await setDataJSONStringifyByKey(keys.player(usr_qq), player);
 }
 

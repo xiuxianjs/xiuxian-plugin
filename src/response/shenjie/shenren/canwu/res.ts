@@ -17,20 +17,20 @@ const res = onResponse(selects, async e => {
   }
   const player = await readPlayer(usr_qq);
 
-  if (player.魔道值 > 0 || (player.灵根.type != '转生' && player.level_id < 42)) {
-    Send(Text('你尝试领悟神石,但是失败了'));
+  if (player.魔道值 > 0 || (player.灵根.type !== '转生' && player.level_id < 42)) {
+    void Send(Text('你尝试领悟神石,但是失败了'));
 
     return false;
   }
   const x = await existNajieThing(usr_qq, '神石', '道具');
 
   if (!x) {
-    Send(Text('你没有神石'));
+    void Send(Text('你没有神石'));
 
     return false;
   }
   if (x < 8) {
-    Send(Text('神石不足8个,当前神石数量' + x + '个'));
+    void Send(Text('神石不足8个,当前神石数量' + x + '个'));
 
     return false;
   }
@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
   const wuping_index = Math.floor(Math.random() * wuping_length);
   const wuping = timeDanyaoData[wuping_index];
 
-  Send(Text('获得了' + wuping.name));
+  void Send(Text('获得了' + wuping.name));
   await addNajieThing(usr_qq, wuping.name, wuping.class, 1);
 });
 

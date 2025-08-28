@@ -69,7 +69,7 @@ const res = onResponse(selects, async e => {
   const gameActionRaw = await redis.get(getRedisKey(usr_qq, 'game_action'));
 
   if (toInt(gameActionRaw) === 1) {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -83,7 +83,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`正在${actionObj.action}中, 剩余时间: ${m}分${s}秒`));
+    void Send(Text(`正在${actionObj.action}中, 剩余时间: ${m}分${s}秒`));
 
     return false;
   }
@@ -127,12 +127,12 @@ const res = onResponse(selects, async e => {
 
   // 资格校验
   if (toInt(player.魔道值) > 0 || (player.灵根?.type !== '转生' && toInt(player.level_id) < 42)) {
-    Send(Text('你没有资格进入神界'));
+    void Send(Text('你没有资格进入神界'));
 
     return false;
   }
   if (toInt(player.灵石) < LS_COST) {
-    Send(Text('灵石不足'));
+    void Send(Text('灵石不足'));
 
     return false;
   }
@@ -143,7 +143,7 @@ const res = onResponse(selects, async e => {
   const lastDayRef = lastDayRefRaw ? ((await shijianc(toInt(lastDayRefRaw))) as DayInfo) : null;
 
   if (!isDayChanged(todayRef, lastDayRef) && toInt(player.神界次数) === 0) {
-    Send(Text('今日次数用光了,请明日再来吧'));
+    void Send(Text('今日次数用光了,请明日再来吧'));
 
     return false;
   }
@@ -171,7 +171,7 @@ const res = onResponse(selects, async e => {
     newAction.group_id = e.ChannelId;
   }
   await redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(newAction));
-  Send(Text(`开始进入神界, ${DURATION_MINUTES}分钟后归来!`));
+  void Send(Text(`开始进入神界, ${DURATION_MINUTES}分钟后归来!`));
 
   return false;
 });

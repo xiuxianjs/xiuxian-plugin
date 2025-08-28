@@ -38,28 +38,28 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player?.宗门 || !isPlayerGuildRef(player.宗门)) {
-    Send(Text('请先加入宗门'));
+    void Send(Text('请先加入宗门'));
 
     return false;
   }
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
   if (!assData) {
-    Send(Text('宗门数据异常'));
+    void Send(Text('宗门数据异常'));
 
     return;
   }
   const assRaw = JSON.parse(assData);
 
   if (assRaw === 'error' || !isExtAss(assRaw)) {
-    Send(Text('宗门数据不存在'));
+    void Send(Text('宗门数据不存在'));
 
     return false;
   }
   const ass = assRaw;
 
   if (!ass.宗门驻地 || ass.宗门驻地 === 0) {
-    Send(Text('你的宗门还没有驻地，不能探索秘境哦'));
+    void Send(Text('你的宗门还没有驻地，不能探索秘境哦'));
 
     return false;
   }
@@ -67,7 +67,7 @@ const res = onResponse(selects, async e => {
   const didian = e.MessageText.replace(/^(#|＃|\/)?探索宗门秘境/, '').trim();
 
   if (!didian) {
-    Send(Text('请在指令后面补充秘境名称'));
+    void Send(Text('请在指令后面补充秘境名称'));
 
     return false;
   }
@@ -75,7 +75,7 @@ const res = onResponse(selects, async e => {
   const weizhi = listRaw?.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhi)) {
-    Send(Text('未找到该宗门秘境'));
+    void Send(Text('未找到该宗门秘境'));
 
     return false;
   }
@@ -84,12 +84,12 @@ const res = onResponse(selects, async e => {
   const price = Number(weizhi.Price || 0);
 
   if (price <= 0) {
-    Send(Text('秘境费用配置异常'));
+    void Send(Text('秘境费用配置异常'));
 
     return false;
   }
   if (playerCoin < price) {
-    Send(Text(`没有灵石寸步难行, 攒到${price}灵石才够哦~`));
+    void Send(Text(`没有灵石寸步难行, 攒到${price}灵石才够哦~`));
 
     return false;
   }
@@ -123,7 +123,7 @@ const res = onResponse(selects, async e => {
   };
 
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
-  Send(
+  void Send(
     Text(
       `开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`
     )

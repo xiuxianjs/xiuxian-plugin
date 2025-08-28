@@ -14,11 +14,11 @@ const res = onResponse(selects, async e => {
   });
 
   if (Buffer.isBuffer(image)) {
-    Send(Image(image));
+    void Send(Image(image));
 
     return;
   }
-  Send(Text('更新日志获取失败'));
+  void Send(Text('更新日志获取失败'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

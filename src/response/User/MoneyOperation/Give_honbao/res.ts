@@ -37,7 +37,7 @@ const res = onResponse(selects, async e => {
   if (now < lastTs + CD_MS) {
     const remain = Math.ceil((lastTs + CD_MS - now) / 1000);
 
-    Send(Text(`操作太频繁，请${remain}秒后再发红包`));
+    void Send(Text(`操作太频繁，请${remain}秒后再发红包`));
 
     return false;
   }
@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (seg.length < 2) {
-    Send(Text('格式: 发红包金额*个数'));
+    void Send(Text('格式: 发红包金额*个数'));
 
     return false;
   }
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
   let count = toInt(await convert2integer(seg[1]), 0);
 
   if (per <= 0 || count <= 0) {
-    Send(Text('金额与个数需为正整数'));
+    void Send(Text('金额与个数需为正整数'));
 
     return false;
   }
@@ -66,7 +66,7 @@ const res = onResponse(selects, async e => {
   // 取整到万
   per = Math.trunc(per / MIN_PER) * MIN_PER;
   if (per < MIN_PER) {
-    Send(Text(`单个红包至少 ${MIN_PER} 灵石`));
+    void Send(Text(`单个红包至少 ${MIN_PER} 灵石`));
 
     return false;
   }
@@ -77,12 +77,12 @@ const res = onResponse(selects, async e => {
   const total = per * count;
 
   if (!Number.isFinite(total) || total <= 0) {
-    Send(Text('金额异常'));
+    void Send(Text('金额异常'));
 
     return false;
   }
   if (total > MAX_TOTAL) {
-    Send(Text('总额过大，已拒绝'));
+    void Send(Text('总额过大，已拒绝'));
 
     return false;
   }
@@ -93,12 +93,12 @@ const res = onResponse(selects, async e => {
   }
 
   if (!player || Array.isArray(player)) {
-    Send(Text('存档异常'));
+    void Send(Text('存档异常'));
 
     return false;
   }
   if (player.灵石 < total) {
-    Send(Text('红包数要比自身灵石数小噢'));
+    void Send(Text('红包数要比自身灵石数小噢'));
 
     return false;
   }
@@ -107,7 +107,7 @@ const res = onResponse(selects, async e => {
   const existing = await redis.get(getRedisKey(usr_qq, 'honbaoacount'));
 
   if (existing && Number(existing) > 0) {
-    Send(Text('你已有未被抢完的红包，稍后再发'));
+    void Send(Text('你已有未被抢完的红包，稍后再发'));
 
     return false;
   }
@@ -117,7 +117,7 @@ const res = onResponse(selects, async e => {
   await addCoin(usr_qq, -total);
   await redis.set(cdKey, String(now));
 
-  Send(Text(`【全服公告】${player.名号}发了${count}个${per}灵石的红包！`));
+  void Send(Text(`【全服公告】${player.名号}发了${count}个${per}灵石的红包！`));
 
   return false;
 });

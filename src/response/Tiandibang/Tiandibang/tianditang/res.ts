@@ -27,19 +27,19 @@ const res = onResponse(selects, async e => {
   let m = tiandibang.length;
 
   for (m = 0; m < tiandibang.length; m++) {
-    if (tiandibang[m].qq == usr_qq) {
+    if (tiandibang[m].qq === usr_qq) {
       break;
     }
   }
-  if (m == tiandibang.length) {
-    Send(Text('请先报名!'));
+  if (m === tiandibang.length) {
+    void Send(Text('请先报名!'));
 
     return false;
   }
   const img = await getTianditangImage(e, tiandibang[m].积分);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

@@ -59,7 +59,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (!parts[0]) {
-    Send(Text('未指定物品名称或序号'));
+    void Send(Text('未指定物品名称或序号'));
 
     return false;
   }
@@ -77,7 +77,7 @@ const res = onResponse(selects, async e => {
       const pet = najie.仙宠?.[index - 1001];
 
       if (!pet) {
-        Send(Text('仙宠代号输入有误'));
+        void Send(Text('仙宠代号输入有误'));
 
         return false;
       }
@@ -86,7 +86,7 @@ const res = onResponse(selects, async e => {
       const equip = najie.装备?.[index - 101];
 
       if (!equip) {
-        Send(Text('装备代号输入有误'));
+        void Send(Text('装备代号输入有误'));
 
         return false;
       }
@@ -100,7 +100,7 @@ const res = onResponse(selects, async e => {
   const thingDef = await foundthing(thingName);
 
   if (!thingDef) {
-    Send(Text(`不存在的物品: ${thingName}`));
+    void Send(Text(`不存在的物品: ${thingName}`));
 
     return false;
   }
@@ -113,11 +113,11 @@ const res = onResponse(selects, async e => {
   const updated = await updateBagThing(usr_qq, thingName, category, pinjiNum, lockFlag);
 
   if (updated) {
-    Send(Text(`${category}:${thingName}${action === '锁定' ? '已锁定' : '已解锁'}`));
+    void Send(Text(`${category}:${thingName}${action === '锁定' ? '已锁定' : '已解锁'}`));
 
     return false;
   }
-  Send(Text(`你没有【${thingName}】这样的${category}`));
+  void Send(Text(`你没有【${thingName}】这样的${category}`));
 
   return false;
 });

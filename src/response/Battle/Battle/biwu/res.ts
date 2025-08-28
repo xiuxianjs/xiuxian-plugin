@@ -34,21 +34,21 @@ const res = onResponse(selects, async e => {
   const B = target.UserId;
 
   if (A === B) {
-    Send(Text('你还跟自己修炼上了是不是?'));
+    void Send(Text('你还跟自己修炼上了是不是?'));
 
     return false;
   }
   const ext = await redis.exists(keys.player(A));
 
   if (ext < 1) {
-    Send(Text('修仙者不可对凡人出手!'));
+    void Send(Text('修仙者不可对凡人出手!'));
 
     return false;
   }
   const player = await getDataJSONParseByKey(keys.player(A));
 
   if (!player) {
-    Send(Text('你的数据不存在'));
+    void Send(Text('你的数据不存在'));
 
     return;
   }
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
   const playerB = await getDataJSONParseByKey(keys.player(B));
 
   if (!playerB) {
-    Send(Text('对方数据不存在'));
+    void Send(Text('对方数据不存在'));
 
     return;
   }
@@ -115,7 +115,7 @@ const res = onResponse(selects, async e => {
     });
 
     if (Buffer.isBuffer(img)) {
-      Send(Image(img));
+      void Send(Image(img));
     } else {
       const result = Data_battle.msg.includes(A_win)
         ? 'A'
@@ -123,10 +123,10 @@ const res = onResponse(selects, async e => {
           ? 'B'
           : 'draw';
 
-      Send(Text(header + result));
+      void Send(Text(header + result));
     }
   } catch (_err) {
-    Send(Text('战斗过程出现异常'));
+    void Send(Text('战斗过程出现异常'));
   }
 
   return false;

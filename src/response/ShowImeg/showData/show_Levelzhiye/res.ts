@@ -18,7 +18,7 @@ const res = onResponse(selects, async e => {
   const img = await getStatezhiyeImage(e, null);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

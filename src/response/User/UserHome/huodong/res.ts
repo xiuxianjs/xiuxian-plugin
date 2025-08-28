@@ -61,7 +61,7 @@ const res = onResponse(selects, async e => {
   const codeInput = e.MessageText.replace(/^(#|＃|\/)?活动兑换/, '').trim();
 
   if (!codeInput) {
-    Send(Text('请在指令后输入兑换码'));
+    void Send(Text('请在指令后输入兑换码'));
 
     return false;
   }
@@ -70,7 +70,7 @@ const res = onResponse(selects, async e => {
   const codeObj = list.find(c => c.name === codeInput);
 
   if (!codeObj) {
-    Send(Text('兑换码不存在!'));
+    void Send(Text('兑换码不存在!'));
 
     return false;
   }
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
   const usedList = parseJson<string[]>(await redis.get(key)) || [];
 
   if (usedList.includes(codeInput)) {
-    Send(Text('你已经兑换过该兑换码了'));
+    void Send(Text('你已经兑换过该兑换码了'));
 
     return false;
   }
@@ -102,11 +102,11 @@ const res = onResponse(selects, async e => {
     msg.push(`\n${t.name}x${qty}`);
   }
   if (!msg.length) {
-    Send(Text('该兑换码没有有效奖励内容'));
+    void Send(Text('该兑换码没有有效奖励内容'));
 
     return false;
   }
-  Send(Text('恭喜获得:' + msg.join('')));
+  void Send(Text('恭喜获得:' + msg.join('')));
 
   return false;
 });

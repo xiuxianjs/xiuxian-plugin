@@ -69,9 +69,9 @@ export async function reBangdang() {
     const thisQqStr = playerList[k];
     const player = await readPlayer(thisQqStr);
     const levelList = await getDataList('Level1');
-    const level_id = levelList.find(item => item.level_id == player.level_id)?.level_id;
+    const level_id = levelList.find(item => item.level_id === player.level_id)?.level_id;
 
-    if (level_id == null) {
+    if (level_id === null) {
       continue;
     }
     temp.push({

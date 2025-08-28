@@ -38,7 +38,7 @@ const res = onResponse(selects, async e => {
   const lastTs = toInt(await redis.get(cdKey));
 
   if (now < lastTs + CD_MS) {
-    Send(Text(`查看过于频繁，请${Math.ceil((lastTs + CD_MS - now) / 1000)}秒后再试`));
+    void Send(Text(`查看过于频繁，请${Math.ceil((lastTs + CD_MS - now) / 1000)}秒后再试`));
 
     return false;
   }
@@ -48,7 +48,7 @@ const res = onResponse(selects, async e => {
   const cate = VALID.find(v => v === raw) || undefined;
 
   if (raw && !cate) {
-    Send(Text('类别无效，可选: ' + VALID.join('/')));
+    void Send(Text('类别无效，可选: ' + VALID.join('/')));
 
     return false;
   }
@@ -57,13 +57,13 @@ const res = onResponse(selects, async e => {
   const img = await getForumImage(evt, cate);
 
   if (!img) {
-    Send(Text('生成列表失败，请稍后再试'));
+    void Send(Text('生成列表失败，请稍后再试'));
 
     return false;
   }
   const buffer = Buffer.isBuffer(img) ? img : Buffer.from(img);
 
-  Send(Image(buffer));
+  void Send(Image(buffer));
 
   return false;
 });

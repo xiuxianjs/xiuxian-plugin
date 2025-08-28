@@ -14,13 +14,13 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!notUndAndNull(player.宗门)) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
 
   if (!['宗主', '副宗主', '长老'].includes(player.宗门.职位)) {
-    Send(Text('只有宗主、副宗主或长老可以操作'));
+    void Send(Text('只有宗主、副宗主或长老可以操作'));
 
     return false;
   }
@@ -31,7 +31,7 @@ const res = onResponse(selects, async e => {
   const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (!ass) {
-    Send(Text('宗门数据异常'));
+    void Send(Text('宗门数据异常'));
 
     return false;
   }
@@ -39,19 +39,19 @@ const res = onResponse(selects, async e => {
   const association = ass as AssociationDetailData;
 
   if (association.灵石池 < lingshi) {
-    Send(Text(`宗门灵石池只有${ass.灵石池}灵石,数量不足`));
+    void Send(Text(`宗门灵石池只有${ass.灵石池}灵石,数量不足`));
 
     return false;
   }
   let xian = 5;
 
-  if (association.power == 1) {
+  if (association.power === 1) {
     xian = 2;
   }
   association.大阵血量 = (association.大阵血量 || 0) + lingshi * xian;
   association.灵石池 = (association.灵石池 || 0) - lingshi;
   await setDataJSONStringifyByKey(keys.association(association.宗门名称), association);
-  Send(Text(`维护成功,宗门还有${ass.灵石池}灵石,护宗大阵增加了${lingshi * xian}血量`));
+  void Send(Text(`维护成功,宗门还有${ass.灵石池}灵石,护宗大阵增加了${lingshi * xian}血量`));
 });
 
 import mw from '@src/response/mw';

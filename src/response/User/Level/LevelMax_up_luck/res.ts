@@ -20,7 +20,7 @@ const res = onResponse(selects, async e => {
   const x = await existNajieThing(usr_qq, '幸运草', '道具');
 
   if (!x) {
-    Send(Text('醒醒，你没有道具【幸运草】!'));
+    void Send(Text('醒醒，你没有道具【幸运草】!'));
 
     return false;
   }

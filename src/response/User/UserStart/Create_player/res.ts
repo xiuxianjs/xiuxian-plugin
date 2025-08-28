@@ -49,11 +49,11 @@ const res = onResponse(selects, async e => {
     const img = await getPlayerImage(e as Parameters<typeof getPlayerImage>[0]);
 
     if (Buffer.isBuffer(img)) {
-      Send(Image(img));
+      void Send(Image(img));
 
       return;
     }
-    Send(Text('图片加载失败'));
+    void Send(Text('图片加载失败'));
 
     return;
   }
@@ -160,11 +160,11 @@ const res = onResponse(selects, async e => {
   const img = await getPlayerImage(e);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
 
     return false;
   }
-  Send(Text('图片加载失败'));
+  void Send(Text('图片加载失败'));
 
   return false;
 });

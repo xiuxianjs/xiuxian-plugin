@@ -27,7 +27,7 @@ const res = onResponse(selects, (event, next) => {
   setState(false);
   const [message] = useMessage(event);
 
-  message.send(format(Text('关闭成功')));
+  void message.send(format(Text('关闭成功')));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

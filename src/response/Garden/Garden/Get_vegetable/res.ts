@@ -40,14 +40,14 @@ const res = onResponse(selects, async e => {
   const guildName = player?.宗门?.宗门名称;
 
   if (!guildName) {
-    Send(Text('您未加入宗门，无法拔苗助长'));
+    void Send(Text('您未加入宗门，无法拔苗助长'));
 
     return false;
   }
   const ass = await getDataJSONParseByKey(keys.association(guildName));
 
   if (!ass) {
-    Send(Text('宗门不存在, 如有必要可聊系管理员!'));
+    void Send(Text('宗门不存在, 如有必要可聊系管理员!'));
 
     return;
   }
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
   const garden = gardenAny as { 药园等级?: number; 作物?: GardenCrop[] } | undefined;
 
   if (!garden || toInt(garden.药园等级) <= 1) {
-    Send(Text('药园等级太低，可远观不可亵玩焉'));
+    void Send(Text('药园等级太低，可远观不可亵玩焉'));
 
     return false;
   }
@@ -70,7 +70,7 @@ const res = onResponse(selects, async e => {
   const remain = lastTime + cdMs - now;
 
   if (cdMs > 0 && remain > 0) {
-    Send(Text(`每${cdMinutes}分钟拔苗一次。cd: ${formatRemain(remain)}`));
+    void Send(Text(`每${cdMinutes}分钟拔苗一次。cd: ${formatRemain(remain)}`));
 
     return false;
   }
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
   const rawName = e.MessageText.replace(/^(#|＃|\/)?拔苗助长/, '').trim();
 
   if (!rawName) {
-    Send(Text('请输入要拔苗助长的作物名称'));
+    void Send(Text('请输入要拔苗助长的作物名称'));
 
     return false;
   }
@@ -89,7 +89,7 @@ const res = onResponse(selects, async e => {
   const targetIndex = crops.findIndex(c => c?.name === rawName);
 
   if (targetIndex === -1) {
-    Send(Text('您拔错了吧！掣电树chedianshu'));
+    void Send(Text('您拔错了吧！掣电树chedianshu'));
     await redis.set(lastKey, now); // 仍记录冷却，避免刷词
 
     return false;
@@ -119,13 +119,13 @@ const res = onResponse(selects, async e => {
     await redis.set(lastKey, now);
     const remainAfter = matureAt - now;
 
-    Send(Text(`作物${rawName}加速成功，减少1800000成熟度，剩余${remainAfter}成熟度`));
+    void Send(Text(`作物${rawName}加速成功，减少1800000成熟度，剩余${remainAfter}成熟度`));
 
     return false;
   }
 
   // 否则视为已成熟 -> 采摘
-  Send(Text(`作物${rawName}已成熟，被${usr_qq}${player?.名号 || ''}摘取, 放入纳戒了`));
+  void Send(Text(`作物${rawName}已成熟，被${usr_qq}${player?.名号 || ''}摘取, 放入纳戒了`));
   await addNajieThing(usr_qq, rawName, '草药', 1);
   const nextMature = now + 24 * 60 * 60 * 1000 * ts;
 

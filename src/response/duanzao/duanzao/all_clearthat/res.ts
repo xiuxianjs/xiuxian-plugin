@@ -19,7 +19,7 @@ const res = onResponse(selects, async e => {
     await stopActionWithSuffix(player_id, 'action10');
     await setValue(userKey(player_id, 'action10'), null);
   }
-  Send(Text('清除完成'));
+  void Send(Text('清除完成'));
 });
 
 import mw from '@src/response/mw';

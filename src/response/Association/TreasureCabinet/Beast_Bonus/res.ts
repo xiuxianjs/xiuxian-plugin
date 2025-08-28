@@ -65,21 +65,21 @@ const res = onResponse(selects, async e => {
     return;
   }
   if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
   const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (assRaw === 'error' || !isExtAss(assRaw)) {
-    Send(Text('宗门数据不存在'));
+    void Send(Text('宗门数据不存在'));
 
     return false;
   }
   const ass = assRaw;
 
   if (!ass.宗门神兽 || ass.宗门神兽 === '0' || ass.宗门神兽 === '无') {
-    Send(Text('你的宗门还没有神兽的护佑，快去召唤神兽吧'));
+    void Send(Text('你的宗门还没有神兽的护佑，快去召唤神兽吧'));
 
     return false;
   }
@@ -90,7 +90,7 @@ const res = onResponse(selects, async e => {
 
   if (isDateParts(Today) && isDateParts(lastsign_time)) {
     if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
-      Send(Text('今日已经接受过神兽赐福了，明天再来吧'));
+      void Send(Text('今日已经接受过神兽赐福了，明天再来吧'));
 
       return false;
     }
@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
   const random = Math.random();
 
   if (random <= 0.7) {
-    Send(Text(`${ass.宗门神兽}闭上了眼睛，表示今天不想理你`));
+    void Send(Text(`${ass.宗门神兽}闭上了眼睛，表示今天不想理你`));
 
     return false;
   }
@@ -144,7 +144,7 @@ const res = onResponse(selects, async e => {
   const normalList = normalLists[beast] || [];
 
   if (!highList.length && !normalList.length) {
-    Send(Text('神兽奖励配置缺失'));
+    void Send(Text('神兽奖励配置缺失'));
 
     return false;
   }
@@ -154,7 +154,7 @@ const res = onResponse(selects, async e => {
   const item = fromList[Math.floor(Math.random() * fromList.length)];
 
   if (!item) {
-    Send(Text('本次赐福意外失败'));
+    void Send(Text('本次赐福意外失败'));
 
     return false;
   }
@@ -164,9 +164,9 @@ const res = onResponse(selects, async e => {
 
   await addNajieThing(usr_qq, item.name, category, 1);
   if (randomB > 0.9) {
-    Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`));
+    void Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`));
   } else {
-    Send(Text(`${beast} 今天心情不错，随手丢给了你 ${item.name}`));
+    void Send(Text(`${beast} 今天心情不错，随手丢给了你 ${item.name}`));
   }
 
   return false;

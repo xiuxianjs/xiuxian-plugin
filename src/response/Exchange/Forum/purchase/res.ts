@@ -66,7 +66,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`每${CD_MINUTES}分钟操作一次，CD: ${m}分${s}秒`));
+    void Send(Text(`每${CD_MINUTES}分钟操作一次，CD: ${m}分${s}秒`));
 
     return false;
   }
@@ -75,7 +75,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('存档异常'));
+    void Send(Text('存档异常'));
 
     return false;
   }
@@ -84,7 +84,7 @@ const res = onResponse(selects, async e => {
   const body = e.MessageText.replace(/^(#|＃|\/)?接取/, '').trim();
 
   if (!body) {
-    Send(Text('格式: 接取编号*数量 (数量可省略为全部)'));
+    void Send(Text('格式: 接取编号*数量 (数量可省略为全部)'));
 
     return false;
   }
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (seg.length === 0) {
-    Send(Text('指令解析失败'));
+    void Send(Text('指令解析失败'));
 
     return false;
   }
@@ -103,7 +103,7 @@ const res = onResponse(selects, async e => {
   const orderIndex = toInt(await convert2integer(idxRaw), 0) - 1;
 
   if (orderIndex < 0) {
-    Send(Text('编号不合法'));
+    void Send(Text('编号不合法'));
 
     return false;
   }
@@ -117,7 +117,7 @@ const res = onResponse(selects, async e => {
     forum = [];
   }
   if (orderIndex >= forum.length) {
-    Send(Text('没有该编号的求购单'));
+    void Send(Text('没有该编号的求购单'));
 
     return false;
   }
@@ -133,7 +133,7 @@ const res = onResponse(selects, async e => {
 
   // 自己不能接自己的单
   if (String(order.qq) === String(usr_qq)) {
-    Send(Text('没事找事做?'));
+    void Send(Text('没事找事做?'));
 
     return false;
   }
@@ -143,7 +143,7 @@ const res = onResponse(selects, async e => {
   const remaining = toInt(order.aconut, 0);
 
   if (unitPrice <= 0 || remaining <= 0) {
-    Send(Text('该求购单已失效'));
+    void Send(Text('该求购单已失效'));
 
     return false;
   }
@@ -156,7 +156,7 @@ const res = onResponse(selects, async e => {
   } else {
     deliverQty = toInt(await convert2integer(qtyRaw), 0);
     if (deliverQty <= 0) {
-      Send(Text('数量需为正整数'));
+      void Send(Text('数量需为正整数'));
 
       return false;
     }
@@ -172,12 +172,12 @@ const res = onResponse(selects, async e => {
   const hasNum = await existNajieThing(usr_qq, order.name, order.class as NajieCategory);
 
   if (!hasNum) {
-    Send(Text(`你没有【${order.name}】`));
+    void Send(Text(`你没有【${order.name}】`));
 
     return false;
   }
   if (hasNum < deliverQty) {
-    Send(Text(`你只有【${order.name}】 x ${hasNum}`));
+    void Send(Text(`你只有【${order.name}】 x ${hasNum}`));
 
     return false;
   }
@@ -185,7 +185,7 @@ const res = onResponse(selects, async e => {
   const gain = unitPrice * deliverQty;
 
   if (!Number.isFinite(gain) || gain <= 0 || gain > MAX_PRICE_SUM) {
-    Send(Text('价格计算异常'));
+    void Send(Text('价格计算异常'));
 
     return false;
   }
@@ -209,7 +209,7 @@ const res = onResponse(selects, async e => {
   }
   await writeForum(forum);
 
-  Send(Text(`${player.名号}在聚宝堂收获了${gain}灵石！(交付 ${order.name} x ${deliverQty})`));
+  void Send(Text(`${player.名号}在聚宝堂收获了${gain}灵石！(交付 ${order.name} x ${deliverQty})`));
 
   return false;
 });

@@ -23,7 +23,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!game.game_key_user[usr_qq]) {
-    Send(Text('媚娘：公子，你还没投入呢'));
+    void Send(Text('媚娘：公子，你还没投入呢'));
 
     return false;
   }
@@ -79,12 +79,12 @@ const res = onResponse(selects, async e => {
       }
       await setDataJSONStringifyByKey(keys.player(usr_qq), player);
       addCoin(usr_qq, game.yazhu[usr_qq]);
-      if (y == 1) {
-        Send(
+      if (y === 1) {
+        void Send(
           Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`)
         );
       } else {
-        Send(
+        void Send(
           Text(
             `骰子最终为 ${touzi} 你虽然猜对了，但是金银坊怀疑你出老千，准备打断你的腿的时候，你选择破财消灾。\n现在拥有灵石:${player.灵石 + game.yazhu[usr_qq]}`
           )
@@ -107,7 +107,7 @@ const res = onResponse(selects, async e => {
       if (now_money <= 0) {
         msg.push('\n媚娘：没钱了也想跟老娘耍？\n你已经裤衩都输光了...快去降妖赚钱吧！');
       }
-      Send(Text(msg.join('')));
+      void Send(Text(msg.join('')));
     }
   } else {
     // 猜数字直接判断是否相等，猜中3倍收益
@@ -128,7 +128,7 @@ const res = onResponse(selects, async e => {
       }
       await setDataJSONStringifyByKey(keys.player(usr_qq), player);
       addCoin(usr_qq, winAmount);
-      Send(
+      void Send(
         Text(
           `骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`
         )
@@ -149,7 +149,7 @@ const res = onResponse(selects, async e => {
       if (now_money <= 0) {
         msg.push('\n媚娘：没钱了也想跟老娘耍？\n你已经裤衩都输光了...快去降妖赚钱吧！');
       }
-      Send(Text(msg.join('')));
+      void Send(Text(msg.join('')));
     }
   }
 

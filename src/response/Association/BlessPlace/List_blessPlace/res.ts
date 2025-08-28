@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
   const blessList: BlessPlace[] = Array.isArray(blessRaw) ? blessRaw.filter(isBlessPlace) : [];
 
   if (!blessList.length) {
-    message.send([Text('暂无洞天福地配置')]);
+    void message.send([Text('暂无洞天福地配置')]);
 
     return false;
   }
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
     if (a === 'error' || !isExtAss(a)) {
       continue;
     }
-    if (a.宗门驻地 != null && !locationMap.has(a.宗门驻地)) {
+    if (a.宗门驻地 !== null && !locationMap.has(a.宗门驻地)) {
       locationMap.set(a.宗门驻地, a.宗门名称);
     }
   }
@@ -63,13 +63,13 @@ const res = onResponse(selects, async e => {
     });
 
     if (Buffer.isBuffer(image)) {
-      message.send([Image(image)]);
+      void message.send([Image(image)]);
 
       return;
     }
-    message.send([Text('生成洞天福地列表时出错')]);
+    void message.send([Text('生成洞天福地列表时出错')]);
   } catch (_err) {
-    message.send([Text('生成洞天福地列表时出错')]);
+    void message.send([Text('生成洞天福地列表时出错')]);
   }
 
   return false;

@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   if (!e.IsMaster) {
-    Send(Text('只有主人可以开启'));
+   void Send(Text('只有主人可以开启'));
 
     return false;
   }
@@ -29,7 +29,7 @@ const res = onResponse(selects, async e => {
   const already = await redis.sismember(redisGlKey, channelId);
 
   if (already) {
-    Send(Text('星阁拍卖行已经开啦'));
+   void Send(Text('星阁拍卖行已经开啦'));
 
     return false;
   }
@@ -37,7 +37,7 @@ const res = onResponse(selects, async e => {
 
   if (groupList.length > 0) {
     await redis.sadd(redisGlKey, channelId);
-    Send(Text('星阁已开启，已将本群添加至星阁体系'));
+   void Send(Text('星阁已开启，已将本群添加至星阁体系'));
 
     return false;
   }
@@ -72,14 +72,14 @@ const res = onResponse(selects, async e => {
 
         msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
       }
-      await Send(Text(msg));
+      awaitvoid Send(Text(msg));
     } catch (err) {
-      Send(Text('开启拍卖失败: ' + (err as Error).message));
+     void Send(Text('开启拍卖失败: ' + (err as Error).message));
 
       return false;
     }
   } else {
-    Send(Text('当前不在星阁开启时间，将直接初始化空白场次'));
+   void Send(Text('当前不在星阁开启时间，将直接初始化空白场次'));
   }
 
   // 重置并加入当前群
@@ -89,7 +89,7 @@ const res = onResponse(selects, async e => {
     // 忽略删除失败
   }
   await redis.sadd(redisGlKey, channelId);
-  Send(Text('星阁体系在本群开启！'));
+ void Send(Text('星阁体系在本群开启！'));
 
   return false;
 });

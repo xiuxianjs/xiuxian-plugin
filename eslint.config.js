@@ -152,7 +152,7 @@ export default [
       'yoda': 'error',
 
       // ===== 最佳实践规则 =====
-      // 严格相等比较 - 禁止使用 == 和 !=
+      // 严格相等比较 - 禁止使用 === 和 !=
       'eqeqeq': ['error', 'always'],
       'curly': ['error', 'all'],
       'no-multi-spaces': 'error',

@@ -42,7 +42,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (parts.length < 2) {
-    Send(Text('格式：打磨 装备名*品级 例：打磨 斩仙剑*优'));
+    void Send(Text('格式：打磨 装备名*品级 例：打磨 斩仙剑*优'));
 
     return false;
   }
@@ -50,13 +50,13 @@ const res = onResponse(selects, async e => {
   const pinjiInput = parsePinji(parts[1]);
 
   if (pinjiInput === undefined) {
-    Send(Text(`未知品级：${parts[1]}`));
+    void Send(Text(`未知品级：${parts[1]}`));
 
     return false;
   }
   // 最高品级顶(6)不可再打磨
   if (pinjiInput >= 6) {
-    Send(Text(`${thingName}(${parts[1]})已是最高品级，无法继续打磨`));
+    void Send(Text(`${thingName}(${parts[1]})已是最高品级，无法继续打磨`));
 
     return false;
   }
@@ -64,7 +64,7 @@ const res = onResponse(selects, async e => {
   const thingDef = await foundthing(thingName);
 
   if (!thingDef) {
-    Send(Text(`你在瞎说啥呢? 哪来的【${thingName}】?`));
+    void Send(Text(`你在瞎说啥呢? 哪来的【${thingName}】?`));
 
     return false;
   }
@@ -74,7 +74,7 @@ const res = onResponse(selects, async e => {
   const hp = Number(thingDef.HP || 0);
 
   if (atk < 10 && def < 10 && hp < 10) {
-    Send(Text(`${thingName}(${parts[1]})不支持打磨`));
+    void Send(Text(`${thingName}(${parts[1]})不支持打磨`));
 
     return false;
   }
@@ -90,7 +90,7 @@ const res = onResponse(selects, async e => {
   const count = equips.length;
 
   if (count < 3) {
-    Send(Text(`需要同品级装备 3 件，你只有 ${thingName}(${parts[1]}) x${count}`));
+    void Send(Text(`需要同品级装备 3 件，你只有 ${thingName}(${parts[1]}) x${count}`));
 
     return false;
   }
@@ -98,7 +98,7 @@ const res = onResponse(selects, async e => {
   // 扣除 3 件，增加下一品级 1 件
   await addNajieThing(usr_qq, thingName, '装备', -3, pinjiInput);
   await addNajieThing(usr_qq, thingName, '装备', 1, pinjiInput + 1);
-  Send(Text(`打磨成功！${thingName} 品级 ${parts[1]} -> ${pinjiInput + 1}`));
+  void Send(Text(`打磨成功！${thingName} 品级 ${parts[1]} -> ${pinjiInput + 1}`));
 
   return false;
 });

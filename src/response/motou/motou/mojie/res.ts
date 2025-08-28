@@ -26,7 +26,7 @@ const res = onResponse(selects, async e => {
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -34,19 +34,19 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
+    void Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }
   const player = await readPlayer(usr_qq);
 
   if (player.魔道值 < 1000) {
-    Send(Text('你不是魔头'));
+    void Send(Text('你不是魔头'));
 
     return false;
   }
   if (player.修为 < 4000000) {
-    Send(Text('修为不足'));
+    void Send(Text('修为不足'));
 
     return false;
   }
@@ -66,11 +66,11 @@ const res = onResponse(selects, async e => {
     plant: '1',
     mine: '1',
     cishu: 10,
-    group_id: e.name == 'message.create' ? e.ChannelId : undefined
+    group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
   await setValue(userKey(usr_qq, 'action'), arr);
-  Send(Text(`开始进入魔界,${time}分钟后归来!`));
+  void Send(Text(`开始进入魔界,${time}分钟后归来!`));
 });
 
 import mw from '@src/response/mw';

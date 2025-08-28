@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (player.occupation !== '炼丹师') {
-    Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'));
+    void Send(Text('丹是上午炼的,药是中午吃的,人是下午走的'));
 
     return false;
   }
@@ -57,7 +57,7 @@ const res = onResponse(selects, async e => {
   const body = e.MessageText.replace(/^(#|＃|\/)?炼制/, '').trim();
 
   if (!body) {
-    Send(Text('格式: 炼制丹药名*数量(数量可省略)'));
+    void Send(Text('格式: 炼制丹药名*数量(数量可省略)'));
 
     return false;
   }
@@ -79,12 +79,12 @@ const res = onResponse(selects, async e => {
   const danfang = danfangListData.find(item => item.name === danyao);
 
   if (!notUndAndNull(danfang)) {
-    Send(Text(`世界上没有丹药[${danyao}]的配方`));
+    void Send(Text(`世界上没有丹药[${danyao}]的配方`));
 
     return false;
   }
   if (danfang.level_limit > player.occupation_level) {
-    Send(Text(`${danfang.level_limit}级炼丹师才能炼制${danyao}`));
+    void Send(Text(`${danfang.level_limit}级炼丹师才能炼制${danyao}`));
 
     return false;
   }
@@ -92,7 +92,7 @@ const res = onResponse(selects, async e => {
   const materials = danfang.materials || [];
 
   if (materials.length === 0) {
-    Send(Text('配方材料缺失'));
+    void Send(Text('配方材料缺失'));
 
     return false;
   }
@@ -103,7 +103,7 @@ const res = onResponse(selects, async e => {
     const need = m.amount * n;
 
     if (have < need) {
-      Send(Text(`纳戒中拥有 ${m.name} x ${have}，炼制需要 ${need} 份`));
+      void Send(Text(`纳戒中拥有 ${m.name} x ${have}，炼制需要 ${need} 份`));
 
       return false;
     }
@@ -132,9 +132,9 @@ const res = onResponse(selects, async e => {
 
     if (rand < (player.仙宠.加成 || 0)) {
       finalQty *= 2;
-      Send(Text(`你的仙宠${player.仙宠.name}辅佐了你进行炼丹, 成功获得了双倍丹药`));
+      void Send(Text(`你的仙宠${player.仙宠.name}辅佐了你进行炼丹, 成功获得了双倍丹药`));
     } else {
-      Send(Text('你的仙宠只是在旁边看着'));
+      void Send(Text('你的仙宠只是在旁边看着'));
     }
   }
 
@@ -162,7 +162,7 @@ const res = onResponse(selects, async e => {
   }
 
   await addExp4(usr_qq, totalExp);
-  Send(Text(resultMsg));
+  void Send(Text(resultMsg));
 
   return false;
 });

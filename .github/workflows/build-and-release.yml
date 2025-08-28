@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0 # 获取完整 tag 历史
 
       - name: 检查分支
-        if: github.ref != 'refs/heads/main'
+        if: github.ref !== 'refs/heads/main'
         run: |
           echo "错误: 该工作流只能在 main 分支上运行。"
           exit 1

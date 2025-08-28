@@ -18,12 +18,12 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
   redis.set(getRedisKey(usr_qq, 'couple'), 1);
-  Send(Text(`${player.名号}开启了拒绝模式`));
+  void Send(Text(`${player.名号}开启了拒绝模式`));
 
   return false;
 });

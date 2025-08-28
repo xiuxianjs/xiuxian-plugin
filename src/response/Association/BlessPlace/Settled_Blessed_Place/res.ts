@@ -42,12 +42,12 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
   if (player.宗门.职位 !== '宗主') {
-    Send(Text('只有宗主可以操作'));
+    void Send(Text('只有宗主可以操作'));
 
     return false;
   }
@@ -55,7 +55,7 @@ const res = onResponse(selects, async e => {
   const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (!assRaw) {
-    Send(Text('宗门数据不存在'));
+    void Send(Text('宗门数据不存在'));
 
     return false;
   }
@@ -64,7 +64,7 @@ const res = onResponse(selects, async e => {
   const blessed_name = e.MessageText.replace(/^(#|＃|\/)?入驻洞天/, '').trim();
 
   if (!blessed_name) {
-    Send(Text('请在指令后补充洞天名称'));
+    void Send(Text('请在指令后补充洞天名称'));
 
     return false;
   }
@@ -74,12 +74,12 @@ const res = onResponse(selects, async e => {
     | undefined;
 
   if (!dongTan) {
-    Send(Text('未找到该洞天'));
+    void Send(Text('未找到该洞天'));
 
     return false;
   }
   if (ass.宗门驻地 === dongTan.name) {
-    Send(Text('该洞天已是你宗门的驻地'));
+    void Send(Text('该洞天已是你宗门的驻地'));
 
     return false;
   }
@@ -155,14 +155,14 @@ const res = onResponse(selects, async e => {
       other.大阵血量 = 0;
       await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
       await setDataJSONStringifyByKey(keys.association(other.宗门名称), other);
-      Send(
+      void Send(
         Text(
           `洞天被占据！${ass.宗门名称} 发动进攻 (战力${attackPower}) 攻破 ${other.宗门名称} (防御${defendPower})，夺取了 ${dongTan.name}`
         )
       );
     } else {
       await setDataJSONStringifyByKey(keys.association(other.宗门名称), other);
-      Send(
+      void Send(
         Text(
           `${ass.宗门名称} 进攻 ${other.宗门名称} 失败 (进攻${attackPower} / 防御${defendPower})`
         )
@@ -176,7 +176,7 @@ const res = onResponse(selects, async e => {
   ass.宗门驻地 = dongTan.name;
   ass.宗门建设等级 = 0;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  Send(Text(`入驻成功，${ass.宗门名称} 当前驻地为：${dongTan.name}`));
+  void Send(Text(`入驻成功，${ass.宗门名称} 当前驻地为：${dongTan.name}`));
 
   return false;
 });

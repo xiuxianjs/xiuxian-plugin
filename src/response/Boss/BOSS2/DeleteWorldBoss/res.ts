@@ -14,9 +14,9 @@ const res = onResponse(selects, async e => {
     if (await BossIsAlive()) {
       await redis.del(KEY_WORLD_BOOS_STATUS_TWO);
       await redis.del(KEY_RECORD_TWO);
-      Send(Text('金角大王挑战关闭！'));
+      void Send(Text('金角大王挑战关闭！'));
     } else {
-      Send(Text('金角大王未开启'));
+      void Send(Text('金角大王未开启'));
     }
   }
 });

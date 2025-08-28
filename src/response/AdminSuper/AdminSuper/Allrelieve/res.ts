@@ -12,7 +12,7 @@ const res = onResponse(selects, async e => {
   if (!e.IsMaster) {
     return;
   }
-  Send(Text('开始行动！'));
+  void Send(Text('开始行动！'));
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const player_id of playerList) {
@@ -31,7 +31,7 @@ const res = onResponse(selects, async e => {
       });
     }
   }
-  Send(Text('行动结束！'));
+  void Send(Text('行动结束！'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

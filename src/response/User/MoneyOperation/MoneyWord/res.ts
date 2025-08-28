@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
   const raw = e.MessageText.replace(/^(#|＃|\/)?交税/, '').trim();
 
   if (!raw) {
-    Send(Text('格式: 交税数量 (例: 交税10000)'));
+    void Send(Text('格式: 交税数量 (例: 交税10000)'));
 
     return false;
   }
@@ -33,7 +33,7 @@ const res = onResponse(selects, async e => {
   let amount = toInt(await convert2integer(raw), 0);
 
   if (amount < MIN_TAX) {
-    Send(Text(`至少交税 ${MIN_TAX}`));
+    void Send(Text(`至少交税 ${MIN_TAX}`));
 
     return false;
   }
@@ -44,25 +44,25 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('存档异常'));
+    void Send(Text('存档异常'));
 
     return false;
   }
   const lingshi = Number(player.灵石) || 0;
 
   if (lingshi <= 0) {
-    Send(Text('你身无分文，无需交税'));
+    void Send(Text('你身无分文，无需交税'));
 
     return false;
   }
   if (amount > lingshi) {
-    Send(Text('醒醒，你没有那么多'));
+    void Send(Text('醒醒，你没有那么多'));
 
     return false;
   }
 
   await addCoin(usr_qq, -amount);
-  Send(Text(`成功交税 ${amount} 灵石，剩余 ${lingshi - amount}`));
+  void Send(Text(`成功交税 ${amount} 灵石，剩余 ${lingshi - amount}`));
 
   return false;
 });

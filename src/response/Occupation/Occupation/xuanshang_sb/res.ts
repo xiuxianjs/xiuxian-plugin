@@ -20,14 +20,14 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
   const rest = e.MessageText.replace(/^(#|＃|\/)?悬赏/, '').trim();
 
   if (!rest) {
-    Send(Text('格式: 悬赏qq号*金额 (例:#悬赏123456*300000)'));
+    void Send(Text('格式: 悬赏qq号*金额 (例:#悬赏123456*300000)'));
 
     return false;
   }
@@ -35,7 +35,7 @@ const res = onResponse(selects, async e => {
   const targetQQ = code[0].trim();
 
   if (!/^\d{5,}$/.test(targetQQ)) {
-    Send(Text('目标QQ格式不正确'));
+    void Send(Text('目标QQ格式不正确'));
 
     return false;
   }
@@ -54,20 +54,20 @@ const res = onResponse(selects, async e => {
   }
 
   if ((player.灵石 || 0) < money) {
-    Send(Text('您手头这点灵石,似乎在说笑'));
+    void Send(Text('您手头这点灵石,似乎在说笑'));
 
     return false;
   }
 
   if (!(await existplayer(targetQQ))) {
-    Send(Text('世间没有这人'));
+    void Send(Text('世间没有这人'));
 
     return false;
   }
   const player_B = await readPlayer(targetQQ);
 
   if (!player_B) {
-    Send(Text('查询目标玩家数据失败'));
+    void Send(Text('查询目标玩家数据失败'));
 
     return false;
   }
@@ -95,7 +95,7 @@ const res = onResponse(selects, async e => {
   await writePlayer(usr_qq, player);
   await redis.set(actionKey, JSON.stringify(list));
 
-  Send(Text('悬赏成功!'));
+  void Send(Text('悬赏成功!'));
   const msg = `【全服公告】${player_B.名号}被悬赏了${money}灵石`;
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
   const groupList = await redis.smembers(redisGlKey);

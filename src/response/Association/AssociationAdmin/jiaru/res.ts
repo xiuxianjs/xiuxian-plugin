@@ -16,7 +16,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!player.宗门) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
@@ -24,7 +24,7 @@ const res = onResponse(selects, async e => {
   const allow = role === '宗主' || role === '副宗主' || role === '长老';
 
   if (!allow) {
-    Send(Text('只有宗主、副宗主或长老可以操作'));
+    void Send(Text('只有宗主、副宗主或长老可以操作'));
 
     return false;
   }
@@ -32,7 +32,7 @@ const res = onResponse(selects, async e => {
   const jiar = e.MessageText.replace(/^(#|＃|\/)?设置门槛/, '').trim();
 
   if (!jiar) {
-    Send(Text('请输入境界名称'));
+    void Send(Text('请输入境界名称'));
 
     return false;
   }
@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
   const levelInfo = levelList.find(item => item.level === jiar);
 
   if (!levelInfo) {
-    Send(Text('境界不存在'));
+    void Send(Text('境界不存在'));
 
     return false;
   }
@@ -53,16 +53,16 @@ const res = onResponse(selects, async e => {
   }
   if (ass.power === 0 && jr_level_id > 41) {
     jr_level_id = 41;
-    Send(Text('不知哪位大能立下誓言：凡界无仙！'));
+    void Send(Text('不知哪位大能立下誓言：凡界无仙！'));
   }
   if (ass.power === 1 && jr_level_id < 42) {
     jr_level_id = 42;
-    Send(Text('仅仙人可加入仙宗'));
+    void Send(Text('仅仙人可加入仙宗'));
   }
 
   ass.最低加入境界 = jr_level_id;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  Send(Text('已成功设置宗门门槛，当前门槛:' + jiar));
+  void Send(Text('已成功设置宗门门槛，当前门槛:' + jiar));
 
   return false;
 });

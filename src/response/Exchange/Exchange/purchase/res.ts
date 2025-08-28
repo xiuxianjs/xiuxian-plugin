@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
     const ExchangeCDm = Math.trunc((ExchangeCD + transferTimeout - now_time) / 60 / 1000);
     const ExchangeCDs = Math.trunc(((ExchangeCD + transferTimeout - now_time) % 60000) / 1000);
 
-    Send(
+    void Send(
       Text(
         `每${transferTimeout / 1000 / 60}分钟操作一次，` + `CD: ${ExchangeCDm}分${ExchangeCDs}秒`
       )
@@ -60,12 +60,12 @@ const res = onResponse(selects, async e => {
 
   // 如果t[0]或t[1]不是非0开头的数字, 发送提示并返回
   if (!/^[1-9]\d*$/.test(t[0])) {
-    Send(Text(`请输入正确的编号,${t[0]}不是合法的数字`));
+    void Send(Text(`请输入正确的编号,${t[0]}不是合法的数字`));
 
     return false;
   }
   if (!/^[1-9]\d*$/.test(t[1])) {
-    Send(Text(`请输入正确的数量,${t[1]}不是合法的数字`));
+    void Send(Text(`请输入正确的数量,${t[1]}不是合法的数字`));
 
     return false;
   }
@@ -76,8 +76,8 @@ const res = onResponse(selects, async e => {
   }
   const thingqq = Exchange[x].qq;
 
-  if (thingqq == usr_qq) {
-    Send(Text('自己买自己的东西？我看你是闲得蛋疼！'));
+  if (thingqq === usr_qq) {
+    void Send(Text('自己买自己的东西？我看你是闲得蛋疼！'));
 
     return false;
   }
@@ -92,7 +92,7 @@ const res = onResponse(selects, async e => {
     n = thing_amount;
   }
   if (n > thing_amount) {
-    Send(Text(`冲水堂没有这么多【${thing_name}】!`));
+    void Send(Text(`冲水堂没有这么多【${thing_name}】!`));
 
     return false;
   }
@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
   // 查灵石
   if (player.灵石 > money) {
     // 加物品
-    if (thing_class == '装备' || thing_class == '仙宠') {
+    if (thing_class === '装备' || thing_class === '仙宠') {
       await addNajieThing(usr_qq, Exchange[x].thing.name, thing_class, n, Exchange[x].pinji2);
     } else {
       await addNajieThing(usr_qq, thing_name, thing_class, n);
@@ -114,9 +114,9 @@ const res = onResponse(selects, async e => {
     // 删除该位置信息
     Exchange = Exchange.filter(item => item.amount > 0);
     await writeExchange(Exchange);
-    Send(Text(`${player.名号}在冲水堂购买了${n}个【${thing_name}】！`));
+    void Send(Text(`${player.名号}在冲水堂购买了${n}个【${thing_name}】！`));
   } else {
-    Send(Text('醒醒，你没有那么多钱！'));
+    void Send(Text('醒醒，你没有那么多钱！'));
 
     return false;
   }

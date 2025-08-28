@@ -73,7 +73,7 @@ const res = onResponse(selects, async e => {
 
   if (!garden || toInt(garden.药园等级, 1) === 1 || toInt(garden.药园等级) !== guildLevel) {
     await createGarden(guildName, usr_qq, guildLevel);
-    Send(Text('新建药园，种下了一棵草'));
+    void Send(Text('新建药园，种下了一棵草'));
     ass = (await getDataJSONParseByKey(keys.association(guildName))) as GuildData;
   }
 
@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
 
     msg.push(`作物: ${crop.name}\n描述: ${crop.desc || ''}\n成长时间:${remainStr}`);
   }
-  Send(Text(msg.join('\n')));
+  void Send(Text(msg.join('\n')));
 
   return false;
 });

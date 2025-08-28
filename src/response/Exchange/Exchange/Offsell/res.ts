@@ -70,7 +70,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`每${cdMs / 60000}分钟操作一次，CD: ${m}分${s}秒`));
+    void Send(Text(`每${cdMs / 60000}分钟操作一次，CD: ${m}分${s}秒`));
 
     return false;
   }
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
   const idx = toInt(e.MessageText.replace(/^(#|＃|\/)?下架/, ''), 0) - 1;
 
   if (idx < 0) {
-    Send(Text('编号格式错误'));
+    void Send(Text('编号格式错误'));
 
     return false;
   }
@@ -96,7 +96,7 @@ const res = onResponse(selects, async e => {
 
   console.log('list:', list);
   if (idx >= list.length) {
-    Send(Text(`没有编号为${idx + 1}的物品`));
+    void Send(Text(`没有编号为${idx + 1}的物品`));
 
     return false;
   }
@@ -104,7 +104,7 @@ const res = onResponse(selects, async e => {
   const rec = list[idx];
 
   if (rec.qq !== usr_qq) {
-    Send(Text('不能下架别人上架的物品'));
+    void Send(Text('不能下架别人上架的物品'));
 
     return false;
   }
@@ -120,7 +120,7 @@ const res = onResponse(selects, async e => {
     thingClass = rec.name.class;
   }
   if (!thingName) {
-    Send(Text('物品名称缺失'));
+    void Send(Text('物品名称缺失'));
 
     return false;
   }
@@ -141,7 +141,7 @@ const res = onResponse(selects, async e => {
 
   const player = await readPlayer(usr_qq);
 
-  Send(Text(`${player?.名号 || usr_qq}下架${thingName}成功！`));
+  void Send(Text(`${player?.名号 || usr_qq}下架${thingName}成功！`));
 
   return false;
 });

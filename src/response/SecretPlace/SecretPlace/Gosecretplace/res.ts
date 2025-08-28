@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
 
   didian = didian.trim();
   const didianList = await getDataList('Didian');
-  const weizhiRaw = didianList?.find(item => item.name == didian);
+  const weizhiRaw = didianList?.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhiRaw)) {
     return false;
@@ -51,22 +51,22 @@ const res = onResponse(selects, async e => {
   const weizhi = weizhiUnknown;
 
   if (player.灵石 < weizhi.Price) {
-    Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'));
+    void Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'));
 
     return false;
   }
-  if (didian == '桃花岛') {
+  if (didian === '桃花岛') {
     const exist_B = await existHunyin(usr_qq);
 
     if (!exist_B) {
-      Send(Text('还请少侠找到道侣之后再来探索吧'));
+      void Send(Text('还请少侠找到道侣之后再来探索吧'));
 
       return false;
     }
     const qinmidu = await findDaolvQinmidu(usr_qq);
 
     if (typeof qinmidu === 'number' && qinmidu < 550) {
-      Send(Text('少侠还是先和道侣再联络联络感情吧'));
+      void Send(Text('少侠还是先和道侣再联络联络感情吧'));
 
       return false;
     }
@@ -93,7 +93,7 @@ const res = onResponse(selects, async e => {
   });
 
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
-  Send(Text('开始降临' + didian + ',' + time + '分钟后归来!'));
+  void Send(Text('开始降临' + didian + ',' + time + '分钟后归来!'));
 });
 
 import mw from '@src/response/mw';

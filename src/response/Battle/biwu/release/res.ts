@@ -27,16 +27,16 @@ const res = onResponse(selects, async e => {
     };
 
     if (
-      action.技能[jineng].cd < data.Jineng.find(item => item.name == action.技能[jineng].name).cd
+      action.技能[jineng].cd < data.Jineng.find(item => item.name === action.技能[jineng].name).cd
     ) {
-      Send(Text(`${action.技能[jineng].name}技能cd中`));
+      void Send(Text(`${action.技能[jineng].name}技能cd中`));
 
       return false;
     }
   }
   action.use = jineng;
   await redis.set(getRedisKey(e.UserId, 'bisai'), JSON.stringify(action));
-  Send(Text(`选择成功,下回合释放技能:${action.技能[jineng].name}`));
+  void Send(Text(`选择成功,下回合释放技能:${action.技能[jineng].name}`));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

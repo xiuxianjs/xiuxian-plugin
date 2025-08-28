@@ -37,13 +37,13 @@ const res = onResponse(selects, async e => {
     // 得到投入金额
     game.yazhu[usr_qq] = player.灵石 - 1;
     game.game_key_user[usr_qq] = true;
-    message.send(format(Text('媚娘：梭哈完成,发送[大|小|1-6]')));
+    void message.send(format(Text('媚娘：梭哈完成,发送[大|小|1-6]')));
 
     return false;
   }
 
   if (parseInt(num) <= 0 || isNaN(parseInt(num))) {
-    message.send(format(Text('媚娘：请输入正确的投入金额')));
+    void message.send(format(Text('媚娘：请输入正确的投入金额')));
 
     return false;
   }
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
       // 如果押的钱不够
       // 值未真。并记录此人信息
       game.game_key_user[usr_qq] = true;
-      message.send(format(Text('媚娘：投入完成,发送[大|小|1-6]')));
+      void message.send(format(Text('媚娘：投入完成,发送[大|小|1-6]')));
     } else {
       // 直接清除，并记录
       // 重新记录本次时间
@@ -74,7 +74,7 @@ const res = onResponse(selects, async e => {
       game.yazhu[usr_qq] = 0;
       // 清除游戏定时检测CD
       clearTimeout(game.game_time[usr_qq]);
-      message.send(format(Text('媚娘：钱不够也想玩？')));
+      void message.send(format(Text('媚娘：钱不够也想玩？')));
     }
   }
 });

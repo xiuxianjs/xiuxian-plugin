@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
   const img = await getGongfaImage(e);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

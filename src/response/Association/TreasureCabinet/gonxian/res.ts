@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
 
   // 无宗门
   if (!notUndAndNull(player.宗门)) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
@@ -30,11 +30,11 @@ const res = onResponse(selects, async e => {
   // 贡献值为捐献灵石除10000
   const gonxianzhi = Math.trunc(player.宗门.lingshi_donate / 10000);
 
-  Send(
+  void Send(
     Text(
-      '你为宗门的贡献值为[' +
-        gonxianzhi +
-        '],可以在#宗门藏宝阁 使用贡献值兑换宗门物品,感谢您对宗门做出的贡献'
+      '你为宗门的贡献值为['
+        + gonxianzhi
+        + '],可以在#宗门藏宝阁 使用贡献值兑换宗门物品,感谢您对宗门做出的贡献'
     )
   );
 });

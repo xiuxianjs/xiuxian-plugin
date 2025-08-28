@@ -26,23 +26,23 @@ const res = onResponse(selects, async e => {
   }
   if (
     // !player ||
-    !notUndAndNull(player.宗门) ||
-    !isPlayerGuildRef(player.宗门)
+    !notUndAndNull(player.宗门)
+    || !isPlayerGuildRef(player.宗门)
   ) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
   const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (!assRaw || !isAssDetail(assRaw)) {
-    Send(Text('宗门数据不存在'));
+    void Send(Text('宗门数据不存在'));
 
     return;
   }
   const hp = typeof assRaw.大阵血量 === 'number' ? assRaw.大阵血量 : 0;
 
-  Send(Text(`护宗大阵血量:${hp}`));
+  void Send(Text(`护宗大阵血量:${hp}`));
 
   return false;
 });

@@ -82,7 +82,7 @@ const res = onResponse(selects, async e => {
   const nowTs = nowDate.getTime();
 
   if (nowTs >= openTime && nowTs <= closeTime) {
-    Send(Text('这个时间由星阁阁主看管,还是不要张扬较好'));
+    void Send(Text('这个时间由星阁阁主看管,还是不要张扬较好'));
 
     return false;
   }
@@ -97,7 +97,7 @@ const res = onResponse(selects, async e => {
   const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'));
 
   if (last_game_timeA && Number(last_game_timeA) === 0) {
-    Send(Text('猜大小正在进行哦!'));
+    void Send(Text('猜大小正在进行哦!'));
 
     return false;
   }
@@ -116,12 +116,12 @@ const res = onResponse(selects, async e => {
   const B = target.UserId;
 
   if (A === B) {
-    Send(Text('咋的，自己弄自己啊？'));
+    void Send(Text('咋的，自己弄自己啊？'));
 
     return false;
   }
   if (!(await existplayer(B))) {
-    Send(Text('不可对凡人出手!'));
+    void Send(Text('不可对凡人出手!'));
 
     return false;
   }
@@ -130,7 +130,7 @@ const res = onResponse(selects, async e => {
   const playerAA = await readPlayer(A);
 
   if (!notUndAndNull(playerAA.level_id)) {
-    Send(Text('请先#同步信息'));
+    void Send(Text('请先#同步信息'));
 
     return false;
   }
@@ -138,7 +138,7 @@ const res = onResponse(selects, async e => {
   const levelA = levelList.find(it => it.level_id === playerAA.level_id);
 
   if (!levelA) {
-    Send(Text('你的境界数据异常'));
+    void Send(Text('你的境界数据异常'));
 
     return false;
   }
@@ -147,26 +147,26 @@ const res = onResponse(selects, async e => {
   const playerBB = await readPlayer(B);
 
   if (!notUndAndNull(playerBB.level_id)) {
-    Send(Text('对方为错误存档！'));
+    void Send(Text('对方为错误存档！'));
 
     return false;
   }
   const levelB = levelList.find(it => it.level_id === playerBB.level_id);
 
   if (!levelB) {
-    Send(Text('对方境界数据异常'));
+    void Send(Text('对方境界数据异常'));
 
     return false;
   }
   const now_level_idBB = levelB.level_id;
 
   if (now_level_idAA > 41 && now_level_idBB <= 41) {
-    Send(Text('仙人不可对凡人出手！'));
+    void Send(Text('仙人不可对凡人出手！'));
 
     return false;
   }
   if (now_level_idAA >= 12 && now_level_idBB < 12) {
-    Send(Text('不可欺负弱小！'));
+    void Send(Text('不可欺负弱小！'));
 
     return false;
   }
@@ -178,10 +178,10 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (
-    playerAFull?.宗门 &&
-    playerBFull?.宗门 &&
-    isPlayerGuildRef(playerAFull.宗门) &&
-    isPlayerGuildRef(playerBFull.宗门)
+    playerAFull?.宗门
+    && playerBFull?.宗门
+    && isPlayerGuildRef(playerAFull.宗门)
+    && isPlayerGuildRef(playerBFull.宗门)
   ) {
     const assA = await getDataJSONParseByKey(keys.association(playerAFull.宗门.宗门名称));
     const assB = await getDataJSONParseByKey(keys.association(playerBFull.宗门.宗门名称));
@@ -190,13 +190,13 @@ const res = onResponse(selects, async e => {
       return false;
     }
     if (
-      assA !== 'error' &&
-      assB !== 'error' &&
-      isExtAss(assA) &&
-      isExtAss(assB) &&
-      assA.宗门名称 === assB.宗门名称
+      assA !== 'error'
+      && assB !== 'error'
+      && isExtAss(assA)
+      && isExtAss(assB)
+      && assA.宗门名称 === assB.宗门名称
     ) {
-      Send(Text('门派禁止内讧'));
+      void Send(Text('门派禁止内讧'));
 
       return false;
     }
@@ -217,7 +217,7 @@ const res = onResponse(selects, async e => {
           const m = Math.floor(remain / 60000);
           const s = Math.floor((remain % 60000) / 1000);
 
-          Send(Text(`正在${A_action.action}中,剩余时间:${m}分${s}秒`));
+          void Send(Text(`正在${A_action.action}中,剩余时间:${m}分${s}秒`));
 
           return false;
         }
@@ -231,7 +231,7 @@ const res = onResponse(selects, async e => {
   const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'));
 
   if (last_game_timeB && Number(last_game_timeB) === 0) {
-    Send(Text('对方猜大小正在进行哦，等他赚够了再打劫也不迟!'));
+    void Send(Text('对方猜大小正在进行哦，等他赚够了再打劫也不迟!'));
 
     return false;
   }
@@ -254,7 +254,7 @@ const res = onResponse(selects, async e => {
           const m = Math.floor(remain / 60000);
           const s = Math.floor((remain % 60000) / 1000);
 
-          Send(Text(`对方正在${B_action.action}中,剩余时间:${m}分${s}秒`));
+          void Send(Text(`对方正在${B_action.action}中,剩余时间:${m}分${s}秒`));
 
           return false;
         }
@@ -276,7 +276,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`打劫正在CD中，剩余cd:  ${m}分 ${s}秒`));
+    void Send(Text(`打劫正在CD中，剩余cd:  ${m}分 ${s}秒`));
 
     return false;
   }
@@ -285,17 +285,17 @@ const res = onResponse(selects, async e => {
   const B_player = await readPlayer(B);
 
   if (A_player.修为 < 0) {
-    Send(Text('还是闭会关再打劫吧'));
+    void Send(Text('还是闭会关再打劫吧'));
 
     return false;
   }
   if (B_player.当前血量 < 20000) {
-    Send(Text(`${B_player.名号} 重伤未愈,就不要再打他了`));
+    void Send(Text(`${B_player.名号} 重伤未愈,就不要再打他了`));
 
     return false;
   }
   if (B_player.灵石 < 30002) {
-    Send(Text(`${B_player.名号} 太穷了,就不要再打他了`));
+    void Send(Text(`${B_player.名号} 太穷了,就不要再打他了`));
 
     return false;
   }
@@ -330,7 +330,7 @@ const res = onResponse(selects, async e => {
   try {
     battle = await zdBattle(A_player, B_player);
   } catch {
-    Send(Text('战斗过程出错'));
+    void Send(Text('战斗过程出错'));
 
     return false;
   }
@@ -364,18 +364,18 @@ const res = onResponse(selects, async e => {
   });
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 
   if (msgArr.includes(A_win)) {
     const hasDoll = await existNajieThing(B, '替身人偶', '道具');
 
     if (
-      hasDoll &&
-      B_player.魔道值 < 1 &&
-      (B_player.灵根?.type === '转生' || (B_player.level_id ?? 0) > 41)
+      hasDoll
+      && B_player.魔道值 < 1
+      && (B_player.灵根?.type === '转生' || (B_player.level_id ?? 0) > 41)
     ) {
-      Send(Text(`${B_player.名号}使用了道具替身人偶,躲过了此次打劫`));
+      void Send(Text(`${B_player.名号}使用了道具替身人偶,躲过了此次打劫`));
       await addNajieThing(B, '替身人偶', '道具', -1);
 
       return false;
@@ -433,12 +433,12 @@ const res = onResponse(selects, async e => {
       );
     }
   } else {
-    Send(Text('战斗过程出错'));
+    void Send(Text('战斗过程出错'));
 
     return false;
   }
 
-  Send(Text(final_msg.join('\n')));
+  void Send(Text(final_msg.join('\n')));
 
   return false;
 });

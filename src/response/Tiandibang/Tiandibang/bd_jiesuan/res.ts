@@ -10,7 +10,7 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   if (!e.IsMaster) {
-    Send(Text('只有主人可以执行操作'));
+    void Send(Text('只有主人可以执行操作'));
 
     return false;
   }
@@ -21,7 +21,7 @@ const res = onResponse(selects, async e => {
     await writeTiandibang([]);
   }
   await reBangdang();
-  Send(Text('积分已经重置！'));
+  void Send(Text('积分已经重置！'));
 
   return false;
 });

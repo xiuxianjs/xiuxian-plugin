@@ -14,16 +14,16 @@ const res = onResponse(selects, async e => {
   }
   const A = await looktripod(user_qq);
 
-  if (A != 1) {
-    Send(Text('请先去#炼器师能力评测,再来煅炉吧'));
+  if (A !== 1) {
+    void Send(Text('请先去#炼器师能力评测,再来煅炉吧'));
 
     return false;
   }
 
   const a = await readMytripod(user_qq);
 
-  if (a.材料.length == 0) {
-    Send(Text('锻炉里空空如也,没什么好看的'));
+  if (a.材料.length === 0) {
+    void Send(Text('锻炉里空空如也,没什么好看的'));
 
     return false;
   }
@@ -34,12 +34,12 @@ const res = onResponse(selects, async e => {
 
   for (const item in a.材料) {
     for (const item1 in shuju) {
-      if (shuju[item1] == a.材料[item]) {
+      if (shuju[item1] === a.材料[item]) {
         shuju2[item1] = shuju2[item1] * 1 + a.数量[item] * 1;
         xuanze = 1;
       }
     }
-    if (xuanze == 0) {
+    if (xuanze === 0) {
       shuju.push(a.材料[item]);
       shuju2.push(a.数量[item]);
     } else {
@@ -50,7 +50,7 @@ const res = onResponse(selects, async e => {
   for (const item2 in shuju) {
     b += shuju[item2] + shuju2[item2] + '个\n';
   }
-  Send(Text(b));
+  void Send(Text(b));
 });
 
 import mw from '@src/response/mw';

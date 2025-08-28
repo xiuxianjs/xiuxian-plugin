@@ -26,14 +26,14 @@ const res = onResponse(selects, async e => {
     const ifexistplay = await existplayer(qq);
 
     if (!ifexistplay) {
-      Send(Text('没存档你打个锤子！'));
+      void Send(Text('没存档你打个锤子！'));
 
       return false;
     }
     const player = await readPlayer(qq);
 
     player.power_place = 1;
-    Send(Text('已打落凡间！'));
+    void Send(Text('已打落凡间！'));
     await writePlayer(qq, player);
 
     return false;

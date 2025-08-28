@@ -17,10 +17,10 @@ const res = onResponse(selects, async e => {
   }
   const player = await readPlayer(usr_qq);
 
-  if (player.level_id > 31 || player.level_id == 0) {
+  if (player.level_id > 31 || player.level_id === 0) {
     return false;
   }
-  Send(Text('已为你开启10次自动突破'));
+  void Send(Text('已为你开启10次自动突破'));
   let num = 1;
   const time = setInterval(() => {
     Level_up(e);

@@ -12,7 +12,7 @@ const res = onResponse(selects, async e => {
   if (!flag) {
     return;
   }
-  Send(Text('空闲中!'));
+  void Send(Text('空闲中!'));
 });
 
 import mw from '@src/response/mw';

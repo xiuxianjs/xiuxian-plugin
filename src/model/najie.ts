@@ -31,15 +31,15 @@ export async function updateBagThing(
     najie[thing_class] = [];
   }
 
-  if (thing_class == '装备' && (thing_pinji || thing_pinji == 0)) {
+  if (thing_class === '装备' && (thing_pinji || thing_pinji === 0)) {
     for (const i of najie['装备']) {
-      if (i.name == thing_name && i.pinji == thing_pinji) {
+      if (i.name === thing_name && i.pinji === thing_pinji) {
         i.islockd = lock;
       }
     }
   } else {
     for (const i of najie[thing_class]) {
-      if (i.name == thing_name) {
+      if (i.name === thing_name) {
         i.islockd = lock;
       }
     }
@@ -70,10 +70,10 @@ export async function existNajieThing(
   }
   let ifexist: NajieItem | undefined;
 
-  if (thing_class == '装备' && (thing_pinji || thing_pinji == 0)) {
+  if (thing_class === '装备' && (thing_pinji || thing_pinji === 0)) {
     const equipList = Array.isArray(najie.装备) ? najie.装备 : [];
 
-    ifexist = equipList.find(item => item.name == thing_name && item.pinji == thing_pinji);
+    ifexist = equipList.find(item => item.name === thing_name && item.pinji === thing_pinji);
   } else {
     const type: NajieCategory[] = [
       '装备',
@@ -92,7 +92,7 @@ export async function existNajieThing(
       if (!Array.isArray(list)) {
         continue;
       }
-      ifexist = list.find(item => item.name == thing_name);
+      ifexist = list.find(item => item.name === thing_name);
       if (ifexist) {
         break;
       }
@@ -121,7 +121,7 @@ export async function addNajieThing(
   x: number,
   pinji?: number
 ): Promise<void> {
-  if (x == 0) {
+  if (x === 0) {
     return;
   }
   const najie: Najie | null = await readNajie(usr_qq);
@@ -134,8 +134,8 @@ export async function addNajieThing(
   if (!Array.isArray(najie[thing_class])) {
     najie[thing_class] = [];
   }
-  if (thing_class == '装备') {
-    if (!pinji && pinji != 0) {
+  if (thing_class === '装备') {
+    if (!pinji && pinji !== 0) {
       pinji = Math.trunc(Math.random() * 6);
     }
     const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2];
@@ -155,7 +155,7 @@ export async function addNajieThing(
           if (!Array.isArray(i)) {
             continue;
           }
-          const thing = (i as NajieItem[]).find(item => item.name == name);
+          const thing = (i as NajieItem[]).find(item => item.name === name);
 
           if (thing) {
             const equ = _.cloneDeep(thing) as EquipmentLike;
@@ -191,7 +191,7 @@ export async function addNajieThing(
       }
     }
     const fb = najie[thing_class].find(
-      item => item.name == ((name as NajieItem).name || name) && item.pinji == pinji
+      item => item.name === ((name as NajieItem).name || name) && item.pinji === pinji
     );
 
     if (fb) {
@@ -201,13 +201,13 @@ export async function addNajieThing(
     await writeNajie(usr_qq, najie);
 
     return;
-  } else if (thing_class == '仙宠') {
+  } else if (thing_class === '仙宠') {
     if (x > 0) {
       if (typeof name !== 'object') {
         const data = {
           xianchon: await getDataList('Xianchon')
         };
-        let thing = data.xianchon.find((item: XianchongSource) => item.name == name);
+        let thing = data.xianchon.find((item: XianchongSource) => item.name === name);
 
         if (thing) {
           thing = _.cloneDeep(thing);
@@ -233,7 +233,7 @@ export async function addNajieThing(
         return;
       }
     }
-    const fb = najie[thing_class].find(item => item.name == ((name as NajieItem).name || name));
+    const fb = najie[thing_class].find(item => item.name === ((name as NajieItem).name || name));
 
     if (fb) {
       fb.数量 = (fb.数量 || 0) + x;
@@ -262,10 +262,10 @@ export async function addNajieThing(
       if (!Array.isArray(i)) {
         continue;
       }
-      thing = (i as NajieItem[]).find(item => item.name == name);
+      thing = (i as NajieItem[]).find(item => item.name === name);
       if (thing) {
         najie[thing_class].push(thing);
-        const fb = najie[thing_class].find(item => item.name == name);
+        const fb = najie[thing_class].find(item => item.name === name);
 
         if (fb) {
           fb.数量 = x;
@@ -277,7 +277,7 @@ export async function addNajieThing(
       }
     }
   }
-  const fb = najie[thing_class].find(item => item.name == name);
+  const fb = najie[thing_class].find(item => item.name === name);
 
   if (fb) {
     fb.数量 = (fb.数量 || 0) + x;

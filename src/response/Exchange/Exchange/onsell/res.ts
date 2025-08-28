@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
   const raw = e.MessageText.replace(/^(#|＃|\/)?上架/, '').trim();
 
   if (!raw) {
-    Send(Text('格式：#上架物品名*价格*数量 (装备/仙宠可附加 *品级)'));
+    void Send(Text('格式：#上架物品名*价格*数量 (装备/仙宠可附加 *品级)'));
 
     return false;
   }
@@ -78,7 +78,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (parts.length < 2) {
-    Send(Text('参数不足，至少需要 物品*价格*数量'));
+    void Send(Text('参数不足，至少需要 物品*价格*数量'));
 
     return false;
   }
@@ -91,7 +91,7 @@ const res = onResponse(selects, async e => {
       const pet = najie.仙宠?.[numericCode - 1001];
 
       if (!pet) {
-        Send(Text('仙宠代号输入有误!'));
+        void Send(Text('仙宠代号输入有误!'));
 
         return false;
       }
@@ -100,7 +100,7 @@ const res = onResponse(selects, async e => {
       const equip = najie.装备?.[numericCode - 101];
 
       if (!equip) {
-        Send(Text('装备代号输入有误!'));
+        void Send(Text('装备代号输入有误!'));
 
         return false;
       }
@@ -111,7 +111,7 @@ const res = onResponse(selects, async e => {
   const thingDefRaw = await foundthing(thingName);
 
   if (!thingDefRaw) {
-    Send(Text(`这方世界没有[${thingName}]`));
+    void Send(Text(`这方世界没有[${thingName}]`));
 
     return false;
   }
@@ -146,7 +146,7 @@ const res = onResponse(selects, async e => {
   const amount = await convert2integer(amountRaw);
 
   if (!isPositive(price) || !isPositive(amount)) {
-    Send(Text('价格与数量需为正整数'));
+    void Send(Text('价格与数量需为正整数'));
 
     return false;
   }
@@ -158,14 +158,14 @@ const res = onResponse(selects, async e => {
     const equips = (najie.装备 || []).filter(i => i.name === thingName);
 
     if (!equips.length) {
-      Send(Text(`你没有[${thingName}]`));
+      void Send(Text(`你没有[${thingName}]`));
 
       return false;
     }
     if (finalPinji !== undefined) {
       selected = equips.find(ei => ei.pinji === finalPinji);
       if (!selected) {
-        Send(Text(`你没有该品级的[${thingName}]`));
+        void Send(Text(`你没有该品级的[${thingName}]`));
 
         return false;
       }
@@ -177,7 +177,7 @@ const res = onResponse(selects, async e => {
     const pets = (najie.仙宠 || []).filter(i => i.name === thingName);
 
     if (!pets.length) {
-      Send(Text(`你没有[${thingName}]`));
+      void Send(Text(`你没有[${thingName}]`));
 
       return false;
     }
@@ -185,7 +185,7 @@ const res = onResponse(selects, async e => {
   }
 
   if ((itemClass === '装备' || itemClass === '仙宠') && amount !== 1) {
-    Send(Text(`${itemClass}一次只能上架 1 个`));
+    void Send(Text(`${itemClass}一次只能上架 1 个`));
 
     return false;
   }
@@ -193,7 +193,7 @@ const res = onResponse(selects, async e => {
   const ownedCount = await existNajieThing(usr_qq, thingName, itemClass, finalPinji);
 
   if (!ownedCount || ownedCount < amount) {
-    Send(Text(`你没有那么多[${thingName}]`));
+    void Send(Text(`你没有那么多[${thingName}]`));
 
     return false;
   }
@@ -201,7 +201,7 @@ const res = onResponse(selects, async e => {
   const totalPrice = Math.trunc(price * amount);
 
   if (!isPositive(totalPrice)) {
-    Send(Text('总价计算异常'));
+    void Send(Text('总价计算异常'));
 
     return false;
   }
@@ -214,7 +214,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (player.灵石 < fee) {
-    Send(Text(`就这点灵石还想上架，需要手续费 ${fee}`));
+    void Send(Text(`就这点灵石还想上架，需要手续费 ${fee}`));
 
     return false;
   }
@@ -237,7 +237,7 @@ const res = onResponse(selects, async e => {
 
   if (itemClass === '装备' || itemClass === '仙宠') {
     if (!selected) {
-      Send(Text('内部错误：未选中上架对象'));
+      void Send(Text('内部错误：未选中上架对象'));
 
       return false;
     }
@@ -270,7 +270,7 @@ const res = onResponse(selects, async e => {
 
   exchange.push(newRecord);
   await writeExchange(exchange);
-  Send(Text('上架成功！'));
+  void Send(Text('上架成功！'));
 });
 
 import mw from '@src/response/mw';

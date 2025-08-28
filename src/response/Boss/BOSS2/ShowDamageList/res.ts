@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
   }
 
   if (!(await BossIsAlive())) {
-    Send(Text('金角大王未开启！'));
+    void Send(Text('金角大王未开启！'));
 
     return false;
   }
@@ -48,14 +48,14 @@ const res = onResponse(selects, async e => {
   const WorldBossStatusStr = parseJson<WorldBossStatus>(await redis.get(KEY_WORLD_BOOS_STATUS_TWO));
 
   if (!PlayerRecord || !Array.isArray(PlayerRecord.Name)) {
-    Send(Text('还没人挑战过金角大王'));
+    void Send(Text('还没人挑战过金角大王'));
 
     return false;
   }
   const PlayerList = await SortPlayer(PlayerRecord);
 
   if (!Array.isArray(PlayerList) || PlayerList.length === 0) {
-    Send(Text('还没人挑战过金角大王'));
+    void Send(Text('还没人挑战过金角大王'));
 
     return false;
   }
@@ -98,7 +98,7 @@ const res = onResponse(selects, async e => {
       level_id: 0
     };
 
-    if (PlayerRecord.QQ[idx] == e.UserId) {
+    if (PlayerRecord.QQ[idx] === e.UserId) {
       CurrentQQ = i + 1;
     }
   }
@@ -106,7 +106,7 @@ const res = onResponse(selects, async e => {
   if (CurrentQQ) {
     const idx = PlayerList[CurrentQQ - 1];
 
-    Send(
+    void Send(
       Text(
         `你在金角大王周本贡献排行榜中排名第${CurrentQQ}，造成伤害${
           PlayerRecord.TotalDamage[idx] || 0
@@ -127,12 +127,12 @@ const res = onResponse(selects, async e => {
   });
 
   if (Buffer.isBuffer(image)) {
-    Send(Image(image));
+    void Send(Image(image));
 
     return;
   }
 
-  Send(Text('图片生产失败'));
+  void Send(Text('图片生产失败'));
 });
 
 import mw from '@src/response/mw';

@@ -37,10 +37,10 @@ const res = onResponse(selects, async e => {
 
   // 获取游戏状态
   const game_action_raw = await redis.get(getRedisKey(usr_qq, 'game_action'));
-  const game_action = game_action_raw == null ? 0 : Number(game_action_raw);
+  const game_action = game_action_raw === null ? 0 : Number(game_action_raw);
 
   // 防止继续其他娱乐行为
-  if (game_action == 1) {
+  if (game_action === 1) {
     void Send(Text('修仙：游戏进行中...'));
 
     return false;
@@ -49,9 +49,9 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
   // 境界
   const levelList = await getDataList('Level1');
-  const now_level = levelList.find(item => item.level_id == player.level_id)?.level;
+  const now_level = levelList.find(item => item.level_id === player.level_id)?.level;
 
-  if (now_level != '渡劫期') {
+  if (now_level !== '渡劫期') {
     void Send(Text('你非渡劫期修士！'));
 
     return false;
@@ -67,7 +67,7 @@ const res = onResponse(selects, async e => {
     action = null;
   }
   // 不为空
-  if (action != null) {
+  if (action !== null) {
     const action_end_time = action.end_time;
     const now_time = Date.now();
 
@@ -80,7 +80,7 @@ const res = onResponse(selects, async e => {
       return false;
     }
   }
-  if (player.power_place != 0) {
+  if (player.power_place !== 0) {
     void Send(Text('请先渡劫！'));
 
     return false;
@@ -93,10 +93,10 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+  now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
   const now_exp = player.修为;
   // 修为
-  const need_exp = levelList.find(item => item.level_id == player.level_id).exp;
+  const need_exp = levelList.find(item => item.level_id === player.level_id).exp;
 
   if (now_exp < need_exp) {
     void Send(Text(`修为不足,再积累${need_exp - now_exp}修为后方可成仙！`));
@@ -104,12 +104,12 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 零，开仙门
-  if (player.power_place == 0) {
+  if (player.power_place === 0) {
     void Send(
       Text(
-        '天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，' +
-          player.名号 +
-          '来不及思索，立即向前飞去！只见万物仰头相望，似乎感觉到了，也似乎没有感觉，殊不知......'
+        '天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，'
+          + player.名号
+          + '来不及思索，立即向前飞去！只见万物仰头相望，似乎感觉到了，也似乎没有感觉，殊不知......'
       )
     );
     now_level_id = now_level_id + 1;
@@ -131,7 +131,7 @@ const res = onResponse(selects, async e => {
         return false;
       }
       // 有宗门
-      if (player.宗门.职位 != '宗主') {
+      if (player.宗门.职位 !== '宗主') {
         const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
         if (!assData) {
@@ -147,10 +147,10 @@ const res = onResponse(selects, async e => {
         const pos = player.宗门.职位 as string;
         const curList = (association[pos] as string[] | undefined) || [];
 
-        association[pos] = curList.filter(item => item != usr_qq);
+        association[pos] = curList.filter(item => item !== usr_qq);
         const allList = (association['所有成员'] as string[] | undefined) || [];
 
-        association['所有成员'] = allList.filter(item => item != usr_qq);
+        association['所有成员'] = allList.filter(item => item !== usr_qq);
         await redis.set(
           `${__PATH.association}:${association.宗门名称}`,
           JSON.stringify(association)
@@ -175,7 +175,7 @@ const res = onResponse(selects, async e => {
           await playerEfficiency(usr_qq);
           void Send(Text('一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
         } else {
-          association['所有成员'] = allList.filter(item => item != usr_qq); // 剔除原成员
+          association['所有成员'] = allList.filter(item => item !== usr_qq); // 剔除原成员
           delete player.宗门; // 删除这个B存档里的宗门信息
           await writePlayer(usr_qq, player);
           await playerEfficiency(usr_qq);
@@ -200,7 +200,7 @@ const res = onResponse(selects, async e => {
           const rPos = randmember.宗门.职位 as string;
           const rList = (association[rPos] as string[] | undefined) || [];
 
-          association[rPos] = rList.filter(item => item != randmember_qq);
+          association[rPos] = rList.filter(item => item !== randmember_qq);
           association['宗主'] = randmember_qq; // 新的职位表加入这个幸运儿
           randmember.宗门.职位 = '宗主'; // 成员存档里改职位
           await writePlayer(randmember_qq, randmember); // 记录到存档

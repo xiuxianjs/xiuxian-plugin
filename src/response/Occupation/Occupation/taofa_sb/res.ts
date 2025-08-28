@@ -48,7 +48,7 @@ const res = onResponse(selects, async e => {
       const m = Math.floor(remain / 60000);
       const s = Math.floor((remain % 60000) / 1000);
 
-      Send(Text(`正在${actionState.action}中,剩余时间:${m}分${s}秒`));
+      void Send(Text(`正在${actionState.action}中,剩余时间:${m}分${s}秒`));
 
       return false;
     }
@@ -56,8 +56,8 @@ const res = onResponse(selects, async e => {
 
   const player = await readPlayer(usr_qq);
 
-  if (player.occupation != '侠客') {
-    Send(Text('侠客资质不足,需要进行训练'));
+  if (player.occupation !== '侠客') {
+    void Send(Text('侠客资质不足,需要进行训练'));
 
     return false;
   }
@@ -65,12 +65,12 @@ const res = onResponse(selects, async e => {
   const task = parseJson<ShangjingTask>(await redis.get(getRedisKey(usr_qq, 'shangjing')));
 
   if (!task) {
-    Send(Text('还没有接取到悬赏,请查看后再来吧'));
+    void Send(Text('还没有接取到悬赏,请查看后再来吧'));
 
     return false;
   }
   if (task.arm.length === 0) {
-    Send(Text('每日限杀,请等待20小时后新的赏金目标'));
+    void Send(Text('每日限杀,请等待20小时后新的赏金目标'));
 
     return false;
   }
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
   const num = parseInt(idxRaw, 10) - 1;
 
   if (isNaN(num) || num < 0 || num >= task.arm.length) {
-    Send(Text('不要伤及无辜'));
+    void Send(Text('不要伤及无辜'));
 
     return false;
   }
@@ -88,13 +88,13 @@ const res = onResponse(selects, async e => {
 
   let last_msg = '';
 
-  if (qq != 1) {
+  if (qq !== 1) {
     const player_B = await readPlayer(String(qq));
 
     player_B.当前血量 = player_B.血量上限;
     // 规范 battle 实体：法球倍率 转 number
-    const fq =
-      typeof player_B.灵根.法球倍率 === 'number'
+    const fq
+      = typeof player_B.灵根.法球倍率 === 'number'
         ? player_B.灵根.法球倍率
         : parseFloat(String(player_B.灵根.法球倍率)) || 0;
     const buff = 1 + (player.occupation_level || 0) * 0.055;
@@ -154,7 +154,7 @@ const res = onResponse(selects, async e => {
     if (msg.length > 100) {
       logger.info('通过');
     } else {
-      Send(Text(msg.join('\n')));
+      void Send(Text(msg.join('\n')));
     }
   } else {
     player.灵石 += target.赏金;
@@ -166,10 +166,10 @@ const res = onResponse(selects, async e => {
   task.arm.splice(num, 1);
   await redis.set(getRedisKey(usr_qq, 'shangjing'), JSON.stringify(task));
   if (
-    last_msg === '你惩戒了仙路窃贼,获得了部分灵石' ||
-    last_msg.endsWith('反杀了你,只获得了部分辛苦钱')
+    last_msg === '你惩戒了仙路窃贼,获得了部分灵石'
+    || last_msg.endsWith('反杀了你,只获得了部分辛苦钱')
   ) {
-    Send(Text(last_msg));
+    void Send(Text(last_msg));
   } else if (last_msg) {
     const redisGlKey = KEY_AUCTION_GROUP_LIST;
     const groupList = await redis.smembers(redisGlKey);

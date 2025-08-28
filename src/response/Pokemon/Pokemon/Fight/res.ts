@@ -71,7 +71,7 @@ const res = onResponse(selects, async e => {
   let input = e.MessageText.replace(/^(#|＃|\/)?出战仙宠/, '').trim();
 
   if (!input) {
-    Send(Text('请在指令后附上仙宠名称或代号(>1000)'));
+    void Send(Text('请在指令后附上仙宠名称或代号(>1000)'));
 
     return false;
   }
@@ -79,7 +79,7 @@ const res = onResponse(selects, async e => {
   const najie = await readNajie(usr_qq);
 
   if (!najie || !Array.isArray(najie.仙宠)) {
-    Send(Text('纳戒数据异常'));
+    void Send(Text('纳戒数据异常'));
 
     return false;
   }
@@ -91,7 +91,7 @@ const res = onResponse(selects, async e => {
     const targetUnknown = najie.仙宠[idx];
 
     if (idx < 0 || idx >= najie.仙宠.length || !isBagPetLike(targetUnknown)) {
-      Send(Text('仙宠代号输入有误!'));
+      void Send(Text('仙宠代号输入有误!'));
 
       return false;
     }
@@ -99,7 +99,7 @@ const res = onResponse(selects, async e => {
   }
 
   if (player.仙宠?.灵魂绑定 === 1 && player.仙宠.name !== input) {
-    Send(Text(`你已经与${player.仙宠.name}绑定了灵魂,无法更换别的仙宠！`));
+    void Send(Text(`你已经与${player.仙宠.name}绑定了灵魂,无法更换别的仙宠！`));
 
     return false;
   }
@@ -108,7 +108,7 @@ const res = onResponse(selects, async e => {
   const petDef = (xianchonData as PetDef[]).find(p => p.name === input);
 
   if (!notUndAndNull(petDef)) {
-    Send(Text('这方世界不存在' + input));
+    void Send(Text('这方世界不存在' + input));
 
     return false;
   }
@@ -116,14 +116,14 @@ const res = onResponse(selects, async e => {
   const bagPetUnknown = najie.仙宠.find(p => p.name === input);
 
   if (!isBagPetLike(bagPetUnknown)) {
-    Send(Text('你没有' + input));
+    void Send(Text('你没有' + input));
 
     return false;
   }
   const bagPet = bagPetUnknown;
 
   if (player.仙宠?.name === bagPet.name) {
-    Send(Text('该仙宠已在出战中'));
+    void Send(Text('该仙宠已在出战中'));
 
     return false;
   }
@@ -169,7 +169,7 @@ const res = onResponse(selects, async e => {
   await addPet(usr_qq, newPet.name, -1, newPet.等级);
   await writePlayer(usr_qq, player);
 
-  Send(Text('成功出战' + newPet.name));
+  void Send(Text('成功出战' + newPet.name));
 
   return false;
 });

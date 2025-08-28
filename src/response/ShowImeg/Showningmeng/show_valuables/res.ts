@@ -16,7 +16,7 @@ const res = onResponse(selects, async e => {
   const img = await getValuablesImage(e);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

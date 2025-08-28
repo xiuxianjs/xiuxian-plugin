@@ -51,10 +51,10 @@ export const GET = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase()) ||
-              associationName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch
+              = !search
+              || associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase())
+              || associationName.toLowerCase().includes(search.toLowerCase());
 
             if (matchesSearch) {
               total++;
@@ -227,10 +227,10 @@ export const PUT = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch =
-              !search ||
-              associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase()) ||
-              associationName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch
+              = !search
+              || associationWithName.宗门名称?.toLowerCase().includes(search.toLowerCase())
+              || associationName.toLowerCase().includes(search.toLowerCase());
 
             if (matchesSearch) {
               total++;

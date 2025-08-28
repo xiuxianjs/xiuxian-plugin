@@ -26,14 +26,14 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
-    Send(Text('只有宗主、副宗主可以操作'));
+    void Send(Text('只有宗主、副宗主可以操作'));
 
     return false;
   }
   const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (!ass) {
-    Send(Text('宗门数据不存在'));
+    void Send(Text('宗门数据不存在'));
 
     return;
   }
@@ -46,7 +46,7 @@ const res = onResponse(selects, async e => {
   if (lastMaintain && lastMaintain > nowTime - 1000 * 60 * 60 * 24 * 7) {
     const nextmt_time = await shijianc(nextMaintainTs);
 
-    Send(
+    void Send(
       Text(
         `当前无需维护,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`
       )
@@ -59,7 +59,7 @@ const res = onResponse(selects, async e => {
   const need = level * 50000;
 
   if (pool < need) {
-    Send(Text(`目前宗门维护需要${need}灵石,本宗门灵石池储量不足`));
+    void Send(Text(`目前宗门维护需要${need}灵石,本宗门灵石池储量不足`));
 
     return false;
   }
@@ -69,7 +69,7 @@ const res = onResponse(selects, async e => {
   setDataJSONStringifyByKey(keys.player(usr_qq), player);
   const nextmt_time = await shijianc(ass.维护时间 + 60000 * time);
 
-  Send(
+  void Send(
     Text(
       `宗门维护成功,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`
     )

@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
 
   for (const j of type) {
     if (equipment[j].atk < 10 && equipment[j].def < 10 && equipment[j].HP < 10) {
-      Send(Text('请更换其他固定数值装备爬塔'));
+      void Send(Text('请更换其他固定数值装备爬塔'));
 
       return false;
     }
@@ -81,12 +81,12 @@ const res = onResponse(selects, async e => {
       const Random = Math.random();
 
       if (!(BattleFrame & 1)) {
-        let Player_To_BOSS_Damage =
-          Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
+        let Player_To_BOSS_Damage
+          = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
         const SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1;
 
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
-        if (Random > 0.5 && BattleFrame == 0) {
+        if (Random > 0.5 && BattleFrame === 0) {
           msg.push('你的进攻被反手了！');
           Player_To_BOSS_Damage = Math.trunc(Player_To_BOSS_Damage * 0.3);
         } else if (Random > 0.94) {
@@ -159,7 +159,7 @@ const res = onResponse(selects, async e => {
     }
   }
   player.灵石 += lingshi;
-  Send(Text(`\n恭喜你获得灵石${lingshi},本次通过${cengshu}层,失去部分灵石`));
+  void Send(Text(`\n恭喜你获得灵石${lingshi},本次通过${cengshu}层,失去部分灵石`));
 
   void setDataJSONStringifyByKey(keys.player(usr_qq), player);
 });

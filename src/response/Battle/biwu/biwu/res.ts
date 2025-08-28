@@ -98,12 +98,12 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!(await existplayer(B))) {
-    Send(Text('修仙者不可对凡人出手!'));
+    void Send(Text('修仙者不可对凡人出手!'));
 
     return false;
   }
   if (B_QQ.some(i => i.QQ === A || i.QQ === B) || A_QQ.some(i => i.QQ === A || i.QQ === B)) {
-    Send(Text('你或他已经在战斗中了'));
+    void Send(Text('你或他已经在战斗中了'));
 
     return false;
   }
@@ -575,9 +575,9 @@ async function battle(e, num: number) {
   });
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   } else {
-    Send(Text(A_player.当前血量 <= 0 ? `${B_player.名号}win!` : `${A_player.名号}win!`));
+    void Send(Text(A_player.当前血量 <= 0 ? `${B_player.名号}win!` : `${A_player.名号}win!`));
   }
 
   // 清理（记录原 QQ 供删除 redis 用）

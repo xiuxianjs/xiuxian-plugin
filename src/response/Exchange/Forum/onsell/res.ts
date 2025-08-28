@@ -34,12 +34,12 @@ const res = onResponse(selects, async e => {
   const thing_exist = await foundthing(thing_name);
 
   if (!thing_exist) {
-    Send(Text(`这方世界没有[${thing_name}]`));
+    void Send(Text(`这方世界没有[${thing_name}]`));
 
     return false;
   }
-  if (thing_exist.class == '装备' || thing_exist.class == '仙宠') {
-    Send(Text('暂不支持该类型物品交易'));
+  if (thing_exist.class === '装备' || thing_exist.class === '仙宠') {
+    void Send(Text('暂不支持该类型物品交易'));
 
     return false;
   }
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (player.灵石 < off + whole) {
-    Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`));
+    void Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`));
 
     return false;
   }
@@ -80,7 +80,7 @@ const res = onResponse(selects, async e => {
   Forum.push(wupin);
   // 写入
   await writeForum(Forum);
-  Send(Text('发布成功！'));
+  void Send(Text('发布成功！'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

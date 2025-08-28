@@ -24,7 +24,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
@@ -33,7 +33,7 @@ const res = onResponse(selects, async e => {
   const playerMagic = Number(player.魔道值) || 0;
 
   if (playerMagic < needMagic) {
-    Send(Text('你不是魔头'));
+    void Send(Text('你不是魔头'));
 
     return false;
   }
@@ -43,12 +43,12 @@ const res = onResponse(selects, async e => {
   const owned = Number(hasCount) || 0;
 
   if (owned <= 0) {
-    Send(Text('你没有魔石'));
+    void Send(Text('你没有魔石'));
 
     return false;
   }
   if (owned < COST) {
-    Send(Text(`魔石不足${COST}个,当前魔石数量${owned}个`));
+    void Send(Text(`魔石不足${COST}个,当前魔石数量${owned}个`));
 
     return false;
   }
@@ -57,7 +57,7 @@ const res = onResponse(selects, async e => {
   const pool = xinggeList[0]?.one as PrizeItem[] | undefined;
 
   if (!Array.isArray(pool) || pool.length === 0) {
-    Send(Text('奖励配置缺失'));
+    void Send(Text('奖励配置缺失'));
 
     return false;
   }
@@ -68,14 +68,14 @@ const res = onResponse(selects, async e => {
   const prize = pool[idx];
 
   if (!prize || typeof prize !== 'object' || !prize.name) {
-    Send(Text('奖励生成失败'));
+    void Send(Text('奖励生成失败'));
 
     return false;
   }
   const name = prize.name;
   const cls = (prize.class || '道具') as NajieCategory;
 
-  Send(Text('获得了' + name));
+  void Send(Text('获得了' + name));
   await addNajieThing(usr_qq, name, cls, 1);
 
   return false;

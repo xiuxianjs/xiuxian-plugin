@@ -21,20 +21,20 @@ const res = onResponse(selects, async e => {
 
   // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
-    Send(Text('请先#同步信息'));
+    void Send(Text('请先#同步信息'));
 
     return false;
   }
   if (!notUndAndNull(player.power_place)) {
-    Send(Text('请#同步信息'));
+    void Send(Text('请#同步信息'));
 
     return false;
   }
   const levelList = await getDataList('Level1');
-  const now_level_id = levelList?.find(item => item.level_id == player.level_id)?.level_id;
+  const now_level_id = levelList?.find(item => item.level_id === player.level_id)?.level_id;
 
   if (now_level_id < 22) {
-    Send(Text('没有达到化神之前还是不要去了'));
+    void Send(Text('没有达到化神之前还是不要去了'));
 
     return false;
   }
@@ -42,10 +42,10 @@ const res = onResponse(selects, async e => {
 
   didian = didian.trim();
   const forbiddenAreaList = await getDataList('ForbiddenArea');
-  const weizhiRaw = forbiddenAreaList?.find(item => item.name == didian);
+  const weizhiRaw = forbiddenAreaList?.find(item => item.name === didian);
 
-  // if (player.power_place == 0 && weizhi.id != 666) {
-  //     Send(Text("仙人不得下凡")
+  // if (player.power_place === 0 && weizhi.id !== 666) {
+  //    void Send(Text("仙人不得下凡")
   //     return  false;
   //  }
   if (!notUndAndNull(weizhiRaw)) {
@@ -69,12 +69,12 @@ const res = onResponse(selects, async e => {
   const weizhi = weizhiUnknown;
 
   if (player.灵石 < weizhi.Price) {
-    Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'));
+    void Send(Text('没有灵石寸步难行,攒到' + weizhi.Price + '灵石才够哦~'));
 
     return false;
   }
   if (player.修为 < weizhi.experience) {
-    Send(Text('你需要积累' + weizhi.experience + '修为，才能抵抗禁地魔气！'));
+    void Send(Text('你需要积累' + weizhi.experience + '修为，才能抵抗禁地魔气！'));
 
     return false;
   }
@@ -96,11 +96,11 @@ const res = onResponse(selects, async e => {
     plant: '1',
     mine: '1',
     Place_address: weizhi,
-    group_id: e.name == 'message.create' ? e.ChannelId : undefined
+    group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
   await redis.set(getRedisKey(String(usr_qq), 'action'), JSON.stringify(arr));
-  Send(Text('正在前往' + weizhi.name + ',' + time + '分钟后归来!'));
+  void Send(Text('正在前往' + weizhi.name + ',' + time + '分钟后归来!'));
 });
 
 import mw from '@src/response/mw';

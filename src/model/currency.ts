@@ -878,10 +878,10 @@ export const getAllUsersCurrencyInfo = async (
 
       // 只返回有充值记录的用户
       if (
-        userInfo.total_recharge_count > 0 ||
-        userInfo.currency > 0 ||
-        userInfo.small_month_card_days > 0 ||
-        userInfo.big_month_card_days > 0
+        userInfo.total_recharge_count > 0
+        || userInfo.currency > 0
+        || userInfo.small_month_card_days > 0
+        || userInfo.big_month_card_days > 0
       ) {
         users.push(userInfo);
       }

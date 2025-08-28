@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`每${cdMinutes}分钟抢一次，正在CD中，剩余cd: ${m}分${s}秒`));
+    void Send(Text(`每${cdMinutes}分钟抢一次，正在CD中，剩余cd: ${m}分${s}秒`));
 
     return false;
   }
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
   const honbao_qq = target.UserId;
 
   if (honbao_qq === usr_qq) {
-    Send(Text('不能抢自己的红包'));
+    void Send(Text('不能抢自己的红包'));
 
     return false;
   }
@@ -72,7 +72,7 @@ const res = onResponse(selects, async e => {
   if (remainingCount < 0) {
     // 恢复计数器（因为我们多扣了一次）
     await redis.incr(countKey);
-    Send(Text('他的红包被光啦！'));
+    void Send(Text('他的红包被光啦！'));
 
     return false;
   }
@@ -83,7 +83,7 @@ const res = onResponse(selects, async e => {
   const lingshi = toInt(valStr);
 
   if (lingshi <= 0) {
-    Send(Text('这个红包里居然是空的...'));
+    void Send(Text('这个红包里居然是空的...'));
     // 设置CD时间（防刷机制）
     await redis.set(lastKey, now);
 
@@ -94,7 +94,7 @@ const res = onResponse(selects, async e => {
   await addCoin(usr_qq, lingshi);
   await redis.set(lastKey, now);
 
-  Send(Text(`【全服公告】${player.名号 || usr_qq}抢到一个${lingshi}灵石的红包！`));
+  void Send(Text(`【全服公告】${player.名号 || usr_qq}抢到一个${lingshi}灵石的红包！`));
 
   return false;
 });

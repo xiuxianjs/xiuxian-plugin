@@ -23,19 +23,19 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
-    Send(Text('你尚未加入宗门'));
+    void Send(Text('你尚未加入宗门'));
 
     return false;
   }
   if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
-    Send(Text('只有宗主、副宗主可以操作'));
+    void Send(Text('只有宗主、副宗主可以操作'));
 
     return false;
   }
   const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
   if (!assRaw) {
-    Send(Text('宗门数据不存在'));
+    void Send(Text('宗门数据不存在'));
 
     return false;
   }
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
   const topLevel = 宗门人数上限.length;
 
   if (level >= topLevel) {
-    Send(Text('已经是最高等级宗门'));
+    void Send(Text('已经是最高等级宗门'));
 
     return false;
   }
@@ -53,7 +53,7 @@ const res = onResponse(selects, async e => {
   const need = level * 300000 * xian;
 
   if (pool < need) {
-    Send(Text(`本宗门目前灵石池中仅有${pool}灵石,当前宗门升级需要${need}灵石,数量不足`));
+    void Send(Text(`本宗门目前灵石池中仅有${pool}灵石,当前宗门升级需要${need}灵石,数量不足`));
 
     return false;
   }
@@ -64,7 +64,7 @@ const res = onResponse(selects, async e => {
   await playerEfficiency(usr_qq);
   const newCapIndex = Math.max(0, Math.min(宗门人数上限.length - 1, ass.宗门等级 - 1));
 
-  Send(
+  void Send(
     Text(
       `宗门升级成功当前宗门等级为${ass.宗门等级},宗门人数上限提高到:${宗门人数上限[newCapIndex]}`
     )

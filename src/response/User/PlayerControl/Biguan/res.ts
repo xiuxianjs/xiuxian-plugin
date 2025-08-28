@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -47,7 +47,7 @@ const res = onResponse(selects, async e => {
     const m = Math.floor(rest / 60000);
     const s = Math.floor((rest - m * 60000) / 1000);
 
-    Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
+    void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
 
     return false;
   }
@@ -71,7 +71,7 @@ const res = onResponse(selects, async e => {
   if (mirror) {
     await setDataByUserId(usr_qq, 'action', JSON.stringify(mirror));
   }
-  Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`));
+  void Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`));
 });
 
 import mw from '@src/response/mw';

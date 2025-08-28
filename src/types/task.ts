@@ -84,7 +84,6 @@ export interface RaidActionState extends Omit<ActionState, 'A_player'> {
   cishu?: number;
 }
 
-/** **************************** 魔界 / 神界 探索 (mojietask / shenjietask) ******************************/
 /** 探索阶段：0=进行中(多次结算), -1=特殊神界模式, 1=结束 */
 export type ExplorePhase = '-1' | '0' | '1' | -1 | 0 | 1 | number;
 export interface ExploreActionState extends ActionState {
@@ -92,7 +91,6 @@ export interface ExploreActionState extends ActionState {
   cishu?: number; // 剩余次数
 }
 
-/** **************************** 秘境 探索 (SecretPlaceTask / SecretPlaceplusTask) ******************************/
 export interface SecretPlaceAddress extends PlaceAddress {
   Grade?: number;
   one?: PlaceThing[];
@@ -106,7 +104,6 @@ export interface SecretPlaceActionState extends ActionState {
   cishu?: number; // plus 模式剩余次数
 }
 
-/** **************************** 职业 / 闭关 / 采矿 (OccupationTask / PlayerControlTask) ******************************/
 export interface OccupationActionState extends ActionState {
   plant?: string | number; // 种植 / 炼丹师特殊闭关扩展
   mine?: string | number; // 采矿状态
@@ -122,7 +119,6 @@ export interface TempMessage {
   qq?: string | number;
 }
 
-/** **************************** 商店动态 (Taopaotask / Shoptask / ShopGradetask) ******************************/
 // 扩展 ShopItem 时改用可选并复用原 ShopGoodsItem 结构
 export type DynamicShopItem = ShopItem & {
   one?: ShopItem['one'];

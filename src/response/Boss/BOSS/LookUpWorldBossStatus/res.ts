@@ -17,11 +17,11 @@ const res = onResponse(selects, async e => {
       const WorldBossStatus = JSON.parse(WorldBossStatusStr);
 
       if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
-        Send(Text('妖王正在刷新,21点开启'));
+        void Send(Text('妖王正在刷新,21点开启'));
 
         return false;
-      } else if (WorldBossStatus.KilledTime != -1) {
-        if ((await InitWorldBoss()) == false) {
+      } else if (WorldBossStatus.KilledTime !== -1) {
+        if ((await InitWorldBoss()) === false) {
           await LookUpWorldBossStatus(e);
         }
 
@@ -31,10 +31,10 @@ const res = onResponse(selects, async e => {
         `----妖王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatus.Health}\n奖励:${WorldBossStatus.Reward}`
       ];
 
-      Send(Text(ReplyMsg.join('\n')));
+      void Send(Text(ReplyMsg.join('\n')));
     }
   } else {
-    Send(Text('妖王未开启！'));
+    void Send(Text('妖王未开启！'));
   }
 });
 

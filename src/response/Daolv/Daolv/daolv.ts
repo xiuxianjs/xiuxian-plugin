@@ -23,9 +23,9 @@ export const Daolv = {
 export async function chaoshi(e) {
   const [message] = useMessage(e);
   const chaoshi_time = setTimeout(() => {
-    if (Daolv.x == 1 || Daolv.x == 2) {
+    if (Daolv.x === 1 || Daolv.x === 2) {
       Daolv.set_x(0);
-      message.send(format(Text('对方没有搭理你')));
+      void message.send(format(Text('对方没有搭理你')));
 
       return false;
     }
@@ -39,8 +39,8 @@ export async function found(A, B) {
 
   for (i = 0; i < qinmidu.length; i++) {
     if (
-      (qinmidu[i].QQ_A == A && qinmidu[i].QQ_B == B) ||
-      (qinmidu[i].QQ_A == B && qinmidu[i].QQ_B == A)
+      (qinmidu[i].QQ_A === A && qinmidu[i].QQ_B === B)
+      || (qinmidu[i].QQ_A === B && qinmidu[i].QQ_B === A)
     ) {
       break;
     }

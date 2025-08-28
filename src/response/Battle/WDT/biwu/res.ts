@@ -53,7 +53,7 @@ const res = onResponse(selects, async e => {
   const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'));
 
   if (toInt(last_game_timeA) === 0) {
-    Send(Text('猜大小正在进行哦!'));
+    void Send(Text('猜大小正在进行哦!'));
 
     return false;
   }
@@ -71,13 +71,13 @@ const res = onResponse(selects, async e => {
   const B = target.UserId;
 
   if (A === B) {
-    Send(Text('咋的，自娱自乐？'));
+    void Send(Text('咋的，自娱自乐？'));
 
     return false;
   }
 
   if (!(await existplayer(B))) {
-    Send(Text('不可对凡人出手!'));
+    void Send(Text('不可对凡人出手!'));
 
     return false;
   }
@@ -92,7 +92,7 @@ const res = onResponse(selects, async e => {
 
   // 境界校验
   if (!notUndAndNull(A_player.level_id) || !notUndAndNull(B_player.level_id)) {
-    Send(Text('请先#同步信息 / 对方为错误存档'));
+    void Send(Text('请先#同步信息 / 对方为错误存档'));
 
     return false;
   }
@@ -101,7 +101,9 @@ const res = onResponse(selects, async e => {
   const A_action = parseJson<ActionState | null>(await redis.get(getRedisKey(A, 'action')), null);
 
   if (A_action?.end_time && Date.now() <= A_action.end_time) {
-    Send(Text(`正在${A_action.action}中,剩余时间:${formatRemain(A_action.end_time - Date.now())}`));
+    void Send(
+      Text(`正在${A_action.action}中,剩余时间:${formatRemain(A_action.end_time - Date.now())}`)
+    );
 
     return false;
   }
@@ -111,7 +113,7 @@ const res = onResponse(selects, async e => {
     const hasHide = await existNajieThing(A, '剑xx', '道具');
 
     if (!hasHide) {
-      Send(
+      void Send(
         Text(
           `对方正在${B_action.action}中,剩余时间:${formatRemain(B_action.end_time - Date.now())}`
         )
@@ -125,7 +127,7 @@ const res = onResponse(selects, async e => {
   const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'));
 
   if (toInt(last_game_timeB) === 0) {
-    Send(Text('对方猜大小正在进行哦，等他结束再来比武吧!'));
+    void Send(Text('对方猜大小正在进行哦，等他结束再来比武吧!'));
 
     return false;
   }
@@ -136,7 +138,7 @@ const res = onResponse(selects, async e => {
   const lastBiwuA = toInt(await redis.get(getRedisKey(A, 'last_biwu_time')));
 
   if (now < lastBiwuA + biwuCdMs) {
-    Send(Text(`比武正在CD中，剩余cd:  ${formatRemain(lastBiwuA + biwuCdMs - now)}`));
+    void Send(Text(`比武正在CD中，剩余cd:  ${formatRemain(lastBiwuA + biwuCdMs - now)}`));
 
     return false;
   }
@@ -148,14 +150,14 @@ const res = onResponse(selects, async e => {
     const lastA = lastBiwuA; // 与比武 CD 存同 key
 
     if (now < lastA + coupleMs) {
-      Send(Text(`比武冷却:  ${formatRemain(lastA + coupleMs - now)}`));
+      void Send(Text(`比武冷却:  ${formatRemain(lastA + coupleMs - now)}`));
 
       return false;
     }
     const lastB = toInt(await redis.get(getRedisKey(B, 'last_biwu_time')));
 
     if (now < lastB + coupleMs) {
-      Send(Text(`对方比武冷却:  ${formatRemain(lastB + coupleMs - now)}`));
+      void Send(Text(`对方比武冷却:  ${formatRemain(lastB + coupleMs - now)}`));
 
       return false;
     }
@@ -165,12 +167,12 @@ const res = onResponse(selects, async e => {
   const hpThreshold = 5 / 6;
 
   if (B_player.当前血量 <= B_player.血量上限 * hpThreshold) {
-    Send(Text(`${B_player.名号} 血量未满，不能趁人之危哦`));
+    void Send(Text(`${B_player.名号} 血量未满，不能趁人之危哦`));
 
     return false;
   }
   if (A_player.当前血量 <= A_player.血量上限 * hpThreshold) {
-    Send(Text('你血量未满，对方不想趁人之危'));
+    void Send(Text('你血量未满，对方不想趁人之危'));
 
     return false;
   }
@@ -190,7 +192,7 @@ const res = onResponse(selects, async e => {
   const msg = Data_battle.msg;
 
   if (msg.length <= 35) {
-    Send(Text(msg.join('\n')));
+    void Send(Text(msg.join('\n')));
   }
   await addHP(A, Data_battle.A_xue);
   await addHP(B, Data_battle.B_xue);
@@ -201,14 +203,14 @@ const res = onResponse(selects, async e => {
   const bWin = msg.includes(B_win);
 
   if (!aWin && !bWin) {
-    Send(Text('战斗过程出错'));
+    void Send(Text('战斗过程出错'));
 
     return false;
   }
 
   const levelList = await getDataList('Level1');
-  const levelA = levelList.find(l => l.level_id == A_player.level_id)?.level_id || 1;
-  const levelB = levelList.find(l => l.level_id == B_player.level_id)?.level_id || 1;
+  const levelA = levelList.find(l => l.level_id === A_player.level_id)?.level_id || 1;
+  const levelB = levelList.find(l => l.level_id === B_player.level_id)?.level_id || 1;
 
   if (aWin) {
     const qixueA = Math.trunc(1000 * levelB);
@@ -248,7 +250,7 @@ const res = onResponse(selects, async e => {
     );
   }
 
-  Send(Text(final_msg.join('')));
+  void Send(Text(final_msg.join('')));
 
   return false;
 });

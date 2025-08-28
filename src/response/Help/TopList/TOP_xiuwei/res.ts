@@ -26,13 +26,13 @@ const res = onResponse(selects, async e => {
     const sum_exp = await getAllExp(this_qq);
 
     if (!notUndAndNull(player.level_id)) {
-      Send(Text('请先#同步信息'));
+      void Send(Text('请先#同步信息'));
 
       return false;
     }
     // 境界名字需要查找境界名
     const levelList = await getDataList('Level1');
-    const level = levelList.find(item => item.level_id == player.level_id).level;
+    const level = levelList.find(item => item.level_id === player.level_id).level;
 
     temp.push({
       总修为: sum_exp,
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
   const img = await getRankingPowerImage(e, Data, usr_paiming, thisplayer);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

@@ -39,10 +39,10 @@ const res = onResponse(selects, async e => {
       const guild = player.宗门;
 
       if (
-        guild &&
-        typeof guild === 'object' &&
-        '宗门名称' in guild &&
-        (guild as { 宗门名称?: string }).宗门名称 === didian
+        guild
+        && typeof guild === 'object'
+        && '宗门名称' in guild
+        && (guild as { 宗门名称?: string }).宗门名称 === didian
       ) {
         // 写入前去除宗门字段
         const { 宗门: _ignored, ...rest } = player;

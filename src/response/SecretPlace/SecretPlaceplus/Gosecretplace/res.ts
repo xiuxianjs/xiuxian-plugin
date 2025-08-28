@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const diDianList = await getDataList('Didian');
-  const weizhi = await diDianList.find(item => item.name == didian);
+  const weizhi = await diDianList.find(item => item.name === didian);
 
   if (!notUndAndNull(weizhi)) {
     return false;
@@ -44,23 +44,23 @@ const res = onResponse(selects, async e => {
   const placeUnknown = weizhi;
 
   if (
-    !placeUnknown ||
-    typeof placeUnknown !== 'object' ||
-    !('Price' in placeUnknown) ||
-    !('name' in placeUnknown) ||
-    typeof placeUnknown.Price !== 'number'
+    !placeUnknown
+    || typeof placeUnknown !== 'object'
+    || !('Price' in placeUnknown)
+    || !('name' in placeUnknown)
+    || typeof placeUnknown.Price !== 'number'
   ) {
     return false;
   }
   const place = placeUnknown as { name: string; Price: number } & Record<string, unknown>;
 
   if (player.灵石 < place.Price * 10 * i) {
-    Send(Text('没有灵石寸步难行,攒到' + place.Price * 10 * i + '灵石才够哦~'));
+    void Send(Text('没有灵石寸步难行,攒到' + place.Price * 10 * i + '灵石才够哦~'));
 
     return false;
   }
-  if (didian == '大千世界' || didian == '桃花岛') {
-    Send(Text('该秘境不支持沉迷哦'));
+  if (didian === '大千世界' || didian === '桃花岛') {
+    void Send(Text('该秘境不支持沉迷哦'));
 
     return false;
   }
@@ -69,7 +69,7 @@ const res = onResponse(selects, async e => {
   if (typeof keyCount === 'number' && keyCount >= i) {
     await addNajieThing(usr_qq, '秘境之匙', '道具', -i);
   } else {
-    Send(Text('你没有足够数量的秘境之匙'));
+    void Send(Text('你没有足够数量的秘境之匙'));
 
     return false;
   }
@@ -90,11 +90,11 @@ const res = onResponse(selects, async e => {
     mine: '1',
     cishu: i * 10,
     Place_address: place,
-    group_id: e.name == 'message.create' ? e.ChannelId : undefined
+    group_id: e.name === 'message.create' ? e.ChannelId : undefined
   });
 
   await redis.set(getRedisKey(usr_qq, 'action'), JSON.stringify(arr));
-  Send(Text('开始降临' + didian + ',' + time + '分钟后归来!'));
+  void Send(Text('开始降临' + didian + ',' + time + '分钟后归来!'));
 });
 
 import mw from '@src/response/mw';

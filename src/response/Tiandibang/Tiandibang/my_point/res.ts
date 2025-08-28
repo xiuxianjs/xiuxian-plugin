@@ -26,10 +26,10 @@ const res = onResponse(selects, async e => {
     await writeTiandibang([]);
   }
   // 查找用户是否报名
-  const userIndex = tiandibang.findIndex(p => p.qq == usr_qq);
+  const userIndex = tiandibang.findIndex(p => p.qq === usr_qq);
 
   if (userIndex === -1) {
-    Send(Text('请先报名!'));
+    void Send(Text('请先报名!'));
 
     return false;
   }
@@ -50,12 +50,12 @@ const res = onResponse(selects, async e => {
   });
 
   if (Buffer.isBuffer(image)) {
-    Send(Image(image));
+    void Send(Image(image));
 
     return;
   }
   // 图片生成失败，仅提示错误
-  Send(Text('图片生产失败'));
+  void Send(Text('图片生产失败'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

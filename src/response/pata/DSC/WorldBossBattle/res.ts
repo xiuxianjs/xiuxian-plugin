@@ -18,7 +18,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
@@ -26,7 +26,7 @@ const res = onResponse(selects, async e => {
   const layer = Number(player.神魄段数) || 0;
 
   if (layer > 6000) {
-    Send(Text('已达到上限'));
+    void Send(Text('已达到上限'));
 
     return false;
   }
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(left / 60000);
     const s = Math.trunc((left % 60000) / 1000);
 
-    Send(Text(`正在CD中，剩余cd: ${m}分 ${s}秒`));
+    void Send(Text(`正在CD中，剩余cd: ${m}分 ${s}秒`));
 
     return false;
   }
@@ -83,9 +83,9 @@ const res = onResponse(selects, async e => {
 
     if (!(BattleFrame & 1)) {
       // 玩家回合
-      let damage =
-        Harm(Number(player.攻击) || 0, BOSSCurrentDefence) +
-        Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let damage
+        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
+        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const isCrit = Math.random() < (Number(player.暴击率) || 0);
       const critMul = isCrit ? 1.5 : 1;
 
@@ -125,10 +125,10 @@ const res = onResponse(selects, async e => {
 
   if (msg.length > 30) {
     msg.length = 30;
-    Send(Text(msg.join('\n')));
-    Send(Text('战斗过长，仅展示部分内容'));
+    void Send(Text(msg.join('\n')));
+    void Send(Text('战斗过长，仅展示部分内容'));
   } else {
-    Send(Text(msg.join('\n')));
+    void Send(Text(msg.join('\n')));
   }
 
   await redis.set(cdKey, now);
@@ -137,12 +137,12 @@ const res = onResponse(selects, async e => {
     player.神魄段数 = layer + 5;
     player.血气 = (Number(player.血气) || 0) + Reward;
     player.当前血量 = Number(player.血量上限) || player.当前血量;
-    Send(Text(`\n你成功突破一段神魄，段数+5！血气+${Reward} 血量已回满`));
+    void Send(Text(`\n你成功突破一段神魄，段数+5！血气+${Reward} 血量已回满`));
   } else if ((Number(player.当前血量) || 0) <= 0) {
     const lose = Math.trunc(Reward * 2);
 
     player.修为 = Math.max(0, (Number(player.修为) || 0) - lose);
-    Send(Text(`\n你未能通过此层锻神池！修为-${lose}`));
+    void Send(Text(`\n你未能通过此层锻神池！修为-${lose}`));
   }
 
   void setDataJSONStringifyByKey(keys.player(usr_qq), player);

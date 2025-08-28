@@ -27,19 +27,19 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
   if (player.occupation !== '炼器师') {
-    Send(Text('铜都不炼你还炼器？'));
+    void Send(Text('铜都不炼你还炼器？'));
 
     return false;
   }
   const raw = e.MessageText.replace(/^(#|＃|\/)?打造/, '').trim();
 
   if (!raw) {
-    Send(Text('格式: 打造装备名*数量(可选)'));
+    void Send(Text('格式: 打造装备名*数量(可选)'));
 
     return false;
   }
@@ -69,22 +69,22 @@ const res = onResponse(selects, async e => {
   const tuzhi = tuzhiCandidate as Partial<TuzhiItem> | undefined;
 
   if (
-    !tuzhi ||
-    typeof tuzhi.rate !== 'number' ||
-    !Array.isArray(tuzhi.exp) ||
-    !Array.isArray(tuzhi.materials)
+    !tuzhi
+    || typeof tuzhi.rate !== 'number'
+    || !Array.isArray(tuzhi.exp)
+    || !Array.isArray(tuzhi.materials)
   ) {
-    Send(Text(`世界上没有[${equipment_name}]的图纸或配置不完整`));
+    void Send(Text(`世界上没有[${equipment_name}]的图纸或配置不完整`));
 
     return false;
   }
   if (!Array.isArray(tuzhi.materials)) {
-    Send(Text('图纸材料配置异常'));
+    void Send(Text('图纸材料配置异常'));
 
     return false;
   }
   if (!Array.isArray(tuzhi.exp) || tuzhi.exp.length === 0) {
-    Send(Text('图纸经验配置缺失'));
+    void Send(Text('图纸经验配置缺失'));
 
     return false;
   }
@@ -102,7 +102,7 @@ const res = onResponse(selects, async e => {
 
   if (player.occupation_level > 0) {
     const dataList = await getDataList('experience');
-    const occConf = dataList.find(item => item.id == player.occupation_level);
+    const occConf = dataList.find(item => item.id === player.occupation_level);
 
     if (occConf) {
       // 使用经验表的 experience 做近似比率换算（避免不存在的 rate 字段）
@@ -131,7 +131,7 @@ const res = onResponse(selects, async e => {
     const need = m.amount * count;
 
     if (typeof owned !== 'number' || owned < need) {
-      Send(Text(`纳戒中拥有${m.name}×${owned || 0}，打造需要${need}份`));
+      void Send(Text(`纳戒中拥有${m.name}×${owned || 0}，打造需要${need}份`));
 
       return false;
     }
@@ -166,9 +166,9 @@ const res = onResponse(selects, async e => {
     const random = Math.random();
 
     if (random < 0.5) {
-      Send(Text(`${costMsg}打造装备时不小心锤断了刃芯，打造失败！`));
+      void Send(Text(`${costMsg}打造装备时不小心锤断了刃芯，打造失败！`));
     } else {
-      Send(Text(`${costMsg}打造装备时没有把控好火候，烧毁了，打造失败！`));
+      void Send(Text(`${costMsg}打造装备时没有把控好火候，烧毁了，打造失败！`));
     }
 
     return false;
@@ -189,7 +189,7 @@ const res = onResponse(selects, async e => {
 
   const msg = `${extraMsg}${costMsg}打造成功${success}/${count}件，获得${equipment_name}(${pjSummary})，炼器经验+${totalExp}`;
 
-  Send(Text(msg));
+  void Send(Text(msg));
 
   return false;
 });

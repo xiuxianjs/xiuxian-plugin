@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
   );
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

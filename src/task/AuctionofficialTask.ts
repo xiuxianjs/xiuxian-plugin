@@ -81,8 +81,8 @@ export const AuctionofficialTask = async () => {
 
       return (list as string[]).includes(raw) ? (raw as NajieCategory) : '道具';
     })();
-    const pinji =
-      typeof wupin.thing.pinji === 'number'
+    const pinji
+      = typeof wupin.thing.pinji === 'number'
         ? wupin.thing.pinji
         : typeof wupin.thing.pinji === 'string'
           ? Number(wupin.thing.pinji)

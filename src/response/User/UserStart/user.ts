@@ -13,15 +13,15 @@ export async function showSlayer(e: EventsMessageCreateEnum | PrivateEventMessag
     const img = await getPlayerImage(e);
 
     if (Buffer.isBuffer(img)) {
-      Send(Image(img));
+      void Send(Image(img));
 
       return false;
     }
-    Send(Text('图片加载失败'));
+    void Send(Text('图片加载失败'));
 
     return false;
   } catch {
-    Send(Text('角色卡生成失败'));
+    void Send(Text('角色卡生成失败'));
 
     return false;
   }

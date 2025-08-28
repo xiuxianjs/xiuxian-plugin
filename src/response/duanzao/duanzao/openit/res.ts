@@ -30,8 +30,8 @@ const res = onResponse(selects, async e => {
   }
   const A = await looktripod(user_qq);
 
-  if (A != 1) {
-    Send(Text('请先去#炼器师能力评测,再来锻造吧'));
+  if (A !== 1) {
+    void Send(Text('请先去#炼器师能力评测,再来锻造吧'));
 
     return false;
   }
@@ -41,8 +41,8 @@ const res = onResponse(selects, async e => {
   if (!player) {
     return;
   }
-  if (player.occupation != '炼器师') {
-    Send(Text('切换到炼器师后再来吧,宝贝'));
+  if (player.occupation !== '炼器师') {
+    void Send(Text('切换到炼器师后再来吧,宝贝'));
 
     return false;
   }
@@ -52,9 +52,9 @@ const res = onResponse(selects, async e => {
     await writeDuanlu([]);
   }
   for (const item of newtripod) {
-    if (user_qq == item.qq) {
-      if (item.TIME == 0) {
-        Send(Text('煅炉里面空空如也,也许自己还没有启动它'));
+    if (user_qq === item.qq) {
+      if (item.TIME === 0) {
+        void Send(Text('煅炉里面空空如也,也许自己还没有启动它'));
 
         return false;
       }
@@ -64,7 +64,7 @@ const res = onResponse(selects, async e => {
       const newtime = Date.now() - item.TIME;
 
       if (newtime < 1000 * 60 * 30) {
-        Send(Text('炼制时间过短,无法获得装备,再等等吧'));
+        void Send(Text('炼制时间过短,无法获得装备,再等等吧'));
 
         return false;
       }
@@ -73,12 +73,12 @@ const res = onResponse(selects, async e => {
       const action = await readActionWithSuffix(user_qq, 'action10');
 
       if (!action) {
-        Send(Text('未开始锻造或未达到最短锻造时间'));
+        void Send(Text('未开始锻造或未达到最短锻造时间'));
 
         return false;
       }
       // if (isActionRunning(action)) {
-      //   Send(
+      //  void Send(
       //     Text(
       //       `正在${action.action}中，剩余时间:${formatRemaining(remainingMs(action))}`
       //     )
@@ -174,10 +174,10 @@ const res = onResponse(selects, async e => {
         if (max < wuwei[i]) {
           max = wuwei[i];
           shuzu = [wuxing[i]];
-        } else if (max == wuwei[i]) {
+        } else if (max === wuwei[i]) {
           shuzu.push(wuxing[i]);
         }
-        if (wuwei[i] != 0) {
+        if (wuwei[i] !== 0) {
           qianzhui++;
         }
       }
@@ -187,24 +187,24 @@ const res = onResponse(selects, async e => {
       const maxTuple = selectArr as [string, number];
       let fangyuxuejian = 0;
 
-      if (qianzhui == 5) {
+      if (qianzhui === 5) {
         houzhui = '五行杂灵';
         xishu += 0.1;
-      } else if (qianzhui == 4) {
+      } else if (qianzhui === 4) {
         houzhui = '四圣显化';
         xishu += 0.07;
-      } else if (qianzhui == 3) {
+      } else if (qianzhui === 3) {
         houzhui = '三灵共堂';
         xishu += 0.05;
-      } else if (qianzhui == 2) {
+      } else if (qianzhui === 2) {
         const shuzufu = await restraint(wuwei, maxTuple[0]);
 
         houzhui = shuzufu[0];
         xishu += shuzufu[1];
-        if (shuzufu[1] == 0.5) {
+        if (shuzufu[1] === 0.5) {
           fangyuxuejian = 0.5;
         }
-      } else if (qianzhui == 1) {
+      } else if (qianzhui === 1) {
         const mu = await mainyuansu(wuwei);
 
         houzhui = '纯' + mu;
@@ -240,7 +240,7 @@ const res = onResponse(selects, async e => {
       } else if (sum >= 0.7) {
         z += 1000;
       }
-      if (player.仙宠.type == '炼器') {
+      if (player.仙宠.type === '炼器') {
         z = Math.floor(z * (1 + (player.仙宠.等级 / 25) * 0.1));
       }
       addExp4(user_qq, z);
@@ -255,7 +255,7 @@ const res = onResponse(selects, async e => {
       await stopActionWithSuffix(user_qq, 'action10');
       // 标记结束时间戳（可选：写入当前时间覆盖 key）
       await setValue(userKey(user_qq, 'action10'), Date.now());
-      Send(Text(`恭喜你获得了[${wuqiname}·${houzhui}],炼器经验增加了[${z}]`));
+      void Send(Text(`恭喜你获得了[${wuqiname}·${houzhui}],炼器经验增加了[${z}]`));
 
       return false;
     }

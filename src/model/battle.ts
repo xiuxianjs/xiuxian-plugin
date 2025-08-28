@@ -119,17 +119,17 @@ export async function zdBattle(
       if (buff > 1.3) {
         buff = 1.3;
       }
-      if (P.灵根.name == '九重魔功') {
+      if (P.灵根.name === '九重魔功') {
         buff += 0.2;
       }
       msg.push(`魔道值为${P.名号}提供了${Math.trunc((buff - 1) * 100)}%的增伤`);
-    } else if ((P.魔道值 ?? 0) < 1 && (P.灵根.type == '转生' || P.level_id > 41)) {
+    } else if ((P.魔道值 ?? 0) < 1 && (P.灵根.type === '转生' || P.level_id > 41)) {
       let buff = (P.神石 ?? 0) * 0.0015;
 
       if (buff > 0.3) {
         buff = 0.3;
       }
-      if (P.灵根.name == '九转轮回体') {
+      if (P.灵根.name === '九转轮回体') {
         buff += 0.2;
       }
       msg.push(`神石为${P.名号}提供了${Math.trunc(buff * 100)}%的减伤`);
@@ -151,9 +151,9 @@ export async function zdBattle(
     let baoji = baojishanghai(A_player.暴击率);
 
     if (notUndAndNull(A_player.仙宠)) {
-      if (A_player.仙宠.type == '暴伤') {
+      if (A_player.仙宠.type === '暴伤') {
         baoji += A_player.仙宠.加成;
-      } else if (A_player.仙宠.type == '战斗') {
+      } else if (A_player.仙宠.type === '战斗') {
         const ran = Math.random();
 
         if (ran < 0.35) {
@@ -169,14 +169,14 @@ export async function zdBattle(
       const equipment = await readEquipment(A_player.id);
       const ran = Math.random();
 
-      if (equipment?.武器?.name == '紫云剑' && ran > 0.7) {
+      if (equipment?.武器?.name === '紫云剑' && ran > 0.7) {
         A_player.攻击 *= 3;
         msg.push(`${A_player.名号}触发了紫云剑被动,攻击力提高了200%`);
-      } else if (equipment?.武器?.name == '炼血竹枪' && ran > 0.75) {
+      } else if (equipment?.武器?.name === '炼血竹枪' && ran > 0.75) {
         A_player.攻击 *= 2;
         A_player.当前血量 = Math.trunc(A_player.当前血量 * 1.2);
         msg.push(`${A_player.名号}触发了炼血竹枪被动,攻击力提高了100%,血量回复了20%`);
-      } else if (equipment?.武器?.name == '少阴玉剑' && ran > 0.85) {
+      } else if (equipment?.武器?.name === '少阴玉剑' && ran > 0.85) {
         A_player.当前血量 = Math.trunc(A_player.当前血量 * 1.4);
         msg.push(`${A_player.名号}触发了少阴玉剑被动,血量回复了40%`);
       }
@@ -189,47 +189,47 @@ export async function zdBattle(
 
     for (let i = 0; i < jineng1.length; i++) {
       if (
-        (jineng1[i].class == '常驻' &&
-          (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1) &&
-          Random < jineng1[i].pr) ||
-        (A_player.学习的功法 &&
-          jineng1[i].class == '功法' &&
-          A_player.学习的功法.indexOf(jineng1[i].name) > -1 &&
-          (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1) &&
-          Random < jineng1[i].pr) ||
-        (A_player.灵根 &&
-          jineng1[i].class == '灵根' &&
-          A_player.灵根.name == jineng1[i].name &&
-          (cnt2 == jineng1[i].cnt || jineng1[i].cnt == -1) &&
-          Random < jineng1[i].pr)
+        (jineng1[i].class === '常驻'
+          && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
+          && Random < jineng1[i].pr)
+        || (A_player.学习的功法
+          && jineng1[i].class === '功法'
+          && A_player.学习的功法.indexOf(jineng1[i].name) > -1
+          && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
+          && Random < jineng1[i].pr)
+        || (A_player.灵根
+          && jineng1[i].class === '灵根'
+          && A_player.灵根.name === jineng1[i].name
+          && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
+          && Random < jineng1[i].pr)
       ) {
         msg.push(
-          jineng1[i].msg2 == ''
+          jineng1[i].msg2 === ''
             ? A_player.名号 + jineng1[i].msg1
             : A_player.名号 + jineng1[i].msg1 + B_player.名号 + jineng1[i].msg2
         );
         伤害 = 伤害 * jineng1[i].beilv + jineng1[i].other;
         count++;
       }
-      if (count == 3) {
+      if (count === 3) {
         break;
       }
     }
     for (let i = 0; i < jineng2.length; i++) {
       if (
-        (B_player.学习的功法 &&
-          jineng2[i].class == '功法' &&
-          B_player.学习的功法.indexOf(jineng2[i].name) > -1 &&
-          (cnt2 == jineng2[i].cnt || jineng2[i].cnt == -1) &&
-          random < jineng2[i].pr) ||
-        (B_player.灵根 &&
-          jineng2[i].class == '灵根' &&
-          B_player.灵根.name == jineng2[i].name &&
-          (cnt2 == jineng2[i].cnt || jineng2[i].cnt == -1) &&
-          random < jineng2[i].pr)
+        (B_player.学习的功法
+          && jineng2[i].class === '功法'
+          && B_player.学习的功法.indexOf(jineng2[i].name) > -1
+          && (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1)
+          && random < jineng2[i].pr)
+        || (B_player.灵根
+          && jineng2[i].class === '灵根'
+          && B_player.灵根.name === jineng2[i].name
+          && (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1)
+          && random < jineng2[i].pr)
       ) {
         msg.push(
-          jineng2[i].msg2 == ''
+          jineng2[i].msg2 === ''
             ? B_player.名号 + jineng2[i].msg1
             : B_player.名号 + jineng2[i].msg1 + A_player.名号 + jineng2[i].msg2
         );
@@ -241,17 +241,17 @@ export async function zdBattle(
       if (buff > 1.3) {
         buff = 1.3;
       }
-      if (A_player.灵根.name == '九重魔功') {
+      if (A_player.灵根.name === '九重魔功') {
         buff += 0.2;
       }
     }
-    if ((B_player.魔道值 ?? 0) < 1 && (B_player.灵根.type == '转生' || B_player.level_id > 41)) {
+    if ((B_player.魔道值 ?? 0) < 1 && (B_player.灵根.type === '转生' || B_player.level_id > 41)) {
       let buff2 = (B_player.神石 ?? 0) * 0.0015;
 
       if (buff2 > 0.3) {
         buff2 = 0.3;
       }
-      if (B_player.灵根.name == '九转轮回体') {
+      if (B_player.灵根.name === '九转轮回体') {
         buff2 += 0.2;
       }
       buff -= buff2;
@@ -261,7 +261,7 @@ export async function zdBattle(
     if (B_player.当前血量 < 0) {
       B_player.当前血量 = 0;
     }
-    if (cnt % 2 == 0) {
+    if (cnt % 2 === 0) {
       A_player.防御 = AA_player.防御;
       A_player.攻击 = AA_player.攻击;
     } else {
@@ -273,7 +273,7 @@ export async function zdBattle(
     );
     cnt++;
   }
-  if (cnt % 2 == 0) {
+  if (cnt % 2 === 0) {
     t = A_player;
     A_player = B_player;
     B_player = t;

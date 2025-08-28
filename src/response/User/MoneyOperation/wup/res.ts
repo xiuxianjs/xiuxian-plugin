@@ -67,7 +67,7 @@ const res = onResponse(selects, async e => {
   }
 
   if (!(await existplayer(targetQQ))) {
-    Send(Text('对方无踏入仙途'));
+    void Send(Text('对方无踏入仙途'));
 
     return false;
   }
@@ -80,7 +80,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (parts.length < 2) {
-    Send(Text('格式错误，应为: 发 资源名*数量 或 发 装备名*品级*数量'));
+    void Send(Text('格式错误，应为: 发 资源名*数量 或 发 装备名*品级*数量'));
 
     return false;
   }
@@ -91,7 +91,7 @@ const res = onResponse(selects, async e => {
     const amount = toInt(parts[1], 1);
 
     if (amount <= 0) {
-      Send(Text('数量需为正整数'));
+      void Send(Text('数量需为正整数'));
 
       return false;
     }
@@ -102,7 +102,7 @@ const res = onResponse(selects, async e => {
     } else {
       await addExp2(targetQQ, amount);
     }
-    Send(Text(`发放成功: ${thingName} x ${amount}`));
+    void Send(Text(`发放成功: ${thingName} x ${amount}`));
 
     return false;
   }
@@ -111,7 +111,7 @@ const res = onResponse(selects, async e => {
   const thingDef = await foundthing(thingName);
 
   if (!thingDef) {
-    Send(Text(`这方世界没有[${thingName}]`));
+    void Send(Text(`这方世界没有[${thingName}]`));
 
     return false;
   }
@@ -137,13 +137,13 @@ const res = onResponse(selects, async e => {
   const amount = toInt(amountStr, 1);
 
   if (amount <= 0) {
-    Send(Text('数量需为正整数'));
+    void Send(Text('数量需为正整数'));
 
     return false;
   }
 
   await addNajieThing(targetQQ, thingName, itemClass, amount, pinji);
-  Send(
+  void Send(
     Text(`发放成功, 增加${thingName} x ${amount}${pinji !== undefined ? ` (品级:${pinji})` : ''}`)
   );
 

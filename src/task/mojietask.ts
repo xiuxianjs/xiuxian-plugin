@@ -35,7 +35,7 @@ export const MojiTask = async () => {
       action = null;
     }
     // 不为空，存在动作
-    if (action != null) {
+    if (action !== null) {
       let push_address = player_id; // 消息推送地址
       let is_group = false; // 是否推送到群
 
@@ -59,10 +59,10 @@ export const MojiTask = async () => {
       const player = await readPlayer(player_id);
 
       // 有洗劫状态:这个直接结算即可
-      if (String(act.mojie) == '0') {
+      if (String(act.mojie) === '0') {
         // 5分钟后开始结算阶段一
-        const baseDuration =
-          typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+        const baseDuration
+          = typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
 
         end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
         // 时间过了
@@ -124,7 +124,7 @@ export const MojiTask = async () => {
           if (random < player.幸运) {
             if (random < player.addluckyNo) {
               last_msg += '福源丹生效，所以在';
-            } else if (player.仙宠.type == '幸运') {
+            } else if (player.仙宠.type === '幸运') {
               last_msg += '仙宠使你在探索中欧气满满，所以在';
             }
             n++;
@@ -132,7 +132,7 @@ export const MojiTask = async () => {
           }
           if (player.islucky > 0) {
             player.islucky--;
-            if (player.islucky != 0) {
+            if (player.islucky !== 0) {
               fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
             } else {
               fyd_msg = '  \n本次探索后，福源丹已失效\n';
@@ -160,17 +160,17 @@ export const MojiTask = async () => {
             qixue = Math.trunc(qixue);
             await addNajieThing(player_id, '血魔丹', '道具', -1);
           }
-          if (thing_name != '' || thing_class != '') {
+          if (thing_name !== '' || thing_class !== '') {
             await addNajieThing(player_id, thing_name, thing_class, n);
           }
-          last_msg +=
-            m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu || 0) - 1);
+          last_msg
+            += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
           msg.push('\n' + player.名号 + last_msg + fyd_msg);
           const arr: ExploreActionState = {
             ...act
           };
 
-          if (arr.cishu == 1) {
+          if (arr.cishu === 1) {
             // 把状态都关了
             arr.shutup = 1; // 闭关状态
             arr.working = 1; // 降妖状态

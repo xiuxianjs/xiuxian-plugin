@@ -15,19 +15,19 @@ const res = onResponse(selects, async e => {
   }
   const player = await readPlayer(user_qq);
 
-  if (player.occupation != '炼器师') {
-    Send(Text('你还不是炼器师哦,宝贝'));
+  if (player.occupation !== '炼器师') {
+    void Send(Text('你还不是炼器师哦,宝贝'));
 
     return false;
   }
   if (player.锻造天赋) {
-    Send(Text('您已经测评过了'));
+    void Send(Text('您已经测评过了'));
 
     return false;
   }
   const b = await settripod(user_qq);
 
-  Send(Text(b));
+  void Send(Text(b));
 });
 
 import mw from '@src/response/mw';

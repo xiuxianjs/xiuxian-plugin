@@ -20,8 +20,8 @@ const res = onResponse(selects, async e => {
   let action = await redis.get(getRedisKey('1', 'shangjing'));
 
   action = await JSON.parse(action);
-  if (action == null) {
-    Send(Text('悬赏已经被抢空了')); // 没人被悬赏
+  if (action === null) {
+    void Send(Text('悬赏已经被抢空了')); // 没人被悬赏
 
     return false;
   }
@@ -37,7 +37,7 @@ const res = onResponse(selects, async e => {
         count = 1;
       }
     }
-    if (count == 0) {
+    if (count === 0) {
       break;
     }
   }
@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
   const img = await screenshot('msg', e.UserId, msg_data);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

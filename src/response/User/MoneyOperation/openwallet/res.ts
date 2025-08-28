@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
     m = player.名号 + '打开了[' + thing_name + ']你很开心的得到了' + lingshi + '颗灵石！';
   }
   await addCoin(usr_qq, lingshi);
-  Send(Text(m));
+  void Send(Text(m));
 
   return false;
 });

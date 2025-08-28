@@ -32,8 +32,7 @@ function isLastSignStruct(v): v is LastSignStruct {
 
   return typeof obj.Y === 'number' && typeof obj.M === 'number' && typeof obj.D === 'number';
 }
-const isSameDay = (a: LastSignStruct, b: LastSignStruct) =>
-  a.Y === b.Y && a.M === b.M && a.D === b.D;
+const isSameDay = (a: LastSignStruct, b: LastSignStruct) => a.Y === b.Y && a.M === b.M && a.D === b.D;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
@@ -49,18 +48,18 @@ const res = onResponse(selects, async e => {
   const lastSignStruct = await getLastsign(usr_qq);
 
   if (
-    isLastSignStruct(lastSignStruct) &&
-    isLastSignStruct(todayStruct) &&
-    isSameDay(todayStruct, lastSignStruct)
+    isLastSignStruct(lastSignStruct)
+    && isLastSignStruct(todayStruct)
+    && isSameDay(todayStruct, lastSignStruct)
   ) {
-    Send(Text('今日已经签到过了'));
+    void Send(Text('今日已经签到过了'));
 
     return false;
   }
-  const continued =
-    isLastSignStruct(lastSignStruct) &&
-    isLastSignStruct(yesterdayStruct) &&
-    isSameDay(yesterdayStruct, lastSignStruct);
+  const continued
+    = isLastSignStruct(lastSignStruct)
+    && isLastSignStruct(yesterdayStruct)
+    && isSameDay(yesterdayStruct, lastSignStruct);
 
   await redis.set(getRedisKey(usr_qq, 'lastsign_time'), String(nowTime));
 
@@ -94,7 +93,7 @@ const res = onResponse(selects, async e => {
   }
   await addExp(usr_qq, gift_xiuwei);
 
-  Send(
+  void Send(
     Text(
       `已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''}`
     )

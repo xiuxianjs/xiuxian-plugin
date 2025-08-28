@@ -44,7 +44,7 @@ const res = onResponse(selects, async e => {
   const playerCount = playerList.length;
 
   if (playerCount === 0) {
-    Send(Text('暂无玩家存档，发放取消'));
+    void Send(Text('暂无玩家存档，发放取消'));
 
     return false;
   }
@@ -52,7 +52,7 @@ const res = onResponse(selects, async e => {
   const body = e.MessageText.replace(/^(#|＃|\/)?全体发/, '').trim();
 
   if (!body) {
-    Send(Text('格式: 全体发灵石*数量 / 全体发物品名*数量 / 全体发装备名*品质*数量'));
+    void Send(Text('格式: 全体发灵石*数量 / 全体发物品名*数量 / 全体发装备名*品质*数量'));
 
     return false;
   }
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (seg.length === 0) {
-    Send(Text('指令解析失败'));
+    void Send(Text('指令解析失败'));
 
     return false;
   }
@@ -73,14 +73,14 @@ const res = onResponse(selects, async e => {
   // 资源类发放
   if (isResource) {
     if (seg.length < 2) {
-      Send(Text('请填写发放数量'));
+      void Send(Text('请填写发放数量'));
 
       return false;
     }
     let amt = toInt(seg[1], 0);
 
     if (amt <= 0) {
-      Send(Text('数量需为正整数'));
+      void Send(Text('数量需为正整数'));
 
       return false;
     }
@@ -97,7 +97,7 @@ const res = onResponse(selects, async e => {
         await addExp2(qq, amt);
       }
     }
-    Send(Text(`发放成功，共${playerCount}人，每人增加 ${name} x ${amt}`));
+    void Send(Text(`发放成功，共${playerCount}人，每人增加 ${name} x ${amt}`));
 
     return false;
   }
@@ -106,7 +106,7 @@ const res = onResponse(selects, async e => {
   const itemMeta = await foundthing(name);
 
   if (!itemMeta) {
-    Send(Text(`这方世界没有[${name}]`));
+    void Send(Text(`这方世界没有[${name}]`));
 
     return false;
   }
@@ -158,7 +158,7 @@ const res = onResponse(selects, async e => {
     );
   }
 
-  Send(
+  void Send(
     Text(
       `发放成功, 当前${playerCount}人, 每人增加 ${name}${itemMeta.class === '装备' ? `(品质${quality})` : ''} x ${amount}`
     )

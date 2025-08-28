@@ -51,7 +51,7 @@ const res = onResponse(selects, async e => {
   const game_action = await getString(userKey(usr_qq, 'game_action'));
 
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -59,7 +59,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
+    void Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }
@@ -74,7 +74,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(remain / 60000);
     const s = Math.trunc((remain % 60000) / 1000);
 
-    Send(Text(`每120分钟洗劫一次，正在CD中，剩余cd: ${m}分${s}秒`));
+    void Send(Text(`每120分钟洗劫一次，正在CD中，剩余cd: ${m}分${s}秒`));
 
     return false;
   }
@@ -82,7 +82,7 @@ const res = onResponse(selects, async e => {
   const Today = await shijianc(now_time);
 
   if (Today.h > 19 && Today.h < 21) {
-    Send(Text('每日20-21点商店修整中,请过会再来'));
+    void Send(Text('每日20-21点商店修整中,请过会再来'));
 
     return false;
   }
@@ -90,7 +90,7 @@ const res = onResponse(selects, async e => {
   const didian = e.MessageText.replace(/^(#|＃|\/)?洗劫/, '').trim();
 
   if (!didian) {
-    Send(Text('请指定洗劫目标地点'));
+    void Send(Text('请指定洗劫目标地点'));
 
     return false;
   }
@@ -117,7 +117,7 @@ const res = onResponse(selects, async e => {
   const target = shop[index];
 
   if (!isShopItem(target)) {
-    Send(Text('目标商店数据异常'));
+    void Send(Text('目标商店数据异常'));
 
     return false;
   }
@@ -125,7 +125,7 @@ const res = onResponse(selects, async e => {
   const state = num(target.state);
 
   if (state === 1) {
-    Send(Text(`${didian}已经戒备森严了,还是不要硬闯好了`));
+    void Send(Text(`${didian}已经戒备森严了,还是不要硬闯好了`));
 
     return false;
   }
@@ -133,7 +133,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据异常'));
+    void Send(Text('玩家数据异常'));
 
     return false;
   }
@@ -144,7 +144,7 @@ const res = onResponse(selects, async e => {
   const buff = grade + 1;
 
   if (num(player.灵石) < Price) {
-    Send(Text('灵石不足,无法进行强化'));
+    void Send(Text('灵石不足,无法进行强化'));
 
     return false;
   }
@@ -193,7 +193,7 @@ const res = onResponse(selects, async e => {
   await setValue(userKey(usr_qq, 'action'), arr);
   await setDataByUserId(usr_qq, 'lastxijie_time', now_time);
   msg += `\n开始前往${didian},祝你好运!`;
-  Send(Text(msg));
+  void Send(Text(msg));
 
   return false;
 });

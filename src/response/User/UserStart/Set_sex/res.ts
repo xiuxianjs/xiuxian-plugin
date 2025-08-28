@@ -44,7 +44,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (player.sex && player.sex !== '0') {
-    Send(Text('每个存档仅可设置一次性别！'));
+    void Send(Text('每个存档仅可设置一次性别！'));
 
     return false;
   }
@@ -52,7 +52,7 @@ const res = onResponse(selects, async e => {
   const gender = normalizeGender(raw);
 
   if (!gender) {
-    Send(Text('用法: #设置性别男 或 #设置性别女'));
+    void Send(Text('用法: #设置性别男 或 #设置性别女'));
 
     return false;
   }

@@ -26,13 +26,13 @@ const res = onResponse(selects, async e => {
   const najie_num = cf.najie_num;
   const najie_price = cf.najie_price;
 
-  if (najie.等级 == najie_num.length) {
-    Send(Text('你的纳戒已经是最高级的了'));
+  if (najie.等级 === najie_num.length) {
+    void Send(Text('你的纳戒已经是最高级的了'));
 
     return false;
   }
   if (player.灵石 < najie_price[najie.等级]) {
-    Send(Text(`灵石不足,还需要准备${najie_price[najie.等级] - player.灵石}灵石`));
+    void Send(Text(`灵石不足,还需要准备${najie_price[najie.等级] - player.灵石}灵石`));
 
     return false;
   }
@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
   najie.灵石上限 = najie_num[najie.等级];
   najie.等级 += 1;
   await writeNajie(usr_qq, najie);
-  Send(
+  void Send(
     Text(
       `你的纳戒升级成功,花了${
         najie_price[najie.等级 - 1]

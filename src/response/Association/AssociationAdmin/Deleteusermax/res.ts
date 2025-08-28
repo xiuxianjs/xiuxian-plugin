@@ -30,12 +30,12 @@ const res = onResponse(selects, async e => {
   const member_qq = e.MessageText.replace(/^(#|＃|\/)?逐出/, '').trim();
 
   if (!member_qq) {
-    Send(Text('请输入要逐出成员的QQ'));
+    void Send(Text('请输入要逐出成员的QQ'));
 
     return false;
   }
   if (usr_qq === member_qq) {
-    Send(Text('不能踢自己'));
+    void Send(Text('不能踢自己'));
 
     return false;
   }
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (!playerB || !notUndAndNull(playerB.宗门) || !isPlayerGuildRef(playerB.宗门)) {
-    Send(Text('对方尚未加入宗门'));
+    void Send(Text('对方尚未加入宗门'));
 
     return false;
   }
@@ -79,18 +79,18 @@ const res = onResponse(selects, async e => {
     await setDataJSONStringifyByKey(keys.association(bss.宗门名称), bss);
     await setDataJSONStringifyByKey(keys.player(member_qq), playerB);
     await playerEfficiency(member_qq);
-    Send(Text('已踢出！'));
+    void Send(Text('已踢出！'));
 
     return false;
   }
   if (actorRole === '副宗主') {
     if (targetRole === '宗主') {
-      Send(Text('你没权限'));
+      void Send(Text('你没权限'));
 
       return false;
     }
     if (targetRole === '长老' || targetRole === '副宗主') {
-      Send(Text(`宗门${targetRole}任免请上报宗主！`));
+      void Send(Text(`宗门${targetRole}任免请上报宗主！`));
 
       return false;
     }
@@ -98,18 +98,18 @@ const res = onResponse(selects, async e => {
     await setDataJSONStringifyByKey(keys.association(bss.宗门名称), bss);
     await setDataJSONStringifyByKey(keys.player(member_qq), playerB);
     await playerEfficiency(member_qq);
-    Send(Text('已踢出！'));
+    void Send(Text('已踢出！'));
 
     return false;
   }
   if (actorRole === '长老') {
     if (targetRole === '宗主' || targetRole === '副宗主') {
-      Send(Text('造反啦？'));
+      void Send(Text('造反啦？'));
 
       return false;
     }
     if (targetRole === '长老') {
-      Send(Text(`宗门${targetRole}任免请上报宗主！`));
+      void Send(Text(`宗门${targetRole}任免请上报宗主！`));
 
       return false;
     }
@@ -117,7 +117,7 @@ const res = onResponse(selects, async e => {
     await setDataJSONStringifyByKey(keys.association(bss.宗门名称), bss);
     await setDataJSONStringifyByKey(keys.player(member_qq), playerB);
     await playerEfficiency(member_qq);
-    Send(Text('已踢出！'));
+    void Send(Text('已踢出！'));
 
     return false;
   }

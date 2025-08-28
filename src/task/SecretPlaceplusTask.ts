@@ -9,7 +9,7 @@ import { readTemp, writeTemp } from '@src/model/temp';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import type { Player, CoreNajieCategory as NajieCategory } from '@src/types';
+import type { CoreNajieCategory as NajieCategory } from '@src/types';
 import { getConfig } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 
@@ -42,7 +42,7 @@ interface MonsterLike {
 }
 
 /**
- * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于闭关（shutup == '0'）或降妖（working == '0'）状态。
+ * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于闭关（shutup === '0'）或降妖（working === '0'）状态。
 对于闭关：
 判断是否到达结算时间（提前2分钟）。
 计算修为、血气等收益，处理炼丹师丹药、特殊道具加成，以及顿悟/走火入魔等随机事件。
@@ -216,13 +216,13 @@ export const SecretPlaceplusTask = async () => {
             }
             n *= 2;
           }
-          if ((player.islucky || 0) > 0) {
+          if ((player.islucky ?? 0) > 0) {
             player.islucky--;
             if (player.islucky !== 0) {
               fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
             } else {
               fyd_msg = '  \n本次探索后，福源丹已失效\n';
-              player.幸运 = Number(player.幸运 || 0) - Number(player.addluckyNo || 0);
+              player.幸运 = Number(player.幸运 ?? 0) - Number(player.addluckyNo ?? 0);
               player.addluckyNo = 0;
             }
             await writePlayer(player_id, JSON.parse(JSON.stringify(player)));

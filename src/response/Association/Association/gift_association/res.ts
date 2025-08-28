@@ -57,14 +57,14 @@ const res = onResponse(selects, async e => {
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
   if (!assData) {
-    Send(Text('宗门数据异常'));
+    void Send(Text('宗门数据异常'));
 
     return;
   }
   const assRaw = JSON.parse(assData);
 
   if (assRaw === 'error') {
-    Send(Text('宗门数据不存在或已损坏'));
+    void Send(Text('宗门数据不存在或已损坏'));
 
     return false;
   }
@@ -72,7 +72,7 @@ const res = onResponse(selects, async e => {
   const ismt = isNotMaintenance(ass);
 
   if (ismt) {
-    Send(Text('宗门尚未维护，快找宗主维护宗门'));
+    void Send(Text('宗门尚未维护，快找宗主维护宗门'));
 
     return false;
   }
@@ -82,7 +82,7 @@ const res = onResponse(selects, async e => {
 
   if (isDateParts(Today) && isDateParts(lastsign_time)) {
     if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
-      Send(Text('今日已经领取过了'));
+      void Send(Text('今日已经领取过了'));
 
       return false;
     }
@@ -90,7 +90,7 @@ const res = onResponse(selects, async e => {
   const role = player.宗门.职位;
 
   if (role === '外门弟子' || role === '内门弟子') {
-    Send(Text('没有资格领取俸禄'));
+    void Send(Text('没有资格领取俸禄'));
 
     return false;
   }
@@ -118,7 +118,7 @@ const res = onResponse(selects, async e => {
   const pool = Number(ass.灵石池 || 0);
 
   if (pool - gift_lingshi < 0) {
-    Send(Text('宗门灵石池不够发放俸禄啦，快去为宗门做贡献吧'));
+    void Send(Text('宗门灵石池不够发放俸禄啦，快去为宗门做贡献吧'));
 
     return false;
   }
@@ -127,7 +127,7 @@ const res = onResponse(selects, async e => {
   await redis.set(getRedisKey(usr_qq, 'lastsign_Asso_time'), nowTime);
   await writePlayer(usr_qq, serializePlayer(player));
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
-  Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`));
+  void Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`));
 
   return false;
 });

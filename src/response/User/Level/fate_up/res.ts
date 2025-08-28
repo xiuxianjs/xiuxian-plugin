@@ -50,23 +50,23 @@ const res = onResponse(selects, async e => {
   const levelInfo = levelList.find(l => l.level_id === player.level_id);
 
   if (!levelInfo) {
-    Send(Text('境界数据缺失'));
+    void Send(Text('境界数据缺失'));
 
     return false;
   }
 
   if (levelInfo.level !== '渡劫期') {
-    Send(Text('你非渡劫期修士！'));
+    void Send(Text('你非渡劫期修士！'));
 
     return false;
   }
   if (player.linggenshow === 1) {
-    Send(Text('你灵根未开，不能渡劫！'));
+    void Send(Text('你灵根未开，不能渡劫！'));
 
     return false;
   }
   if (player.power_place === 0) {
-    Send(Text('你已度过雷劫，请感应仙门#登仙'));
+    void Send(Text('你已度过雷劫，请感应仙门#登仙'));
 
     return false;
   }
@@ -76,7 +76,7 @@ const res = onResponse(selects, async e => {
   if (Number(player.当前血量) < baseHpNeed * MIN_HP_RATIO) {
     player.当前血量 = 1;
     await writePlayer(usr_qq, player);
-    Send(Text(`${player.名号}血量亏损，强行渡劫后晕倒在地！`));
+    void Send(Text(`${player.名号}血量亏损，强行渡劫后晕倒在地！`));
 
     return false;
   }
@@ -84,7 +84,7 @@ const res = onResponse(selects, async e => {
   const needExp = levelInfo.exp;
 
   if (player.修为 < needExp) {
-    Send(Text(`修为不足,再积累${needExp - player.修为}修为后方可突破`));
+    void Send(Text(`修为不足,再积累${needExp - player.修为}修为后方可突破`));
 
     return false;
   }
@@ -102,13 +102,13 @@ const res = onResponse(selects, async e => {
       player.修为 = 0;
     }
     await writePlayer(usr_qq, player);
-    Send(Text('天空一声巨响，未降下雷劫，就被天道的气势震死了。'));
+    void Send(Text('天空一声巨响，未降下雷劫，就被天道的气势震死了。'));
 
     return false;
   }
 
   if (dj > 0) {
-    Send(Text('已经有人在渡劫了,建议打死他'));
+    void Send(Text('已经有人在渡劫了,建议打死他'));
 
     return false;
   }
@@ -119,8 +119,8 @@ const res = onResponse(selects, async e => {
   const lRatio = denominator > 0 ? ((x - n) / denominator) * 100 : 0;
   const percent = lRatio.toFixed(2);
 
-  Send(Text('天道：就你，也敢逆天改命？'));
-  Send(
+  void Send(Text('天道：就你，也敢逆天改命？'));
+  void Send(
     Text(
       `【${player.名号}】\n雷抗：${x}\n成功率：${percent}%\n灵根：${player.灵根.type}\n需渡${y}道雷劫\n将在1分钟后落下\n[温馨提示]\n请把其他渡劫期打死后再渡劫！`
     )

@@ -5,8 +5,8 @@ import { parseJsonBody } from '@src/route/core/bodyParser';
 export const POST = async (ctx: Context) => {
   try {
     const body = await parseJsonBody(ctx);
-    const token =
-      ctx.request.headers.authorization?.replace('Bearer ', '') || (body.token as string);
+    const token
+      = ctx.request.headers.authorization?.replace('Bearer ', '') || (body.token as string);
 
     if (!token) {
       ctx.status = 400;

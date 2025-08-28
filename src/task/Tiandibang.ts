@@ -27,7 +27,7 @@ export const TiandibangTask = async () => {
       }
 
       const levelList = await getDataList('Level1');
-      const level = levelList.find(item => item.level_id == player.level_id);
+      const level = levelList.find(item => item.level_id === player.level_id);
 
       if (!level) {
         return;
@@ -64,7 +64,7 @@ export const TiandibangTask = async () => {
         count = 1;
       }
     }
-    if (count == 0) {
+    if (count === 0) {
       break;
     }
   }

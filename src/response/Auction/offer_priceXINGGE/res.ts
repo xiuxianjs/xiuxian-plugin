@@ -32,7 +32,7 @@ const res = onResponse(selects, async e => {
   if (!notUndAndNull(auction)) {
     const { openHour, closeHour } = (await getConfig('xiuxian', 'xiuxian')).Auction;
 
-    Send(Text(`不在拍卖时间，开启时间为每天${openHour}时~${closeHour}时`));
+    void Send(Text(`不在拍卖时间，开启时间为每天${openHour}时~${closeHour}时`));
 
     return false;
   }
@@ -43,8 +43,8 @@ const res = onResponse(selects, async e => {
   const last_price = auctionData.last_price;
   const reg = e.MessageText.replace(/^(#|＃|\/)?星阁出价/, '');
 
-  if (auctionData.last_offer_player == usr_qq) {
-    Send(Text('不能自己给自己抬价哦!'));
+  if (auctionData.last_offer_player === usr_qq) {
+    void Send(Text('不能自己给自己抬价哦!'));
 
     return false;
   }
@@ -54,13 +54,13 @@ const res = onResponse(selects, async e => {
     new_price = Math.floor(Math.ceil(last_price * 1.1));
   } else {
     if (new_price < Math.ceil(last_price * 1.1)) {
-      Send(Text(`最新价格为${last_price}，每次加价不少于10 %！`));
+      void Send(Text(`最新价格为${last_price}，每次加价不少于10 %！`));
 
       return false;
     }
   }
   if (player.灵石 < new_price) {
-    Send(Text('没这么多钱也想浑水摸鱼?'));
+    void Send(Text('没这么多钱也想浑水摸鱼?'));
 
     return false;
   }
@@ -74,7 +74,7 @@ const res = onResponse(selects, async e => {
 
   const msg = `${player.名号}叫价${new_price} `;
 
-  Send(Text(msg));
+  void Send(Text(msg));
   // ↑新的：RetuEase
 
   auctionData.last_price = new_price;

@@ -28,9 +28,9 @@ export async function dujie(userId: string): Promise<number> {
   const N = newBlood + newDefense;
   let x = N * newAttack;
 
-  if (player.灵根.type == '真灵根') {
+  if (player.灵根.type === '真灵根') {
     x = x * 1.5;
-  } else if (player.灵根.type == '天灵根') {
+  } else if (player.灵根.type === '天灵根') {
     x = x * 1.75;
   } else {
     x = x * 2;
@@ -52,7 +52,7 @@ export async function LevelTask(
   const player: Player | null = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据不存在'));
+    void Send(Text('玩家数据不存在'));
 
     return 0;
   }
@@ -87,7 +87,7 @@ export async function LevelTask(
         msg.push(
           `\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`
         );
-        Send(Text(msg.join('')));
+        void Send(Text(msg.join('')));
 
         return 1;
       }
@@ -99,7 +99,7 @@ export async function LevelTask(
       msg.push(
         `\n本次雷伤${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n第${aconut}道雷劫落下了，可惜${player.名号}未能抵挡，渡劫失败了！`
       );
-      Send(Text(msg.join('')));
+      void Send(Text(msg.join('')));
 
       return 0;
     }
@@ -122,11 +122,11 @@ export async function getAllExp(usr_qq: string) {
     return;
   }
   const levelList = await getDataList('Level1');
-  const now_level_id = levelList.find(item => item.level_id == player.level_id)?.level_id;
+  const now_level_id = levelList.find(item => item.level_id === player.level_id)?.level_id;
 
   if (now_level_id < 65) {
     for (let i = 1; i < now_level_id; i++) {
-      sum_exp += levelList.find(temp => temp.level_id == i)?.exp || 0;
+      sum_exp += levelList.find(temp => temp.level_id === i)?.exp || 0;
     }
   } else {
     sum_exp = -999999999;
@@ -154,17 +154,17 @@ export async function getRandomTalent(): Promise<TalentInfo> {
   };
 
   if (getRandomRes(体质概率)) {
-    talent = data.talent_list.filter(item => item.type == '体质');
+    talent = data.talent_list.filter(item => item.type === '体质');
   } else if (getRandomRes(伪灵根概率 / (1 - 体质概率))) {
-    talent = data.talent_list.filter(item => item.type == '伪灵根');
+    talent = data.talent_list.filter(item => item.type === '伪灵根');
   } else if (getRandomRes(真灵根概率 / (1 - 伪灵根概率 - 体质概率))) {
-    talent = data.talent_list.filter(item => item.type == '真灵根');
+    talent = data.talent_list.filter(item => item.type === '真灵根');
   } else if (getRandomRes(天灵根概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率))) {
-    talent = data.talent_list.filter(item => item.type == '天灵根');
+    talent = data.talent_list.filter(item => item.type === '天灵根');
   } else if (getRandomRes(圣体概率 / (1 - 真灵根概率 - 伪灵根概率 - 体质概率 - 天灵根概率))) {
-    talent = data.talent_list.filter(item => item.type == '圣体');
+    talent = data.talent_list.filter(item => item.type === '圣体');
   } else {
-    talent = data.talent_list.filter(item => item.type == '变异灵根');
+    talent = data.talent_list.filter(item => item.type === '变异灵根');
   }
 
   return getRandomFromARR<TalentInfo>(talent as TalentInfo[]);
@@ -180,7 +180,7 @@ export async function setFileValue(user_qq: string, num: number, type: string): 
   const currentNum = typeof currentRaw === 'number' ? currentRaw : 0;
   let newNum = currentNum + num;
 
-  if (type == '当前血量' && newNum > player.血量上限) {
+  if (type === '当前血量' && newNum > player.血量上限) {
     newNum = player.血量上限;
   }
   player[type] = newNum;
@@ -223,8 +223,7 @@ export async function foundthing(thingName: string): Promise<FoundThing | false>
     duanzhaocailiao: await getDataList('Duanzhaocailiao'),
     zalei: await getDataList('Zalei')
   };
-  const hasName = (obj): obj is FoundThing =>
-    typeof obj === 'object' && obj !== null && 'name' in obj;
+  const hasName = (obj): obj is FoundThing => typeof obj === 'object' && obj !== null && 'name' in obj;
 
   for (const key of primaryGroups) {
     const arr = data[key];

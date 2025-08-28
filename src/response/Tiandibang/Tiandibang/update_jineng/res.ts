@@ -46,7 +46,7 @@ const res = onResponse(selects, async e => {
   const index = tiandibang.findIndex(item => item.qq === usr_qq);
 
   if (index === -1) {
-    Send(Text('请先报名!'));
+    void Send(Text('请先报名!'));
 
     return false;
   }
@@ -63,7 +63,7 @@ const res = onResponse(selects, async e => {
     tiandibang[index].次数 = 0;
   }
   const levelList = await getDataList('Level1');
-  const level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+  const level_id = levelList.find(item => item.level_id === player.level_id).level_id;
   const row = tiandibang[index];
 
   row.名号 = player.名号;
@@ -81,23 +81,23 @@ const res = onResponse(selects, async e => {
 
   refreshed.暴击率 = Math.trunc(refreshed.暴击率 * 100);
   const msg = [
-    '名次：' +
-      (index + 1) +
-      '\n名号：' +
-      refreshed.名号 +
-      '\n攻击：' +
-      refreshed.攻击 +
-      '\n防御：' +
-      refreshed.防御 +
-      '\n血量：' +
-      refreshed.当前血量 +
-      '\n暴击：' +
-      refreshed.暴击率 +
-      '%\n积分：' +
-      refreshed.积分
+    '名次：'
+      + (index + 1)
+      + '\n名号：'
+      + refreshed.名号
+      + '\n攻击：'
+      + refreshed.攻击
+      + '\n防御：'
+      + refreshed.防御
+      + '\n血量：'
+      + refreshed.当前血量
+      + '\n暴击：'
+      + refreshed.暴击率
+      + '%\n积分：'
+      + refreshed.积分
   ];
 
-  Send(Text(msg.join('')));
+  void Send(Text(msg.join('')));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

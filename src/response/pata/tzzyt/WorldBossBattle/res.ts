@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据读取失败'));
+    void Send(Text('玩家数据读取失败'));
 
     return false;
   }
@@ -38,7 +38,7 @@ const res = onResponse(selects, async e => {
   const currentLayer = Number(player.镇妖塔层数) || 0;
 
   if (currentLayer > 6000) {
-    Send(Text('已达到上限'));
+    void Send(Text('已达到上限'));
 
     return false;
   }
@@ -62,7 +62,7 @@ const res = onResponse(selects, async e => {
     const hp = safeNum(eq?.HP);
 
     if (atk < 10 && def < 10 && hp < 10) {
-      Send(Text('请更换其他固定数值装备爬塔'));
+      void Send(Text('请更换其他固定数值装备爬塔'));
 
       return false;
     }
@@ -110,7 +110,7 @@ const res = onResponse(selects, async e => {
     const m = Math.trunc(left / 60000);
     const s = Math.trunc((left % 60000) / 1000);
 
-    Send(Text(`正在CD中，剩余cd: ${m}分 ${s}秒`));
+    void Send(Text(`正在CD中，剩余cd: ${m}分 ${s}秒`));
 
     return false;
   }
@@ -124,9 +124,9 @@ const res = onResponse(selects, async e => {
     const Random = Math.random();
 
     if (!(BattleFrame & 1)) {
-      let playerDamage =
-        Harm(Number(player.攻击) || 0, BOSSCurrentDefence) +
-        Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let playerDamage
+        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
+        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const critChance = Number(player.暴击率) || 0;
       const isCrit = Math.random() < critChance;
       const critMul = isCrit ? 1.5 : 1;
@@ -179,10 +179,10 @@ const res = onResponse(selects, async e => {
 
   if (msg.length > 30) {
     msg.length = 30;
-    Send(Text(msg.join('\n')));
-    Send(Text('战斗过长，仅展示部分内容'));
+    void Send(Text(msg.join('\n')));
+    void Send(Text('战斗过长，仅展示部分内容'));
   } else {
-    Send(Text(msg.join('\n')));
+    void Send(Text(msg.join('\n')));
   }
 
   await redis.set(cdKey, now);
@@ -191,12 +191,12 @@ const res = onResponse(selects, async e => {
     player.镇妖塔层数 = currentLayer + 5;
     player.灵石 = (Number(player.灵石) || 0) + Reward;
     player.当前血量 = (Number(player.当前血量) || 0) + Reward * 21;
-    Send(Text(`\n恭喜通过此层镇妖塔，层数+5！增加灵石${Reward} 回复血量${Reward * 21}`));
+    void Send(Text(`\n恭喜通过此层镇妖塔，层数+5！增加灵石${Reward} 回复血量${Reward * 21}`));
   } else if (player.当前血量 <= 0) {
     const lose = Math.trunc(Reward * 2);
 
     player.灵石 = Math.max(0, (Number(player.灵石) || 0) - lose);
-    Send(Text(`\n你未能通过此层镇妖塔！灵石-${lose}`));
+    void Send(Text(`\n你未能通过此层镇妖塔！灵石-${lose}`));
   }
 
   void setDataJSONStringifyByKey(keys.player(usr_qq), player);

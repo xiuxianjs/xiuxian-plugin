@@ -60,7 +60,7 @@ const res = onResponse(selects, async e => {
   const raw = e.MessageText.replace(/^(#|＃|\/)?出售/, '').trim();
 
   if (!raw) {
-    Send(Text('格式：出售 物品名*(品级)*数量  例如: 出售 血气丹*10 / 出售 斩仙剑*优*1'));
+    void Send(Text('格式：出售 物品名*(品级)*数量  例如: 出售 血气丹*10 / 出售 斩仙剑*优*1'));
 
     return false;
   }
@@ -70,7 +70,7 @@ const res = onResponse(selects, async e => {
     .filter(Boolean);
 
   if (!segs.length) {
-    Send(Text('未检测到物品名'));
+    void Send(Text('未检测到物品名'));
 
     return false;
   }
@@ -88,7 +88,7 @@ const res = onResponse(selects, async e => {
         thingName = najie.装备[codeNum - 101]?.name || thingName;
       }
     } catch {
-      Send(Text('代号解析失败'));
+      void Send(Text('代号解析失败'));
 
       return false;
     }
@@ -97,7 +97,7 @@ const res = onResponse(selects, async e => {
   const thingDef = await foundthing(thingName);
 
   if (!thingDef) {
-    Send(Text(`这方世界没有[${thingName}]`));
+    void Send(Text(`这方世界没有[${thingName}]`));
 
     return false;
   }
@@ -137,7 +137,7 @@ const res = onResponse(selects, async e => {
     const allEqu = (najie.装备 || []).filter(i => i.name === thingName);
 
     if (!allEqu.length) {
-      Send(Text(`你没有[${thingName}]`));
+      void Send(Text(`你没有[${thingName}]`));
 
       return false;
     }
@@ -150,7 +150,7 @@ const res = onResponse(selects, async e => {
   const owned = await existNajieThing(usr_qq, thingName, itemClass, pinji);
 
   if (!owned || owned < amount) {
-    Send(Text(`你只有[${thingName}]*${owned || 0}`));
+    void Send(Text(`你只有[${thingName}]*${owned || 0}`));
 
     return false;
   }
@@ -180,7 +180,7 @@ const res = onResponse(selects, async e => {
 
   const remain = (await existNajieThing(usr_qq, thingName, itemClass, pinji)) || 0;
 
-  Send(Text(`出售成功! 获得${price}灵石, 剩余 ${thingName}*${remain}`));
+  void Send(Text(`出售成功! 获得${price}灵石, 剩余 ${thingName}*${remain}`));
 
   return false;
 });

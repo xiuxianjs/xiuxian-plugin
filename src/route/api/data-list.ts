@@ -52,8 +52,7 @@ export const GET = async (ctx: Context) => {
     }
     const filteredData = search
       ? data.filter(item => {
-          return Object.values(item).some(value =>
-            String(value).toLowerCase().includes(search.toLowerCase())
+          return Object.values(item).some(value => String(value).toLowerCase().includes(search.toLowerCase())
           );
         })
       : data;

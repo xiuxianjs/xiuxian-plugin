@@ -25,7 +25,7 @@ const res = onResponse(selects, async e => {
   if (!action) {
     return;
   }
-  if (action.shutup == 1) {
+  if (action.shutup === 1) {
     return;
   }
 
@@ -119,7 +119,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     return false;
   }
   const LevelList = await getDataList('Level1');
-  const now_level_id = LevelList.find(item => item.level_id == player.level_id).level_id;
+  const now_level_id = LevelList.find(item => item.level_id === player.level_id).level_id;
   // 闭关收益倍率计算 倍率*境界id*天赋*时间
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const size = cf.biguan.size;
@@ -139,7 +139,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   console.log('dy', dy);
   if (dy.biguan > 0) {
     dy.biguan--;
-    if (dy.biguan == 0) {
+    if (dy.biguan === 0) {
       dy.biguanxl = 0;
     }
   }
@@ -156,7 +156,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
       rand = Math.trunc(rand * 10) + 45;
       other_xiuwei = rand * time;
       xueqi = Math.trunc(rand * time * dy.beiyong4);
-      if (transformation == '血气') {
+      if (transformation === '血气') {
         msg.push('\n本次闭关顿悟,受到炼神之力修正,额外增加血气:' + xueqi);
       } else {
         msg.push('\n本次闭关顿悟,额外增加修为:' + rand * time);
@@ -167,7 +167,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
       rand = Math.trunc(rand * 10) + 5;
       other_xiuwei = -1 * rand * time;
       xueqi = Math.trunc(rand * time * dy.beiyong4);
-      if (transformation == '血气') {
+      if (transformation === '血气') {
         msg.push('\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi);
       } else {
         msg.push('\n由于你闭关时隔壁装修,导致你差点走火入魔,修为下降' + rand * time);
@@ -184,9 +184,9 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
     await addExp(usr_qq, other_x);
   }
   if (
-    (await existNajieThing(usr_qq, '神界秘宝', '道具')) &&
-    player.魔道值 < 1 &&
-    (player.灵根.type == '转生' || player.level_id > 41)
+    (await existNajieThing(usr_qq, '神界秘宝', '道具'))
+    && player.魔道值 < 1
+    && (player.灵根.type === '转生' || player.level_id > 41)
   ) {
     qixue = Math.trunc(xiuwei * 0.1 * time);
     await addNajieThing(usr_qq, '神界秘宝', '道具', -1);
@@ -198,7 +198,7 @@ async function biguan_jiesuan(user_id, time, is_random, group_id?) {
   await setFileValue(usr_qq, blood * time, '当前血量');
 
   // 给出消息提示
-  if (transformation == '血气') {
+  if (transformation === '血气') {
     await setFileValue(usr_qq, (xiuwei * time + other_xiuwei) * dy.beiyong4, transformation); // 丹药修正
     msg.push(
       '\n受到炼神之力的影响,增加血气:' + xiuwei * time * dy.beiyong4,

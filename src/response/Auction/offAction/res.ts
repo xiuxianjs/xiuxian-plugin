@@ -10,7 +10,7 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   if (!e.IsMaster) {
-    Send(Text('只有主人可以关闭'));
+    void Send(Text('只有主人可以关闭'));
 
     return false;
   }
@@ -18,7 +18,7 @@ const res = onResponse(selects, async e => {
   await redis.del(KEY_AUCTION_OFFICIAL_TASK);
   await redis.del(KEY_AUCTION_GROUP_LIST);
 
-  Send(Text('星阁体系已关闭！'));
+  void Send(Text('星阁体系已关闭！'));
 
   return false;
 });

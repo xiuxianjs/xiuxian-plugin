@@ -35,7 +35,7 @@ export const Xijietask = async () => {
       action = null;
     }
     // 不为空，存在动作
-    if (action != null) {
+    if (action !== null) {
       let push_address; // 消息推送地址
       let is_group = false; // 是否推送到群
 
@@ -54,10 +54,10 @@ export const Xijietask = async () => {
       const now_time = Date.now();
 
       // 有洗劫状态:这个直接结算即可
-      if (action.xijie == '0') {
+      if (action.xijie === '0') {
         // 10分钟后开始结算阶段一
-        const durRaw =
-          typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
+        const durRaw
+          = typeof action.time === 'number' ? action.time : parseInt(String(action.time ?? 0), 10);
         const dur = isNaN(durRaw) ? 0 : durRaw;
 
         end_time = end_time - dur + 60000 * 10;
@@ -72,7 +72,7 @@ export const Xijietask = async () => {
           const npc_list = await getDataList('NPC');
 
           for (i = 0; i < npc_list.length; i++) {
-            if (npc_list[i].name == weizhi.name) {
+            if (npc_list[i].name === weizhi.name) {
               break;
             }
           }
@@ -81,11 +81,11 @@ export const Xijietask = async () => {
           let monster_index;
           let monster;
 
-          if (weizhi.Grade == 1) {
+          if (weizhi.Grade === 1) {
             monster_length = npc_list[i].one.length;
             monster_index = Math.trunc(Math.random() * monster_length);
             monster = npc_list[i].one[monster_index];
-          } else if (weizhi.Grade == 2) {
+          } else if (weizhi.Grade === 2) {
             monster_length = npc_list[i].two.length;
             monster_index = Math.trunc(Math.random() * monster_length);
             monster = npc_list[i].two[monster_index];
@@ -108,16 +108,13 @@ export const Xijietask = async () => {
           let last_msg = '';
           // 构造满足 BattleEntity 最小字段的参战对象（填补缺失字段的默认值）
           const talent = A_player.灵根;
-          const getTalentName = (t): string =>
-            typeof t === 'object' && t != null && 'name' in t
+          const getTalentName = (t): string => typeof t === 'object' && t !== null && 'name' in t
               ? String((t as { name }).name)
               : '凡灵根';
-          const getTalentType = (t): string =>
-            typeof t === 'object' && t != null && 'type' in t
+          const getTalentType = (t): string => typeof t === 'object' && t !== null && 'type' in t
               ? String((t as { type }).type)
               : '普通';
-          const getTalentRate = (t): number =>
-            typeof t === 'object' && t != null && '法球倍率' in t
+          const getTalentRate = (t): number => typeof t === 'object' && t !== null && '法球倍率' in t
               ? Number((t as { 法球倍率 }).法球倍率) || 1
               : 1;
           const A_battle = {
@@ -155,9 +152,9 @@ export const Xijietask = async () => {
               id: player_id,
               name: A_battle?.名号,
               avatar: getAvatar(player_id),
-              power: A_battle?.战力 || 0,
-              hp: A_battle?.当前血量 || 0,
-              maxHp: A_battle?.血量上限 || 0
+              power: A_battle?.战力 ?? 0,
+              hp: A_battle?.当前血量 ?? 0,
+              maxHp: A_battle?.血量上限 ?? 0
             };
             const playerB = {
               id: '1715713638',
@@ -184,7 +181,7 @@ export const Xijietask = async () => {
           const arr = action;
 
           // 后续阶段会重新以 const 定义 time / action_time
-          if (msgg.find(item => item == A_win)) {
+          if (msgg.find(item => item === A_win)) {
             const time = 10; // 时间（分钟）
             const action_time = 60000 * time; // 持续时间，单位毫秒
 
@@ -194,7 +191,7 @@ export const Xijietask = async () => {
             arr.time = action_time;
             arr.xijie = -1; // 进入二阶段
             last_msg += ',经过一番战斗,击败对手,剩余' + A_player.当前血量 + '血量,开始搜刮物品';
-          } else if (msgg.find(item => item == B_win)) {
+          } else if (msgg.find(item => item === B_win)) {
             const num = weizhi.Grade;
 
             last_msg += ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' + num;
@@ -204,7 +201,7 @@ export const Xijietask = async () => {
             const shop = await readShop();
 
             for (i = 0; i < shop.length; i++) {
-              if (shop[i].name == weizhi.name) {
+              if (shop[i].name === weizhi.name) {
                 shop[i].state = 0;
                 break;
               }
@@ -218,12 +215,12 @@ export const Xijietask = async () => {
             arr.end_time = Date.now() + action_time;
             const redisGlKey = KEY_AUCTION_GROUP_LIST;
             const groupList = await redis.smembers(redisGlKey);
-            const xx =
-              '【全服公告】' +
-              A_player.名号 +
-              '被' +
-              B_player.名号 +
-              '抓进了地牢,希望大家遵纪守法,引以为戒';
+            const xx
+              = '【全服公告】'
+              + A_player.名号
+              + '被'
+              + B_player.名号
+              + '抓进了地牢,希望大家遵纪守法,引以为戒';
 
             for (const group_id of groupList) {
               pushInfo(group_id, true, xx);
@@ -238,10 +235,10 @@ export const Xijietask = async () => {
             await pushInfo(player_id, is_group, msg.join('\n'));
           }
         }
-      } else if (action.xijie == '-1') {
+      } else if (action.xijie === '-1') {
         // 5分钟后开始结算阶段二
-        const dur2Raw =
-          typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
+        const dur2Raw
+          = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
         const dur2 = isNaN(dur2Raw) ? 0 : dur2Raw;
 
         end_time = end_time - dur2 + 60000 * 5;
@@ -256,7 +253,7 @@ export const Xijietask = async () => {
           let i;
 
           for (i = 0; i < shop.length; i++) {
-            if (shop[i].name == weizhi.name) {
+            if (shop[i].name === weizhi.name) {
               break;
             }
           }
@@ -267,7 +264,7 @@ export const Xijietask = async () => {
             const gradeNum = Number(shop[i].Grade ?? 0) || 0;
             let x = gradeNum * 2;
 
-            while (x > 0 && thing != false) {
+            while (x > 0 && thing !== false) {
               const t = (() => {
                 const thing_index = Math.trunc(Math.random() * thing.length);
 
@@ -277,7 +274,7 @@ export const Xijietask = async () => {
               thing_name.push(t);
               shop = await readShop();
               for (let j = 0; j < shop[i].one.length; j++) {
-                if (shop[i].one[j].name == t.name && shop[i].one[j].数量 > 0) {
+                if (shop[i].one[j].name === t.name && shop[i].one[j].数量 > 0) {
                   shop[i].one[j].数量 = 0;
                   await writeShop(shop);
                   break;

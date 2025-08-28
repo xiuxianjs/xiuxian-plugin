@@ -21,7 +21,7 @@ const res = onResponse(selects, async e => {
   const thing_exist = await foundthing(thing_name);
 
   if (thing_exist) {
-    Send(Text(`${thing_name}可以使用,不需要回收`));
+    void Send(Text(`${thing_name}可以使用,不需要回收`));
 
     return false;
   }
@@ -56,7 +56,7 @@ const res = onResponse(selects, async e => {
         class?: string;
         pinji?: number;
       }>
-    ).find(item => item.name == thing_name);
+    ).find(item => item.name === thing_name);
 
     if (!thing) {
       continue;
@@ -65,7 +65,7 @@ const res = onResponse(selects, async e => {
     const num = typeof thing.数量 === 'number' ? thing.数量 : 0;
     const cls = (thing.class as NajieCategory) || cate;
 
-    if (cls == '材料' || cls == '草药') {
+    if (cls === '材料' || cls === '草药') {
       lingshi += sell * num;
     } else {
       lingshi += sell * 2 * num;
@@ -75,7 +75,7 @@ const res = onResponse(selects, async e => {
     }
   }
   await addCoin(usr_qq, lingshi);
-  Send(Text(`回收成功,获得${lingshi}灵石`));
+  void Send(Text(`回收成功,获得${lingshi}灵石`));
 });
 
 import mw from '@src/response/mw';

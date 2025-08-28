@@ -29,7 +29,7 @@ const res = onResponse(selects, async e => {
   if (!tiandibang.find(item => item.qq === usr_qq)) {
     const player = await readPlayer(usr_qq);
     const levelList = await getDataList('Level1');
-    const level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+    const level_id = levelList.find(item => item.level_id === player.level_id).level_id;
     const A_player = {
       名号: player.名号,
       境界: level_id,
@@ -47,9 +47,9 @@ const res = onResponse(selects, async e => {
 
     tiandibang.push(A_player);
     await writeTiandibang(tiandibang);
-    Send(Text('参赛成功!'));
+    void Send(Text('参赛成功!'));
   } else {
-    Send(Text('你已经参赛了!'));
+    void Send(Text('你已经参赛了!'));
   }
 });
 

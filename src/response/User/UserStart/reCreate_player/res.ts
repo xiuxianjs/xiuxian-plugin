@@ -112,7 +112,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await Send(
+  awaitvoid Send(
     Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择')
   );
   const [subscribe] = useSubscribe(e, selects);
@@ -122,13 +122,13 @@ const res = onResponse(selects, async e => {
       const choice = event.MessageText.trim();
 
       if (choice === '再继仙缘') {
-        void message.send([Text('重拾道心,继续修行')]);
+         void  message.send([Text('重拾道心,继续修行')]);
         clearTimeout(timeout);
 
         return;
       }
       if (choice !== '断绝此生') {
-        void message.send([Text('请回复:【断绝此生】或者【再继仙缘】进行选择')]);
+         void  message.send([Text('请回复:【断绝此生】或者【再继仙缘】进行选择')]);
         next();
 
         return;
@@ -138,7 +138,7 @@ const res = onResponse(selects, async e => {
       let acountVal = parseNum(acountValRaw, 1);
 
       if (acountVal >= 15) {
-        void message.send([Text('灵魂虚弱，已不可转世！')]);
+         void  message.send([Text('灵魂虚弱，已不可转世！')]);
 
         return;
       }
@@ -197,7 +197,7 @@ const res = onResponse(selects, async e => {
       await redis.del(getRedisKey(usr_qq, 'last_dajie_time'));
       await redis.set(lastKey, String(Date.now()));
       await redis.set(rebornKey, String(acountVal));
-      void message.send([Text('来世，信则有，不信则无，岁月悠悠……')]);
+       void  message.send([Text('来世，信则有，不信则无，岁月悠悠……')]);
     },
     ['UserId']
   );

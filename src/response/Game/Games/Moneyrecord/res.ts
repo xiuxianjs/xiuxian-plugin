@@ -36,11 +36,11 @@ const res = onResponse(selects, async e => {
   });
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
 
     return;
   }
-  Send(Text('生成记录失败'));
+  void Send(Text('生成记录失败'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

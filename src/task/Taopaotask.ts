@@ -72,10 +72,10 @@ export const Taopaotask = async () => {
       const now_time = Date.now();
 
       // 有洗劫状态:这个直接结算即可
-      if (action.xijie == '-2') {
+      if (action.xijie === '-2') {
         // 5分钟后开始结算阶段一
-        const actTime =
-          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const actTime
+          = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
 
         end_time = end_time - (isNaN(actTime) ? 0 : actTime) + 60000 * 5;
         // 时间过了
@@ -89,7 +89,7 @@ export const Taopaotask = async () => {
           let i = 0; // 获取对应npc列表的位置
 
           for (i = 0; i < npcList.length; i++) {
-            if (npcList[i].name == '万仙盟') {
+            if (npcList[i].name === '万仙盟') {
               break;
             }
           }
@@ -100,12 +100,12 @@ export const Taopaotask = async () => {
           }
           let monster: MonsterSlot;
 
-          if (weizhi.Grade == 1) {
+          if (weizhi.Grade === 1) {
             const monster_length = npcList[i].one.length;
             const monster_index = Math.trunc(Math.random() * monster_length);
 
             monster = npcList[i].one[monster_index];
-          } else if (weizhi.Grade == 2) {
+          } else if (weizhi.Grade === 2) {
             const monster_length = npcList[i].two.length;
             const monster_index = Math.trunc(Math.random() * monster_length);
 
@@ -121,22 +121,22 @@ export const Taopaotask = async () => {
             名号: monster.name,
             攻击: Math.floor(Number(monster.atk || 0) * Number(A_player.攻击 || 0)),
             防御: Math.floor(
-              (Number(monster.def || 0) * Number(A_player.防御 || 0)) /
-                (1 + Number(weizhi.Grade || 0) * 0.05)
+              (Number(monster.def || 0) * Number(A_player.防御 || 0))
+                / (1 + Number(weizhi.Grade ?? 0) * 0.05)
             ),
             当前血量: Math.floor(
-              (Number(monster.blood || 0) * Number(A_player.当前血量 || 0)) /
-                (1 + Number(weizhi.Grade || 0) * 0.05)
+              (Number(monster.blood || 0) * Number(A_player.当前血量 || 0))
+                / (1 + Number(weizhi.Grade ?? 0) * 0.05)
             ),
             暴击率: Number(monster.baoji || 0),
-            灵根: monster.灵根 || { name: '野怪', type: '普通', 法球倍率: 0.1 },
-            法球倍率: Number(monster.灵根?.法球倍率 || 0.1)
+            灵根: monster.灵根 ?? { name: '野怪', type: '普通', 法球倍率: 0.1 },
+            法球倍率: Number(monster.灵根?.法球倍率 ?? 0.1)
           };
           const Random = Math.random();
           const npc_damage = Math.trunc(
-            Harm(B_player.攻击 * 0.85, Number(A_player.防御 || 0)) +
-              Math.trunc(B_player.攻击 * B_player.法球倍率) +
-              B_player.防御 * 0.1
+            Harm(B_player.攻击 * 0.85, Number(A_player.防御 || 0))
+              + Math.trunc(B_player.攻击 * B_player.法球倍率)
+              + B_player.防御 * 0.1
           );
           let last_msg = '';
 
@@ -164,7 +164,7 @@ export const Taopaotask = async () => {
           }
           const arr: ActionState = action;
           const shop = await readShop();
-          const slot = shop.find(s => s.name == weizhi.name) as ShopSlotLike | undefined;
+          const slot = shop.find(s => s.name === weizhi.name) as ShopSlotLike | undefined;
 
           if (slot) {
             slot.state = 0;
@@ -175,7 +175,7 @@ export const Taopaotask = async () => {
               arr.cishu -= 1;
             }
           } else {
-            const num = Number(weizhi.Grade || 0) + 1;
+            const num = Number(weizhi.Grade ?? 0) + 1;
 
             last_msg += `\n在躲避追杀中,没能躲过此劫,被抓进了天牢\n在天牢中你找到了秘境之匙x${num}`;
             await addNajieThing(player_id, '秘境之匙', '道具', num);
@@ -198,7 +198,7 @@ export const Taopaotask = async () => {
               pushInfo(gid, true, notice);
             }
           }
-          if ((arr.cishu || 0) === 0) {
+          if ((arr.cishu ?? 0) === 0) {
             last_msg += '\n你成功躲过了万仙盟的追杀,躲进了宗门';
             arr.xijie = 1;
             arr.end_time = Date.now();
@@ -210,7 +210,7 @@ export const Taopaotask = async () => {
                 }
                 const tn = t.name;
                 const tc = isNajieCategory(t.class) ? t.class : '道具';
-                const count = t.数量 || 0;
+                const count = t.数量 ?? 0;
 
                 if (tn && count > 0) {
                   await addNajieThing(player_id, tn, tc, count);
@@ -229,9 +229,9 @@ export const Taopaotask = async () => {
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           msg.push('\n' + last_msg);
           if (is_group && push_address) {
-            await pushInfo(push_address, is_group, msg.join('\n'));
+            pushInfo(push_address, is_group, msg.join('\n'));
           } else {
-            await pushInfo(player_id, is_group, msg.join('\n'));
+            pushInfo(player_id, is_group, msg.join('\n'));
           }
         }
       }

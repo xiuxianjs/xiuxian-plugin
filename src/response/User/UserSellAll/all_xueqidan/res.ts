@@ -67,12 +67,12 @@ const res = onResponse(selects, async e => {
     }
   }
   if (totalGain <= 0) {
-    Send(Text('没有可服用的血气丹'));
+    void Send(Text('没有可服用的血气丹'));
 
     return false;
   }
   await addExp2(usr_qq, totalGain);
-  Send(Text(`服用成功，血气增加${totalGain}`));
+  void Send(Text(`服用成功，血气增加${totalGain}`));
 
   return false;
 });

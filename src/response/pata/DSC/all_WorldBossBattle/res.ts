@@ -60,12 +60,12 @@ const res = onResponse(selects, async e => {
 
     while (player.当前血量 > 0 && bosszt.Health > 0) {
       if (!(BattleFrame & 1)) {
-        let Player_To_BOSS_Damage =
-          Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
+        let Player_To_BOSS_Damage
+          = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
         const SuperAttack = player.暴击率 > 2 ? 1.5 : 1;
 
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
-        if (BattleFrame == 0) {
+        if (BattleFrame === 0) {
           msg.push('你进入锻神池，开始了！');
           Player_To_BOSS_Damage = 0;
         }
@@ -114,7 +114,7 @@ const res = onResponse(selects, async e => {
     }
   }
   player.血气 += xueqi;
-  Send(Text([`\n恭喜你获得血气${xueqi},本次通过${cengshu}层,失去部分修为`].join('')));
+  void Send(Text([`\n恭喜你获得血气${xueqi},本次通过${cengshu}层,失去部分修为`].join('')));
   void setDataJSONStringifyByKey(keys.player(usr_qq), player);
 });
 

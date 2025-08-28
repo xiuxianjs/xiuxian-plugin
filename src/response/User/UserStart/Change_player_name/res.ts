@@ -48,12 +48,12 @@ const res = onResponse(selects, async e => {
 
   if (isRename) {
     if (raw.length === 0) {
-      Send(Text('改名格式为:【#改名张三】请输入正确名字'));
+      void Send(Text('改名格式为:【#改名张三】请输入正确名字'));
 
       return false;
     }
     if (raw.length > 8) {
-      Send(Text('玩家名字最多八字'));
+      void Send(Text('玩家名字最多八字'));
 
       return false;
     }
@@ -65,7 +65,7 @@ const res = onResponse(selects, async e => {
     const lastStruct = await getDayStruct(lastRaw);
 
     if (sameDay(today, lastStruct)) {
-      Send(Text('每日只能改名一次'));
+      void Send(Text('每日只能改名一次'));
 
       return false;
     }
@@ -73,14 +73,14 @@ const res = onResponse(selects, async e => {
     const player = await readPlayer(usr_qq);
 
     if (!player) {
-      Send(Text('玩家数据异常'));
+      void Send(Text('玩家数据异常'));
 
       return false;
     }
     const cost = 1000;
 
     if (typeof player.灵石 !== 'number' || player.灵石 < cost) {
-      Send(Text(`改名需要${cost}灵石`));
+      void Send(Text(`改名需要${cost}灵石`));
 
       return false;
     }
@@ -99,7 +99,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (raw.length > 50) {
-    Send(Text('道宣最多50字符'));
+    void Send(Text('道宣最多50字符'));
 
     return false;
   }
@@ -111,7 +111,7 @@ const res = onResponse(selects, async e => {
   const lastStruct = await getDayStruct(lastRaw);
 
   if (sameDay(today, lastStruct)) {
-    Send(Text('每日仅可更改一次'));
+    void Send(Text('每日仅可更改一次'));
 
     return false;
   }
@@ -119,7 +119,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (!player) {
-    Send(Text('玩家数据异常'));
+    void Send(Text('玩家数据异常'));
 
     return false;
   }

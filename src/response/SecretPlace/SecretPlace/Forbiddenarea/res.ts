@@ -12,11 +12,11 @@ const res = onResponse(selects, async e => {
   });
 
   if (!image) {
-    message.send(format(Text('图片生成失败')));
+    void message.send(format(Text('图片生成失败')));
 
     return;
   }
-  message.send(format(Image(image)));
+  void message.send(format(Image(image)));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

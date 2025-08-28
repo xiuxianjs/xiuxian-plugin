@@ -10,7 +10,7 @@ export const ShopGradetask = async () => {
   const shop = await readShop();
 
   for (const slot of shop as Array<ShopSlot & { Grade?: number }>) {
-    const current = Number(slot.Grade || 1);
+    const current = Number(slot.Grade ?? 1);
 
     slot.Grade = current - 1;
     if (slot.Grade < 1) {

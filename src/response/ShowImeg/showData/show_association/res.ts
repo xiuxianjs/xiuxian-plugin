@@ -16,7 +16,7 @@ const res = onResponse(selects, async e => {
   const img = await getAssociationImage(e);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

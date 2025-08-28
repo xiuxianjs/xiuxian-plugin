@@ -1,7 +1,6 @@
 import { pushInfo } from '@src/model/api';
 // 细粒度导入避免 barrel 循环
 import { readTemp, writeTemp } from '@src/model/temp';
-import { TempRecord as TempRecordLegacy } from '@src/types/model';
 import type { TempMessage } from '@src/types';
 import { screenshot } from '@src/image';
 
@@ -12,7 +11,7 @@ import { screenshot } from '@src/image';
  * 推送完成后，清空临时消息记录。
  */
 export const MsgTask = async () => {
-  let temp: (TempMessage & TempRecordLegacy)[] = [];
+  let temp: TempMessage[] = [];
 
   try {
     temp = await readTemp();
@@ -25,7 +24,7 @@ export const MsgTask = async () => {
     group.push(temp[0].qq_group);
     f1: for (const i of temp) {
       for (const j of group) {
-        if (i.qq_group == j) {
+        if (i.qq_group === j) {
           continue f1;
         }
       }
@@ -35,7 +34,7 @@ export const MsgTask = async () => {
       const msg: string[] = [];
 
       for (const j of temp) {
-        if (i == j.qq_group) {
+        if (i === j.qq_group) {
           msg.push(j.msg);
         }
       }

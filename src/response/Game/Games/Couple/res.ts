@@ -61,14 +61,14 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (A === B) {
-    Send(Text('你咋这么爱撸自己呢?'));
+    void Send(Text('你咋这么爱撸自己呢?'));
 
     return false;
   }
 
   // 对方必须存在存档
   if (!(await existplayer(B))) {
-    Send(Text('修仙者不可对凡人出手!'));
+    void Send(Text('修仙者不可对凡人出手!'));
 
     return false;
   }
@@ -94,12 +94,12 @@ const res = onResponse(selects, async e => {
     ]);
 
     if (remainA > 0) {
-      Send(Text(`双修冷却:  ${formatRemain(remainA)}`));
+      void Send(Text(`双修冷却:  ${formatRemain(remainA)}`));
 
       return false;
     }
     if (remainB > 0) {
-      Send(Text(`对方双修冷却:  ${formatRemain(remainB)}`));
+      void Send(Text(`对方双修冷却:  ${formatRemain(remainB)}`));
 
       return false;
     }
@@ -109,7 +109,7 @@ const res = onResponse(selects, async e => {
   const coupleFlag = toInt(await redis.get(getRedisKey(B, 'couple')));
 
   if (coupleFlag !== 0) {
-    Send(Text('哎哟，你干嘛...'));
+    void Send(Text('哎哟，你干嘛...'));
 
     return false;
   }
@@ -123,7 +123,7 @@ const res = onResponse(selects, async e => {
   if (hunyinOfA !== '' || hunyinOfB !== '') {
     // 如果已婚但对象不是彼此，则拒绝
     if (hunyinOfA !== B || hunyinOfB !== A) {
-      Send(Text('力争纯爱！禁止贴贴！！'));
+      void Send(Text('力争纯爱！禁止贴贴！！'));
 
       return false;
     }
@@ -171,7 +171,7 @@ const res = onResponse(selects, async e => {
   const scenario = scenarios.find(s => rand > s.range[0] && rand <= s.range[1]);
 
   if (!scenario) {
-    Send(Text('你们双修时心神合一，但是不知道哪来的小孩，惊断了状态'));
+    void Send(Text('你们双修时心神合一，但是不知道哪来的小孩，惊断了状态'));
 
     return false;
   }
@@ -179,7 +179,7 @@ const res = onResponse(selects, async e => {
   const gain = Math.trunc(efficiency * scenario.base);
 
   await Promise.all([addExp(A, gain), addExp(B, gain), addQinmidu(A, B, scenario.intimacy)]);
-  Send(Text(`${scenario.text}${gain}修为,亲密度增加了${scenario.intimacy}点`));
+  void Send(Text(`${scenario.text}${gain}修为,亲密度增加了${scenario.intimacy}点`));
 
   return false;
 });

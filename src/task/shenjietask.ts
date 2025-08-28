@@ -8,12 +8,7 @@ import { readTemp, writeTemp } from '@src/model/temp';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import type {
-  Player,
-  CoreNajieCategory as NajieCategory,
-  ActionState,
-  ShenjiePlace
-} from '@src/types';
+import type { CoreNajieCategory as NajieCategory, ActionState, ShenjiePlace } from '@src/types';
 import { safeParse } from '@src/model/utils/safe';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getDataList } from '@src/model/DataList';
@@ -58,7 +53,7 @@ export const ShenjieTask = async () => {
     }
 
     if (String(action.mojie) === '-1') {
-      end_time = end_time - Number(action.time || 0);
+      end_time = end_time - Number(action.time ?? 0);
       if (now_time > end_time) {
         let thing_name: string | undefined;
         let thing_class: NajieCategory | undefined;
@@ -128,7 +123,7 @@ export const ShenjieTask = async () => {
         if (random < (Number(player.幸运) || 0)) {
           if (random < (Number(player.addluckyNo) || 0)) {
             last_msg += '福源丹生效，所以在';
-          } else if (player.仙宠?.type == '幸运') {
+          } else if (player.仙宠?.type === '幸运') {
             last_msg += '仙宠使你在探索中欧气满满，所以在';
           }
           // 机缘翻倍
@@ -141,13 +136,13 @@ export const ShenjieTask = async () => {
             fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
           } else {
             fyd_msg = '  \n本次探索后，福源丹已失效\n';
-            player.幸运 = Number(player.幸运 || 0) - Number(player.addluckyNo || 0);
+            player.幸运 = Number(player.幸运 ?? 0) - Number(player.addluckyNo ?? 0);
             player.addluckyNo = 0;
           }
           await writePlayer(player_id, player);
         }
-        const now_level_id = player.level_id || 0;
-        const now_physique_id = player.Physique_id || 0;
+        const now_level_id = player.level_id ?? 0;
+        const now_physique_id = player.Physique_id ?? 0;
         const xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
         const qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
 

@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
   }
 
   if (!(await Boss2IsAlive())) {
-    Send(Text('金角大王未开启！'));
+    void Send(Text('金角大王未开启！'));
 
     return false;
   }
@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
   const status = parseJson<WorldBossStatusInfo | null>(statusStr, null);
 
   if (!status) {
-    Send(Text('状态数据缺失，请联系管理员重新开启！'));
+    void Send(Text('状态数据缺失，请联系管理员重新开启！'));
 
     return false;
   }
@@ -58,7 +58,7 @@ const res = onResponse(selects, async e => {
 
   // 24h 内为刷新冷却期
   if (now - status.KilledTime < 86400000) {
-    Send(Text('金角大王正在刷新,20点开启'));
+    void Send(Text('金角大王正在刷新,20点开启'));
 
     return false;
   }
@@ -73,7 +73,7 @@ const res = onResponse(selects, async e => {
 
   const reply = `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${formatNum(status.Health)}\n奖励:${formatNum(status.Reward)}`;
 
-  Send(Text(reply));
+  void Send(Text(reply));
 
   return false;
 });

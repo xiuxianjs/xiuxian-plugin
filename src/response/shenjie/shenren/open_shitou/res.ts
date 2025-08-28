@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
   const x = await existNajieThing(usr_qq, '闪闪发光的石头', '道具');
 
   if (!x) {
-    Send(Text('你没有闪闪发光的石头'));
+    void Send(Text('你没有闪闪发光的石头'));
 
     return false;
   }
@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
   } else {
     thing = '魔石';
   }
-  Send(Text('你打开了石头,获得了' + thing + 'x2'));
+  void Send(Text('你打开了石头,获得了' + thing + 'x2'));
   await addNajieThing(usr_qq, thing, '道具', 2);
 });
 

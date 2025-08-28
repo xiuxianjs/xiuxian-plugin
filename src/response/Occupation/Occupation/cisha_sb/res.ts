@@ -48,7 +48,7 @@ const res = onResponse(selects, async e => {
       const m = Math.floor(remain / 60000);
       const s = Math.floor((remain % 60000) / 1000);
 
-      Send(Text(`正在${actionState.action}中,剩余时间:${m}分${s}秒`));
+      void Send(Text(`正在${actionState.action}中,剩余时间:${m}分${s}秒`));
 
       return false;
     }
@@ -57,7 +57,7 @@ const res = onResponse(selects, async e => {
   const pool = parseJson<AssassinationTarget[]>(await redis.get(getRedisKey('1', 'shangjing')));
 
   if (!pool || pool.length === 0) {
-    Send(Text('暂无刺杀目标'));
+    void Send(Text('暂无刺杀目标'));
 
     return false;
   }
@@ -66,15 +66,15 @@ const res = onResponse(selects, async e => {
   const idx = parseInt(idxRaw, 10) - 1;
 
   if (isNaN(idx) || idx < 0 || idx >= pool.length) {
-    Send(Text('不要伤及无辜'));
+    void Send(Text('不要伤及无辜'));
 
     return false;
   }
   const target = pool[idx];
   const qq = target.QQ;
 
-  if (qq == usr_qq) {
-    Send(Text('咋的，自己干自己？'));
+  if (qq === usr_qq) {
+    void Send(Text('咋的，自己干自己？'));
 
     return false;
   }
@@ -83,7 +83,7 @@ const res = onResponse(selects, async e => {
   const player_B = await readPlayer(String(qq));
 
   if (player_B.当前血量 === 0) {
-    Send(Text('对方已经没有血了,请等一段时间再刺杀他吧'));
+    void Send(Text('对方已经没有血了,请等一段时间再刺杀他吧'));
 
     return false;
   }
@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
         const m = Math.floor(remain / 60000);
         const s = Math.floor((remain % 60000) / 1000);
 
-        Send(Text(`对方正在${targetAction.action}中,剩余时间:${m}分${s}秒`));
+        void Send(Text(`对方正在${targetAction.action}中,剩余时间:${m}分${s}秒`));
 
         return false;
       }
@@ -110,12 +110,12 @@ const res = onResponse(selects, async e => {
 
   // 构建战斗实体（转换法球倍率为 number）
   const buff = player.occupation === '侠客' ? 1 + (player.occupation_level || 0) * 0.055 : 1;
-  const fqA =
-    typeof player.灵根.法球倍率 === 'number'
+  const fqA
+    = typeof player.灵根.法球倍率 === 'number'
       ? player.灵根.法球倍率
       : parseFloat(String(player.灵根.法球倍率)) || 0;
-  const fqB =
-    typeof player_B.灵根.法球倍率 === 'number'
+  const fqB
+    = typeof player_B.灵根.法球倍率 === 'number'
       ? player_B.灵根.法球倍率
       : parseFloat(String(player_B.灵根.法球倍率)) || 0;
   const player_A: BattleEntity = {
@@ -170,7 +170,7 @@ const res = onResponse(selects, async e => {
   if (msg.length > 100) {
     logger.info('通过');
   } else {
-    Send(Text(msg.join('\n')));
+    void Send(Text(msg.join('\n')));
   }
 
   if (broadcast) {

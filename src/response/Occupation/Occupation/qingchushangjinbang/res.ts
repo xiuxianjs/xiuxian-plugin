@@ -23,7 +23,7 @@ const res = onResponse(selects, async e => {
 
   action = await JSON.parse(action);
   action = null;
-  Send(Text('清除完成'));
+  void Send(Text('清除完成'));
   await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(action));
 });
 

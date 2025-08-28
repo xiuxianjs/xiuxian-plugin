@@ -29,7 +29,7 @@ const res = onResponse(selects, async e => {
   const last = toInt(await redis.get(cdKey));
 
   if (now < last + CD_MS) {
-    Send(Text(`查看过于频繁，请${Math.ceil((last + CD_MS - now) / 1000)}秒后再试`));
+    void Send(Text(`查看过于频繁，请${Math.ceil((last + CD_MS - now) / 1000)}秒后再试`));
 
     return false;
   }
@@ -39,13 +39,13 @@ const res = onResponse(selects, async e => {
   const img = await getXianChongImage(evt);
 
   if (!img) {
-    Send(Text('生成图片失败，请稍后再试'));
+    void Send(Text('生成图片失败，请稍后再试'));
 
     return false;
   }
   const buffer = Buffer.isBuffer(img) ? img : Buffer.from(img);
 
-  Send(Image(buffer));
+  void Send(Image(buffer));
 
   return false;
 });

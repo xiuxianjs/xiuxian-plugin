@@ -18,10 +18,10 @@ const res = onResponse(selects, async e => {
   }
   const action: ActionState = rawAction as unknown as ActionState;
 
-  if (action.action == '空闲') {
+  if (action.action === '空闲') {
     return;
   }
-  if (action.working == 1) {
+  if (action.working === 1) {
     return false;
   }
   // 结算
@@ -107,7 +107,7 @@ async function dagong_jiesuan(user_id, time, is_random, group_id?) {
     return false;
   }
   const LevelList = await getDataList('Level1');
-  const now_level_id = LevelList.find(item => item.level_id == player.level_id).level_id;
+  const now_level_id = LevelList.find(item => item.level_id === player.level_id).level_id;
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const size = cf.work.size;
   const lingshi = Math.floor(size * now_level_id * (1 + player.修炼效率提升) * 0.5);

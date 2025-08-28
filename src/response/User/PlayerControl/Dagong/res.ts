@@ -29,7 +29,7 @@ const res = onResponse(selects, async e => {
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -42,7 +42,7 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(usr_qq);
 
   if (player.当前血量 < 200) {
-    Send(Text('你都伤成这样了,先去疗伤吧'));
+    void Send(Text('你都伤成这样了,先去疗伤吧'));
 
     return false;
   }
@@ -51,7 +51,7 @@ const res = onResponse(selects, async e => {
   const current = await readAction(usr_qq);
 
   if (isActionRunning(current)) {
-    Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
+    void Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
 
     return false;
   }
@@ -69,7 +69,7 @@ const res = onResponse(selects, async e => {
   });
 
   await setDataByUserId(usr_qq, 'action', JSON.stringify(arr));
-  Send(Text(`现在开始降妖${time}分钟`));
+  void Send(Text(`现在开始降妖${time}分钟`));
 });
 
 import mw from '@src/response/mw';

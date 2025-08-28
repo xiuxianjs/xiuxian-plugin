@@ -49,12 +49,12 @@ const res = onResponse(selects, async e => {
   });
 
   if (Buffer.isBuffer(image)) {
-    Send(Image(image));
+    void Send(Image(image));
 
     return;
   }
 
-  Send(Text('图片生产失败'));
+  void Send(Text('图片生产失败'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

@@ -26,12 +26,12 @@ const res = onResponse(selects, async e => {
     let thing = e.MessageText.replace(/^(#|＃|\/)?一键锁定/, '');
 
     for (const i of wupin) {
-      if (thing == i) {
+      if (thing === i) {
         wupin1.push(i);
         thing = thing.replace(i, '');
       }
     }
-    if (thing.length == 0) {
+    if (thing.length === 0) {
       wupin = wupin1;
     } else {
       return false;
@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
     }
   }
   await writeNajie(usr_qq, najie);
-  Send(Text('一键锁定完成'));
+  void Send(Text('一键锁定完成'));
 });
 
 import mw from '@src/response/mw';

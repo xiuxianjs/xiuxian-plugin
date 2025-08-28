@@ -33,7 +33,7 @@ const res = onResponse(selects, async e => {
     const remain = lastTs + CD_MS - now;
     const s = Math.ceil(remain / 1000);
 
-    Send(Text(`请求过于频繁，请${s}秒后再试`));
+    void Send(Text(`请求过于频繁，请${s}秒后再试`));
 
     return false;
   }
@@ -43,16 +43,16 @@ const res = onResponse(selects, async e => {
   const img = await getNajieImage(publicEvent);
 
   if (!img) {
-    Send(Text('纳戒信息生成失败，请稍后重试'));
+    void Send(Text('纳戒信息生成失败，请稍后重试'));
 
     return false;
   }
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
 
     return false;
   }
-  Send(Text('图片加载失败'));
+  void Send(Text('图片加载失败'));
 
   return false;
 });

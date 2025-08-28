@@ -7,7 +7,7 @@ export const regular = /^(#|＃|\/)?修仙攻略$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  Send(Text('修仙攻略\nhttps://docs.qq.com/doc/DTHhuVnRLWlhjclhC'));
+  void Send(Text('修仙攻略\nhttps://docs.qq.com/doc/DTHhuVnRLWlhjclhC'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

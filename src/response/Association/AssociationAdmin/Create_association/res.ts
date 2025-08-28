@@ -23,25 +23,25 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const levelList = await getDataList('Level1');
-  const now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+  const now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
 
   if (now_level_id < 22) {
-    message.send(format(Text('修为达到化神再来吧')));
+    void message.send(format(Text('修为达到化神再来吧')));
 
     return false;
   }
   if (notUndAndNull(player.宗门)) {
-    message.send(format(Text('已经有宗门了')));
+    void message.send(format(Text('已经有宗门了')));
 
     return false;
   }
   if (player.灵石 < 10000) {
-    message.send(format(Text('开宗立派是需要本钱的,攒到一万灵石再来吧')));
+    void message.send(format(Text('开宗立派是需要本钱的,攒到一万灵石再来吧')));
 
     return false;
   }
   /** 回复 */
-  message.send(
+  void message.send(
     format(
       Text(
         '请发送宗门名字,一旦设立,无法再改,请慎重取名,(宗门名字最多6个中文字符)\n想改变主意请回复:【取消】'
@@ -56,20 +56,22 @@ const res = onResponse(selects, async e => {
       const association_name = event.MessageText;
 
       if (/^(#|＃|\/)?取消$/.test(association_name)) {
-        message.send(format(Text('已取消创建宗门')));
+        void message.send(format(Text('已取消创建宗门')));
         clearTimeout(timeout);
 
         return;
       }
       // res为true表示存在汉字以外的字符
       if (!/^[\u4e00-\u9fa5]+$/.test(association_name)) {
-        message.send(format(Text('宗门名字只能使用中文,请重新输入:\n想改变主意请回复:【取消】')));
+        void message.send(
+          format(Text('宗门名字只能使用中文,请重新输入:\n想改变主意请回复:【取消】'))
+        );
         next();
 
         return;
       }
       if (association_name.length > 6) {
-        message.send(
+        void message.send(
           format(Text('宗门名字最多只能设置6个字符,请重新输入:\n想改变主意请回复:【取消】'))
         );
         next();
@@ -79,7 +81,7 @@ const res = onResponse(selects, async e => {
       const ifexistass = await existDataByKey(keys.association(association_name));
 
       if (ifexistass) {
-        message.send(format(Text('该宗门已经存在,请重新输入:\n想改变主意请回复:【取消】')));
+        void message.send(format(Text('该宗门已经存在,请重新输入:\n想改变主意请回复:【取消】')));
         next();
 
         return;
@@ -99,7 +101,7 @@ const res = onResponse(selects, async e => {
       await writePlayer(usr_qq, player);
       await new_Association(association_name, usr_qq, e);
       await setFileValue(usr_qq, -10000, '灵石');
-      message.send(format(Text('宗门创建成功')));
+      void message.send(format(Text('宗门创建成功')));
     },
     ['UserId']
   );
@@ -108,7 +110,7 @@ const res = onResponse(selects, async e => {
       try {
         // 不能在回调中执行
         subscribe.cancel(sub);
-        message.send(format(Text('创建宗门超时,已取消')));
+        void message.send(format(Text('创建宗门超时,已取消')));
       } catch (e) {
         logger.error('取消订阅失败', e);
       }
@@ -121,7 +123,7 @@ async function new_Association(name, holder_qq, e) {
   const usr_qq = e.UserId;
   const player = await readPlayer(usr_qq);
   const levelList = await getDataList('Level1');
-  const now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+  const now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
   const isHigh = now_level_id > 41;
   const x = isHigh ? 1 : 0;
   const xian = isHigh ? 10 : 1;

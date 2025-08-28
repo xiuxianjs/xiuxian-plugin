@@ -431,7 +431,7 @@ const Player = ({
                     </div>
                   </div>
                 </div>
-                {player.occupation.length == 0 ? (
+                {player.occupation.length === 0 ? (
                   <div className='bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg'>
                     <div className='space-y-1.5'>
                       <div className='flex items-center justify-between'>

@@ -20,7 +20,7 @@ const res = onResponse(selects, async e => {
 
   // 防止继续其他娱乐行为
   if (game_action === '1') {
-    Send(Text('修仙：游戏进行中...'));
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -28,8 +28,8 @@ const res = onResponse(selects, async e => {
   const action = await readAction(usr_qq);
 
   if (
-    action &&
-    (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')
+    action
+    && (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')
   ) {
     await stopAction(usr_qq, {
       is_jiesuan: 1,
@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
       Place_actionplus: '1',
       mojie: '1'
     });
-    Send(Text('你已逃离！'));
+    void Send(Text('你已逃离！'));
 
     return false;
   }

@@ -56,33 +56,33 @@ const res = onResponse(selects, async e => {
   const msg = e.MessageText.replace(reg, '').trim();
 
   if (!msg) {
-    Send(Text('请输入灵石数量'));
+    void Send(Text('请输入灵石数量'));
 
     return false;
   }
   const lingshi = Number.parseInt(msg, 10);
 
   if (!Number.isFinite(lingshi) || lingshi <= 0) {
-    Send(Text('请输入正确的灵石数量'));
+    void Send(Text('请输入正确的灵石数量'));
 
     return false;
   }
   if (player.灵石 < lingshi) {
-    Send(Text(`你身上只有${player.灵石}灵石,数量不足`));
+    void Send(Text(`你身上只有${player.灵石}灵石,数量不足`));
 
     return false;
   }
   const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
   if (!assData) {
-    Send(Text('宗门数据异常'));
+    void Send(Text('宗门数据异常'));
 
     return;
   }
   const assRaw = JSON.parse(assData);
 
   if (assRaw === 'error') {
-    Send(Text('宗门数据不存在或已损坏'));
+    void Send(Text('宗门数据不存在或已损坏'));
 
     return false;
   }
@@ -101,7 +101,7 @@ const res = onResponse(selects, async e => {
   if (pool + lingshi > cap) {
     const remain = cap - pool;
 
-    Send(Text(`${ass.宗门名称}的灵石池最多还能容纳${remain}灵石,请重新捐赠`));
+    void Send(Text(`${ass.宗门名称}的灵石池最多还能容纳${remain}灵石,请重新捐赠`));
 
     return false;
   }
@@ -110,7 +110,7 @@ const res = onResponse(selects, async e => {
   player.灵石 -= lingshi;
   await writePlayer(usr_qq, serializePlayer(player));
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
-  Send(Text(`捐赠成功,你身上还有${player.灵石}灵石,宗门灵石池目前有${ass.灵石池}灵石`));
+  void Send(Text(`捐赠成功,你身上还有${player.灵石}灵石,宗门灵石池目前有${ass.灵石池}灵石`));
 
   return false;
 });

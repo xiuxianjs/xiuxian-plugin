@@ -24,7 +24,7 @@ const res = onResponse(selects, async e => {
   let name = '';
 
   for (const l of najie.功法) {
-    const islearned = player.学习的功法.find(item => item == l.name);
+    const islearned = player.学习的功法.find(item => item === l.name);
 
     if (!islearned) {
       await addNajieThing(usr_qq, l.name, '功法', -1);
@@ -33,9 +33,9 @@ const res = onResponse(selects, async e => {
     }
   }
   if (name) {
-    Send(Text(`你学会了${name},可以在【#我的炼体】中查看`));
+    void Send(Text(`你学会了${name},可以在【#我的炼体】中查看`));
   } else {
-    Send(Text('无新功法'));
+    void Send(Text('无新功法'));
   }
 });
 

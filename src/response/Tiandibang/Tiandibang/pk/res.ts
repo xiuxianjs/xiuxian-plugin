@@ -38,8 +38,7 @@ interface BattlePlayer {
   血量上限: number;
   法球倍率?: number;
 }
-const toNum = (v, d = 0) =>
-  typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const toNum = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
 
 import { getRedisKey } from '@src/model/keys';
 const randomScale = () => 0.8 + 0.4 * Math.random();
@@ -71,7 +70,7 @@ function settleWin(
   opponentName: string,
   win: boolean
 ) {
-  // wild: k == -1
+  // wild: k === -1
   if (win) {
     self.积分 += isWild ? 1500 : 2000;
   } else {
@@ -101,8 +100,8 @@ const res = onResponse(selects, async e => {
   const game_action = await redis.get(getRedisKey(usr_qq, 'game_action'));
 
   // 防止继续其他娱乐行为
-  if (+game_action == 1) {
-    Send(Text('修仙：游戏进行中...'));
+  if (+game_action === 1) {
+    void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
@@ -124,7 +123,7 @@ const res = onResponse(selects, async e => {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60);
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000);
 
-      Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
+      void Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
 
       return false;
     }
@@ -140,7 +139,7 @@ const res = onResponse(selects, async e => {
   const x = tiandibang.findIndex(item => String(item.qq) === usr_qq);
 
   if (x === -1) {
-    Send(Text('请先报名!'));
+    void Send(Text('请先报名!'));
 
     return;
   }
@@ -158,18 +157,18 @@ const res = onResponse(selects, async e => {
     tiandibang[x].次数 = 3;
   }
   if (
-    lastbisai_time &&
-    (Today.Y != lastbisai_time.Y || Today.M != lastbisai_time.M || Today.D != lastbisai_time.D)
+    lastbisai_time
+    && (Today.Y !== lastbisai_time.Y || Today.M !== lastbisai_time.M || Today.D !== lastbisai_time.D)
   ) {
     await redis.set(getRedisKey(usr_qq, 'lastbisai_time'), nowTime); // redis设置签到时间
     tiandibang[x].次数 = 3;
   }
   if (
-    lastbisai_time &&
-    Today.Y == lastbisai_time.Y &&
-    Today.M == lastbisai_time.M &&
-    Today.D == lastbisai_time.D &&
-    tiandibang[x].次数 < 1
+    lastbisai_time
+    && Today.Y === lastbisai_time.Y
+    && Today.M === lastbisai_time.M
+    && Today.D === lastbisai_time.D
+    && tiandibang[x].次数 < 1
   ) {
     const zbl = await existNajieThing(usr_qq, '摘榜令', '道具');
 
@@ -178,7 +177,7 @@ const res = onResponse(selects, async e => {
       await addNajieThing(usr_qq, '摘榜令', '道具', -1);
       last_msg.push(`${tiandibang[x].名号}使用了摘榜令\n`);
     } else {
-      Send(Text('今日挑战次数用光了,请明日再来吧'));
+      void Send(Text('今日挑战次数用光了,请明日再来吧'));
 
       return false;
     }
@@ -187,7 +186,7 @@ const res = onResponse(selects, async e => {
   let lingshi = 0;
 
   tiandibang = await readTiandibang();
-  if (x != 0) {
+  if (x !== 0) {
     let k;
 
     for (k = x - 1; k >= 0; k--) {
@@ -203,7 +202,7 @@ const res = onResponse(selects, async e => {
     }
     let B_player: BattlePlayer;
 
-    if (k != -1) {
+    if (k !== -1) {
       if (tiandibang[k].攻击 / tiandibang[x].攻击 > 2) {
         atk = 2;
         def = 2;
@@ -221,7 +220,7 @@ const res = onResponse(selects, async e => {
     }
     const A_player = buildBattlePlayer(tiandibang[x], atk, def, blood);
 
-    if (k == -1) {
+    if (k === -1) {
       atk = randomScale();
       def = randomScale();
       blood = randomScale();
@@ -234,18 +233,18 @@ const res = onResponse(selects, async e => {
     const B_win = `${B_player.名号}击败了${A_player.名号}`;
 
     if (msg.includes(A_win)) {
-      lingshi = settleWin(tiandibang[x], k == -1, last_msg, B_player.名号, true);
+      lingshi = settleWin(tiandibang[x], k === -1, last_msg, B_player.名号, true);
       await writeTiandibang(tiandibang);
     } else if (msg.includes(B_win)) {
-      lingshi = settleWin(tiandibang[x], k == -1, last_msg, B_player.名号, false);
+      lingshi = settleWin(tiandibang[x], k === -1, last_msg, B_player.名号, false);
       await writeTiandibang(tiandibang);
     } else {
-      Send(Text('战斗过程出错'));
+      void Send(Text('战斗过程出错'));
 
       return false;
     }
     await addCoin(usr_qq, lingshi);
-    Send(Text(last_msg.join('\n')));
+    void Send(Text(last_msg.join('\n')));
     const img = await screenshot('CombatResult', usr_qq, {
       msg: msg,
       playerA: {
@@ -266,7 +265,7 @@ const res = onResponse(selects, async e => {
     });
 
     if (Buffer.isBuffer(img)) {
-      Send(Image(img));
+      void Send(Image(img));
     }
   } else {
     const A_player = buildBattlePlayer(tiandibang[x]);
@@ -289,12 +288,12 @@ const res = onResponse(selects, async e => {
       lingshi = settleWin(tiandibang[x], true, last_msg, B_player.名号, false);
       await writeTiandibang(tiandibang);
     } else {
-      Send(Text('战斗过程出错'));
+      void Send(Text('战斗过程出错'));
 
       return false;
     }
     await addCoin(usr_qq, lingshi);
-    Send(Text(last_msg.join('\n')));
+    void Send(Text(last_msg.join('\n')));
     const img = await screenshot('CombatResult', usr_qq, {
       msg: msg,
       playerA: {
@@ -315,7 +314,7 @@ const res = onResponse(selects, async e => {
     });
 
     if (Buffer.isBuffer(img)) {
-      Send(Image(img));
+      void Send(Image(img));
     }
   }
   tiandibang = await readTiandibang();

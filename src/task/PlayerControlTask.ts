@@ -15,12 +15,12 @@ import { getDataList } from '@src/model/DataList';
 
 /**
  * 遍历所有玩家，检查每个玩家的当前动作（action），判断是否处于闭关或降妖状态。
-对于闭关（shutup == '0'）：
+对于闭关（shutup === '0'）：
 判断是否到达结算时间（提前2分钟结算）。
 计算修为、血气等收益，处理特殊道具和炼丹师加成，处理顿悟/走火入魔等随机事件。
 更新玩家属性、道具、经验，并推送结算消息。
 结算后关闭相关状态。
-对于降妖（working == '0'）：
+对于降妖（working === '0'）：
 判断是否到达结算时间（提前2分钟结算）。
 计算灵石、血气等收益，处理随机事件（如额外收益、损失等）。
 更新玩家属性、灵石，并推送结算消息。
@@ -43,7 +43,7 @@ export const PlayerControlTask = async () => {
       action = null;
     }
     // 不为空，存在动作
-    if (action != null) {
+    if (action !== null) {
       let push_address; // 消息推送地址
       let is_group = false; // 是否推送到群
 
@@ -61,7 +61,7 @@ export const PlayerControlTask = async () => {
       const now_time = Date.now();
 
       // 闭关状态
-      if (action.shutup == '0') {
+      if (action.shutup === '0') {
         // 这里改一改,要在结束时间的前一分钟提前结算
         // 时间过了
         end_time = end_time - 60000 * 2;
@@ -72,13 +72,13 @@ export const PlayerControlTask = async () => {
             return false;
           }
           const levelList = await getDataList('Level1');
-          const now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+          const now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
           const size = cf.biguan.size;
           const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1)); // 增加的修为
           const blood = Math.floor(player.血量上限 * 0.02);
           const rawTime = action.time;
-          const time =
-            (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
+          const time
+            = (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
           let rand = Math.random();
           let xueqi = 0;
           let other_xiuwei = 0;
@@ -90,7 +90,7 @@ export const PlayerControlTask = async () => {
 
           if (dy.biguan > 0) {
             dy.biguan--;
-            if (dy.biguan == 0) {
+            if (dy.biguan === 0) {
               dy.biguanxl = 0;
             }
           }
@@ -103,7 +103,7 @@ export const PlayerControlTask = async () => {
             rand = Math.trunc(rand * 10) + 45;
             other_xiuwei = rand * time;
             xueqi = Math.trunc(rand * time * dy.beiyong4);
-            if (transformation == '血气') {
+            if (transformation === '血气') {
               msg.push('\n本次闭关顿悟,受到炼神之力修正,额外增加血气:' + xueqi);
             } else {
               msg.push('\n本次闭关顿悟,额外增加修为:' + rand * time);
@@ -112,7 +112,7 @@ export const PlayerControlTask = async () => {
             rand = Math.trunc(rand * 10) + 5;
             other_xiuwei = -1 * rand * time;
             xueqi = Math.trunc(rand * time * dy.beiyong4);
-            if (transformation == '血气') {
+            if (transformation === '血气') {
               msg.push(
                 '\n,由于你闭关时隔壁装修,导致你差点走火入魔,受到炼神之力修正,血气下降' + xueqi
               );
@@ -130,9 +130,9 @@ export const PlayerControlTask = async () => {
             await addExp(player_id, other_x);
           }
           if (
-            (await existNajieThing(player_id, '神界秘宝', '道具')) &&
-            player.魔道值 < 1 &&
-            (player.灵根.type == '转生' || player.level_id > 41)
+            (await existNajieThing(player_id, '神界秘宝', '道具'))
+            && player.魔道值 < 1
+            && (player.灵根.type === '转生' || player.level_id > 41)
           ) {
             qixue = Math.trunc(xiuwei * 0.1 * time);
             await addNajieThing(player_id, '神界秘宝', '道具', -1);
@@ -142,7 +142,7 @@ export const PlayerControlTask = async () => {
 
           await setFileValue(player_id, blood * time, '当前血量');
 
-          if (action.acount == null) {
+          if (action.acount === null) {
             action.acount = 0;
           }
           const arr = action;
@@ -156,7 +156,7 @@ export const PlayerControlTask = async () => {
           delete arr.group_id; // 结算完去除group_id
           await setDataByUserId(player_id, 'action', JSON.stringify(arr));
           xueqi = Math.trunc(xiuwei * time * dy.beiyong4);
-          if (transformation == '血气') {
+          if (transformation === '血气') {
             await setFileValue(
               player_id,
               (xiuwei * time + other_xiuwei) * dy.beiyong4,
@@ -183,7 +183,7 @@ export const PlayerControlTask = async () => {
         }
       } // 炼丹师修正结束
       // 降妖
-      if (action.working == '0') {
+      if (action.working === '0') {
         // 这里改一改,要在结束时间的前一分钟提前结算
         end_time = end_time - 60000 * 2;
         // 时间过了
@@ -195,12 +195,12 @@ export const PlayerControlTask = async () => {
             return false;
           }
           const levelList = await getDataList('Level1');
-          const now_level_id = levelList.find(item => item.level_id == player.level_id).level_id;
+          const now_level_id = levelList.find(item => item.level_id === player.level_id).level_id;
           const size = cf.work.size;
           const lingshi = Math.floor(size * now_level_id * (1 + player.修炼效率提升) * 0.5);
           const rawTime2 = action.time;
-          const time =
-            (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
+          const time
+            = (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
           let other_lingshi = 0;
           let other_xueqi = 0;
           let rand = Math.random();
@@ -220,11 +220,11 @@ export const PlayerControlTask = async () => {
             other_lingshi = -1 * rand * time;
             other_xueqi = -2 * rand * time;
             msg.push(
-              '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了' +
-                rand * time +
-                '灵石，' +
-                '早上醒来，气血消耗了' +
-                2 * rand * time
+              '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了'
+                + rand * time
+                + '灵石，'
+                + '早上醒来，气血消耗了'
+                + 2 * rand * time
             );
           }
           //
@@ -235,7 +235,7 @@ export const PlayerControlTask = async () => {
           //
           await setFileValue(player_id, get_lingshi, '灵石'); // 添加灵石
           // redis动作
-          if (action.acount == null) {
+          if (action.acount === null) {
             action.acount = 0;
           }
           const arr = action;

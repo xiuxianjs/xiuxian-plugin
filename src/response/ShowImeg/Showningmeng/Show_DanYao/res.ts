@@ -8,7 +8,7 @@ const res = onResponse(selects, async e => {
   const img = await getDanyaoImage(e);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
   }
 });
 

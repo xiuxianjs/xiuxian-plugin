@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
   const didian = e.MessageText.replace(/^(#|＃|\/)?重置/, '').trim();
 
   if (!didian) {
-    Send(Text('请在指令后填写要重置的商店名称'));
+    void Send(Text('请在指令后填写要重置的商店名称'));
 
     return false;
   }
@@ -45,7 +45,7 @@ const res = onResponse(selects, async e => {
 
   slot.state = 0;
   await writeShop(shop);
-  Send(Text(`重置成功: ${didian}`));
+  void Send(Text(`重置成功: ${didian}`));
 
   return false;
 });

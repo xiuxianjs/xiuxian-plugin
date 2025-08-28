@@ -19,7 +19,7 @@ const res = onResponse(selects, async e => {
   const res = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
 
   if (!notUndAndNull(res)) {
-    Send(Text('目前没有拍卖正在进行'));
+   void Send(Text('目前没有拍卖正在进行'));
 
     return false;
   }
@@ -34,7 +34,7 @@ const res = onResponse(selects, async e => {
 
     msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
   }
-  await Send(Text(msg));
+  awaitvoid Send(Text(msg));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

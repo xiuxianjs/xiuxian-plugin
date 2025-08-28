@@ -22,16 +22,16 @@ const res = onResponse(selects, async e => {
   let wupin = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
   const wupin1 = [];
 
-  if (e.MessageText != '#一键解锁') {
+  if (e.MessageText !== '#一键解锁') {
     let thing = e.MessageText.replace(/^(#|＃|\/)?一键解锁/, '');
 
     for (const i of wupin) {
-      if (thing == i) {
+      if (thing === i) {
         wupin1.push(i);
         thing = thing.replace(i, '');
       }
     }
-    if (thing.length == 0) {
+    if (thing.length === 0) {
       wupin = wupin1;
     } else {
       return false;
@@ -49,7 +49,7 @@ const res = onResponse(selects, async e => {
     }
   }
   await writeNajie(usr_qq, najie);
-  Send(Text('一键解锁完成'));
+  void Send(Text('一键解锁完成'));
 });
 
 import mw from '@src/response/mw';

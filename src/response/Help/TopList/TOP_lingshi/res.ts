@@ -43,11 +43,11 @@ const res = onResponse(selects, async e => {
   const img = await getRankingMoneyImage(e, Data, usr_paiming, player, thisnajie);
 
   if (Buffer.isBuffer(img)) {
-    Send(Image(img));
+    void Send(Image(img));
 
     return;
   }
-  Send(Text('图片生成错误'));
+  void Send(Text('图片生成错误'));
 });
 
 import mw from '@src/response/mw';

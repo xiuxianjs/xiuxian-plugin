@@ -24,7 +24,7 @@ export function isNotMaintenance(ass) {
  * @returns obj==null/undefined,return false,other return true
  */
 export function notUndAndNull(obj) {
-  if (obj == undefined || obj == null) {
+  if (obj === undefined || obj === null) {
     return false;
   }
 
@@ -44,7 +44,7 @@ export async function getLastsign_Asso(usr_qq) {
   // 查询redis中的人物动作
   const time = await redis.get(getRedisKey(usr_qq, 'lastsign_Asso_time'));
 
-  if (time != null) {
+  if (time !== null) {
     const data = await shijianc(parseInt(time));
 
     return data;
