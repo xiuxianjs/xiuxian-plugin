@@ -22,7 +22,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  redis.set(getRedisKey(userId, 'couple'), 1);
+  void redis.set(getRedisKey(userId, 'couple'), 1);
   void Send(Text(`${player.名号}开启了拒绝模式`));
 
   return false;

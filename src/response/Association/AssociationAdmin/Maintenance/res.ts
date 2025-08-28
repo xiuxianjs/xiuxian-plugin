@@ -65,8 +65,8 @@ const res = onResponse(selects, async e => {
   }
   ass.灵石池 = pool - need;
   ass.维护时间 = nowTime;
-  setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  setDataJSONStringifyByKey(keys.player(userId), player);
+  void setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
+  void setDataJSONStringifyByKey(keys.player(userId), player);
   const nextmt_time = shijianc(ass.维护时间 + 60000 * time);
 
   void Send(

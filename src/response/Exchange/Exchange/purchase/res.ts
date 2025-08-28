@@ -28,8 +28,12 @@ const res = onResponse(selects, async e => {
   const time0 = 0.5; // 分钟cd
   // 获取当前时间
   const now_time = Date.now();
-  const Exchange_res = await redis.get(getRedisKey(userId, 'ExchangeCD'));
-  const ExchangeCD = parseInt(Exchange_res);
+  const res = await redis.get(getRedisKey(userId, 'ExchangeCD'));
+
+  if (!res) {
+    return;
+  }
+  const ExchangeCD = parseInt(res);
   const transferTimeout = Math.floor(60000 * time0);
 
   if (now_time < ExchangeCD + transferTimeout) {

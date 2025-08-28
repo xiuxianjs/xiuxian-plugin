@@ -33,8 +33,6 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const userId = e.UserId;
-
   const thingName = e.MessageText.replace(/^(#|＃|\/)?积分兑换/, '').trim();
 
   if (!thingName) {

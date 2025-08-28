@@ -20,9 +20,9 @@ export const Daolv = {
   }
 };
 
-export async function chaoshi(e) {
+export function chaoshi(e) {
   const [message] = useMessage(e);
-  const chaoshi_time = setTimeout(() => {
+  const chaoshiTime = setTimeout(() => {
     if (Daolv.x === 1 || Daolv.x === 2) {
       Daolv.set_x(0);
       void message.send(format(Text('对方没有搭理你')));
@@ -31,7 +31,7 @@ export async function chaoshi(e) {
     }
   }, 30000);
 
-  Daolv.set_chaoshi_time(chaoshi_time);
+  Daolv.set_chaoshi_time(chaoshiTime);
 }
 export async function found(A, B) {
   const qinmidu = await readQinmidu();

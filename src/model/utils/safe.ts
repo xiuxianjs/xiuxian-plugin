@@ -18,7 +18,7 @@ export class PlayerRepo {
    * @param id 玩家ID
    * @returns 原始字符串数据或null
    */
-  async getRaw(id: string): Promise<string | null> {
+  getRaw(id: string): Promise<string | null> {
     return getDataByKey(keys.player(id));
   }
 

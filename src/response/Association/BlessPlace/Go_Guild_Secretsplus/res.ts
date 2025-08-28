@@ -7,7 +7,6 @@ import { convert2integer } from '@src/model/utils/number';
 import { readPlayer } from '@src/model/xiuxian_impl';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addCoin } from '@src/model/economy';
-import type { Player } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import { getRedisKey, keys } from '@src/model/keys';
@@ -129,7 +128,7 @@ const res = onResponse(selects, async e => {
     group_id: e.name === 'message.create' ? e.ChannelId : undefined
   };
 
-  redis.set(getRedisKey(userId, 'action'), JSON.stringify(arr));
+  void redis.set(getRedisKey(userId, 'action'), JSON.stringify(arr));
   void Send(
     Text(
       `开始沉迷探索 ${didian} 宗门秘境 * ${i} 次，共耗时 ${time} 分钟 (消耗${Price}灵石，上缴宗门${guildGain}灵石)`

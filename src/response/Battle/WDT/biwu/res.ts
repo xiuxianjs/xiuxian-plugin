@@ -7,7 +7,6 @@ import { zdBattle } from '@src/model/battle';
 import { addHP, addExp2, addCoin } from '@src/model/economy';
 import { existNajieThing } from '@src/model/najie';
 import { existplayer, readPlayer } from '@src/model/xiuxian_impl';
-import type { Player } from '@src/types/player';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

@@ -11,7 +11,7 @@ import {
   readPlayer,
   writePlayer
 } from '@src/model/index';
-import type { AssociationDetailData, Player, JSONValue } from '@src/types';
+import type { Player, JSONValue } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -20,14 +20,6 @@ export const regular = /^(#|＃|\/)?加入宗门.*$/;
 
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27];
 
-interface GuildInfo extends AssociationDetailData {
-  宗门等级?: number;
-  所有成员?: string[];
-  外门弟子?: string[];
-}
-function isGuildInfo(v): v is GuildInfo {
-  return !!v && typeof v === 'object' && 'power' in v;
-}
 function serializePlayer(p: Player): Record<string, JSONValue> {
   const r: Record<string, JSONValue> = {};
 

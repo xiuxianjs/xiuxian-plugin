@@ -70,7 +70,6 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const userId = e.UserId;
   const now = Date.now();
   const fightCdMs = 5 * 60000;
   const lastTimeRaw = await redis.get(getRedisKey(userId, 'BOSSCD'));
@@ -191,7 +190,7 @@ const res = onResponse(selects, async e => {
     clearTimeout(WorldBossBattleInfo.UnLockTimer);
     WorldBossBattleInfo.setUnLockTimer(null);
   }
-  SetWorldBOSSBattleUnLockTimer(e);
+  void SetWorldBOSSBattleUnLockTimer(e);
   if (WorldBossBattleInfo.Lock !== 0) {
     void Send(Text('好像有人正在和金角大王激战，现在去怕是有未知的凶险，还是等等吧！'));
 
@@ -272,7 +271,7 @@ const res = onResponse(selects, async e => {
     WorldBossStatus.KilledTime = Date.now();
     await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus));
 
-    const PlayerList = await SortPlayer(PlayerRecordJSON);
+    const PlayerList = SortPlayer(PlayerRecordJSON);
 
     void Send(
       Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')

@@ -39,8 +39,6 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
 
-  const userId = e.UserId; // 用户qq
-
   // 有无存档
   if (!(await existplayer(userId))) {
     return false;

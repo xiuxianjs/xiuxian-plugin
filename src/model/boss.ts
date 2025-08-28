@@ -5,7 +5,7 @@ import { readPlayer, existplayer as existPlayer, writePlayer } from '@src/model'
 import { zdBattle, Harm } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { addHP, addCoin } from '@src/model/economy';
-import { __PATH, keys, keysByPath } from '@src/model/keys';
+import { __PATH, keysByPath } from '@src/model/keys';
 import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { existplayer } from '@src/model';
 import {
@@ -199,7 +199,7 @@ export async function LookUpWorldBossStatus(e: EventsMessageCreateEnum) {
   return false;
 }
 // 排序
-export async function SortPlayer(PlayerRecordJSON) {
+export function SortPlayer(PlayerRecordJSON) {
   if (PlayerRecordJSON) {
     // let Temp0 = JSON.parse(JSON.stringify(PlayerRecordJSON))
     const Temp0 = _.cloneDeep(PlayerRecordJSON);
@@ -238,7 +238,6 @@ export async function WorldBossBattle(e) {
 
     return false;
   }
-  const userId = e.UserId;
   let Time = 5;
   const now_Time = Date.now(); // 获取当前时间戳
 
@@ -250,7 +249,7 @@ export async function WorldBossBattle(e) {
     const Couple_m = Math.trunc((last_time + Time - now_Time) / 60 / 1000);
     const Couple_s = Math.trunc(((last_time + Time - now_Time) % 60000) / 1000);
 
-    void Send(Text('正在CD中，' + `剩余cd:  ${Couple_m}分 ${Couple_s}秒`));
+    void Send(Text(`刚刚一战消耗了太多气力，还是先歇息一会儿吧~(剩余${Couple_m}分${Couple_s}秒)`));
 
     return false;
   }
@@ -354,7 +353,7 @@ export async function WorldBossBattle(e) {
       clearTimeout(WorldBossBattleInfo.UnLockTimer);
       WorldBossBattleInfo.setUnLockTimer(null);
     }
-    SetWorldBOSSBattleUnLockTimer(e);
+    void SetWorldBOSSBattleUnLockTimer(e);
     if (WorldBossBattleInfo.Lock !== 0) {
       void Send(Text('好像有人正在和妖王激战，现在去怕是有未知的凶险，还是等等吧！'));
 
@@ -414,8 +413,8 @@ export async function WorldBossBattle(e) {
     }
     await sleep(1000);
     PlayerRecordJSON.TotalDamage[Userid] += TotalDamage;
-    redis.set(KEY_RECORD, JSON.stringify(PlayerRecordJSON));
-    redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
+    void redis.set(KEY_RECORD, JSON.stringify(PlayerRecordJSON));
+    void redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
     if (WorldBossStatus.Health <= 0) {
       void Send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'));
       await sleep(1000);
@@ -431,8 +430,8 @@ export async function WorldBossBattle(e) {
       logger.info(`[妖王] 结算:${userId}增加奖励1000000`);
 
       WorldBossStatus.KilledTime = Date.now();
-      redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
-      const PlayerList = await SortPlayer(PlayerRecordJSON);
+      void redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
+      const PlayerList = SortPlayer(PlayerRecordJSON);
 
       void Send(
         Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')
@@ -473,13 +472,13 @@ export async function WorldBossBattle(e) {
               + `获得灵石奖励${Reward}`
           );
           CurrentPlayer.灵石 += Reward;
-          writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
+          void writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
           logger.info(`[妖王周本] 结算:${PlayerRecordJSON.QQ[PlayerList[i]]}增加奖励${Reward}`);
           continue;
         } else {
           CurrentPlayer.灵石 += 200000;
           logger.info(`[妖王周本] 结算:${PlayerRecordJSON.QQ[PlayerList[i]]}增加奖励200000`);
-          writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
+          void writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
         }
         if (i === PlayerList.length - 1) {
           Rewardmsg.push('其余参与的修仙者均获得200000灵石奖励！');
@@ -499,7 +498,7 @@ export async function WorldBossBattle(e) {
   }
 }
 // 设置防止锁卡死的计时器
-export async function SetWorldBOSSBattleUnLockTimer(e) {
+export function SetWorldBOSSBattleUnLockTimer(e) {
   const Send = useSend(e);
   const timeout = setTimeout(() => {
     if (WorldBossBattleInfo.Lock === 1) {

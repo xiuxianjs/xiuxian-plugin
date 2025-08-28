@@ -1,7 +1,6 @@
-// import data from './XiuxianData.js'
 import { useSend, Text, EventsMessageCreateEnum, Image } from 'alemonjs';
 import { screenshot } from '@src/image/index.js';
-import type { Player, Equipment, Najie, StrandResult } from '../types/player.js';
+import type { Player, Najie, StrandResult } from '../types/player.js';
 import { getRandomTalent } from './cultivation.js';
 import type {
   ScreenshotResult,
@@ -636,7 +635,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     player.灵根 = await getRandomTalent();
   }
   await playerEfficiency(userId); // 注意这里刷新了修炼效率提升
-  if ((await player.linggenshow) !== 0) {
+  if (player.linggenshow !== 0) {
     player.灵根.type = '无';
     player.灵根.name = '未知';
     player.灵根.法球倍率 = '0';

@@ -4,7 +4,7 @@ import { redis } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { getRedisKey, __PATH } from '@src/model/keys';
 import { Go, readPlayer, notUndAndNull, addCoin, getConfig } from '@src/model/index';
-import type { Player, AssociationDetailData } from '@src/types';
+import type { AssociationDetailData } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

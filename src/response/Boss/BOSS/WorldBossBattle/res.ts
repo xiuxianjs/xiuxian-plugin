@@ -71,7 +71,6 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const userId = e.UserId;
   const now_Time = Date.now();
   const cdMs = 5 * 60000;
   const last_time_raw = await redis.get(getRedisKey(userId, 'BOSSCD'));
@@ -266,7 +265,7 @@ const res = onResponse(selects, async e => {
     WorldBossStatus.KilledTime = Date.now();
     await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
 
-    const PlayerList = await SortPlayer(PlayerRecordJSON);
+    const PlayerList = SortPlayer(PlayerRecordJSON);
 
     void Send(
       Text('正在进行存档有效性检测，如果长时间没有回复请联系主人修复存档并手动按照贡献榜发放奖励')

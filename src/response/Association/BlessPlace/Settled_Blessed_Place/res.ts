@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { __PATH, keysByPath, notUndAndNull, readPlayer, existplayer, keys } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
-import type { Player, AssociationDetailData } from '@src/types';
+import type { AssociationDetailData } from '@src/types';
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { selects } from '@src/response/mw';

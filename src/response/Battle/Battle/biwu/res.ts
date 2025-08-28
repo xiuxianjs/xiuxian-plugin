@@ -53,16 +53,16 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  const playerB = await getDataJSONParseByKey(keys.player(B));
+  const playerDataB = await getDataJSONParseByKey(keys.player(B));
 
-  if (!playerB) {
+  if (!playerDataB) {
     void Send(Text('对方数据不存在'));
 
     return;
   }
 
   const playerA: Player = player;
-  const playerB: Player = playerB;
+  const playerB: Player = playerDataB;
 
   // 复制（避免副作用）
   const a = { ...playerA };

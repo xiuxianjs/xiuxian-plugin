@@ -1,7 +1,5 @@
-import { getIoRedis } from '@alemonjs/db';
 import { __PATH } from './keys.js';
 import { writePlayer } from './pub.js';
-import { safeParse } from './utils/safe.js';
 import type { Tripod, TalentInfo } from '../types/player.js';
 import { getDataList } from './DataList.js';
 import { LIB_MAP, LibHumanReadable } from '../types/model.js';
@@ -148,7 +146,7 @@ export async function readThat(
 
 // 读取item某个文件的全部物品
 // 返回 unknown[] 保持宽松兼容
-export async function readAll(weizhi: LibHumanReadable): Promise<unknown[]> {
+export async function readAll(weizhi: LibHumanReadable) {
   const key = LIB_MAP[weizhi];
   const arr = await getDataList(key);
 
@@ -156,10 +154,7 @@ export async function readAll(weizhi: LibHumanReadable): Promise<unknown[]> {
 }
 
 // 对值相同的五行进行挑选
-export async function getxuanze(
-  shuju: string[],
-  linggentype: number
-): Promise<[string, number] | false> {
+export function getxuanze(shuju: string[], linggentype: number): Promise<[string, number] | false> {
   let i;
   const shuzu = [1, 2, 3, 4, 5];
   const wuxing = ['金', '木', '土', '水', '火', '金', '木', '土', '水', '火'];

@@ -10,7 +10,6 @@ import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.
 
 export async function playerEfficiency(userId: string): Promise<null | undefined> {
   // 这里有问题
-  const userId = userId;
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {

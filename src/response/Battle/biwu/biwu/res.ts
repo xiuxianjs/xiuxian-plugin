@@ -205,7 +205,7 @@ async function battle(e, num: number) {
     action_A = JSON.parse((await redis.get(getRedisKey(A_QQ[num].QQ, 'bisai'))) || '{}');
     action_B = JSON.parse((await redis.get(getRedisKey(B_QQ[num].QQ, 'bisai'))) || '{}');
     // 清空上次技能 cd
-    if (action_A.技能 && action_A.技能[action_A.use]) {
+    if (action_A.技能?.[action_A.use]) {
       action_A.技能[action_A.use].cd = 0;
     }
 
@@ -313,7 +313,7 @@ async function battle(e, num: number) {
     A_harm = Math.trunc(A_baoji * A_harm + A_faqiu + playerA.防御 * 0.1);
 
     // A 技能释放
-    if (action_A.use !== -1 && action_A.技能 && action_A.技能[action_A.use]) {
+    if (action_A.use !== -1 && action_A.技能?.[action_A.use]) {
       const sk = action_A.技能[action_A.use];
 
       switch (sk.name) {
@@ -375,7 +375,7 @@ async function battle(e, num: number) {
     }
 
     // B 方
-    if (action_B.技能 && action_B.技能[action_B.use]) {
+    if (action_B.技能?.[action_B.use]) {
       action_B.技能[action_B.use].cd = 0;
     }
     applyBuffDecay(

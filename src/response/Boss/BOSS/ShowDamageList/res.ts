@@ -52,7 +52,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const PlayerList = await SortPlayer(PlayerRecord);
+  const PlayerList = SortPlayer(PlayerRecord);
 
   if (!Array.isArray(PlayerList) || PlayerList.length === 0) {
     void Send(Text('还没人挑战过妖王'));

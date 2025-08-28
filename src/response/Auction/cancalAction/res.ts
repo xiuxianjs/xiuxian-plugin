@@ -18,7 +18,7 @@ const res = onResponse(selects, async e => {
 
   const redisGlKey = KEY_AUCTION_GROUP_LIST;
 
-  if (!redis.sismember(redisGlKey, String(e.ChannelId))) {
+  if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) {
     void Send(Text('本来就没开取消个冒险'));
 
     return false;
