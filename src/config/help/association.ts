@@ -1,13 +1,4 @@
-export interface HelpItem {
-  icon: string;
-  title: string;
-  desc: string;
-}
-
-export interface HelpGroup {
-  group: string;
-  list: HelpItem[];
-}
+import { HelpGroup } from './types';
 
 const sectHelpConfig: HelpGroup[] = [
   {

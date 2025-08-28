@@ -1,19 +1,8 @@
-export interface HelpItem {
-  icon: string;
-  title: string;
-  desc?: string;
-}
-
-export interface HelpGroup {
-  group: string;
-  desc?: string;
-  list: HelpItem[];
-}
+import { HelpGroup } from './types';
 
 const masterDiscipleHelpConfig: HelpGroup[] = [
   {
     group: '传道授业',
-    desc: '进行拜师(示例: #拜师 @某人)',
     list: [
       {
         icon: 'help-icon_13',
@@ -25,7 +14,7 @@ const masterDiscipleHelpConfig: HelpGroup[] = [
         title: '#关闭收徒',
         desc: '其他人不再能拜你为师'
       },
-      { icon: 'help-icon_13', title: '#拜师+@' },
+      { icon: 'help-icon_13', title: '#拜师+@', desc: '' },
       { icon: 'help-icon_13', title: '#解除师徒关系', desc: '解除师徒关系' },
       {
         icon: 'help-icon_13',

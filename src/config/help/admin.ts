@@ -1,13 +1,4 @@
-export interface HelpItem {
-  icon: string;
-  title: string;
-  desc: string;
-}
-
-export interface HelpGroup {
-  group: string;
-  list: HelpItem[];
-}
+import { HelpGroup } from './types';
 
 const helpConfig: HelpGroup[] = [
   {
@@ -72,11 +63,6 @@ const helpConfig: HelpGroup[] = [
         icon: 'help-icon_9',
         title: '#解散宗门+宗门名',
         desc: '解散宗门，删除文件'
-      },
-      {
-        icon: 'help-icon_9',
-        title: '#修仙设置',
-        desc: '查看修仙配置'
       },
       {
         icon: 'help-icon_9',

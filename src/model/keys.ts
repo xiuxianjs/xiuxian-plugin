@@ -1,6 +1,5 @@
 import Association from '@src/config/help/association';
 import help from '@src/config/help/base';
-import help2 from '@src/config/help/extensions';
 import set from '@src/config/help/admin';
 import shituhelp from '@src/config/help/professor';
 import xiuxian from '@src/config/xiuxian';
@@ -46,7 +45,6 @@ export { __PATH };
 export const __PATH_CONFIG = {
   Association,
   help,
-  help2,
   set,
   shituhelp,
   xiuxian

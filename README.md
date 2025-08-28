@@ -12,6 +12,8 @@ https://github.com/lemonade-lab/alemongo
 
 > 安装后使用 `/修仙帮助` 唤醒
 
+主人专用指令 `/修仙扩展`
+
 ### alemongo
 
 地址

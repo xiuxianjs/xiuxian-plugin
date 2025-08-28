@@ -64,8 +64,8 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
   const dy = await readDanyao(userId);
   const bgdan = dy.biguanxl || 0;
 
-  player.修炼效率提升
-    = linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
+  player.修炼效率提升 =
+    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
   await setDataJSONStringifyByKey(keys.player(userId), player);
 }
 

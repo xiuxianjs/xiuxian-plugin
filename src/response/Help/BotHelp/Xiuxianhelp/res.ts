@@ -5,7 +5,7 @@ import { screenshot } from '@src/image';
 
 import mw from '@src/response/mw';
 
-export const regular = /^(#|＃|\/)??(修仙|仙侠)?帮助(\d+)?$/;
+export const regular = /^(#|＃|\/)??(修仙|仙侠)?(帮助|扩展)(\d+)?$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
