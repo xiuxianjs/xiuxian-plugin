@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { existplayer, existNajieThing, sleep, addNajieThing } from '@src/model/index';
+import { existNajieThing, sleep, addNajieThing, readPlayer, writePlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?供奉奇怪的石头$/;
@@ -8,15 +8,15 @@ export const regular = /^(#|＃|\/)?供奉奇怪的石头$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   // 固定写法
-  const usr_qq = e.UserId;
-  // 判断是否为匿名创建存档
-  // 有无存档
-  const ifexistplay = await existplayer(usr_qq);
+  const userId = e.UserId;
 
-  if (!ifexistplay) {
-    return false;
+  //
+  const player = await readPlayer(userId);
+
+  if (!player) {
+    return;
   }
-  const x = await existNajieThing(usr_qq, '长相奇怪的小石头', '道具');
+  const x = await existNajieThing(userId, '长相奇怪的小石头', '道具');
 
   if (!x) {
     void Send(
@@ -27,7 +27,6 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await readPlayer(usr_qq);
 
   if (player.轮回点 >= 10 && player.lunhui === 0) {
     void Send(Text('你梳洗完毕，将小石头摆在案上,点上香烛，拜上三拜！'));
@@ -36,29 +35,29 @@ const res = onResponse(selects, async e => {
     player.血气 -= 500000;
     void Send(
       Text(
-        '奇怪的小石头灵光一闪，你感受到胸口一阵刺痛，喷出一口鲜血：\n'
-          + '“不好，这玩意一定是个邪物！不能放在身上！\n是不是该把它卖了补贴家用？\n'
-          + '或者放拍卖行骗几个自认为识货的人回本？”'
+        '奇怪的小石头灵光一闪，你感受到胸口一阵刺痛，喷出一口鲜血：\n' +
+          '“不好，这玩意一定是个邪物！不能放在身上！\n是不是该把它卖了补贴家用？\n' +
+          '或者放拍卖行骗几个自认为识货的人回本？”'
       )
     );
-    await writePlayer(usr_qq, player);
+    await writePlayer(userId, player);
 
     return false;
   }
-  await addNajieThing(usr_qq, '长相奇怪的小石头', '道具', -1);
+  await addNajieThing(userId, '长相奇怪的小石头', '道具', -1);
   void Send(Text('你梳洗完毕，将小石头摆在案上,点上香烛，拜上三拜！'));
   await sleep(3000);
   player.当前血量 = Math.floor(player.当前血量 / 3);
   player.血气 = Math.floor(player.血气 / 3);
   void Send(
     Text(
-      '小石头灵光一闪，化作一道精光融入你的体内。\n'
-        + '你喷出一口瘀血，顿时感受到天地束缚弱了几分，可用轮回点+1'
+      '小石头灵光一闪，化作一道精光融入你的体内。\n' +
+        '你喷出一口瘀血，顿时感受到天地束缚弱了几分，可用轮回点+1'
     )
   );
   await sleep(1000);
   player.轮回点++;
-  await writePlayer(usr_qq, player);
+  await writePlayer(userId, player);
 
   return false;
 });

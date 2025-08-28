@@ -27,12 +27,9 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
   } else {
     const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-    if (ass) {
-      return null;
-    }
     if (ass.宗门驻地 === 0) {
       Assoc_efficiency = ass.宗门等级 * 0.05;
-    } else {
+    } else if (ass) {
       const dongTan = (await getDataList('Bless')).find(item => item.name === ass.宗门驻地);
 
       try {
@@ -68,8 +65,8 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
   const dy = await readDanyao(usr_qq);
   const bgdan = dy.biguanxl || 0;
 
-  player.修炼效率提升
-    = linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
+  player.修炼效率提升 =
+    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
   await setDataJSONStringifyByKey(keys.player(usr_qq), player);
 }
 
