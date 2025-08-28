@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 import mw from '@src/response/mw';
 
 export const selects = onSelects(['message.create']);
@@ -16,14 +16,17 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
-
-  if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) {
-    void Send(Text('本来就没开取消个冒险'));
-
+  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+  const auctionKeyManager = getAuctionKeyManager();
+  const groupId = String(e.ChannelId);
+  
+  const isGroupEnabled = await auctionKeyManager.isGroupAuctionEnabled(groupId);
+  if (!isGroupEnabled) {
+    void Send(Text('本群未开启星阁拍卖'));
     return false;
   }
-  await redis.srem(redisGlKey, String(e.ChannelId));
+  
+  await auctionKeyManager.disableGroupAuction(groupId);
   void Send(Text('星阁体系在本群取消了'));
 });
 

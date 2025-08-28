@@ -15,7 +15,7 @@ import {
   KEY_WORLD_BOOS_STATUS_TWO
 } from '@src/model/settions';
 import { getRedisKey } from '@src/model/keys';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 
 export const WorldBossBattleInfo = {
   CD: {},
@@ -61,8 +61,9 @@ export async function InitWorldBoss() {
   await redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
   await redis.set(KEY_RECORD, JSON.stringify(PlayerRecord));
   const msg = '【全服公告】妖王已经苏醒,击杀者额外获得100w灵石';
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
-  const groupList = await redis.smembers(redisGlKey);
+  const auctionKeyManager = getAuctionKeyManager();
+  const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+  const groupList = await redis.smembers(groupListKey);
 
   for (const group of groupList) {
     pushInfo(group, true, msg);
@@ -100,8 +101,9 @@ export async function InitWorldBoss2() {
   await redis.set(KEY_WORLD_BOOS_STATUS_TWO, JSON.stringify(WorldBossStatus));
   await redis.set(KEY_RECORD_TWO, JSON.stringify(PlayerRecord));
   const msg = '【全服公告】金角大王已经苏醒,击杀者额外获得50w灵石';
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
-  const groupList = await redis.smembers(redisGlKey);
+  const auctionKeyManager = getAuctionKeyManager();
+  const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+  const groupList = await redis.smembers(groupListKey);
 
   for (const groupId of groupList) {
     pushInfo(groupId, true, msg);
@@ -420,8 +422,9 @@ export async function WorldBossBattle(e) {
       await sleep(1000);
       const msg2
         = '【全服公告】' + player.名号 + '亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！';
-      const redisGlKey = KEY_AUCTION_GROUP_LIST;
-      const groupList = await redis.smembers(redisGlKey);
+      const auctionKeyManager = getAuctionKeyManager();
+      const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+      const groupList = await redis.smembers(groupListKey);
 
       for (const group of groupList) {
         pushInfo(group, true, msg2);

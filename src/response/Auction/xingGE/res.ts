@@ -5,7 +5,7 @@ import { existplayer, notUndAndNull, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?星阁拍卖行$/;
 
 const res = onResponse(selects, async e => {
@@ -16,7 +16,12 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const res = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
+  
+  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+  const auctionKeyManager = getAuctionKeyManager();
+  
+  const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
+  const res = await redis.get(auctionTaskKey);
 
   if (!notUndAndNull(res)) {
     void Send(Text('目前没有拍卖正在进行'));

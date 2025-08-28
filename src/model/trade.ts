@@ -3,7 +3,7 @@ import { getIoRedis } from '@alemonjs/db';
 import type { AuctionItem } from '../types/data_extra';
 import type { ExchangeRecord, ForumRecord } from '../types/model';
 import { keys } from './keys.js';
-import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK } from './constants.js';
+import { getAuctionKeyManager } from './constants.js';
 import { getDataList } from './DataList.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
@@ -33,8 +33,14 @@ export async function readForum(): Promise<ForumRecord[]> {
   // 如果不是数组，返回空数组
   return [];
 }
+/**
+ * 开启星阁拍卖
+ * @returns 拍卖记录
+ */
 export async function openAU(): Promise<ExchangeRecord> {
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
+  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+  const auctionKeyManager = getAuctionKeyManager();
+  
   const data = {
     xingge: await getDataList('Xingge')
   };
@@ -50,7 +56,8 @@ export async function openAU(): Promise<ExchangeRecord> {
   const thingValue = Math.floor(Number(thingData.出售价) || 0);
   const thingAmount = 1;
   const nowTime = Date.now();
-  const groupList = await redis.smembers(redisGlKey);
+  const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+  const groupList = await redis.smembers(groupListKey);
   const wupin: ExchangeRecord = {
     thing: thingData,
     start_price: thingValue,
@@ -61,7 +68,8 @@ export async function openAU(): Promise<ExchangeRecord> {
     groupList
   };
 
-  await setDataJSONStringifyByKey(KEY_AUCTION_OFFICIAL_TASK, wupin);
+  const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
+  await setDataJSONStringifyByKey(auctionTaskKey, wupin);
 
   return wupin;
 }

@@ -17,7 +17,7 @@ import { selects } from '@src/response/mw';
 import { existplayer } from '@src/model';
 import { getRedisKey, keys } from '@src/model/keys';
 import {
-  KEY_AUCTION_GROUP_LIST,
+  getAuctionKeyManager,
   KEY_RECORD_TWO,
   KEY_WORLD_BOOS_STATUS_TWO
 } from '@src/model/constants';
@@ -259,8 +259,9 @@ const res = onResponse(selects, async e => {
     void Send(Text('金角大王被击杀！玩家们可以根据贡献获得奖励！'));
     await sleep(1000);
     const killMsg = `【全服公告】${player.名号}亲手结果了金角大王的性命,为民除害,额外获得500000灵石奖励！`;
-    const glKey = KEY_AUCTION_GROUP_LIST;
-    const groups = await redis.smembers(glKey);
+    const auctionKeyManager = getAuctionKeyManager();
+    const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+    const groups = await redis.smembers(groupListKey);
 
     for (const g of groups) {
       pushInfo(g, true, killMsg);

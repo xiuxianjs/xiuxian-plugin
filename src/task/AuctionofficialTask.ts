@@ -5,11 +5,15 @@ import { addCoin } from '@src/model/economy';
 import { addNajieThing } from '@src/model/najie';
 import type { AuctionSession, CoreNajieCategory as NajieCategory } from '@src/types';
 import { getConfig } from '@src/model';
-import { KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 
 export const AuctionofficialTask = async () => {
+  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+  const auctionKeyManager = getAuctionKeyManager();
+  
   const set = await getConfig('xiuxian', 'xiuxian');
-  const wupinStr = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
+  const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
+  const wupinStr = await redis.get(auctionTaskKey);
 
   if (!wupinStr) {
     // 未在拍卖中 -> 判断时间窗口
@@ -81,8 +85,8 @@ export const AuctionofficialTask = async () => {
 
       return (list as string[]).includes(raw) ? (raw as NajieCategory) : '道具';
     })();
-    const pinji
-      = typeof wupin.thing.pinji === 'number'
+    const pinji =
+      typeof wupin.thing.pinji === 'number'
         ? wupin.thing.pinji
         : typeof wupin.thing.pinji === 'string'
           ? Number(wupin.thing.pinji)
@@ -94,7 +98,7 @@ export const AuctionofficialTask = async () => {
     msg = `拍卖结束，${player.名号}最终拍得该物品！`;
   }
   wupin.groupList.forEach(g => pushInfo(String(g), true, msg));
-  await redis.del(KEY_AUCTION_OFFICIAL_TASK);
+  await redis.del(auctionTaskKey);
 
   return false;
 };

@@ -10,7 +10,7 @@ import { safeParse } from '@src/model/utils/safe';
 import type { ActionState, CoreNajieCategory as NajieCategory } from '@src/types';
 import { Mention, DataMention } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 
 function isNajieCategory(v): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -190,8 +190,9 @@ export const Taopaotask = async () => {
             arr.action = '天牢';
             arr.xijie = 1; // 关闭洗劫
             arr.end_time = Date.now() + action_time;
-            const redisGlKey = KEY_AUCTION_GROUP_LIST;
-            const groupList = await redis.smembers(redisGlKey);
+            const auctionKeyManager = getAuctionKeyManager();
+            const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+            const groupList = await redis.smembers(groupListKey);
             const notice = `【全服公告】${playerA.名号}被${playerB.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
 
             for (const gid of groupList) {

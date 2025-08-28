@@ -6,7 +6,7 @@ import { readShop, writeShop, existshop } from '@src/model/shop';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import type { RaidActionState } from '@src/types';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 import { screenshot } from '@src/image';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { getDataList } from '@src/model/DataList';
@@ -213,8 +213,9 @@ export const Xijietask = async () => {
             arr.action = '禁闭';
             arr.xijie = 1; // 关闭洗劫
             arr.end_time = Date.now() + action_time;
-            const redisGlKey = KEY_AUCTION_GROUP_LIST;
-            const groupList = await redis.smembers(redisGlKey);
+            const auctionKeyManager = getAuctionKeyManager();
+            const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+            const groupList = await redis.smembers(groupListKey);
             const xx
               = '【全服公告】'
               + playerA.名号

@@ -16,7 +16,7 @@ import {
 import { existplayer } from '@src/model';
 import { getRedisKey, keys } from '@src/model/keys';
 import mw from '@src/response/mw';
-import { KEY_AUCTION_GROUP_LIST, KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants';
+import { getAuctionKeyManager, KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 
 export const selects = onSelects(['message.create']);
@@ -253,8 +253,9 @@ const res = onResponse(selects, async e => {
     void Send(Text('妖王被击杀！玩家们可以根据贡献获得奖励！'));
     await sleep(1000);
     const msg2 = `【全服公告】${player.名号}亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！`;
-    const redisGlKey = KEY_AUCTION_GROUP_LIST;
-    const groupList = await redis.smembers(redisGlKey);
+    const auctionKeyManager = getAuctionKeyManager();
+    const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+    const groupList = await redis.smembers(groupListKey);
 
     for (const group of groupList) {
       pushInfo(group, true, msg2);
