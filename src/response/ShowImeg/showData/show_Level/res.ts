@@ -13,7 +13,7 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const img = await getStateImage(e, null);
+  const img = await getStateImage(e, false);
 
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));

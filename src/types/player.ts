@@ -17,47 +17,93 @@ export interface XianchongInfo {
   灵魂绑定?: number;
 }
 
+interface LingGen {
+  name: string;
+  type: string;
+  eff: number;
+  法球倍率: number;
+}
+
+export interface XianChong {
+  name: string;
+  type: string;
+  加成: number;
+  等级: number;
+  每级增加: number;
+  灵魂绑定: number;
+  等级上限: number;
+}
+
+export interface HiddenLingGen {
+  name: string;
+  class: string;
+  type: number;
+  控火: number;
+  控器: number;
+}
+
+export interface ZongMen {
+  宗门名称: string;
+  职位: string;
+  time: [string, number];
+}
+
 export interface Player {
+  id: string;
+  sex: number;
   名号: string;
+  宣言: string;
+  avatar: string;
   level_id: number;
   Physique_id: number;
+  race: number;
   修为: number;
-  灵石: number;
   血气: number;
-  当前血量: number;
-  血量上限: number;
-  攻击: number;
-  防御: number;
+  灵石: number;
+  灵根: LingGen;
+  神石: number;
+  favorability: number;
+  breakthrough: boolean;
+  linggen: any[]; // 未知类型，留空数组
+  linggenshow: number;
+  学习的功法: string[];
+  修炼效率提升: number;
+  连续签到天数: number;
   攻击加成: number;
   防御加成: number;
   生命加成: number;
-  暴击率: number;
-  暴击伤害: number;
+  power_place: number;
+  当前血量: number;
+  lunhui: number;
+  lunhuiBH: number;
+  轮回点: number;
+  occupation: string;
+  occupation_level: number;
   镇妖塔层数: number;
   神魄段数: number;
-  favorability: number;
-  id?: string; // 部分逻辑需要通过 id 读取装备
-  神石?: number; // 神石数量（战斗减伤判定使用）
-  法球倍率?: number; // 直接挂载在玩家上的法球倍率（部分旧代码直接访问）
-  宣言?: string;
-  灵根: TalentInfo;
-  隐藏灵根?: TalentInfo;
-  仙宠: XianchongInfo;
-  学习的功法: any[];
-  修炼效率提升: number;
-  宗门?: string | { 宗门名称: string; 职位: string };
-  sex?: string;
-  linggenshow?: number;
-  power_place?: number;
-  锻造天赋?: number;
-  occupation?: any;
-  occupation_level?: number;
-  occupation_exp?: number;
-  // 幸运 / 魔道相关（在各任务与服用道具时使用）
-  islucky?: number;
-  addluckyNo?: number;
-  幸运?: number;
-  魔道值?: number;
+  魔道值: number;
+  仙宠: XianChong;
+  练气皮肤: number;
+  装备皮肤: number;
+  幸运: number;
+  addluckyNo: number;
+  师徒任务阶段: number;
+  师徒积分: number;
+  攻击: number;
+  防御: number;
+  血量上限: number;
+  暴击率: number;
+  暴击伤害: number;
+  金银坊败场: number;
+  金银坊支出: number;
+  金银坊胜场: number;
+  金银坊收入: number;
+  occupation_exp: number;
+  锻造天赋: number;
+  隐藏灵根: HiddenLingGen;
+  神界次数: number;
+  宗门: ZongMen;
+  法球倍率: number;
 }
 
 export interface Equipment {

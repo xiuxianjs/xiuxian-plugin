@@ -1,5 +1,5 @@
 // 通用领域模型类型声明，逐步替换 any
-
+import { ZongMen } from './ass';
 // 玩家宗门职位
 export type GuildRole = '宗主' | '副宗主' | '长老' | '弟子' | '外门弟子' | string;
 
@@ -12,14 +12,7 @@ export interface AssociationData {
 }
 
 // 运行期实际使用到的更完整的宗门数据结构（增量类型，避免大量 any）
-export interface AssociationDetailData extends AssociationData {
-  灵石池?: number;
-  大阵血量?: number;
-  所有成员?: string[];
-  副宗主?: string[];
-  长老?: string[];
-  内门弟子?: string[];
-}
+export type AssociationDetailData = ZongMen;
 
 // 关卡/境界等级条目
 export interface LevelItem {
