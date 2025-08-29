@@ -1,9 +1,8 @@
 import { Text, useSend } from 'alemonjs';
-
 import { Go, existplayer, readNajie, readPlayer, addCoin, writeNajie } from '@src/model/index';
 import { config } from '@src/model/api';
-
 import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
 export const regular = /^(#|＃|\/)?升级纳戒$/;
 
 const res = onResponse(selects, async e => {
@@ -49,5 +48,4 @@ const res = onResponse(selects, async e => {
   );
 });
 
-import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

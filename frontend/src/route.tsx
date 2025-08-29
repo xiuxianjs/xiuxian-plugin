@@ -13,6 +13,7 @@ const UserManager = lazy(() => import('@/pages/UserManager/UserManager'));
 const Profile = lazy(() => import('@/pages/Profile/Profile'));
 const ConfigManager = lazy(() => import('@/pages/ConfigManager/ConfigManager'));
 const MuteManager = lazy(() => import('@/pages/MuteManager/MuteManager'));
+const MessagesManager = lazy(() => import('@/pages/MessageManager/App'));
 const Dashboard = lazy(() => import('@/pages/Dashboard/Dashboard'));
 const App = lazy(() => import('@/pages/App'));
 
@@ -76,6 +77,10 @@ export default createHashRouter([
       {
         path: '/mute',
         element: <MuteManager />
+      },
+      {
+        path: '/messages',
+        element: <MessagesManager />
       }
     ]
   }

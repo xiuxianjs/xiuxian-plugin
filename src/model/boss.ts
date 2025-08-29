@@ -296,7 +296,7 @@ export async function WorldBossBattle(e) {
     }
     const WorldBossStatusStr = await redis.get(KEY_WORLD_BOOS_STATUS);
     const PlayerRecord = await redis.get(KEY_RECORD);
-    const WorldBossStatus = JSON.parse(WorldBossStatusStr);
+    const WorldBossStatus = JSON.parse(WorldBossStatusStr ?? '{}');
 
     if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
       void Send(Text('妖王正在刷新,21点开启'));

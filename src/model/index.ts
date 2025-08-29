@@ -39,3 +39,4 @@ export * from './temp';
 export * from './trade';
 export * from './xiuxian_m';
 export * from './xiuxiandata';
+export * from './message';

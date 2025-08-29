@@ -7,6 +7,7 @@
 
 export * from './action';
 export * from './data';
+export * from './message';
 
 // data_extra 纯类型集合
 export type {
@@ -32,7 +33,6 @@ export * from './domain';
 
 // model.ts 选择性导出并做别名避免与 task.ts 冲突
 export type {
-  AssociationAPI,
   DataControlAPI,
   NajieCategory as CoreNajieCategory,
   NajieServiceAPI,

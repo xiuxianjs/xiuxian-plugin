@@ -41,7 +41,8 @@ const __PATH = {
   // 禁言
   mute: 'data:alemonjs-xiuxian:mute',
   // 副职
-  fuzhi: 'xiuxian:player'
+  fuzhi: 'xiuxian:player',
+  message: 'data:alemonjs-xiuxian:message'
 };
 
 export { __PATH };
@@ -94,7 +95,8 @@ export type ActionType =
   | 'money_game'
   | 'getLastsign_Bonus'
   | 'BOSSCD'
-  | 'last_getbung_time';
+  | 'last_getbung_time'
+  | 'messageShowCD';
 
 export const keys = {
   player: (id: string) => `${__PATH.player_path}:${id}`,
@@ -122,6 +124,7 @@ export const keys = {
   currencyIndex: () => `${__PATH.currency_index}`,
   captcha: (id: string) => `${__PATH.captcha}:${id}`,
   mute: (id: string) => `${__PATH.mute}:${id}`,
+  message: (id: string) => `${__PATH.message}:${id}`,
   fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
 };
 

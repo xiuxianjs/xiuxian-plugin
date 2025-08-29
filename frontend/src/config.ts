@@ -52,6 +52,11 @@ export const menuItems = [
     path: '/mute'
   },
   {
+    label: '站内信管理',
+    icon: '📬',
+    path: '/messages'
+  },
+  {
     label: '系统配置',
     icon: '⚙️',
     path: '/config'
