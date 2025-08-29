@@ -5,7 +5,6 @@ import { existplayer, readPlayer, convert2integer, writePlayer } from '@src/mode
 
 import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
-import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?悬赏.*$/;
 
 const res = onResponse(selects, async e => {
@@ -109,4 +108,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getAuctionKeyManager } from '@src/model/auction';
 export default onResponse(selects, [mw.current, res.current]);

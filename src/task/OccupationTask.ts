@@ -1,5 +1,5 @@
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model/xiuxian_impl';
+import { readPlayer } from '@src/model';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import { safeParse } from '@src/model/utils/safe';
@@ -84,8 +84,8 @@ export const OccupationTask = async () => {
         if (!notUndAndNull(player.level_id)) {
           continue;
         }
-        const rawTime2
-          = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const rawTime2 =
+          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
         const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;
 
         await mine_jiesuan(playerId, timeMin, push_address);

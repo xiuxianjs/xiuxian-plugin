@@ -33,20 +33,12 @@ export function readAction(userId: string | number) {
   return getJSON<ActionRecord>(actionRedisKey(userId));
 }
 
-export function readActionWithSuffix(userId: string | number, suffix: ActionType) {
+export function readActionWithSuffix(userId: string | number, suffix?: ActionType) {
   return getJSON<ActionRecord>(actionRedisKey(userId, suffix));
 }
 
 export async function writeAction(userId: string | number, record: ActionRecord) {
   await setValue(actionRedisKey(userId), record);
-}
-
-export async function writeActionWithSuffix(
-  userId: string | number,
-  suffix: ActionType,
-  record: ActionRecord
-) {
-  await setValue(actionRedisKey(userId, suffix), record);
 }
 
 export function isActionRunning(record: ActionRecord | null | undefined, now = Date.now()) {
@@ -82,7 +74,7 @@ export async function startActionWithSuffix(
     ...flags
   };
 
-  await writeActionWithSuffix(userId, suffix, record);
+  await setValue(actionRedisKey(userId, suffix), record);
 
   return record;
 }
@@ -175,7 +167,7 @@ export async function updateActionWithSuffix(
   const next = updater(prev);
 
   if (next) {
-    await writeActionWithSuffix(userId, suffix, next);
+    await setValue(actionRedisKey(userId, suffix), next);
   }
 
   return next;

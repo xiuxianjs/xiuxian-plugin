@@ -1,6 +1,6 @@
-import { writePlayer } from './pub.js';
+import { writePlayer } from './xiuxiandata.js';
 import type { Player, Equipment } from '../types/player.js';
-import { readPlayer } from './xiuxian_impl.js';
+import { readPlayer } from './xiuxiandata.js';
 import { addHP } from './economy.js';
 import { keys } from './keys.js';
 import { getDataList } from './DataList.js';
@@ -21,18 +21,18 @@ export async function writeEquipment(usrId: string, equipment: Equipment): Promi
   const levelInfo = levelList.find(item => item.level_id === player.level_id);
   const physiqueInfo = physiqueList.find(item => item.level_id === player.Physique_id);
 
-  player.攻击
-    = Number(levelInfo?.基础攻击 ?? 0)
-    + Number(player.攻击加成 ?? 0)
-    + Number(physiqueInfo?.基础攻击 ?? 0);
-  player.防御
-    = Number(levelInfo?.基础防御 ?? 0)
-    + Number(player.防御加成 ?? 0)
-    + Number(physiqueInfo?.基础防御 ?? 0);
-  player.血量上限
-    = Number(levelInfo?.基础血量 ?? 0)
-    + Number(player.生命加成 ?? 0)
-    + Number(physiqueInfo?.基础血量 ?? 0);
+  player.攻击 =
+    Number(levelInfo?.基础攻击 ?? 0) +
+    Number(player.攻击加成 ?? 0) +
+    Number(physiqueInfo?.基础攻击 ?? 0);
+  player.防御 =
+    Number(levelInfo?.基础防御 ?? 0) +
+    Number(player.防御加成 ?? 0) +
+    Number(physiqueInfo?.基础防御 ?? 0);
+  player.血量上限 =
+    Number(levelInfo?.基础血量 ?? 0) +
+    Number(player.生命加成 ?? 0) +
+    Number(physiqueInfo?.基础血量 ?? 0);
   player.暴击率 = Number(levelInfo?.基础暴击 ?? 0) + Number(physiqueInfo?.基础暴击 ?? 0);
 
   const types = ['武器', '护具', '法宝'] as const;

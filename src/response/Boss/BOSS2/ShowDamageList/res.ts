@@ -5,7 +5,7 @@ import { existplayer, sortBy } from '@src/model/index';
 import { BossIsAlive, SortPlayer } from '../../../../model/boss';
 
 import { selects } from '@src/response/mw';
-import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants';
+import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?金角大王贡献榜$/;
 

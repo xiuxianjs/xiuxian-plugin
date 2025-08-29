@@ -1,9 +1,9 @@
 import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs';
 import type { Player, TalentInfo } from '../types/player.js';
-import { writePlayer } from './pub.js';
+import { writePlayer } from './xiuxiandata.js';
 import { readItTyped } from './duanzaofu.js';
 import { existNajieThing, addNajieThing } from './najie.js';
-import { readPlayer } from './xiuxian_impl.js';
+import { readPlayer } from './xiuxiandata.js';
 import { getRandomFromARR, notUndAndNull } from './common.js';
 
 import { 体质概率, 伪灵根概率, 真灵根概率, 天灵根概率, 圣体概率 } from './settions.js';

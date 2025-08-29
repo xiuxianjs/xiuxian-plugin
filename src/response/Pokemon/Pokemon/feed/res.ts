@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { convert2integer, notUndAndNull, existNajieThing, addNajieThing } from '@src/model/index';
-import { readPlayer, existplayer, writePlayer } from '@src/model/xiuxian_impl';
+import { readPlayer, existplayer, writePlayer } from '@src/model';
 
 import { selects } from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';

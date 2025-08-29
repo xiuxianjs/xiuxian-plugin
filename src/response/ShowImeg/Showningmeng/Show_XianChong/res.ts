@@ -35,8 +35,7 @@ const res = onResponse(selects, async e => {
   }
   await redis.set(cdKey, String(now));
 
-  const evt = e as import('alemonjs').EventsMessageCreateEnum;
-  const img = await getXianChongImage(evt);
+  const img = await getXianChongImage(e);
 
   if (!img) {
     void Send(Text('生成图片失败，请稍后再试'));

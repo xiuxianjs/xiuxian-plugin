@@ -1,6 +1,6 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, writePlayer } from '@src/model/xiuxian';
+import { readPlayer, writePlayer } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { zdBattle } from '@src/model/battle';
 import { readDanyao, writeDanyao } from '@src/model/danyao';

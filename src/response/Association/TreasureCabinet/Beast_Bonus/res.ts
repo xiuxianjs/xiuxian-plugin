@@ -158,9 +158,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const category = (
-    item.class && typeof item.class === 'string' ? item.class : '道具'
-  ) as import('@src/types').NajieCategory;
+  const category = item.class && typeof item.class === 'string' ? item.class : '道具';
 
   await addNajieThing(userId, item.name, category, 1);
   if (randomB > 0.9) {

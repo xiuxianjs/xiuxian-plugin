@@ -6,7 +6,7 @@ import { notUndAndNull } from '@src/model/common';
 import { zdBattle } from '@src/model/battle';
 import { addHP, addExp2, addCoin } from '@src/model/economy';
 import { existNajieThing } from '@src/model/najie';
-import { existplayer, readPlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer, writePlayer } from '@src/model';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -224,7 +224,7 @@ const res = onResponse(selects, async e => {
 
     if (pA) {
       pA.魔道值 = (Number(pA.魔道值) || 0) + 1;
-      await import('@src/model/xiuxian_impl').then(m => m.writePlayer(A, pA));
+      void writePlayer(A, pA);
     }
     final_msg.push(
       ` 经过一番大战,${winA}获得了胜利,${playerA.名号}获得${qixueA}气血，${playerB.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`
@@ -242,7 +242,7 @@ const res = onResponse(selects, async e => {
 
     if (pB) {
       pB.魔道值 = (Number(pB.魔道值) || 0) + 1;
-      await import('@src/model/xiuxian_impl').then(m => m.writePlayer(B, pB));
+      void writePlayer(B, pB);
     }
     final_msg.push(
       `经过一番大战,${winB}获得了胜利,${playerB.名号}获得${qixueB}气血，${playerA.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`

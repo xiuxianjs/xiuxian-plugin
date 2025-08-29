@@ -1,6 +1,6 @@
 import { redis, pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model/xiuxian';
+import { readPlayer } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
@@ -61,8 +61,8 @@ export const MojiTask = async () => {
       // 有洗劫状态:这个直接结算即可
       if (String(act.mojie) === '0') {
         // 5分钟后开始结算阶段一
-        const baseDuration
-          = typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+        const baseDuration =
+          typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
 
         end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
         // 时间过了
@@ -163,8 +163,8 @@ export const MojiTask = async () => {
           if (thingName !== '' || thingClass !== '') {
             await addNajieThing(playerId, thingName, thingClass, n);
           }
-          lastMessage
-            += m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
+          lastMessage +=
+            m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
           msg.push('\n' + player.名号 + lastMessage + fyd_msg);
           const arr: ExploreActionState = {
             ...act

@@ -1,14 +1,14 @@
 import { Text, useSend } from 'alemonjs';
 import { __PATH, keys } from '@src/model/keys';
 import { getRandomFromARR, notUndAndNull } from '@src/model/common';
-import { readPlayer, writePlayer } from '@src/model/xiuxian_impl';
-import { playerEfficiency } from '@src/model/efficiency';
+import { readPlayer, writePlayer } from '@src/model/';
 import { redis } from '@src/model/api';
 import type { AssociationDetailData, Player } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { getConfig } from '@src/model';
+import { playerEfficiency } from '@src/model';
 export const regular = /^(#|＃|\/)?退出宗门$/;
 
 // 成员宗门信息运行期形状（旧数据兼容）

@@ -1,12 +1,53 @@
-// 玩家效率/收益相关逻辑抽取
-import { addConFaByUser } from './xiuxian_impl.js';
-export { addConFaByUser };
-import type { GongfaItem } from '../types/model';
+import { createPlayerRepository } from './repository/playerRepository.js';
+import { createNajieRepository } from './repository/najieRepository.js';
+import { keys } from './keys.js';
 import { getDataList } from './DataList.js';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
+import type { GongfaItem } from '../types/model.js';
 import { readDanyao } from './danyao.js';
 import { notUndAndNull } from './common.js';
-import { keys } from './keys.js';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
+import { readPlayer } from './xiuxiandata.js';
+
+const experienceList = (await getDataList('experience')) as Array<{
+  id: number;
+  name: string;
+  experience: number;
+  rate: number;
+}>;
+
+const playerRepo = createPlayerRepository(() => experienceList);
+const najieRepo = createNajieRepository();
+
+export async function addExp4(usrid: string, exp = 0) {
+  if (exp === 0 || isNaN(exp)) {
+    return;
+  }
+  await playerRepo.addOccupationExp(usrid, exp);
+}
+
+export async function addConFaByUser(usrid: string, gongfaName: string) {
+  const player = await readPlayer(usrid);
+
+  if (!player) {
+    return;
+  }
+  if (!Array.isArray(player.学习的功法)) {
+    player.学习的功法 = [];
+  }
+  player.学习的功法.push(gongfaName);
+  await setDataJSONStringifyByKey(keys.player(usrid), player);
+
+  void playerEfficiency(usrid);
+}
+
+export async function addBagCoin(usrid: string, lingshi: number) {
+  const delta = Math.trunc(Number(lingshi));
+
+  if (delta === 0) {
+    return;
+  }
+  await najieRepo.addLingShi(usrid, delta);
+}
 
 export async function playerEfficiency(userId: string): Promise<null | undefined> {
   // 这里有问题
@@ -64,8 +105,12 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
   const dy = await readDanyao(userId);
   const bgdan = dy.biguanxl || 0;
 
-  player.修炼效率提升 =
-    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency + bgdan; // 修炼效率综合
+  const efficiency =
+    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency;
+  const add = efficiency + bgdan;
+
+  player.修炼效率提升 = add; // 修炼效率综合
+
   await setDataJSONStringifyByKey(keys.player(userId), player);
 }
 

@@ -27,14 +27,21 @@ import type {
 import type { SkillItem } from './data_extra';
 
 // 新增：事件与消息相关类型、提取自 model/api 与 common
-import type { DataMention } from 'alemonjs';
+import type {
+  DataMention,
+  EventsMessageCreateEnum,
+  PrivateEventInteractionCreate,
+  PrivateEventMessageCreate,
+  PublicEventInteractionCreate,
+  Text
+} from 'alemonjs';
 
 export type AnyIncomingEvent =
-  | import('alemonjs').EventsMessageCreateEnum
-  | import('alemonjs').PrivateEventMessageCreate
-  | import('alemonjs').PublicEventInteractionCreate
-  | import('alemonjs').PrivateEventInteractionCreate;
-export type MessageEnumsArray = ReturnType<typeof import('alemonjs').Text>[];
+  | EventsMessageCreateEnum
+  | PrivateEventMessageCreate
+  | PublicEventInteractionCreate
+  | PrivateEventInteractionCreate;
+export type MessageEnumsArray = ReturnType<typeof Text>[];
 export type MessageInput = Buffer | string | Array<string | DataMention>;
 
 // DataList 对外暴露的运行时实例类型（只读引用）

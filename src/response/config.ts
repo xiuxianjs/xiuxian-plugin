@@ -1,4 +1,4 @@
-import { baseKey } from '@src/model/constants';
+import { baseKey } from '@src/model/keys';
 import dayjs from 'dayjs';
 
 // 回复次数缓存（内存，防止频繁提醒）

@@ -1,11 +1,10 @@
-import { __PATH } from './keys.js';
-import { writePlayer } from './pub.js';
+import { writePlayer } from './xiuxiandata.js';
 import type { Tripod, TalentInfo } from '../types/player.js';
 import { getDataList } from './DataList.js';
 import { LIB_MAP, LibHumanReadable } from '../types/model.js';
 import type { CustomRecord } from '../types/model.js';
-import { keys } from './keys.js';
-import { readPlayer } from './xiuxian_impl.js';
+import { keys, __PATH } from './keys.js';
+import { readPlayer } from './xiuxiandata.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
 export async function settripod(qq: string): Promise<string> {

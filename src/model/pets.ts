@@ -1,4 +1,4 @@
-import { writeNajie, readNajie } from './xiuxian_impl.js';
+import { writeNajie, readNajie } from './xiuxiandata.js';
 import { notUndAndNull } from './common.js';
 import type { Najie } from '../types/player.js';
 import type { OwnedPetItem, PetList } from '../types/model';

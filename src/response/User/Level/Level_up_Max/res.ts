@@ -9,7 +9,6 @@ import {
   readEquipment,
   writeEquipment,
   addHP,
-  playerEfficiency,
   getRandomFromARR
 } from '@src/model/index';
 
@@ -219,4 +218,5 @@ const res = onResponse(selects, async e => {
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
 import { delDataByKey, getDataJSONParseByKey } from '@src/model/DataControl';
+import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

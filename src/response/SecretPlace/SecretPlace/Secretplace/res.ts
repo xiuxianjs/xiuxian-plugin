@@ -14,9 +14,8 @@ const res = onResponse(selects, async e => {
   if (!Array.isArray(didian) || didian.length === 0) {
     return false;
   }
-  const pubEvent = e as import('alemonjs').EventsMessageCreateEnum;
 
-  await Goweizhi(pubEvent, didian);
+  await Goweizhi(e, didian);
 
   return false;
 });

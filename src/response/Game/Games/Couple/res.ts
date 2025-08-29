@@ -5,7 +5,7 @@ import { config, redis } from '@src/model/api';
 import { addExp } from '@src/model/economy';
 import { existHunyin, fstaddQinmidu, addQinmidu } from '@src/model/qinmidu';
 import { findQinmidu } from '@src/types/player';
-import { existplayer } from '@src/model/xiuxian_impl';
+import { existplayer } from '@src/model';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

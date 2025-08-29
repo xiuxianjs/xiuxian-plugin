@@ -16,7 +16,7 @@ const res = onResponse(selects, async e => {
   if (!Array.isArray(list) || list.length === 0) {
     return false;
   }
-  await Goweizhi(e as import('alemonjs').EventsMessageCreateEnum, list);
+  await Goweizhi(e, list);
 
   return false;
 });

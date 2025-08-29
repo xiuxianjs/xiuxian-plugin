@@ -4,7 +4,7 @@ import { redis } from '@src/model/api';
 import { BossIsAlive } from '../../../../model/boss';
 
 import { selects } from '@src/response/mw';
-import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants';
+import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?关闭金角大王$/;
 
 const res = onResponse(selects, async e => {

@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { getIoRedis } from '@alemonjs/db';
-import { validateRole } from '@src/model';
+import { validateRole } from '../core/auth';
 
 // 获取禁言日志
 export const GET = async (ctx: Context) => {

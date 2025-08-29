@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { keys, notUndAndNull, playerEfficiency } from '@src/model/index';
+import { keys, notUndAndNull } from '@src/model/index';
 import type { Player } from '@src/types';
 
 import { selects } from '@src/response/mw';

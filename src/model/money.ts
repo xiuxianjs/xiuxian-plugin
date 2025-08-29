@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 import { getIoRedis } from '@alemonjs/db';
 import type { DiceGameResult, RiskProfile } from '../types/model';
-import { GAME_KEY } from './constants';
+import { GAME_KEY } from './keys';
 
 function buildRiskProfile(inputMoney: number): RiskProfile {
   const minMoney = (Math.floor(Math.random() * 10000) + 10000) * 30000;

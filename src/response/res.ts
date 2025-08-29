@@ -1,7 +1,7 @@
 import { getIoRedis } from '@alemonjs/db';
 import { getAppCofig, keys } from '@src/model';
 import { generateCaptcha, svgToPngBuffer, verifyCaptcha } from '@src/model/captcha';
-import { baseKey } from '@src/model/constants';
+import { baseKey } from '@src/model/keys';
 import { Image, Mention, Text, useMessage } from 'alemonjs';
 import dayjs from 'dayjs';
 import { selects } from './mw';

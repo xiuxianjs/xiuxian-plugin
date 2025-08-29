@@ -2,7 +2,6 @@ import { config, pushInfo } from '@src/model/api';
 import { getJSON, userKey } from '@src/model/utils/redisHelper';
 import type { ActionState } from '@src/types';
 import {
-  playerEfficiency,
   notUndAndNull,
   readDanyao,
   existNajieThing,
@@ -180,9 +179,9 @@ async function biguanJiesuan(userId, time, isRandom, group_id?) {
     await addExp(userId, other_x);
   }
   if (
-    (await existNajieThing(userId, '神界秘宝', '道具'))
-    && player.魔道值 < 1
-    && (player.灵根.type === '转生' || player.level_id > 41)
+    (await existNajieThing(userId, '神界秘宝', '道具')) &&
+    player.魔道值 < 1 &&
+    (player.灵根.type === '转生' || player.level_id > 41)
   ) {
     qixue = Math.trunc(xiuwei * 0.1 * time);
     await addNajieThing(userId, '神界秘宝', '道具', -1);
@@ -230,4 +229,5 @@ async function biguanJiesuan(userId, time, isRandom, group_id?) {
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

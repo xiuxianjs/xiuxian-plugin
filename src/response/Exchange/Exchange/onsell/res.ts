@@ -5,7 +5,7 @@ import { foundthing } from '@src/model/cultivation';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addCoin } from '@src/model/economy';
 import { readExchange, writeExchange } from '@src/model/trade';
-import { existplayer, readNajie, readPlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readNajie, readPlayer } from '@src/model';
 import type { NajieItem, Najie } from '@src/types/player';
 import type { NajieCategory, ExchangeRecord } from '@src/types/model';
 

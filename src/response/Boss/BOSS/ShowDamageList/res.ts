@@ -3,7 +3,7 @@ import { Image, Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { existplayer } from '@src/model/index';
 import { BossIsAlive, SortPlayer } from '../../../../model/boss';
-import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants';
+import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 import { screenshot } from '@src/image';
 
 export const selects = onSelects(['message.create']);

@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../../../model/boss';
 import { existplayer } from '@src/model';
-import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/constants';
+import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?金角大王状态$/;

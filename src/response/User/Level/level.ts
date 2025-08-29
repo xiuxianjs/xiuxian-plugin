@@ -6,7 +6,7 @@ import { notUndAndNull } from '@src/model/common';
 import { readEquipment, writeEquipment } from '@src/model/equipment';
 import { addExp, addExp2, addHP } from '@src/model/economy';
 import { addNajieThing } from '@src/model/najie';
-import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer, writePlayer } from '@src/model';
 
 export async function useLevelUp(e, luck = false) {
   const userId = e.UserId;
@@ -58,11 +58,11 @@ export async function useLevelUp(e, luck = false) {
 
   // 真仙突破
   if (
-    now_level_id >= 51
-    && player.灵根.name !== '天五灵根'
-    && player.灵根.name !== '垃圾五灵根'
-    && player.灵根.name !== '九转轮回体'
-    && player.灵根.name !== '九重魔功'
+    now_level_id >= 51 &&
+    player.灵根.name !== '天五灵根' &&
+    player.灵根.name !== '垃圾五灵根' &&
+    player.灵根.name !== '九转轮回体' &&
+    player.灵根.name !== '九重魔功'
   ) {
     void Send(Text('你灵根不齐，无成帝的资格！请先夺天地之造化，修补灵根后再来突破吧'));
 
@@ -119,9 +119,9 @@ export async function useLevelUp(e, luck = false) {
       await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(
         Text(
-          '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了'
-            + needEXP * 0.4
-            + '修为'
+          '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了' +
+            needEXP * 0.4 +
+            '修为'
         )
       );
 
@@ -137,9 +137,9 @@ export async function useLevelUp(e, luck = false) {
       await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(
         Text(
-          '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了'
-            + needEXP * 0.1
-            + '修为'
+          '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了' +
+            needEXP * 0.1 +
+            '修为'
         )
       );
 
@@ -154,9 +154,9 @@ export async function useLevelUp(e, luck = false) {
       await setTimestamp(userId, 'last_Levelup_time', now_Time);
       void Send(
         Text(
-          '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了'
-            + needEXP * 0.2
-            + '修为'
+          '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了' +
+            needEXP * 0.2 +
+            '修为'
         )
       );
 
@@ -175,9 +175,9 @@ export async function useLevelUp(e, luck = false) {
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
       void Send(
         Text(
-          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
       await addNajieThing(userId, changzhuxianchonList[random2].name, '仙宠', 1);
@@ -191,9 +191,9 @@ export async function useLevelUp(e, luck = false) {
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
       void Send(
         Text(
-          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
       await addNajieThing(userId, changzhuxianchonList[random2].name, '仙宠', 1);
@@ -287,9 +287,9 @@ export async function userLevelMaxUp(e, luck) {
       await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(
         Text(
-          '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了'
-            + needEXP * 0.4
-            + '血气'
+          '突然听到一声鸡叫,鸡..鸡..鸡...鸡你太美！！！是翠翎恐蕈，此地不适合突破，快跑！险些走火入魔，丧失了' +
+            needEXP * 0.4 +
+            '血气'
         )
       );
 
@@ -305,9 +305,9 @@ export async function userLevelMaxUp(e, luck) {
       await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(
         Text(
-          '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了'
-            + needEXP * 0.1
-            + '血气'
+          '突破瓶颈时想起背后是药园，刚种下掣电树种子，不能被破坏了，打断突破，嘴角流血，丧失了' +
+            needEXP * 0.1 +
+            '血气'
         )
       );
 
@@ -322,9 +322,9 @@ export async function userLevelMaxUp(e, luck) {
       await setTimestamp(userId, 'last_LevelMaxup_time', now_Time);
       void Send(
         Text(
-          '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了'
-            + needEXP * 0.2
-            + '血气'
+          '突破瓶颈时想起怡红院里的放肆,想起了金银坊里的狂热,险些走火入魔，丧失了' +
+            needEXP * 0.2 +
+            '血气'
         )
       );
 
@@ -343,9 +343,9 @@ export async function userLevelMaxUp(e, luck) {
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
       void Send(
         Text(
-          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList2[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList2[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
       await addNajieThing(userId, changzhuxianchonList2[random2].name, '仙宠', 1);
@@ -359,9 +359,9 @@ export async function userLevelMaxUp(e, luck) {
       random2 = (Math.ceil((random2 + 1) / 5) - 1) * 5;
       void Send(
         Text(
-          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只['
-            + changzhuxianchonList2[random2].name
-            + '],将伴随与你,愿你修仙路上不再独身一人.`'
+          '修仙本是逆天而行,神明愿意降下自己的恩泽.这只[' +
+            changzhuxianchonList2[random2].name +
+            '],将伴随与你,愿你修仙路上不再独身一人.`'
         )
       );
       await addNajieThing(userId, changzhuxianchonList2[random2].name, '仙宠', 1);

@@ -1,8 +1,7 @@
 // 丹药存取逻辑抽离
-import { __PATH } from './keys.js';
+import { __PATH, keys } from './keys.js';
 import { readAll } from './duanzaofu.js';
 import { DanyaoStatus } from '@src/types/player.js';
-import { keys } from './keys.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
 const baseData = {

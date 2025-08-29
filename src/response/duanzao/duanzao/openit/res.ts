@@ -11,9 +11,8 @@ import {
   restraint,
   mainyuansu,
   addNajieThing,
-  addExp4,
-  keys
-} from '@src/model/index';
+  addExp4
+} from '@src/model';
 
 import { selects } from '@src/response/mw';
 import { readActionWithSuffix, stopActionWithSuffix } from '@src/model/actionHelper';
@@ -253,4 +252,5 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { keys } from '@src/model/keys';
 export default onResponse(selects, [mw.current, res.current]);

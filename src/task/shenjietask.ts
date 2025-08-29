@@ -1,7 +1,7 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model/xiuxian';
-import { writePlayer } from '@src/model/xiuxian';
+import { readPlayer } from '@src/model';
+import { writePlayer } from '@src/model';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';

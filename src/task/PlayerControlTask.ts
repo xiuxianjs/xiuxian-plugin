@@ -1,7 +1,7 @@
 import { pushInfo } from '@src/model/api';
 // 直接从具体模块导入，避免经由 barrel 产生的 re-export 循环
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, writePlayer } from '@src/model/xiuxian_impl';
+import { readPlayer, writePlayer } from '@src/model';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
@@ -77,8 +77,8 @@ export const PlayerControlTask = async () => {
           const xiuwei = Math.floor(size * now_level_id * (player.修炼效率提升 + 1)); // 增加的修为
           const blood = Math.floor(player.血量上限 * 0.02);
           const rawTime = action.time;
-          const time
-            = (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
+          const time =
+            (typeof rawTime === 'number' ? rawTime : parseInt(rawTime || '0', 10)) / 1000 / 60; // 分钟
           let rand = Math.random();
           let xueqi = 0;
           let otherEXP = 0;
@@ -130,9 +130,9 @@ export const PlayerControlTask = async () => {
             await addExp(playerId, other_x);
           }
           if (
-            (await existNajieThing(playerId, '神界秘宝', '道具'))
-            && player.魔道值 < 1
-            && (player.灵根.type === '转生' || player.level_id > 41)
+            (await existNajieThing(playerId, '神界秘宝', '道具')) &&
+            player.魔道值 < 1 &&
+            (player.灵根.type === '转生' || player.level_id > 41)
           ) {
             qixue = Math.trunc(xiuwei * 0.1 * time);
             await addNajieThing(playerId, '神界秘宝', '道具', -1);
@@ -195,8 +195,8 @@ export const PlayerControlTask = async () => {
           const size = cf.work.size;
           const lingshi = Math.floor(size * now_level_id * (1 + player.修炼效率提升) * 0.5);
           const rawTime2 = action.time;
-          const time
-            = (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
+          const time =
+            (typeof rawTime2 === 'number' ? rawTime2 : parseInt(rawTime2 || '0', 10)) / 1000 / 60; // 分钟
           let otherLingshi = 0;
           let other_xueqi = 0;
           let rand = Math.random();
@@ -216,11 +216,11 @@ export const PlayerControlTask = async () => {
             otherLingshi = -1 * rand * time;
             other_xueqi = -2 * rand * time;
             msg.push(
-              '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了'
-                + rand * time
-                + '灵石，'
-                + '早上醒来，气血消耗了'
-                + 2 * rand * time
+              '\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了' +
+                rand * time +
+                '灵石，' +
+                '早上醒来，气血消耗了' +
+                2 * rand * time
             );
           }
           //

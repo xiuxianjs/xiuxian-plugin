@@ -15,12 +15,7 @@ import { addHP, addCoin } from '@src/model/economy';
 
 import { selects } from '@src/response/mw';
 import { existplayer } from '@src/model';
-import { getRedisKey, keys } from '@src/model/keys';
-import {
-  getAuctionKeyManager,
-  KEY_RECORD_TWO,
-  KEY_WORLD_BOOS_STATUS_TWO
-} from '@src/model/constants';
+import { getRedisKey, keys, KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?讨伐金角大王$/;
 
 interface PlayerRecordData {
@@ -328,4 +323,5 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { getAuctionKeyManager } from '@src/model/auction';
 export default onResponse(selects, [mw.current, res.current]);

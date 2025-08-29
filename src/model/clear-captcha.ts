@@ -1,6 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import { keys } from '@src/model';
-import { baseKey } from '@src/model/constants';
+import { baseKey, keys } from '@src/model/keys';
 
 /**
  * 清理指定用户的验证码相关记录

@@ -3,7 +3,7 @@ import { Image, Text, useMention, useSend } from 'alemonjs';
 import * as _ from 'lodash-es';
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle';
 import { sleep } from '@src/model/common';
-import { existplayer, readPlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer } from '@src/model';
 import { pushInfo, redis } from '@src/model/api';
 
 import { selects } from '@src/response/mw';

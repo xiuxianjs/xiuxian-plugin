@@ -55,8 +55,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const evt = e as import('alemonjs').EventsMessageCreateEnum;
-  const img = await getSupermarketImage(evt, cate);
+  const img = await getSupermarketImage(e, cate);
 
   if (!img) {
     void Send(Text('生成列表失败，请稍后再试'));

@@ -1,7 +1,8 @@
 import { Context } from 'koa';
 import { getIoRedis } from '@alemonjs/db';
-import { keys, validateRole } from '@src/model';
+import { keys } from '@src/model';
 import { parseJsonBody } from '../core/bodyParser';
+import { validateRole } from '../core/auth';
 
 // 获取禁言列表
 export const GET = async (ctx: Context) => {

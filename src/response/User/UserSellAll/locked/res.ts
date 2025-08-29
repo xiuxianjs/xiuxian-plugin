@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { foundthing } from '@src/model/cultivation';
 import { updateBagThing } from '@src/model/najie';
-import { existplayer, readNajie } from '@src/model/xiuxian_impl';
+import { existplayer, readNajie } from '@src/model';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?(锁定|解锁).*$/;

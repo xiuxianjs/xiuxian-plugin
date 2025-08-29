@@ -1,9 +1,10 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
 import { __PATH, keys, keysByPath } from '@src/model/keys';
-import { readPlayer } from '@src/model/xiuxian_impl';
+import { readPlayer } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { TiandibangTask } from '@src/task/Tiandibang';
 
 // 获取排名数据
 export const GET = async (ctx: Context) => {
@@ -51,8 +52,8 @@ export const GET = async (ctx: Context) => {
             const lingshi = ass.宗门灵石池 ?? 0;
 
             // 综合实力计算：等级 * 1000 + 成员数 * 100 + 灵石池 / 10000 + 仙界加成
-            const totalPower
-              = level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
+            const totalPower =
+              level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
 
             rankingData.push({
               id: assName,
@@ -319,8 +320,8 @@ export const POST = async (ctx: Context) => {
         const members = ass.所有成员?.length || 0;
         const lingshi = ass.宗门灵石池 || 0;
 
-        const totalPower
-          = level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
+        const totalPower =
+          level * 1000 + members * 100 + Math.floor(lingshi / 10000) + (power === 1 ? 5000 : 0);
 
         topAssociations.push({
           id: assName,
@@ -374,9 +375,6 @@ export const PUT = async (ctx: Context) => {
     if (!res) {
       return;
     }
-
-    // 触发天地榜任务
-    const { TiandibangTask } = await import('@src/task/Tiandibang');
 
     await TiandibangTask();
 

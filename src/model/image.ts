@@ -10,9 +10,8 @@ import type {
   AssociationInfo,
   ForumView
 } from '../types/model.js';
-import { getEquipmentDataSafe, getPlayerDataSafe, readPlayer, readNajie } from './xiuxian_impl.js';
+import { readPlayer, readNajie } from './xiuxiandata.js';
 import { getPlayerAction, notUndAndNull } from './common.js';
-import { playerEfficiency } from './efficiency.js';
 import { readEquipment } from './equipment.js';
 import { readExchange, readForum } from './trade.js';
 import { GetPower, bigNumberTransform } from './utils/number.js';
@@ -23,6 +22,7 @@ import { keys } from './keys.js';
 import { getDataList } from './DataList.js';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { getDataJSONParseByKey } from './DataControl.js';
+import { playerEfficiency } from './xiuxian_m.js';
 
 function isAssociationInfo(v): v is AssociationInfo {
   return (
@@ -335,7 +335,7 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
   if (!ifexistplay) {
     return;
   }
-  const player = await getPlayerDataSafe(userId);
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -462,7 +462,7 @@ export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<Screen
 export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   const userId = e.UserId;
 
-  const player = await getPlayerDataSafe(userId);
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return;
@@ -511,7 +511,7 @@ export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<Screen
 export async function getPowerImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   const userId = e.UserId;
   const Send: SendFn = useSend(e) as SendFn;
-  const player = await getPlayerDataSafe(userId);
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     void Send(Text('玩家数据获取失败'));
@@ -579,7 +579,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   if (!ifexistplay) {
     return;
   }
-  const player = await getPlayerDataSafe(userId);
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     void Send(Text('玩家数据获取失败'));
@@ -593,7 +593,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
     ? rawXuexi.filter(v => typeof v === 'string')
     : [];
 
-  const equipment = await getEquipmentDataSafe(userId);
+  const equipment = await getDataJSONParseByKey(keys.equipment(userId));
 
   if (!equipment) {
     void Send(Text('装备数据获取失败'));
@@ -881,7 +881,7 @@ export async function getAssociationImage(e: EventsMessageCreateEnum): Promise<S
     return;
   }
   // 门派
-  const player = await getPlayerDataSafe(userId);
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player || !notUndAndNull(player.宗门)) {
     return;

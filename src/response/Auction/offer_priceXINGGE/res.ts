@@ -5,7 +5,7 @@ import { existplayer, getConfig, notUndAndNull, readPlayer } from '@src/model/in
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { getAuctionKeyManager } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/auction';
 export const regular = /^(#|＃|\/)?星阁出价.*$/;
 
 const res = onResponse(selects, async e => {

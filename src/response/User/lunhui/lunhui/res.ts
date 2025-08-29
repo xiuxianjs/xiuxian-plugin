@@ -7,7 +7,6 @@ import {
   notUndAndNull,
   writePlayer,
   readEquipment,
-  playerEfficiency,
   getRandomFromARR,
   addNajieThing,
   writeEquipment,
@@ -25,6 +24,7 @@ import {
   getDataJSONParseByKey,
   setDataJSONStringifyByKey
 } from '@src/model/DataControl';
+import { playerEfficiency } from '@src/model';
 export const regular = /^(#|＃|\/)?轮回$/;
 
 // === 配置：各转轮回灵根与提示 ===
@@ -251,7 +251,8 @@ const FAIL_PROB = 1 / 9;
 
 // 辅助扩展类型与工具函数（放置在文件顶部下方，集中管理）
 type PlayerEx = Player & {};
-const numVal = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const numVal = (v, d = 0) =>
+  typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
 const setNum = (p: PlayerEx, k: string, v: number) => {
   p[k] = v;
 };
@@ -284,9 +285,9 @@ const res = onResponse(selects, async e => {
   if (lhFlag !== 1) {
     void Send(
       Text(
-        '轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n'
-          + '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n'
-          + '再次输入 #轮回 继续，或忽略退出。'
+        '轮回之术乃逆天造化之术，须清空仙人所有的修为气血才可施展。\n' +
+          '传说只有得到"轮回阵旗"进行辅助轮回，才会抵御轮回之苦的十之八九。\n' +
+          '再次输入 #轮回 继续，或忽略退出。'
       )
     );
     await redis.set(key, 1);

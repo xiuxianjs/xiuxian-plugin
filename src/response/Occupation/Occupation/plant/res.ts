@@ -9,7 +9,7 @@ import {
   remainingMs,
   formatRemaining
 } from '@src/model/actionHelper';
-import { setValue, userKey } from '@src/model/utils/redisHelper';
+import { getString, setValue, userKey } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -26,7 +26,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 获取游戏状态
-  const game_action = await getGameFlag(userId);
+  const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
   if (+game_action === 1) {
@@ -73,10 +73,3 @@ const res = onResponse(selects, async e => {
 });
 
 export default onResponse(selects, [mw.current, res.current]);
-
-// 兼容读取 game_action 标志（保持旧 key）
-async function getGameFlag(userId: string | number) {
-  return await import('@src/model/utils/redisHelper').then(m =>
-    m.getString(userKey(userId, 'game_action'))
-  );
-}

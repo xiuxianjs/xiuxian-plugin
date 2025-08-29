@@ -10,7 +10,7 @@ import { safeParse } from '@src/model/utils/safe';
 import type { ActionState, CoreNajieCategory as NajieCategory } from '@src/types';
 import { Mention, DataMention } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
-import { getAuctionKeyManager } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/auction';
 
 function isNajieCategory(v): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -74,8 +74,8 @@ export const Taopaotask = async () => {
       // 有洗劫状态:这个直接结算即可
       if (action.xijie === '-2') {
         // 5分钟后开始结算阶段一
-        const actTime
-          = typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
+        const actTime =
+          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
 
         end_time = end_time - (isNaN(actTime) ? 0 : actTime) + 60000 * 5;
         // 时间过了
@@ -121,12 +121,12 @@ export const Taopaotask = async () => {
             名号: monster.name,
             攻击: Math.floor(Number(monster.atk || 0) * Number(playerA.攻击 || 0)),
             防御: Math.floor(
-              (Number(monster.def || 0) * Number(playerA.防御 || 0))
-                / (1 + Number(weizhi.Grade ?? 0) * 0.05)
+              (Number(monster.def || 0) * Number(playerA.防御 || 0)) /
+                (1 + Number(weizhi.Grade ?? 0) * 0.05)
             ),
             当前血量: Math.floor(
-              (Number(monster.blood || 0) * Number(playerA.当前血量 || 0))
-                / (1 + Number(weizhi.Grade ?? 0) * 0.05)
+              (Number(monster.blood || 0) * Number(playerA.当前血量 || 0)) /
+                (1 + Number(weizhi.Grade ?? 0) * 0.05)
             ),
             暴击率: Number(monster.baoji || 0),
             灵根: monster.灵根 ?? { name: '野怪', type: '普通', 法球倍率: 0.1 },
@@ -134,9 +134,9 @@ export const Taopaotask = async () => {
           };
           const Random = Math.random();
           const npc_damage = Math.trunc(
-            Harm(playerB.攻击 * 0.85, Number(playerA.防御 || 0))
-              + Math.trunc(playerB.攻击 * playerB.法球倍率)
-              + playerB.防御 * 0.1
+            Harm(playerB.攻击 * 0.85, Number(playerA.防御 || 0)) +
+              Math.trunc(playerB.攻击 * playerB.法球倍率) +
+              playerB.防御 * 0.1
           );
           let lastMessage = '';
 

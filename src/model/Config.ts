@@ -1,6 +1,7 @@
 import { __PATH_CONFIG, keysAction } from './keys';
 import { getIoRedis } from '@alemonjs/db';
 import { getConfigValue } from 'alemonjs';
+import { keysActionWithBotId } from './keys';
 
 export type Data = typeof __PATH_CONFIG;
 
@@ -75,4 +76,25 @@ export const getAppCofig = () => {
 
 export default {
   getConfig
+};
+
+/**
+ * 兼容性函数：获取带botId的星阁相关key（已废弃，建议使用AuctionKeyManager）
+ * @deprecated 请使用 getAuctionKeyManager() 替代
+ */
+export function getAuctionKeys(botId?: string) {
+  const actualBotId = botId ?? getAppCofig()?.botId ?? 'default';
+
+  return {
+    AUCTION_OFFICIAL_TASK: keysActionWithBotId.system('auctionofficialtask', actualBotId),
+    AUCTION_GROUP_LIST: keysActionWithBotId.system('auctionofficialtask_grouplist', actualBotId)
+  };
+}
+
+export const closeAuctionKeys = () => {
+  const auctionKeys = getAuctionKeys();
+  const redis = getIoRedis();
+
+  void redis.del(auctionKeys.AUCTION_OFFICIAL_TASK);
+  void redis.del(auctionKeys.AUCTION_GROUP_LIST);
 };

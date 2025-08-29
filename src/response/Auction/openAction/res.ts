@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { getConfig, openAU, readPlayer } from '@src/model/index';
 import type { ExchangeRecord } from '@src/types';
-import { getAuctionKeyManager } from '@src/model/constants';
 import mw from '@src/response/mw';
+import { getAuctionKeyManager } from '@src/model/auction';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?开启星阁体系$/;

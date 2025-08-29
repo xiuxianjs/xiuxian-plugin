@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { dujie, LevelTask } from '@src/model/cultivation';
-import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer, writePlayer } from '@src/model';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?渡劫$/;
@@ -147,8 +147,7 @@ const res = onResponse(selects, async e => {
       return;
     }
 
-    const publicEvent = e as import('alemonjs').EventsMessageCreateEnum;
-    const cont = await LevelTask(publicEvent, n, n + p, y, strikeIndex);
+    const cont = await LevelTask(e, n, n + p, y, strikeIndex);
 
     strikeIndex++;
     if (!cont || strikeIndex > y) {

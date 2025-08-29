@@ -1,11 +1,11 @@
 import { redis, pushInfo } from '@src/model/api';
 import { openAU } from '@src/model/trade';
-import { readPlayer } from '@src/model/xiuxian';
+import { readPlayer } from '@src/model';
 import { addCoin } from '@src/model/economy';
 import { addNajieThing } from '@src/model/najie';
 import type { AuctionSession, CoreNajieCategory as NajieCategory } from '@src/types';
 import { getConfig } from '@src/model';
-import { getAuctionKeyManager } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/auction';
 
 export const AuctionofficialTask = async () => {
   // 获取星阁key管理器，支持多机器人部署和自动数据迁移

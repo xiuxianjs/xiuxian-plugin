@@ -1,8 +1,9 @@
-import { writeNajie, readNajie } from './xiuxian_impl.js';
+import { writeNajie, readNajie } from './xiuxiandata.js';
 import * as _ from 'lodash-es';
 import type { Najie, NajieItem, Equipment, EquipmentItem } from '../types/player.js';
 import type { EquipmentLike, XianchongLike, XianchongSource, NajieCategory } from '../types/model';
 import { getDataList } from './DataList.js';
+import { readEquipment, writeEquipment } from './equipment.js';
 
 /**
  * 更新纳戒物品
@@ -288,7 +289,6 @@ export async function addNajieThing(
 
 export async function insteadEquipment(usrId: string, equipmentData: EquipmentLike) {
   await addNajieThing(usrId, equipmentData, '装备', -1, equipmentData.pinji);
-  const { readEquipment, writeEquipment } = await import('./equipment.js');
   const equipment: Equipment | null = await readEquipment(usrId);
 
   if (!equipment) {

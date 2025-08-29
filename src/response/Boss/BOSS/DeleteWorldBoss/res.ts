@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { BossIsAlive } from '../../../../model/boss';
-import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants';
+import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?关闭妖王$/;

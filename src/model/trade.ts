@@ -2,10 +2,10 @@
 import { getIoRedis } from '@alemonjs/db';
 import type { AuctionItem } from '../types/data_extra';
 import type { ExchangeRecord, ForumRecord } from '../types/model';
-import { keys } from './keys.js';
-import { getAuctionKeyManager } from './constants.js';
 import { getDataList } from './DataList.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
+import { getAuctionKeyManager } from './auction.js';
+import { keys } from './keys.js';
 
 export async function writeExchange(wupin: ExchangeRecord[]): Promise<void> {
   await setDataJSONStringifyByKey(keys.exchange('Exchange'), wupin);

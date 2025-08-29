@@ -6,7 +6,6 @@ import { existplayer, readPlayer, zdBattle, writePlayer, addExp4 } from '@src/mo
 
 import { selects } from '@src/response/mw';
 import type { BattleEntity } from '@src/types/model';
-import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?讨伐目标.*$/;
 
 interface ShangjingTask {
@@ -93,8 +92,8 @@ const res = onResponse(selects, async e => {
 
     player_B.当前血量 = player_B.血量上限;
     // 规范 battle 实体：法球倍率 转 number
-    const fq
-      = typeof player_B.灵根.法球倍率 === 'number'
+    const fq =
+      typeof player_B.灵根.法球倍率 === 'number'
         ? player_B.灵根.法球倍率
         : parseFloat(String(player_B.灵根.法球倍率)) || 0;
     const buff = 1 + (player.occupation_level || 0) * 0.055;
@@ -166,8 +165,8 @@ const res = onResponse(selects, async e => {
   task.arm.splice(num, 1);
   await redis.set(getRedisKey(userId, 'shangjing'), JSON.stringify(task));
   if (
-    lastMessage === '你惩戒了仙路窃贼,获得了部分灵石'
-    || lastMessage.endsWith('反杀了你,只获得了部分辛苦钱')
+    lastMessage === '你惩戒了仙路窃贼,获得了部分灵石' ||
+    lastMessage.endsWith('反杀了你,只获得了部分辛苦钱')
   ) {
     void Send(Text(lastMessage));
   } else if (lastMessage) {
@@ -182,4 +181,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getAuctionKeyManager } from '@src/model/auction';
 export default onResponse(selects, [mw.current, res.current]);

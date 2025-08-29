@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs';
-import { keys, notUndAndNull, playerEfficiency } from '@src/model/index';
+import { keys, notUndAndNull } from '@src/model/index';
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/;
 
@@ -75,4 +75,5 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

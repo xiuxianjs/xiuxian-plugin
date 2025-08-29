@@ -1,7 +1,7 @@
 import { pushInfo } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model/xiuxian';
+import { readPlayer } from '@src/model';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
@@ -11,7 +11,7 @@ import { DataMention, Mention } from 'alemonjs';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import { safeParse } from '@src/model/utils/safe';
 import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types';
-import { writePlayer } from '@src/model/xiuxian';
+import { writePlayer } from '@src/model';
 import { getConfig } from '@src/model';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 
@@ -258,26 +258,26 @@ export const SecretPlaceTask = async () => {
                 const index = Math.trunc(Math.random() * length);
                 const kouliang = xianchonkouliangList[index];
 
-                lastMessage
-                  += '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
+                lastMessage +=
+                  '\n七彩流光的神奇仙谷[' + kouliang.name + ']深埋在土壤中，是仙兽们的最爱。';
                 await addNajieThing(playerId, kouliang.name, '仙宠口粮', 1);
               }
             }
             if (random > 0.1 && random < 0.1002) {
-              lastMessage
-                += '\n'
-                + playerB.名号
-                + '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
+              lastMessage +=
+                '\n' +
+                playerB.名号 +
+                '倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
               await addNajieThing(playerId, '长相奇怪的小石头', '道具', 1);
             }
           } else if (msgg.find(item => item === winB)) {
             xiuwei = 800;
-            lastMessage
-              = '不巧撞见['
-              + playerB.名号
-              + '],经过一番战斗,败下阵来,还好跑得快,只获得了修为'
-              + xiuwei
-              + ']';
+            lastMessage =
+              '不巧撞见[' +
+              playerB.名号 +
+              '],经过一番战斗,败下阵来,还好跑得快,只获得了修为' +
+              xiuwei +
+              ']';
           }
           msg.push('\n' + player.名号 + lastMessage);
           const arr: ActionState = action;

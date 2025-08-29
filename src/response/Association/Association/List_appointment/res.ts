@@ -1,5 +1,5 @@
 import { Image, Text, useSend } from 'alemonjs';
-import { existplayer } from '@src/model/xiuxian_impl';
+import { existplayer } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 
 import { selects } from '@src/response/mw';
@@ -43,8 +43,8 @@ const res = onResponse(selects, async e => {
     } else {
       const blessData = await getDataList('Bless');
       const dongTan = (blessData || []).find(item => item.name === this_ass.宗门驻地);
-      const addEff
-        = dongTan && typeof dongTan.efficiency === 'number' ? dongTan.efficiency * 100 : 5;
+      const addEff =
+        dongTan && typeof dongTan.efficiency === 'number' ? dongTan.efficiency * 100 : 5;
 
       this_ass_xiuxian = baseEff + addEff;
     }

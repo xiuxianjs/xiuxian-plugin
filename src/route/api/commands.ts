@@ -1,4 +1,3 @@
-import { validateRole } from '@src/model';
 import { Context } from 'koa';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -6,6 +5,7 @@ import { parseJsonBody } from '../core/bodyParser';
 import { readdirSync, existsSync } from 'fs';
 import { useState } from 'alemonjs';
 import { createRequire } from 'module';
+import { validateRole } from '../core/auth';
 // 获得当前文件目录
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

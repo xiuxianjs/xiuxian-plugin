@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { notUndAndNull } from '@src/model/common';
 import { addPet } from '@src/model/pets';
-import { readNajie, writePlayer, readPlayer, existplayer } from '@src/model/xiuxian_impl';
+import { readNajie, writePlayer, readPlayer, existplayer } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import type { XianchongInfo } from '@src/types/player';
 

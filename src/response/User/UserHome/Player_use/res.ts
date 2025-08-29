@@ -5,8 +5,7 @@ import { foundthing, getRandomTalent } from '@src/model/cultivation';
 import { existNajieThing, addNajieThing, insteadEquipment } from '@src/model/najie';
 import { addExp, addExp2, addExp3, addHP } from '@src/model/economy';
 import { readEquipment, writeEquipment } from '@src/model/equipment';
-import { playerEfficiency } from '@src/model/efficiency';
-import { existplayer, readPlayer, readNajie, writePlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer, readNajie, writePlayer } from '@src/model';
 import { readDanyao, writeDanyao, readAll } from '@src/model/danyao';
 
 import { selects } from '@src/response/mw';
@@ -41,7 +40,8 @@ const parsePinji = (raw): number | undefined => {
 };
 
 const toNumber = (v, def = 0) => (typeof v === 'number' ? v : def);
-const thingType = (obj): string | undefined => obj && typeof obj === 'object' && 'type' in obj ? (obj as { type?: string }).type : undefined;
+const thingType = (obj): string | undefined =>
+  obj && typeof obj === 'object' && 'type' in obj ? (obj as { type?: string }).type : undefined;
 
 const res = onResponse(selects, async e => {
   const userId = e.UserId;
@@ -130,8 +130,8 @@ const res = onResponse(selects, async e => {
 
   // 装备
   if (func[0] === '装备') {
-    const equ
-      = pinji !== undefined
+    const equ =
+      pinji !== undefined
         ? najie.装备.find(i => i.name === thingName && i.pinji === pinji)
         : najie.装备
             .filter(i => i.name === thingName)
@@ -142,7 +142,7 @@ const res = onResponse(selects, async e => {
 
       return;
     }
-    await insteadEquipment(userId, equ as import('@src/types/model').EquipmentLike);
+    await insteadEquipment(userId, equ);
     const img = await getQquipmentImage(e as Parameters<typeof getQquipmentImage>[0]);
     const Send = useSend(e);
 
@@ -574,8 +574,8 @@ const res = onResponse(selects, async e => {
 
         return;
       } else if (
-        qh.class === '神人'
-        && ((player.魔道值 ?? 0) > 0 || (player.灵根.type !== '转生' && player.level_id < 42))
+        qh.class === '神人' &&
+        ((player.魔道值 ?? 0) > 0 || (player.灵根.type !== '转生' && player.level_id < 42))
       ) {
         void message.send(format(Text('你尝试使用它,但是失败了')));
 
@@ -601,4 +601,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

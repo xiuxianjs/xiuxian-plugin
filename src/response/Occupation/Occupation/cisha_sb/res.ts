@@ -6,7 +6,6 @@ import { existplayer, readPlayer, existNajieThing, zdBattle, writePlayer } from 
 
 import { selects } from '@src/response/mw';
 import type { BattleEntity } from '@src/types/model';
-import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?刺杀目标.*$/;
 
 interface ActionState {
@@ -110,12 +109,12 @@ const res = onResponse(selects, async e => {
 
   // 构建战斗实体（转换法球倍率为 number）
   const buff = player.occupation === '侠客' ? 1 + (player.occupation_level || 0) * 0.055 : 1;
-  const fqA
-    = typeof player.灵根.法球倍率 === 'number'
+  const fqA =
+    typeof player.灵根.法球倍率 === 'number'
       ? player.灵根.法球倍率
       : parseFloat(String(player.灵根.法球倍率)) || 0;
-  const fqB
-    = typeof player_B.灵根.法球倍率 === 'number'
+  const fqB =
+    typeof player_B.灵根.法球倍率 === 'number'
       ? player_B.灵根.法球倍率
       : parseFloat(String(player_B.灵根.法球倍率)) || 0;
   const player_A: BattleEntity = {
@@ -187,4 +186,5 @@ const res = onResponse(selects, async e => {
 });
 
 import mw from '@src/response/mw';
+import { getAuctionKeyManager } from '@src/model/auction';
 export default onResponse(selects, [mw.current, res.current]);

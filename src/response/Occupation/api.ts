@@ -1,7 +1,8 @@
 import { pushInfo } from '@src/model/api';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
-import { addNajieThing, addExp4, keys } from '@src/model/index';
+import { addNajieThing, keys } from '@src/model/index';
+import { addExp4 } from '@src/model';
 import { DataMention, Mention } from 'alemonjs';
 
 function toNum(v, d = 0) {

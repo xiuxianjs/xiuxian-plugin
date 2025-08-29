@@ -1,21 +1,24 @@
 import { EventsMessageCreateEnum, useSend, Text } from 'alemonjs';
 import * as _ from 'lodash-es';
 import { pushInfo, redis } from '@src/model/api';
-import { readPlayer, existplayer as existPlayer, writePlayer } from '@src/model';
+import {
+  readPlayer,
+  existplayer as existPlayer,
+  existplayer,
+  writePlayer
+} from '@src/model/xiuxiandata';
 import { zdBattle, Harm } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { addHP, addCoin } from '@src/model/economy';
-import { __PATH, keysByPath } from '@src/model/keys';
+import { __PATH, keysByPath, getRedisKey } from '@src/model/keys';
 import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/model/actionHelper';
-import { existplayer } from '@src/model';
 import {
   KEY_RECORD,
   KEY_RECORD_TWO,
   KEY_WORLD_BOOS_STATUS,
   KEY_WORLD_BOOS_STATUS_TWO
 } from '@src/model/settions';
-import { getRedisKey } from '@src/model/keys';
-import { getAuctionKeyManager } from '@src/model/constants';
+import { getAuctionKeyManager } from './auction';
 
 export const WorldBossBattleInfo = {
   CD: {},

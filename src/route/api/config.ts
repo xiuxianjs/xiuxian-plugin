@@ -1,6 +1,7 @@
-import { ConfigKey, getConfig, setConfig, validateRole } from '@src/model';
+import { ConfigKey, getConfig, setConfig } from '@src/model';
 import { Context } from 'koa';
 import { parseJsonBody } from '@src/route/core/bodyParser';
+import { validateRole } from '../core/auth';
 
 export const GET = async (ctx: Context) => {
   try {

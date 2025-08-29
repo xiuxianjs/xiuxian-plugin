@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { notUndAndNull } from '@src/model/common';
-import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer, writePlayer } from '@src/model';
 import { redis } from '@src/model/api';
 import { __PATH } from '@src/model/keys';
 import type { AssociationDetailData } from '@src/types';

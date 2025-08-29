@@ -7,7 +7,7 @@ import {
   KEY_RECORD_TWO,
   KEY_WORLD_BOOS_STATUS,
   KEY_WORLD_BOOS_STATUS_TWO
-} from './constants';
+} from './keys';
 
 // 概率常量保持与原文件一致
 export const 体质概率 = 0.2;

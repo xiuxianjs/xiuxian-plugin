@@ -14,10 +14,10 @@ import {
   WorldBossBattleInfo
 } from '../../../../model/boss';
 import { existplayer } from '@src/model';
-import { getRedisKey, keys } from '@src/model/keys';
+import { getRedisKey, keys, KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 import mw from '@src/response/mw';
-import { getAuctionKeyManager, KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/constants';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { getAuctionKeyManager } from '@src/model/auction';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?讨伐妖王$/;

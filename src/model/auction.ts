@@ -1,39 +1,6 @@
-import { getAppCofig } from './Config';
 import { getIoRedis } from '@alemonjs/db';
-
-// 基础 Redis Key 前缀
-export const baseKey = 'xiuxian@1.3.0';
-
-const keysAction = {
-  system: (id: string) => `${baseKey}:system:${id}`
-};
-
-/**
- * 带botId的系统key生成器，用于多机器人部署
- * @param botId 机器人ID
- * @param id key标识符
- * @returns 带botId的系统key
- */
-const keysActionWithBotId = {
-  system: (id: string, botId: string) => `${baseKey}:system:${id}_${botId}`
-};
-
-export const keysFuzhi = (id: string) => `xiuxian:player:${id}:fuzhi`;
-
-// 金银坊 - 资金池 Redis Key
-export const GAME_KEY = keysAction.system('money_game');
-
-// 妖王 - demon king
-export const KEY_WORLD_BOOS_STATUS = keysAction.system('world_boss_demon_king_status');
-export const KEY_RECORD = keysAction.system('record_demon_king');
-
-// 金角 大王 - king
-export const KEY_WORLD_BOOS_STATUS_TWO = keysAction.system('world_boss_king_status');
-export const KEY_RECORD_TWO = keysAction.system('record_king');
-
-// 星阁 - 旧版本key（兼容性保留，仅内部使用）
-const KEY_AUCTION_GROUP_LIST = keysAction.system('auctionofficialtask_grouplist');
-const KEY_AUCTION_OFFICIAL_TASK = keysAction.system('auctionofficialtask');
+import { getAppCofig } from './Config';
+import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK, keysActionWithBotId } from './keys';
 
 /**
  * 星阁系统Redis Key管理器
@@ -220,16 +187,3 @@ export class AuctionKeyManager {
  * 获取星阁key管理器实例
  */
 export const getAuctionKeyManager = () => AuctionKeyManager.getInstance();
-
-/**
- * 兼容性函数：获取带botId的星阁相关key（已废弃，建议使用AuctionKeyManager）
- * @deprecated 请使用 getAuctionKeyManager() 替代
- */
-export function getAuctionKeys(botId?: string) {
-  const actualBotId = botId || getAppCofig()?.botId || 'default';
-
-  return {
-    AUCTION_OFFICIAL_TASK: keysActionWithBotId.system('auctionofficialtask', actualBotId),
-    AUCTION_GROUP_LIST: keysActionWithBotId.system('auctionofficialtask_grouplist', actualBotId)
-  };
-}

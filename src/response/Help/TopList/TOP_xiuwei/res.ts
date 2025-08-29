@@ -2,7 +2,7 @@ import { Text, useSend, Image } from 'alemonjs';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { notUndAndNull } from '@src/model/common';
 import { sortBy, getAllExp } from '@src/model/cultivation';
-import { existplayer, readPlayer } from '@src/model/xiuxian_impl';
+import { existplayer, readPlayer } from '@src/model';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';

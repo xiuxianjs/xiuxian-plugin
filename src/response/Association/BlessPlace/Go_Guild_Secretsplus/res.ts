@@ -4,7 +4,7 @@ import { redis } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { Go, notUndAndNull } from '@src/model/common';
 import { convert2integer } from '@src/model/utils/number';
-import { readPlayer } from '@src/model/xiuxian_impl';
+import { readPlayer } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addCoin } from '@src/model/economy';
 

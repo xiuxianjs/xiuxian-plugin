@@ -6,10 +6,10 @@ import { readShop, writeShop, existshop } from '@src/model/shop';
 import { __PATH, keysByPath } from '@src/model/keys';
 import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import type { RaidActionState } from '@src/types';
-import { getAuctionKeyManager } from '@src/model/constants';
 import { screenshot } from '@src/image';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { getDataList } from '@src/model/DataList';
+import { getAuctionKeyManager } from '@src/model/auction';
 
 /**
  * 获取所有玩家，逐个检查其当前动作（action）。
@@ -56,8 +56,8 @@ export const Xijietask = async () => {
       // 有洗劫状态:这个直接结算即可
       if (action.xijie === '0') {
         // 10分钟后开始结算阶段一
-        const durRaw
-          = typeof action.time === 'number' ? action.time : parseInt(String(action.time ?? 0), 10);
+        const durRaw =
+          typeof action.time === 'number' ? action.time : parseInt(String(action.time ?? 0), 10);
         const dur = isNaN(durRaw) ? 0 : durRaw;
 
         end_time = end_time - dur + 60000 * 10;
@@ -108,13 +108,16 @@ export const Xijietask = async () => {
           let lastMessage = '';
           // 构造满足 BattleEntity 最小字段的参战对象（填补缺失字段的默认值）
           const talent = playerA.灵根;
-          const getTalentName = (t): string => typeof t === 'object' && t !== null && 'name' in t
+          const getTalentName = (t): string =>
+            typeof t === 'object' && t !== null && 'name' in t
               ? String((t as { name }).name)
               : '凡灵根';
-          const getTalentType = (t): string => typeof t === 'object' && t !== null && 'type' in t
+          const getTalentType = (t): string =>
+            typeof t === 'object' && t !== null && 'type' in t
               ? String((t as { type }).type)
               : '普通';
-          const getTalentRate = (t): number => typeof t === 'object' && t !== null && '法球倍率' in t
+          const getTalentRate = (t): number =>
+            typeof t === 'object' && t !== null && '法球倍率' in t
               ? Number((t as { 法球倍率 }).法球倍率) || 1
               : 1;
           const dataBattleA = {
@@ -216,12 +219,12 @@ export const Xijietask = async () => {
             const auctionKeyManager = getAuctionKeyManager();
             const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
             const groupList = await redis.smembers(groupListKey);
-            const xx
-              = '【全服公告】'
-              + playerA.名号
-              + '被'
-              + playerB.名号
-              + '抓进了地牢,希望大家遵纪守法,引以为戒';
+            const xx =
+              '【全服公告】' +
+              playerA.名号 +
+              '被' +
+              playerB.名号 +
+              '抓进了地牢,希望大家遵纪守法,引以为戒';
 
             for (const group_id of groupList) {
               pushInfo(group_id, true, xx);
@@ -238,8 +241,8 @@ export const Xijietask = async () => {
         }
       } else if (action.xijie === '-1') {
         // 5分钟后开始结算阶段二
-        const dur2Raw
-          = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
+        const dur2Raw =
+          typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
         const dur2 = isNaN(dur2Raw) ? 0 : dur2Raw;
 
         end_time = end_time - dur2 + 60000 * 5;
@@ -288,8 +291,8 @@ export const Xijietask = async () => {
             for (let j = 0; j < thingName.length; j++) {
               lastMessage += '\n' + thingName[j].name + ' x ' + thingName[j].数量;
             }
-            lastMessage
-              += '\n刚出门就被万仙盟的人盯上了,他们仗着人多，你一人无法匹敌，于是撒腿就跑';
+            lastMessage +=
+              '\n刚出门就被万仙盟的人盯上了,他们仗着人多，你一人无法匹敌，于是撒腿就跑';
           }
           arr.action = '逃跑';
           const time = 30; // 时间（分钟）
