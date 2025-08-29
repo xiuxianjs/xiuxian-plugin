@@ -3,16 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { getRedisKey } from '@src/model/keys';
 import { startAction } from '@src/model/actionHelper';
-import {
-  Go,
-  readPlayer,
-  notUndAndNull,
-  convert2integer,
-  existNajieThing,
-  addNajieThing,
-  addCoin,
-  addExp
-} from '@src/model/index';
+import { Go, readPlayer, notUndAndNull, convert2integer, existNajieThing, addNajieThing, addCoin, addExp } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?沉迷禁地.*$/;
@@ -69,9 +60,7 @@ const res = onResponse(selects, async e => {
     }
     const r = v;
 
-    return (
-      typeof r.Price === 'number' && typeof r.experience === 'number' && typeof r.name === 'string'
-    );
+    return typeof r.Price === 'number' && typeof r.experience === 'number' && typeof r.name === 'string';
   };
 
   if (!guardWeizhi(weizhiUnknown)) {

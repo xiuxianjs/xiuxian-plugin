@@ -39,13 +39,7 @@ export async function dujie(userId: string): Promise<number> {
   return Number(Number(x).toFixed(2));
 }
 
-export async function LevelTask(
-  e: EventsMessageCreateEnum,
-  power_n: number,
-  power_m: number,
-  power_Grade: number,
-  aconut: number
-): Promise<number> {
+export async function LevelTask(e: EventsMessageCreateEnum, power_n: number, power_m: number, power_Grade: number, aconut: number): Promise<number> {
   const userId = e.UserId;
   const Send = useSend(e);
   const msg: string[] = [Number(userId).toString()];
@@ -84,9 +78,7 @@ export async function LevelTask(
 
         player.当前血量 = Math.trunc(player.当前血量 - player.当前血量 * act);
         await writePlayer(userId, player);
-        msg.push(
-          `\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`
-        );
+        msg.push(`\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`);
         void Send(Text(msg.join('')));
 
         return 1;
@@ -96,9 +88,7 @@ export async function LevelTask(
       player.修为 = Math.trunc(player.修为 * 0.5);
       player.power_place = 1;
       await writePlayer(userId, player);
-      msg.push(
-        `\n本次雷伤${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n第${aconut}道雷劫落下了，可惜${player.名号}未能抵挡，渡劫失败了！`
-      );
+      msg.push(`\n本次雷伤${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n第${aconut}道雷劫落下了，可惜${player.名号}未能抵挡，渡劫失败了！`);
       void Send(Text(msg.join('')));
 
       return 0;
@@ -223,8 +213,7 @@ export async function foundthing(thingName: string): Promise<FoundThing | false>
     duanzhaocailiao: await getDataList('Duanzhaocailiao'),
     zalei: await getDataList('Zalei')
   };
-  const hasName = (obj): obj is FoundThing =>
-    typeof obj === 'object' && obj !== null && 'name' in obj;
+  const hasName = (obj): obj is FoundThing => typeof obj === 'object' && obj !== null && 'name' in obj;
 
   for (const key of primaryGroups) {
     const arr = data[key];

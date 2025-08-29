@@ -3,13 +3,7 @@ import { getIoRedis } from '@alemonjs/db';
 
 import { getDataList } from '@src/model/DataList';
 import { keys } from '@src/model/keys';
-import {
-  notUndAndNull,
-  timestampToTime,
-  existplayer,
-  readPlayer,
-  writePlayer
-} from '@src/model/index';
+import { notUndAndNull, timestampToTime, existplayer, readPlayer, writePlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -47,9 +41,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const levelList = await getDataList('Level1');
-  const levelEntry = levelList.find(
-    (item: { level_id: number }) => item.level_id === player.level_id
-  );
+  const levelEntry = levelList.find((item: { level_id: number }) => item.level_id === player.level_id);
 
   if (!levelEntry) {
     void Send(Text('境界数据缺失'));
@@ -97,9 +89,7 @@ const res = onResponse(selects, async e => {
 
   if (Number(ass.最低加入境界 || 0) > now_level_id) {
     const levelList = await getDataList('Level1');
-    const levelEntry = levelList.find(
-      (item: { level_id: number }) => item.level_id === ass.最低加入境界
-    );
+    const levelEntry = levelList.find((item: { level_id: number }) => item.level_id === ass.最低加入境界);
     const level = levelEntry?.level || '未知境界';
 
     void Send(Text(`${association_name}招收弟子的最低加入境界要求为:${level},当前未达到要求`));

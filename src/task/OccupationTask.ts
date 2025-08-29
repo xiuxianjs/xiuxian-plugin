@@ -4,153 +4,213 @@ import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import type { ActionState } from '@src/types';
 import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
 
+interface OccupationActionState extends ActionState {
+  plant?: string | number;
+  mine?: string | number;
+  is_jiesuan?: number;
+  end_time: number;
+  time: number | string;
+  group_id?: string | number;
+}
+
+interface SettlementResult {
+  success: boolean;
+  message?: string;
+}
+
 /**
- * 遍历所有玩家，检查每个玩家的当前动作（如闭关、采集等）。
-判断动作是否为闭关（plant === '0'），并在动作结束后进行结算：
-计算并发放经验值。
-根据玩家等级和职业等级，计算采集草药的数量并发放到纳戒。
-通过推送消息通知玩家或群组结算结果。
+ * 基础配置常量
  */
-export const OccupationTask = async () => {
-  const playerList = await keysByPath(__PATH.player_path);
+const BASE_CONFIG = {
+  SETTLEMENT_TIME_OFFSET: 60000 * 2, // 提前2分钟结算
+  TIME_CONVERSION: 1000 * 60, // 毫秒转分钟
+  SETTLED_FLAG: 1, // 已结算标志
+  ACTIVE_FLAG: 1, // 激活状态标志
+  INACTIVE_FLAG: '0' // 非激活状态标志
+} as const;
 
-  for (const playerId of playerList) {
-    // 得到动作
-    const action = await getDataJSONParseByKey(keysAction.action(playerId));
+/**
+ * 解析时间参数
+ * @param rawTime 原始时间参数
+ * @returns 分钟数
+ */
+const parseTime = (rawTime: number | string): number => {
+  const time = typeof rawTime === 'string' ? parseInt(rawTime) : Number(rawTime);
 
-    // 不为空，存在动作
-    if (!action) {
-      continue;
+  return isNaN(time) ? 0 : time / BASE_CONFIG.TIME_CONVERSION;
+};
+
+/**
+ * 获取推送地址
+ * @param action 动作状态
+ * @returns 推送地址
+ */
+const getPushAddress = (action: OccupationActionState): string | undefined => {
+  if ('group_id' in action && notUndAndNull(action.group_id)) {
+    return String(action.group_id);
+  }
+
+  return undefined;
+};
+
+/**
+ * 检查是否到达结算时间
+ * @param endTime 结束时间
+ * @returns 是否到达结算时间
+ */
+const isSettlementTime = (endTime: number): boolean => {
+  const settlementTime = endTime - BASE_CONFIG.SETTLEMENT_TIME_OFFSET;
+
+  return Date.now() > settlementTime;
+};
+
+/**
+ * 重置所有状态
+ * @param action 动作状态
+ * @returns 重置后的状态
+ */
+const resetAllStates = (action: OccupationActionState): OccupationActionState => {
+  const resetAction = { ...action };
+
+  resetAction.shutup = BASE_CONFIG.ACTIVE_FLAG;
+  resetAction.working = BASE_CONFIG.ACTIVE_FLAG;
+  resetAction.power_up = BASE_CONFIG.ACTIVE_FLAG;
+  resetAction.Place_action = BASE_CONFIG.ACTIVE_FLAG;
+  resetAction.Place_actionplus = BASE_CONFIG.ACTIVE_FLAG;
+
+  delete resetAction.group_id;
+
+  return resetAction;
+};
+
+/**
+ * 处理采药结算
+ * @param playerId 玩家ID
+ * @param action 动作状态
+ * @param pushAddress 推送地址
+ * @returns 结算结果
+ */
+const handlePlantSettlement = async (playerId: string, action: OccupationActionState, pushAddress: string | undefined): Promise<SettlementResult> => {
+  try {
+    // 检查是否已结算
+    if (action.is_jiesuan === BASE_CONFIG.SETTLED_FLAG) {
+      return { success: false, message: '已结算，跳过' };
     }
 
-    let push_address: string | undefined; // 消息推送地址
+    // 计算有效时间
+    const startTime = action.end_time - Number(action.time);
+    const now = Date.now();
+    const timeMin = calcEffectiveMinutes(startTime, action.end_time, now);
 
-    if ('group_id' in action && notUndAndNull(action.group_id)) {
-      push_address = action.group_id;
+    // 执行采药结算
+    await plant_jiesuan(playerId, timeMin, pushAddress);
+
+    // 重置状态
+    const resetAction = resetAllStates(action);
+
+    resetAction.is_jiesuan = BASE_CONFIG.SETTLED_FLAG;
+    resetAction.plant = BASE_CONFIG.ACTIVE_FLAG;
+
+    await setDataJSONStringifyByKey(keysAction.action(playerId), resetAction);
+
+    return { success: true, message: '采药结算完成' };
+  } catch (error) {
+    return { success: false, message: `采药结算失败: ${error}` };
+  }
+};
+
+/**
+ * 处理采矿结算
+ * @param playerId 玩家ID
+ * @param action 动作状态
+ * @param pushAddress 推送地址
+ * @returns 结算结果
+ */
+const handleMineSettlement = async (playerId: string, action: OccupationActionState, pushAddress: string | undefined): Promise<SettlementResult> => {
+  try {
+    // 验证玩家数据
+    const playerRaw = await readPlayer(playerId);
+
+    if (!playerRaw || Array.isArray(playerRaw)) {
+      return { success: false, message: '玩家数据无效' };
     }
 
-    // 动作结束时间（预处理提前量）
-    const now_time = Date.now();
+    if (!notUndAndNull(playerRaw.level_id)) {
+      return { success: false, message: '玩家等级数据无效' };
+    }
 
-    // 闭关状态结算
-    if (action.plant === '0') {
-      const end_time = action.end_time - 60000 * 2; // 提前 2 分钟
+    // 计算时间
+    const timeMin = parseTime(action.time);
 
-      if (now_time > end_time) {
-        // 若已结算，跳过
-        if (action.is_jiesuan === 1) {
+    // 执行采矿结算
+    await mine_jiesuan(playerId, timeMin, pushAddress);
+
+    // 重置状态
+    const resetAction = resetAllStates(action);
+
+    resetAction.mine = BASE_CONFIG.ACTIVE_FLAG;
+
+    await setDataJSONStringifyByKey(keysAction.action(playerId), resetAction);
+
+    return { success: true, message: '采矿结算完成' };
+  } catch (error) {
+    return { success: false, message: `采矿结算失败: ${error}` };
+  }
+};
+
+/**
+ * 处理单个玩家的职业状态
+ * @param playerId 玩家ID
+ * @param action 动作状态
+ * @returns 处理结果
+ */
+const processPlayerOccupation = async (playerId: string, action: OccupationActionState): Promise<SettlementResult> => {
+  try {
+    const pushAddress = getPushAddress(action);
+    let settlementResult: SettlementResult = { success: false, message: '无需要结算的状态' };
+
+    // 处理采药状态
+    if (action.plant === BASE_CONFIG.INACTIVE_FLAG && isSettlementTime(action.end_time)) {
+      settlementResult = await handlePlantSettlement(playerId, action, pushAddress);
+    }
+
+    // 处理采矿状态
+    if (action.mine === BASE_CONFIG.INACTIVE_FLAG && isSettlementTime(action.end_time)) {
+      settlementResult = await handleMineSettlement(playerId, action, pushAddress);
+    }
+
+    return settlementResult;
+  } catch (error) {
+    return { success: false, message: `处理玩家职业状态失败: ${error}` };
+  }
+};
+
+/**
+ * 职业任务 - 处理玩家采药和采矿状态
+ * 遍历所有玩家，检查处于采药或采矿状态的玩家，进行结算处理
+ */
+export const OccupationTask = async (): Promise<void> => {
+  try {
+    const playerList = await keysByPath(__PATH.player_path);
+
+    if (!playerList || playerList.length === 0) {
+      return;
+    }
+
+    for (const playerId of playerList) {
+      try {
+        const action = await getDataJSONParseByKey(keysAction.action(playerId));
+
+        if (!action) {
           continue;
         }
 
-        // 计算开始时间和有效时间（使用统一的时间槽计算逻辑）
-        const start_time = action.end_time - Number(action.time);
-        const now = Date.now();
-        const timeMin = calcEffectiveMinutes(start_time, action.end_time, now);
-
-        // 使用统一的采药结算函数
-        await plant_jiesuan(playerId, timeMin, push_address);
-
-        // 状态复位
-        const arr = { ...action };
-
-        // 设为已结算
-        arr.is_jiesuan = 1;
-        arr.plant = 1;
-        arr.shutup = 1;
-        arr.working = 1;
-        arr.power_up = 1;
-        arr.Place_action = 1;
-        arr.Place_actionplus = 1;
-        delete (arr as Partial<ActionState>).group_id;
-        await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+        await processPlayerOccupation(playerId, action);
+      } catch (error) {
+        logger.error(error);
       }
     }
-
-    // 采矿状态结算
-    if (action.mine === '0') {
-      const end_time = action.end_time - 60000 * 2;
-
-      if (now_time > end_time) {
-        const playerRaw = await readPlayer(playerId);
-
-        if (!playerRaw || Array.isArray(playerRaw)) {
-          continue;
-        }
-        const player = playerRaw;
-
-        if (!notUndAndNull(player.level_id)) {
-          continue;
-        }
-        const rawTime2 =
-          typeof action.time === 'string' ? parseInt(action.time) : Number(action.time);
-        const timeMin = (isNaN(rawTime2) ? 0 : rawTime2) / 1000 / 60;
-
-        await mine_jiesuan(playerId, timeMin, push_address);
-
-        // const mine_amount1 = Math.floor((1.8 + Math.random() * 0.4) * timeMin)
-        // const occRow = data.occupation_exp_list.find(
-        //   (o: { id: number; name: string; experience: number }) =>
-        //     o.id === player.occupation_level
-        // )
-        // // 原代码使用 occRow.rate，不存在该字段，改为基于 experience 推导一个倍率（示例：experience / 1000）
-        // const rateBase = occRow ? occRow.experience / 1000 : 0
-        // const rate = rateBase * 10
-        // const exp = timeMin * 10
-        // const ext = `你是采矿师，获得采矿经验${exp}，额外获得矿石${Math.floor(rate * 100)}%，`
-        // let end_amount = Math.floor(4 * (rate + 1) * mine_amount1)
-        // const num = Math.floor(((rate / 12) * timeMin) / 30)
-        // const A = [
-        //   '金色石胚',
-        //   '棕色石胚',
-        //   '绿色石胚',
-        //   '红色石胚',
-        //   '蓝色石胚',
-        //   '金色石料',
-        //   '棕色石料',
-        //   '绿色石料',
-        //   '红色石料',
-        //   '蓝色石料'
-        // ] as const
-        // const B = [
-        //   '金色妖石',
-        //   '棕色妖石',
-        //   '绿色妖石',
-        //   '红色妖石',
-        //   '蓝色妖石',
-        //   '金色妖丹',
-        //   '棕色妖丹',
-        //   '绿色妖丹',
-        //   '红色妖丹',
-        //   '蓝色妖丹'
-        // ] as const
-        // const xuanze = Math.trunc(Math.random() * A.length)
-        // end_amount = Math.floor(end_amount * (player.level_id / 40))
-        // await addNajieThing(playerId, '庚金', '材料', end_amount)
-        // await addNajieThing(playerId, '玄土', '材料', end_amount)
-        // await addNajieThing(playerId, A[xuanze], '材料', num)
-        // await addNajieThing(playerId, B[xuanze], '材料', Math.trunc(num / 48))
-        // await addExp4(playerId, exp)
-        // msg.push(
-        //   `\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`
-        // )
-        // msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`)
-        // 状态复位
-        const arr = { ...action };
-
-        arr.mine = 1;
-        arr.shutup = 1;
-        arr.working = 1;
-        arr.power_up = 1;
-        arr.Place_action = 1;
-        arr.Place_actionplus = 1;
-        delete (arr as Partial<ActionState>).group_id;
-        await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
-        // if (isGroup && push_address) {
-        //   pushInfo(push_address, isGroup, msg)
-        // } else {
-        //   pushInfo(playerId, isGroup, msg)
-        // }
-      }
-    }
+  } catch (error) {
+    logger.error(error);
   }
 };

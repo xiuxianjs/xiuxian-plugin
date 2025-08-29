@@ -69,13 +69,7 @@ export default function DataQuery() {
         <div className='flex flex-col md:flex-row gap-4 items-center'>
           <div className='flex-1 min-w-0'>
             <label className='block text-slate-300 text-sm font-medium mb-2'>数据类型</label>
-            <Select
-              value={selectedDataType}
-              onChange={handleDataTypeChange}
-              placeholder='请选择数据类型'
-              className='w-full xiuxian-select'
-              size='large'
-            >
+            <Select value={selectedDataType} onChange={handleDataTypeChange} placeholder='请选择数据类型' className='w-full xiuxian-select' size='large'>
               {dataTypes.map(type => (
                 <Option key={type} value={type}>
                   {getDataTypeDisplayName(type)}
@@ -98,10 +92,7 @@ export default function DataQuery() {
       </div>
 
       {/* 数据表格 */}
-      <XiuxianTableContainer
-        title={selectedDataType ? getDataTypeDisplayName(selectedDataType) : '数据列表'}
-        icon={<SearchOutlined />}
-      >
+      <XiuxianTableContainer title={selectedDataType ? getDataTypeDisplayName(selectedDataType) : '数据列表'} icon={<SearchOutlined />}>
         <XiuxianTableWithPagination
           columns={columns}
           dataSource={dataList}

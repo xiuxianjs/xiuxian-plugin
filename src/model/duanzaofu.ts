@@ -40,8 +40,7 @@ export async function settripod(qq: string): Promise<string> {
   const a = await readAll('隐藏灵根');
   const newa = Math.floor(Math.random() * a.length);
   const candidate = a[newa];
-  const isTalentInfo = (x): x is TalentInfo =>
-    !!x && typeof x === 'object' && 'type' in x && 'name' in x;
+  const isTalentInfo = (x): x is TalentInfo => !!x && typeof x === 'object' && 'type' in x && 'name' in x;
 
   if (isTalentInfo(candidate)) {
     player.隐藏灵根 = candidate;
@@ -110,10 +109,7 @@ export function jiaozheng(value): number {
 }
 
 // 读取item 中某个json文件中的属性
-export async function readThat(
-  thingName: string,
-  weizhi: LibHumanReadable
-): Promise<unknown | undefined> {
+export async function readThat(thingName: string, weizhi: LibHumanReadable): Promise<unknown | undefined> {
   const key = LIB_MAP[weizhi];
   const arr = await getDataList(key);
 
@@ -193,20 +189,14 @@ export function restraint(shuju: number[], main: string): [string, number] {
 
   // [ '木', '水']
   for (const item in shuzu) {
-    if (
-      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 1] === newshuzu[1]) ||
-      (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 1] === newshuzu[0])
-    ) {
+    if ((shuzu[item] === newshuzu[0] && shuzu[Number(item) + 1] === newshuzu[1]) || (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 1] === newshuzu[0])) {
       houzui = `毁${main}灭灵`;
       jiaceng = 0.5;
 
       return [houzui, jiaceng];
     }
 
-    if (
-      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 2] === newshuzu[1]) ||
-      (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 2] === newshuzu[0])
-    ) {
+    if ((shuzu[item] === newshuzu[0] && shuzu[Number(item) + 2] === newshuzu[1]) || (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 2] === newshuzu[0])) {
       if (main === newshuzu[0]) {
         houzui = `神${main}相生`;
         jiaceng = 0.3;

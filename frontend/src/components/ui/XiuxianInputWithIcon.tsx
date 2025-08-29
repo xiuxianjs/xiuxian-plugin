@@ -10,15 +10,7 @@ interface XiuxianInputWithIconProps {
   className?: string;
 }
 
-const XiuxianInputWithIcon: React.FC<XiuxianInputWithIconProps> = ({
-  icon,
-  type = 'text',
-  name,
-  placeholder,
-  required = false,
-  minLength,
-  className = ''
-}) => {
+const XiuxianInputWithIcon: React.FC<XiuxianInputWithIconProps> = ({ icon, type = 'text', name, placeholder, required = false, minLength, className = '' }) => {
   return (
     <div className={className}>
       <div className='relative'>

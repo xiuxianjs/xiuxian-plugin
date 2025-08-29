@@ -1,22 +1,9 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  existplayer,
-  shijianc,
-  readShop,
-  writeShop,
-  readPlayer,
-  writePlayer
-} from '@src/model/index';
+import { existplayer, shijianc, readShop, writeShop, readPlayer, writePlayer } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
-import {
-  readAction,
-  isActionRunning,
-  startAction,
-  formatRemaining,
-  remainingMs
-} from '@src/model/actionHelper';
+import { readAction, isActionRunning, startAction, formatRemaining, remainingMs } from '@src/model/actionHelper';
 import { getString, userKey, setValue } from '@src/model/utils/redisHelper';
 
 import mw, { selects } from '@src/response/mw';

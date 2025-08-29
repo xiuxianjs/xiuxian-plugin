@@ -139,16 +139,12 @@ const Player = ({
             ) : (
               <div className='flex items-center justify-between'>
                 <span className='font-medium text-gray-700'>{value.type}加成</span>
-                <span className='font-bold text-gray-800 text-sm'>
-                  {(value.加成 * 100).toFixed(1)}%
-                </span>
+                <span className='font-bold text-gray-800 text-sm'>{(value.加成 * 100).toFixed(1)}%</span>
               </div>
             )}
             <div className='flex items-center justify-between'>
               <span className='font-medium text-gray-700'>绑定</span>
-              <span className='font-bold text-gray-800 text-sm'>
-                {value.灵魂绑定 === 1 ? '有' : '无'}
-              </span>
+              <span className='font-bold text-gray-800 text-sm'>{value.灵魂绑定 === 1 ? '有' : '无'}</span>
             </div>
           </div>
         </div>
@@ -260,8 +256,7 @@ const Player = ({
               <div className='flex items-center gap-2 bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-2 border border-white/20'>
                 <span className=' text-sm'>🏛️</span>
                 <span className='  font-medium'>
-                  宗门：【{this_association.宗门名称}】
-                  {this_association.宗门名称 !== '无' && `[${this_association.职位}]`}
+                  宗门：【{this_association.宗门名称}】{this_association.宗门名称 !== '无' && `[${this_association.职位}]`}
                 </span>
               </div>
 
@@ -306,9 +301,7 @@ const Player = ({
                     </div>
                     <div className='flex items-center justify-between'>
                       <span className='text-xs font-medium text-gray-700'>暴伤</span>
-                      <span className='font-bold text-gray-800 text-sm'>
-                        {(player.暴击伤害 * 100).toFixed(0)}%
-                      </span>
+                      <span className='font-bold text-gray-800 text-sm'>{(player.暴击伤害 * 100).toFixed(0)}%</span>
                     </div>
                   </div>
                 </div>
@@ -368,9 +361,7 @@ const Player = ({
                           <span className='text-blue-500 text-xs'>⚡</span>
                         </span>
                         <span className='text-sm font-semibold'>{rank_lianqi}</span>
-                        {player.修为 >= expmax_lianqi && (
-                          <span className='text-green-500 text-xs'>[UP]</span>
-                        )}
+                        {player.修为 >= expmax_lianqi && <span className='text-green-500 text-xs'>[UP]</span>}
                       </span>
                     </div>
                     {/* 练气进度条 - 使用Tailwind CSS */}
@@ -405,9 +396,7 @@ const Player = ({
                           <span className='text-green-500 text-xs'>💪</span>
                         </span>
                         <span className='text-sm font-semibold'>{rank_llianti}</span>
-                        {player.血气 >= expmax_llianti && (
-                          <span className='text-green-500 text-xs'>[UP]</span>
-                        )}
+                        {player.血气 >= expmax_llianti && <span className='text-green-500 text-xs'>[UP]</span>}
                       </span>
                     </div>
                     {/* 炼体进度条 - 使用Tailwind CSS */}
@@ -452,9 +441,7 @@ const Player = ({
                             <span className='text-purple-500 text-xs'>🧪</span>
                           </span>
                           <span className='text-sm font-semibold'>{rank_liandan}</span>
-                          {player.occupation_exp >= expmax_liandan && (
-                            <span className='text-green-500 text-xs'>[UP]</span>
-                          )}
+                          {player.occupation_exp >= expmax_liandan && <span className='text-green-500 text-xs'>[UP]</span>}
                         </span>
                       </div>
                       {/* 炼丹进度条 - 使用Tailwind CSS */}
@@ -501,9 +488,7 @@ const Player = ({
                   )}
                   <div className='flex items-center justify-between'>
                     <span className='font-medium text-gray-700'>镇妖</span>
-                    <span className='font-bold text-gray-800 text-sm'>
-                      【{player.镇妖塔层数}层】
-                    </span>
+                    <span className='font-bold text-gray-800 text-sm'>【{player.镇妖塔层数}层】</span>
                   </div>
                   <div className='flex items-center justify-between'>
                     <span className='font-medium text-gray-700'>神魂</span>
@@ -511,9 +496,7 @@ const Player = ({
                   </div>
                   <div className='flex items-center justify-between'>
                     <span className='font-medium text-gray-700'>幸运</span>
-                    <span className='font-bold text-gray-800 text-sm'>
-                      【{(player.幸运 * 100).toFixed(1)}%】
-                    </span>
+                    <span className='font-bold text-gray-800 text-sm'>【{(player.幸运 * 100).toFixed(1)}%】</span>
                   </div>
                   <div className='flex items-center justify-between'>
                     <span className='font-medium text-gray-700'>魔道值</span>
@@ -541,9 +524,7 @@ const Player = ({
               </div>
               <h2 className='text-xl font-bold text-gray-700'>仙宠</h2>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'>
-              {PetsReander}
-            </div>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'>{PetsReander}</div>
           </div>
         </div>
       </div>

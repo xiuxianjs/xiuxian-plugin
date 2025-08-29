@@ -3,15 +3,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { startAction } from '@src/model/actionHelper';
-import {
-  Go,
-  convert2integer,
-  notUndAndNull,
-  readPlayer,
-  existNajieThing,
-  addNajieThing,
-  addCoin
-} from '@src/model/index';
+import { Go, convert2integer, notUndAndNull, readPlayer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

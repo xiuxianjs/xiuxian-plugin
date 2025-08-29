@@ -3,12 +3,7 @@ import { Text, useSend } from 'alemonjs';
 // redis 直接操作被 helper 替代
 import { getString, userKey } from '@src/model/utils/redisHelper';
 import { existplayer, keysAction, setDataJSONStringifyByKey } from '@src/model/index';
-import {
-  readAction,
-  isActionRunning,
-  startAction,
-  normalizeBiguanMinutes
-} from '@src/model/actionHelper';
+import { readAction, isActionRunning, startAction, normalizeBiguanMinutes } from '@src/model/actionHelper';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/;

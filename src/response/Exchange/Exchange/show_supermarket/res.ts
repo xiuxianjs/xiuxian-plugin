@@ -9,15 +9,7 @@ import { getRedisKey } from '@src/model/keys';
 
 export const regular = /^(#|＃|\/)?冲水堂(装备|丹药|功法|道具|草药|仙宠|材料)?$/;
 
-const VALID: ReadonlyArray<NajieCategory> = [
-  '装备',
-  '丹药',
-  '功法',
-  '道具',
-  '草药',
-  '仙宠',
-  '材料'
-];
+const VALID: ReadonlyArray<NajieCategory> = ['装备', '丹药', '功法', '道具', '草药', '仙宠', '材料'];
 const CD_MS = 10 * 1000;
 
 function toInt(v, d = 0) {

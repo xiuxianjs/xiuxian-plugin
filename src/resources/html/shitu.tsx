@@ -4,21 +4,7 @@ import HTML from './HTML';
 import { Avatar } from './Avatar';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 
-const Shitu = ({
-  user_id,
-  minghao,
-  renwu,
-  tudinum,
-  newchengyuan,
-  shimen,
-  rw1,
-  wancheng1,
-  rw2,
-  wancheng2,
-  rw3,
-  wancheng3,
-  chengyuan
-}) => {
+const Shitu = ({ user_id, minghao, renwu, tudinum, newchengyuan, shimen, rw1, wancheng1, rw2, wancheng2, rw3, wancheng3, chengyuan }) => {
   return (
     <HTML>
       <div
@@ -66,10 +52,7 @@ const Shitu = ({
             <div className='text-xl font-bold text-blue-700 mb-2'>[座下门徒]</div>
             <div className='w-full flex flex-wrap gap-2'>
               {chengyuan?.map((item, index) => (
-                <span
-                  key={index}
-                  className='inline-block bg-blue-100 text-blue-900 rounded px-3 py-1 text-sm font-semibold'
-                >
+                <span key={index} className='inline-block bg-blue-100 text-blue-900 rounded px-3 py-1 text-sm font-semibold'>
                   {item}
                 </span>
               ))}

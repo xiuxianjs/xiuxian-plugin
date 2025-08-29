@@ -7,9 +7,7 @@ export const regular = /^(#|＃|\/)?师徒帮助(\d+)?$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const helpData = await getConfig('help', 'shituhelp');
-  const page = e.MessageText.match(/(\d+)/)?.[1]
-    ? parseInt(e.MessageText.match(/(\d+)/)?.[1] || '1')
-    : 1;
+  const page = e.MessageText.match(/(\d+)/)?.[1] ? parseInt(e.MessageText.match(/(\d+)/)?.[1] || '1') : 1;
   const pageSize = 2;
   const total = Math.ceil(helpData.length / pageSize);
   const data = helpData.slice((page - 1) * pageSize, page * pageSize);

@@ -102,9 +102,7 @@ const Shenbing = ({ newwupin }) => {
                               <div className='w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center'>
                                 <span className='text-xs'>👤</span>
                               </div>
-                              <span className='text-lg font-bold text-green-100'>
-                                {item.使用者}
-                              </span>
+                              <span className='text-lg font-bold text-green-100'>{item.使用者}</span>
                             </div>
                           </div>
                         </div>
@@ -126,9 +124,7 @@ const Shenbing = ({ newwupin }) => {
                                 }}
                               />
                             </div>
-                            <span className='text-xs text-gray-300'>
-                              {Math.min((item.评分 / 100) * 100, 100).toFixed(0)}%
-                            </span>
+                            <span className='text-xs text-gray-300'>{Math.min((item.评分 / 100) * 100, 100).toFixed(0)}%</span>
                           </div>
                         </div>
 
@@ -156,17 +152,13 @@ const Shenbing = ({ newwupin }) => {
                       <div className='w-6 h-6 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center'>
                         <span className='text-xs'>📊</span>
                       </div>
-                      <span className='text-sm text-red-200'>
-                        共 {newwupin?.length || 0} 件神兵
-                      </span>
+                      <span className='text-sm text-red-200'>共 {newwupin?.length || 0} 件神兵</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center'>
                         <span className='text-xs'>🏆</span>
                       </div>
-                      <span className='text-sm text-yellow-200'>
-                        最高灵韵值：{newwupin?.[0]?.评分 || 0}
-                      </span>
+                      <span className='text-sm text-yellow-200'>最高灵韵值：{newwupin?.[0]?.评分 || 0}</span>
                     </div>
                   </div>
                 </div>

@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, message, Tag, Form } from 'antd';
-import {
-  ClockCircleOutlined,
-  PlayCircleOutlined,
-  PauseCircleOutlined,
-  SettingOutlined
-} from '@ant-design/icons';
+import { ClockCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  getTaskConfigAPI,
-  updateTaskConfigAPI,
-  restartTasksAPI,
-  getTaskStatusAPI,
-  taskControlAPI
-} from '@/api/auth';
+import { getTaskConfigAPI, updateTaskConfigAPI, restartTasksAPI, getTaskStatusAPI, taskControlAPI } from '@/api/auth';
 import type { ColumnsType } from 'antd/es/table';
 import { TaskInfo } from '@/types/types';
 import TaskConfig from './TaskConfig';
@@ -22,12 +11,7 @@ import formatCron from './config';
 import classNames from 'classnames';
 
 // 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianTableContainer,
-  XiuxianRefreshButton
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer, XiuxianRefreshButton } from '@/components/ui';
 
 // 获取类型标签
 const getTypeTag = (type: string) => {
@@ -165,11 +149,7 @@ export default function TaskManager() {
       ),
       key: 'lastRun',
       width: 180,
-      render: (_, record) => (
-        <div className='text-sm text-slate-300'>
-          {record.lastRun ? new Date(record.lastRun).toLocaleString('zh-CN') : '未执行'}
-        </div>
-      )
+      render: (_, record) => <div className='text-sm text-slate-300'>{record.lastRun ? new Date(record.lastRun).toLocaleString('zh-CN') : '未执行'}</div>
     },
     {
       title: (
@@ -179,11 +159,7 @@ export default function TaskManager() {
       ),
       key: 'nextRun',
       width: 180,
-      render: (_, record) => (
-        <div className='text-sm text-slate-300'>
-          {record.nextRun ? new Date(record.nextRun).toLocaleString('zh-CN') : '未计划'}
-        </div>
-      )
+      render: (_, record) => <div className='text-sm text-slate-300'>{record.nextRun ? new Date(record.nextRun).toLocaleString('zh-CN') : '未计划'}</div>
     }
   ];
 
@@ -223,8 +199,7 @@ export default function TaskManager() {
           prevTasks.map(task => ({
             ...task,
             status: result.data![task.name]?.running ? 'running' : 'stopped',
-            nextRun:
-              result.data![task.name]?.nextInvocation || new Date(Date.now() + 60000).toISOString()
+            nextRun: result.data![task.name]?.nextInvocation || new Date(Date.now() + 60000).toISOString()
           }))
         );
       }

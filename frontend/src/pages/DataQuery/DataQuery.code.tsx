@@ -209,19 +209,14 @@ export const useDataQueryCode = () => {
       render: (value: unknown) => {
         if (typeof value === 'object') {
           return (
-            <span
-              className='text-blue-400 cursor-pointer'
-              onClick={() => handleViewDetail({ key, value })}
-            >
+            <span className='text-blue-400 cursor-pointer' onClick={() => handleViewDetail({ key, value })}>
               {JSON.stringify(value).substring(0, 50)}...
             </span>
           );
         }
         if (typeof value === 'boolean') {
           return (
-            <span
-              className={`px-2 py-1 rounded-full text-xs ${value ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}
-            >
+            <span className={`px-2 py-1 rounded-full text-xs ${value ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
               {value ? '是' : '否'}
             </span>
           );

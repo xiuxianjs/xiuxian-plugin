@@ -23,21 +23,15 @@ export default function StatsTab({ stats }: StatsTabProps) {
             <div className='space-y-4'>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>总充值金额</span>
-                <span className='text-2xl font-bold text-green-400'>
-                  ¥{stats.total_amount.toLocaleString()}
-                </span>
+                <span className='text-2xl font-bold text-green-400'>¥{stats.total_amount.toLocaleString()}</span>
               </div>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>本月充值金额</span>
-                <span className='text-xl font-bold text-blue-400'>
-                  ¥{stats.month_amount.toLocaleString()}
-                </span>
+                <span className='text-xl font-bold text-blue-400'>¥{stats.month_amount.toLocaleString()}</span>
               </div>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>今日充值金额</span>
-                <span className='text-lg font-bold text-orange-400'>
-                  ¥{stats.today_amount.toLocaleString()}
-                </span>
+                <span className='text-lg font-bold text-orange-400'>¥{stats.today_amount.toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -51,21 +45,15 @@ export default function StatsTab({ stats }: StatsTabProps) {
             <div className='space-y-4'>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>总充值次数</span>
-                <span className='text-2xl font-bold text-blue-400'>
-                  {stats.total_count.toLocaleString()}
-                </span>
+                <span className='text-2xl font-bold text-blue-400'>{stats.total_count.toLocaleString()}</span>
               </div>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>本月充值次数</span>
-                <span className='text-xl font-bold text-purple-400'>
-                  {stats.month_count.toLocaleString()}
-                </span>
+                <span className='text-xl font-bold text-purple-400'>{stats.month_count.toLocaleString()}</span>
               </div>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>今日充值次数</span>
-                <span className='text-lg font-bold text-cyan-400'>
-                  {stats.today_count.toLocaleString()}
-                </span>
+                <span className='text-lg font-bold text-cyan-400'>{stats.today_count.toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -82,17 +70,12 @@ export default function StatsTab({ stats }: StatsTabProps) {
             <div className='space-y-4'>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>首充用户数</span>
-                <span className='text-2xl font-bold text-yellow-400'>
-                  {stats.first_recharge_users.toLocaleString()}
-                </span>
+                <span className='text-2xl font-bold text-yellow-400'>{stats.first_recharge_users.toLocaleString()}</span>
               </div>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>平均充值金额</span>
                 <span className='text-xl font-bold text-green-400'>
-                  ¥
-                  {stats.total_count > 0
-                    ? (stats.total_amount / stats.total_count).toFixed(2)
-                    : '0.00'}
+                  ¥{stats.total_count > 0 ? (stats.total_amount / stats.total_count).toFixed(2) : '0.00'}
                 </span>
               </div>
             </div>
@@ -107,9 +90,7 @@ export default function StatsTab({ stats }: StatsTabProps) {
             <div className='space-y-4'>
               <div className='flex justify-between items-center'>
                 <span className='text-slate-400'>最后更新</span>
-                <span className='text-sm text-slate-300'>
-                  {dayjs(stats.updated_at).format('YYYY-MM-DD HH:mm:ss')}
-                </span>
+                <span className='text-sm text-slate-300'>{dayjs(stats.updated_at).format('YYYY-MM-DD HH:mm:ss')}</span>
               </div>
             </div>
           </div>

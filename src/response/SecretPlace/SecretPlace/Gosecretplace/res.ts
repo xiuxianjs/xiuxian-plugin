@@ -4,15 +4,7 @@ import { redis, config } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { getRedisKey } from '@src/model/keys';
 import { startAction } from '@src/model/actionHelper';
-import {
-  Go,
-  readPlayer,
-  notUndAndNull,
-  existHunyin,
-  addQinmidu,
-  addCoin,
-  findDaolvQinmidu
-} from '@src/model/index';
+import { Go, readPlayer, notUndAndNull, existHunyin, addQinmidu, addCoin, findDaolvQinmidu } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?降临秘境.*$/;

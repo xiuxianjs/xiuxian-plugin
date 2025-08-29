@@ -8,10 +8,8 @@ interface XiuxianCardProps extends Omit<CardProps, 'variant'> {
 
 const XiuxianCard: React.FC<XiuxianCardProps> = ({ className, variant = 'default', ...props }) => {
   const variantClasses = {
-    default:
-      'bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50',
-    gradient:
-      'bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30'
+    default: 'bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50',
+    gradient: 'bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30'
   };
 
   return (

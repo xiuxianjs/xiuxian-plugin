@@ -7,215 +7,451 @@ import { readTemp, writeTemp } from '@src/model/temp';
 import { __PATH, keys as dataKeys, keysAction, keysByPath } from '@src/model/keys';
 import type { ExploreActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
+import type { Player } from '@src/types/player';
 
-function isExploreAction(a): a is ExploreActionState {
-  return !!a && typeof a === 'object' && 'end_time' in a;
+interface MojieItem {
+  name: string;
+  class: string;
+}
+
+interface MojieData {
+  one: MojieItem[];
+  two: MojieItem[];
+  three: MojieItem[];
+}
+
+interface ExplorationResult {
+  thingName: string;
+  thingClass: string;
+  message: string;
+  quantity: number;
+  t1: number;
+  t2: number;
+}
+
+interface LuckyBonus {
+  message: string;
+  quantity: number;
+}
+
+interface SettlementResult {
+  xiuwei: number;
+  qixue: number;
+  message: string;
 }
 
 /**
- * 遍历所有玩家，检查每个玩家的当前动作（如探索、魔劫等）。
- * 判断动作是否为“魔劫”相关，并根据动作状态和时间进行结算处理。
- * 结算时会处理经验、物品发放、状态变更等，并通过推送消息通知玩家或群组。
- * 该任务确保玩家的“魔劫”或探索等行为能在到达指定时间后自动结算和反馈。
+ * 基础配置常量
  */
-export const MojiTask = async () => {
-  // 获取缓存中人物列表
-  const playerList = await keysByPath(__PATH.player_path);
+const BASE_CONFIG = {
+  FIND_ITEM_CHANCE: 0.98,
+  RARE_ITEM_CHANCE: 0.4,
+  EPIC_ITEM_CHANCE: 0.15,
+  XIUWEI_BASE: 2000,
+  QIXUE_BASE: 2000,
+  LEVEL_MULTIPLIER: 100,
+  PHYSIQUE_MULTIPLIER: 100,
+  XIUWEI_DIVISOR: 5,
+  XIUWEI_MULTIPLIER: 0.1,
+  QIXUE_MULTIPLIER: 0.1
+} as const;
 
-  for (const playerId of playerList) {
-    // 查询当前人物动作（日志变量已移除以减 lint 噪声）
+/**
+ * 道具效果配置
+ */
+const ITEM_EFFECTS = {
+  XIUMO_DAN_MULTIPLIER: 100,
+  XUEMO_DAN_MULTIPLIER: 18
+} as const;
 
-    const action = await getDataJSONParseByKey(keysAction.action(playerId));
+/**
+ * 检查是否为探索动作
+ * @param action 动作对象
+ * @returns 是否为探索动作
+ */
+function isExploreAction(action: any): action is ExploreActionState {
+  return !!action && typeof action === 'object' && 'end_time' in action;
+}
 
-    if (!action) {
-      continue;
+/**
+ * 获取推送信息
+ * @param action 动作状态
+ * @param playerId 玩家ID
+ * @returns 推送信息
+ */
+const getPushInfo = (action: ExploreActionState, playerId: string): { pushAddress: string; isGroup: boolean } => {
+  let pushAddress = playerId;
+  let isGroup = false;
+
+  if (notUndAndNull(action.group_id)) {
+    isGroup = true;
+    pushAddress = action.group_id;
+  }
+
+  return { pushAddress, isGroup };
+};
+
+/**
+ * 解析时间参数
+ * @param time 时间参数
+ * @returns 时间数值
+ */
+const parseTime = (time: number | string): number => {
+  const baseDuration = typeof time === 'number' ? time : parseInt(String(time || 0), 10);
+
+  return isNaN(baseDuration) ? 0 : baseDuration;
+};
+
+/**
+ * 获取随机物品
+ * @param mojieData 魔劫数据
+ * @returns 探索结果
+ */
+const getRandomItem = (mojieData: MojieData): ExplorationResult => {
+  const random1 = Math.random();
+  const random2 = Math.random();
+  const random3 = Math.random();
+
+  if (random1 <= BASE_CONFIG.FIND_ITEM_CHANCE) {
+    if (random2 <= BASE_CONFIG.RARE_ITEM_CHANCE) {
+      if (random3 <= BASE_CONFIG.EPIC_ITEM_CHANCE && mojieData.three.length > 0) {
+        const random4 = Math.floor(Math.random() * mojieData.three.length);
+        const item = mojieData.three[random4];
+
+        return {
+          thingName: item.name,
+          thingClass: item.class,
+          message: `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${item.name}]`,
+          quantity: 1,
+          t1: 2 + Math.random(),
+          t2: 2 + Math.random()
+        };
+      } else if (mojieData.two.length > 0) {
+        const random4 = Math.floor(Math.random() * mojieData.two.length);
+        const item = mojieData.two[random4];
+
+        return {
+          thingName: item.name,
+          thingClass: item.class,
+          message: `在洞穴中拿到[${item.name}]`,
+          quantity: 1,
+          t1: 1 + Math.random(),
+          t2: 1 + Math.random()
+        };
+      }
+    } else if (mojieData.one.length > 0) {
+      const random4 = Math.floor(Math.random() * mojieData.one.length);
+      const item = mojieData.one[random4];
+
+      return {
+        thingName: item.name,
+        thingClass: item.class,
+        message: `捡到了[${item.name}]`,
+        quantity: 1,
+        t1: 0.5 + Math.random() * 0.5,
+        t2: 0.5 + Math.random() * 0.5
+      };
+    }
+  }
+
+  return {
+    thingName: '',
+    thingClass: '',
+    message: '走在路上都没看见一只蚂蚁！',
+    quantity: 1,
+    t1: 2 + Math.random(),
+    t2: 2 + Math.random()
+  };
+};
+
+/**
+ * 检查幸运加成
+ * @param player 玩家数据
+ * @returns 幸运加成信息
+ */
+const checkLuckyBonus = (player: Player): LuckyBonus => {
+  const random = Math.random();
+
+  if (random < player.幸运) {
+    let message = '';
+
+    if (random < player.addluckyNo) {
+      message = '福源丹生效，所以在';
+    } else if (player.仙宠?.type === '幸运') {
+      message = '仙宠使你在探索中欧气满满，所以在';
     }
 
-    // 不为空，存在动作
-    let push_address = playerId; // 消息推送地址
-    let isGroup = false; // 是否推送到群
+    message += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
 
-    if (isExploreAction(action) && notUndAndNull(action.group_id)) {
-      isGroup = true;
-      push_address = action.group_id!;
+    return {
+      message,
+      quantity: 2
+    };
+  }
+
+  return {
+    message: '',
+    quantity: 1
+  };
+};
+
+/**
+ * 处理福源丹效果
+ * @param playerId 玩家ID
+ * @param player 玩家数据
+ * @returns 福源丹消息
+ */
+const handleLuckyPill = async (playerId: string, player: Player): Promise<string> => {
+  if ((player.islucky || 0) <= 0) {
+    return '';
+  }
+
+  player.islucky--;
+  let message = '';
+
+  if (player.islucky !== 0) {
+    message = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
+  } else {
+    message = '  \n本次探索后，福源丹已失效\n';
+    player.幸运 -= player.addluckyNo;
+    player.addluckyNo = 0;
+  }
+
+  await redis.set(dataKeys.player(playerId), JSON.stringify(player));
+
+  return message;
+};
+
+/**
+ * 计算结算奖励
+ * @param player 玩家数据
+ * @param t1 修为系数
+ * @param t2 气血系数
+ * @returns 结算结果
+ */
+const calculateRewards = (player: Player, t1: number, t2: number): SettlementResult => {
+  const levelId = player.level_id || 0;
+  const physiqueId = player.Physique_id || 0;
+
+  const xiuwei = Math.trunc(
+    BASE_CONFIG.XIUWEI_BASE + (BASE_CONFIG.LEVEL_MULTIPLIER * levelId * levelId * t1 * BASE_CONFIG.XIUWEI_MULTIPLIER) / BASE_CONFIG.XIUWEI_DIVISOR
+  );
+  const qixue = Math.trunc(BASE_CONFIG.QIXUE_BASE + BASE_CONFIG.PHYSIQUE_MULTIPLIER * physiqueId * physiqueId * t2 * BASE_CONFIG.QIXUE_MULTIPLIER);
+
+  return { xiuwei, qixue, message: '' };
+};
+
+/**
+ * 处理道具效果
+ * @param playerId 玩家ID
+ * @param xiuwei 修为
+ * @param qixue 气血
+ * @returns 处理后的奖励
+ */
+const handleItemEffects = async (playerId: string, xiuwei: number, qixue: number): Promise<{ xiuwei: number; qixue: number }> => {
+  let finalXiuwei = xiuwei;
+  let finalQixue = qixue;
+
+  if (await existNajieThing(playerId, '修魔丹', '道具')) {
+    finalXiuwei *= ITEM_EFFECTS.XIUMO_DAN_MULTIPLIER;
+    finalXiuwei = Math.trunc(finalXiuwei);
+    await addNajieThing(playerId, '修魔丹', '道具', -1);
+  }
+
+  if (await existNajieThing(playerId, '血魔丹', '道具')) {
+    finalQixue *= ITEM_EFFECTS.XUEMO_DAN_MULTIPLIER;
+    finalQixue = Math.trunc(finalQixue);
+    await addNajieThing(playerId, '血魔丹', '道具', -1);
+  }
+
+  return { xiuwei: finalXiuwei, qixue: finalQixue };
+};
+
+/**
+ * 记录临时消息
+ * @param message 消息内容
+ * @param playerId 玩家ID
+ * @param pushAddress 推送地址
+ */
+const recordTempMessage = async (message: string, playerId: string, pushAddress: string): Promise<void> => {
+  try {
+    const temp = await readTemp();
+    const p = {
+      msg: message,
+      qq_group: pushAddress
+    };
+
+    temp.push(p);
+    await writeTemp(temp);
+  } catch {
+    const temp: { msg: string; qq?: string; qq_group: string }[] = [];
+    const p = {
+      msg: message,
+      qq: playerId,
+      qq_group: pushAddress
+    };
+
+    temp.push(p);
+    await writeTemp(temp);
+  }
+};
+
+/**
+ * 处理探索完成
+ * @param playerId 玩家ID
+ * @param action 动作状态
+ * @param result 探索结果
+ * @param luckyMessage 幸运消息
+ * @param fydMessage 福源丹消息
+ * @param pushAddress 推送地址
+ * @param isGroup 是否群组
+ * @param remainingCount 剩余次数
+ */
+const handleExplorationComplete = async (
+  playerId: string,
+  action: ExploreActionState,
+  result: SettlementResult,
+  luckyMessage: string,
+  fydMessage: string,
+  pushAddress: string,
+  isGroup: boolean,
+  remainingCount: number
+): Promise<void> => {
+  const msg: string[] = [];
+  const lastMessage = `${result.message},获得修为${result.xiuwei},气血${result.qixue},剩余次数${remainingCount}`;
+
+  msg.push('\n' + luckyMessage + lastMessage + fydMessage);
+
+  const arr: ExploreActionState = { ...action };
+
+  if (arr.cishu === 1) {
+    // 探索完成，关闭所有状态
+    arr.shutup = 1;
+    arr.working = 1;
+    arr.power_up = 1;
+    arr.Place_action = 1;
+    arr.Place_actionplus = 1;
+    arr.mojie = 1;
+    arr.end_time = Date.now();
+    delete arr.group_id;
+
+    await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+    await addExp2(playerId, result.qixue);
+    await addExp(playerId, result.xiuwei);
+
+    pushInfo(pushAddress, isGroup, msg.join(''));
+  } else {
+    // 继续探索
+    if (typeof arr.cishu === 'number') {
+      arr.cishu--;
     }
 
-    // 最后发送的消息
-    const msg: string[] = [];
+    await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+    await addExp2(playerId, result.qixue);
+    await addExp(playerId, result.xiuwei);
 
-    // 动作结束时间
-    if (!isExploreAction(action)) {
-      continue;
+    await recordTempMessage(luckyMessage + lastMessage + fydMessage, playerId, pushAddress);
+  }
+};
+
+/**
+ * 处理单个玩家的魔劫探索
+ * @param playerId 玩家ID
+ * @param action 动作状态
+ * @param mojieData 魔劫数据
+ * @returns 是否处理成功
+ */
+const processPlayerExploration = async (playerId: string, action: ExploreActionState, mojieData: MojieData): Promise<boolean> => {
+  try {
+    const { pushAddress, isGroup } = getPushInfo(action, playerId);
+    const baseDuration = parseTime(action.time);
+    const endTime = action.end_time - baseDuration;
+    const nowTime = Date.now();
+
+    if (nowTime <= endTime) {
+      return false;
     }
-    const act = action;
-    let end_time = act.end_time;
-    // 现在的时间
-    const now_time = Date.now();
-    // 用户信息
+
     const player = await readPlayer(playerId);
 
-    // 有洗劫状态:这个直接结算即可
-    if (String(act.mojie) === '0') {
-      // 5分钟后开始结算阶段一
-      const baseDuration =
-        typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+    if (!player) {
+      return false;
+    }
 
-      end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
-      // 时间过了
-      if (now_time > end_time) {
-        let thingName;
-        let thingClass;
-        const x = 0.98;
-        const random1 = Math.random();
-        const y = 0.4;
-        const random2 = Math.random();
-        const z = 0.15;
-        const random3 = Math.random();
-        let random4;
-        let m = '';
-        let n = 1;
-        let t1: number;
-        let t2: number;
-        let lastMessage = '';
-        let fyd_msg = '';
+    // 获取随机物品
+    const explorationResult = getRandomItem(mojieData);
 
-        const data = {
-          mojie: await getDataList('Mojie')
-        };
+    // 检查幸运加成
+    const luckyBonus = checkLuckyBonus(player);
+    const finalQuantity = explorationResult.quantity * luckyBonus.quantity;
 
-        if (random1 <= x) {
-          if (random2 <= y) {
-            if (random3 <= z) {
-              random4 = Math.floor(Math.random() * data.mojie[0].three.length);
-              thingName = data.mojie[0].three[random4].name;
-              thingClass = data.mojie[0].three[random4].class;
-              m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thingName}]`;
-              t1 = 2 + Math.random();
-              t2 = 2 + Math.random();
-            } else {
-              random4 = Math.floor(Math.random() * data.mojie[0].two.length);
-              thingName = data.mojie[0].two[random4].name;
-              thingClass = data.mojie[0].two[random4].class;
-              m = `在洞穴中拿到[${thingName}]`;
-              t1 = 1 + Math.random();
-              t2 = 1 + Math.random();
-            }
-          } else {
-            random4 = Math.floor(Math.random() * data.mojie[0].one.length);
-            thingName = data.mojie[0].one[random4].name;
-            thingClass = data.mojie[0].one[random4].class;
-            m = `捡到了[${thingName}]`;
-            t1 = 0.5 + Math.random() * 0.5;
-            t2 = 0.5 + Math.random() * 0.5;
-          }
-        } else {
-          thingName = '';
-          thingClass = '';
-          m = '走在路上都没看见一只蚂蚁！';
-          t1 = 2 + Math.random();
-          t2 = 2 + Math.random();
+    // 处理福源丹效果
+    const fydMessage = await handleLuckyPill(playerId, player);
+
+    // 计算奖励
+    const settlementResult = calculateRewards(player, explorationResult.t1, explorationResult.t2);
+
+    // 处理道具效果
+    const { xiuwei, qixue } = await handleItemEffects(playerId, settlementResult.xiuwei, settlementResult.qixue);
+
+    // 添加物品奖励
+    if (explorationResult.thingName && explorationResult.thingClass) {
+      await addNajieThing(playerId, explorationResult.thingName, explorationResult.thingClass, finalQuantity);
+    }
+
+    const finalResult: SettlementResult = {
+      xiuwei,
+      qixue,
+      message: explorationResult.message
+    };
+
+    // 处理探索完成
+    await handleExplorationComplete(playerId, action, finalResult, luckyBonus.message, fydMessage, pushAddress, isGroup, (action.cishu ?? 0) - 1);
+
+    return true;
+  } catch (error) {
+    logger.error(error);
+
+    return false;
+  }
+};
+
+/**
+ * 魔劫任务 - 处理玩家魔劫探索
+ * 遍历所有玩家，检查处于魔劫探索状态的玩家，进行结算处理
+ */
+export const MojiTask = async (): Promise<void> => {
+  try {
+    const playerList = await keysByPath(__PATH.player_path);
+
+    if (!playerList || playerList.length === 0) {
+      return;
+    }
+
+    const mojieDataList = await getDataList('Mojie');
+
+    if (!mojieDataList || mojieDataList.length === 0) {
+      return;
+    }
+
+    const mojieData = mojieDataList[0] as MojieData;
+
+    for (const playerId of playerList) {
+      try {
+        const action = await getDataJSONParseByKey(keysAction.action(playerId));
+
+        if (!action || !isExploreAction(action)) {
+          continue;
         }
-        const random = Math.random();
 
-        if (random < player.幸运) {
-          if (random < player.addluckyNo) {
-            lastMessage += '福源丹生效，所以在';
-          } else if (player.仙宠.type === '幸运') {
-            lastMessage += '仙宠使你在探索中欧气满满，所以在';
-          }
-          n++;
-          lastMessage += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
+        if (String(action.mojie) === '0') {
+          await processPlayerExploration(playerId, action, mojieData);
         }
-        if (player.islucky > 0) {
-          player.islucky--;
-          if (player.islucky !== 0) {
-            fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
-          } else {
-            fyd_msg = '  \n本次探索后，福源丹已失效\n';
-            player.幸运 -= player.addluckyNo;
-            player.addluckyNo = 0;
-          }
-          await redis.set(dataKeys.player(playerId), JSON.stringify(player));
-        }
-        // 默认结算装备数
-        const now_level_id = player.level_id;
-        const now_physique_id = player.Physique_id;
-        // 结算
-        let qixue = 0;
-        let xiuwei = 0;
-
-        xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
-        qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
-        if (await existNajieThing(playerId, '修魔丹', '道具')) {
-          xiuwei *= 100;
-          xiuwei = Math.trunc(xiuwei);
-          await addNajieThing(playerId, '修魔丹', '道具', -1);
-        }
-        if (await existNajieThing(playerId, '血魔丹', '道具')) {
-          qixue *= 18;
-          qixue = Math.trunc(qixue);
-          await addNajieThing(playerId, '血魔丹', '道具', -1);
-        }
-        if (thingName !== '' || thingClass !== '') {
-          await addNajieThing(playerId, thingName, thingClass, n);
-        }
-        lastMessage +=
-          m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
-        msg.push('\n' + player.名号 + lastMessage + fyd_msg);
-        const arr: ExploreActionState = {
-          ...act
-        };
-
-        if (arr.cishu === 1) {
-          // 把状态都关了
-          arr.shutup = 1; // 闭关状态
-          arr.working = 1; // 降妖状态
-          arr.power_up = 1; // 渡劫状态
-          arr.Place_action = 1; // 秘境
-          arr.Place_actionplus = 1; // 沉迷状态
-          // 魔界状态关闭并更新时间
-          arr.mojie = 1;
-          arr.end_time = Date.now();
-          // 结算完去除group_id
-          delete arr.group_id;
-          // 写入redis
-          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
-          // 先完结再结算
-          await addExp2(playerId, qixue);
-          await addExp(playerId, xiuwei);
-          // 发送消息
-          pushInfo(push_address, isGroup, msg.join(''));
-        } else {
-          if (typeof arr.cishu === 'number') {
-            arr.cishu--;
-          }
-
-          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
-          // 先完结再结算
-          await addExp2(playerId, qixue);
-          await addExp(playerId, xiuwei);
-          try {
-            const temp = await readTemp();
-            const p = {
-              msg: player.名号 + lastMessage + fyd_msg,
-              qq_group: push_address
-            };
-
-            temp.push(p);
-            await writeTemp(temp);
-          } catch {
-            const temp: { msg: string; qq?: string; qq_group: string }[] = [];
-            const p = {
-              msg: player.名号 + lastMessage + fyd_msg,
-              qq: playerId,
-              qq_group: push_address
-            };
-
-            temp.push(p);
-            await writeTemp(temp);
-          }
-        }
+      } catch (error) {
+        logger.error(error);
       }
     }
+  } catch (error) {
+    logger.error(error);
   }
 };

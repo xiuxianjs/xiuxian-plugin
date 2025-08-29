@@ -1,19 +1,7 @@
 import React from 'react';
 import { Form, message } from 'antd';
-import type {
-  CurrencyUser,
-  RechargeRecord,
-  GlobalStats,
-  RechargeFormValues
-} from '@/types/CurrencyManager';
-import {
-  fetchUsersAPI,
-  fetchRecordsAPI,
-  fetchStatsAPI,
-  fetchConfigAPI,
-  createRechargeRecordAPI,
-  completePaymentAPI
-} from '@/api/auth/currency';
+import type { CurrencyUser, RechargeRecord, GlobalStats, RechargeFormValues } from '@/types/CurrencyManager';
+import { fetchUsersAPI, fetchRecordsAPI, fetchStatsAPI, fetchConfigAPI, createRechargeRecordAPI, completePaymentAPI } from '@/api/auth/currency';
 
 export const useCurrencyManager = () => {
   const [loading, setLoading] = React.useState(false);

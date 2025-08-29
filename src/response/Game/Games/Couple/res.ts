@@ -88,10 +88,7 @@ const res = onResponse(selects, async e => {
   const keyB = getRedisKey(B, 'last_shuangxiu_time');
 
   if (cooldownMs > 0) {
-    const [{ remain: remainA }, { remain: remainB }] = await Promise.all([
-      checkAndGetRemain(A, keyA),
-      checkAndGetRemain(B, keyB)
-    ]);
+    const [{ remain: remainA }, { remain: remainB }] = await Promise.all([checkAndGetRemain(A, keyA), checkAndGetRemain(B, keyB)]);
 
     if (remainA > 0) {
       void Send(Text(`双修冷却:  ${formatRemain(remainA)}`));

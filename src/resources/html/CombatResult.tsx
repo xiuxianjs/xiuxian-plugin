@@ -51,9 +51,7 @@ const CombatResult = ({
             <div className='w-6 h-6 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center'>
               <span className='text-white text-sm font-bold'>⚔</span>
             </div>
-            <h1 className='text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 bg-clip-text text-transparent'>
-              修仙对决
-            </h1>
+            <h1 className='text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 bg-clip-text text-transparent'>修仙对决</h1>
             {/* 胜负结果 */}
             <div>
               {result === 'A' && (
@@ -98,11 +96,7 @@ const CombatResult = ({
                       <div className='w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full p-1 shadow-lg'>
                         <div className='w-full h-full rounded-full overflow-hidden bg-slate-800 flex items-center justify-center'>
                           {playerA.avatar ? (
-                            <img
-                              src={playerA.avatar}
-                              alt={playerA.name}
-                              className='w-full h-full object-cover'
-                            />
+                            <img src={playerA.avatar} alt={playerA.name} className='w-full h-full object-cover' />
                           ) : (
                             <span className='text-white text-2xl'>👤</span>
                           )}
@@ -150,18 +144,13 @@ const CombatResult = ({
                 <div className='hidden md:flex items-center justify-center'>
                   <div className='relative'>
                     <div
-                      className={classNames(
-                        'w-16 h-16 rounded-full flex items-center justify-center shadow-2xl',
-                        {
-                          'bg-gradient-to-br from-blue-500 to-cyan-500': result === 'A',
-                          'bg-gradient-to-br from-red-500 to-pink-500': result === 'B',
-                          'bg-gradient-to-br from-purple-500 to-pink-500': result === 'draw'
-                        }
-                      )}
+                      className={classNames('w-16 h-16 rounded-full flex items-center justify-center shadow-2xl', {
+                        'bg-gradient-to-br from-blue-500 to-cyan-500': result === 'A',
+                        'bg-gradient-to-br from-red-500 to-pink-500': result === 'B',
+                        'bg-gradient-to-br from-purple-500 to-pink-500': result === 'draw'
+                      })}
                     >
-                      <span className='text-white text-2xl font-bold'>
-                        {result === 'A' ? '战胜' : result === 'B' ? '战败' : 'VS'}
-                      </span>
+                      <span className='text-white text-2xl font-bold'>{result === 'A' ? '战胜' : result === 'B' ? '战败' : 'VS'}</span>
                     </div>
                     <div
                       className={classNames('absolute inset-0 rounded-full blur-lg opacity-50', {
@@ -184,11 +173,7 @@ const CombatResult = ({
                       <div className='w-20 h-20 bg-gradient-to-br from-red-400 to-pink-400 rounded-full p-1 shadow-lg'>
                         <div className='w-full h-full rounded-full overflow-hidden bg-slate-800 flex items-center justify-center'>
                           {playerB.avatar ? (
-                            <img
-                              src={playerB.avatar}
-                              alt={playerB.name}
-                              className='w-full h-full object-cover'
-                            />
+                            <img src={playerB.avatar} alt={playerB.name} className='w-full h-full object-cover' />
                           ) : (
                             <span className='text-white text-2xl'>👹</span>
                           )}

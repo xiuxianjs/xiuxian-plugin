@@ -1,14 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  existNajieThing,
-  foundthing,
-  readItTyped,
-  writeIt,
-  readNajie,
-  writeNajie
-} from '@src/model/index';
+import { existplayer, existNajieThing, foundthing, readItTyped, writeIt, readNajie, writeNajie } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?赋名.*$/;

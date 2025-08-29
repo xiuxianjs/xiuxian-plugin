@@ -28,9 +28,7 @@ const XiuxianSearchBar: React.FC<XiuxianSearchBarProps> = ({
   };
 
   return (
-    <div
-      className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg ${className}`}
-    >
+    <div className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg ${className}`}>
       <div className='flex gap-4'>
         <div className='flex-1 relative'>
           <SearchOutlined className='absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg' />

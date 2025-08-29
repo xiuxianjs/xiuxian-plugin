@@ -9,13 +9,7 @@ import { levelNames } from '@/config';
 import { rankingTypes, useRankingManagerCode } from './RankingManager.code';
 
 // 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianStatCard,
-  XiuxianTableContainer,
-  XiuxianRefreshButton
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianStatCard, XiuxianTableContainer, XiuxianRefreshButton } from '@/components/ui';
 
 export default function RankingManager() {
   const {
@@ -46,14 +40,11 @@ export default function RankingManager() {
         <div className='flex items-center justify-center'>
           {record.rank <= 3 ? (
             <div
-              className={classNames(
-                'w-8 h-8 rounded-full flex items-center justify-center text-white font-bold',
-                {
-                  'bg-yellow-500': record.rank === 1,
-                  'bg-gray-400': record.rank === 2,
-                  'bg-orange-500': record.rank === 3
-                }
-              )}
+              className={classNames('w-8 h-8 rounded-full flex items-center justify-center text-white font-bold', {
+                'bg-yellow-500': record.rank === 1,
+                'bg-gray-400': record.rank === 2,
+                'bg-orange-500': record.rank === 3
+              })}
             >
               {record.rank}
             </div>
@@ -74,12 +65,8 @@ export default function RankingManager() {
       render: (_, record) => (
         <div>
           <div className='font-bold text-white'>{record.name}</div>
-          {record.extra?.名号 && (
-            <div className='text-xs text-slate-400'>道号: {record.extra.名号}</div>
-          )}
-          {record.extra?.宗主 && (
-            <div className='text-xs text-slate-400'>宗主: {record.extra.宗主}</div>
-          )}
+          {record.extra?.名号 && <div className='text-xs text-slate-400'>道号: {record.extra.名号}</div>}
+          {record.extra?.宗主 && <div className='text-xs text-slate-400'>宗主: {record.extra.宗主}</div>}
         </div>
       )
     },
@@ -94,13 +81,9 @@ export default function RankingManager() {
       render: (_, record) => {
         // 如果选择了境界。value是境界等级
         if (selectedRankingType === 'PLAYER_LEVEL') {
-          return (
-            <div className='text-sm font-medium text-blue-400'>{levelNames[record.value]}</div>
-          );
+          return <div className='text-sm font-medium text-blue-400'>{levelNames[record.value]}</div>;
         }
-        return (
-          <div className='text-sm font-bold text-green-400'>{record.value.toLocaleString()}</div>
-        );
+        return <div className='text-sm font-bold text-green-400'>{record.value.toLocaleString()}</div>;
       }
     },
     {
@@ -111,11 +94,7 @@ export default function RankingManager() {
       ),
       key: 'type',
       width: 100,
-      render: (_, record) => (
-        <div className='text-sm text-slate-400'>
-          {record.extra?.type === 'player' ? '玩家' : '宗门'}
-        </div>
-      )
+      render: (_, record) => <div className='text-sm text-slate-400'>{record.extra?.type === 'player' ? '玩家' : '宗门'}</div>
     }
   ];
 
@@ -149,24 +128,9 @@ export default function RankingManager() {
       {/* 统计信息 */}
       {rankingStats && (
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
-          <XiuxianStatCard
-            title='总排行榜数'
-            value={rankingStats.associationCount + rankingStats.playerCount}
-            icon={<TrophyOutlined />}
-            gradient='purple'
-          />
-          <XiuxianStatCard
-            title='玩家排行榜'
-            value={rankingStats.playerCount}
-            icon={<CrownOutlined />}
-            gradient='blue'
-          />
-          <XiuxianStatCard
-            title='宗门排行榜'
-            value={rankingStats.associationCount}
-            icon={<TeamOutlined />}
-            gradient='green'
-          />
+          <XiuxianStatCard title='总排行榜数' value={rankingStats.associationCount + rankingStats.playerCount} icon={<TrophyOutlined />} gradient='purple' />
+          <XiuxianStatCard title='玩家排行榜' value={rankingStats.playerCount} icon={<CrownOutlined />} gradient='blue' />
+          <XiuxianStatCard title='宗门排行榜' value={rankingStats.associationCount} icon={<TeamOutlined />} gradient='green' />
         </div>
       )}
 
@@ -222,10 +186,7 @@ export default function RankingManager() {
       </div>
 
       {/* 排名表格 */}
-      <XiuxianTableContainer
-        title={`${getRankingTypeLabel(selectedRankingType)} - 前${rankingLimit}名`}
-        icon={<TrophyOutlined />}
-      >
+      <XiuxianTableContainer title={`${getRankingTypeLabel(selectedRankingType)} - 前${rankingLimit}名`} icon={<TrophyOutlined />}>
         <Table
           columns={columns}
           dataSource={rankingData}

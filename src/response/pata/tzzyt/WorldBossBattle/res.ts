@@ -124,9 +124,7 @@ const res = onResponse(selects, async e => {
     const Random = Math.random();
 
     if (!(BattleFrame & 1)) {
-      let playerDamage
-        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
-        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let playerDamage = Harm(Number(player.攻击) || 0, BOSSCurrentDefence) + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const critChance = Number(player.暴击率) || 0;
       const isCrit = Math.random() < critChance;
       const critMul = isCrit ? 1.5 : 1;
@@ -150,9 +148,7 @@ const res = onResponse(selects, async e => {
       if (bosszt.Health < 0) {
         bosszt.Health = 0;
       }
-      msg.push(
-        `${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`
-      );
+      msg.push(`${player.名号}${ifbaoji(critMul)}造成伤害${playerDamage}，未知妖物剩余血量${bosszt.Health}`);
     } else {
       let bossDamage = Harm(BOSSCurrentAttack, Math.trunc((Number(player.防御) || 0) * 0.1));
 
@@ -170,9 +166,7 @@ const res = onResponse(selects, async e => {
       if (player.当前血量 < 0) {
         player.当前血量 = 0;
       }
-      msg.push(
-        `未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`
-      );
+      msg.push(`未知妖物攻击了${player.名号}，造成伤害${bossDamage}，${player.名号}剩余血量${player.当前血量}`);
     }
     BattleFrame++;
   }

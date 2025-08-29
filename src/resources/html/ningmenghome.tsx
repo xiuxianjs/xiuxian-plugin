@@ -34,9 +34,7 @@ const Ningmenghome = ({ commodities_list }) => {
                   <span>
                     【{item.type}】{item.name}
                   </span>
-                  <span className='text-blue-700 font-bold'>
-                    {(item.出售价 * 1.2).toFixed(0)} 灵石
-                  </span>
+                  <span className='text-blue-700 font-bold'>{(item.出售价 * 1.2).toFixed(0)} 灵石</span>
                 </div>
 
                 {item.class === '装备' && (
@@ -54,15 +52,9 @@ const Ningmenghome = ({ commodities_list }) => {
                   </div>
                 )}
 
-                {item.class === '功法' && (
-                  <div className='text-blue-800 font-medium'>
-                    修炼加成：{(item.修炼加成 * 100).toFixed(0)}%
-                  </div>
-                )}
+                {item.class === '功法' && <div className='text-blue-800 font-medium'>修炼加成：{(item.修炼加成 * 100).toFixed(0)}%</div>}
 
-                {(item.class === '道具' || item.class === '草药') && (
-                  <div className='text-blue-800 font-medium'>描述：{item.desc}</div>
-                )}
+                {(item.class === '道具' || item.class === '草药') && <div className='text-blue-800 font-medium'>描述：{item.desc}</div>}
               </div>
             ))}
           </div>

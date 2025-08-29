@@ -2,16 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { redis, config } from '@src/model/api';
 import { getRedisKey } from '@src/model/keys';
-import {
-  Go,
-  readPlayer,
-  sleep,
-  notUndAndNull,
-  addCoin,
-  existNajieThing,
-  addNajieThing,
-  addExp
-} from '@src/model/index';
+import { Go, readPlayer, sleep, notUndAndNull, addCoin, existNajieThing, addNajieThing, addExp } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?探索仙府$/;
@@ -65,9 +56,7 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
-    void Send(
-      Text('价格为5w,你觉得特别特别便宜,赶紧全款拿下了,历经九九八十天,到了后发现居然是仙湖游乐场！')
-    );
+    void Send(Text('价格为5w,你觉得特别特别便宜,赶紧全款拿下了,历经九九八十天,到了后发现居然是仙湖游乐场！'));
     await addCoin(userId, -FAIL_PRICE);
 
     return false;
@@ -104,9 +93,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (player.修为 < MIN_REQ_EXP) {
-    void Send(
-      Text('到了地图上的地点，发现洞府前有一句前人留下的遗言:‘至少有10w修为才能抵御仙威！’')
-    );
+    void Send(Text('到了地图上的地点，发现洞府前有一句前人留下的遗言:‘至少有10w修为才能抵御仙威！’'));
 
     return false;
   }
@@ -158,9 +145,7 @@ const res = onResponse(selects, async e => {
 
   const baseMsg
     = `你买下了那份地图,历经九九八十一天,终于到达了地图上的${selectedName === '无欲天仙' ? '仙府' : '地点'},`
-    + (selectedName === '无欲天仙'
-      ? `洞府上模糊得刻着[${place.name}仙府]`
-      : '这座洞府仿佛是上个末法时代某个仙人留下的遗迹')
+    + (selectedName === '无欲天仙' ? `洞府上模糊得刻着[${place.name}仙府]` : '这座洞府仿佛是上个末法时代某个仙人留下的遗迹')
     + `,你兴奋地冲进去探索机缘,被强大的仙气压制，消耗了${MIN_REQ_EXP}修为成功突破封锁闯了进去${minutes}分钟后归来!`;
 
   void Send(Text(baseMsg));

@@ -87,9 +87,7 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
 
     // 这里是查看了功法表
     for (const j of gongfa) {
-      const ifexist = ((await getDataList(j as 'Gongfa' | 'TimeGongfa')) as GongfaItem[]).find(
-        item => item.name === player.学习的功法[i]
-      );
+      const ifexist = ((await getDataList(j as 'Gongfa' | 'TimeGongfa')) as GongfaItem[]).find(item => item.name === player.学习的功法[i]);
 
       if (ifexist) {
         gongfa_efficiency += ifexist.修炼加成 as number;
@@ -105,8 +103,7 @@ export async function playerEfficiency(userId: string): Promise<null | undefined
   const dy = await readDanyao(userId);
   const bgdan = dy.biguanxl || 0;
 
-  const efficiency =
-    linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency;
+  const efficiency = linggen_efficiency + Assoc_efficiency + gongfa_efficiency + xianchong_efficiency;
   const add = efficiency + bgdan;
 
   player.修炼效率提升 = add; // 修炼效率综合

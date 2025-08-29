@@ -35,16 +35,7 @@ function parseJson<T>(raw): T | null {
     return null;
   }
 }
-const CATEGORY_SET: Set<NajieCategory> = new Set([
-  '装备',
-  '丹药',
-  '道具',
-  '功法',
-  '草药',
-  '材料',
-  '仙宠',
-  '仙宠口粮'
-]);
+const CATEGORY_SET: Set<NajieCategory> = new Set(['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮']);
 
 function normalizeCategory(c: string | undefined): NajieCategory {
   return CATEGORY_SET.has(c as NajieCategory) ? (c as NajieCategory) : '道具';

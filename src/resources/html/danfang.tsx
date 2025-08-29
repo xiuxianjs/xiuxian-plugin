@@ -29,10 +29,7 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
   };
 
   return (
-    <HTML
-      className=' w-full text-center p-4 md:p-8 bg-top bg-cover relative'
-      style={{ backgroundImage: `url(${danfangURL})` }}
-    >
+    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover relative' style={{ backgroundImage: `url(${danfangURL})` }}>
       {/* 背景渐变遮罩 */}
       <div className='absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-transparent backdrop-blur-sm pointer-events-none' />
 
@@ -45,12 +42,8 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
           >
             丹方
           </h1>
-          <p className='text-blue-900/80 text-sm md:text-base font-medium'>
-            炼制指令：#炼制+丹药名
-          </p>
-          <p className='text-blue-900/70 text-xs md:text-sm'>
-            炼制成功率 = 丹方成功率 + 玩家职业等级成功率
-          </p>
+          <p className='text-blue-900/80 text-sm md:text-base font-medium'>炼制指令：#炼制+丹药名</p>
+          <p className='text-blue-900/70 text-xs md:text-sm'>炼制成功率 = 丹方成功率 + 玩家职业等级成功率</p>
         </header>
 
         <section className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
@@ -69,12 +62,8 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
                     {item.name}
                   </h2>
                   <div className='flex items-center gap-3 text-sm text-blue-900/80'>
-                    <span className='px-2 py-0.5 rounded-full bg-blue-500/20 font-medium shadow-sm border border-blue-300/50'>
-                      {ratePercent}%
-                    </span>
-                    <span className='px-2 py-0.5 rounded-full bg-blue-200/40 font-medium shadow-sm border border-blue-300/50'>
-                      lv.{item.level_limit}
-                    </span>
+                    <span className='px-2 py-0.5 rounded-full bg-blue-500/20 font-medium shadow-sm border border-blue-300/50'>{ratePercent}%</span>
+                    <span className='px-2 py-0.5 rounded-full bg-blue-200/40 font-medium shadow-sm border border-blue-300/50'>lv.{item.level_limit}</span>
                   </div>
                 </header>
                 <div className='text-sm text-blue-900/90 font-medium leading-relaxed'>

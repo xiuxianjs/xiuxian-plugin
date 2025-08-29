@@ -36,11 +36,7 @@ const generateToken = (): string => {
 };
 
 // 创建用户
-export const createUser = async (
-  username: string,
-  password: string,
-  role = 'admin'
-): Promise<User | null> => {
+export const createUser = async (username: string, password: string, role = 'admin'): Promise<User | null> => {
   try {
     // 检查用户名是否已存在
     const existingUser = await getUserByUsername(username);

@@ -10,13 +10,7 @@ interface ResponsiveCardProps {
   loading?: boolean;
 }
 
-export default function ResponsiveCard({
-  title,
-  children,
-  className = '',
-  extra,
-  loading = false
-}: ResponsiveCardProps) {
+export default function ResponsiveCard({ title, children, className = '', extra, loading = false }: ResponsiveCardProps) {
   return (
     <Card
       title={<span className='text-sm sm:text-base lg:text-lg font-medium'>{title}</span>}
@@ -43,15 +37,7 @@ interface ResponsiveStatCardProps {
   };
 }
 
-export function ResponsiveStatCard({
-  title,
-  value,
-  prefix,
-  suffix,
-  color = '#1890ff',
-  description,
-  trend
-}: ResponsiveStatCardProps) {
+export function ResponsiveStatCard({ title, value, prefix, suffix, color = '#1890ff', description, trend }: ResponsiveStatCardProps) {
   return (
     <div className='bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100'>
       <div className='flex items-start justify-between'>
@@ -100,13 +86,7 @@ interface ResponsiveDataTableProps {
   pagination?: boolean | object;
 }
 
-export function ResponsiveDataTable({
-  data,
-  columns,
-  title,
-  loading = false,
-  pagination = false
-}: ResponsiveDataTableProps) {
+export function ResponsiveDataTable({ data, columns, title, loading = false, pagination = false }: ResponsiveDataTableProps) {
   // 过滤响应式列
   const getResponsiveColumns = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -127,10 +107,7 @@ export function ResponsiveDataTable({
           <thead className='bg-gray-50'>
             <tr>
               {getResponsiveColumns().map(column => (
-                <th
-                  key={column.key}
-                  className='px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium text-gray-700 uppercase tracking-wider'
-                >
+                <th key={column.key} className='px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium text-gray-700 uppercase tracking-wider'>
                   {column.title}
                 </th>
               ))}
@@ -139,19 +116,13 @@ export function ResponsiveDataTable({
           <tbody className='bg-white divide-y divide-gray-200'>
             {loading ? (
               <tr>
-                <td
-                  colSpan={getResponsiveColumns().length}
-                  className='px-3 sm:px-4 py-8 text-center text-sm text-gray-500'
-                >
+                <td colSpan={getResponsiveColumns().length} className='px-3 sm:px-4 py-8 text-center text-sm text-gray-500'>
                   加载中...
                 </td>
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td
-                  colSpan={getResponsiveColumns().length}
-                  className='px-3 sm:px-4 py-8 text-center text-sm text-gray-500'
-                >
+                <td colSpan={getResponsiveColumns().length} className='px-3 sm:px-4 py-8 text-center text-sm text-gray-500'>
                   暂无数据
                 </td>
               </tr>
@@ -159,13 +130,8 @@ export function ResponsiveDataTable({
               data.map((record, index) => (
                 <tr key={record.key} className='hover:bg-gray-50 transition-colors duration-150'>
                   {getResponsiveColumns().map(column => (
-                    <td
-                      key={column.key}
-                      className='px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-900'
-                    >
-                      {column.render
-                        ? column.render(record[column.dataIndex], record, index)
-                        : String(record[column.dataIndex] || '')}
+                    <td key={column.key} className='px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-900'>
+                      {column.render ? column.render(record[column.dataIndex], record, index) : String(record[column.dataIndex] || '')}
                     </td>
                   ))}
                 </tr>
@@ -195,11 +161,7 @@ interface ResponsiveContainerProps {
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 }
 
-export function ResponsiveContainer({
-  children,
-  className = '',
-  maxWidth = 'full'
-}: ResponsiveContainerProps) {
+export function ResponsiveContainer({ children, className = '', maxWidth = 'full' }: ResponsiveContainerProps) {
   const maxWidthClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
@@ -209,11 +171,5 @@ export function ResponsiveContainer({
     full: 'max-w-full'
   };
 
-  return (
-    <div
-      className={classNames(`mx-auto px-4 sm:px-6 lg:px-8`, maxWidthClasses[maxWidth], className)}
-    >
-      {children}
-    </div>
-  );
+  return <div className={classNames(`mx-auto px-4 sm:px-6 lg:px-8`, maxWidthClasses[maxWidth], className)}>{children}</div>;
 }

@@ -58,12 +58,7 @@ export async function updateBagThing(
  * @param thing_pinji 物品等级
  * @returns
  */
-export async function existNajieThing(
-  userId: string,
-  thingName: string,
-  thingClass: NajieCategory,
-  thing_pinji = 0
-): Promise<number | false> {
+export async function existNajieThing(userId: string, thingName: string, thingClass: NajieCategory, thing_pinji = 0): Promise<number | false> {
   const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
@@ -76,16 +71,7 @@ export async function existNajieThing(
 
     ifexist = equipList.find(item => item.name === thingName && item.pinji === thing_pinji);
   } else {
-    const type: NajieCategory[] = [
-      '装备',
-      '丹药',
-      '道具',
-      '功法',
-      '草药',
-      '材料',
-      '仙宠',
-      '仙宠口粮'
-    ];
+    const type: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
     for (const cat of type) {
       const list = najie[cat];
@@ -191,9 +177,7 @@ export async function addNajieThing(
         return;
       }
     }
-    const fb = najie[thingClass].find(
-      item => item.name === ((name as NajieItem).name || name) && item.pinji === pinji
-    );
+    const fb = najie[thingClass].find(item => item.name === ((name as NajieItem).name || name) && item.pinji === pinji);
 
     if (fb) {
       fb.数量 = (fb.数量 || 0) + x;

@@ -1,14 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  readNajie,
-  foundthing,
-  convert2integer,
-  existNajieThing,
-  addNajieThing,
-  addCoin
-} from '@src/model/index';
+import { existplayer, readNajie, foundthing, convert2integer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
@@ -165,9 +157,7 @@ const res = onResponse(selects, async e => {
 
   if (zalei.find(it => it.name === thingName.replace(/[0-9]+/g, ''))) {
     // 在 najie 中查找对应品级的装备
-    const sel = (najie.装备 || []).find(
-      i => i.name === thingName && toInt(i.pinji) === (pinji ?? 0)
-    );
+    const sel = (najie.装备 || []).find(i => i.name === thingName && toInt(i.pinji) === (pinji ?? 0));
 
     if (sel) {
       price = toInt(sel.出售价) * amount;

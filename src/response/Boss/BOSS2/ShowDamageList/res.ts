@@ -106,13 +106,7 @@ const res = onResponse(selects, async e => {
   if (CurrentQQ) {
     const idx = PlayerList[CurrentQQ - 1];
 
-    void Send(
-      Text(
-        `你在金角大王周本贡献排行榜中排名第${CurrentQQ}，造成伤害${
-          PlayerRecord.TotalDamage[idx] || 0
-        }，再接再厉！`
-      )
-    );
+    void Send(Text(`你在金角大王周本贡献排行榜中排名第${CurrentQQ}，造成伤害${PlayerRecord.TotalDamage[idx] || 0}，再接再厉！`));
   }
 
   // 根据力量排序

@@ -117,11 +117,7 @@ const res = onResponse(selects, async e => {
     if (Buffer.isBuffer(img)) {
       void Send(Image(img));
     } else {
-      const result = dataBattle.msg.includes(winA)
-        ? 'A'
-        : dataBattle.msg.includes(winB)
-          ? 'B'
-          : 'draw';
+      const result = dataBattle.msg.includes(winA) ? 'A' : dataBattle.msg.includes(winB) ? 'B' : 'draw';
 
       void Send(Text(header + result));
     }

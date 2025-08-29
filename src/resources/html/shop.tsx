@@ -34,9 +34,7 @@ const Shop: React.FC<ShopProps> = ({ name, level, state, thing = [] }) => {
               <div className='w-10 h-10 bg-amber-400/30 rounded-full flex items-center justify-center'>
                 <span className='text-amber-300 text-xl'>🏪</span>
               </div>
-              <h1 className='text-2xl md:text-3xl font-bold tracking-wider text-amber-200 drop-shadow-lg'>
-                【{name}】
-              </h1>
+              <h1 className='text-2xl md:text-3xl font-bold tracking-wider text-amber-200 drop-shadow-lg'>【{name}】</h1>
               <div className='w-10 h-10 bg-amber-400/30 rounded-full flex items-center justify-center'>
                 <span className='text-amber-300 text-xl'>🏪</span>
               </div>
@@ -75,9 +73,7 @@ const Shop: React.FC<ShopProps> = ({ name, level, state, thing = [] }) => {
                           <span className='text-blue-300 text-xl'>📦</span>
                         </div>
                         <div>
-                          <h3 className='text-lg font-bold tracking-wide text-blue-100 drop-shadow'>
-                            {item.name}
-                          </h3>
+                          <h3 className='text-lg font-bold tracking-wide text-blue-100 drop-shadow'>{item.name}</h3>
                           <p className='text-blue-200/80 text-sm'>编号: {index + 1}</p>
                         </div>
                       </div>

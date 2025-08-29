@@ -64,11 +64,7 @@ const res = onResponse(selects, async e => {
   await playerEfficiency(userId);
   const newCapIndex = Math.max(0, Math.min(宗门人数上限.length - 1, ass.宗门等级 - 1));
 
-  void Send(
-    Text(
-      `宗门升级成功当前宗门等级为${ass.宗门等级},宗门人数上限提高到:${宗门人数上限[newCapIndex]}`
-    )
-  );
+  void Send(Text(`宗门升级成功当前宗门等级为${ass.宗门等级},宗门人数上限提高到:${宗门人数上限[newCapIndex]}`));
 
   return false;
 });

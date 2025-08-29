@@ -1,15 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  existplayer,
-  shijianc,
-  getLastsign,
-  addNajieThing,
-  addExp,
-  writePlayer,
-  getConfig
-} from '@src/model/index';
+import { existplayer, shijianc, getLastsign, addNajieThing, addExp, writePlayer, getConfig } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getRedisKey, keys } from '@src/model/keys';
@@ -46,19 +38,12 @@ const res = onResponse(selects, async e => {
   const todayStruct = shijianc(nowTime);
   const lastSignStruct = await getLastsign(userId);
 
-  if (
-    isLastSignStruct(lastSignStruct)
-    && isLastSignStruct(todayStruct)
-    && isSameDay(todayStruct, lastSignStruct)
-  ) {
+  if (isLastSignStruct(lastSignStruct) && isLastSignStruct(todayStruct) && isSameDay(todayStruct, lastSignStruct)) {
     void Send(Text('今日已经签到过了'));
 
     return false;
   }
-  const continued
-    = isLastSignStruct(lastSignStruct)
-    && isLastSignStruct(yesterdayStruct)
-    && isSameDay(yesterdayStruct, lastSignStruct);
+  const continued = isLastSignStruct(lastSignStruct) && isLastSignStruct(yesterdayStruct) && isSameDay(yesterdayStruct, lastSignStruct);
 
   await redis.set(getRedisKey(userId, 'lastsign_time'), String(nowTime));
 
@@ -92,11 +77,7 @@ const res = onResponse(selects, async e => {
   }
   await addExp(userId, gift_xiuwei);
 
-  void Send(
-    Text(
-      `已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''}`
-    )
-  );
+  void Send(Text(`已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''}`));
 
   return false;
 });

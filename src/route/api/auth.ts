@@ -56,9 +56,7 @@ export const POST = async (ctx: Context) => {
 // 验证token接口
 export const GET = async (ctx: Context) => {
   try {
-    const token
-      = ctx.request.headers.authorization?.replace('Bearer ', '')
-      || (ctx.request.query.token as string);
+    const token = ctx.request.headers.authorization?.replace('Bearer ', '') || (ctx.request.query.token as string);
 
     if (!token) {
       ctx.status = 401;

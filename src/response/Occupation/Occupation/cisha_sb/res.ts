@@ -109,14 +109,8 @@ const res = onResponse(selects, async e => {
 
   // 构建战斗实体（转换法球倍率为 number）
   const buff = player.occupation === '侠客' ? 1 + (player.occupation_level || 0) * 0.055 : 1;
-  const fqA =
-    typeof player.灵根.法球倍率 === 'number'
-      ? player.灵根.法球倍率
-      : parseFloat(String(player.灵根.法球倍率)) || 0;
-  const fqB =
-    typeof player_B.灵根.法球倍率 === 'number'
-      ? player_B.灵根.法球倍率
-      : parseFloat(String(player_B.灵根.法球倍率)) || 0;
+  const fqA = typeof player.灵根.法球倍率 === 'number' ? player.灵根.法球倍率 : parseFloat(String(player.灵根.法球倍率)) || 0;
+  const fqB = typeof player_B.灵根.法球倍率 === 'number' ? player_B.灵根.法球倍率 : parseFloat(String(player_B.灵根.法球倍率)) || 0;
   const player_A: BattleEntity = {
     id: player.id,
     名号: player.名号,

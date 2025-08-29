@@ -42,14 +42,7 @@ function clonePlayer<T>(p: T): T {
   return _.cloneDeep(p);
 }
 
-function applyBuffDecay(
-  source: BuffMap,
-  _targetUnused,
-  buffName: string,
-  effect: () => void,
-  msgArr: string[],
-  label: string
-) {
+function applyBuffDecay(source: BuffMap, _targetUnused, buffName: string, effect: () => void, msgArr: string[], label: string) {
   if (source[buffName]) {
     effect();
     source[buffName]--;
@@ -57,18 +50,7 @@ function applyBuffDecay(
   }
 }
 
-const BASE_SKILLS = [
-  '四象封印',
-  '桃园结义',
-  '长生诀',
-  '祝水咒',
-  '阴风蚀骨',
-  '万年俱灰',
-  '心烦意乱',
-  '失魂落魄',
-  '玄冰封印',
-  '诛仙三剑'
-];
+const BASE_SKILLS = ['四象封印', '桃园结义', '长生诀', '祝水咒', '阴风蚀骨', '万年俱灰', '心烦意乱', '失魂落魄', '玄冰封印', '诛仙三剑'];
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
@@ -366,9 +348,7 @@ async function battle(e, num: number) {
       buff_A.诛仙三剑--;
     }
     playerB.当前血量 -= A_harm;
-    roundMsgs.push(
-      `第${cnt}回合,${playerA.名号}普通攻击，${ifbaoji(A_baoji)}造成伤害${A_harm}，${playerB.名号}剩余血量${playerB.当前血量}`
-    );
+    roundMsgs.push(`第${cnt}回合,${playerA.名号}普通攻击，${ifbaoji(A_baoji)}造成伤害${A_harm}，${playerB.名号}剩余血量${playerB.当前血量}`);
     if (playerB.当前血量 <= 0) {
       history.push(roundMsgs);
       break;
@@ -532,9 +512,7 @@ async function battle(e, num: number) {
       buff_B.诛仙三剑--;
     }
     playerA.当前血量 -= B_harm;
-    roundMsgs.push(
-      `第${cnt}回合,${playerB.名号}普通攻击，${ifbaoji(B_baoji)}造成伤害${B_harm}，${playerA.名号}剩余血量${playerA.当前血量}`
-    );
+    roundMsgs.push(`第${cnt}回合,${playerB.名号}普通攻击，${ifbaoji(B_baoji)}造成伤害${B_harm}，${playerA.名号}剩余血量${playerA.当前血量}`);
 
     cnt++;
     pushInfo(A_QQ[num].QQ, false, roundMsgs);

@@ -367,11 +367,7 @@ export const createRechargeRecord = async (
  * @param paymentMethod 支付方式
  * @returns 更新后的充值记录
  */
-export const completeRechargePayment = async (
-  recordId: string,
-  transactionId: string,
-  paymentMethod = 'unknown'
-): Promise<RechargeRecord> => {
+export const completeRechargePayment = async (recordId: string, transactionId: string, paymentMethod = 'unknown'): Promise<RechargeRecord> => {
   // 输入验证
   if (!recordId || typeof recordId !== 'string') {
     throw new Error('Invalid record ID');
@@ -477,13 +473,7 @@ export const completeRechargePayment = async (
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserCurrency = async (
-  userId: string,
-  tier: string,
-  paymentMethod = 'unknown',
-  ipAddress = '',
-  deviceInfo = ''
-) => {
+export const rechargeUserCurrency = async (userId: string, tier: string, paymentMethod = 'unknown', ipAddress = '', deviceInfo = '') => {
   try {
     // 根据档位获取金额
     const amount = getAmountByTier(tier);
@@ -515,12 +505,7 @@ export const rechargeUserCurrency = async (
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserSmallMonthCard = async (
-  userId: string,
-  paymentMethod = 'unknown',
-  ipAddress = '',
-  deviceInfo = ''
-) => {
+export const rechargeUserSmallMonthCard = async (userId: string, paymentMethod = 'unknown', ipAddress = '', deviceInfo = '') => {
   try {
     const { days, name } = MONTH_CARD_CONFIG.SMALL;
 
@@ -550,12 +535,7 @@ export const rechargeUserSmallMonthCard = async (
  * @param deviceInfo 设备信息
  * @returns 充值记录
  */
-export const rechargeUserBigMonthCard = async (
-  userId: string,
-  paymentMethod = 'unknown',
-  ipAddress = '',
-  deviceInfo = ''
-) => {
+export const rechargeUserBigMonthCard = async (userId: string, paymentMethod = 'unknown', ipAddress = '', deviceInfo = '') => {
   try {
     const { days, name } = MONTH_CARD_CONFIG.BIG;
 
@@ -616,12 +596,7 @@ export const getUserRechargeRecords = async (userId: string, limit = 20, offset 
  * @param type 充值类型过滤
  * @returns 充值记录列表
  */
-export const getAllRechargeRecords = async (
-  limit = 50,
-  offset = 0,
-  status?: PaymentStatus,
-  type?: RechargeType
-) => {
+export const getAllRechargeRecords = async (limit = 50, offset = 0, status?: PaymentStatus, type?: RechargeType) => {
   try {
     const redis = getIoRedis();
     const pattern = REDIS_KEYS.CURRENCY_LOG('*');
@@ -776,11 +751,7 @@ export const checkUserMonthCardStatus = async (userId: string) => {
  * @param days 消费天数
  * @returns 是否成功
  */
-export const consumeMonthCardDays = async (
-  userId: string,
-  cardType: 'small' | 'big',
-  days = 1
-): Promise<boolean> => {
+export const consumeMonthCardDays = async (userId: string, cardType: 'small' | 'big', days = 1): Promise<boolean> => {
   // 输入验证
   if (!userId || typeof userId !== 'string') {
     throw new Error('Invalid user ID');
@@ -860,10 +831,7 @@ export const consumeUserCurrency = async (userId: string, amount: number): Promi
  * @param offset 偏移量，默认0
  * @returns 用户货币信息列表
  */
-export const getAllUsersCurrencyInfo = async (
-  limit = 100,
-  offset = 0
-): Promise<UserCurrencyData[]> => {
+export const getAllUsersCurrencyInfo = async (limit = 100, offset = 0): Promise<UserCurrencyData[]> => {
   try {
     const redis = getIoRedis();
     // 获取所有玩家货币数据的key（限制数量避免性能问题）
@@ -877,12 +845,7 @@ export const getAllUsersCurrencyInfo = async (
       const userInfo = await findUserRechargeInfo(userId);
 
       // 只返回有充值记录的用户
-      if (
-        userInfo.total_recharge_count > 0
-        || userInfo.currency > 0
-        || userInfo.small_month_card_days > 0
-        || userInfo.big_month_card_days > 0
-      ) {
+      if (userInfo.total_recharge_count > 0 || userInfo.currency > 0 || userInfo.small_month_card_days > 0 || userInfo.big_month_card_days > 0) {
         users.push(userInfo);
       }
     }

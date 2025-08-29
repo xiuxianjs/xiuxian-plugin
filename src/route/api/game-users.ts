@@ -52,10 +52,7 @@ export const GET = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || playerWithId.名号?.toLowerCase().includes(search.toLowerCase())
-              || playerWithId.id.includes(search);
+            const matchesSearch = !search || playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) || playerWithId.id.includes(search);
 
             if (matchesSearch) {
               total++;
@@ -122,10 +119,7 @@ export const GET = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase())
-              || corruptedPlayer.id.includes(search);
+            const matchesSearch = !search || corruptedPlayer.名号.toLowerCase().includes(search.toLowerCase()) || corruptedPlayer.id.includes(search);
 
             if (matchesSearch) {
               total++;
@@ -355,10 +349,7 @@ export const PUT = async (ctx: Context) => {
             };
 
             // 应用搜索过滤
-            const matchesSearch
-              = !search
-              || playerWithId.名号?.toLowerCase().includes(search.toLowerCase())
-              || playerWithId.id.includes(search);
+            const matchesSearch = !search || playerWithId.名号?.toLowerCase().includes(search.toLowerCase()) || playerWithId.id.includes(search);
 
             if (matchesSearch) {
               total++;

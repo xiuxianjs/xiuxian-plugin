@@ -22,9 +22,7 @@ const res = onResponse(selects, e => {
       return;
     }
     if (error) {
-      void Send(
-        Text('更新失败！\nError code: ' + error.code + '\n' + error.stack + '\n 请稍后重试。')
-      );
+      void Send(Text('更新失败！\nError code: ' + error.code + '\n' + error.stack + '\n 请稍后重试。'));
 
       return;
     }

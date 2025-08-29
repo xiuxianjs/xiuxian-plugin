@@ -27,10 +27,7 @@ const res = onResponse(selects, async e => {
   // 查询redis中的人物动作
   const action = await readAction(userId);
 
-  if (
-    action
-    && (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')
-  ) {
+  if (action && (action.Place_action === '0' || action.Place_actionplus === '0' || action.mojie === '0')) {
     await stopAction(userId, {
       is_jiesuan: 1,
       shutup: '1',

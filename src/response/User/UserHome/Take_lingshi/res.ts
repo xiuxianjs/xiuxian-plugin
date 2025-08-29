@@ -1,14 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  Go,
-  readPlayer,
-  readNajie,
-  convert2integer,
-  addBagCoin,
-  addCoin
-} from '@src/model/index';
+import { existplayer, Go, readPlayer, readNajie, convert2integer, addBagCoin, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?(存|取)灵石(.*)$/;
@@ -68,9 +60,7 @@ const res = onResponse(selects, async e => {
     }
     await addBagCoin(userId, lingshi);
     await addCoin(userId, -lingshi);
-    void Send(
-      Text(`储存完毕,你目前还有${player_lingshi - lingshi}灵石,纳戒内有${najie.灵石 + lingshi}灵石`)
-    );
+    void Send(Text(`储存完毕,你目前还有${player_lingshi - lingshi}灵石,纳戒内有${najie.灵石 + lingshi}灵石`));
 
     return false;
   }

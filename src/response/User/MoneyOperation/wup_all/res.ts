@@ -1,13 +1,5 @@
 import { Text, useSend } from 'alemonjs';
-import {
-  __PATH,
-  addCoin,
-  addExp,
-  addExp2,
-  foundthing,
-  addNajieThing,
-  keysByPath
-} from '@src/model/index';
+import { __PATH, addCoin, addExp, addExp2, foundthing, addNajieThing, keysByPath } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import type { NajieCategory } from '@src/types/model';
 
@@ -149,20 +141,10 @@ const res = onResponse(selects, async e => {
   }
 
   for (const qq of playerList) {
-    await addNajieThing(
-      qq,
-      name,
-      itemMeta.class as NajieCategory,
-      amount,
-      itemMeta.class === '装备' ? quality : undefined
-    );
+    await addNajieThing(qq, name, itemMeta.class as NajieCategory, amount, itemMeta.class === '装备' ? quality : undefined);
   }
 
-  void Send(
-    Text(
-      `发放成功, 当前${playerCount}人, 每人增加 ${name}${itemMeta.class === '装备' ? `(品质${quality})` : ''} x ${amount}`
-    )
-  );
+  void Send(Text(`发放成功, 当前${playerCount}人, 每人增加 ${name}${itemMeta.class === '装备' ? `(品质${quality})` : ''} x ${amount}`));
 
   return false;
 });

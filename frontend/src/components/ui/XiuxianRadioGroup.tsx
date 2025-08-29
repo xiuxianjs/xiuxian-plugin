@@ -15,14 +15,7 @@ interface XiuxianRadioGroupProps {
   variant?: 'button' | 'radio';
 }
 
-const XiuxianRadioGroup: React.FC<XiuxianRadioGroupProps> = ({
-  value,
-  onChange,
-  options,
-  className = '',
-  size = 'default',
-  variant = 'button'
-}) => {
+const XiuxianRadioGroup: React.FC<XiuxianRadioGroupProps> = ({ value, onChange, options, className = '', size = 'default', variant = 'button' }) => {
   const sizeClasses = {
     small: 'px-3 py-1.5 text-sm',
     default: 'px-4 py-2 text-base',
@@ -108,9 +101,7 @@ const XiuxianRadioGroup: React.FC<XiuxianRadioGroupProps> = ({
                 {isSelected && <div className='w-2 h-2 bg-white rounded-full'></div>}
               </div>
             </div>
-            <span className={`text-sm ${isSelected ? 'text-white' : 'text-slate-300'}`}>
-              {option.label}
-            </span>
+            <span className={`text-sm ${isSelected ? 'text-white' : 'text-slate-300'}`}>{option.label}</span>
           </label>
         );
       })}

@@ -61,13 +61,12 @@ export const useProfileCode = () => {
     }
   };
 
-  const handleInputChange =
-    (field: keyof PasswordForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPasswordForm(prev => ({
-        ...prev,
-        [field]: e.target.value
-      }));
-    };
+  const handleInputChange = (field: keyof PasswordForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordForm(prev => ({
+      ...prev,
+      [field]: e.target.value
+    }));
+  };
 
   return {
     activeTab,

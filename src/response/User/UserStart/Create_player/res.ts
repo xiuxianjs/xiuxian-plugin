@@ -1,16 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
-import {
-  __PATH,
-  getRandomTalent,
-  writePlayer,
-  writeEquipment,
-  writeNajie,
-  addHP,
-  writeDanyao,
-  keysByPath,
-  keys
-} from '@src/model/index';
+import { __PATH, getRandomTalent, writePlayer, writeEquipment, writeNajie, addHP, writeDanyao, keysByPath, keys } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
 import { selects } from '@src/response/mw';
 import { getPlayerImage } from '@src/model/image';

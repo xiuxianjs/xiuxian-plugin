@@ -83,9 +83,7 @@ const res = onResponse(selects, async e => {
 
     if (!(BattleFrame & 1)) {
       // 玩家回合
-      let damage
-        = Harm(Number(player.攻击) || 0, BOSSCurrentDefence)
-        + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
+      let damage = Harm(Number(player.攻击) || 0, BOSSCurrentDefence) + Math.trunc((Number(player.攻击) || 0) * (Number(player.灵根?.法球倍率) || 0));
       const isCrit = Math.random() < (Number(player.暴击率) || 0);
       const critMul = isCrit ? 1.5 : 1;
 

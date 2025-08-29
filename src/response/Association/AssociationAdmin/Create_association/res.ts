@@ -41,13 +41,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   /** 回复 */
-  void message.send(
-    format(
-      Text(
-        '请发送宗门名字,一旦设立,无法再改,请慎重取名,(宗门名字最多6个中文字符)\n想改变主意请回复:【取消】'
-      )
-    )
-  );
+  void message.send(format(Text('请发送宗门名字,一旦设立,无法再改,请慎重取名,(宗门名字最多6个中文字符)\n想改变主意请回复:【取消】')));
   /** 设置上下文 */
   const [subscribe] = useSubscribe(e, selects);
 
@@ -63,17 +57,13 @@ const res = onResponse(selects, async e => {
       }
       // res为true表示存在汉字以外的字符
       if (!/^[\u4e00-\u9fa5]+$/.test(association_name)) {
-        void message.send(
-          format(Text('宗门名字只能使用中文,请重新输入:\n想改变主意请回复:【取消】'))
-        );
+        void message.send(format(Text('宗门名字只能使用中文,请重新输入:\n想改变主意请回复:【取消】')));
         next();
 
         return;
       }
       if (association_name.length > 6) {
-        void message.send(
-          format(Text('宗门名字最多只能设置6个字符,请重新输入:\n想改变主意请回复:【取消】'))
-        );
+        void message.send(format(Text('宗门名字最多只能设置6个字符,请重新输入:\n想改变主意请回复:【取消】')));
         next();
 
         return;

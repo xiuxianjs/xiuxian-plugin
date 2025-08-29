@@ -74,16 +74,7 @@ export const AuctionofficialTask = async () => {
     // 拍卖物品分类校验并回退到 '道具'
     const cls = (() => {
       const raw = String(wupin.thing.class);
-      const list: NajieCategory[] = [
-        '装备',
-        '丹药',
-        '道具',
-        '功法',
-        '草药',
-        '材料',
-        '仙宠',
-        '仙宠口粮'
-      ];
+      const list: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
       return (list as string[]).includes(raw) ? (raw as NajieCategory) : '道具';
     })();

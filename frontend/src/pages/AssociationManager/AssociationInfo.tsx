@@ -57,10 +57,7 @@ const AssociationInfo = ({
                   color={selectedAssociation.power > 0 ? 'purple' : 'blue'}
                   className='border-0'
                   style={{
-                    background:
-                      selectedAssociation.power > 0
-                        ? 'linear-gradient(135deg, #8b5cf6, #ec4899)'
-                        : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+                    background: selectedAssociation.power > 0 ? 'linear-gradient(135deg, #8b5cf6, #ec4899)' : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
                     color: 'white'
                   }}
                 >
@@ -69,15 +66,11 @@ const AssociationInfo = ({
               </div>
               <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
                 <label className='text-sm text-slate-400'>最低加入境界</label>
-                <p className='font-medium text-white'>
-                  {getLevelName(selectedAssociation.最低加入境界)}
-                </p>
+                <p className='font-medium text-white'>{getLevelName(selectedAssociation.最低加入境界)}</p>
               </div>
               <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
                 <label className='text-sm text-slate-400'>创立时间</label>
-                <p className='font-medium text-white'>
-                  {selectedAssociation.创立时间?.[0] || '未知'}
-                </p>
+                <p className='font-medium text-white'>{selectedAssociation.创立时间?.[0] || '未知'}</p>
               </div>
             </div>
           </div>
@@ -91,33 +84,23 @@ const AssociationInfo = ({
             <div className='grid grid-cols-2 gap-4'>
               <div className='bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>总成员数</label>
-                <p className='text-xl font-bold text-blue-400'>
-                  {selectedAssociation.所有成员?.length || 0}
-                </p>
+                <p className='text-xl font-bold text-blue-400'>{selectedAssociation.所有成员?.length || 0}</p>
               </div>
               <div className='bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>副宗主数</label>
-                <p className='text-xl font-bold text-purple-400'>
-                  {selectedAssociation.副宗主?.length || 0}
-                </p>
+                <p className='text-xl font-bold text-purple-400'>{selectedAssociation.副宗主?.length || 0}</p>
               </div>
               <div className='bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>长老数</label>
-                <p className='text-xl font-bold text-green-400'>
-                  {selectedAssociation.长老?.length || 0}
-                </p>
+                <p className='text-xl font-bold text-green-400'>{selectedAssociation.长老?.length || 0}</p>
               </div>
               <div className='bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>内门弟子数</label>
-                <p className='text-xl font-bold text-yellow-400'>
-                  {selectedAssociation.内门弟子?.length || 0}
-                </p>
+                <p className='text-xl font-bold text-yellow-400'>{selectedAssociation.内门弟子?.length || 0}</p>
               </div>
               <div className='bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl border border-red-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>外门弟子数</label>
-                <p className='text-xl font-bold text-red-400'>
-                  {selectedAssociation.外门弟子?.length || 0}
-                </p>
+                <p className='text-xl font-bold text-red-400'>{selectedAssociation.外门弟子?.length || 0}</p>
               </div>
             </div>
           </div>
@@ -131,34 +114,24 @@ const AssociationInfo = ({
             <div className='grid grid-cols-3 gap-4'>
               <div className='bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>灵石池</label>
-                <p className='text-xl font-bold text-green-400'>
-                  {selectedAssociation.灵石池?.toLocaleString() || 0}
-                </p>
+                <p className='text-xl font-bold text-green-400'>{selectedAssociation.灵石池?.toLocaleString() || 0}</p>
               </div>
               <div className='bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl border border-red-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>大阵血量</label>
-                <p className='text-xl font-bold text-red-400'>
-                  {selectedAssociation.大阵血量?.toLocaleString() || 0}
-                </p>
+                <p className='text-xl font-bold text-red-400'>{selectedAssociation.大阵血量?.toLocaleString() || 0}</p>
               </div>
               <div className='bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>宗门驻地</label>
-                <p className='text-xl font-bold text-blue-400'>
-                  {selectedAssociation.宗门驻地 || '无驻地'}
-                </p>
+                <p className='text-xl font-bold text-blue-400'>{selectedAssociation.宗门驻地 || '无驻地'}</p>
               </div>
               <div className='bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>宗门神兽</label>
-                <p className='text-xl font-bold text-purple-400'>
-                  {selectedAssociation.宗门神兽 || '无'}
-                </p>
+                <p className='text-xl font-bold text-purple-400'>{selectedAssociation.宗门神兽 || '无'}</p>
               </div>
               <div className='bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 p-4 rounded-xl shadow-lg'>
                 <label className='text-sm text-slate-400'>维护时间</label>
                 <p className='text-xl font-bold text-yellow-400'>
-                  {selectedAssociation.维护时间
-                    ? new Date(selectedAssociation.维护时间).toLocaleString()
-                    : '-'}
+                  {selectedAssociation.维护时间 ? new Date(selectedAssociation.维护时间).toLocaleString() : '-'}
                 </p>
               </div>
             </div>

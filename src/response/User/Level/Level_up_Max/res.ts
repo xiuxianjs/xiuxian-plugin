@@ -1,16 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { __PATH, keys, keysAction } from '@src/model/keys';
-import {
-  existplayer,
-  readPlayer,
-  notUndAndNull,
-  writePlayer,
-  readEquipment,
-  writeEquipment,
-  addHP,
-  getRandomFromARR
-} from '@src/model/index';
+import { existplayer, readPlayer, notUndAndNull, writePlayer, readEquipment, writeEquipment, addHP, getRandomFromARR } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
@@ -94,9 +85,9 @@ const res = onResponse(selects, async e => {
   if (player.power_place === 0) {
     void Send(
       Text(
-        '天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，' +
-          player.名号 +
-          '来不及思索，立即向前飞去！只见万物仰头相望，似乎感觉到了，也似乎没有感觉，殊不知......'
+        '天空一声巨响，一道虚影从眼中浮现，突然身体微微颤抖，似乎感受到了什么，'
+          + player.名号
+          + '来不及思索，立即向前飞去！只见万物仰头相望，似乎感觉到了，也似乎没有感觉，殊不知......'
       )
     );
     now_level_id = now_level_id + 1;
@@ -138,10 +129,7 @@ const res = onResponse(selects, async e => {
         const allList = (association['所有成员'] as string[] | undefined) || [];
 
         association['所有成员'] = allList.filter(item => item !== userId);
-        await redis.set(
-          `${__PATH.association}:${association.宗门名称}`,
-          JSON.stringify(association)
-        );
+        await redis.set(`${__PATH.association}:${association.宗门名称}`, JSON.stringify(association));
         delete player.宗门;
         await writePlayer(userId, player);
         await playerEfficiency(userId);
@@ -190,10 +178,7 @@ const res = onResponse(selects, async e => {
           randmember.宗门.职位 = '宗主'; // 成员存档里改职位
           await writePlayer(randmemberId, randmember); // 记录到存档
           await writePlayer(userId, player);
-          await redis.set(
-            `${__PATH.association}:${association.宗门名称}`,
-            JSON.stringify(association)
-          ); // 记录到宗门
+          await redis.set(`${__PATH.association}:${association.宗门名称}`, JSON.stringify(association)); // 记录到宗门
           void Send(Text(`飞升前,遵循你的嘱托,${randmember.名号}将继承你的衣钵,成为新一任的宗主`));
         }
       }

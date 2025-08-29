@@ -25,9 +25,7 @@ const res = onResponse(selects, async e => {
 
     return;
   }
-  const ass: ZongMen | null = await getDataJSONParseByKey(
-    keys.association(player.宗门['宗门名称'])
-  );
+  const ass: ZongMen | null = await getDataJSONParseByKey(keys.association(player.宗门['宗门名称']));
 
   if (!ass) {
     void message.send(format(Text('宗门不存在')));

@@ -307,11 +307,10 @@ export const PUT = async (ctx: Context) => {
     }
 
     const body = await parseJsonBody(ctx);
-    const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 }
-      = body as {
-        userId: string;
-        [key: string]: unknown;
-      };
+    const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 } = body as {
+      userId: string;
+      [key: string]: unknown;
+    };
 
     if (!userId) {
       ctx.status = 400;

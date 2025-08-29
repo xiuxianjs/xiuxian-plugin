@@ -1,15 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  Go,
-  readPlayer,
-  readExchange,
-  writeExchange,
-  convert2integer,
-  addNajieThing,
-  addCoin
-} from '@src/model/index';
+import { Go, readPlayer, readExchange, writeExchange, convert2integer, addNajieThing, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
@@ -40,9 +32,7 @@ const res = onResponse(selects, async e => {
     const ExchangeCDm = Math.trunc((ExchangeCD + transferTimeout - now_time) / 60 / 1000);
     const ExchangeCDs = Math.trunc(((ExchangeCD + transferTimeout - now_time) % 60000) / 1000);
 
-    void Send(
-      Text(`每${transferTimeout / 1000 / 60}分钟操作一次，CD: ${ExchangeCDm}分${ExchangeCDs}秒`)
-    );
+    void Send(Text(`每${transferTimeout / 1000 / 60}分钟操作一次，CD: ${ExchangeCDm}分${ExchangeCDs}秒`));
 
     // 存在CD。直接返回
     return false;

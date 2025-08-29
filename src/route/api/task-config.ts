@@ -2,14 +2,7 @@ import { Context } from 'koa';
 import { validateRole, validateToken } from '@src/route/core/auth';
 import { getConfig, setConfig } from '@src/model';
 import { parseJsonBody } from '../core/bodyParser';
-import {
-  startSingleTask,
-  stopTask,
-  restartTask,
-  startAllTasks,
-  stopAllTasks,
-  restartAllTasks
-} from '@src/task/index';
+import { startSingleTask, stopTask, restartTask, startAllTasks, stopAllTasks, restartAllTasks } from '@src/task/index';
 import { TaskMap } from '@src/model/task';
 // 获取定时任务配置
 export const GET = async (ctx: Context) => {

@@ -1,7 +1,6 @@
 import { __PATH_CONFIG, keysAction } from './keys';
 import { getIoRedis } from '@alemonjs/db';
 import { getConfigValue } from 'alemonjs';
-import { keysAction } from './keys';
 
 export type Data = typeof __PATH_CONFIG;
 

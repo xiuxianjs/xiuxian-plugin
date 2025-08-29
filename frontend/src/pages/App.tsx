@@ -5,23 +5,12 @@ import { menuItems } from '@/config';
 import { useAppCode } from './App.code';
 
 export default function App() {
-  const {
-    user,
-    navigate,
-    sidebarCollapsed,
-    isMobile,
-    mobileMenuOpen,
-    handleLogout,
-    toggleSidebar,
-    closeMobileMenu
-  } = useAppCode();
+  const { user, navigate, sidebarCollapsed, isMobile, mobileMenuOpen, handleLogout, toggleSidebar, closeMobileMenu } = useAppCode();
 
   return (
     <div className='h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'>
       {/* 移动端遮罩层 */}
-      {isMobile && mobileMenuOpen && (
-        <div className='fixed inset-0 bg-black/50 z-40 lg:hidden' onClick={closeMobileMenu} />
-      )}
+      {isMobile && mobileMenuOpen && <div className='fixed inset-0 bg-black/50 z-40 lg:hidden' onClick={closeMobileMenu} />}
 
       {/* 侧边栏 */}
       <div
@@ -62,9 +51,7 @@ export default function App() {
               >
                 <div className='flex items-center px-3 py-3 text-slate-300 hover:text-white transition-all duration-200 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 border border-transparent hover:border-purple-500/30'>
                   <div className='text-lg flex-shrink-0'>{item.icon}</div>
-                  {(!sidebarCollapsed || isMobile) && (
-                    <span className='ml-3 font-medium truncate'>{item.label}</span>
-                  )}
+                  {(!sidebarCollapsed || isMobile) && <span className='ml-3 font-medium truncate'>{item.label}</span>}
                   <div className='absolute inset-0 bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300'></div>
                 </div>
               </button>
@@ -98,17 +85,9 @@ export default function App() {
         >
           <div className='h-full flex items-center justify-between px-4 sm:px-6'>
             <div className='flex items-center space-x-4'>
-              <button
-                onClick={toggleSidebar}
-                className='p-2 text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-all duration-200'
-              >
+              <button onClick={toggleSidebar} className='p-2 text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-all duration-200'>
                 <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M4 6h16M4 12h16M4 18h16'
-                  />
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
                 </svg>
               </button>
             </div>
@@ -116,12 +95,8 @@ export default function App() {
             <div className='flex items-center space-x-2 sm:space-x-4'>
               <div className='relative group'>
                 <button className='flex items-center space-x-2 px-3 sm:px-4 py-2 bg-slate-700/50 text-white rounded-lg hover:bg-slate-600/50 transition-all duration-200 border border-slate-600/50'>
-                  <div className='w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0'>
-                    👤
-                  </div>
-                  <span className='hidden sm:block truncate max-w-24'>
-                    {user?.username || '管理员'}
-                  </span>
+                  <div className='w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0'>👤</div>
+                  <span className='hidden sm:block truncate max-w-24'>{user?.username || '管理员'}</span>
                   <span className='hidden sm:block'>▼</span>
                 </button>
 

@@ -26,9 +26,7 @@ const res = onResponse(selects, async e => {
       Jineng: await getDataList('Jineng')
     };
 
-    if (
-      action.技能[jineng].cd < data.Jineng.find(item => item.name === action.技能[jineng].name).cd
-    ) {
+    if (action.技能[jineng].cd < data.Jineng.find(item => item.name === action.技能[jineng].name).cd) {
       void Send(Text(`${action.技能[jineng].name}技能cd中`));
 
       return false;

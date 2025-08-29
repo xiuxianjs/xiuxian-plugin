@@ -40,10 +40,7 @@ const BadgeList = ({ title, items }: { title: string; items?: string[] }) => (
     <div className='flex flex-wrap gap-2'>
       {items?.length ? (
         items.map((it, i) => (
-          <span
-            key={i}
-            className='px-3 py-1 rounded-full bg-brand-dark/60  text-sm font-medium shadow ring-1 ring-brand-accent/20'
-          >
+          <span key={i} className='px-3 py-1 rounded-full bg-brand-dark/60  text-sm font-medium shadow ring-1 ring-brand-accent/20'>
             {it}
           </span>
         ))
@@ -61,20 +58,7 @@ const InfoItem = ({ label, value }: { label: string; value: React.ReactNode }) =
   </div>
 );
 
-const Association: React.FC<AssociationProps> = ({
-  user_id,
-  ass,
-  mainname,
-  mainqq,
-  weizhi,
-  state,
-  xiulian,
-  level,
-  fuzong,
-  zhanglao,
-  neimen,
-  waimen
-}) => {
+const Association: React.FC<AssociationProps> = ({ user_id, ass, mainname, mainqq, weizhi, state, xiulian, level, fuzong, zhanglao, neimen, waimen }) => {
   return (
     <HTML
       className=' w-full text-center p-4 md:p-8 bg-top bg-no-repeat bg-[length:100%]'
@@ -88,9 +72,7 @@ const Association: React.FC<AssociationProps> = ({
         <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-8'>
           <div className='flex flex-col items-center gap-4'>
             <Avatar src={getAvatar(user_id)} rootClassName='w-60 h-60' className='w-40 h-40' />
-            <div className='px-5 py-1.5 rounded-2xl bg-black/40 text-white backdrop-blur  text-lg font-semibold shadow'>
-              账号: {user_id}
-            </div>
+            <div className='px-5 py-1.5 rounded-2xl bg-black/40 text-white backdrop-blur  text-lg font-semibold shadow'>账号: {user_id}</div>
           </div>
           <div className='flex-1 flex w-full rounded-2xl bg-white/5 p-2 pt-5 pb-5  ring-white/10 backdrop-blur-md  shadow-card'>
             <div className='flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-3'>
@@ -138,9 +120,7 @@ const Association: React.FC<AssociationProps> = ({
         </div>
 
         <section className='w-full rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/10 p-4 md:p-6 shadow-card'>
-          <p className='/80 text-sm md:text-base tracking-wide'>
-            创立于: {ass?.创立时间?.[0] || '-'}
-          </p>
+          <p className='/80 text-sm md:text-base tracking-wide'>创立于: {ass?.创立时间?.[0] || '-'}</p>
         </section>
       </main>
     </HTML>

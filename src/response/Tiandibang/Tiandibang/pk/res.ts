@@ -1,20 +1,8 @@
 import { Image, Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  existplayer,
-  shijianc,
-  existNajieThing,
-  addNajieThing,
-  zdBattle,
-  addCoin
-} from '@src/model/index';
-import {
-  readTiandibang,
-  writeTiandibang,
-  getLastbisai,
-  TiandibangRow
-} from '../../../../model/tian';
+import { existplayer, shijianc, existNajieThing, addNajieThing, zdBattle, addCoin } from '@src/model/index';
+import { readTiandibang, writeTiandibang, getLastbisai, TiandibangRow } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -38,7 +26,7 @@ interface BattlePlayer {
   血量上限: number;
   法球倍率?: number;
 }
-const toNum = (v, d = 0) => typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d;
+const toNum = (v, d = 0) => (typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d);
 
 import { getRedisKey } from '@src/model/keys';
 const randomScale = () => 0.8 + 0.4 * Math.random();
@@ -63,13 +51,7 @@ function buildBattlePlayer(src: RankEntry, atkMul = 1, defMul = 1, hpMul = 1): B
     法球倍率: typeof src.法球倍率 === 'number' ? src.法球倍率 : toNum(src.法球倍率)
   };
 }
-function settleWin(
-  self: RankEntry,
-  isWild: boolean,
-  lastMsg: string[],
-  opponentName: string,
-  win: boolean
-) {
+function settleWin(self: RankEntry, isWild: boolean, lastMsg: string[], opponentName: string, win: boolean) {
   // wild: k === -1
   if (win) {
     self.积分 += isWild ? 1500 : 2000;
@@ -156,20 +138,11 @@ const res = onResponse(selects, async e => {
     await redis.set(getRedisKey(userId, 'lastbisai_time'), nowTime); // redis设置签到时间
     tiandibang[x].次数 = 3;
   }
-  if (
-    lastbisai_time
-    && (Today.Y !== lastbisai_time.Y || Today.M !== lastbisai_time.M || Today.D !== lastbisai_time.D)
-  ) {
+  if (lastbisai_time && (Today.Y !== lastbisai_time.Y || Today.M !== lastbisai_time.M || Today.D !== lastbisai_time.D)) {
     await redis.set(getRedisKey(userId, 'lastbisai_time'), nowTime); // redis设置签到时间
     tiandibang[x].次数 = 3;
   }
-  if (
-    lastbisai_time
-    && Today.Y === lastbisai_time.Y
-    && Today.M === lastbisai_time.M
-    && Today.D === lastbisai_time.D
-    && tiandibang[x].次数 < 1
-  ) {
+  if (lastbisai_time && Today.Y === lastbisai_time.Y && Today.M === lastbisai_time.M && Today.D === lastbisai_time.D && tiandibang[x].次数 < 1) {
     const zbl = await existNajieThing(userId, '摘榜令', '道具');
 
     if (typeof zbl === 'number' && zbl > 0) {

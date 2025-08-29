@@ -7,12 +7,7 @@ interface XiuxianTableContainerProps {
   className?: string;
 }
 
-const XiuxianTableContainer: React.FC<XiuxianTableContainerProps> = ({
-  title,
-  icon,
-  children,
-  className = ''
-}) => {
+const XiuxianTableContainer: React.FC<XiuxianTableContainerProps> = ({ title, icon, children, className = '' }) => {
   return (
     <div
       className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-lg overflow-hidden ${className}`}

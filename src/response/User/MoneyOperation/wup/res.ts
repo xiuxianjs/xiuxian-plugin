@@ -143,9 +143,7 @@ const res = onResponse(selects, async e => {
   }
 
   await addNajieThing(targetQQ, thingName, itemClass, amount, pinji);
-  void Send(
-    Text(`发放成功, 增加${thingName} x ${amount}${pinji !== undefined ? ` (品级:${pinji})` : ''}`)
-  );
+  void Send(Text(`发放成功, 增加${thingName} x ${amount}${pinji !== undefined ? ` (品级:${pinji})` : ''}`));
 
   return false;
 });

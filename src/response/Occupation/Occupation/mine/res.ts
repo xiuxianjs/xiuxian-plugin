@@ -1,14 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { readPlayer, addCoin } from '@src/model/index';
-import {
-  readAction,
-  isActionRunning,
-  startAction,
-  normalizeDurationMinutes,
-  remainingMs,
-  formatRemaining
-} from '@src/model/actionHelper';
+import { readAction, isActionRunning, startAction, normalizeDurationMinutes, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { setValue, userKey, getString } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';

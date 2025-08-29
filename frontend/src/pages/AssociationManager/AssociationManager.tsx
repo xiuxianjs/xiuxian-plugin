@@ -1,13 +1,6 @@
 import React from 'react';
 import { Table, Tag, Tooltip } from 'antd';
-import {
-  EyeOutlined,
-  TeamOutlined,
-  FireOutlined,
-  CrownOutlined,
-  BankOutlined,
-  UserOutlined
-} from '@ant-design/icons';
+import { EyeOutlined, TeamOutlined, FireOutlined, CrownOutlined, BankOutlined, UserOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Association } from '@/types/types';
 import AssociationInfo from './AssociationInfo';
@@ -86,10 +79,7 @@ export default function AssociationManager() {
             color={record.power > 0 ? 'purple' : 'blue'}
             className='px-3 py-1 rounded-full font-medium text-sm border-0 shadow-lg'
             style={{
-              background:
-                record.power > 0
-                  ? 'linear-gradient(135deg, #8b5cf6, #ec4899)'
-                  : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+              background: record.power > 0 ? 'linear-gradient(135deg, #8b5cf6, #ec4899)' : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
               color: 'white'
             }}
           >
@@ -112,21 +102,15 @@ export default function AssociationManager() {
           <div className='space-y-2'>
             <div className='flex justify-between items-center'>
               <span className='text-slate-300 text-sm'>总成员</span>
-              <span className='text-white font-bold'>
-                {(record.所有成员?.length || 0).toLocaleString()}
-              </span>
+              <span className='text-white font-bold'>{(record.所有成员?.length || 0).toLocaleString()}</span>
             </div>
             <div className='flex justify-between items-center'>
               <span className='text-slate-300 text-sm'>副宗主</span>
-              <span className='text-purple-400 font-bold'>
-                {(record.副宗主?.length || 0).toLocaleString()}
-              </span>
+              <span className='text-purple-400 font-bold'>{(record.副宗主?.length || 0).toLocaleString()}</span>
             </div>
             <div className='flex justify-between items-center'>
               <span className='text-slate-300 text-sm'>长老</span>
-              <span className='text-green-400 font-bold'>
-                {(record.长老?.length || 0).toLocaleString()}
-              </span>
+              <span className='text-green-400 font-bold'>{(record.长老?.length || 0).toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -145,21 +129,15 @@ export default function AssociationManager() {
           <div className='space-y-2'>
             <div className='flex justify-between items-center'>
               <span className='text-slate-300 text-sm'>灵石池</span>
-              <span className='text-green-400 font-bold text-sm'>
-                {(record.灵石池 || 0).toLocaleString()}
-              </span>
+              <span className='text-green-400 font-bold text-sm'>{(record.灵石池 || 0).toLocaleString()}</span>
             </div>
             <div className='flex justify-between items-center'>
               <span className='text-slate-300 text-sm'>大阵血量</span>
-              <span className='text-yellow-400 font-bold text-sm'>
-                {(record.大阵血量 || 0).toLocaleString()}
-              </span>
+              <span className='text-yellow-400 font-bold text-sm'>{(record.大阵血量 || 0).toLocaleString()}</span>
             </div>
             <div className='flex justify-between items-center'>
               <span className='text-slate-300 text-sm'>最低境界</span>
-              <span className='text-purple-400 font-bold text-sm'>
-                {getLevelName(record.最低加入境界)}
-              </span>
+              <span className='text-purple-400 font-bold text-sm'>{getLevelName(record.最低加入境界)}</span>
             </div>
           </div>
         </div>
@@ -222,12 +200,7 @@ export default function AssociationManager() {
         icon={<TeamOutlined />}
         title='宗门管理'
         subtitle='管理修仙世界的宗门信息'
-        actions={
-          <XiuxianRefreshButton
-            loading={loading}
-            onClick={() => fetchAssociations(1, pagination.pageSize)}
-          />
-        }
+        actions={<XiuxianRefreshButton loading={loading} onClick={() => fetchAssociations(1, pagination.pageSize)} />}
       />
 
       {/* 统计卡片 */}

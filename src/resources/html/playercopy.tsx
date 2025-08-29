@@ -3,18 +3,7 @@ import HTML from './HTML';
 import { Avatar } from './Avatar';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 
-const PlayerCopy = ({
-  user_id,
-  nickname,
-  player_nowHP,
-  player_maxHP,
-  levelMax,
-  xueqi,
-  need_xueqi,
-  lingshi,
-  association,
-  learned_gongfa = []
-}) => {
+const PlayerCopy = ({ user_id, nickname, player_nowHP, player_maxHP, levelMax, xueqi, need_xueqi, lingshi, association, learned_gongfa = [] }) => {
   return (
     <HTML className='p-0 m-0 w-full text-center'>
       {/* 背景装饰层 */}
@@ -26,92 +15,22 @@ const PlayerCopy = ({
         <div className=' z-10 w-full bg-gradient-to-br from-green-100/90 via-yellow-50/95 to-red-100/90 backdrop-blur-3xl rounded-[2rem] shadow-[0_20px_60px_0_rgba(46,204,64,0.3),0_0_100px_0_rgba(255,215,0,0.2)] p-6 sm:p-8 mt-8 border border-green-300/60'>
           {/* 装饰性边框 */}
           <div className='relative inset-0 pointer-events-none z-0'>
-            <svg
-              width='100%'
-              height='100%'
-              viewBox='0 0 800 600'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
+            <svg width='100%' height='100%' viewBox='0 0 800 600' fill='none' xmlns='http://www.w3.org/2000/svg'>
               {/* 外框装饰 */}
-              <rect
-                x='20'
-                y='20'
-                width='760'
-                height='560'
-                rx='40'
-                fill='none'
-                stroke='url(#borderGradient)'
-                strokeWidth='3'
-                strokeDasharray='20 10'
-              />
-              <rect
-                x='30'
-                y='30'
-                width='740'
-                height='540'
-                rx='35'
-                fill='none'
-                stroke='url(#innerBorder)'
-                strokeWidth='1'
-                strokeDasharray='5 5'
-              />
+              <rect x='20' y='20' width='760' height='560' rx='40' fill='none' stroke='url(#borderGradient)' strokeWidth='3' strokeDasharray='20 10' />
+              <rect x='30' y='30' width='740' height='540' rx='35' fill='none' stroke='url(#innerBorder)' strokeWidth='1' strokeDasharray='5 5' />
 
               {/* 四角装饰 */}
-              <path
-                d='M 40 40 L 80 40 L 80 80 L 40 80 Z'
-                fill='url(#cornerGradient)'
-                stroke='#2ecc40'
-                strokeWidth='2'
-              />
-              <path
-                d='M 720 40 L 760 40 L 760 80 L 720 80 Z'
-                fill='url(#cornerGradient)'
-                stroke='#2ecc40'
-                strokeWidth='2'
-              />
-              <path
-                d='M 40 520 L 80 520 L 80 560 L 40 560 Z'
-                fill='url(#cornerGradient)'
-                stroke='#2ecc40'
-                strokeWidth='2'
-              />
-              <path
-                d='M 720 520 L 760 520 L 760 560 L 720 560 Z'
-                fill='url(#cornerGradient)'
-                stroke='#2ecc40'
-                strokeWidth='2'
-              />
+              <path d='M 40 40 L 80 40 L 80 80 L 40 80 Z' fill='url(#cornerGradient)' stroke='#2ecc40' strokeWidth='2' />
+              <path d='M 720 40 L 760 40 L 760 80 L 720 80 Z' fill='url(#cornerGradient)' stroke='#2ecc40' strokeWidth='2' />
+              <path d='M 40 520 L 80 520 L 80 560 L 40 560 Z' fill='url(#cornerGradient)' stroke='#2ecc40' strokeWidth='2' />
+              <path d='M 720 520 L 760 520 L 760 560 L 720 560 Z' fill='url(#cornerGradient)' stroke='#2ecc40' strokeWidth='2' />
 
               {/* 云纹装饰 */}
-              <path
-                d='M 100 80 Q 150 60 200 80 T 300 80'
-                stroke='#2ecc40'
-                strokeWidth='2'
-                fill='none'
-                opacity='0.6'
-              />
-              <path
-                d='M 500 80 Q 550 60 600 80 T 700 80'
-                stroke='#2ecc40'
-                strokeWidth='2'
-                fill='none'
-                opacity='0.6'
-              />
-              <path
-                d='M 100 520 Q 150 540 200 520 T 300 520'
-                stroke='#ff4e50'
-                strokeWidth='2'
-                fill='none'
-                opacity='0.6'
-              />
-              <path
-                d='M 500 520 Q 550 540 600 520 T 700 520'
-                stroke='#ff4e50'
-                strokeWidth='2'
-                fill='none'
-                opacity='0.6'
-              />
+              <path d='M 100 80 Q 150 60 200 80 T 300 80' stroke='#2ecc40' strokeWidth='2' fill='none' opacity='0.6' />
+              <path d='M 500 80 Q 550 60 600 80 T 700 80' stroke='#2ecc40' strokeWidth='2' fill='none' opacity='0.6' />
+              <path d='M 100 520 Q 150 540 200 520 T 300 520' stroke='#ff4e50' strokeWidth='2' fill='none' opacity='0.6' />
+              <path d='M 500 520 Q 550 540 600 520 T 700 520' stroke='#ff4e50' strokeWidth='2' fill='none' opacity='0.6' />
 
               {/* 仙气效果 */}
               <circle cx='150' cy='120' r='8' fill='#2ecc40' opacity='0.3' />
@@ -166,12 +85,8 @@ const PlayerCopy = ({
                     {/* 背景装饰 */}
                     <div className='absolute inset-0 bg-gradient-to-br from-green-300/20 to-red-300/20' />
                     <div className='relative z-10 text-center'>
-                      <div className='text-xl sm:text-3xl font-black text-green-800 tracking-wider mb-2 sm:mb-3 drop-shadow-lg'>
-                        🏮 道号：{nickname} 🏮
-                      </div>
-                      <div className='text-lg sm:text-xl text-green-700 font-bold tracking-wide'>
-                        ⚔️ 体境：{levelMax} ⚔️
-                      </div>
+                      <div className='text-xl sm:text-3xl font-black text-green-800 tracking-wider mb-2 sm:mb-3 drop-shadow-lg'>🏮 道号：{nickname} 🏮</div>
+                      <div className='text-lg sm:text-xl text-green-700 font-bold tracking-wide'>⚔️ 体境：{levelMax} ⚔️</div>
                     </div>
                   </div>
                 </div>
@@ -187,9 +102,7 @@ const PlayerCopy = ({
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>❤️</span>
-                  <div className='font-black text-lg sm:text-xl text-red-800 tracking-wide'>
-                    血量
-                  </div>
+                  <div className='font-black text-lg sm:text-xl text-red-800 tracking-wide'>血量</div>
                 </div>
                 <div className='text-2xl sm:text-3xl font-black text-red-900 tracking-wider'>
                   {player_nowHP} / {player_maxHP}
@@ -210,9 +123,7 @@ const PlayerCopy = ({
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>💙</span>
-                  <div className='font-black text-lg sm:text-xl text-blue-800 tracking-wide'>
-                    气血
-                  </div>
+                  <div className='font-black text-lg sm:text-xl text-blue-800 tracking-wide'>气血</div>
                 </div>
                 <div className='text-2xl sm:text-3xl font-black text-blue-900 tracking-wider'>
                   {xueqi} / {need_xueqi}
@@ -233,13 +144,9 @@ const PlayerCopy = ({
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>💰</span>
-                  <div className='font-black text-lg sm:text-xl text-yellow-800 tracking-wide'>
-                    灵石
-                  </div>
+                  <div className='font-black text-lg sm:text-xl text-yellow-800 tracking-wide'>灵石</div>
                 </div>
-                <div className='text-2xl sm:text-3xl font-black text-yellow-900 tracking-wider'>
-                  {lingshi}
-                </div>
+                <div className='text-2xl sm:text-3xl font-black text-yellow-900 tracking-wider'>{lingshi}</div>
                 <div className='text-sm text-yellow-700 mt-2 font-semibold'>修炼资源</div>
               </div>
             </div>
@@ -250,16 +157,10 @@ const PlayerCopy = ({
               <div className='relative z-10'>
                 <div className='flex items-center gap-2 mb-3'>
                   <span className='text-xl sm:text-2xl'>🏛️</span>
-                  <div className='font-black text-lg sm:text-xl text-purple-800 tracking-wide'>
-                    宗门
-                  </div>
+                  <div className='font-black text-lg sm:text-xl text-purple-800 tracking-wide'>宗门</div>
                 </div>
-                <div className='text-xl sm:text-2xl font-black text-purple-900 tracking-wider mb-1'>
-                  {association?.宗门名称 || '无'}
-                </div>
-                <div className='text-sm text-purple-700 font-semibold'>
-                  {association?.职位 || '散修'}
-                </div>
+                <div className='text-xl sm:text-2xl font-black text-purple-900 tracking-wider mb-1'>{association?.宗门名称 || '无'}</div>
+                <div className='text-sm text-purple-700 font-semibold'>{association?.职位 || '散修'}</div>
               </div>
             </div>
           </div>
@@ -278,9 +179,7 @@ const PlayerCopy = ({
                 {!learned_gongfa || learned_gongfa.length === 0 ? (
                   <div className='flex items-center justify-center gap-3 py-6 sm:py-8'>
                     <span className='text-xl sm:text-2xl'>📖</span>
-                    <span className='text-lg sm:text-xl font-bold text-green-700 tracking-wide opacity-70'>
-                      暂无功法
-                    </span>
+                    <span className='text-lg sm:text-xl font-bold text-green-700 tracking-wide opacity-70'>暂无功法</span>
                     <span className='text-xl sm:text-2xl'>📖</span>
                   </div>
                 ) : (

@@ -17,15 +17,10 @@ interface FairyRealmItem {
 
 const FairyRealm = ({ didian_list = [] }: { didian_list?: FairyRealmItem[] }) => {
   return (
-    <HTML
-      className=' w-full text-center p-4 md:p-8 bg-top bg-cover'
-      style={{ backgroundImage: `url(${fairyrealmBgURL})` }}
-    >
+    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover' style={{ backgroundImage: `url(${fairyrealmBgURL})` }}>
       <main className='max-w-5xl mx-auto space-y-8'>
         <header className='space-y-4 flex flex-col items-center'>
-          <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>
-            仙境
-          </h1>
+          <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>仙境</h1>
           <span className='/70 text-sm md:text-base'>指令：#镇守仙境+仙境名</span>
         </header>
 

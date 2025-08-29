@@ -6,12 +6,7 @@ import { Image, Mention, Text, useMessage } from 'alemonjs';
 import dayjs from 'dayjs';
 import { isNight, MAX_COUNT, MIN_COUNT, replyCount } from './config';
 
-export const selects = onSelects([
-  'message.create',
-  'private.message.create',
-  'private.interaction.create',
-  'interaction.create'
-]);
+export const selects = onSelects(['message.create', 'private.message.create', 'private.interaction.create', 'interaction.create']);
 
 const mw = onResponse(selects, async event => {
   const values = getAppCofig();

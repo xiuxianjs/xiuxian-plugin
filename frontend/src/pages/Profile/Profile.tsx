@@ -3,24 +3,10 @@ import { useProfileCode } from './Profile.code';
 import classNames from 'classnames';
 
 // 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianTabGroup,
-  XiuxianInfoCard
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTabGroup, XiuxianInfoCard } from '@/components/ui';
 
 export default function Profile() {
-  const {
-    activeTab,
-    setActiveTab,
-    loading,
-    message,
-    passwordForm,
-    handlePasswordChange,
-    handleInputChange,
-    user
-  } = useProfileCode();
+  const { activeTab, setActiveTab, loading, message, passwordForm, handlePasswordChange, handleInputChange, user } = useProfileCode();
 
   // 构建标签页数据
   const tabs = [
@@ -36,9 +22,7 @@ export default function Profile() {
                 <div className='w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg'>
                   <span className='text-white text-3xl'>👤</span>
                 </div>
-                <h3 className='text-white text-xl font-semibold mb-2'>
-                  {user?.username || '管理员'}
-                </h3>
+                <h3 className='text-white text-xl font-semibold mb-2'>{user?.username || '管理员'}</h3>
                 <p className='text-slate-400 text-sm'>系统管理员</p>
               </div>
             </div>
@@ -57,9 +41,7 @@ export default function Profile() {
                 </div>
                 <div className='flex justify-between items-center'>
                   <span className='text-slate-400'>登录时间</span>
-                  <span className='text-white font-medium'>
-                    {new Date().toLocaleString('zh-CN')}
-                  </span>
+                  <span className='text-white font-medium'>{new Date().toLocaleString('zh-CN')}</span>
                 </div>
                 <div className='flex justify-between items-center'>
                   <span className='text-slate-400'>账户状态</span>

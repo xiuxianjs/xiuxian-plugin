@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  PauseCircleOutlined
-} from '@ant-design/icons';
+import { CheckCircleOutlined, ExclamationCircleOutlined, PauseCircleOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 
 /**

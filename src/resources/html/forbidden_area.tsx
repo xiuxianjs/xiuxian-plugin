@@ -18,15 +18,10 @@ interface ForbiddenAreaItem {
 
 const ForbiddenArea = ({ didian_list = [] }: { didian_list?: ForbiddenAreaItem[] }) => {
   return (
-    <HTML
-      className=' w-full text-center p-4 md:p-8 bg-top bg-cover'
-      style={{ backgroundImage: `url(${forbiddenAreaBgURL})` }}
-    >
+    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover' style={{ backgroundImage: `url(${forbiddenAreaBgURL})` }}>
       <main className='max-w-5xl mx-auto space-y-8'>
         <header className='space-y-4 flex flex-col items-center'>
-          <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>
-            禁地
-          </h1>
+          <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>禁地</h1>
           <span className='/70 text-sm md:text-base'>指令：#前往禁地+禁地名</span>
         </header>
 
@@ -45,8 +40,7 @@ const ForbiddenArea = ({ didian_list = [] }: { didian_list?: ForbiddenAreaItem[]
                     {item.name}
                   </h2>
                   <div className='text-sm /80 font-medium'>
-                    <span className=' font-bold'>{item.Price}</span> 灵石 +{' '}
-                    <span className=' font-bold'>{item.experience}</span> 修为
+                    <span className=' font-bold'>{item.Price}</span> 灵石 + <span className=' font-bold'>{item.experience}</span> 修为
                   </div>
                 </header>
                 <div className='mt-4 space-y-2 text-sm md:text-base /90 font-medium text-left'>

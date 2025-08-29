@@ -51,9 +51,7 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       dataIndex: 'user_id',
       key: 'user_id',
       width: 120,
-      render: userId => (
-        <div className='font-mono text-sm bg-slate-700/50 px-2 py-1 rounded'>{userId}</div>
-      )
+      render: userId => <div className='font-mono text-sm bg-slate-700/50 px-2 py-1 rounded'>{userId}</div>
     },
     {
       title: '充值类型',
@@ -77,14 +75,8 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
         return (
           <div className='space-y-1'>
             <div className='font-bold text-green-400'>¥{amount}</div>
-            {record.currency_gained > 0 && (
-              <div className='text-xs text-yellow-400'>
-                获得金币: {record.currency_gained.toLocaleString()}
-              </div>
-            )}
-            {record.month_card_days > 0 && (
-              <div className='text-xs text-blue-400'>月卡天数: {record.month_card_days}天</div>
-            )}
+            {record.currency_gained > 0 && <div className='text-xs text-yellow-400'>获得金币: {record.currency_gained.toLocaleString()}</div>}
+            {record.month_card_days > 0 && <div className='text-xs text-blue-400'>月卡天数: {record.month_card_days}天</div>}
           </div>
         );
       }
@@ -106,9 +98,7 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
             <span className='text-slate-400'>方式:</span>
             <span className='text-slate-300 ml-1'>{record.payment_method}</span>
           </div>
-          {record.transaction_id && (
-            <div className='font-mono text-slate-400'>{record.transaction_id.slice(0, 8)}...</div>
-          )}
+          {record.transaction_id && <div className='font-mono text-slate-400'>{record.transaction_id.slice(0, 8)}...</div>}
         </div>
       )
     },
@@ -142,9 +132,7 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
               首充
             </Tag>
           )}
-          {record.first_recharge_bonus > 0 && (
-            <div className='text-xs text-yellow-400'>奖励: +{record.first_recharge_bonus}</div>
-          )}
+          {record.first_recharge_bonus > 0 && <div className='text-xs text-yellow-400'>奖励: +{record.first_recharge_bonus}</div>}
         </div>
       )
     },
@@ -169,9 +157,7 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
   ];
 
   const filteredRecords = records.filter(record => {
-    const matchesSearch =
-      record.user_id.toLowerCase().includes(searchText.toLowerCase()) ||
-      record.id.toLowerCase().includes(searchText.toLowerCase());
+    const matchesSearch = record.user_id.toLowerCase().includes(searchText.toLowerCase()) || record.id.toLowerCase().includes(searchText.toLowerCase());
     const matchesStatus = !statusFilter || record.payment_status === statusFilter;
     const matchesType = !typeFilter || record.type === typeFilter;
     return matchesSearch && matchesStatus && matchesType;
@@ -187,30 +173,16 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
             onSearch={() => {}}
-            onKeyPress={e =>
-              e.key === 'Enter' && setSearchText((e.target as HTMLInputElement).value)
-            }
+            onKeyPress={e => e.key === 'Enter' && setSearchText((e.target as HTMLInputElement).value)}
           />
         </div>
-        <Select
-          placeholder='支付状态'
-          allowClear
-          className='xiuxian-select'
-          style={{ width: 120 }}
-          onChange={setStatusFilter}
-        >
+        <Select placeholder='支付状态' allowClear className='xiuxian-select' style={{ width: 120 }} onChange={setStatusFilter}>
           <Option value='pending'>待支付</Option>
           <Option value='success'>支付成功</Option>
           <Option value='failed'>支付失败</Option>
           <Option value='refunded'>已退款</Option>
         </Select>
-        <Select
-          placeholder='充值类型'
-          allowClear
-          className='xiuxian-select'
-          style={{ width: 120 }}
-          onChange={setTypeFilter}
-        >
+        <Select placeholder='充值类型' allowClear className='xiuxian-select' style={{ width: 120 }} onChange={setTypeFilter}>
           <Option value='currency'>金币充值</Option>
           <Option value='small_month_card'>小月卡</Option>
           <Option value='big_month_card'>大月卡</Option>

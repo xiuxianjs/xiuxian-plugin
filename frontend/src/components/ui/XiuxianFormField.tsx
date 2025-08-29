@@ -9,14 +9,7 @@ interface XiuxianFormFieldProps extends FormItemProps {
 
 const XiuxianFormField: React.FC<XiuxianFormFieldProps> = ({ children, className, ...props }) => {
   return (
-    <Form.Item
-      className={classNames(
-        '[&_.ant-form-item-label>label]:text-slate-300',
-        '[&_.ant-form-item-explain-error]:text-red-400',
-        className
-      )}
-      {...props}
-    >
+    <Form.Item className={classNames('[&_.ant-form-item-label>label]:text-slate-300', '[&_.ant-form-item-explain-error]:text-red-400', className)} {...props}>
       {children}
     </Form.Item>
   );

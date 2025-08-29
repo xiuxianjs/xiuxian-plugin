@@ -73,16 +73,7 @@ export const useNajieManagerCode = () => {
 
   // 计算背包总物品数
   const getTotalItems = (najie: Najie) => {
-    const categories = [
-      '装备',
-      '丹药',
-      '道具',
-      '功法',
-      '草药',
-      '材料',
-      '仙宠',
-      '仙宠口粮'
-    ] as const;
+    const categories = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'] as const;
     return categories.reduce((total, cat) => {
       return total + (Array.isArray(najie[cat]) ? najie[cat].length : 0);
     }, 0);

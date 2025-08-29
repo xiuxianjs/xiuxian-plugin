@@ -16,14 +16,7 @@ interface XiuxianTabNavigationProps {
   className?: string;
 }
 
-const XiuxianTabNavigation: React.FC<XiuxianTabNavigationProps> = ({
-  tabs,
-  selectedTab,
-  onTabChange,
-  title,
-  titleIcon,
-  className
-}) => {
+const XiuxianTabNavigation: React.FC<XiuxianTabNavigationProps> = ({ tabs, selectedTab, onTabChange, title, titleIcon, className }) => {
   return (
     <div
       className={classNames(

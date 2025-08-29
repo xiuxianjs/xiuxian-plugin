@@ -9,14 +9,7 @@ interface XiuxianStatCardProps {
   className?: string;
 }
 
-const XiuxianStatCard: React.FC<XiuxianStatCardProps> = ({
-  title,
-  value,
-  icon,
-  subtitle,
-  gradient = 'blue',
-  className = ''
-}) => {
+const XiuxianStatCard: React.FC<XiuxianStatCardProps> = ({ title, value, icon, subtitle, gradient = 'blue', className = '' }) => {
   const gradientClasses = {
     blue: 'from-blue-500/10 to-cyan-500/10 border-blue-500/30 text-blue-400',
     green: 'from-green-500/10 to-emerald-500/10 border-green-500/30 text-green-400',
@@ -36,20 +29,14 @@ const XiuxianStatCard: React.FC<XiuxianStatCardProps> = ({
   };
 
   return (
-    <div
-      className={`bg-gradient-to-br ${gradientClasses[gradient]} backdrop-blur-xl border rounded-2xl p-6 shadow-lg ${className}`}
-    >
+    <div className={`bg-gradient-to-br ${gradientClasses[gradient]} backdrop-blur-xl border rounded-2xl p-6 shadow-lg ${className}`}>
       <div className='flex items-center justify-between'>
         <div>
           <p className='text-slate-400 text-sm font-medium'>{title}</p>
-          <p className='text-white text-3xl font-bold mt-2'>
-            {typeof value === 'number' ? value.toLocaleString() : value}
-          </p>
+          <p className='text-white text-3xl font-bold mt-2'>{typeof value === 'number' ? value.toLocaleString() : value}</p>
           {subtitle && <p className='text-slate-400 text-xs mt-1'>{subtitle}</p>}
         </div>
-        <div
-          className={`w-12 h-12 bg-gradient-to-br ${iconGradientClasses[gradient]} rounded-xl flex items-center justify-center shadow-lg`}
-        >
+        <div className={`w-12 h-12 bg-gradient-to-br ${iconGradientClasses[gradient]} rounded-xl flex items-center justify-center shadow-lg`}>
           <div className='text-white text-xl'>{icon}</div>
         </div>
       </div>

@@ -50,22 +50,11 @@ export function isActionRunning(record: ActionRecord | null | undefined, now = D
 }
 
 // 通用启动：传入动作名与持续时长（毫秒）以及附加 flag
-export function startAction(
-  userId: string | number,
-  name: string,
-  durationMs: number,
-  flags: Partial<ActionRecord>
-) {
+export function startAction(userId: string | number, name: string, durationMs: number, flags: Partial<ActionRecord>) {
   return startActionWithSuffix(userId, 'action', name, durationMs, flags);
 }
 
-export async function startActionWithSuffix(
-  userId: string | number,
-  suffix: ActionType,
-  name: string,
-  durationMs: number,
-  flags: Partial<ActionRecord>
-) {
+export async function startActionWithSuffix(userId: string | number, suffix: ActionType, name: string, durationMs: number, flags: Partial<ActionRecord>) {
   const now = Date.now();
   const record: ActionRecord = {
     action: name,
@@ -144,10 +133,7 @@ export function formatRemaining(ms: number) {
 }
 
 // 通用更新：传入回调，回调返回新的记录（或 null 代表不更新）
-export async function updateAction(
-  userId: string | number,
-  updater: (prev: ActionRecord | null) => ActionRecord | null
-) {
+export async function updateAction(userId: string | number, updater: (prev: ActionRecord | null) => ActionRecord | null) {
   const prev = await readAction(userId);
   const next = updater(prev);
 
@@ -158,11 +144,7 @@ export async function updateAction(
   return next;
 }
 
-export async function updateActionWithSuffix(
-  userId: string | number,
-  suffix: ActionType,
-  updater: (prev: ActionRecord | null) => ActionRecord | null
-) {
+export async function updateActionWithSuffix(userId: string | number, suffix: ActionType, updater: (prev: ActionRecord | null) => ActionRecord | null) {
   const prev = await readActionWithSuffix(userId, suffix);
   const next = updater(prev);
 
@@ -188,11 +170,7 @@ export function stopAction(userId: string | number, extra: Partial<ActionRecord 
   });
 }
 
-export function stopActionWithSuffix(
-  userId: string | number,
-  suffix: ActionType,
-  extra: Partial<ActionRecord & {}> = {}
-) {
+export function stopActionWithSuffix(userId: string | number, suffix: ActionType, extra: Partial<ActionRecord & {}> = {}) {
   return updateActionWithSuffix(userId, suffix, prev => {
     if (!prev) {
       return null;

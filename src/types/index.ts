@@ -86,10 +86,4 @@ export type {
   BackupTaskMeta,
   AnyTaskActionState
 } from './task';
-export {
-  isRaidActionState,
-  isExploreActionState,
-  isSecretPlaceActionState,
-  isOccupationActionState,
-  isControlActionState
-} from './task';
+export { isRaidActionState, isExploreActionState, isSecretPlaceActionState, isOccupationActionState, isControlActionState } from './task';

@@ -39,9 +39,7 @@ const res = onResponse(selects, async e => {
     targetTypes = ALL_TYPES;
   } else {
     // 分词：每一位汉字视为一个类型
-    targetTypes = typeArg
-      .split('')
-      .filter(t => ALL_TYPES.includes(t) || ALL_TYPES.includes(t + '宠口粮')); // 兼容“仙宠口粮”
+    targetTypes = typeArg.split('').filter(t => ALL_TYPES.includes(t) || ALL_TYPES.includes(t + '宠口粮')); // 兼容“仙宠口粮”
     // 检查是否有非法类型
     if (targetTypes.length === 0) {
       void Send(Text('物品类型错误，仅支持：' + ALL_TYPES.join('、')));

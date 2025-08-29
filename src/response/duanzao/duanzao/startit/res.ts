@@ -1,20 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  looktripod,
-  readTripod,
-  writeDuanlu,
-  readDanyao,
-  writeDanyao
-} from '@src/model/index';
-import {
-  readActionWithSuffix,
-  isActionRunning,
-  startActionWithSuffix,
-  remainingMs,
-  formatRemaining
-} from '@src/model/actionHelper';
+import { existplayer, looktripod, readTripod, writeDuanlu, readDanyao, writeDanyao } from '@src/model/index';
+import { readActionWithSuffix, isActionRunning, startActionWithSuffix, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
 import { selects } from '@src/response/mw';

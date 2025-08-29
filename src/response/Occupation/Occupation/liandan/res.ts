@@ -1,15 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { getDataList } from '@src/model/DataList';
-import {
-  existplayer,
-  readPlayer,
-  convert2integer,
-  notUndAndNull,
-  existNajieThing,
-  addNajieThing,
-  addExp4
-} from '@src/model/index';
+import { existplayer, readPlayer, convert2integer, notUndAndNull, existNajieThing, addNajieThing, addExp4 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

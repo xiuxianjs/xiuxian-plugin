@@ -80,9 +80,7 @@ const res = onResponse(selects, async e => {
       await setDataJSONStringifyByKey(keys.player(userId), player);
       void addCoin(userId, game.yazhu[userId]);
       if (y === 1) {
-        void Send(
-          Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[userId]}`)
-        );
+        void Send(Text(`骰子最终为 ${touzi} 你猜对了！\n现在拥有灵石:${player.灵石 + game.yazhu[userId]}`));
       } else {
         void Send(
           Text(
@@ -128,11 +126,7 @@ const res = onResponse(selects, async e => {
       }
       await setDataJSONStringifyByKey(keys.player(userId), player);
       void addCoin(userId, winAmount);
-      void Send(
-        Text(
-          `骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`
-        )
-      );
+      void Send(Text(`骰子最终为 ${touzi}，你猜中了！获得${winAmount}灵石\n现在拥有灵石:${player.灵石 + winAmount}`));
     } else {
       if (notUndAndNull(player.金银坊败场)) {
         player.金银坊败场 = ensureNumber(player.金银坊败场) + 1;

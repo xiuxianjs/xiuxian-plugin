@@ -29,16 +29,7 @@ const res = onResponse(selects, async e => {
   if (!najie) {
     return false;
   }
-  const type: NajieCategory[] = [
-    '装备',
-    '丹药',
-    '道具',
-    '功法',
-    '草药',
-    '材料',
-    '仙宠',
-    '仙宠口粮'
-  ];
+  const type: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
   for (const cate of type) {
     const list = najie[cate];

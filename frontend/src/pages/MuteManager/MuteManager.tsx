@@ -26,16 +26,7 @@ import {
 } from '@/components/ui';
 
 // 导入API接口
-import {
-  getMuteListAPI,
-  addMuteAPI,
-  unmuteAPI,
-  batchUnmuteAPI,
-  getMuteLogsAPI,
-  clearMuteLogsAPI,
-  type MuteRecord,
-  type MuteFormValues
-} from '@/api/auth/mute';
+import { getMuteListAPI, addMuteAPI, unmuteAPI, batchUnmuteAPI, getMuteLogsAPI, clearMuteLogsAPI, type MuteRecord, type MuteFormValues } from '@/api/auth/mute';
 
 const { Option } = Select;
 
@@ -115,12 +106,7 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
         <div className='space-y-4'>
           <div className='flex justify-between items-center'>
             <h3 className='text-lg font-semibold text-white'>禁言记录</h3>
-            <Popconfirm
-              title='确定要清理禁言记录吗？'
-              onConfirm={() => handleClearLogs('mute')}
-              okText='确定'
-              cancelText='取消'
-            >
+            <Popconfirm title='确定要清理禁言记录吗？' onConfirm={() => handleClearLogs('mute')} okText='确定' cancelText='取消'>
               <Button danger size='small'>
                 清理禁言记录
               </Button>
@@ -138,10 +124,7 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
             ) : (
               <div className='space-y-2'>
                 {logs.map((log, index) => (
-                  <div
-                    key={index}
-                    className='bg-slate-800/50 border border-slate-700 rounded-lg p-3'
-                  >
+                  <div key={index} className='bg-slate-800/50 border border-slate-700 rounded-lg p-3'>
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center gap-3'>
                         <span className='font-mono text-sm text-white'>{log.userId}</span>
@@ -156,13 +139,9 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
                           </Tag>
                         )}
                       </div>
-                      <div className='text-slate-400 text-xs'>
-                        {dayjs(log.timestamp).format('YYYY-MM-DD HH:mm:ss')}
-                      </div>
+                      <div className='text-slate-400 text-xs'>{dayjs(log.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                     </div>
-                    {log.adminId && (
-                      <div className='text-slate-500 text-xs mt-1'>操作管理员: {log.adminId}</div>
-                    )}
+                    {log.adminId && <div className='text-slate-500 text-xs mt-1'>操作管理员: {log.adminId}</div>}
                   </div>
                 ))}
               </div>
@@ -178,12 +157,7 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
         <div className='space-y-4'>
           <div className='flex justify-between items-center'>
             <h3 className='text-lg font-semibold text-white'>解除记录</h3>
-            <Popconfirm
-              title='确定要清理解除记录吗？'
-              onConfirm={() => handleClearLogs('unmute')}
-              okText='确定'
-              cancelText='取消'
-            >
+            <Popconfirm title='确定要清理解除记录吗？' onConfirm={() => handleClearLogs('unmute')} okText='确定' cancelText='取消'>
               <Button danger size='small'>
                 清理解除记录
               </Button>
@@ -201,10 +175,7 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
             ) : (
               <div className='space-y-2'>
                 {logs.map((log, index) => (
-                  <div
-                    key={index}
-                    className='bg-slate-800/50 border border-slate-700 rounded-lg p-3'
-                  >
+                  <div key={index} className='bg-slate-800/50 border border-slate-700 rounded-lg p-3'>
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center gap-3'>
                         <span className='font-mono text-sm text-white'>{log.userId}</span>
@@ -214,13 +185,9 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
                           </Tag>
                         )}
                       </div>
-                      <div className='text-slate-400 text-xs'>
-                        {dayjs(log.timestamp).format('YYYY-MM-DD HH:mm:ss')}
-                      </div>
+                      <div className='text-slate-400 text-xs'>{dayjs(log.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                     </div>
-                    {log.adminId && (
-                      <div className='text-slate-500 text-xs mt-1'>操作管理员: {log.adminId}</div>
-                    )}
+                    {log.adminId && <div className='text-slate-500 text-xs mt-1'>操作管理员: {log.adminId}</div>}
                   </div>
                 ))}
               </div>
@@ -243,12 +210,7 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
       onCancel={onCancel}
       footer={
         <div className='flex justify-between'>
-          <Popconfirm
-            title='确定要清理所有日志吗？'
-            onConfirm={() => handleClearLogs('all')}
-            okText='确定'
-            cancelText='取消'
-          >
+          <Popconfirm title='确定要清理所有日志吗？' onConfirm={() => handleClearLogs('all')} okText='确定' cancelText='取消'>
             <Button danger>清理所有日志</Button>
           </Popconfirm>
           <Button onClick={onCancel}>关闭</Button>
@@ -257,12 +219,7 @@ const LogsViewer: React.FC<LogsViewerProps> = ({ visible, onCancel }) => {
       className='xiuxian-modal'
       width={900}
     >
-      <XiuxianTabGroup
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        className='mt-4'
-      />
+      <XiuxianTabGroup tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} className='mt-4' />
     </Modal>
   );
 };
@@ -359,9 +316,7 @@ const MuteManager: React.FC = () => {
   };
 
   // 搜索过滤
-  const filteredMuteList = muteList.filter(item =>
-    item.userId.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredMuteList = muteList.filter(item => item.userId.toLowerCase().includes(searchText.toLowerCase()));
 
   // 分页处理
   const paginatedData = filteredMuteList.slice((current - 1) * pageSize, current * pageSize);
@@ -377,11 +332,7 @@ const MuteManager: React.FC = () => {
       ),
       dataIndex: 'userId',
       key: 'userId',
-      render: (userId: string) => (
-        <span className='font-mono text-sm text-white bg-slate-700/50 px-2 py-1 rounded'>
-          {userId}
-        </span>
-      )
+      render: (userId: string) => <span className='font-mono text-sm text-white bg-slate-700/50 px-2 py-1 rounded'>{userId}</span>
     },
     {
       title: (
@@ -406,9 +357,7 @@ const MuteManager: React.FC = () => {
       ),
       dataIndex: 'unlockTime',
       key: 'unlockTime',
-      render: (unlockTime: string) => (
-        <span className='text-slate-300'>{dayjs(unlockTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-      )
+      render: (unlockTime: string) => <span className='text-slate-300'>{dayjs(unlockTime).format('YYYY-MM-DD HH:mm:ss')}</span>
     },
     {
       title: (
@@ -419,18 +368,8 @@ const MuteManager: React.FC = () => {
       key: 'action',
       render: (_: unknown, record: MuteRecord) => (
         <Space>
-          <Popconfirm
-            title='确定要解除该用户的禁言吗？'
-            onConfirm={() => handleUnmute(record.userId)}
-            okText='确定'
-            cancelText='取消'
-          >
-            <Button
-              type='text'
-              size='small'
-              icon={<UnlockOutlined />}
-              className='text-green-400 hover:text-green-300 hover:bg-green-400/10'
-            >
+          <Popconfirm title='确定要解除该用户的禁言吗？' onConfirm={() => handleUnmute(record.userId)} okText='确定' cancelText='取消'>
+            <Button type='text' size='small' icon={<UnlockOutlined />} className='text-green-400 hover:text-green-300 hover:bg-green-400/10'>
               解除禁言
             </Button>
           </Popconfirm>
@@ -467,12 +406,7 @@ const MuteManager: React.FC = () => {
             >
               添加禁言
             </Button>
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              disabled={selectedRowKeys.length === 0}
-              onClick={handleBatchUnmute}
-            >
+            <Button danger icon={<DeleteOutlined />} disabled={selectedRowKeys.length === 0} onClick={handleBatchUnmute}>
               批量解除 ({selectedRowKeys.length})
             </Button>
             <Button
@@ -490,33 +424,13 @@ const MuteManager: React.FC = () => {
       <div className='space-y-6'>
         {/* 统计卡片 */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-          <XiuxianStatCard
-            title='当前禁言用户'
-            value={total}
-            icon={<StopOutlined />}
-            gradient='red'
-          />
-          <XiuxianStatCard
-            title='即将解除'
-            value={muteList.filter(item => item.ttl <= 3600).length}
-            icon={<ClockCircleOutlined />}
-            gradient='orange'
-          />
-          <XiuxianStatCard
-            title='已选择'
-            value={selectedRowKeys.length}
-            icon={<UnlockOutlined />}
-            gradient='green'
-          />
+          <XiuxianStatCard title='当前禁言用户' value={total} icon={<StopOutlined />} gradient='red' />
+          <XiuxianStatCard title='即将解除' value={muteList.filter(item => item.ttl <= 3600).length} icon={<ClockCircleOutlined />} gradient='orange' />
+          <XiuxianStatCard title='已选择' value={selectedRowKeys.length} icon={<UnlockOutlined />} gradient='green' />
         </div>
 
         {/* 搜索栏 */}
-        <XiuxianSearchBar
-          placeholder='搜索用户ID...'
-          value={searchText}
-          onChange={setSearchText}
-          onSearch={() => {}}
-        />
+        <XiuxianSearchBar placeholder='搜索用户ID...' value={searchText} onChange={setSearchText} onSearch={() => {}} />
 
         {/* 表格 */}
         <XiuxianTableContainer title='禁言列表'>
@@ -563,19 +477,11 @@ const MuteManager: React.FC = () => {
         width={500}
       >
         <Form form={form} layout='vertical' onFinish={handleAddMute} className='mt-4'>
-          <Form.Item
-            name='userId'
-            label={<span className='text-slate-300'>用户ID</span>}
-            rules={[{ required: true, message: '请输入用户ID' }]}
-          >
+          <Form.Item name='userId' label={<span className='text-slate-300'>用户ID</span>} rules={[{ required: true, message: '请输入用户ID' }]}>
             <Input placeholder='请输入用户ID' className='xiuxian-input' />
           </Form.Item>
 
-          <Form.Item
-            name='duration'
-            label={<span className='text-slate-300'>禁言时长</span>}
-            rules={[{ required: true, message: '请输入禁言时长' }]}
-          >
+          <Form.Item name='duration' label={<span className='text-slate-300'>禁言时长</span>} rules={[{ required: true, message: '请输入禁言时长' }]}>
             <Input
               placeholder='例如: 30m, 2h, 3600s'
               className='xiuxian-input'
@@ -590,11 +496,7 @@ const MuteManager: React.FC = () => {
           </Form.Item>
 
           <Form.Item name='reason' label={<span className='text-slate-300'>禁言原因</span>}>
-            <Input.TextArea
-              placeholder='请输入禁言原因（可选）'
-              rows={3}
-              className='xiuxian-input'
-            />
+            <Input.TextArea placeholder='请输入禁言原因（可选）' rows={3} className='xiuxian-input' />
           </Form.Item>
         </Form>
       </Modal>

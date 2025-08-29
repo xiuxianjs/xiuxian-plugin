@@ -50,9 +50,7 @@ const res = onResponse(selects, async e => {
   const B_action = await readAction(B);
 
   if (isActionRunning(B_action)) {
-    void Send(
-      Text(`对方正在${B_action.action}中,剩余时间:${formatRemaining(remainingMs(B_action))}`)
-    );
+    void Send(Text(`对方正在${B_action.action}中,剩余时间:${formatRemaining(remainingMs(B_action))}`));
 
     return false;
   }

@@ -2,12 +2,7 @@ import React from 'react';
 import { useLoginCode } from './Login.code';
 
 // 导入UI组件库
-import {
-  XiuxianLoginCard,
-  XiuxianAlert,
-  XiuxianInputWithIcon,
-  XiuxianDivider
-} from '@/components/ui';
+import { XiuxianLoginCard, XiuxianAlert, XiuxianInputWithIcon, XiuxianDivider } from '@/components/ui';
 
 export default function Login() {
   const { loading, error, handleSubmit } = useLoginCode();
@@ -29,26 +24,12 @@ export default function Login() {
           <form onSubmit={handleSubmit} className='space-y-4 sm:space-y-6'>
             <div>
               <label className='block text-slate-300 text-sm font-medium mb-2'>用户名</label>
-              <XiuxianInputWithIcon
-                icon='👤'
-                type='text'
-                name='username'
-                placeholder='请输入管理员用户名'
-                required
-                minLength={3}
-              />
+              <XiuxianInputWithIcon icon='👤' type='text' name='username' placeholder='请输入管理员用户名' required minLength={3} />
             </div>
 
             <div>
               <label className='block text-slate-300 text-sm font-medium mb-2'>密码</label>
-              <XiuxianInputWithIcon
-                icon='🔒'
-                type='password'
-                name='password'
-                placeholder='请输入密码'
-                required
-                minLength={6}
-              />
+              <XiuxianInputWithIcon icon='🔒' type='password' name='password' placeholder='请输入密码' required minLength={6} />
             </div>
 
             <button
@@ -92,12 +73,7 @@ export default function Login() {
         </div>
 
         {/* 安全提示 */}
-        <XiuxianAlert
-          type='info'
-          title='安全提醒'
-          message='请确保在安全的环境下登录，不要在公共场所保存密码。'
-          className='mt-4'
-        />
+        <XiuxianAlert type='info' title='安全提醒' message='请确保在安全的环境下登录，不要在公共场所保存密码。' className='mt-4' />
       </div>
     </div>
   );

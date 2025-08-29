@@ -98,12 +98,7 @@ const EquipmentCard: React.FC<{
   return (
     <article className='group relative'>
       {/* 动态边框光效 */}
-      <div
-        className={classNames(
-          'absolute inset-0 rounded-2xl bg-gradient-to-r p-[2px] animate-pulse',
-          quality.gradient
-        )}
-      >
+      <div className={classNames('absolute inset-0 rounded-2xl bg-gradient-to-r p-[2px] animate-pulse', quality.gradient)}>
         <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
       </div>
 
@@ -126,12 +121,7 @@ const EquipmentCard: React.FC<{
           <h2 className='text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-lg'>
             {title}
           </h2>
-          <div
-            className={classNames(
-              'w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center shadow-lg',
-              quality.gradient
-            )}
-          >
+          <div className={classNames('w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center shadow-lg', quality.gradient)}>
             <span className='text-2xl'>{elementIcon}</span>
           </div>
         </div>
@@ -206,10 +196,7 @@ const PlayerStats: React.FC<{
     >
       {/* 装饰性元素 */}
       <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full' />
-      <div
-        className='absolute top-4 right-4 w-6 h-6 border-2 border-cyan-400/50 rounded-full animate-spin'
-        style={{ animationDuration: '3s' }}
-      />
+      <div className='absolute top-4 right-4 w-6 h-6 border-2 border-cyan-400/50 rounded-full animate-spin' style={{ animationDuration: '3s' }} />
 
       <h2 className='text-2xl font-black mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 drop-shadow-lg tracking-wider'>
         ✨ 修仙属性 ✨
@@ -280,34 +267,19 @@ const Equipment: React.FC<EquipmentProps> = ({
         <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:30px_30px] animate-pulse' />
 
         {/* 流动的灵气 */}
-        <div
-          className='absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent animate-pulse'
-          style={{ animationDuration: '4s' }}
-        />
+        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent animate-pulse' style={{ animationDuration: '4s' }} />
 
         {/* 修仙符文装饰 */}
-        <div
-          className='absolute top-10 left-10 text-purple-400/20 text-4xl animate-bounce'
-          style={{ animationDuration: '3s' }}
-        >
+        <div className='absolute top-10 left-10 text-purple-400/20 text-4xl animate-bounce' style={{ animationDuration: '3s' }}>
           ☯
         </div>
-        <div
-          className='absolute top-20 right-20 text-cyan-400/20 text-3xl animate-bounce'
-          style={{ animationDuration: '2.5s' }}
-        >
+        <div className='absolute top-20 right-20 text-cyan-400/20 text-3xl animate-bounce' style={{ animationDuration: '2.5s' }}>
           ⚡
         </div>
-        <div
-          className='absolute bottom-20 left-20 text-yellow-400/20 text-3xl animate-bounce'
-          style={{ animationDuration: '3.5s' }}
-        >
+        <div className='absolute bottom-20 left-20 text-yellow-400/20 text-3xl animate-bounce' style={{ animationDuration: '3.5s' }}>
           🌟
         </div>
-        <div
-          className='absolute bottom-10 right-10 text-pink-400/20 text-4xl animate-bounce'
-          style={{ animationDuration: '2s' }}
-        >
+        <div className='absolute bottom-10 right-10 text-pink-400/20 text-4xl animate-bounce' style={{ animationDuration: '2s' }}>
           💫
         </div>
       </div>
@@ -327,13 +299,7 @@ const Equipment: React.FC<EquipmentProps> = ({
           <EquipmentCard title='🗡️ 武器' equipment={arms} renderStats={renderStats} />
           <EquipmentCard title='🛡️ 护具' equipment={armor} renderStats={renderStats} />
           <EquipmentCard title='🔮 法宝' equipment={treasure} renderStats={renderStats} />
-          <PlayerStats
-            nickname={nickname}
-            player_maxHP={player_maxHP}
-            player_atk={player_atk}
-            player_def={player_def}
-            player_bao={player_bao}
-          />
+          <PlayerStats nickname={nickname} player_maxHP={player_maxHP} player_atk={player_atk} player_def={player_def} player_bao={player_bao} />
         </div>
       </main>
     </HTML>

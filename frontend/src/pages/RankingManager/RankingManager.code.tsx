@@ -5,14 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getRankingsAPI, getRankingsStatsAPI, triggerRankingCalculationAPI } from '@/api/auth';
 import { RankingItem, RankingStats } from '@/types/types';
 
-import {
-  TrophyOutlined,
-  CrownOutlined,
-  FireOutlined,
-  TeamOutlined,
-  BankOutlined,
-  StarOutlined
-} from '@ant-design/icons';
+import { TrophyOutlined, CrownOutlined, FireOutlined, TeamOutlined, BankOutlined, StarOutlined } from '@ant-design/icons';
 
 // 排名类型选项
 export const rankingTypes = [

@@ -76,9 +76,7 @@ const Danyao = ({
                 <div className='w-8 h-8 bg-emerald-400/30 rounded-full flex items-center justify-center'>
                   <span className='text-emerald-300 text-lg'>💊</span>
                 </div>
-                <h2 className='text-xl md:text-2xl font-bold tracking-wider text-emerald-200 drop-shadow-lg'>
-                  【已拥有】
-                </h2>
+                <h2 className='text-xl md:text-2xl font-bold tracking-wider text-emerald-200 drop-shadow-lg'>【已拥有】</h2>
                 <div className='w-8 h-8 bg-emerald-400/30 rounded-full flex items-center justify-center'>
                   <span className='text-emerald-300 text-lg'>💊</span>
                 </div>
@@ -94,9 +92,7 @@ const Danyao = ({
                     <div className='space-y-3'>
                       <div className='flex items-center space-x-2'>
                         <span className='text-emerald-300 text-lg'>🧪</span>
-                        <h3 className='text-lg font-bold tracking-wide text-emerald-100 drop-shadow'>
-                          {item.name}
-                        </h3>
+                        <h3 className='text-lg font-bold tracking-wide text-emerald-100 drop-shadow'>{item.name}</h3>
                       </div>
                       <div className='space-y-2 text-sm'>
                         <div className='flex items-center space-x-2 text-white/90'>
@@ -107,16 +103,12 @@ const Danyao = ({
                         <div className='flex items-start space-x-2 text-white/90'>
                           <span className='text-emerald-300 mt-0.5'>⚡</span>
                           <span>效果：</span>
-                          <span className='font-semibold text-emerald-200'>
-                            {renderEffect(item)}
-                          </span>
+                          <span className='font-semibold text-emerald-200'>{renderEffect(item)}</span>
                         </div>
                         <div className='flex items-center space-x-2 text-white/90'>
                           <span className='text-amber-300'>💰</span>
                           <span>价格：</span>
-                          <span className='font-bold text-amber-300 text-lg'>
-                            {item.出售价.toFixed(0)}
-                          </span>
+                          <span className='font-bold text-amber-300 text-lg'>{item.出售价.toFixed(0)}</span>
                         </div>
                       </div>
                     </div>
@@ -136,9 +128,7 @@ const Danyao = ({
                 <div className='w-8 h-8 bg-red-400/30 rounded-full flex items-center justify-center'>
                   <span className='text-red-300 text-lg'>❌</span>
                 </div>
-                <h2 className='text-xl md:text-2xl font-bold tracking-wider text-red-200 drop-shadow-lg'>
-                  【未拥有】
-                </h2>
+                <h2 className='text-xl md:text-2xl font-bold tracking-wider text-red-200 drop-shadow-lg'>【未拥有】</h2>
                 <div className='w-8 h-8 bg-red-400/30 rounded-full flex items-center justify-center'>
                   <span className='text-red-300 text-lg'>❌</span>
                 </div>
@@ -154,9 +144,7 @@ const Danyao = ({
                     <div className='space-y-3'>
                       <div className='flex items-center space-x-2'>
                         <span className='text-red-300 text-lg'>🧪</span>
-                        <h3 className='text-lg font-bold tracking-wide text-red-100 drop-shadow'>
-                          {item.name}
-                        </h3>
+                        <h3 className='text-lg font-bold tracking-wide text-red-100 drop-shadow'>{item.name}</h3>
                       </div>
                       <div className='space-y-2 text-sm'>
                         <div className='flex items-center space-x-2 text-white/90'>
@@ -172,9 +160,7 @@ const Danyao = ({
                         <div className='flex items-center space-x-2 text-white/90'>
                           <span className='text-amber-300'>💰</span>
                           <span>价格：</span>
-                          <span className='font-bold text-amber-300 text-lg'>
-                            {item.出售价.toFixed(0)}
-                          </span>
+                          <span className='font-bold text-amber-300 text-lg'>{item.出售价.toFixed(0)}</span>
                         </div>
                       </div>
                     </div>

@@ -21,9 +21,7 @@ const NajieInfo = ({
     <Modal
       title={
         <div className='flex items-center gap-2'>
-          <span className='text-xl font-bold text-white'>
-            {selectedNajie?.数据状态 === 'corrupted' ? '损坏数据详情' : '背包详情'}
-          </span>
+          <span className='text-xl font-bold text-white'>{selectedNajie?.数据状态 === 'corrupted' ? '损坏数据详情' : '背包详情'}</span>
         </div>
       }
       open={najieDetailVisible}
@@ -59,21 +57,9 @@ const NajieInfo = ({
                 </h3>
                 <div className='grid grid-cols-2 gap-4'>
                   <XiuxianInfoCard label='用户ID' value={selectedNajie.userId} gradient='blue' />
-                  <XiuxianInfoCard
-                    label='背包等级'
-                    value={selectedNajie.等级 || 1}
-                    gradient='green'
-                  />
-                  <XiuxianInfoCard
-                    label='总物品数'
-                    value={getTotalItems(selectedNajie)}
-                    gradient='purple'
-                  />
-                  <XiuxianInfoCard
-                    label='当前灵石'
-                    value={`${selectedNajie.灵石?.toLocaleString() || 0}`}
-                    gradient='green'
-                  />
+                  <XiuxianInfoCard label='背包等级' value={selectedNajie.等级 || 1} gradient='green' />
+                  <XiuxianInfoCard label='总物品数' value={getTotalItems(selectedNajie)} gradient='purple' />
+                  <XiuxianInfoCard label='当前灵石' value={`${selectedNajie.灵石?.toLocaleString() || 0}`} gradient='green' />
                 </div>
               </div>
 
@@ -84,26 +70,10 @@ const NajieInfo = ({
                   物品统计
                 </h3>
                 <div className='grid grid-cols-4 gap-4'>
-                  <XiuxianInfoCard
-                    label='装备'
-                    value={selectedNajie.装备?.length || 0}
-                    gradient='blue'
-                  />
-                  <XiuxianInfoCard
-                    label='丹药'
-                    value={selectedNajie.丹药?.length || 0}
-                    gradient='green'
-                  />
-                  <XiuxianInfoCard
-                    label='道具'
-                    value={selectedNajie.道具?.length || 0}
-                    gradient='purple'
-                  />
-                  <XiuxianInfoCard
-                    label='功法'
-                    value={selectedNajie.功法?.length || 0}
-                    gradient='orange'
-                  />
+                  <XiuxianInfoCard label='装备' value={selectedNajie.装备?.length || 0} gradient='blue' />
+                  <XiuxianInfoCard label='丹药' value={selectedNajie.丹药?.length || 0} gradient='green' />
+                  <XiuxianInfoCard label='道具' value={selectedNajie.道具?.length || 0} gradient='purple' />
+                  <XiuxianInfoCard label='功法' value={selectedNajie.功法?.length || 0} gradient='orange' />
                 </div>
               </div>
 
@@ -114,26 +84,10 @@ const NajieInfo = ({
                   其他物品
                 </h3>
                 <div className='grid grid-cols-4 gap-4'>
-                  <XiuxianInfoCard
-                    label='草药'
-                    value={selectedNajie.草药?.length || 0}
-                    gradient='green'
-                  />
-                  <XiuxianInfoCard
-                    label='材料'
-                    value={selectedNajie.材料?.length || 0}
-                    gradient='yellow'
-                  />
-                  <XiuxianInfoCard
-                    label='仙宠'
-                    value={selectedNajie.仙宠?.length || 0}
-                    gradient='pink'
-                  />
-                  <XiuxianInfoCard
-                    label='灵石上限'
-                    value={`${selectedNajie.灵石上限?.toLocaleString() || 0}`}
-                    gradient='blue'
-                  />
+                  <XiuxianInfoCard label='草药' value={selectedNajie.草药?.length || 0} gradient='green' />
+                  <XiuxianInfoCard label='材料' value={selectedNajie.材料?.length || 0} gradient='yellow' />
+                  <XiuxianInfoCard label='仙宠' value={selectedNajie.仙宠?.length || 0} gradient='pink' />
+                  <XiuxianInfoCard label='灵石上限' value={`${selectedNajie.灵石上限?.toLocaleString() || 0}`} gradient='blue' />
                 </div>
               </div>
             </>

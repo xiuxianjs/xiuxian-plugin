@@ -4,14 +4,7 @@ import { redis, config } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { getRedisKey } from '@src/model/keys';
 import { startAction } from '@src/model/actionHelper';
-import {
-  Go,
-  readPlayer,
-  notUndAndNull,
-  existNajieThing,
-  addNajieThing,
-  addCoin
-} from '@src/model/index';
+import { Go, readPlayer, notUndAndNull, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?镇守仙境.*$/;
@@ -71,11 +64,7 @@ const res = onResponse(selects, async e => {
     dazhe = 0;
     void Send(Text(player.名号 + '使用了道具杀神崖通行证,本次仙境免费'));
     await addNajieThing(userId, '杀神崖通行证', '道具', -1);
-  } else if (
-    (await existNajieThing(userId, '仙境优惠券', '道具'))
-    && player.魔道值 < 1
-    && (player.灵根.type === '转生' || player.level_id > 41)
-  ) {
+  } else if ((await existNajieThing(userId, '仙境优惠券', '道具')) && player.魔道值 < 1 && (player.灵根.type === '转生' || player.level_id > 41)) {
     dazhe = 0.5;
     void Send(Text(player.名号 + '使用了道具仙境优惠券,本次消耗减少50%'));
     await addNajieThing(userId, '仙境优惠券', '道具', -1);

@@ -8,17 +8,9 @@ interface XiuxianPageTitleProps {
   className?: string;
 }
 
-const XiuxianPageTitle: React.FC<XiuxianPageTitleProps> = ({
-  icon,
-  title,
-  subtitle,
-  actions,
-  className = ''
-}) => {
+const XiuxianPageTitle: React.FC<XiuxianPageTitleProps> = ({ icon, title, subtitle, actions, className = '' }) => {
   return (
-    <div
-      className={`flex flex-col sm:flex-row gap-2 justify-between items-center mb-6 ${className}`}
-    >
+    <div className={`flex flex-col sm:flex-row gap-2 justify-between items-center mb-6 ${className}`}>
       <div className='flex items-center gap-4'>
         <div className='w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg'>
           <div className='text-white text-xl'>{icon}</div>

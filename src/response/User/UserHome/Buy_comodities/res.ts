@@ -1,13 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  addNajieThing,
-  addCoin,
-  convert2integer,
-  existplayer,
-  Go,
-  readPlayer
-} from '@src/model/index';
+import { addNajieThing, addCoin, convert2integer, existplayer, Go, readPlayer } from '@src/model/index';
 
 import { getDataList } from '@src/model/DataList';
 import type { NajieCategory } from '@src/types/model';
@@ -110,11 +103,7 @@ const res = onResponse(selects, async e => {
 
   await addNajieThing(userId, thingName, commodity.class as NajieCategory, qty);
   await addCoin(userId, -totalPrice);
-  void Send(
-    Text(
-      `购买成功! 获得[${thingName}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`
-    )
-  );
+  void Send(Text(`购买成功! 获得[${thingName}]*${qty}, 花费[${totalPrice}]灵石, 剩余[${lingshi - totalPrice}]灵石\n可以在【我的纳戒】中查看`));
 
   return false;
 });

@@ -100,9 +100,7 @@ const res = onResponse(selects, async e => {
   const A_action = parseJson<ActionState | null>(await redis.get(getRedisKey(A, 'action')), null);
 
   if (A_action?.end_time && Date.now() <= A_action.end_time) {
-    void Send(
-      Text(`正在${A_action.action}中,剩余时间:${formatRemain(A_action.end_time - Date.now())}`)
-    );
+    void Send(Text(`正在${A_action.action}中,剩余时间:${formatRemain(A_action.end_time - Date.now())}`));
 
     return false;
   }
@@ -112,11 +110,7 @@ const res = onResponse(selects, async e => {
     const hasHide = await existNajieThing(A, '剑xx', '道具');
 
     if (!hasHide) {
-      void Send(
-        Text(
-          `对方正在${B_action.action}中,剩余时间:${formatRemain(B_action.end_time - Date.now())}`
-        )
-      );
+      void Send(Text(`对方正在${B_action.action}中,剩余时间:${formatRemain(B_action.end_time - Date.now())}`));
 
       return false;
     }
@@ -226,9 +220,7 @@ const res = onResponse(selects, async e => {
       pA.魔道值 = (Number(pA.魔道值) || 0) + 1;
       void writePlayer(A, pA);
     }
-    final_msg.push(
-      ` 经过一番大战,${winA}获得了胜利,${playerA.名号}获得${qixueA}气血，${playerB.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`
-    );
+    final_msg.push(` 经过一番大战,${winA}获得了胜利,${playerA.名号}获得${qixueA}气血，${playerB.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`);
   } else if (bWin) {
     const qixueA = Math.trunc(500 * levelB);
     const qixueB = Math.trunc(1000 * levelA);
@@ -244,9 +236,7 @@ const res = onResponse(selects, async e => {
       pB.魔道值 = (Number(pB.魔道值) || 0) + 1;
       void writePlayer(B, pB);
     }
-    final_msg.push(
-      `经过一番大战,${winB}获得了胜利,${playerB.名号}获得${qixueB}气血，${playerA.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`
-    );
+    final_msg.push(`经过一番大战,${winB}获得了胜利,${playerB.名号}获得${qixueB}气血，${playerA.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`);
   }
 
   void Send(Text(final_msg.join('')));

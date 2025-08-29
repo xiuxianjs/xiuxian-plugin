@@ -1,15 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  Go,
-  existplayer,
-  readPlayer,
-  notUndAndNull,
-  existNajieThing,
-  addNajieThing,
-  writePlayer,
-  keys
-} from '@src/model/index';
+import { Go, existplayer, readPlayer, notUndAndNull, existNajieThing, addNajieThing, writePlayer, keys } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?转职.*$/;

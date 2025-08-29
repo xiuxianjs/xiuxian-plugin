@@ -58,9 +58,7 @@ const res = onResponse(selects, async e => {
     }
     const r = v;
 
-    return (
-      typeof r.Price === 'number' && typeof r.experience === 'number' && typeof r.name === 'string'
-    );
+    return typeof r.Price === 'number' && typeof r.experience === 'number' && typeof r.name === 'string';
   };
 
   if (!guardWeizhi(weizhiUnknown)) {

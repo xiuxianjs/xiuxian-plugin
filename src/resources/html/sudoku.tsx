@@ -24,10 +24,7 @@ const Sudoku = ({ sudokuData }) => {
             <div className='rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center'>
               <div className='flex flex-row mb-2'>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
-                  <div
-                    key={n}
-                    className='w-12 h-8 flex items-center justify-center text-blue-700 font-bold text-lg'
-                  >
+                  <div key={n} className='w-12 h-8 flex items-center justify-center text-blue-700 font-bold text-lg'>
                     {n}
                   </div>
                 ))}
@@ -35,10 +32,7 @@ const Sudoku = ({ sudokuData }) => {
               <div className='flex flex-row'>
                 <div className='flex flex-col mr-2'>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
-                    <div
-                      key={n}
-                      className='w-8 h-12 flex items-center justify-center text-blue-700 font-bold text-lg'
-                    >
+                    <div key={n} className='w-8 h-12 flex items-center justify-center text-blue-700 font-bold text-lg'>
                       {n}
                     </div>
                   ))}

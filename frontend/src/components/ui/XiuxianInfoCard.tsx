@@ -8,13 +8,7 @@ interface XiuxianInfoCardProps {
   fullWidth?: boolean;
 }
 
-const XiuxianInfoCard: React.FC<XiuxianInfoCardProps> = ({
-  label,
-  value,
-  gradient = 'blue',
-  className = '',
-  fullWidth = false
-}) => {
+const XiuxianInfoCard: React.FC<XiuxianInfoCardProps> = ({ label, value, gradient = 'blue', className = '', fullWidth = false }) => {
   const gradientClasses = {
     blue: 'from-blue-500/10 to-cyan-500/10 border-blue-500/30',
     green: 'from-green-500/10 to-emerald-500/10 border-green-500/30',

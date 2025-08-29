@@ -14,10 +14,7 @@ interface ForumItem {
 
 const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
   return (
-    <HTML
-      className='w-full text-center p-4 md:p-8 bg-top bg-cover min-h-screen'
-      style={{ backgroundImage: `url(${supermarketURL})` }}
-    >
+    <HTML className='w-full text-center p-4 md:p-8 bg-top bg-cover min-h-screen' style={{ backgroundImage: `url(${supermarketURL})` }}>
       {/* 星空粒子层 */}
       <div
         className='absolute inset-0 pointer-events-none
@@ -39,9 +36,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
               backdrop-blur-xl border-2 border-sky-300/50
               text-3xl md:text-4xl font-extrabold tracking-widest shadow-2xl ring-2 ring-sky-200/60'
             >
-              <span className='bg-gradient-to-r from-sky-100 to-cyan-100 bg-clip-text text-transparent'>
-                聚宝堂
-              </span>
+              <span className='bg-gradient-to-r from-sky-100 to-cyan-100 bg-clip-text text-transparent'>聚宝堂</span>
             </h1>
           </div>
           <div className='relative'>

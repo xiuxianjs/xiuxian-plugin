@@ -40,8 +40,7 @@ const parsePinji = (raw): number | undefined => {
 };
 
 const toNumber = (v, def = 0) => (typeof v === 'number' ? v : def);
-const thingType = (obj): string | undefined =>
-  obj && typeof obj === 'object' && 'type' in obj ? (obj as { type?: string }).type : undefined;
+const thingType = (obj): string | undefined => (obj && typeof obj === 'object' && 'type' in obj ? (obj as { type?: string }).type : undefined);
 
 const res = onResponse(selects, async e => {
   const userId = e.UserId;
@@ -109,12 +108,7 @@ const res = onResponse(selects, async e => {
   const thingClass = thingExist.class;
   // 品级解析（修复 0 被视为 falsy 问题）
   const pinji = parsePinji(code[1]);
-  const x = await existNajieThing(
-    userId,
-    thingName,
-    (thingClass || '道具') as NajieCategory,
-    pinji
-  );
+  const x = await existNajieThing(userId, thingName, (thingClass || '道具') as NajieCategory, pinji);
 
   if (!x) {
     void message.send(format(Text(`你没有【${thingName}】这样的【${thingClass || '未知类别'}】`)));
@@ -130,12 +124,10 @@ const res = onResponse(selects, async e => {
 
   // 装备
   if (func[0] === '装备') {
-    const equ =
-      pinji !== undefined
+    const equ
+      = pinji !== undefined
         ? najie.装备.find(i => i.name === thingName && i.pinji === pinji)
-        : najie.装备
-            .filter(i => i.name === thingName)
-            .sort((a, b) => (b.pinji ?? 0) - (a.pinji ?? 0))[0];
+        : najie.装备.filter(i => i.name === thingName).sort((a, b) => (b.pinji ?? 0) - (a.pinji ?? 0))[0];
 
     if (!equ) {
       void message.send(format(Text(`找不到可装备的 ${thingName}`)));
@@ -210,11 +202,7 @@ const res = onResponse(selects, async e => {
       player.addluckyNo = xingyun;
       player.幸运 = (player.幸运 ?? 0) + xingyun;
       await writePlayer(userId, player);
-      void message.send(
-        format(
-          Text(`${thingName}服用成功，将在之后的 ${quantity * 10}次冒险旅途中为你提高幸运值！`)
-        )
-      );
+      void message.send(format(Text(`${thingName}服用成功，将在之后的 ${quantity * 10}次冒险旅途中为你提高幸运值！`)));
       await addNajieThing(userId, thingName, '丹药', -quantity);
 
       return;
@@ -222,13 +210,7 @@ const res = onResponse(selects, async e => {
     if (tType === '闭关') {
       dy.biguan = quantity;
       dy.biguanxl = numOr('biguan');
-      void message.send(
-        format(
-          Text(
-            `${thingName}提高了你的忍耐力,提高了下次闭关的效率,当前提高${dy.biguanxl * 100}%\n查看练气信息后生效`
-          )
-        )
-      );
+      void message.send(format(Text(`${thingName}提高了你的忍耐力,提高了下次闭关的效率,当前提高${dy.biguanxl * 100}%\n查看练气信息后生效`)));
       await addNajieThing(userId, thingName, '丹药', -quantity);
       await writeDanyao(userId, dy);
 
@@ -237,9 +219,7 @@ const res = onResponse(selects, async e => {
     if (tType === '仙缘') {
       dy.ped = 5 * quantity;
       dy.beiyong1 = numOr('gailv');
-      void message.send(
-        format(Text(`${thingName}赐予${player.名号}仙缘,${player.名号}得到了仙兽的祝福`))
-      );
+      void message.send(format(Text(`${thingName}赐予${player.名号}仙缘,${player.名号}得到了仙兽的祝福`)));
       await addNajieThing(userId, thingName, '丹药', -quantity);
       await writeDanyao(userId, dy);
 
@@ -269,13 +249,7 @@ const res = onResponse(selects, async e => {
     if (tType === '炼神') {
       dy.lianti = quantity;
       dy.beiyong4 = numOr('lianshen');
-      void message.send(
-        format(
-          Text(
-            `服用了${thingName},获得了炼神之力,下次闭关获得了炼神之力,当前炼神之力为${dy.beiyong4 * 100}%`
-          )
-        )
-      );
+      void message.send(format(Text(`服用了${thingName},获得了炼神之力,下次闭关获得了炼神之力,当前炼神之力为${dy.beiyong4 * 100}%`)));
       await writeDanyao(userId, dy);
       await addNajieThing(userId, thingName, '丹药', -quantity);
 
@@ -284,9 +258,7 @@ const res = onResponse(selects, async e => {
     if (tType === '神赐') {
       dy.beiyong2 = quantity;
       dy.beiyong3 = numOr('概率');
-      void message.send(
-        format(Text(`${player.名号}获得了神兽的恩赐,赐福的概率增加了,当前剩余次数${dy.beiyong2}`))
-      );
+      void message.send(format(Text(`${player.名号}获得了神兽的恩赐,赐福的概率增加了,当前剩余次数${dy.beiyong2}`)));
       await writeDanyao(userId, dy);
       await addNajieThing(userId, thingName, '丹药', -quantity);
 
@@ -311,13 +283,7 @@ const res = onResponse(selects, async e => {
 
       player.隐藏灵根 = hidden;
       await writePlayer(userId, player);
-      void message.send(
-        format(
-          Text(
-            `神药入体,${player.名号}更改了自己的隐藏灵根,当前隐藏灵根为[${player.隐藏灵根.name}]`
-          )
-        )
-      );
+      void message.send(format(Text(`神药入体,${player.名号}更改了自己的隐藏灵根,当前隐藏灵根为[${player.隐藏灵根.name}]`)));
       await addNajieThing(userId, thingName, '丹药', -1);
 
       return;
@@ -331,9 +297,7 @@ const res = onResponse(selects, async e => {
       const addTalent = numOr('天赋') * quantity;
 
       player.锻造天赋 = (player.锻造天赋 || 0) + addTalent;
-      void message.send(
-        format(Text(`服用成功,您额外获得了${addTalent}天赋上限,您当前炼器天赋为${player.锻造天赋}`))
-      );
+      void message.send(format(Text(`服用成功,您额外获得了${addTalent}天赋上限,您当前炼器天赋为${player.锻造天赋}`)));
       await writePlayer(userId, player);
       await addNajieThing(userId, thingName, '丹药', -quantity);
 
@@ -347,9 +311,7 @@ const res = onResponse(selects, async e => {
       }
       dy.xingyun = quantity;
       dy.beiyong5 = numOr('额外数量');
-      void message.send(
-        format(Text(`服用成功,您下一次的炼器获得了额外的炼器格子[${dy.beiyong5}]`))
-      );
+      void message.send(format(Text(`服用成功,您下一次的炼器获得了额外的炼器格子[${dy.beiyong5}]`)));
       await addNajieThing(userId, thingName, '丹药', -quantity);
       await writeDanyao(userId, dy);
 
@@ -437,11 +399,7 @@ const res = onResponse(selects, async e => {
 
       if (typeof number === 'number' && number > 9) {
         /** 回复 */
-        void message.send(
-          format(
-            Text('是否消耗十个卷轴兑换一个八品功法？回复:【兑换*功法名】或者【还是算了】进行选择')
-          )
-        );
+        void message.send(format(Text('是否消耗十个卷轴兑换一个八品功法？回复:【兑换*功法名】或者【还是算了】进行选择')));
         /** 设置上下文 */
         const [subscribe] = useSubscribe(e, selects);
         const sub = subscribe.mount(
@@ -557,9 +515,7 @@ const res = onResponse(selects, async e => {
       await addNajieThing(userId, thingName, '道具', -1);
       player.linggenshow = 0;
       await writePlayer(userId, player);
-      void message.send(
-        format(Text(`你眼前一亮，看到了自己的灵根,"${player.灵根.type}"：${player.灵根.name}`))
-      );
+      void message.send(format(Text(`你眼前一亮，看到了自己的灵根,"${player.灵根.type}"：${player.灵根.name}`)));
 
       return;
     }
@@ -573,10 +529,7 @@ const res = onResponse(selects, async e => {
         void message.send(format(Text('你还是提升点魔道值再用吧!')));
 
         return;
-      } else if (
-        qh.class === '神人' &&
-        ((player.魔道值 ?? 0) > 0 || (player.灵根.type !== '转生' && player.level_id < 42))
-      ) {
+      } else if (qh.class === '神人' && ((player.魔道值 ?? 0) > 0 || (player.灵根.type !== '转生' && player.level_id < 42))) {
         void message.send(format(Text('你尝试使用它,但是失败了')));
 
         return;

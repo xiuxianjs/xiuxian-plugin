@@ -108,10 +108,7 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
                 <div className='p-4'>
                   <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {val.list?.map((item, itemIndex) => (
-                      <div
-                        key={itemIndex}
-                        className='relative p-4 rounded-xl bg-gradient-to-br from-black/20 to-black/30 border border-white/10'
-                      >
+                      <div key={itemIndex} className='relative p-4 rounded-xl bg-gradient-to-br from-black/20 to-black/30 border border-white/10'>
                         {/* 装饰性光效 */}
                         <div className='absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-teal-500/5 to-transparent' />
 
@@ -125,12 +122,8 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
 
                           {/* 内容区域 */}
                           <div className='flex-1 min-w-0'>
-                            <strong className='block font-bold text-slate-800 mb-1'>
-                              {item.title}
-                            </strong>
-                            <span className='block text-sm leading-relaxed text-gray-600'>
-                              {item.desc}
-                            </span>
+                            <strong className='block font-bold text-slate-800 mb-1'>{item.title}</strong>
+                            <span className='block text-sm leading-relaxed text-gray-600'>{item.desc}</span>
                           </div>
                         </div>
                       </div>
@@ -153,9 +146,7 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
               <div className='text-center'>
                 <div className='inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-yellow-500/20 px-6 py-3 rounded-2xl shadow-inner border border-red-400/30 backdrop-blur-sm'>
                   <span className='text-white/70 text-sm md:text-base font-medium'>第</span>
-                  <b className='text-3xl md:text-4xl text-red-300 drop-shadow-lg font-black'>
-                    {page}
-                  </b>
+                  <b className='text-3xl md:text-4xl text-red-300 drop-shadow-lg font-black'>{page}</b>
                   {typeof total === 'number' && total > 0 ? (
                     <>
                       <span className='text-white/50 text-lg md:text-xl'>/</span>
@@ -166,17 +157,13 @@ const Help = ({ helpData = [], page = 1, pageSize, total }) => {
                     <span className='text-white/70 text-sm md:text-base font-medium'>页</span>
                   )}
                   {typeof pageSize !== 'undefined' && pageSize ? (
-                    <span className='ml-3 text-xs md:text-sm text-red-200/80 font-normal'>
-                      （每页 {pageSize} 组）
-                    </span>
+                    <span className='ml-3 text-xs md:text-sm text-red-200/80 font-normal'>（每页 {pageSize} 组）</span>
                   ) : null}
                 </div>
 
                 <div className='mt-6'>
                   <div className='inline-flex items-center shadow-inner gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600/30 to-red-700/30 border border-red-400/20 '>
-                    <span className='text-red-200/90  text-sm md:text-base font-medium'>
-                      翻页： 指令后直接加页码
-                    </span>
+                    <span className='text-red-200/90  text-sm md:text-base font-medium'>翻页： 指令后直接加页码</span>
                   </div>
                 </div>
               </div>

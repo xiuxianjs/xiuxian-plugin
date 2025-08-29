@@ -107,9 +107,7 @@ const TianDiTang = ({ name, jifen, commodities_list }) => {
                               <div className='w-6 h-6 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center'>
                                 <span className='text-xs'>💥</span>
                               </div>
-                              <span className='text-sm text-purple-200'>
-                                暴击：{(item.bao * 100).toFixed(0)}%
-                              </span>
+                              <span className='text-sm text-purple-200'>暴击：{(item.bao * 100).toFixed(0)}%</span>
                             </div>
                           </div>
                         )}
@@ -137,9 +135,7 @@ const TianDiTang = ({ name, jifen, commodities_list }) => {
                               </div>
                               <span className='text-sm font-medium text-purple-200'>修炼加成</span>
                             </div>
-                            <p className='text-sm text-gray-200'>
-                              {(item.修炼加成 * 100).toFixed(0)}%
-                            </p>
+                            <p className='text-sm text-gray-200'>{(item.修炼加成 * 100).toFixed(0)}%</p>
                           </div>
                         )}
 
@@ -158,9 +154,7 @@ const TianDiTang = ({ name, jifen, commodities_list }) => {
                         {/* 兑换按钮 */}
                         <div className='flex justify-center'>
                           <div className='inline-block px-4 py-2 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full border border-orange-400/30 backdrop-blur-sm'>
-                            <span className='text-orange-200 text-sm font-medium'>
-                              💰 兑换此物品
-                            </span>
+                            <span className='text-orange-200 text-sm font-medium'>💰 兑换此物品</span>
                           </div>
                         </div>
                       </div>

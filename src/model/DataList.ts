@@ -48,16 +48,7 @@ import 隐藏灵根 from '../resources/data/item/隐藏灵根.json';
 import 锻造杂类 from '../resources/data/item/锻造杂类.json';
 import 技能列表 from '../resources/data/item/技能列表.json';
 import updateRecord from '../resources/data/updateRecord.json';
-import type {
-  TalentItem,
-  LevelStageItem,
-  PhysiqueStageItem,
-  CommodityItem,
-  GongfaItem,
-  EquipmentTuzhiItem,
-  PetItem,
-  PetFoodItem
-} from '../types/data';
+import type { TalentItem, LevelStageItem, PhysiqueStageItem, CommodityItem, GongfaItem, EquipmentTuzhiItem, PetItem, PetFoodItem } from '../types/data';
 import type {
   MonsterItem,
   PlaceItem,
@@ -69,16 +60,7 @@ import type {
   ShopItem,
   RealmShopGroupItem
 } from '../types/data_extra';
-import type {
-  ScoreShopItem,
-  LimitedEquipItem,
-  OccupationItem,
-  DanfangItem,
-  BapinItem,
-  HallItem,
-  PermanentPetItem,
-  SkillItem
-} from '../types/data_extra';
+import type { ScoreShopItem, LimitedEquipItem, OccupationItem, DanfangItem, BapinItem, HallItem, PermanentPetItem, SkillItem } from '../types/data_extra';
 import { __PATH } from './keys.js';
 import { getIoRedis } from '@alemonjs/db';
 

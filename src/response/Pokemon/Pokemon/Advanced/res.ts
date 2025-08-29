@@ -1,14 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existNajieThing,
-  addNajieThing,
-  writePlayer,
-  keys,
-  petGrade,
-  notUndAndNull,
-  petLevel
-} from '@src/model/index';
+import { existNajieThing, addNajieThing, writePlayer, keys, petGrade, notUndAndNull, petLevel } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?进阶仙宠$/;

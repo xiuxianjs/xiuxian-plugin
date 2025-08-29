@@ -42,39 +42,12 @@ const floors = [
 ];
 
 // 楼层组件
-const FloorSection = ({
-  name,
-  type,
-  icon,
-  color,
-  borderColor
-}: {
-  name: string;
-  type: string;
-  icon: string;
-  color: string;
-  borderColor: string;
-}) => (
+const FloorSection = ({ name, type, icon, color, borderColor }: { name: string; type: string; icon: string; color: string; borderColor: string }) => (
   <div className='relative group'>
-    <div
-      className={classNames(
-        'absolute inset-0 bg-gradient-to-r rounded-2xl blur-sm',
-        `${color.replace('400', '500')}/20`
-      )}
-    />
-    <div
-      className={classNames(
-        'relative backdrop-blur-md bg-white/5 rounded-2xl border p-6 hover:border-opacity-60 transition-all duration-300',
-        borderColor
-      )}
-    >
+    <div className={classNames('absolute inset-0 bg-gradient-to-r rounded-2xl blur-sm', `${color.replace('400', '500')}/20`)} />
+    <div className={classNames('relative backdrop-blur-md bg-white/5 rounded-2xl border p-6 hover:border-opacity-60 transition-all duration-300', borderColor)}>
       <div className='flex flex-col items-center gap-4'>
-        <div
-          className={classNames(
-            'w-16 h-16 bg-gradient-to-br rounded-xl flex items-center justify-center border border-white/20',
-            color
-          )}
-        >
+        <div className={classNames('w-16 h-16 bg-gradient-to-br rounded-xl flex items-center justify-center border border-white/20', color)}>
           <span className='text-3xl'>{icon}</span>
         </div>
         <div className='text-center'>
@@ -123,9 +96,7 @@ const Valuables = () => {
                   <div className='text-lg font-bold text-white mb-2'>修仙界最大的当铺</div>
                   <div className='text-base text-gray-300 mb-4'>汇聚天下所有物品</div>
                   <div className='inline-block px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full border border-blue-400/30 backdrop-blur-sm'>
-                    <span className='text-blue-200 text-sm font-medium'>
-                      🗺️ 快去秘境历练获得神器吧 🗺️
-                    </span>
+                    <span className='text-blue-200 text-sm font-medium'>🗺️ 快去秘境历练获得神器吧 🗺️</span>
                   </div>
                 </div>
               </div>
@@ -136,14 +107,7 @@ const Valuables = () => {
           <div className='max-w-6xl mx-auto'>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
               {floors.map((floor, index) => (
-                <FloorSection
-                  key={index}
-                  name={floor.name}
-                  type={floor.type}
-                  icon={floor.icon}
-                  color={floor.color}
-                  borderColor={floor.borderColor}
-                />
+                <FloorSection key={index} name={floor.name} type={floor.type} icon={floor.icon} color={floor.color} borderColor={floor.borderColor} />
               ))}
             </div>
           </div>

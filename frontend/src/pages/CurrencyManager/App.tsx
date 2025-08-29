@@ -9,12 +9,7 @@ import StatsTab from './components/StatsTab';
 import RechargeModal from './components/RechargeModal';
 
 // 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianTableContainer,
-  XiuxianRefreshButton
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer, XiuxianRefreshButton } from '@/components/ui';
 
 export default function CurrencyManager() {
   const {
@@ -89,27 +84,15 @@ export default function CurrencyManager() {
       {/* 内容区域 */}
       <XiuxianTableContainer
         title={
-          (selectedTab === 'users' && '用户货币管理') ||
-          (selectedTab === 'records' && '充值记录管理') ||
-          (selectedTab === 'stats' && '统计分析') ||
-          '货币管理'
+          (selectedTab === 'users' && '用户货币管理') || (selectedTab === 'records' && '充值记录管理') || (selectedTab === 'stats' && '统计分析') || '货币管理'
         }
         icon={<DollarOutlined />}
       >
         {/* 用户货币管理 */}
-        {selectedTab === 'users' && (
-          <UserCurrencyTab
-            users={users}
-            loading={loading}
-            onRefresh={fetchUsers}
-            onStatsRefresh={fetchStats}
-          />
-        )}
+        {selectedTab === 'users' && <UserCurrencyTab users={users} loading={loading} onRefresh={fetchUsers} onStatsRefresh={fetchStats} />}
 
         {/* 充值记录管理 */}
-        {selectedTab === 'records' && (
-          <RechargeRecordsTab records={records} loading={loading} config={config} />
-        )}
+        {selectedTab === 'records' && <RechargeRecordsTab records={records} loading={loading} config={config} />}
 
         {/* 统计分析 */}
         {selectedTab === 'stats' && <StatsTab stats={stats} />}

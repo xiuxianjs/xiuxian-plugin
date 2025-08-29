@@ -10,11 +10,7 @@ interface TabNavigationProps {
   onRecordsTabClick: () => void;
 }
 
-export default function TabNavigation({
-  selectedTab,
-  onTabChange,
-  onRecordsTabClick
-}: TabNavigationProps) {
+export default function TabNavigation({ selectedTab, onTabChange, onRecordsTabClick }: TabNavigationProps) {
   const tabs = [
     {
       name: 'users',

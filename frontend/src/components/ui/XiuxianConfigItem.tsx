@@ -10,14 +10,7 @@ interface XiuxianConfigItemProps {
   className?: string;
 }
 
-const XiuxianConfigItem: React.FC<XiuxianConfigItemProps> = ({
-  name,
-  description,
-  type,
-  value,
-  onChange,
-  className = ''
-}) => {
+const XiuxianConfigItem: React.FC<XiuxianConfigItemProps> = ({ name, description, type, value, onChange, className = '' }) => {
   const typeColors = {
     string: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
     number: 'bg-green-500/20 text-green-400 border-green-500/30',
@@ -73,19 +66,10 @@ const XiuxianConfigItem: React.FC<XiuxianConfigItemProps> = ({
   };
 
   return (
-    <div
-      className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4 shadow-lg ${className}`}
-    >
+    <div className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4 shadow-lg ${className}`}>
       <div className='flex items-center justify-between mb-2'>
         <label className='text-white font-medium text-sm'>{name}</label>
-        <span
-          className={classNames(
-            'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border',
-            typeColors[type]
-          )}
-        >
-          {type.toUpperCase()}
-        </span>
+        <span className={classNames('inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border', typeColors[type])}>{type.toUpperCase()}</span>
       </div>
 
       <p className='text-slate-400 text-xs mb-3'>{description}</p>

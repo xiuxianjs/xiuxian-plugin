@@ -21,10 +21,7 @@ const Shitujifen = ({ name, jifen, commodities_list }) => {
             </div>
             <div className='w-full'>
               {commodities_list?.map((item, index) => (
-                <div
-                  key={index}
-                  className='border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition mb-4'
-                >
+                <div key={index} className='border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition mb-4'>
                   <div className='flex items-center justify-between mb-2'>
                     <span className='font-bold text-blue-800 text-lg'>
                       【{item.type}】{item.name}
@@ -33,18 +30,10 @@ const Shitujifen = ({ name, jifen, commodities_list }) => {
                   </div>
                   {item.class === '装备' && (
                     <div className='flex flex-wrap gap-2 mb-2'>
-                      <span className='inline-block bg-blue-200 text-blue-900 rounded px-2 py-1 text-xs font-semibold'>
-                        攻：{item.atk}
-                      </span>
-                      <span className='inline-block bg-green-200 text-green-900 rounded px-2 py-1 text-xs font-semibold'>
-                        防：{item.def}
-                      </span>
-                      <span className='inline-block bg-yellow-200 text-yellow-900 rounded px-2 py-1 text-xs font-semibold'>
-                        血：{item.HP}
-                      </span>
-                      <span className='inline-block bg-pink-200 text-pink-900 rounded px-2 py-1 text-xs font-semibold'>
-                        暴：{item.bao * 100}%
-                      </span>
+                      <span className='inline-block bg-blue-200 text-blue-900 rounded px-2 py-1 text-xs font-semibold'>攻：{item.atk}</span>
+                      <span className='inline-block bg-green-200 text-green-900 rounded px-2 py-1 text-xs font-semibold'>防：{item.def}</span>
+                      <span className='inline-block bg-yellow-200 text-yellow-900 rounded px-2 py-1 text-xs font-semibold'>血：{item.HP}</span>
+                      <span className='inline-block bg-pink-200 text-pink-900 rounded px-2 py-1 text-xs font-semibold'>暴：{item.bao * 100}%</span>
                     </div>
                   )}
                   {item.class === '丹药' && (
@@ -53,14 +42,8 @@ const Shitujifen = ({ name, jifen, commodities_list }) => {
                       {item.xueqi}
                     </div>
                   )}
-                  {item.class === '功法' && (
-                    <div className='text-sm text-gray-700 mb-2'>
-                      修炼加成：{(item.修炼加成 * 100).toFixed(0)}%
-                    </div>
-                  )}
-                  {(item.class === '道具' || item.class === '草药') && (
-                    <div className='text-sm text-gray-700 mb-2'>描述：{item.desc}</div>
-                  )}
+                  {item.class === '功法' && <div className='text-sm text-gray-700 mb-2'>修炼加成：{(item.修炼加成 * 100).toFixed(0)}%</div>}
+                  {(item.class === '道具' || item.class === '草药') && <div className='text-sm text-gray-700 mb-2'>描述：{item.desc}</div>}
                 </div>
               ))}
             </div>

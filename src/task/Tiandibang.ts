@@ -3,72 +3,156 @@ import { __PATH, keys, keysByPath } from '@src/model/keys';
 import type { TiandibangRankEntry as RankEntry } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import type { Player } from '@src/types/player';
 
 /**
- * 遍历所有玩家，读取玩家的属性（如名号、境界、攻击、防御、血量、暴击率、灵根、功法、魔道值、神石等）。
-构建排行榜条目（RankEntry），将所有玩家信息收集到一个数组中。
-对排行榜条目按积分字段进行排序（积分高的排前）。
-调用 writeTiandibang 方法，将排行榜数据写入存储或展示。
-总结：生成“天帝榜”排行榜，展示玩家的综合实力排名，实现排行榜的自动刷新和维护。
- * @returns
+ * 计算玩家战力积分
+ * @param player 玩家数据
+ * @returns 战力积分
  */
-export const TiandibangTask = async () => {
-  const playerList = await keysByPath(__PATH.player_path);
-  const temp: RankEntry[] = [];
-  let t: RankEntry | undefined;
-  let k: number;
+const calculatePowerScore = (player: Player): number => {
+  const baseScore = player.攻击 * 0.3 + player.防御 * 0.2 + player.血量上限 * 0.1;
+  const critBonus = player.暴击率 * 1000; // 暴击率加成
+  const magicBonus = (player.魔道值 || 0) * 0.1; // 魔道值加成
+  const stoneBonus = (player.神石 || 0) * 0.05; // 神石加成
 
-  await Promise.all(
-    playerList.map(async userId => {
-      const player = await getDataJSONParseByKey(keys.player(userId));
+  return Math.floor(baseScore + critBonus + magicBonus + stoneBonus);
+};
 
-      if (!player) {
-        return;
-      }
+/**
+ * 获取玩家境界信息
+ * @param levelId 境界ID
+ * @param levelList 境界列表
+ * @returns 境界信息或null
+ */
+const getLevelInfo = (levelId: number, levelList: any[]): any => {
+  return levelList.find(item => item.level_id === levelId) || null;
+};
 
-      const levelList = await getDataList('Level1');
-      const level = levelList.find(item => item.level_id === player.level_id);
+/**
+ * 创建排行榜条目
+ * @param player 玩家数据
+ * @param levelId 境界ID
+ * @param userId 用户ID
+ * @returns 排行榜条目
+ */
+const createRankEntry = (player: Player, levelId: number, userId: string): RankEntry => {
+  const powerScore = calculatePowerScore(player);
 
-      if (!level) {
-        return;
-      }
-      const level_id = level?.level_id;
+  return {
+    名号: player.名号,
+    境界: levelId,
+    攻击: player.攻击,
+    防御: player.防御,
+    当前血量: player.血量上限,
+    暴击率: player.暴击率,
+    灵根: player.灵根,
+    法球倍率: player.灵根.法球倍率 || 1,
+    学习的功法: player.学习的功法 || [],
+    魔道值: player.魔道值 || 0,
+    神石: player.神石 || 0,
+    qq: userId,
+    次数: 3,
+    积分: powerScore
+  };
+};
 
-      temp[k] = {
-        名号: player.名号,
-        境界: level_id,
-        攻击: player.攻击,
-        防御: player.防御,
-        当前血量: player.血量上限,
-        暴击率: player.暴击率,
-        灵根: player.灵根,
-        法球倍率: player.灵根.法球倍率,
-        学习的功法: player.学习的功法,
-        魔道值: player.魔道值,
-        神石: player.神石,
-        qq: userId,
-        次数: 3,
-        积分: 0
-      };
-      k++;
-    })
-  );
-  for (let i = 0; i < playerList.length - 1; i++) {
-    let count = 0;
+/**
+ * 冒泡排序优化版 - 按积分降序排列
+ * @param arr 待排序数组
+ */
+const bubbleSortByScore = (arr: RankEntry[]): void => {
+  const len = arr.length;
+  let swapped: boolean;
 
-    for (let j = 0; j < playerList.length - i - 1; j++) {
-      if (temp[j].积分 < temp[j + 1].积分) {
-        t = temp[j];
-        temp[j] = temp[j + 1];
-        temp[j + 1] = t;
-        count = 1;
+  for (let i = 0; i < len - 1; i++) {
+    swapped = false;
+
+    for (let j = 0; j < len - i - 1; j++) {
+      if (arr[j].积分 < arr[j + 1].积分) {
+        // 交换元素
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+        swapped = true;
       }
     }
-    if (count === 0) {
+
+    // 如果没有发生交换，说明数组已经有序
+    if (!swapped) {
       break;
     }
   }
-  await writeTiandibang(temp);
+};
 
-  return false;
+/**
+ * 天帝榜任务 - 生成玩家排行榜
+ * 根据玩家战力计算积分，按积分降序排列
+ */
+export const TiandibangTask = async (): Promise<boolean> => {
+  try {
+    // 获取所有玩家ID
+    const playerList = await keysByPath(__PATH.player_path);
+
+    if (!playerList || playerList.length === 0) {
+      return false;
+    }
+
+    // 获取境界列表（只获取一次）
+    const levelList = await getDataList('Level1');
+
+    if (!levelList || levelList.length === 0) {
+      return false;
+    }
+
+    // 并行处理所有玩家数据
+    const rankEntries: RankEntry[] = [];
+
+    await Promise.all(
+      playerList.map(async (userId: string) => {
+        try {
+          const player = await getDataJSONParseByKey(keys.player(userId));
+
+          if (!player) {
+            logger.warn(`玩家数据不存在: ${userId}`);
+
+            return;
+          }
+
+          const levelInfo = getLevelInfo(player.level_id, levelList);
+
+          if (!levelInfo) {
+            logger.warn(`玩家 ${player.名号} 的境界信息不存在: level_id=${player.level_id}`);
+
+            return;
+          }
+
+          const rankEntry = createRankEntry(player, levelInfo.level_id, userId);
+
+          rankEntries.push(rankEntry);
+        } catch (error) {
+          logger.error(`处理玩家 ${userId} 数据时出错:`, error);
+        }
+      })
+    );
+
+    // 检查是否有有效数据
+    if (rankEntries.length === 0) {
+      logger.warn('没有有效的排行榜数据');
+
+      return false;
+    }
+
+    // 按积分排序
+    bubbleSortByScore(rankEntries);
+
+    // 写入排行榜数据
+    await writeTiandibang(rankEntries);
+
+    logger.info(`天帝榜更新完成，共处理 ${rankEntries.length} 名玩家`);
+
+    return true;
+  } catch (error) {
+    logger.error('天帝榜任务执行失败:', error);
+
+    return false;
+  }
 };

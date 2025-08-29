@@ -92,10 +92,7 @@ const res = onResponse(selects, async e => {
 
     player_B.当前血量 = player_B.血量上限;
     // 规范 battle 实体：法球倍率 转 number
-    const fq =
-      typeof player_B.灵根.法球倍率 === 'number'
-        ? player_B.灵根.法球倍率
-        : parseFloat(String(player_B.灵根.法球倍率)) || 0;
+    const fq = typeof player_B.灵根.法球倍率 === 'number' ? player_B.灵根.法球倍率 : parseFloat(String(player_B.灵根.法球倍率)) || 0;
     const buff = 1 + (player.occupation_level || 0) * 0.055;
     const player_A: BattleEntity = {
       id: player.id,
@@ -164,10 +161,7 @@ const res = onResponse(selects, async e => {
   }
   task.arm.splice(num, 1);
   await redis.set(getRedisKey(userId, 'shangjing'), JSON.stringify(task));
-  if (
-    lastMessage === '你惩戒了仙路窃贼,获得了部分灵石' ||
-    lastMessage.endsWith('反杀了你,只获得了部分辛苦钱')
-  ) {
+  if (lastMessage === '你惩戒了仙路窃贼,获得了部分灵石' || lastMessage.endsWith('反杀了你,只获得了部分辛苦钱')) {
     void Send(Text(lastMessage));
   } else if (lastMessage) {
     const auctionKeyManager = getAuctionKeyManager();

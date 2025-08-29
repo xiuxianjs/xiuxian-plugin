@@ -4,25 +4,11 @@ import { ArrowLeftOutlined, FolderOutlined, FileOutlined } from '@ant-design/ico
 import { useCommandManagerCode } from './CommandManager.code';
 
 // 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianTableContainer,
-  XiuxianRefreshButton,
-  XiuxianEmptyState
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer, XiuxianRefreshButton, XiuxianEmptyState } from '@/components/ui';
 
 export default function CommandManager() {
-  const {
-    currentItems,
-    loading,
-    currentPath,
-    handleEnterDirectory,
-    handleBackToParent,
-    handleNavigateToPath,
-    handleToggleStatus,
-    handleRefresh
-  } = useCommandManagerCode();
+  const { currentItems, loading, currentPath, handleEnterDirectory, handleBackToParent, handleNavigateToPath, handleToggleStatus, handleRefresh } =
+    useCommandManagerCode();
 
   return (
     <XiuxianPageWrapper>
@@ -56,20 +42,14 @@ export default function CommandManager() {
           items={[
             {
               title: (
-                <span
-                  className='text-slate-200 font-medium cursor-pointer hover:text-white'
-                  onClick={() => handleNavigateToPath([])}
-                >
+                <span className='text-slate-200 font-medium cursor-pointer hover:text-white' onClick={() => handleNavigateToPath([])}>
                   根目录
                 </span>
               )
             },
             ...currentPath.map((item, index) => ({
               title: (
-                <span
-                  className='text-slate-300 cursor-pointer hover:text-white'
-                  onClick={() => handleNavigateToPath(currentPath.slice(0, index + 1))}
-                >
+                <span className='text-slate-300 cursor-pointer hover:text-white' onClick={() => handleNavigateToPath(currentPath.slice(0, index + 1))}>
                   {item}
                 </span>
               )
@@ -80,10 +60,7 @@ export default function CommandManager() {
       </div>
 
       {/* 当前目录内容 */}
-      <XiuxianTableContainer
-        title={`当前目录${currentPath.length > 0 ? ` (${currentPath.join('/')})` : ''}`}
-        icon={<FolderOutlined />}
-      >
+      <XiuxianTableContainer title={`当前目录${currentPath.length > 0 ? ` (${currentPath.join('/')})` : ''}`} icon={<FolderOutlined />}>
         {loading ? (
           <div className='flex justify-center items-center py-12'>
             <Spin size='large' />
@@ -98,15 +75,11 @@ export default function CommandManager() {
                     <Avatar
                       icon={item.isDir ? <FolderOutlined /> : <FileOutlined />}
                       className={`${
-                        item.isDir
-                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                          : 'bg-green-500/20 text-green-400 border border-green-500/30'
+                        item.isDir ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-green-500/20 text-green-400 border border-green-500/30'
                       }`}
                     />
                     <span
-                      className={`text-slate-200 font-medium ${
-                        item.isDir ? 'cursor-pointer hover:text-blue-400' : ''
-                      }`}
+                      className={`text-slate-200 font-medium ${item.isDir ? 'cursor-pointer hover:text-blue-400' : ''}`}
                       onClick={() => {
                         if (item.isDir) {
                           handleEnterDirectory(item.path);
@@ -121,18 +94,10 @@ export default function CommandManager() {
                     <div className='flex items-center gap-4'>
                       <span
                         className={`text-sm font-medium ${
-                          item.status === true
-                            ? 'text-emerald-400'
-                            : item.status === false
-                              ? 'text-red-400'
-                              : 'text-slate-400'
+                          item.status === true ? 'text-emerald-400' : item.status === false ? 'text-red-400' : 'text-slate-400'
                         }`}
                       >
-                        {item.status === true
-                          ? '已在启用'
-                          : item.status === false
-                            ? '已被禁用'
-                            : '未知状态'}
+                        {item.status === true ? '已在启用' : item.status === false ? '已被禁用' : '未知状态'}
                       </span>
                       <button
                         onClick={() => handleToggleStatus(item.path, !item.status)}

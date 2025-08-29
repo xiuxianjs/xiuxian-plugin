@@ -29,9 +29,7 @@ const SecretPlace = ({ didian_list }) => {
                 <h1 className='text-3xl font-bold text-white tracking-wider'>🏔️ 秘境 🏔️</h1>
               </div>
             </div>
-            <div className='mt-4 text-blue-700 text-sm font-medium'>
-              🌟 修仙界神秘秘境，机缘与挑战并存 🌟
-            </div>
+            <div className='mt-4 text-blue-700 text-sm font-medium'>🌟 修仙界神秘秘境，机缘与挑战并存 🌟</div>
           </div>
 
           {/* 主信息区域 */}
@@ -70,9 +68,7 @@ const SecretPlace = ({ didian_list }) => {
                                 {item.Grade === '顶级' && '🌲'}
                                 {item.Grade === '传说' && '🌟'}
                                 {item.Grade === '神话' && '💎'}
-                                {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(
-                                  item.Grade
-                                ) && '🏔️'}
+                                {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(item.Grade) && '🏔️'}
                               </span>
                             </div>
                             <div>
@@ -141,9 +137,7 @@ const SecretPlace = ({ didian_list }) => {
                                 <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center'>
                                   <span className='text-xs'>🌳</span>
                                 </div>
-                                <span className='text-sm font-medium text-yellow-700'>
-                                  高级奖励
-                                </span>
+                                <span className='text-sm font-medium text-yellow-700'>高级奖励</span>
                               </div>
                               <div className='flex flex-wrap gap-2'>
                                 {item.three.map((thing, idx) => (
@@ -169,9 +163,7 @@ const SecretPlace = ({ didian_list }) => {
                               {item.Grade === '顶级' && '🌲 顶级秘境，传说级奖励'}
                               {item.Grade === '传说' && '🌟 传说秘境，神话级宝物'}
                               {item.Grade === '神话' && '💎 神话秘境，至尊级机缘'}
-                              {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(
-                                item.Grade
-                              ) && '🏔️ 神秘秘境，未知的挑战'}
+                              {!['初级', '中级', '高级', '顶级', '传说', '神话'].includes(item.Grade) && '🏔️ 神秘秘境，未知的挑战'}
                             </span>
                           </div>
                         </div>
@@ -187,9 +179,7 @@ const SecretPlace = ({ didian_list }) => {
                       <div className='w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center'>
                         <span className='text-xs'>📊</span>
                       </div>
-                      <span className='text-sm text-blue-700 font-medium'>
-                        共 {didian_list?.length || 0} 个秘境
-                      </span>
+                      <span className='text-sm text-blue-700 font-medium'>共 {didian_list?.length || 0} 个秘境</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <div className='w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center'>
@@ -209,9 +199,7 @@ const SecretPlace = ({ didian_list }) => {
           {/* 底部装饰 */}
           <div className='text-center mt-12'>
             <div className='inline-block px-6 py-3 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full border border-blue-400/30 backdrop-blur-sm'>
-              <span className='text-blue-700 text-sm font-medium'>
-                🏔️ 秘境深处藏机缘，修仙路上寻仙缘 🏔️
-              </span>
+              <span className='text-blue-700 text-sm font-medium'>🏔️ 秘境深处藏机缘，修仙路上寻仙缘 🏔️</span>
             </div>
           </div>
         </div>

@@ -19,14 +19,7 @@ import { useDashboardCode } from './Dashboard.code';
 import classNames from 'classnames';
 
 // 导入新的可复用组件
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianStatCard,
-  XiuxianTableContainer,
-  XiuxianRefreshButton,
-  XiuxianEmptyState
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianStatCard, XiuxianTableContainer, XiuxianRefreshButton, XiuxianEmptyState } from '@/components/ui';
 
 export default function DashboardRefactored() {
   const { stats, loading, fetchStats } = useDashboardCode();
@@ -77,9 +70,7 @@ export default function DashboardRefactored() {
       key: 'id',
       render: (_, record) => (
         <div className='flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2'>
-          <div className='font-mono text-xs bg-slate-700/50 px-2 py-1 rounded text-slate-400'>
-            {record.id}
-          </div>
+          <div className='font-mono text-xs bg-slate-700/50 px-2 py-1 rounded text-slate-400'>{record.id}</div>
         </div>
       )
     },
@@ -90,9 +81,7 @@ export default function DashboardRefactored() {
         </div>
       ),
       key: 'level',
-      render: (_, record) => (
-        <div className='text-sm font-medium text-blue-400'>{levelNames[record.level]}</div>
-      )
+      render: (_, record) => <div className='text-sm font-medium text-blue-400'>{levelNames[record.level]}</div>
     },
     {
       title: (
@@ -101,11 +90,7 @@ export default function DashboardRefactored() {
         </div>
       ),
       key: 'power',
-      render: (_, record) => (
-        <div className='text-sm font-bold text-green-400'>
-          {(record.power || 0).toLocaleString()}
-        </div>
-      )
+      render: (_, record) => <div className='text-sm font-bold text-green-400'>{(record.power || 0).toLocaleString()}</div>
     }
   ];
 
@@ -140,11 +125,7 @@ export default function DashboardRefactored() {
         </div>
       ),
       key: 'name',
-      render: (_, record) => (
-        <div className='font-medium text-sm truncate max-w-24 sm:max-w-none text-white'>
-          {record.name}
-        </div>
-      )
+      render: (_, record) => <div className='font-medium text-sm truncate max-w-24 sm:max-w-none text-white'>{record.name}</div>
     },
     {
       title: (
@@ -162,11 +143,7 @@ export default function DashboardRefactored() {
         </div>
       ),
       key: 'power',
-      render: (_, record) => (
-        <div className='text-sm font-bold text-green-400'>
-          {(record.power || 0).toLocaleString()}
-        </div>
-      )
+      render: (_, record) => <div className='text-sm font-bold text-green-400'>{(record.power || 0).toLocaleString()}</div>
     },
     {
       title: (
@@ -175,11 +152,7 @@ export default function DashboardRefactored() {
         </div>
       ),
       key: 'lingshi',
-      render: (_, record) => (
-        <div className='text-sm font-bold text-purple-400'>
-          {(record.lingshi || 0).toLocaleString()}
-        </div>
-      )
+      render: (_, record) => <div className='text-sm font-bold text-purple-400'>{(record.lingshi || 0).toLocaleString()}</div>
     }
   ];
 
@@ -275,11 +248,7 @@ export default function DashboardRefactored() {
       )}
 
       {!stats && !loading && (
-        <XiuxianEmptyState
-          icon={<ExclamationCircleOutlined className='text-6xl text-slate-400' />}
-          title='暂无数据'
-          description='请点击刷新按钮获取最新数据'
-        />
+        <XiuxianEmptyState icon={<ExclamationCircleOutlined className='text-6xl text-slate-400' />} title='暂无数据' description='请点击刷新按钮获取最新数据' />
       )}
     </XiuxianPageWrapper>
   );

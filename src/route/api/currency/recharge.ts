@@ -55,13 +55,7 @@ export const POST = async (ctx: Context) => {
           const amount = getAmountByTier(tier);
           const currencyGained = calculateCurrencyGained(amount);
 
-          const currencyRecord = await rechargeUserCurrency(
-            userId,
-            tier,
-            paymentMethod,
-            ipAddress,
-            deviceInfo
-          );
+          const currencyRecord = await rechargeUserCurrency(userId, tier, paymentMethod, ipAddress, deviceInfo);
 
           ctx.status = 201;
           ctx.body = {
@@ -96,12 +90,7 @@ export const POST = async (ctx: Context) => {
           return;
         }
 
-        const smallMonthCardRecord = await rechargeUserSmallMonthCard(
-          userId,
-          paymentMethod,
-          ipAddress,
-          deviceInfo
-        );
+        const smallMonthCardRecord = await rechargeUserSmallMonthCard(userId, paymentMethod, ipAddress, deviceInfo);
 
         ctx.status = 201;
         ctx.body = {
@@ -128,12 +117,7 @@ export const POST = async (ctx: Context) => {
           return;
         }
 
-        const bigMonthCardRecord = await rechargeUserBigMonthCard(
-          userId,
-          paymentMethod,
-          ipAddress,
-          deviceInfo
-        );
+        const bigMonthCardRecord = await rechargeUserBigMonthCard(userId, paymentMethod, ipAddress, deviceInfo);
 
         ctx.status = 201;
         ctx.body = {
@@ -165,11 +149,7 @@ export const POST = async (ctx: Context) => {
           return;
         }
 
-        const completedRecord = await completeRechargePayment(
-          recordId,
-          transactionId,
-          paymentMethod
-        );
+        const completedRecord = await completeRechargePayment(recordId, transactionId, paymentMethod);
 
         ctx.status = 200;
         ctx.body = {

@@ -1,11 +1,7 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
 import { logger } from 'alemonjs';
-import {
-  getUserMessageStats,
-  getGlobalMessageStats,
-  cleanExpiredMessages
-} from '@src/model/message';
+import { getUserMessageStats, getGlobalMessageStats, cleanExpiredMessages } from '@src/model/message';
 
 // 获取用户消息统计
 export const GET = async (ctx: Context) => {

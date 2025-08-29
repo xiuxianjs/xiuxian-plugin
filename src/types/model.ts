@@ -1,11 +1,5 @@
 import type { Player, Equipment, Najie, NajieItem, Tripod } from './player';
-import type {
-  XiuxianDataShape,
-  TalentItem,
-  GongfaItem,
-  EquipmentTuzhiItem,
-  ForgingMaterial
-} from './data';
+import type { XiuxianDataShape, TalentItem, GongfaItem, EquipmentTuzhiItem, ForgingMaterial } from './data';
 import type {
   AuctionItem,
   DanyaoFullItem,
@@ -36,11 +30,7 @@ import type {
   Text
 } from 'alemonjs';
 
-export type AnyIncomingEvent =
-  | EventsMessageCreateEnum
-  | PrivateEventMessageCreate
-  | PublicEventInteractionCreate
-  | PrivateEventInteractionCreate;
+export type AnyIncomingEvent = EventsMessageCreateEnum | PrivateEventMessageCreate | PublicEventInteractionCreate | PrivateEventInteractionCreate;
 export type MessageEnumsArray = ReturnType<typeof Text>[];
 export type MessageInput = Buffer | string | Array<string | DataMention>;
 
@@ -70,37 +60,12 @@ export interface DataControlAPI {
 }
 
 // Najie / 背包相关
-export type NajieCategory =
-  | '装备'
-  | '丹药'
-  | '道具'
-  | '功法'
-  | '草药'
-  | '材料'
-  | '仙宠'
-  | '仙宠口粮';
+export type NajieCategory = '装备' | '丹药' | '道具' | '功法' | '草药' | '材料' | '仙宠' | '仙宠口粮';
 
 export interface NajieServiceAPI {
-  updateBagThing(
-    userId: string,
-    thingName: string,
-    thingClass: NajieCategory,
-    thing_pinji: number | undefined,
-    lock: number
-  ): Promise<boolean>;
-  existNajieThing(
-    userId: string,
-    thingName: string,
-    thingClass: NajieCategory,
-    thing_pinji?: number
-  ): Promise<number | false>;
-  addNajieThing(
-    userId: string,
-    name: string | NajieItem,
-    thingClass: NajieCategory,
-    x: number,
-    pinji?: number
-  ): Promise<void>;
+  updateBagThing(userId: string, thingName: string, thingClass: NajieCategory, thing_pinji: number | undefined, lock: number): Promise<boolean>;
+  existNajieThing(userId: string, thingName: string, thingClass: NajieCategory, thing_pinji?: number): Promise<number | false>;
+  addNajieThing(userId: string, name: string | NajieItem, thingClass: NajieCategory, x: number, pinji?: number): Promise<void>;
 }
 
 // 交易 / 拍卖
@@ -363,15 +328,7 @@ export interface FoundThing {
 export type CustomRecord = Array<Record<string, unknown>> | Record<string, unknown>;
 
 // === 新增：DataControl 文件路径类型 ===
-export type FilePathType =
-  | 'player'
-  | 'equipment'
-  | 'najie'
-  | 'lib'
-  | 'Timelimit'
-  | 'Level'
-  | 'association'
-  | 'occupation';
+export type FilePathType = 'player' | 'equipment' | 'najie' | 'lib' | 'Timelimit' | 'Level' | 'association' | 'occupation';
 
 // === 新增：Repository ===
 export interface NajieRepository {

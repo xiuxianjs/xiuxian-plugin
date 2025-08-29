@@ -9,13 +9,7 @@ interface XiuxianUserAvatarProps {
   className?: string;
 }
 
-const XiuxianUserAvatar: React.FC<XiuxianUserAvatarProps> = ({
-  src,
-  size = 48,
-  name,
-  online = false,
-  className = ''
-}) => {
+const XiuxianUserAvatar: React.FC<XiuxianUserAvatarProps> = ({ src, size = 48, name, online = false, className = '' }) => {
   return (
     <div className={`relative ${className}`}>
       <Avatar src={src} size={size} className='border-2 border-purple-500/50'>

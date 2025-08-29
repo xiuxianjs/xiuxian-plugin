@@ -1,14 +1,7 @@
 import { Text, useMention, useSend } from 'alemonjs';
 
 import { redis, config } from '@src/model/api';
-import {
-  existplayer,
-  addCoin,
-  readNajie,
-  foundthing,
-  existNajieThing,
-  addNajieThing
-} from '@src/model/index';
+import { existplayer, addCoin, readNajie, foundthing, existNajieThing, addNajieThing } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { parseUnitNumber } from '@src/model/utils/utilsx';
@@ -16,8 +9,7 @@ import type { NajieCategory } from '@src/types';
 import { getRedisKey, keys } from '@src/model/keys';
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
-export const regular
-  = /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9fa5]+)?(\*\d+(k|w|e)?)?/;
+export const regular = /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9fa5]+)?(\*\d+(k|w|e)?)?/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
@@ -84,11 +76,7 @@ const res = onResponse(selects, async e => {
       const waittime_m = Math.trunc(remain / 60000);
       const waittime_s = Math.trunc((remain % 60000) / 1000);
 
-      void Send(
-        Text(
-          `每${transferTimeout / 60000}分钟赠送灵石一次，正在CD中，剩余cd: ${waittime_m}分${waittime_s}秒`
-        )
-      );
+      void Send(Text(`每${transferTimeout / 60000}分钟赠送灵石一次，正在CD中，剩余cd: ${waittime_m}分${waittime_s}秒`));
 
       return false;
     }
@@ -113,22 +101,10 @@ const res = onResponse(selects, async e => {
   }
 
   // 品级
-  const pinjiStr
-    = code.length === 3
-      ? code[1]
-      : code.length === 2 && /[\u4e00-\u9fa5]/.test(code[1])
-        ? code[1]
-        : undefined;
+  const pinjiStr = code.length === 3 ? code[1] : code.length === 2 && /[\u4e00-\u9fa5]/.test(code[1]) ? code[1] : undefined;
 
   // 数量
-  const quantityStr
-    = code.length === 3
-      ? code[2]
-      : code.length === 2
-        ? /[\u4e00-\u9fa5]/.test(code[1])
-          ? undefined
-          : code[1]
-        : undefined;
+  const quantityStr = code.length === 3 ? code[2] : code.length === 2 ? (/[\u4e00-\u9fa5]/.test(code[1]) ? undefined : code[1]) : undefined;
 
   const quantity = quantityStr ? parseUnitNumber(quantityStr) : 1;
 
@@ -166,9 +142,7 @@ const res = onResponse(selects, async e => {
     if (thing_piji !== undefined) {
       equ = najie.装备.find(item => item.name === thingName && item.pinji === thing_piji);
     } else {
-      const sorted = najie.装备
-        .filter(item => item.name === thingName)
-        .sort((a, b) => b.pinji - a.pinji);
+      const sorted = najie.装备.filter(item => item.name === thingName).sort((a, b) => b.pinji - a.pinji);
 
       equ = sorted[0];
       thing_piji = equ?.pinji;

@@ -4,10 +4,7 @@ import najieURL from '@src/resources/img/najie.jpg';
 
 const Log = ({ log }: { log?: string[] }) => {
   return (
-    <HTML
-      className=' w-full bg-top bg-cover relative p-4 md:p-8'
-      style={{ backgroundImage: `url(${najieURL})` }}
-    >
+    <HTML className=' w-full bg-top bg-cover relative p-4 md:p-8' style={{ backgroundImage: `url(${najieURL})` }}>
       {/* 背景遮罩渐变，防止文字与背景冲突 */}
       <div className='absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-none' />
 
@@ -16,12 +13,8 @@ const Log = ({ log }: { log?: string[] }) => {
           {log?.length ? (
             log.map((item, index) => (
               <div key={index} className='mb-6 last:mb-0 bg-white/20 rounded-lg p-4 shadow-md'>
-                <div className='text-base md:text-lg font-mono leading-relaxed text-gray-100 break-words whitespace-pre-line'>
-                  {item}
-                </div>
-                {index !== log.length - 1 && (
-                  <hr className='border-t border-dashed border-white/30 mt-4' />
-                )}
+                <div className='text-base md:text-lg font-mono leading-relaxed text-gray-100 break-words whitespace-pre-line'>{item}</div>
+                {index !== log.length - 1 && <hr className='border-t border-dashed border-white/30 mt-4' />}
               </div>
             ))
           ) : (

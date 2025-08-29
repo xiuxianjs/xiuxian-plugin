@@ -15,12 +15,7 @@ interface UserCurrencyTabProps {
   onStatsRefresh: () => Promise<void>;
 }
 
-export default function UserCurrencyTab({
-  users,
-  loading,
-  onRefresh: _onRefresh,
-  onStatsRefresh: _onStatsRefresh
-}: UserCurrencyTabProps) {
+export default function UserCurrencyTab({ users, loading, onRefresh: _onRefresh, onStatsRefresh: _onStatsRefresh }: UserCurrencyTabProps) {
   const [searchText, setSearchText] = React.useState('');
 
   const columns: ColumnsType<CurrencyUser> = [
@@ -52,20 +47,12 @@ export default function UserCurrencyTab({
           <div className='flex items-center gap-2'>
             <CalendarOutlined className='text-blue-400' />
             <span className='text-sm'>小月卡:</span>
-            <Badge
-              count={record.small_month_card_days}
-              showZero
-              color={record.small_month_card_days > 0 ? 'blue' : 'default'}
-            />
+            <Badge count={record.small_month_card_days} showZero color={record.small_month_card_days > 0 ? 'blue' : 'default'} />
           </div>
           <div className='flex items-center gap-2'>
             <CrownOutlined className='text-purple-400' />
             <span className='text-sm'>大月卡:</span>
-            <Badge
-              count={record.big_month_card_days}
-              showZero
-              color={record.big_month_card_days > 0 ? 'purple' : 'default'}
-            />
+            <Badge count={record.big_month_card_days} showZero color={record.big_month_card_days > 0 ? 'purple' : 'default'} />
           </div>
         </div>
       )
@@ -100,18 +87,12 @@ export default function UserCurrencyTab({
         <div className='space-y-1 text-xs'>
           <div>
             <span className='text-slate-400'>最后充值:</span>
-            <div className='text-slate-300'>
-              {record.last_recharge_time
-                ? dayjs(record.last_recharge_time).format('YYYY-MM-DD HH:mm')
-                : '无'}
-            </div>
+            <div className='text-slate-300'>{record.last_recharge_time ? dayjs(record.last_recharge_time).format('YYYY-MM-DD HH:mm') : '无'}</div>
           </div>
           {record.first_recharge_time && (
             <div>
               <span className='text-slate-400'>首充时间:</span>
-              <div className='text-slate-300'>
-                {dayjs(record.first_recharge_time).format('YYYY-MM-DD HH:mm')}
-              </div>
+              <div className='text-slate-300'>{dayjs(record.first_recharge_time).format('YYYY-MM-DD HH:mm')}</div>
             </div>
           )}
         </div>
@@ -119,9 +100,7 @@ export default function UserCurrencyTab({
     }
   ];
 
-  const filteredUsers = users.filter(user =>
-    user.id.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredUsers = users.filter(user => user.id.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <div className='space-y-4'>
@@ -133,9 +112,7 @@ export default function UserCurrencyTab({
             onChange={e => setSearchText(e.target.value)}
             onSearch={() => {}}
             size='large'
-            onKeyPress={e =>
-              e.key === 'Enter' && setSearchText((e.target as HTMLInputElement).value)
-            }
+            onKeyPress={e => e.key === 'Enter' && setSearchText((e.target as HTMLInputElement).value)}
             className='w-full xiuxian-input'
           />
         </div>

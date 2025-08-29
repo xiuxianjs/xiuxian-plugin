@@ -67,9 +67,7 @@ export default function NajieManager() {
       render: (_, record) => (
         <div>
           <div className='text-xs text-green-500'>当前: {record.灵石?.toLocaleString() || 0}</div>
-          <div className='text-xs text-yellow-500'>
-            上限: {record.灵石上限?.toLocaleString() || 0}
-          </div>
+          <div className='text-xs text-yellow-500'>上限: {record.灵石上限?.toLocaleString() || 0}</div>
         </div>
       )
     },
@@ -131,12 +129,7 @@ export default function NajieManager() {
         icon={<ShoppingOutlined />}
         title='背包管理'
         subtitle='管理修仙界道友的背包物品'
-        actions={
-          <XiuxianRefreshButton
-            loading={loading}
-            onClick={() => fetchNajie(1, pagination.pageSize)}
-          />
-        }
+        actions={<XiuxianRefreshButton loading={loading} onClick={() => fetchNajie(1, pagination.pageSize)} />}
       />
 
       {/* 搜索栏 */}

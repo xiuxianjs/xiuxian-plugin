@@ -104,25 +104,19 @@ const Supermarket = ({ Exchange_list }) => {
                                   <div className='w-6 h-6 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>⚔️</span>
                                   </div>
-                                  <span className='text-sm text-red-200'>
-                                    攻击：{item.name.atk.toFixed(0)}
-                                  </span>
+                                  <span className='text-sm text-red-200'>攻击：{item.name.atk.toFixed(0)}</span>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                   <div className='w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>🛡️</span>
                                   </div>
-                                  <span className='text-sm text-blue-200'>
-                                    防御：{item.name.def.toFixed(0)}
-                                  </span>
+                                  <span className='text-sm text-blue-200'>防御：{item.name.def.toFixed(0)}</span>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                   <div className='w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>❤️</span>
                                   </div>
-                                  <span className='text-sm text-green-200'>
-                                    血量：{item.name.HP.toFixed(0)}
-                                  </span>
+                                  <span className='text-sm text-green-200'>血量：{item.name.HP.toFixed(0)}</span>
                                 </div>
                               </>
                             ) : (
@@ -131,33 +125,25 @@ const Supermarket = ({ Exchange_list }) => {
                                   <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>🌟</span>
                                   </div>
-                                  <span className='text-sm text-yellow-200'>
-                                    属性: {['金', '木', '土', '水', '火'][item.name.id - 1]}
-                                  </span>
+                                  <span className='text-sm text-yellow-200'>属性: {['金', '木', '土', '水', '火'][item.name.id - 1]}</span>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                   <div className='w-6 h-6 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>⚔️</span>
                                   </div>
-                                  <span className='text-sm text-red-200'>
-                                    攻击：{(item.name.atk * 100).toFixed(0)}%
-                                  </span>
+                                  <span className='text-sm text-red-200'>攻击：{(item.name.atk * 100).toFixed(0)}%</span>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                   <div className='w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>🛡️</span>
                                   </div>
-                                  <span className='text-sm text-blue-200'>
-                                    防御：{(item.name.def * 100).toFixed(0)}%
-                                  </span>
+                                  <span className='text-sm text-blue-200'>防御：{(item.name.def * 100).toFixed(0)}%</span>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                   <div className='w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center'>
                                     <span className='text-xs'>❤️</span>
                                   </div>
-                                  <span className='text-sm text-green-200'>
-                                    血量：{(item.name.HP * 100).toFixed(0)}%
-                                  </span>
+                                  <span className='text-sm text-green-200'>血量：{(item.name.HP * 100).toFixed(0)}%</span>
                                 </div>
                               </>
                             )}
@@ -165,9 +151,7 @@ const Supermarket = ({ Exchange_list }) => {
                               <div className='w-6 h-6 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center'>
                                 <span className='text-xs'>💥</span>
                               </div>
-                              <span className='text-sm text-purple-200'>
-                                暴击：{(item.name.bao * 100).toFixed(0)}%
-                              </span>
+                              <span className='text-sm text-purple-200'>暴击：{(item.name.bao * 100).toFixed(0)}%</span>
                             </div>
                           </div>
                         )}
@@ -178,9 +162,7 @@ const Supermarket = ({ Exchange_list }) => {
                               <div className='w-6 h-6 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center'>
                                 <span className='text-xs'>🐉</span>
                               </div>
-                              <span className='text-sm font-medium text-purple-200'>
-                                等级：{item.name.等级.toFixed(0)}
-                              </span>
+                              <span className='text-sm font-medium text-purple-200'>等级：{item.name.等级.toFixed(0)}</span>
                             </div>
                           </div>
                         )}
@@ -203,9 +185,7 @@ const Supermarket = ({ Exchange_list }) => {
                             <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center'>
                               <span className='text-xs'>💎</span>
                             </div>
-                            <span className='text-sm text-yellow-200'>
-                              总价：{item.price * item.amount}
-                            </span>
+                            <span className='text-sm text-yellow-200'>总价：{item.price * item.amount}</span>
                           </div>
                           <div className='flex items-center gap-2'>
                             <div className='w-6 h-6 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center'>

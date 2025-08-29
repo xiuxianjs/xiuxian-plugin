@@ -20,13 +20,7 @@ function toNum(v, d = 0) {
  * @param maxSlots 最大时间槽数（默认48个，即720分钟）
  * @returns 有效时间（分钟）
  */
-export function calcEffectiveMinutes(
-  start: number,
-  end: number,
-  now: number,
-  slot = 15,
-  maxSlots = 48
-) {
+export function calcEffectiveMinutes(start: number, end: number, now: number, slot = 15, maxSlots = 48) {
   let minutes: number;
 
   if (end > now) {
@@ -87,9 +81,7 @@ export async function plant_jiesuan(user_id: string, time: number, group_id?: st
   ];
   // 低于36级时使用 sum2，之后使用 sum3。再乘一个职业系数上浮 (1 + occFactor*0.3)
   const sum2 = [0.2, 0.3, 0.2, 0.2, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  const sum3 = [
-    0.17, 0.22, 0.17, 0.17, 0.17, 0.024, 0.024, 0.024, 0.024, 0.024, 0.024, 0.024, 0.012, 0.011
-  ];
+  const sum3 = [0.17, 0.22, 0.17, 0.17, 0.17, 0.024, 0.024, 0.024, 0.024, 0.024, 0.024, 0.024, 0.012, 0.011];
   const baseVec = player.level_id < 36 ? sum2 : sum3;
   const mult = 1 + occFactor * 0.3;
   const amounts = baseVec.map(p => p * sum * mult);
@@ -136,30 +128,8 @@ export async function mine_jiesuan(user_id: string, time: number, group_id?: str
   let end_amount = Math.floor(4 * (rate + 1) * mine_amount1);
   // 锻造材料数量：按时间 & rate 缩放
   const num = Math.floor(((rate / 12) * time) / 30);
-  const A = [
-    '金色石胚',
-    '棕色石胚',
-    '绿色石胚',
-    '红色石胚',
-    '蓝色石胚',
-    '金色石料',
-    '棕色石料',
-    '绿色石料',
-    '红色石料',
-    '蓝色石料'
-  ];
-  const B = [
-    '金色妖石',
-    '棕色妖石',
-    '绿色妖石',
-    '红色妖石',
-    '蓝色妖石',
-    '金色妖丹',
-    '棕色妖丹',
-    '绿色妖丹',
-    '红色妖丹',
-    '蓝色妖丹'
-  ];
+  const A = ['金色石胚', '棕色石胚', '绿色石胚', '红色石胚', '蓝色石胚', '金色石料', '棕色石料', '绿色石料', '红色石料', '蓝色石料'];
+  const B = ['金色妖石', '棕色妖石', '绿色妖石', '红色妖石', '蓝色妖石', '金色妖丹', '棕色妖丹', '绿色妖丹', '红色妖丹', '蓝色妖丹'];
   const xuanze = Math.trunc(Math.random() * A.length);
 
   end_amount *= player.level_id / 40;

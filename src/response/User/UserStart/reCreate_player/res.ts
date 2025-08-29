@@ -2,24 +2,12 @@ import { Text, useMessage, useSend, useSubscribe } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { __PATH, keys } from '@src/model/keys';
-import {
-  existplayer,
-  getRandomFromARR,
-  Go,
-  notUndAndNull,
-  writePlayer,
-  getConfig,
-  readPlayer
-} from '@src/model/index';
+import { existplayer, getRandomFromARR, Go, notUndAndNull, writePlayer, getConfig, readPlayer } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import type { AssociationDetailData } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
 import mw from '@src/response/mw';
-import {
-  delDataByKey,
-  getDataJSONParseByKey,
-  setDataJSONStringifyByKey
-} from '@src/model/DataControl';
+import { delDataByKey, getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 
 export const regular = /^(#|＃|\/)?再入仙途$/;
 
@@ -112,9 +100,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  void Send(
-    Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择')
-  );
+  void Send(Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择'));
   const [subscribe] = useSubscribe(e, selects);
   const sub = subscribe.mount(
     async (event, next) => {

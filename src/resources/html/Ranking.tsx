@@ -5,47 +5,33 @@ import stateURL from '@src/resources/img/state.jpg';
 import user_stateURL from '@src/resources/img/user_state2.png';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 
-const Ranking = ({
-  user_id,
-  messages = [],
-  title,
-  values
-}: {
-  user_id?: string;
-  messages?: React.ReactNode;
-  title?: string;
-  values?: React.ReactNode[];
-}) => {
+const Ranking = ({ user_id, messages = [], title, values }: { user_id?: string; messages?: React.ReactNode; title?: string; values?: React.ReactNode[] }) => {
   const getRankStyles = (index: number) => {
     switch (index) {
       case 0: // 第一名 - 金属金色至尊
         return {
-          container:
-            'border-yellow-400/60 bg-gradient-to-r from-yellow-900/40 to-amber-900/30 shadow-yellow-500/30 shadow-lg',
+          container: 'border-yellow-400/60 bg-gradient-to-r from-yellow-900/40 to-amber-900/30 shadow-yellow-500/30 shadow-lg',
           rank: 'bg-gradient-to-r from-yellow-400 to-amber-300 text-yellow-900',
           glow: 'shadow-yellow-400/50',
           icon: 'text-yellow-400'
         };
       case 1: // 第二名 - 紫色仙君
         return {
-          container:
-            'border-purple-300/60 bg-gradient-to-r from-purple-800/40 to-violet-800/30 shadow-purple-400/30 shadow-lg',
+          container: 'border-purple-300/60 bg-gradient-to-r from-purple-800/40 to-violet-800/30 shadow-purple-400/30 shadow-lg',
           rank: 'bg-gradient-to-r from-purple-300 to-violet-200 text-purple-800',
           glow: 'shadow-purple-300/50',
           icon: 'text-purple-300'
         };
       case 2: // 第三名 - 青色真人
         return {
-          container:
-            'border-cyan-600/60 bg-gradient-to-r from-cyan-900/40 to-blue-900/30 shadow-cyan-600/30 shadow-lg',
+          container: 'border-cyan-600/60 bg-gradient-to-r from-cyan-900/40 to-blue-900/30 shadow-cyan-600/30 shadow-lg',
           rank: 'bg-gradient-to-r from-cyan-400 to-blue-300 text-cyan-900',
           glow: 'shadow-cyan-400/50',
           icon: 'text-cyan-400'
         };
       default: // 其他名次 - 蓝玉修士
         return {
-          container:
-            'border-blue-500/40 bg-gradient-to-r from-blue-900/30 to-indigo-900/20 shadow-blue-500/20 shadow-md',
+          container: 'border-blue-500/40 bg-gradient-to-r from-blue-900/30 to-indigo-900/20 shadow-blue-500/20 shadow-md',
           rank: 'bg-gradient-to-r from-blue-400 to-indigo-300 text-blue-900',
           glow: 'shadow-blue-400/30',
           icon: 'text-blue-400'
@@ -84,10 +70,7 @@ const Ranking = ({
               className='absolute w-52 h-52 rounded-full border-2 border-indigo-300/40 animate-spin-slow'
               style={{ animationDirection: 'reverse', animationDuration: '8s' }}
             />
-            <div
-              className='absolute w-48 h-48 rounded-full border-2 border-purple-200/50 animate-spin-slow'
-              style={{ animationDuration: '12s' }}
-            />
+            <div className='absolute w-48 h-48 rounded-full border-2 border-purple-200/50 animate-spin-slow' style={{ animationDuration: '12s' }} />
 
             {/* 头像 */}
             <div className='relative w-44 h-44 rounded-full overflow-hidden shadow-2xl border-4 border-gradient-to-r from-blue-400 to-indigo-300'>

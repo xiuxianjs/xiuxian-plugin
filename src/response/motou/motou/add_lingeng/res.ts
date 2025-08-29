@@ -1,12 +1,6 @@
 import { Text, useObserver, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  readPlayer,
-  existNajieThing,
-  addNajieThing,
-  writePlayer
-} from '@src/model/index';
+import { existplayer, readPlayer, existNajieThing, addNajieThing, writePlayer } from '@src/model/index';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?供奉魔石$/;

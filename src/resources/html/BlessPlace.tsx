@@ -12,10 +12,7 @@ interface BlessPlaceItem {
 
 const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
   return (
-    <HTML
-      className=' w-full text-center p-4 md:p-8 bg-top bg-cover relative text-white'
-      style={{ backgroundImage: `url(${secretPlaceURL})` }}
-    >
+    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover relative text-white' style={{ backgroundImage: `url(${secretPlaceURL})` }}>
       {/* 背景渐变遮罩 */}
       <div className='absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/20 backdrop-blur-[2px] pointer-events-none' />
 
@@ -45,23 +42,17 @@ const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
                 <header className='space-y-1'>
                   <h2 className='text-lg font-semibold tracking-wide drop-shadow-md'>
                     {item.name}
-                    <span className='block text-sm font-medium text-blue-100/90'>
-                      【入驻宗门: {item.ass || '-'}】
-                    </span>
+                    <span className='block text-sm font-medium text-blue-100/90'>【入驻宗门: {item.ass || '-'}】</span>
                   </h2>
                 </header>
 
                 <div className='mt-4 space-y-2 text-sm md:text-base font-medium'>
                   <p className='flex items-center gap-2'>
-                    <span className='px-2 py-0.5 rounded-full bg-blue-500/30 border border-white/20'>
-                      福地等级
-                    </span>
+                    <span className='px-2 py-0.5 rounded-full bg-blue-500/30 border border-white/20'>福地等级</span>
                     <span className='font-semibold'>{item.level}</span>
                   </p>
                   <p className='flex items-center gap-2'>
-                    <span className='px-2 py-0.5 rounded-full bg-blue-400/30 border border-white/20'>
-                      修炼效率
-                    </span>
+                    <span className='px-2 py-0.5 rounded-full bg-blue-400/30 border border-white/20'>修炼效率</span>
                     <span className='font-semibold'>{item.efficiency}</span>
                   </p>
                 </div>

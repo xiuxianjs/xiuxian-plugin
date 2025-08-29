@@ -142,9 +142,7 @@ const res = onResponse(selects, async e => {
   member.宗门.职位 = appointment;
   await setDataJSONStringifyByKey(keys.player(member_qq), member);
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  void Send(
-    Text(`${ass.宗门名称} ${player.宗门.职位} 已经成功将${member.名号}任命为${appointment}!`)
-  );
+  void Send(Text(`${ass.宗门名称} ${player.宗门.职位} 已经成功将${member.名号}任命为${appointment}!`));
 
   return false;
 });

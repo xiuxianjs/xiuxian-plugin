@@ -60,11 +60,7 @@ const res = onResponse(selects, async e => {
 
   const finalGarden = ass.药园 ?? { 药园等级: 1, 作物: [] };
   const capacity = cap(guildLevel, 6);
-  const msg: string[] = [
-    `宗门名称: ${ass.宗门名称}`,
-    `药园可栽种: ${capacity} 棵药草`,
-    '药园药草如下:'
-  ];
+  const msg: string[] = [`宗门名称: ${ass.宗门名称}`, `药园可栽种: ${capacity} 棵药草`, '药园药草如下:'];
   const now = Date.now();
 
   for (const crop of finalGarden.作物 || []) {
@@ -112,9 +108,7 @@ async function createGarden(ass: ZongMen, associationName: string, userId: strin
     9: 6
   };
   const count = levelMap[level] || 1;
-  const crops = cropTemplates
-    .slice(0, count)
-    .map(c => ({ ...c, start_time: now, who_plant: userId }));
+  const crops = cropTemplates.slice(0, count).map(c => ({ ...c, start_time: now, who_plant: userId }));
   const garden: GardenData = { 药园等级: level, 作物: crops };
 
   // 初始化成熟时间戳

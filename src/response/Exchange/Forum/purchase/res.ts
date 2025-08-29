@@ -1,16 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  Go,
-  readPlayer,
-  readForum,
-  writeForum,
-  convert2integer,
-  existNajieThing,
-  addNajieThing,
-  addCoin
-} from '@src/model/index';
+import { Go, readPlayer, readForum, writeForum, convert2integer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -187,12 +178,7 @@ const res = onResponse(selects, async e => {
   // 扣除物品 & 增加灵石 & 给对方物品
   await addNajieThing(userId, order.name, order.class as NajieCategory, -deliverQty);
   await addCoin(userId, gain);
-  await addNajieThing(
-    String(order.qq ?? order.last_offer_player ?? ''),
-    order.name,
-    order.class as NajieCategory,
-    deliverQty
-  );
+  await addNajieThing(String(order.qq ?? order.last_offer_player ?? ''), order.name, order.class as NajieCategory, deliverQty);
   // 更新订单
   orderRaw.amount = remaining - deliverQty;
   if (typeof order.whole === 'number') {

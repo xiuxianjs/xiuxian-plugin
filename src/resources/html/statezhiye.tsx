@@ -38,9 +38,7 @@ const Statezhiye = ({ Level_list }) => {
                     </div>
                     <h2 className='text-2xl font-bold text-violet-300'>职业等级</h2>
                   </div>
-                  <div className='text-sm text-gray-300'>
-                    从初学者到大师，每一步都是修仙路上的重要里程碑
-                  </div>
+                  <div className='text-sm text-gray-300'>从初学者到大师，每一步都是修仙路上的重要里程碑</div>
                 </div>
 
                 {/* 等级列表 */}
@@ -68,9 +66,7 @@ const Statezhiye = ({ Level_list }) => {
                               </span>
                             </div>
                             <div>
-                              <h3 className='text-lg font-bold text-violet-200'>
-                                等级 {item.name}
-                              </h3>
+                              <h3 className='text-lg font-bold text-violet-200'>等级 {item.name}</h3>
                               <span className='text-xs text-gray-400'>
                                 {index === 0 && '初学者'}
                                 {index === 1 && '学徒'}
@@ -104,9 +100,7 @@ const Statezhiye = ({ Level_list }) => {
                             <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center'>
                               <span className='text-xs'>⭐</span>
                             </div>
-                            <span className='text-lg font-bold text-yellow-200'>
-                              {item.experience}
-                            </span>
+                            <span className='text-lg font-bold text-yellow-200'>{item.experience}</span>
                           </div>
                         </div>
 
@@ -120,9 +114,7 @@ const Statezhiye = ({ Level_list }) => {
                               }}
                             />
                           </div>
-                          <span className='text-xs text-gray-300'>
-                            {Math.min((index + 1) * 10, 100)}%
-                          </span>
+                          <span className='text-xs text-gray-300'>{Math.min((index + 1) * 10, 100)}%</span>
                         </div>
 
                         {/* 等级描述 */}
@@ -155,9 +147,7 @@ const Statezhiye = ({ Level_list }) => {
                       <div className='w-6 h-6 bg-gradient-to-br from-violet-400 to-violet-600 rounded-full flex items-center justify-center'>
                         <span className='text-xs'>📈</span>
                       </div>
-                      <span className='text-sm text-violet-200'>
-                        共 {Level_list?.length || 0} 个等级
-                      </span>
+                      <span className='text-sm text-violet-200'>共 {Level_list?.length || 0} 个等级</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center'>

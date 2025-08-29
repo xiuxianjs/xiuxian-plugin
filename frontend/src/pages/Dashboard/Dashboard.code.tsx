@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  getGameUsersStatsAPI,
-  getAssociationsStatsAPI,
-  getRankingsStatsAPI,
-  getTaskStatusAPI
-} from '@/api/auth';
+import { getGameUsersStatsAPI, getAssociationsStatsAPI, getRankingsStatsAPI, getTaskStatusAPI } from '@/api/auth';
 import { DashboardStats } from '@/types/types';
 
 export const useDashboardCode = () => {

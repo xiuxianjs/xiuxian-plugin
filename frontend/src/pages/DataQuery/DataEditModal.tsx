@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Modal,
-  Input,
-  InputNumber,
-  Switch,
-  Button,
-  message,
-  Space,
-  Card,
-  Typography,
-  Select
-} from 'antd';
+import { Modal, Input, InputNumber, Switch, Button, message, Space, Card, Typography, Select } from 'antd';
 
 // 导入UI组件库
 import { XiuxianPagination } from '@/components/ui';
-import {
-  EditOutlined,
-  SaveOutlined,
-  CloseOutlined,
-  PlusOutlined,
-  DeleteOutlined
-} from '@ant-design/icons';
+import { EditOutlined, SaveOutlined, CloseOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { updateDataListAPI } from '@/api/auth';
 
 const { TextArea } = Input;
@@ -47,14 +30,7 @@ interface DataItem {
   [key: string]: unknown;
 }
 
-export default function DataEditModal({
-  visible,
-  onCancel,
-  onSuccess,
-  dataType,
-  dataTypeName,
-  originalData
-}: DataEditModalProps) {
+export default function DataEditModal({ visible, onCancel, onSuccess, dataType, dataTypeName, originalData }: DataEditModalProps) {
   const [loading, setLoading] = useState(false);
   const [editingData, setEditingData] = useState<DataItem[]>([]);
   const [fieldConfigs, setFieldConfigs] = useState<FieldConfig[]>([]);
@@ -168,9 +144,7 @@ export default function DataEditModal({
   // 选择/取消选择行
   const handleSelectRow = (index: number) => {
     const globalIndex = (currentPage - 1) * pageSize + index;
-    const newSelected = selectedRows.includes(globalIndex)
-      ? selectedRows.filter(i => i !== globalIndex)
-      : [...selectedRows, globalIndex];
+    const newSelected = selectedRows.includes(globalIndex) ? selectedRows.filter(i => i !== globalIndex) : [...selectedRows, globalIndex];
     setSelectedRows(newSelected);
   };
 
@@ -182,32 +156,11 @@ export default function DataEditModal({
 
     switch (field.type) {
       case 'number':
-        return (
-          <InputNumber
-            value={value as number}
-            onChange={handleChange}
-            className='w-full'
-            placeholder={`请输入${field.label}`}
-          />
-        );
+        return <InputNumber value={value as number} onChange={handleChange} className='w-full' placeholder={`请输入${field.label}`} />;
       case 'boolean':
-        return (
-          <Switch
-            checked={value as boolean}
-            onChange={handleChange}
-            checkedChildren='是'
-            unCheckedChildren='否'
-          />
-        );
+        return <Switch checked={value as boolean} onChange={handleChange} checkedChildren='是' unCheckedChildren='否' />;
       case 'textarea':
-        return (
-          <TextArea
-            value={value as string}
-            onChange={e => handleChange(e.target.value)}
-            rows={3}
-            placeholder={`请输入${field.label}`}
-          />
-        );
+        return <TextArea value={value as string} onChange={e => handleChange(e.target.value)} rows={3} placeholder={`请输入${field.label}`} />;
       case 'json':
         return (
           <TextArea
@@ -225,13 +178,7 @@ export default function DataEditModal({
           />
         );
       default:
-        return (
-          <Input
-            value={String(value)}
-            onChange={e => handleChange(e.target.value)}
-            placeholder={`请输入${field.label}`}
-          />
-        );
+        return <Input value={String(value)} onChange={e => handleChange(e.target.value)} placeholder={`请输入${field.label}`} />;
     }
   };
 
@@ -309,10 +256,7 @@ export default function DataEditModal({
             >
               添加行
             </Button>
-            <Button
-              onClick={() => setBatchMode(!batchMode)}
-              className={batchMode ? 'bg-blue-500 text-white' : ''}
-            >
+            <Button onClick={() => setBatchMode(!batchMode)} className={batchMode ? 'bg-blue-500 text-white' : ''}>
               批量操作
             </Button>
           </Space>
@@ -323,24 +267,14 @@ export default function DataEditModal({
           <Card className='mb-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200'>
             <div className='flex items-center gap-4'>
               <Text strong>批量更新：</Text>
-              <Select
-                value={batchField}
-                onChange={setBatchField}
-                style={{ width: 150 }}
-                placeholder='选择字段'
-              >
+              <Select value={batchField} onChange={setBatchField} style={{ width: 150 }} placeholder='选择字段'>
                 {fieldConfigs.map(field => (
                   <Option key={field.key} value={field.key}>
                     {field.label}
                   </Option>
                 ))}
               </Select>
-              <Input
-                value={batchValue}
-                onChange={e => setBatchValue(e.target.value)}
-                placeholder='输入新值'
-                style={{ width: 200 }}
-              />
+              <Input value={batchValue} onChange={e => setBatchValue(e.target.value)} placeholder='输入新值' style={{ width: 200 }} />
               <Button
                 type='primary'
                 onClick={handleBatchUpdate}
@@ -377,9 +311,7 @@ export default function DataEditModal({
             total={editingData.length}
             showSizeChanger={false}
             showQuickJumper={true}
-            showTotal={(total: number, range: [number, number]) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
-            }
+            showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
             onChange={page => setCurrentPage(page)}
           />
         </div>
@@ -395,29 +327,16 @@ export default function DataEditModal({
                 key={globalIndex}
                 title={
                   <div className='flex items-center gap-2'>
-                    <input
-                      type='checkbox'
-                      checked={isSelected}
-                      onChange={() => handleSelectRow(index)}
-                      className='mr-2'
-                    />
+                    <input type='checkbox' checked={isSelected} onChange={() => handleSelectRow(index)} className='mr-2' />
                     <span>第 {globalIndex + 1} 条数据</span>
                   </div>
                 }
                 size='small'
                 className={`border-2 transition-all ${
-                  isSelected
-                    ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300'
-                    : 'bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200'
+                  isSelected ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300' : 'bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200'
                 }`}
                 extra={
-                  <Button
-                    type='text'
-                    danger
-                    size='small'
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleDeleteRow(index)}
-                  >
+                  <Button type='text' danger size='small' icon={<DeleteOutlined />} onClick={() => handleDeleteRow(index)}>
                     删除
                   </Button>
                 }
@@ -438,9 +357,7 @@ export default function DataEditModal({
           })}
         </div>
 
-        {currentPageData.length === 0 && (
-          <div className='text-center py-8 text-slate-500'>当前页暂无数据</div>
-        )}
+        {currentPageData.length === 0 && <div className='text-center py-8 text-slate-500'>当前页暂无数据</div>}
 
         {/* 底部分页 */}
         <div className='mt-4 flex justify-center'>
@@ -450,9 +367,7 @@ export default function DataEditModal({
             total={editingData.length}
             showSizeChanger={false}
             showQuickJumper={true}
-            showTotal={(total: number, range: [number, number]) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
-            }
+            showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
             onChange={page => setCurrentPage(page)}
           />
         </div>

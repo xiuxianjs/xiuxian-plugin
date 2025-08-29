@@ -90,9 +90,7 @@ const Message: React.FC<MessageProps> = ({ stats, messages, pagination }) => {
           <h1 className='text-4xl font-bold text-transparent bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 bg-clip-text drop-shadow-lg tracking-wider mb-3'>
             🏮 修仙界传音符 🏮
           </h1>
-          <p className='text-lg opacity-80 drop-shadow-md tracking-wide'>
-            ✨ 道友，这里是你的专属传音阁 ✨
-          </p>
+          <p className='text-lg opacity-80 drop-shadow-md tracking-wide'>✨ 道友，这里是你的专属传音阁 ✨</p>
         </div>
 
         {/* 统计信息卡片 */}
@@ -169,9 +167,7 @@ const Message: React.FC<MessageProps> = ({ stats, messages, pagination }) => {
                         {getTypeIcon(message.type)}
                       </div>
                       <div className='flex-1'>
-                        <div className='text-lg font-bold text-yellow-400 mb-1 drop-shadow-md'>
-                          {message.title}
-                        </div>
+                        <div className='text-lg font-bold text-yellow-400 mb-1 drop-shadow-md'>{message.title}</div>
                         <div className='text-xs opacity-60 tracking-wide'>📤 {message.sender}</div>
                       </div>
                     </div>
@@ -197,9 +193,7 @@ const Message: React.FC<MessageProps> = ({ stats, messages, pagination }) => {
                   </div>
 
                   {/* 消息内容 */}
-                  <div className='text-base leading-relaxed mb-4 p-4 bg-black/20 rounded-lg border border-white/5 drop-shadow-sm'>
-                    {message.content}
-                  </div>
+                  <div className='text-base leading-relaxed mb-4 p-4 bg-black/20 rounded-lg border border-white/5 drop-shadow-sm'>{message.content}</div>
 
                   {/* 消息底部信息 */}
                   <div className='flex justify-between items-center text-xs opacity-70 pt-3 border-t border-white/10'>
@@ -209,9 +203,7 @@ const Message: React.FC<MessageProps> = ({ stats, messages, pagination }) => {
                         {message.createTime}
                       </span>
                     </div>
-                    <span className='text-yellow-400 font-bold text-sm drop-shadow-sm'>
-                      #{index + 1}
-                    </span>
+                    <span className='text-yellow-400 font-bold text-sm drop-shadow-sm'>#{index + 1}</span>
                   </div>
                 </div>
               ))}

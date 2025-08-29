@@ -20,9 +20,7 @@ export default ({ Record }) => {
             <div className='inline-block relative'>
               <div className='absolute inset-0 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl blur-lg opacity-50' />
               <div className='relative bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl px-8 py-4 border border-teal-400/30'>
-                <h1 className='text-3xl font-bold text-white tracking-wider'>
-                  📜 修仙界更新日志 📜
-                </h1>
+                <h1 className='text-3xl font-bold text-white tracking-wider'>📜 修仙界更新日志 📜</h1>
               </div>
             </div>
           </div>
@@ -44,11 +42,7 @@ export default ({ Record }) => {
                               <div className='absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-full blur-sm' />
                               <div className='relative w-16 h-16 rounded-full border-2 border-teal-400/30 overflow-hidden'>
                                 {item.user.avatar ? (
-                                  <img
-                                    src={item.user.avatar}
-                                    alt={item.user.name}
-                                    className='w-full h-full object-cover'
-                                  />
+                                  <img src={item.user.avatar} alt={item.user.name} className='w-full h-full object-cover' />
                                 ) : (
                                   <div className='w-full h-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center text-2xl font-bold text-white'>
                                     {item.user.name.charAt(0)}
@@ -57,9 +51,7 @@ export default ({ Record }) => {
                               </div>
                             </div>
                             <div className='mt-3 text-center'>
-                              <span className='text-sm font-medium text-teal-200'>
-                                {item.user.name}
-                              </span>
+                              <span className='text-sm font-medium text-teal-200'>{item.user.name}</span>
                             </div>
                           </div>
 
@@ -73,9 +65,7 @@ export default ({ Record }) => {
                               <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center'>
                                 <span className='text-xs'>⏰</span>
                               </div>
-                              <time className='text-sm text-yellow-200 font-medium'>
-                                {item.time}
-                              </time>
+                              <time className='text-sm text-yellow-200 font-medium'>{item.time}</time>
                             </div>
                           </div>
                         </div>

@@ -21,10 +21,7 @@ const generateMessageId = (): string => {
 };
 
 // 获取用户站内信列表
-export const getUserMessages = async (
-  userId: string,
-  params: MessageQueryParams = {}
-): Promise<MessageListResponse> => {
+export const getUserMessages = async (userId: string, params: MessageQueryParams = {}): Promise<MessageListResponse> => {
   try {
     const { page = 1, pageSize = 10, type, status, priority, startTime, endTime, keyword } = params;
 
@@ -55,11 +52,7 @@ export const getUserMessages = async (
     if (keyword) {
       const lowerKeyword = keyword.toLowerCase();
 
-      messages = messages.filter(
-        msg =>
-          msg.title.toLowerCase().includes(lowerKeyword) ||
-          msg.content.toLowerCase().includes(lowerKeyword)
-      );
+      messages = messages.filter(msg => msg.title.toLowerCase().includes(lowerKeyword) || msg.content.toLowerCase().includes(lowerKeyword));
     }
 
     // 按创建时间倒序排序
@@ -112,16 +105,7 @@ export const getMessage = async (userId: string, messageId: string): Promise<Mes
 // 发送站内信
 export const sendMessage = async (params: SendMessageParams): Promise<MessageOperationResult> => {
   try {
-    const {
-      title,
-      content,
-      type,
-      priority = MessagePriority.NORMAL,
-      receivers,
-      expireTime,
-      attachments,
-      metadata
-    } = params;
+    const { title, content, type, priority = MessagePriority.NORMAL, receivers, expireTime, attachments, metadata } = params;
 
     const messageId = generateMessageId();
     const now = Date.now();
@@ -203,10 +187,7 @@ const addMessageToUser = async (userId: string, message: Message): Promise<void>
 };
 
 // 标记消息为已读
-export const markMessageAsRead = async (
-  userId: string,
-  messageId: string
-): Promise<MessageOperationResult> => {
+export const markMessageAsRead = async (userId: string, messageId: string): Promise<MessageOperationResult> => {
   try {
     const messageKey = keys.message(userId);
     const messagesData = await getDataJSONParseByKey(messageKey);
@@ -241,10 +222,7 @@ export const markMessageAsRead = async (
 };
 
 // 删除消息
-export const deleteMessage = async (
-  userId: string,
-  messageId: string
-): Promise<MessageOperationResult> => {
+export const deleteMessage = async (userId: string, messageId: string): Promise<MessageOperationResult> => {
   try {
     const messageKey = keys.message(userId);
     const messagesData = await getDataJSONParseByKey(messageKey);

@@ -1,18 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  looktripod,
-  readTripod,
-  writeDuanlu,
-  readThat,
-  readAll,
-  getxuanze,
-  restraint,
-  mainyuansu,
-  addNajieThing,
-  addExp4
-} from '@src/model';
+import { existplayer, looktripod, readTripod, writeDuanlu, readThat, readAll, getxuanze, restraint, mainyuansu, addNajieThing, addExp4 } from '@src/model';
 
 import { selects } from '@src/response/mw';
 import { readActionWithSuffix, stopActionWithSuffix } from '@src/model/actionHelper';

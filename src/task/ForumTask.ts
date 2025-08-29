@@ -1,32 +1,143 @@
 import { readForum, writeForum } from '@src/model/trade';
 import { addCoin } from '@src/model/economy';
 
+interface ForumRecord {
+  now_time: number;
+  qq: string;
+  whole: number;
+}
+
+interface ProcessResult {
+  success: boolean;
+  processedCount: number;
+  errorCount: number;
+  message: string;
+}
+
 /**
- * 读取论坛奖励记录（Forum）。
- * 检查每条记录的时间，如果已超过3天，则将灵石奖励发放给对应用户，并从记录中移除该条。
- * 最后将更新后的论坛记录写回存储。
- * @returns
+ * 基础配置常量
  */
-export const ForumTask = async () => {
-  const Forum = await readForum();
+const BASE_CONFIG = {
+  FORUM_EXPIRY_DAYS: 3,
+  MILLISECONDS_PER_DAY: 24 * 60 * 60 * 1000
+} as const;
 
-  const now_time = Date.now();
+/**
+ * 计算记录的天数差
+ * @param recordTime 记录时间
+ * @param currentTime 当前时间
+ * @returns 天数差
+ */
+const calculateDaysDifference = (recordTime: number, currentTime: number): number => {
+  const timeDifference = currentTime - recordTime;
 
-  for (let i = 0; i < Forum.length; i++) {
-    const time = (now_time - Forum[i].now_time) / 24 / 60 / 60 / 1000;
+  return timeDifference / BASE_CONFIG.MILLISECONDS_PER_DAY;
+};
 
-    if (time < 3) {
-      break;
+/**
+ * 处理单个论坛记录
+ * @param record 论坛记录
+ * @param currentTime 当前时间
+ * @returns 是否处理成功
+ */
+const processForumRecord = async (record: ForumRecord, currentTime: number): Promise<boolean> => {
+  try {
+    const daysDifference = calculateDaysDifference(record.now_time, currentTime);
+
+    // 如果未超过3天，跳过处理
+    if (daysDifference < BASE_CONFIG.FORUM_EXPIRY_DAYS) {
+      return false;
     }
-    const userId = Forum[i].qq;
-    const lingshi = Forum[i].whole;
 
+    const userId = record.qq;
+    const lingshi = record.whole;
+
+    // 发放灵石奖励给用户
     await addCoin(userId, lingshi);
-    Forum.splice(i, 1);
-    i--;
+
+    return true;
+  } catch (error) {
+    logger.error(error);
+
+    return false;
+  }
+};
+
+/**
+ * 处理论坛记录列表
+ * @param records 论坛记录列表
+ * @param currentTime 当前时间
+ * @returns 处理结果
+ */
+const processForumRecords = async (records: ForumRecord[], currentTime: number): Promise<ProcessResult> => {
+  let processedCount = 0;
+  let errorCount = 0;
+  const validRecords: ForumRecord[] = [];
+
+  for (const record of records) {
+    try {
+      const success = await processForumRecord(record, currentTime);
+
+      if (success) {
+        processedCount++;
+      } else {
+        // 如果处理失败或未过期，保留记录
+        validRecords.push(record);
+      }
+    } catch (error) {
+      logger.error(error);
+      errorCount++;
+      // 处理出错时保留记录，避免数据丢失
+      validRecords.push(record);
+    }
   }
 
-  await writeForum(Forum);
+  return {
+    success: processedCount > 0 || errorCount === 0,
+    processedCount,
+    errorCount,
+    message: `处理了 ${processedCount} 条过期记录，${errorCount} 条记录处理失败`
+  };
+};
 
-  return false;
+/**
+ * 过滤有效记录
+ * @param records 论坛记录列表
+ * @param currentTime 当前时间
+ * @returns 有效记录列表
+ */
+const filterValidRecords = (records: ForumRecord[], currentTime: number): ForumRecord[] => {
+  return records.filter(record => {
+    const daysDifference = calculateDaysDifference(record.now_time, currentTime);
+
+    return daysDifference < BASE_CONFIG.FORUM_EXPIRY_DAYS;
+  });
+};
+
+/**
+ * 论坛任务 - 处理论坛奖励记录
+ * 读取论坛奖励记录，检查过期记录并发放灵石奖励给用户
+ */
+export const ForumTask = async (): Promise<void> => {
+  try {
+    // 读取论坛记录
+    const forumRecords: ForumRecord[] = await readForum();
+
+    const currentTime = Date.now();
+
+    if (!forumRecords || forumRecords.length === 0) {
+      return;
+    }
+
+    // 处理论坛记录
+    await processForumRecords(forumRecords, currentTime);
+
+    // 过滤出未过期的记录
+    const validRecords = filterValidRecords(forumRecords, currentTime);
+
+    // 写回更新后的记录
+    await writeForum(validRecords);
+  } catch (error) {
+    logger.error(error);
+  }
 };

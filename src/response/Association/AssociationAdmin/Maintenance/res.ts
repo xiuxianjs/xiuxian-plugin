@@ -46,11 +46,7 @@ const res = onResponse(selects, async e => {
   if (lastMaintain && lastMaintain > nowTime - 1000 * 60 * 60 * 24 * 7) {
     const nextmt_time = shijianc(nextMaintainTs);
 
-    void Send(
-      Text(
-        `当前无需维护,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`
-      )
-    );
+    void Send(Text(`当前无需维护,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`));
 
     return false;
   }
@@ -69,11 +65,7 @@ const res = onResponse(selects, async e => {
   void setDataJSONStringifyByKey(keys.player(userId), player);
   const nextmt_time = shijianc(ass.维护时间 + 60000 * time);
 
-  void Send(
-    Text(
-      `宗门维护成功,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`
-    )
-  );
+  void Send(Text(`宗门维护成功,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`));
 
   return false;
 });

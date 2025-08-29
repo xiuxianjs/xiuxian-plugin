@@ -18,17 +18,7 @@ interface AreaLike {
   three?: ThingLike[];
 }
 
-const AREA_COLLECTION_KEYS = [
-  'GuildSecrets',
-  'ForbiddenArea',
-  'FairyRealm',
-  'TimePlace',
-  'Didian',
-  'Shenjie',
-  'Mojie',
-  'Xingge',
-  'Shop'
-] as const;
+const AREA_COLLECTION_KEYS = ['GuildSecrets', 'ForbiddenArea', 'FairyRealm', 'TimePlace', 'Didian', 'Shenjie', 'Mojie', 'Xingge', 'Shop'] as const;
 const ITEM_LEVEL_KEYS: (keyof AreaLike)[] = ['one', 'two', 'three'];
 
 function normalizeName(raw: string): string {
@@ -116,10 +106,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const resultMsg
-    = `【${thingName}】可能出现在:\n`
-    + foundPlaces.map(n => `- ${n}`).join('\n')
-    + '\n(已消耗1张寻物纸)';
+  const resultMsg = `【${thingName}】可能出现在:\n` + foundPlaces.map(n => `- ${n}`).join('\n') + '\n(已消耗1张寻物纸)';
 
   void Send(Text(resultMsg));
 

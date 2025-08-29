@@ -2,13 +2,7 @@ import { getRedisKey } from '@src/model/keys';
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import {
-  existplayer,
-  readPlayer,
-  readExchange,
-  writeExchange,
-  addNajieThing
-} from '@src/model/index';
+import { existplayer, readPlayer, readExchange, writeExchange, addNajieThing } from '@src/model/index';
 import type { ExchangeRecord as RawExchangeRecord, NajieCategory } from '@src/types/model';
 
 import { selects } from '@src/response/mw';

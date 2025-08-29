@@ -54,9 +54,7 @@ async function calcBaseThree(player: Player): Promise<[number, number, number] |
 function score(e: EquipItem, base: [number, number, number]): number {
   const small = e.atk < 10 && e.def < 10 && e.HP < 10;
 
-  return small
-    ? e.atk * base[0] * 0.43 + e.def * base[1] * 0.16 + e.HP * base[2] * 0.41
-    : e.atk * 0.43 + e.def * 0.16 + e.HP * 0.41;
+  return small ? e.atk * base[0] * 0.43 + e.def * base[1] * 0.16 + e.HP * base[2] * 0.41 : e.atk * 0.43 + e.def * 0.16 + e.HP * 0.41;
 }
 
 function toEquipLike(item: EquipItem, cls: string): EquipmentLike {

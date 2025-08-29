@@ -1,18 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  message,
-  Space,
-  Tag,
-  Tooltip,
-  Popconfirm,
-  Row,
-  Col
-} from 'antd';
+import { Button, Modal, Form, Input, Select, message, Space, Tag, Tooltip, Popconfirm, Row, Col } from 'antd';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -26,13 +13,7 @@ import {
   StopOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import {
-  getUserMessages,
-  sendMessage,
-  deleteMessage,
-  getMessageStats,
-  cleanExpiredMessages
-} from '../../api/messages';
+import { getUserMessages, sendMessage, deleteMessage, getMessageStats, cleanExpiredMessages } from '../../api/messages';
 import type { MessageListResponse, SendMessageParams, MessageStats } from '../../types/message';
 
 // 导入UI组件库
@@ -104,9 +85,7 @@ const MessagesPage: React.FC = () => {
         content: values.content,
         type: values.type,
         priority: values.priority || 2,
-        receivers: values.receivers
-          ? values.receivers.split(',').map((id: string) => id.trim())
-          : [],
+        receivers: values.receivers ? values.receivers.split(',').map((id: string) => id.trim()) : [],
         expireTime: values.expireTime ? new Date(values.expireTime).getTime() : undefined
       };
 
@@ -171,9 +150,7 @@ const MessagesPage: React.FC = () => {
       ellipsis: true,
       render: (text: string) => (
         <Tooltip title={text}>
-          <span className='text-slate-300'>
-            {text.length > 50 ? `${text.substring(0, 50)}...` : text}
-          </span>
+          <span className='text-slate-300'>{text.length > 50 ? `${text.substring(0, 50)}...` : text}</span>
         </Tooltip>
       )
     },
@@ -261,9 +238,7 @@ const MessagesPage: React.FC = () => {
       dataIndex: 'createTime',
       key: 'createTime',
       width: 180,
-      render: (time: number) => (
-        <span className='text-slate-400 text-sm'>{dayjs(time).format('YYYY-MM-DD HH:mm:ss')}</span>
-      )
+      render: (time: number) => <span className='text-slate-400 text-sm'>{dayjs(time).format('YYYY-MM-DD HH:mm:ss')}</span>
     },
     {
       title: (
@@ -275,18 +250,8 @@ const MessagesPage: React.FC = () => {
       width: 120,
       render: (_: any, record: any) => (
         <Space>
-          <Popconfirm
-            title='确定要删除这条消息吗？'
-            onConfirm={() => handleDeleteMessage(currentUserId, record.id)}
-            okText='确定'
-            cancelText='取消'
-          >
-            <Button
-              type='text'
-              size='small'
-              icon={<DeleteOutlined />}
-              className='text-red-400 hover:text-red-300 hover:bg-red-400/10'
-            >
+          <Popconfirm title='确定要删除这条消息吗？' onConfirm={() => handleDeleteMessage(currentUserId, record.id)} okText='确定' cancelText='取消'>
+            <Button type='text' size='small' icon={<DeleteOutlined />} className='text-red-400 hover:text-red-300 hover:bg-red-400/10'>
               删除
             </Button>
           </Popconfirm>
@@ -316,12 +281,7 @@ const MessagesPage: React.FC = () => {
             >
               发送消息
             </Button>
-            <Button
-              danger
-              icon={<StopOutlined />}
-              onClick={handleCleanExpired}
-              className='hover:bg-red-600'
-            >
+            <Button danger icon={<StopOutlined />} onClick={handleCleanExpired} className='hover:bg-red-600'>
               清理过期
             </Button>
             <XiuxianRefreshButton
@@ -340,30 +300,10 @@ const MessagesPage: React.FC = () => {
       <div className='space-y-6'>
         {/* 统计卡片 */}
         <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-          <XiuxianStatCard
-            title='总消息数'
-            value={(stats?.total || 0).toLocaleString()}
-            icon={<MessageOutlined />}
-            gradient='blue'
-          />
-          <XiuxianStatCard
-            title='未读消息'
-            value={(stats?.unread || 0).toLocaleString()}
-            icon={<ExclamationCircleOutlined />}
-            gradient='red'
-          />
-          <XiuxianStatCard
-            title='已读消息'
-            value={(stats?.read || 0).toLocaleString()}
-            icon={<CheckCircleOutlined />}
-            gradient='green'
-          />
-          <XiuxianStatCard
-            title='已删除消息'
-            value={(stats?.deleted || 0).toLocaleString()}
-            icon={<DeleteOutlined />}
-            gradient='purple'
-          />
+          <XiuxianStatCard title='总消息数' value={(stats?.total || 0).toLocaleString()} icon={<MessageOutlined />} gradient='blue' />
+          <XiuxianStatCard title='未读消息' value={(stats?.unread || 0).toLocaleString()} icon={<ExclamationCircleOutlined />} gradient='red' />
+          <XiuxianStatCard title='已读消息' value={(stats?.read || 0).toLocaleString()} icon={<CheckCircleOutlined />} gradient='green' />
+          <XiuxianStatCard title='已删除消息' value={(stats?.deleted || 0).toLocaleString()} icon={<DeleteOutlined />} gradient='purple' />
         </div>
 
         {/* 搜索和查看区域 */}
@@ -395,17 +335,9 @@ const MessagesPage: React.FC = () => {
         {/* 消息列表表格 */}
         <XiuxianTableContainer title='消息列表' icon={<MessageOutlined />}>
           {!currentUserId ? (
-            <XiuxianEmptyState
-              icon='📝'
-              title='请先输入用户ID'
-              description='在上方输入框中输入用户ID来查看该用户的消息列表'
-            />
+            <XiuxianEmptyState icon='📝' title='请先输入用户ID' description='在上方输入框中输入用户ID来查看该用户的消息列表' />
           ) : messages?.messages.length === 0 ? (
-            <XiuxianEmptyState
-              icon='📭'
-              title='暂无消息'
-              description='该用户目前没有任何消息记录'
-            />
+            <XiuxianEmptyState icon='📭' title='暂无消息' description='该用户目前没有任何消息记录' />
           ) : (
             <XiuxianTableWithPagination
               columns={columns}
@@ -455,29 +387,17 @@ const MessagesPage: React.FC = () => {
           }}
           className='mt-4'
         >
-          <Form.Item
-            name='title'
-            label={<span className='text-slate-300'>消息标题</span>}
-            rules={[{ required: true, message: '请输入消息标题' }]}
-          >
+          <Form.Item name='title' label={<span className='text-slate-300'>消息标题</span>} rules={[{ required: true, message: '请输入消息标题' }]}>
             <Input placeholder='请输入消息标题' className='xiuxian-input' />
           </Form.Item>
 
-          <Form.Item
-            name='content'
-            label={<span className='text-slate-300'>消息内容</span>}
-            rules={[{ required: true, message: '请输入消息内容' }]}
-          >
+          <Form.Item name='content' label={<span className='text-slate-300'>消息内容</span>} rules={[{ required: true, message: '请输入消息内容' }]}>
             <TextArea rows={4} placeholder='请输入消息内容' className='xiuxian-input' />
           </Form.Item>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                name='type'
-                label={<span className='text-slate-300'>消息类型</span>}
-                rules={[{ required: true, message: '请选择消息类型' }]}
-              >
+              <Form.Item name='type' label={<span className='text-slate-300'>消息类型</span>} rules={[{ required: true, message: '请选择消息类型' }]}>
                 <Select placeholder='请选择消息类型' className='xiuxian-select'>
                   <Option value='system'>系统消息</Option>
                   <Option value='announcement'>公告</Option>
@@ -488,11 +408,7 @@ const MessagesPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name='priority'
-                label={<span className='text-slate-300'>优先级</span>}
-                rules={[{ required: true, message: '请选择优先级' }]}
-              >
+              <Form.Item name='priority' label={<span className='text-slate-300'>优先级</span>} rules={[{ required: true, message: '请选择优先级' }]}>
                 <Select placeholder='请选择优先级' className='xiuxian-select'>
                   <Option value={1}>低</Option>
                   <Option value={2}>普通</Option>
@@ -529,10 +445,7 @@ const MessagesPage: React.FC = () => {
               >
                 发送
               </Button>
-              <Button
-                onClick={() => setModalVisible(false)}
-                className='bg-slate-700 hover:bg-slate-600 border-slate-600'
-              >
+              <Button onClick={() => setModalVisible(false)} className='bg-slate-700 hover:bg-slate-600 border-slate-600'>
                 取消
               </Button>
             </Space>

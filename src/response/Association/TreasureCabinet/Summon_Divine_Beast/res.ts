@@ -94,9 +94,7 @@ const res = onResponse(selects, async e => {
   ass.宗门神兽 = newBeast;
   ass.灵石池 = pool - cost;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  void Send(
-    Text(`召唤成功，神兽 ${newBeast} 投下一道分身，开始守护你的宗门，绑定神兽后不可更换哦`)
-  );
+  void Send(Text(`召唤成功，神兽 ${newBeast} 投下一道分身，开始守护你的宗门，绑定神兽后不可更换哦`));
 
   return false;
 });

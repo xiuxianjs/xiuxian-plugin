@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  LeftOutlined,
-  RightOutlined,
-  DoubleLeftOutlined,
-  DoubleRightOutlined
-} from '@ant-design/icons';
+import { LeftOutlined, RightOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
 interface XiuxianPaginationProps {
   current: number;
@@ -87,9 +82,7 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
   };
 
   const isSmall = size === 'small';
-  const baseButtonClass = `flex items-center justify-center transition-all duration-200 font-medium ${
-    isSmall ? 'w-8 h-8 text-sm' : 'w-10 h-10 text-base'
-  }`;
+  const baseButtonClass = `flex items-center justify-center transition-all duration-200 font-medium ${isSmall ? 'w-8 h-8 text-sm' : 'w-10 h-10 text-base'}`;
 
   const normalButtonClass = `${baseButtonClass} bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white border border-slate-600 hover:border-slate-500 rounded-lg`;
   const activeButtonClass = `${baseButtonClass} bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-lg`;
@@ -101,9 +94,7 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
     >
       {/* 左侧信息 */}
       <div className='flex items-center gap-4 text-sm text-slate-300'>
-        {showTotal && (
-          <span className='hidden sm:inline'>{showTotal(total, [startItem, endItem])}</span>
-        )}
+        {showTotal && <span className='hidden sm:inline'>{showTotal(total, [startItem, endItem])}</span>}
 
         {showSizeChanger && (
           <div className='flex items-center gap-2'>
@@ -156,13 +147,7 @@ const XiuxianPagination: React.FC<XiuxianPaginationProps> = ({
               <button
                 onClick={() => handlePageChange(page as number)}
                 disabled={disabled}
-                className={
-                  page === current
-                    ? activeButtonClass
-                    : disabled
-                      ? disabledButtonClass
-                      : normalButtonClass
-                }
+                className={page === current ? activeButtonClass : disabled ? disabledButtonClass : normalButtonClass}
               >
                 {page}
               </button>

@@ -70,19 +70,14 @@ const res = onResponse(selects, async e => {
     const msg = [];
     // 预留总伤害统计
     let _totalDamage = 0;
-    let BOSSCurrentAttack = bosszt.isAngry
-      ? Math.trunc(bosszt.Attack * 1.8)
-      : bosszt.isWeak
-        ? Math.trunc(bosszt.Attack * 0.7)
-        : bosszt.Attack;
+    let BOSSCurrentAttack = bosszt.isAngry ? Math.trunc(bosszt.Attack * 1.8) : bosszt.isWeak ? Math.trunc(bosszt.Attack * 0.7) : bosszt.Attack;
     let BOSSCurrentDefence = bosszt.isWeak ? Math.trunc(bosszt.Defence * 0.7) : bosszt.Defence;
 
     while (player.当前血量 > 0 && bosszt.Health > 0) {
       const Random = Math.random();
 
       if (!(BattleFrame & 1)) {
-        let playerToBOSSDamage
-          = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
+        let playerToBOSSDamage = Harm(player.攻击, BOSSCurrentDefence) + Math.trunc(player.攻击 * player.灵根.法球倍率);
         const SuperAttack = Math.random() < player.暴击率 ? 1.5 : 1;
 
         msg.push(`第${Math.trunc(BattleFrame / 2) + 1}回合：`);
@@ -105,9 +100,7 @@ const res = onResponse(selects, async e => {
         if (bosszt.Health < 0) {
           bosszt.Health = 0;
         }
-        msg.push(
-          `${player.名号}${ifbaoji(SuperAttack)}造成伤害${playerToBOSSDamage}，未知妖物剩余血量${bosszt.Health}`
-        );
+        msg.push(`${player.名号}${ifbaoji(SuperAttack)}造成伤害${playerToBOSSDamage}，未知妖物剩余血量${bosszt.Health}`);
       } else {
         let bOSSToPlayerDamage = Harm(BOSSCurrentAttack, Math.trunc(player.防御 * 0.1));
 
@@ -137,9 +130,7 @@ const res = onResponse(selects, async e => {
         if (player.当前血量 < 0) {
           player.当前血量 = 0;
         }
-        msg.push(
-          `未知妖物攻击了${player.名号}，造成伤害${bOSSToPlayerDamage}，${player.名号}剩余血量${player.当前血量}`
-        );
+        msg.push(`未知妖物攻击了${player.名号}，造成伤害${bOSSToPlayerDamage}，${player.名号}剩余血量${player.当前血量}`);
       }
       BattleFrame++;
     }

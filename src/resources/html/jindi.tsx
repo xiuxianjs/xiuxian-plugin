@@ -70,44 +70,18 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                               <div className='w-10 h-10 bg-gradient-to-br from-red-400 to-orange-600 rounded-lg flex items-center justify-center border border-red-300/50 shadow-md'>
                                 <span className='text-sm'>
                                   {typeof item.Grade === 'number' && item.Grade <= 10 && '🌱'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 10
-                                    && item.Grade <= 20
-                                    && '🌿'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 20
-                                    && item.Grade <= 30
-                                    && '🌳'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 30
-                                    && item.Grade <= 40
-                                    && '🌲'}
-                                  {typeof item.Grade === 'number'
-                                    && item.Grade > 40
-                                    && item.Grade <= 50
-                                    && '🌟'}
+                                  {typeof item.Grade === 'number' && item.Grade > 10 && item.Grade <= 20 && '🌿'}
+                                  {typeof item.Grade === 'number' && item.Grade > 20 && item.Grade <= 30 && '🌳'}
+                                  {typeof item.Grade === 'number' && item.Grade > 30 && item.Grade <= 40 && '🌲'}
+                                  {typeof item.Grade === 'number' && item.Grade > 40 && item.Grade <= 50 && '🌟'}
                                   {typeof item.Grade === 'number' && item.Grade > 50 && '💎'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('初级')
-                                    && '🌱'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('中级')
-                                    && '🌿'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('高级')
-                                    && '🌳'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('顶级')
-                                    && '🌲'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('传说')
-                                    && '🌟'}
-                                  {typeof item.Grade === 'string'
-                                    && item.Grade.includes('神话')
-                                    && '💎'}
-                                  {!['🌱', '🌿', '🌳', '🌲', '🌟', '💎'].includes(
-                                    item.Grade as string
-                                  ) && '⚠️'}
+                                  {typeof item.Grade === 'string' && item.Grade.includes('初级') && '🌱'}
+                                  {typeof item.Grade === 'string' && item.Grade.includes('中级') && '🌿'}
+                                  {typeof item.Grade === 'string' && item.Grade.includes('高级') && '🌳'}
+                                  {typeof item.Grade === 'string' && item.Grade.includes('顶级') && '🌲'}
+                                  {typeof item.Grade === 'string' && item.Grade.includes('传说') && '🌟'}
+                                  {typeof item.Grade === 'string' && item.Grade.includes('神话') && '💎'}
+                                  {!['🌱', '🌿', '🌳', '🌲', '🌟', '💎'].includes(item.Grade as string) && '⚠️'}
                                 </span>
                               </div>
                               <div>
@@ -129,9 +103,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                                 <div className='w-6 h-6 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center'>
                                   <span className='text-xs'>💎</span>
                                 </div>
-                                <span className='text-sm font-medium text-purple-200'>
-                                  极品奖励
-                                </span>
+                                <span className='text-sm font-medium text-purple-200'>极品奖励</span>
                               </div>
                               <div className='flex flex-wrap gap-2'>
                                 {item.Best.map((best, idx) => (
@@ -152,18 +124,14 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                                   <span className='text-xs'>💰</span>
                                 </div>
                                 <span className='text-sm text-blue-200'>所需灵石：</span>
-                                <span className='text-sm font-bold text-blue-100'>
-                                  {item.Price}
-                                </span>
+                                <span className='text-sm font-bold text-blue-100'>{item.Price}</span>
                               </div>
                               <div className='flex items-center gap-2'>
                                 <div className='w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center'>
                                   <span className='text-xs'>⭐</span>
                                 </div>
                                 <span className='text-sm text-green-200'>所需修为：</span>
-                                <span className='text-sm font-bold text-green-100'>
-                                  {item.experience}
-                                </span>
+                                <span className='text-sm font-bold text-green-100'>{item.experience}</span>
                               </div>
                             </div>
                           </div>
@@ -185,9 +153,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                                   }}
                                 />
                               </div>
-                              <span className='text-xs text-gray-300'>
-                                {Math.min((index + 1) * 15, 100)}%
-                              </span>
+                              <span className='text-xs text-gray-300'>{Math.min((index + 1) * 15, 100)}%</span>
                             </div>
                           </div>
 
@@ -227,17 +193,13 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
                       <div className='w-6 h-6 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center'>
                         <span className='text-xs'>📊</span>
                       </div>
-                      <span className='text-sm text-red-200'>
-                        共 {didian_list?.length || 0} 个禁地
-                      </span>
+                      <span className='text-sm text-red-200'>共 {didian_list?.length || 0} 个禁地</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <div className='w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center'>
                         <span className='text-xs'>💀</span>
                       </div>
-                      <span className='text-sm text-yellow-200'>
-                        最高危险等级：{didian_list?.length || 0}
-                      </span>
+                      <span className='text-sm text-yellow-200'>最高危险等级：{didian_list?.length || 0}</span>
                     </div>
                   </div>
                 </div>

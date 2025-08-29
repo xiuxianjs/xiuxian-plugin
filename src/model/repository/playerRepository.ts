@@ -1,14 +1,8 @@
 import { keys } from '../keys.js';
 import type { PlayerRepository, OccupationExpRow } from '../../types/model';
-import {
-  existDataByKey,
-  getDataJSONParseByKey,
-  setDataJSONStringifyByKey
-} from '../DataControl.js';
+import { existDataByKey, getDataJSONParseByKey, setDataJSONStringifyByKey } from '../DataControl.js';
 
-export function createPlayerRepository(
-  getOccupationTable: () => OccupationExpRow[]
-): PlayerRepository {
+export function createPlayerRepository(getOccupationTable: () => OccupationExpRow[]): PlayerRepository {
   return {
     get(id) {
       return getDataJSONParseByKey(keys.player(id));

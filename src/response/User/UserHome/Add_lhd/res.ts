@@ -33,11 +33,10 @@ const res = onResponse(selects, async e => {
     await sleep(3000);
     player.当前血量 = 1;
     player.血气 -= 500000;
+
     void Send(
       Text(
-        '奇怪的小石头灵光一闪，你感受到胸口一阵刺痛，喷出一口鲜血：\n'
-          + '“不好，这玩意一定是个邪物！不能放在身上！\n是不是该把它卖了补贴家用？\n'
-          + '或者放拍卖行骗几个自认为识货的人回本？”'
+        '奇怪的小石头灵光一闪，你感受到胸口一阵刺痛，喷出一口鲜血：\n“不好，这玩意一定是个邪物！不能放在身上！\n是不是该把它卖了补贴家用？\n或者放拍卖行骗几个自认为识货的人回本？”'
       )
     );
     await writePlayer(userId, player);
@@ -49,12 +48,7 @@ const res = onResponse(selects, async e => {
   await sleep(3000);
   player.当前血量 = Math.floor(player.当前血量 / 3);
   player.血气 = Math.floor(player.血气 / 3);
-  void Send(
-    Text(
-      '小石头灵光一闪，化作一道精光融入你的体内。\n'
-        + '你喷出一口瘀血，顿时感受到天地束缚弱了几分，可用轮回点+1'
-    )
-  );
+  void Send(Text('小石头灵光一闪，化作一道精光融入你的体内。\n你喷出一口瘀血，顿时感受到天地束缚弱了几分，可用轮回点+1'));
   await sleep(1000);
   player.轮回点++;
   await writePlayer(userId, player);

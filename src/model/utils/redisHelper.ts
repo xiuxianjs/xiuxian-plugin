@@ -56,11 +56,7 @@ export function getTimestamp(userId: string | number, suffix: ActionType) {
 }
 
 // 设置当前时间戳
-export async function setTimestamp(
-  userId: string | number,
-  suffix: ActionType,
-  ts: number = Date.now()
-) {
+export async function setTimestamp(userId: string | number, suffix: ActionType, ts: number = Date.now()) {
   await redis.set(userKey(userId, suffix), String(ts));
 }
 

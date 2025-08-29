@@ -6,11 +6,7 @@ interface XiuxianTableProps extends TableProps {
   className?: string;
 }
 
-const XiuxianTable: React.FC<XiuxianTableProps> = ({
-  className,
-  rowClassName = () => 'bg-slate-700 hover:bg-slate-600',
-  ...props
-}) => {
+const XiuxianTable: React.FC<XiuxianTableProps> = ({ className, rowClassName = () => 'bg-slate-700 hover:bg-slate-600', ...props }) => {
   return (
     <Table
       className={classNames(

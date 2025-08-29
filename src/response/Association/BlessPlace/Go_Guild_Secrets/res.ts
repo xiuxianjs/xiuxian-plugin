@@ -123,11 +123,7 @@ const res = onResponse(selects, async e => {
   };
 
   await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
-  void Send(
-    Text(
-      `开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`
-    )
-  );
+  void Send(Text(`开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`));
 
   return false;
 });

@@ -34,10 +34,7 @@ const Temp = ({ temp = [] }) => {
                   {/* 消息图标 */}
                   <div className='flex items-start space-x-4'>
                     <div className='message-number flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center border-2 border-amber-300/50'>
-                      <span
-                        className='text-white text-lg font-bold xiuxian-text'
-                        style={{ fontFamily: 'tttgbnumber' }}
-                      >
+                      <span className='text-white text-lg font-bold xiuxian-text' style={{ fontFamily: 'tttgbnumber' }}>
                         {index + 1}
                       </span>
                     </div>
@@ -45,10 +42,7 @@ const Temp = ({ temp = [] }) => {
                     {/* 消息内容 */}
                     <div className='flex-1 min-w-0'>
                       <div className='message-content rounded-xl px-3 py-2 border border-amber-200/50'>
-                        <div
-                          className='text-lg text-gray-800 font-medium leading-relaxed xiuxian-text'
-                          style={{ fontFamily: 'tttgbnumber' }}
-                        >
+                        <div className='text-lg text-gray-800 font-medium leading-relaxed xiuxian-text' style={{ fontFamily: 'tttgbnumber' }}>
                           {item}
                         </div>
                       </div>
@@ -60,9 +54,7 @@ const Temp = ({ temp = [] }) => {
                 </div>
 
                 {/* 连接线（除了最后一个） */}
-                {index < temp.length - 1 && (
-                  <div className='connection-line absolute left-6 top-full w-0.5 h-6' />
-                )}
+                {index < temp.length - 1 && <div className='connection-line absolute left-6 top-full w-0.5 h-6' />}
               </div>
             ))}
           </div>
@@ -70,10 +62,7 @@ const Temp = ({ temp = [] }) => {
           {/* 底部装饰 */}
           <div className='text-center mt-5'>
             <div className='bottom-decoration inline-block px-6 py-3 rounded-xl'>
-              <span
-                className='text-amber-100 text-sm font-medium xiuxian-text'
-                style={{ fontFamily: 'tttgbnumber' }}
-              >
+              <span className='text-amber-100 text-sm font-medium xiuxian-text' style={{ fontFamily: 'tttgbnumber' }}>
                 🎭 修仙之路，永无止境 🎭
               </span>
             </div>

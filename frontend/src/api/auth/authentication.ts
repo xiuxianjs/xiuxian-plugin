@@ -55,9 +55,7 @@ export const logoutAPI = async (token: string): Promise<{ success: boolean }> =>
 };
 
 // 验证token API
-export const verifyTokenAPI = async (
-  token: string
-): Promise<{ valid: boolean; user?: LoginResponse['user'] }> => {
+export const verifyTokenAPI = async (token: string): Promise<{ valid: boolean; user?: LoginResponse['user'] }> => {
   try {
     const result = (await authRequest({
       url: '/auth',

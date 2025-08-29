@@ -27,9 +27,7 @@ const XiuxianAlert: React.FC<XiuxianAlertProps> = ({ type, title, message, class
       <div className='flex items-start space-x-3'>
         <div className={`w-3 h-3 ${dotColors[type]} rounded-full flex-shrink-0 mt-1`}></div>
         <div className='min-w-0 flex-1'>
-          <h3 className={`font-semibold text-sm sm:text-base ${typeStyles[type].split(' ')[3]}`}>
-            {title}
-          </h3>
+          <h3 className={`font-semibold text-sm sm:text-base ${typeStyles[type].split(' ')[3]}`}>{title}</h3>
           <p className='text-slate-300 text-xs sm:text-sm mt-1'>{message}</p>
         </div>
       </div>

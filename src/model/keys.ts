@@ -122,6 +122,11 @@ export const keysAction = {
   config: (id: string) => `${baseKey}:config:${id}`
 };
 
+export const keysTask = {
+  // 洗劫任务数据队列
+  xijie: () => `${baseKey}:task:xijie`
+};
+
 export { __PATH };
 
 export const __PATH_CONFIG = {

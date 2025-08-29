@@ -117,12 +117,7 @@ const shotCache = new Map<string, ShotCacheEntry>();
  * @param data 传入组件的数据
  * @param enableCache 是否启用内部缓存(默认 false 保持旧行为；传 true 时，若数据内容未变化直接复用上一张图)
  */
-export async function screenshot(
-  name: keyof typeof map,
-  uid: number | string,
-  data,
-  enableCache = false
-) {
+export async function screenshot(name: keyof typeof map, uid: number | string, data, enableCache = false) {
   const keyBase = `data/${name}/${uid}`;
 
   if (process.env.NODE_ENV === 'development') {

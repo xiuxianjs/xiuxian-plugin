@@ -123,16 +123,7 @@ const res = onResponse(selects, async e => {
         return;
       }
       let commoditiesPrice = 0;
-      const wupin: NajieCategory[] = [
-        '装备',
-        '丹药',
-        '道具',
-        '功法',
-        '草药',
-        '材料',
-        '仙宠',
-        '仙宠口粮'
-      ];
+      const wupin: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
       for (const i of wupin) {
         const list = najie2[i];

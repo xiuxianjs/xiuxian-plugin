@@ -50,8 +50,7 @@ const res = onResponse(selects, async e => {
   const thingName = code[0]; // 物品
   const account = code[1]; // 数量
   const parsedCount = convert2integer(account);
-  const thing_acount =
-    typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
+  const thing_acount = typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
   const wupintype = await foundthing(thingName);
 
   if (!wupintype || wupintype.type !== '锻造') {
@@ -87,8 +86,7 @@ const res = onResponse(selects, async e => {
   for (const item in tripod.数量) {
     num += Number(tripod.数量[item]);
   }
-  const shengyu =
-    tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
+  const shengyu = tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
 
   if (num + Number(thing_acount) > tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2)) {
     void Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`));
@@ -105,11 +103,7 @@ const res = onResponse(selects, async e => {
       await addNajieThing(userId, thingName, '材料', -thing_acount);
       const yongyou = num + Number(thing_acount);
 
-      void Send(
-        Text(
-          `熔炼成功,当前煅炉内拥有[${yongyou}]个材料,根据您现有等级,您还可以放入[${shengyu}]个材料`
-        )
-      );
+      void Send(Text(`熔炼成功,当前煅炉内拥有[${yongyou}]个材料,根据您现有等级,您还可以放入[${shengyu}]个材料`));
 
       return false;
     }

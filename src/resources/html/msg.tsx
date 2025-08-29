@@ -9,25 +9,18 @@ interface MsgItem {
 
 const Msg = ({ type, msg }: { type: number; msg?: MsgItem[] }) => {
   return (
-    <HTML
-      className=' w-full text-center p-4 md:p-8 bg-top bg-cover'
-      style={{ backgroundImage: `url(${supermarketURL})` }}
-    >
+    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover' style={{ backgroundImage: `url(${supermarketURL})` }}>
       <main className='max-w-3xl mx-auto space-y-8'>
         <header className='space-y-4 flex flex-col items-center'>
           {type === 0 && (
             <>
-              <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>
-                悬赏目标
-              </h1>
+              <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>悬赏目标</h1>
               <div className='/70 text-sm md:text-base'>指令：#讨伐目标+数字</div>
             </>
           )}
           {type === 1 && (
             <>
-              <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>
-                悬赏榜
-              </h1>
+              <h1 className='inline-block px-8 py-2 rounded-2xl bg-black/40 backdrop-blur text-2xl md:text-3xl font-bold tracking-widest  shadow'>悬赏榜</h1>
               <div className='/70 text-sm md:text-base'>指令：#刺杀目标+数字</div>
             </>
           )}

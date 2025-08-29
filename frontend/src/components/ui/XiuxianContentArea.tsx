@@ -8,12 +8,7 @@ interface XiuxianContentAreaProps {
   className?: string;
 }
 
-const XiuxianContentArea: React.FC<XiuxianContentAreaProps> = ({
-  children,
-  title,
-  icon,
-  className
-}) => {
+const XiuxianContentArea: React.FC<XiuxianContentAreaProps> = ({ children, title, icon, className }) => {
   return (
     <div
       className={classNames(

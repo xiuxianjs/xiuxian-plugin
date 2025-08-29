@@ -14,8 +14,7 @@ export const useConfigManagerCode = () => {
     try {
       const result = await getConfig('xiuxian');
       if (result) {
-        const configData =
-          (result.data as Record<string, any>) || (result as unknown as Record<string, any>);
+        const configData = (result.data as Record<string, any>) || (result as unknown as Record<string, any>);
         setConfig(configData);
         setJsonConfig(JSON.stringify(configData, null, 2));
       }

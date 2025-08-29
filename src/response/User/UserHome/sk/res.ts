@@ -53,14 +53,7 @@ const res = onResponse(selects, async e => {
   tianluoRandom = (Math.ceil((tianluoRandom + 1) / 5) - 1) * 5;
   void Send(Text('一道金光从天而降'));
   await sleep(5000);
-  void Send(
-    Text(
-      '金光掉落在地上，走近一看是【'
-        + changzhuxianchonData[tianluoRandom].品级
-        + '】'
-        + changzhuxianchonData[tianluoRandom].name
-    )
-  );
+  void Send(Text('金光掉落在地上，走近一看是【' + changzhuxianchonData[tianluoRandom].品级 + '】' + changzhuxianchonData[tianluoRandom].name));
   await addPet(userId, changzhuxianchonData[tianluoRandom].name, 1);
   void Send(Text('恭喜获得' + changzhuxianchonData[tianluoRandom].name));
 });

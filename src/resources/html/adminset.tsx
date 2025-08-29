@@ -79,15 +79,7 @@ const XiuxianIcon = ({ type }: { type: string }) => {
 };
 
 // 设置项组件
-const SettingItem = ({
-  label,
-  value,
-  unit = ''
-}: {
-  label: string;
-  value: string | number;
-  unit?: string;
-}) => (
+const SettingItem = ({ label, value, unit = '' }: { label: string; value: string | number; unit?: string }) => (
   <div className='relative group'>
     {/* 装饰性边框 */}
     <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-orange-500/20 rounded-xl blur-sm' />
@@ -127,9 +119,7 @@ const SettingSection = ({ title, children }: { title: string; children: React.Re
       <div className='mb-6'>
         <h2 className='text-2xl font-bold tracking-widest text-center text-white/95 flex items-center justify-center gap-3'>
           <div className='w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent' />
-          <span className='bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent'>
-            {title}
-          </span>
+          <span className='bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent'>{title}</span>
           <div className='w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent' />
         </h2>
       </div>
@@ -198,10 +188,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
 
   return (
     <HTML>
-      <div
-        className=' w-full bg-cover bg-center text-center p-4 md:p-8 space-y-8'
-        style={{ backgroundImage: `url(${stateURL})` }}
-      >
+      <div className=' w-full bg-cover bg-center text-center p-4 md:p-8 space-y-8' style={{ backgroundImage: `url(${stateURL})` }}>
         {/* 头部区域 */}
         <header className='relative text-center space-y-6'>
           {/* 标题区域 */}
@@ -217,12 +204,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
             {settingSections.map((section, sectionIndex) => (
               <SettingSection key={sectionIndex} title={section.title}>
                 {section.settings.map((setting, index) => (
-                  <SettingItem
-                    key={index}
-                    label={setting.label}
-                    value={setting.value}
-                    unit={setting.unit}
-                  />
+                  <SettingItem key={index} label={setting.label} value={setting.value} unit={setting.unit} />
                 ))}
               </SettingSection>
             ))}
@@ -232,9 +214,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
         {/* 底部装饰 */}
         <footer className='text-center py-8'>
           <div className='inline-block px-6 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border border-amber-400/20 rounded-xl'>
-            <span className='text-amber-300/80 text-sm tracking-wide'>
-              ✨ 修仙之路，道法自然 ✨
-            </span>
+            <span className='text-amber-300/80 text-sm tracking-wide'>✨ 修仙之路，道法自然 ✨</span>
           </div>
         </footer>
       </div>

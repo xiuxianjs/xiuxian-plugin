@@ -10,43 +10,40 @@ import { getDataList } from './DataList.js';
  * @param AplayerA 参战玩家 A (调用方视角)
  * @param BplayerB 参战玩家 B (对手)
  */
-export async function zdBattle(
-  AplayerA: Player | BattleEntity,
-  BplayerB: Player | BattleEntity
-): Promise<BattleResult> {
+export async function zdBattle(AplayerA: Player | BattleEntity, BplayerB: Player | BattleEntity): Promise<BattleResult> {
   // 运行时克隆并断言为 Player 的最小子集；缺失字段使用回退默认值
   const normalize = (p: Player | BattleEntity): Player => {
     return {
       名号: p.名号,
-      level_id: (p as Player).level_id ?? 0,
-      Physique_id: (p as Player).Physique_id ?? 0,
-      修为: (p as Player).修为 ?? 0,
-      灵石: (p as Player).灵石 ?? 0,
-      血气: (p as Player).血气 ?? 0,
+      level_id: p.level_id ?? 0,
+      Physique_id: p.Physique_id ?? 0,
+      修为: p.修为 ?? 0,
+      灵石: p.灵石 ?? 0,
+      血气: p.血气 ?? 0,
       当前血量: p.当前血量,
-      血量上限: (p as Player).血量上限 ?? p.当前血量,
+      血量上限: p.血量上限 ?? p.当前血量,
       攻击: p.攻击,
       防御: p.防御,
-      攻击加成: (p as Player).攻击加成 ?? 0,
-      防御加成: (p as Player).防御加成 ?? 0,
-      生命加成: (p as Player).生命加成 ?? 0,
+      攻击加成: p.攻击加成 ?? 0,
+      防御加成: p.防御加成 ?? 0,
+      生命加成: p.生命加成 ?? 0,
       暴击率: p.暴击率,
-      暴击伤害: (p as Player).暴击伤害 ?? 0,
-      镇妖塔层数: (p as Player).镇妖塔层数 ?? 0,
-      神魄段数: (p as Player).神魄段数 ?? 0,
-      favorability: (p as Player).favorability ?? 0,
-      灵根: (p as Player).灵根 ?? { name: '未知', type: '普通', 法球倍率: 1 },
-      仙宠: (p as Player).仙宠 ?? { name: '无', type: 'none', 加成: 0 },
-      学习的功法: (p as Player).学习的功法 ?? [],
-      修炼效率提升: (p as Player).修炼效率提升 ?? 0,
-      宗门: (p as Player).宗门,
-      islucky: (p as Player).islucky ?? 0,
-      addluckyNo: (p as Player).addluckyNo ?? 0,
-      幸运: (p as Player).幸运 ?? 0,
-      魔道值: (p as Player).魔道值 ?? 0,
-      id: (p as Player).id,
-      神石: (p as Player).神石 ?? 0,
-      法球倍率: Number((p as Player).法球倍率 ?? (p as Player).灵根?.法球倍率 ?? 1) || 1
+      暴击伤害: p.暴击伤害 ?? 0,
+      镇妖塔层数: p.镇妖塔层数 ?? 0,
+      神魄段数: p.神魄段数 ?? 0,
+      favorability: p.favorability ?? 0,
+      灵根: p.灵根 ?? { name: '未知', type: '普通', 法球倍率: 1 },
+      仙宠: p.仙宠 ?? { name: '无', type: 'none', 加成: 0 },
+      学习的功法: p.学习的功法 ?? [],
+      修炼效率提升: p.修炼效率提升 ?? 0,
+      宗门: p.宗门,
+      islucky: p.islucky ?? 0,
+      addluckyNo: p.addluckyNo ?? 0,
+      幸运: p.幸运 ?? 0,
+      魔道值: p.魔道值 ?? 0,
+      id: p.id,
+      神石: p.神石 ?? 0,
+      法球倍率: Number(p.法球倍率 ?? p.灵根?.法球倍率 ?? 1) || 1
     };
   };
   let playerA: Player = normalize(BplayerB);
@@ -159,9 +156,7 @@ export async function zdBattle(
         if (ran < 0.35) {
           playerA.攻击 += Math.trunc(playerA.攻击 * playerA.仙宠.加成);
           playerA.防御 += Math.trunc(playerA.防御 * playerA.仙宠.加成);
-          msg.push(
-            `仙宠【${playerA.仙宠.name}】辅佐了[${playerA.名号}]，使其伤害增加了[${Math.trunc(playerA.仙宠.加成 * 100)}%]`
-          );
+          msg.push(`仙宠【${playerA.仙宠.name}】辅佐了[${playerA.名号}]，使其伤害增加了[${Math.trunc(playerA.仙宠.加成 * 100)}%]`);
         }
       }
     }
@@ -189,9 +184,7 @@ export async function zdBattle(
 
     for (let i = 0; i < jineng1.length; i++) {
       if (
-        (jineng1[i].class === '常驻'
-          && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
-          && Random < jineng1[i].pr)
+        (jineng1[i].class === '常驻' && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1) && Random < jineng1[i].pr)
         || (playerA.学习的功法
           && jineng1[i].class === '功法'
           && playerA.学习的功法.indexOf(jineng1[i].name) > -1
@@ -203,11 +196,7 @@ export async function zdBattle(
           && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
           && Random < jineng1[i].pr)
       ) {
-        msg.push(
-          jineng1[i].msg2 === ''
-            ? playerA.名号 + jineng1[i].msg1
-            : playerA.名号 + jineng1[i].msg1 + playerB.名号 + jineng1[i].msg2
-        );
+        msg.push(jineng1[i].msg2 === '' ? playerA.名号 + jineng1[i].msg1 : playerA.名号 + jineng1[i].msg1 + playerB.名号 + jineng1[i].msg2);
         伤害 = 伤害 * jineng1[i].beilv + jineng1[i].other;
         count++;
       }
@@ -228,11 +217,7 @@ export async function zdBattle(
           && (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1)
           && random < jineng2[i].pr)
       ) {
-        msg.push(
-          jineng2[i].msg2 === ''
-            ? playerB.名号 + jineng2[i].msg1
-            : playerB.名号 + jineng2[i].msg1 + playerA.名号 + jineng2[i].msg2
-        );
+        msg.push(jineng2[i].msg2 === '' ? playerB.名号 + jineng2[i].msg1 : playerB.名号 + jineng2[i].msg1 + playerA.名号 + jineng2[i].msg2);
         伤害 = 伤害 * jineng2[i].beilv + jineng2[i].other;
       }
     }
@@ -268,9 +253,7 @@ export async function zdBattle(
       playerA.攻击 = BplayerB.攻击;
       playerA.防御 = BplayerB.防御;
     }
-    msg.push(
-      `第${cnt2 + 1}回合：\n  ${playerA.名号}攻击了${playerB.名号}，${ifbaoji(baoji)}造成伤害${伤害}，${playerB.名号}剩余血量${playerB.当前血量}`
-    );
+    msg.push(`第${cnt2 + 1}回合：\n  ${playerA.名号}攻击了${playerB.名号}，${ifbaoji(baoji)}造成伤害${伤害}，${playerB.名号}剩余血量${playerB.当前血量}`);
     cnt++;
   }
   if (cnt % 2 === 0) {

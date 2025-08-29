@@ -98,8 +98,7 @@ const res = onResponse(selects, async e => {
         continue;
       }
       // 材料/草药 1 倍，其它 2 倍
-      const multiplier
-        = normalizeCat(item.class) === '材料' || normalizeCat(item.class) === '草药' ? 1 : 2;
+      const multiplier = normalizeCat(item.class) === '材料' || normalizeCat(item.class) === '草药' ? 1 : 2;
 
       total += salePrice * qty * multiplier;
       await addNajieThing(userId, item.name, normAddCat(item.class), -qty, normPinji(item.pinji));

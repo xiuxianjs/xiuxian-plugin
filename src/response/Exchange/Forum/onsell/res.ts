@@ -1,14 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import {
-  existplayer,
-  foundthing,
-  convert2integer,
-  readForum,
-  writeForum,
-  readPlayer,
-  addCoin
-} from '@src/model/index';
+import { existplayer, foundthing, convert2integer, readForum, writeForum, readPlayer, addCoin } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';

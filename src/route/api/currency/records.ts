@@ -1,12 +1,6 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
-import {
-  getAllRechargeRecords,
-  getRechargeRecordDetail,
-  getUserRechargeRecords,
-  PaymentStatus,
-  RechargeType
-} from '@src/model/currency';
+import { getAllRechargeRecords, getRechargeRecordDetail, getUserRechargeRecords, PaymentStatus, RechargeType } from '@src/model/currency';
 
 // 获取所有充值记录
 export const GET = async (ctx: Context) => {

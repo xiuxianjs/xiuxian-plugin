@@ -27,13 +27,7 @@ const ITEM_CATEGORIES = [
   }
 ];
 
-export default function NajieEditModal({
-  visible,
-  onCancel,
-  onSave,
-  najie,
-  loading = false
-}: NajieEditModalProps) {
+export default function NajieEditModal({ visible, onCancel, onSave, najie, loading = false }: NajieEditModalProps) {
   const [form] = Form.useForm();
   const [editingNajie, setEditingNajie] = useState<Najie | null>(null);
 
@@ -75,9 +69,7 @@ export default function NajieEditModal({
 
     if (!editingNajie) return;
 
-    if (
-      (editingNajie[category as keyof Najie] as NajieItem[]).some(item => item.name === inputValue)
-    ) {
+    if ((editingNajie[category as keyof Najie] as NajieItem[]).some(item => item.name === inputValue)) {
       message.error('已存在该物品');
       return;
     }
@@ -109,12 +101,7 @@ export default function NajieEditModal({
     });
   };
 
-  const updateItem = (
-    category: string,
-    index: number,
-    field: keyof NajieItem,
-    value: string | number | undefined | null
-  ) => {
+  const updateItem = (category: string, index: number, field: keyof NajieItem, value: string | number | undefined | null) => {
     if (!editingNajie) return;
 
     const items = (editingNajie[category as keyof Najie] as NajieItem[]) || [];
@@ -127,28 +114,14 @@ export default function NajieEditModal({
   };
 
   const renderItemCard = (item: NajieItem, category: string, index: number) => (
-    <Card
-      key={index}
-      className='bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-600/50 mb-3'
-      size='small'
-    >
+    <Card key={index} className='bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-600/50 mb-3' size='small'>
       <Row gutter={[8, 8]}>
         <Col span={8}>
-          <Input
-            placeholder='物品名称'
-            value={item.name}
-            onChange={e => updateItem(category, index, 'name', e.target.value)}
-            className='xiuxian-input'
-          />
+          <Input placeholder='物品名称' value={item.name} onChange={e => updateItem(category, index, 'name', e.target.value)} className='xiuxian-input' />
           <div className='absolute inset-0 bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300'></div>
         </Col>
         <Col span={4}>
-          <Input
-            placeholder='品质'
-            value={item.grade}
-            onChange={e => updateItem(category, index, 'grade', e.target.value)}
-            className='xiuxian-input'
-          />
+          <Input placeholder='品质' value={item.grade} onChange={e => updateItem(category, index, 'grade', e.target.value)} className='xiuxian-input' />
         </Col>
         <Col span={3}>
           <InputNumber
@@ -177,13 +150,7 @@ export default function NajieEditModal({
           />
         </Col>
         <Col span={3}>
-          <Button
-            type='text'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => removeItem(category, index)}
-            className='text-red-400 hover:text-red-300'
-          />
+          <Button type='text' danger icon={<DeleteOutlined />} onClick={() => removeItem(category, index)} className='text-red-400 hover:text-red-300' />
         </Col>
       </Row>
     </Card>
@@ -201,11 +168,7 @@ export default function NajieEditModal({
       onCancel={onCancel}
       width={1200}
       footer={[
-        <Button
-          key='cancel'
-          onClick={onCancel}
-          className='bg-slate-600 border-slate-500 text-white'
-        >
+        <Button key='cancel' onClick={onCancel} className='bg-slate-600 border-slate-500 text-white'>
           取消
         </Button>,
         <Button
@@ -227,26 +190,16 @@ export default function NajieEditModal({
           <Form form={form} layout='vertical'>
             <Row gutter={16}>
               <Col span={8}>
-                <Form.Item
-                  label={<span className='text-slate-200'>用户ID</span>}
-                  name='userId'
-                  rules={[{ required: true, message: '请输入用户ID' }]}
-                >
+                <Form.Item label={<span className='text-slate-200'>用户ID</span>} name='userId' rules={[{ required: true, message: '请输入用户ID' }]}>
                   <Input className='bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 hover:bg-white hover:text-gray-900 hover:placeholder-gray-500 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500' />
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item
-                  label={<span className='text-slate-200'>灵石</span>}
-                  name='灵石'
-                  rules={[{ required: true, message: '请输入灵石数量' }]}
-                >
+                <Form.Item label={<span className='text-slate-200'>灵石</span>} name='灵石' rules={[{ required: true, message: '请输入灵石数量' }]}>
                   <InputNumber
                     className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                     min={0}
-                    formatter={(value: number | string | undefined) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
+                    formatter={(value: number | string | undefined) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={(value: string | undefined) => value?.replace(/\$\s?|(,*)/g, '') || ''}
                   />
                 </Form.Item>
@@ -256,9 +209,7 @@ export default function NajieEditModal({
                   <InputNumber
                     className='w-full bg-slate-700/50 border-slate-600 text-white hover:bg-white hover:text-gray-900 focus:bg-white focus:text-gray-900'
                     min={0}
-                    formatter={(value: number | string | undefined) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
+                    formatter={(value: number | string | undefined) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={(value: string | undefined) => value?.replace(/\$\s?|(,*)/g, '') || ''}
                   />
                 </Form.Item>
@@ -288,11 +239,7 @@ export default function NajieEditModal({
                 <div className='flex justify-between items-center mb-4'>
                   <h3 className='text-lg font-bold text-white'>{category.label}</h3>
                   <div className='flex gap-6'>
-                    <Input
-                      value={inputValue}
-                      onChange={e => setInputValue(e.target.value)}
-                      className='max-w-40 xiuxian-input'
-                    />
+                    <Input value={inputValue} onChange={e => setInputValue(e.target.value)} className='max-w-40 xiuxian-input' />
                     <Button
                       type='primary'
                       icon={<PlusOutlined />}
@@ -305,19 +252,13 @@ export default function NajieEditModal({
                 </div>
 
                 <div className='space-y-2'>
-                  {((editingNajie?.[category.key as keyof Najie] as NajieItem[]) || []).map(
-                    (item, index) => renderItemCard(item, category.key, index)
-                  )}
+                  {((editingNajie?.[category.key as keyof Najie] as NajieItem[]) || []).map((item, index) => renderItemCard(item, category.key, index))}
                 </div>
 
                 {(() => {
                   const items = editingNajie?.[category.key as keyof Najie];
                   return !items || !Array.isArray(items) || (items as NajieItem[]).length === 0;
-                })() && (
-                  <div className='text-center py-8 text-slate-400'>
-                    暂无{category.label}，点击上方按钮添加
-                  </div>
-                )}
+                })() && <div className='text-center py-8 text-slate-400'>暂无{category.label}，点击上方按钮添加</div>}
               </div>
             )
           }))}

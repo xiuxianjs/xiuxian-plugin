@@ -30,13 +30,7 @@ const res = onResponse(selects, async e => {
   // 贡献值为捐献灵石除10000
   const gonxianzhi = Math.trunc(player.宗门.lingshi_donate / 10000);
 
-  void Send(
-    Text(
-      '你为宗门的贡献值为['
-        + gonxianzhi
-        + '],可以在#宗门藏宝阁 使用贡献值兑换宗门物品,感谢您对宗门做出的贡献'
-    )
-  );
+  void Send(Text('你为宗门的贡献值为[' + gonxianzhi + '],可以在#宗门藏宝阁 使用贡献值兑换宗门物品,感谢您对宗门做出的贡献'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

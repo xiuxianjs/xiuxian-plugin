@@ -14,16 +14,9 @@ interface XiuxianTabGroupProps {
   className?: string;
 }
 
-const XiuxianTabGroup: React.FC<XiuxianTabGroupProps> = ({
-  tabs,
-  activeTab,
-  onTabChange,
-  className = ''
-}) => {
+const XiuxianTabGroup: React.FC<XiuxianTabGroupProps> = ({ tabs, activeTab, onTabChange, className = '' }) => {
   return (
-    <div
-      className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg ${className}`}
-    >
+    <div className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg ${className}`}>
       {/* 标签页导航 */}
       <div className='flex flex-wrap gap-2 mb-6'>
         {tabs.map(tab => (

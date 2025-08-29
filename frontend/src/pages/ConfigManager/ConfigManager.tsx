@@ -5,12 +5,7 @@ import { useConfigManagerCode } from './ConfigManager.code';
 import { Modal } from 'antd';
 
 // 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianTabGroup,
-  XiuxianConfigItem
-} from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTabGroup, XiuxianConfigItem } from '@/components/ui';
 
 export default function ConfigManager() {
   const {
@@ -45,11 +40,7 @@ export default function ConfigManager() {
               key={item.key}
               name={item.name}
               description={item.description}
-              type={
-                item.type === 'json'
-                  ? 'array'
-                  : (item.type as 'string' | 'number' | 'boolean' | 'array')
-              }
+              type={item.type === 'json' ? 'array' : (item.type as 'string' | 'number' | 'boolean' | 'array')}
               value={getConfigValue(item.key)}
               onChange={value => handleConfigChange(item.key, value)}
             />

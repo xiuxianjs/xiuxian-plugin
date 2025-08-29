@@ -84,13 +84,7 @@ type NajieProps = {
   };
 };
 
-const Najie = ({
-  user_id,
-  player = {},
-  strand_hp = {},
-  najie = {},
-  strand_lingshi = {}
-}: NajieProps) => {
+const Najie = ({ user_id, player = {}, strand_hp = {}, najie = {}, strand_lingshi = {} }: NajieProps) => {
   const qualities = ['劣', '普', '优', '精', '极', '绝', '顶'];
   const lockStatus = ['未锁定', '已锁定'];
   const elements = ['金', '木', '土', '水', '火'];
@@ -177,9 +171,7 @@ const Najie = ({
                           </div>
                           <span className='text-sm font-medium text-gray-700'>道号</span>
                         </div>
-                        <div className='text-lg font-bold text-gray-800'>
-                          {player.名号 || '无名'}
-                        </div>
+                        <div className='text-lg font-bold text-gray-800'>{player.名号 || '无名'}</div>
                       </div>
 
                       <div className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
@@ -202,10 +194,7 @@ const Najie = ({
                         <div className='space-y-2'>
                           <div className='flex items-center gap-2'>
                             <div className='flex-1 bg-white/30 backdrop-blur-sm rounded-full h-3'>
-                              <div
-                                className='bg-gradient-to-r from-red-400 to-red-600 h-3 rounded-full'
-                                style={strand_hp.style}
-                              />
+                              <div className='bg-gradient-to-r from-red-400 to-red-600 h-3 rounded-full' style={strand_hp.style} />
                             </div>
                             <span className='text-sm font-bold text-gray-800'>
                               {player.当前血量 || 0}/{player.血量上限 || 0}
@@ -224,10 +213,7 @@ const Najie = ({
                         <div className='space-y-2'>
                           <div className='flex items-center gap-2'>
                             <div className='flex-1 bg-white/30 backdrop-blur-sm rounded-full h-3'>
-                              <div
-                                className='bg-gradient-to-r from-blue-400 to-blue-600 h-3 rounded-full'
-                                style={strand_lingshi.style}
-                              />
+                              <div className='bg-gradient-to-r from-blue-400 to-blue-600 h-3 rounded-full' style={strand_lingshi.style} />
                             </div>
                             <span className='text-sm font-bold text-gray-800'>
                               {najie.灵石 || 0}/{najie.灵石上限 || 0}
@@ -259,10 +245,7 @@ const Najie = ({
                   </div>
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.道具.map((item, index) => (
-                      <div
-                        key={index}
-                        className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                      >
+                      <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                         <div className='flex items-center gap-2 mb-2'>
                           <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                             <span className='text-xs'>📦</span>
@@ -311,10 +294,7 @@ const Najie = ({
                       const stats = renderEquipmentStats(item);
 
                       return (
-                        <div
-                          key={index}
-                          className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                        >
+                        <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                           <div className='flex items-center gap-2 mb-2'>
                             <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                               <span className='text-xs'>🗡️</span>
@@ -345,9 +325,7 @@ const Najie = ({
                             </div>
                             <div className='flex items-center gap-1'>
                               <span className='text-gray-600'>暴击:</span>
-                              <span className='font-bold text-gray-800'>
-                                {(item.bao * 100).toFixed(0)}%
-                              </span>
+                              <span className='font-bold text-gray-800'>{(item.bao * 100).toFixed(0)}%</span>
                             </div>
                             <div className='flex items-center gap-2'>
                               <span className='text-gray-600'>数量：</span>
@@ -385,10 +363,7 @@ const Najie = ({
                   </div>
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.丹药.map((item, index) => (
-                      <div
-                        key={index}
-                        className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                      >
+                      <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                         <div className='flex items-center gap-2 mb-2'>
                           <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                             <span className='text-xs'>💊</span>
@@ -413,9 +388,7 @@ const Najie = ({
                           {item.xingyun > 0 && (
                             <div className='flex items-center gap-1'>
                               <span className='text-gray-600'>幸运值:</span>
-                              <span className='font-bold text-gray-800'>
-                                {(item.xingyun * 100).toFixed(1)}%
-                              </span>
+                              <span className='font-bold text-gray-800'>{(item.xingyun * 100).toFixed(1)}%</span>
                             </div>
                           )}
                           <div className='flex items-center gap-2'>
@@ -453,10 +426,7 @@ const Najie = ({
                   </div>
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.草药.map((item, index) => (
-                      <div
-                        key={index}
-                        className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                      >
+                      <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                         <div className='flex items-center gap-2 mb-2'>
                           <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                             <span className='text-xs'>🌱</span>
@@ -503,10 +473,7 @@ const Najie = ({
                   </div>
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.材料.map((item, index) => (
-                      <div
-                        key={index}
-                        className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                      >
+                      <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                         <div className='flex items-center gap-2 mb-2'>
                           <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                             <span className='text-xs'>⚒️</span>
@@ -549,10 +516,7 @@ const Najie = ({
                   </div>
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.仙宠.map((item, index) => (
-                      <div
-                        key={index}
-                        className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                      >
+                      <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                         <div className='flex items-center gap-2 mb-2'>
                           <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                             <span className='text-xs'>🐾</span>
@@ -599,10 +563,7 @@ const Najie = ({
                   </div>
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {najie.仙宠口粮.map((item, index) => (
-                      <div
-                        key={index}
-                        className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'
-                      >
+                      <div key={index} className='bg-white/20 backdrop-blur-lg rounded-xl p-4 border border-white/30 shadow-lg'>
                         <div className='flex items-center gap-2 mb-2'>
                           <div className='w-6 h-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center'>
                             <span className='text-xs'>🥘</span>
@@ -632,9 +593,7 @@ const Najie = ({
           {/* 底部装饰 */}
           <div className='text-center mt-12'>
             <div className='inline-block px-6 py-3 bg-white/20 backdrop-blur-lg rounded-full border border-white/30 shadow-lg'>
-              <span className='text-gray-700 text-sm font-medium'>
-                💎 纳戒空间无限，修仙路上相伴 💎
-              </span>
+              <span className='text-gray-700 text-sm font-medium'>💎 纳戒空间无限，修仙路上相伴 💎</span>
             </div>
           </div>
         </div>

@@ -4,21 +4,7 @@ import playerURL from '@src/resources/img/player.jpg';
 import { Avatar } from './Avatar';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 
-const Shifu = ({
-  user_id,
-  minghao,
-  renwu,
-  tudinum,
-  shifu,
-  shimen,
-  rw1,
-  wancheng1,
-  rw2,
-  wancheng2,
-  rw3,
-  wancheng3,
-  chengyuan
-}) => {
+const Shifu = ({ user_id, minghao, renwu, tudinum, shifu, shimen, rw1, wancheng1, rw2, wancheng2, rw3, wancheng3, chengyuan }) => {
   return (
     <HTML
       className=' bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8'
@@ -66,10 +52,7 @@ const Shifu = ({
           <div className='text-xl font-bold text-blue-700 mb-2'>[同门弟子]</div>
           <div className='w-full flex flex-wrap gap-2'>
             {chengyuan?.map((item, index) => (
-              <span
-                key={index}
-                className='inline-block bg-blue-100 text-blue-900 rounded px-3 py-1 text-sm font-semibold'
-              >
+              <span key={index} className='inline-block bg-blue-100 text-blue-900 rounded px-3 py-1 text-sm font-semibold'>
                 {item}
               </span>
             ))}

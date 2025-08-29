@@ -84,9 +84,7 @@ export class AuctionKeyManager {
       if (oldMembers && oldMembers.length > 0) {
         // 将集合数据迁移到新key
         await this.redis.sadd(newKey, ...oldMembers);
-        console.log(
-          `[星阁系统] 集合数据迁移成功: ${oldKey} -> ${newKey}, 迁移${oldMembers.length}个成员`
-        );
+        console.log(`[星阁系统] 集合数据迁移成功: ${oldKey} -> ${newKey}, 迁移${oldMembers.length}个成员`);
 
         // 可选：删除旧key（谨慎操作，建议先备份）
         // await this.redis.del(oldKey);

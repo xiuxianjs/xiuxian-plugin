@@ -5,14 +5,7 @@ import { existplayer, keysAction, readPlayer, setDataJSONStringifyByKey } from '
 
 import { selects } from '@src/response/mw';
 import { getString, userKey } from '@src/model/utils/redisHelper';
-import {
-  readAction,
-  isActionRunning,
-  startAction,
-  normalizeDurationMinutes,
-  remainingMs,
-  formatRemaining
-} from '@src/model/actionHelper';
+import { readAction, isActionRunning, startAction, normalizeDurationMinutes, remainingMs, formatRemaining } from '@src/model/actionHelper';
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {

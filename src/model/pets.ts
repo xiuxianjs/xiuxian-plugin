@@ -8,12 +8,7 @@ import { getDataList } from './DataList.js';
 export const petGrade = ['仙胎', '仙仔', '仙兽', '仙道', '仙灵'];
 export const petLevel = [20, 40, 60, 80, 100];
 
-export async function addPet(
-  usrId: string,
-  thingName: string,
-  n: number,
-  thingLevel: number | null = null
-): Promise<void> {
+export async function addPet(usrId: string, thingName: string, n: number, thingLevel: number | null = null): Promise<void> {
   const x = Number(n);
 
   if (x === 0) {
@@ -38,9 +33,7 @@ export async function addPet(
       islockd: typeof base.islockd === 'number' ? base.islockd : 0
     };
   });
-  const trr = petList.find(
-    (item: OwnedPetItem) => item.name === thingName && item.等级 === thingLevel
-  );
+  const trr = petList.find((item: OwnedPetItem) => item.name === thingName && item.等级 === thingLevel);
 
   if (x > 0 && !notUndAndNull(trr)) {
     interface SourcePetLike {
@@ -51,9 +44,7 @@ export async function addPet(
       加成?: number;
     }
     const data = await getDataList('Xianchon');
-    const base = Array.isArray(data)
-      ? (data as SourcePetLike[]).find(item => item.name === thingName)
-      : undefined;
+    const base = Array.isArray(data) ? (data as SourcePetLike[]).find(item => item.name === thingName) : undefined;
 
     if (!notUndAndNull(base)) {
       console.info('没有这个东西');

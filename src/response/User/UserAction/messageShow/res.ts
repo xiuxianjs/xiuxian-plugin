@@ -86,14 +86,7 @@ const res = onResponse(selects, async e => {
       textMessage += '📋 最新消息列表：\n';
       messageList.messages.forEach((msg, index) => {
         const statusText = msg.status === 0 ? '🔴未读' : msg.status === 1 ? '🟢已读' : '⚫已删';
-        const priorityText =
-          msg.priority === 1
-            ? '低'
-            : msg.priority === 2
-              ? '普通'
-              : msg.priority === 3
-                ? '高'
-                : '紧急';
+        const priorityText = msg.priority === 1 ? '低' : msg.priority === 2 ? '普通' : msg.priority === 3 ? '高' : '紧急';
         const timeText = new Date(msg.createTime).toLocaleString('zh-CN');
 
         textMessage += `${index + 1}. [${statusText}] [${priorityText}] ${msg.title}\n`;

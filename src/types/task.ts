@@ -30,15 +30,7 @@ export interface AuctionSession {
   groupList: GroupId[]; // 需要广播的群
 }
 
-export type NajieCategory =
-  | '装备'
-  | '丹药'
-  | '道具'
-  | '功法'
-  | '草药'
-  | '材料'
-  | '仙宠'
-  | '仙宠口粮';
+export type NajieCategory = '装备' | '丹药' | '道具' | '功法' | '草药' | '材料' | '仙宠' | '仙宠口粮';
 
 /** **************************** 交易 / 论坛 (ExchangeTask / ForumTask) ******************************/
 export interface ExchangeEntry {
@@ -208,13 +200,7 @@ export interface BackupTaskMeta {
 }
 
 /** **************************** 汇总联合类型（如需在外部做窄化） ******************************/
-export type AnyTaskActionState =
-  | RaidActionState
-  | ExploreActionState
-  | SecretPlaceActionState
-  | OccupationActionState
-  | ControlActionState
-  | ActionState; // 兜底
+export type AnyTaskActionState = RaidActionState | ExploreActionState | SecretPlaceActionState | OccupationActionState | ControlActionState | ActionState; // 兜底
 
 /** **************************** Type Guard 辅助 ******************************/
 export function isRaidActionState(a): a is RaidActionState {

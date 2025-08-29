@@ -165,22 +165,13 @@ const Tuzhi = ({ tuzhi_list }) => {
               <div className='flex items-center gap-3'>
                 <div className='text-3xl'>{getWeaponTypeIcon(item.name)}</div>
                 <div className='flex flex-col'>
-                  <span className='font-bold text-2xl text-blue-700 tracking-wide'>
-                    {item.name}
-                  </span>
+                  <span className='font-bold text-2xl text-blue-700 tracking-wide'>{item.name}</span>
                   <div className='text-sm text-blue-600/70 mt-1'>炼器图纸 · 神兵利器</div>
                 </div>
               </div>
               <div className='flex flex-col items-end'>
-                <div
-                  className={classNames(
-                    'px-3 py-1 rounded-lg border border-blue-300/50 backdrop-blur-sm',
-                    getSuccessRateBg(item.rate)
-                  )}
-                >
-                  <span className={classNames('text-lg font-bold', getSuccessRateColor(item.rate))}>
-                    {~~(item.rate * 100)}%
-                  </span>
+                <div className={classNames('px-3 py-1 rounded-lg border border-blue-300/50 backdrop-blur-sm', getSuccessRateBg(item.rate))}>
+                  <span className={classNames('text-lg font-bold', getSuccessRateColor(item.rate))}>{~~(item.rate * 100)}%</span>
                 </div>
                 <div className='text-xs text-blue-600/70 mt-1'>基础成功率</div>
               </div>

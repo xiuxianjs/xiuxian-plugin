@@ -42,9 +42,7 @@ const res = onResponse(selects, async e => {
     const list = ['Xianchon', 'Changzhuxianchon'];
 
     for (const item of list) {
-      const i = ((await getDataList(item as 'Xianchon' | 'Changzhuxianchon')) as PetItem[]).find(
-        x => x.name === player.仙宠.name
-      );
+      const i = ((await getDataList(item as 'Xianchon' | 'Changzhuxianchon')) as PetItem[]).find(x => x.name === player.仙宠.name);
 
       if (i) {
         player.仙宠.等级上限 = i.等级上限;

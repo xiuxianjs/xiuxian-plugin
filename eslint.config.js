@@ -179,7 +179,7 @@ export default [
       'function-paren-newline': 'off',
       'implicit-arrow-linebreak': ['error', 'beside'],
       // 最大行长度限制 - 100字符，忽略URL和字符串
-      'max-len': ['warn', { code: 100, ignoreUrls: true, ignoreStrings: true }],
+      'max-len': ['warn', { code: 160, ignoreUrls: true, ignoreStrings: true }],
       
       // 禁用混合运算符检查 - 与自动格式化工具冲突
       'no-mixed-operators': 'off',

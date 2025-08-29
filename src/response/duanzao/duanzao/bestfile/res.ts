@@ -2,16 +2,7 @@ import { Image, Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import {
-  readItTyped,
-  writeIt,
-  readNajie,
-  readEquipment,
-  existplayer,
-  keys,
-  keysByPath,
-  __PATH
-} from '@src/model/index';
+import { readItTyped, writeIt, readNajie, readEquipment, existplayer, keys, keysByPath, __PATH } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { screenshot } from '@src/image';

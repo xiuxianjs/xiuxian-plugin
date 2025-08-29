@@ -9,9 +9,7 @@ import type { AssociationDetailData } from '@src/types';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 export const regular = /^(#|＃|\/)?宗门(上交|上缴|捐赠)灵石\d+$/;
-const 宗门灵石池上限 = [
-  2000000, 5000000, 8000000, 11000000, 15000000, 20000000, 25000000, 30000000
-];
+const 宗门灵石池上限 = [2000000, 5000000, 8000000, 11000000, 15000000, 20000000, 25000000, 30000000];
 
 interface GuildInfo {
   宗门名称: string;
