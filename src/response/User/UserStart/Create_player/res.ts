@@ -16,6 +16,7 @@ import { selects } from '@src/response/mw';
 import { getPlayerImage } from '@src/model/image';
 import type { Player } from '@src/types';
 import mw from '@src/response/mw';
+import { getAvatar } from '@src/model/utils/utilsx';
 
 export const regular = /^(#|＃|\/)?(我|我的练气|个人信息|我的信息|踏入仙途)$/;
 
@@ -62,12 +63,12 @@ const res = onResponse(selects, async e => {
   const n = userList.length + 1;
   const talentRaw = await getRandomTalent();
   const talent = normalizeTalent(talentRaw);
-  const newPlayer = {
+  const newPlayer: Player = {
     id: userId,
-    sex: '0',
+    sex: 0,
     名号: `路人甲${n}号`,
     宣言: '这个人很懒还没有写',
-    avatar: e.UserAvatar || 'https://s1.ax1x.com/2022/08/09/v8XV3q.jpg',
+    avatar: e.UserAvatar ?? getAvatar('1715713638'),
     level_id: 1,
     Physique_id: 1,
     race: 1,
@@ -91,7 +92,7 @@ const res = onResponse(selects, async e => {
     lunhui: 0,
     lunhuiBH: 0,
     轮回点: 10,
-    occupation: [],
+    occupation: '',
     occupation_level: 1,
     镇妖塔层数: 0,
     神魄段数: 0,
@@ -100,7 +101,10 @@ const res = onResponse(selects, async e => {
       name: '',
       type: '',
       加成: 0,
-      灵魂绑定: 0
+      灵魂绑定: 0,
+      等级: 0,
+      每级增加: 0,
+      等级上限: 0
     },
     练气皮肤: 0,
     装备皮肤: 0,
@@ -112,8 +116,17 @@ const res = onResponse(selects, async e => {
     攻击: 0,
     防御: 0,
     暴击率: 0,
-    暴击伤害: 0
-  } as Player;
+    暴击伤害: 0,
+    金银坊败场: 0,
+    金银坊支出: 0,
+    金银坊胜场: 0,
+    金银坊收入: 0,
+    occupation_exp: 0,
+    锻造天赋: 0,
+    隐藏灵根: undefined,
+    神界次数: 0,
+    法球倍率: 0
+  };
 
   await writePlayer(userId, newPlayer);
   const newQquipment = {

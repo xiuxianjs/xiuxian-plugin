@@ -2,6 +2,7 @@ import { Text, useMessage } from 'alemonjs';
 import mw, { selects } from '@src/response/mw';
 import { keys, readPlayer } from '@src/model';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { ZongMen } from '@src/types';
 
 export const regular = /^(#|＃|\/)?查看宗门贡献$/;
 
@@ -24,7 +25,9 @@ const res = onResponse(selects, async e => {
 
     return;
   }
-  const ass = await getDataJSONParseByKey(keys.association(player.宗门['宗门名称']));
+  const ass: ZongMen | null = await getDataJSONParseByKey(
+    keys.association(player.宗门['宗门名称'])
+  );
 
   if (!ass) {
     void message.send(format(Text('宗门不存在')));

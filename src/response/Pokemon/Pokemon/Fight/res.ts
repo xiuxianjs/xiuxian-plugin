@@ -144,11 +144,7 @@ const res = onResponse(selects, async e => {
   const per = getPer(bagPet) ?? petDef.每级增加;
   const bonus = calcBonus(level, per);
 
-  const newPet: XianchongInfo & {
-    等级: number;
-    每级增加: number;
-    灵魂绑定?: number;
-  } = {
+  const newPet: XianchongInfo = {
     name: input,
     type: petDef.type,
     加成: bonus,

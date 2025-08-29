@@ -2,6 +2,7 @@
 
 import { readQinmidu, writeQinmidu } from '@src/model/qinmidu';
 import type { QinmiduRecord } from './model';
+import XianChong from '@src/resources/html/xianchong';
 
 export interface TalentInfo {
   type: string;
@@ -10,12 +11,7 @@ export interface TalentInfo {
   eff?: number;
 }
 
-export interface XianchongInfo {
-  name: string;
-  type: string;
-  加成: number;
-  灵魂绑定?: number;
-}
+export type XianchongInfo = XianChong;
 
 interface LingGen {
   name: string;
@@ -30,7 +26,7 @@ export interface XianChong {
   加成: number;
   等级: number;
   每级增加: number;
-  灵魂绑定: number;
+  灵魂绑定?: number;
   等级上限: number;
 }
 
@@ -46,6 +42,9 @@ export interface ZongMen {
   宗门名称: string;
   职位: string;
   time: [string, number];
+  所有成员: any;
+  宗门等级: number;
+  药园: undefined;
 }
 
 export interface Player {
@@ -100,9 +99,9 @@ export interface Player {
   金银坊收入: number;
   occupation_exp: number;
   锻造天赋: number;
-  隐藏灵根: HiddenLingGen;
+  隐藏灵根?: HiddenLingGen;
   神界次数: number;
-  宗门: ZongMen;
+  宗门?: ZongMen;
   法球倍率: number;
 }
 
