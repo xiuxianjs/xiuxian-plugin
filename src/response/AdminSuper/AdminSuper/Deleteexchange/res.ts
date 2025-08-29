@@ -10,21 +10,14 @@ export const regular = /^(#|＃|\/)?清除冲水堂$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  {
-    if (!e.IsMaster) {
-      return false;
-    }
+  if (!e.IsMaster) {
+    return;
+  }
 
-    void Send(Text('开始清除！'));
-    let Exchange = [];
+  const Exchange = await readExchange();
 
-    try {
-      Exchange = await readExchange();
-    } catch {
-      //
-    }
-
-    for (const i of Exchange) {
+  void Promise.all(
+    Exchange.map(i => {
       const userId = i.qq;
       let thing = i.thing.name;
       const quanity = i.aconut;
@@ -32,13 +25,13 @@ const res = onResponse(selects, async e => {
       if (i.thing.class === '装备' || i.thing.class === '仙宠') {
         thing = i.thing;
       }
-      await addNajieThing(userId, thing, i.thing.class, quanity, i.thing.pinji);
-    }
-    await writeExchange([]);
-    void Send(Text('清除完成！'));
 
-    return false;
-  }
+      return addNajieThing(userId, thing, i.thing.class, quanity, i.thing.pinji);
+    })
+  ).finally(() => {
+    void writeExchange([]);
+    void Send(Text('清除完成！'));
+  });
 });
 
 export default onResponse(selects, [mw.current, res.current]);

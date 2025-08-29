@@ -54,7 +54,7 @@ export const getDataByKey = async (key: string) => {
   return res;
 };
 
-export const setDataByKey = async (key: string, data: string) => {
+export const setDataByKey = async (key: string, data: string | number) => {
   const redis = getIoRedis();
 
   try {

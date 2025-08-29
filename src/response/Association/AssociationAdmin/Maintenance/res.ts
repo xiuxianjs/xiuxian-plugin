@@ -1,57 +1,62 @@
 import { Text, useSend } from 'alemonjs';
-import { getConfig, keys, notUndAndNull, shijianc } from '@src/model/index';
-import mw from '@src/response/mw';
-import { selects } from '@src/response/mw';
+import { getConfig, keys, shijianc } from '@src/model/index';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?(宗门维护|维护宗门)$/;
-
-interface PlayerGuildRef {
-  宗门名称: string;
-  职位: string;
-}
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
-    return;
-  }
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
     return false;
   }
-  if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
+
+  if (!isKeys(player['宗门'], ['宗门名称', '职位'])) {
+    void Send(Text('你尚未加入宗门'));
+
+    return false;
+  }
+
+  const playerGuild = player['宗门'] as any;
+  const role = playerGuild.职位;
+
+  if (role !== '宗主' && role !== '副宗主') {
     void Send(Text('只有宗主、副宗主可以操作'));
 
     return false;
   }
-  const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-  if (!ass) {
+  const ass = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!ass || !isKeys(ass, ['宗门名称', '维护时间', '宗门等级', '灵石池'])) {
     void Send(Text('宗门数据不存在'));
-
-    return;
-  }
-  const nowTime = Date.now();
-  const cfg = await getConfig('xiuxian', 'xiuxian');
-  const time = cfg.CD.association;
-  const lastMaintain = Number(ass.维护时间 || 0);
-  const nextMaintainTs = lastMaintain + 60000 * time;
-
-  if (lastMaintain && lastMaintain > nowTime - 1000 * 60 * 60 * 24 * 7) {
-    const nextmt_time = shijianc(nextMaintainTs);
-
-    void Send(Text(`当前无需维护,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`));
 
     return false;
   }
-  const level = Number(ass.宗门等级 || 1);
-  const pool = Number(ass.灵石池 || 0);
+
+  const assData = ass as any;
+  const nowTime = Date.now();
+  const cfg = await getConfig('xiuxian', 'xiuxian');
+  const time = cfg.CD.association;
+  const lastMaintain = Number(assData.维护时间 ?? 0);
+  const nextMaintainTs = lastMaintain + 60000 * time;
+
+  if (lastMaintain && lastMaintain > nowTime - 1000 * 60 * 60 * 24 * 7) {
+    const nextmtTime = shijianc(nextMaintainTs);
+
+    void Send(Text(`当前无需维护,下次维护时间:${nextmtTime.Y}年${nextmtTime.M}月${nextmtTime.D}日${nextmtTime.h}时${nextmtTime.m}分${nextmtTime.s}秒`));
+
+    return false;
+  }
+
+  const level = Number(assData.宗门等级 ?? 1);
+  const pool = Number(assData.灵石池 ?? 0);
   const need = level * 50000;
 
   if (pool < need) {
@@ -59,13 +64,16 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  ass.灵石池 = pool - need;
-  ass.维护时间 = nowTime;
-  void setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-  void setDataJSONStringifyByKey(keys.player(userId), player);
-  const nextmt_time = shijianc(ass.维护时间 + 60000 * time);
 
-  void Send(Text(`宗门维护成功,下次维护时间:${nextmt_time.Y}年${nextmt_time.M}月${nextmt_time.D}日${nextmt_time.h}时${nextmt_time.m}分${nextmt_time.s}秒`));
+  assData.灵石池 = pool - need;
+  assData.维护时间 = nowTime;
+
+  await setDataJSONStringifyByKey(keys.association(assData.宗门名称), assData);
+  await setDataJSONStringifyByKey(keys.player(userId), player);
+
+  const nextmtTime = shijianc(assData.维护时间 + 60000 * time);
+
+  void Send(Text(`宗门维护成功,下次维护时间:${nextmtTime.Y}年${nextmtTime.M}月${nextmtTime.D}日${nextmtTime.h}时${nextmtTime.m}分${nextmtTime.s}秒`));
 
   return false;
 });

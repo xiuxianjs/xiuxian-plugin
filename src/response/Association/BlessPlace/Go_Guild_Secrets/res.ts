@@ -1,34 +1,17 @@
 import { Text, useSend } from 'alemonjs';
-
-import { redis } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
-import { __PATH } from '@src/model/keys';
-import { Go, readPlayer, notUndAndNull, addCoin, getConfig, startAction } from '@src/model/index';
-import type { AssociationDetailData } from '@src/types';
-
+import { __PATH, keys } from '@src/model/keys';
+import { Go, readPlayer, addCoin, getConfig, startAction, setDataJSONStringifyByKey, getDataJSONParseByKey } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-export const regular = /^(#|＃|\/)?探索宗门秘境.*$/;
+import { isKeys } from '@src/model/utils/isKeys';
 
-interface PlayerGuildRef {
-  宗门名称: string;
-  职位: string;
-}
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
-interface ExtAss extends AssociationDetailData {
-  宗门驻地?: string | number;
-  灵石池?: number;
-  power?: number;
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v;
-}
+export const regular = /^(#|＃|\/)?探索宗门秘境.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const flag = await Go(e);
 
   if (!flag) {
@@ -37,26 +20,21 @@ const res = onResponse(selects, async e => {
 
   const player = await readPlayer(userId);
 
-  if (!player?.宗门 || !isPlayerGuildRef(player.宗门)) {
+  if (!player || !isKeys(player['宗门'], ['宗门名称'])) {
     void Send(Text('请先加入宗门'));
 
     return false;
   }
-  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
-  if (!assData) {
-    void Send(Text('宗门数据异常'));
+  const playerGuild = player['宗门'] as any;
 
-    return;
-  }
-  const assRaw = JSON.parse(assData);
+  const ass = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
 
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  if (!ass || !isKeys(ass, ['宗门名称', '宗门驻地', '灵石池', 'power'])) {
     void Send(Text('宗门数据不存在'));
 
     return false;
   }
-  const ass = assRaw;
 
   if (!ass.宗门驻地 || ass.宗门驻地 === 0) {
     void Send(Text('你的宗门还没有驻地，不能探索秘境哦'));
@@ -71,45 +49,45 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   const listRaw = await getDataList('GuildSecrets');
   const weizhi = listRaw?.find(item => item.name === didian);
 
-  if (!notUndAndNull(weizhi)) {
+  if (!weizhi || !isKeys(weizhi, ['name', 'Price'])) {
     void Send(Text('未找到该宗门秘境'));
 
     return false;
   }
 
-  const playerCoin = Number(player.灵石 || 0);
-  const price = Number(weizhi.Price || 0);
+  const playerCoin = Number(player.灵石 ?? 0);
+  const price = Number(weizhi.Price ?? 0);
 
   if (price <= 0) {
     void Send(Text('秘境费用配置异常'));
 
     return false;
   }
+
   if (playerCoin < price) {
     void Send(Text(`没有灵石寸步难行, 攒到${price}灵石才够哦~`));
 
     return false;
   }
 
-  // 灵石池收益 5% 向下取整
   const guildGain = Math.trunc(price * 0.05);
 
-  ass.灵石池 = Math.max(0, Number(ass.灵石池 || 0)) + guildGain;
-  await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
+  ass.灵石池 = Math.max(0, Number(ass.灵石池 ?? 0)) + guildGain;
+
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
 
   await addCoin(userId, -price);
-  interface XiuxianConfig {
-    CD?: { secretplace?: number };
-  }
-  const cfg = (await getConfig('xiuxian', 'xiuxian')) as XiuxianConfig;
+
+  const cfg = await getConfig('xiuxian', 'xiuxian');
   const minute = cfg?.CD?.secretplace;
   const time = typeof minute === 'number' && minute > 0 ? minute : 10;
-  const action_time = 60000 * time;
+  const actionTime = 60000 * time;
 
-  void startAction(userId, '历练', action_time, {
+  void startAction(userId, '历练', actionTime, {
     shutup: '1',
     working: '1',
     Place_action: '0',

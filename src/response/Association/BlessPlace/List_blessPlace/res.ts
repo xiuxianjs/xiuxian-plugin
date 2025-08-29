@@ -1,39 +1,26 @@
-import { Text, useMessage, Image } from 'alemonjs';
-
-import { selects } from '@src/response/mw';
+import { Text, useSend, Image } from 'alemonjs';
 import { __PATH, keys, keysByPath } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { screenshot } from '@src/image';
-import type { AssociationDetailData } from '@src/types';
+import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?洞天福地列表$/;
 
-interface ExtAss extends AssociationDetailData {
-  宗门驻地?: string | number;
-  宗门名称: string;
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v;
-}
-interface BlessPlace {
-  name: string;
-  level: number;
-  efficiency: number;
-}
-function isBlessPlace(v): v is BlessPlace {
-  return !!v && typeof v === 'object' && 'name' in v && 'level' in v && 'efficiency' in v;
-}
-
 const res = onResponse(selects, async e => {
-  const [message] = useMessage(e);
+  const Send = useSend(e);
+
   const blessRaw = await getDataList('Bless');
-  const blessList: BlessPlace[] = Array.isArray(blessRaw) ? blessRaw.filter(isBlessPlace) : [];
+  const blessList = Array.isArray(blessRaw) ? blessRaw.filter(item => isKeys(item, ['name', 'level', 'efficiency'])) : [];
 
   if (!blessList.length) {
-    void message.send([Text('暂无洞天福地配置')]);
+    void Send(Text('暂无洞天福地配置'));
 
     return false;
   }
+
   const guildNames = await keysByPath(__PATH.association);
   const datas = await Promise.all(guildNames.map(n => getDataJSONParseByKey(keys.association(n))));
   const assListRaw = datas.filter(Boolean);
@@ -42,11 +29,14 @@ const res = onResponse(selects, async e => {
   for (let idx = 0; idx < assListRaw.length; idx++) {
     const a = assListRaw[idx];
 
-    if (a === 'error' || !isExtAss(a)) {
+    if (!a || !isKeys(a, ['power', '宗门名称', '宗门驻地'])) {
       continue;
     }
-    if (a.宗门驻地 !== null && !locationMap.has(a.宗门驻地)) {
-      locationMap.set(a.宗门驻地, a.宗门名称);
+
+    const assData = a as any;
+
+    if (assData.宗门驻地 !== null && !locationMap.has(assData.宗门驻地)) {
+      locationMap.set(assData.宗门驻地, assData.宗门名称);
     }
   }
 
@@ -54,7 +44,7 @@ const res = onResponse(selects, async e => {
     name: b.name,
     level: b.level,
     efficiency: b.efficiency * 100,
-    ass: locationMap.get(b.name) || '无'
+    ass: locationMap.get(b.name) ?? '无'
   }));
 
   try {
@@ -63,18 +53,17 @@ const res = onResponse(selects, async e => {
     });
 
     if (Buffer.isBuffer(image)) {
-      void message.send([Image(image)]);
+      void Send(Image(image));
 
-      return;
+      return false;
     }
-    void message.send([Text('生成洞天福地列表时出错')]);
+
+    void Send(Text('生成洞天福地列表时出错'));
   } catch (_err) {
-    void message.send([Text('生成洞天福地列表时出错')]);
+    void Send(Text('生成洞天福地列表时出错'));
   }
 
   return false;
 });
 
-import mw from '@src/response/mw';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

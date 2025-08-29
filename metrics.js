@@ -16,8 +16,7 @@ const enableMetrics = process.env.METRICS !== '0';
 if (enableMetrics) {
   const os = await import('os');
   const cores = os.cpus()?.length || 1;
-  const interval =
-    Number(process.env.METRICS_INTERVAL_MS) > 0 ? Number(process.env.METRICS_INTERVAL_MS) : 6_000;
+  const interval = Number(process.env.METRICS_INTERVAL_MS) > 0 ? Number(process.env.METRICS_INTERVAL_MS) : 6_000;
   const mode = (process.env.METRICS_MODE || 'table').toLowerCase();
   const langEnv = process.env.METRICS_LANG;
   const lang = (langEnv || 'en').toLowerCase(); // en|zh
@@ -424,10 +423,7 @@ if (enableMetrics) {
           '\n' +
           pad('EvtLoopLag', data.avg_loop_lag_ms + ' ms ' + fmtStatus(statLag)) +
           '\n' +
-          pad(
-            'LoadAvg',
-            `${data.load.l1} / ${data.load.l5} / ${data.load.l15} ${fmtStatus(statLoad)}`
-          ) +
+          pad('LoadAvg', `${data.load.l1} / ${data.load.l5} / ${data.load.l15} ${fmtStatus(statLoad)}`) +
           '\n' +
           pad('GC Enabled', String(hasGC)) +
           '\n' +
@@ -445,8 +441,6 @@ if (enableMetrics) {
   // 首次立即输出一行基线数据
   setTimeout(() => {
     const m = process.memoryUsage();
-    log(
-      `METRICS 启动 interval=${interval}ms mode=${mode} rss=${formatBytes(m.rss)} heap=${formatBytes(m.heapUsed)}/${formatBytes(m.heapTotal)}`
-    );
+    log(`METRICS 启动 interval=${interval}ms mode=${mode} rss=${formatBytes(m.rss)} heap=${formatBytes(m.heapUsed)}/${formatBytes(m.heapTotal)}`);
   }, 0);
 }

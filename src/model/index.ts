@@ -1,5 +1,3 @@
-export * from './repository/najieRepository';
-export * from './repository/playerRepository';
 export * from './utils/number';
 export * from './utils/redisHelper';
 export * from './utils/safe';

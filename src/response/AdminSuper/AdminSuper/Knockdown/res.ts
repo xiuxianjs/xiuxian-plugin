@@ -9,34 +9,31 @@ export const regular = /^(#|\/)打落凡间.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  {
-    if (!e.IsMaster) {
-      return false;
-    }
-    const [mention] = useMention(e);
-    const res = await mention.findOne();
-    const target = res?.data;
-
-    if (!target || res.code !== 2000) {
-      return false;
-    }
-    // 对方qq
-    const qq = target.UserId;
-
-    const player = await readPlayer(qq);
-
-    if (!player) {
-      void Send(Text('没存档你打个锤子！'));
-
-      return false;
-    }
-
-    player.power_place = 1;
-    void Send(Text('已打落凡间！'));
-    await writePlayer(qq, player);
-
-    return false;
+  if (!e.IsMaster) {
+    return;
   }
+  const [mention] = useMention(e);
+  const res = await mention.findOne();
+  const target = res?.data;
+
+  if (!target || res.code !== 2000) {
+    return;
+  }
+
+  const qq = target.UserId;
+
+  const player = await readPlayer(qq);
+
+  if (!player) {
+    void Send(Text('对方未踏入仙途'));
+
+    return;
+  }
+
+  player.power_place = 1;
+  void writePlayer(qq, player);
+
+  void Send(Text('已打落凡间！'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

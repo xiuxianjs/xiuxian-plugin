@@ -1,28 +1,6 @@
 import { getJSON, setValue, userKey } from '@src/model/utils/redisHelper';
+import { ActionRecord } from '@src/types';
 import { ActionType } from '@src/types/keys';
-
-// 约定：字符串 '0' 表示开启中的状态；'1' 表示关闭或空闲（保持与现有代码一致）
-export interface ActionRecord {
-  action: string; // 动作名称
-  end_time: number; // 截止时间戳 (ms)
-  time: number; // 持续时长 (ms)
-  // 下面是各类状态开关，历史代码中使用字符串 '0' | '1'
-  plant?: '0' | '1';
-  shutup?: '0' | '1';
-  working?: '0' | '1';
-  Place_action?: '0' | '1';
-  Place_actionplus?: '0' | '1';
-  power_up?: '0' | '1';
-  mojie?: '0' | '1';
-  xijie?: '0' | '1';
-  mine?: '0' | '1';
-  cishu?: number;
-  group_id?: string;
-  // 位置/秘境等扩展信息
-  Place_address?: string;
-  is_jiesuan?: number;
-  // 允许额外字段（保持兼容），使用 unknown 再在使用点断言
-}
 
 // 默认动作 key；支持自定义 suffix 以兼容特殊场景（如锻造使用 action10）
 export function actionRedisKey(userId: string | number, suffix: ActionType = 'action') {

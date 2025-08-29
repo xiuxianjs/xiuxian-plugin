@@ -1,59 +1,70 @@
 import { Text, useSend } from 'alemonjs';
-import { notUndAndNull, convert2integer, keys } from '@src/model/index';
-import type { AssociationDetailData } from '@src/types/domain';
+import { convert2integer, keys } from '@src/model/index';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?维护护宗大阵.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
   }
-  if (!notUndAndNull(player.宗门)) {
+
+  if (!isKeys(player['宗门'], ['宗门名称', '职位'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
 
-  if (!['宗主', '副宗主', '长老'].includes(player.宗门.职位)) {
+  const playerGuild = player['宗门'] as any;
+  const role = playerGuild.职位;
+
+  if (!['宗主', '副宗主', '长老'].includes(role)) {
     void Send(Text('只有宗主、副宗主或长老可以操作'));
 
     return false;
   }
-  // 获取灵石数量
-  const msg = e.MessageText.replace(/^#维护护宗大阵/, '');
-  // 校验输入灵石数
-  const lingshi = convert2integer(msg);
-  const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-  if (!ass) {
+  const msg = e.MessageText.replace(/^#维护护宗大阵/, '');
+  const lingshi = convert2integer(msg);
+
+  const ass = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!ass || !isKeys(ass, ['宗门名称', '灵石池', '大阵血量', 'power'])) {
     void Send(Text('宗门数据异常'));
 
     return false;
   }
-  // 断言类型收窄
-  const association = ass as AssociationDetailData;
 
-  if (association.灵石池 < lingshi) {
-    void Send(Text(`宗门灵石池只有${ass.灵石池}灵石,数量不足`));
+  const assData = ass as any;
+
+  if (assData.灵石池 < lingshi) {
+    void Send(Text(`宗门灵石池只有${assData.灵石池}灵石,数量不足`));
 
     return false;
   }
+
   let xian = 5;
 
-  if (association.power === 1) {
+  if (assData.power === 1) {
     xian = 2;
   }
-  association.大阵血量 = (association.大阵血量 || 0) + lingshi * xian;
-  association.灵石池 = (association.灵石池 || 0) - lingshi;
-  await setDataJSONStringifyByKey(keys.association(association.宗门名称), association);
-  void Send(Text(`维护成功,宗门还有${ass.灵石池}灵石,护宗大阵增加了${lingshi * xian}血量`));
+
+  assData.大阵血量 = (assData.大阵血量 ?? 0) + lingshi * xian;
+  assData.灵石池 = (assData.灵石池 ?? 0) - lingshi;
+
+  await setDataJSONStringifyByKey(keys.association(assData.宗门名称), assData);
+
+  void Send(Text(`维护成功,宗门还有${assData.灵石池}灵石,护宗大阵增加了${lingshi * xian}血量`));
+
+  return false;
 });
 
-import mw from '@src/response/mw';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

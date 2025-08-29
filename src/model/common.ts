@@ -48,7 +48,7 @@ export async function getLastsign(usrId: string): Promise<LastSignTime | false> 
 export async function getPlayerAction(usrId: string): Promise<PlayerActionData> {
   const redis = getIoRedis();
   const raw = await redis.get(getRedisKey(usrId, 'action'));
-  const parsed = safeParse(raw, null) as Partial<PlayerActionData> | null;
+  const parsed = safeParse(raw, null);
 
   if (parsed) {
     return {
@@ -90,7 +90,7 @@ export async function Go(e): Promise<boolean | 0> {
     return 0;
   }
   const actionRaw = await redis.get(getRedisKey(userId, 'action'));
-  const action = safeParse(actionRaw, null) as PlayerActionData | null;
+  const action = safeParse(actionRaw, null);
 
   if (action) {
     const action_end_time = action.end_time ?? 0;

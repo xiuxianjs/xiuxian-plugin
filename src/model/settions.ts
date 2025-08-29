@@ -27,3 +27,7 @@ export const pkg = require('../../package.json') as {
 export { GAME_KEY, KEY_RECORD, KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS, KEY_WORLD_BOOS_STATUS_TWO };
 
 export const NAJIE_CATEGORIES: readonly NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'] as const;
+
+export const 宗门灵石池上限 = [2000000, 5000000, 8000000, 11000000, 15000000, 20000000, 25000000, 30000000];
+
+export const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27];

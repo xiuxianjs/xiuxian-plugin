@@ -1,50 +1,51 @@
 import { Text, useSend } from 'alemonjs';
-import { keys, notUndAndNull } from '@src/model/index';
-import mw from '@src/response/mw';
+import { keys } from '@src/model/index';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
+import { ZongMen } from '@src/types';
 
 export const regular = /^(#|＃|\/)?召唤神兽$/;
-
-interface PlayerGuildRef {
-  宗门名称: string;
-  职位: string;
-}
-
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
   }
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+
+  if (!isKeys(player['宗门'], ['宗门名称', '职位'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
-  if (player.宗门.职位 !== '宗主') {
+
+  const playerGuild = player['宗门'] as any;
+  const role = playerGuild.职位;
+
+  if (role !== '宗主') {
     void Send(Text('只有宗主可以操作'));
 
     return false;
   }
-  const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-  if (!assRaw) {
+  const assRaw: ZongMen | null = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!assRaw || !isKeys(assRaw, ['宗门名称', '宗门等级', '宗门建设等级', '宗门驻地', '灵石池', '宗门神兽'])) {
     void Send(Text('宗门数据不存在'));
 
     return false;
   }
+
   const ass = assRaw;
-  const level = Math.max(0, Number(ass.宗门等级 || 0));
-  const buildLevel = Math.max(0, Number(ass.宗门建设等级 || 0));
+  const level = Math.max(0, Number(ass.宗门等级 ?? 0));
+  const buildLevel = Math.max(0, Number(ass.宗门建设等级 ?? 0));
   const site = ass.宗门驻地;
-  const pool = Math.max(0, Number(ass.灵石池 || 0));
+  const pool = Math.max(0, Number(ass.灵石池 ?? 0));
   const beast = ass.宗门神兽;
 
   const cost = 2_000_000;
@@ -54,28 +55,31 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   if (buildLevel < 50) {
     void Send(Text('宗门建设等级不足, 先提升建设度再来吧'));
 
     return false;
   }
+
   if (!site || site === 0) {
     void Send(Text('驻地都没有，让神兽跟你流浪啊？'));
 
     return false;
   }
+
   if (pool < cost) {
     void Send(Text('宗门就这点钱，还想神兽跟着你干活？'));
 
     return false;
   }
+
   if (beast && beast !== 0 && beast !== '0' && beast !== '无') {
     void Send(Text('你的宗门已经有神兽了'));
 
     return false;
   }
 
-  // 随机选择神兽
   const r = Math.random();
   let newBeast: string;
 
@@ -93,7 +97,9 @@ const res = onResponse(selects, async e => {
 
   ass.宗门神兽 = newBeast;
   ass.灵石池 = pool - cost;
+
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
+
   void Send(Text(`召唤成功，神兽 ${newBeast} 投下一道分身，开始守护你的宗门，绑定神兽后不可更换哦`));
 
   return false;

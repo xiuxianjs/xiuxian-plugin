@@ -1,8 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { clearCaptchaRecords } from '@src/model/clear-captcha';
-import mw from '@src/response/mw';
+import mw, { selects } from '@src/response/mw';
 
-export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?清理验证码(.*)?$/;
 
 const res = onResponse(selects, async event => {

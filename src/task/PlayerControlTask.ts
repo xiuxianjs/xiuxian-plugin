@@ -200,9 +200,9 @@ const handleSpecialItems = async (
 
   // 神界秘宝效果
   if (
-    (await existNajieThing(playerId, '神界秘宝', '道具')) &&
-    player.魔道值 < ITEM_EFFECTS.SHENJIE_THRESHOLD &&
-    (player.灵根?.type === '转生' || player.level_id > ITEM_EFFECTS.LEVEL_THRESHOLD)
+    (await existNajieThing(playerId, '神界秘宝', '道具'))
+    && player.魔道值 < ITEM_EFFECTS.SHENJIE_THRESHOLD
+    && (player.灵根?.type === '转生' || player.level_id > ITEM_EFFECTS.LEVEL_THRESHOLD)
   ) {
     qixue = Math.trunc(xiuwei * ITEM_EFFECTS.SHENJIE_MIBAO_QIXUE_BONUS * time);
     await addNajieThing(playerId, '神界秘宝', '道具', -1);

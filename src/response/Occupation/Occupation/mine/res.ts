@@ -21,7 +21,7 @@ const res = onResponse(selects, async e => {
   const game_action = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
-  if (game_action === '1') {
+  if (game_action && +game_action === 1) {
     void Send(Text('修仙：游戏进行中...'));
 
     return false;

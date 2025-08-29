@@ -1,36 +1,12 @@
 import { Text, useSend } from 'alemonjs';
-import { __PATH, keysByPath, notUndAndNull, readPlayer, existplayer, keys } from '@src/model/index';
+import { __PATH, keysByPath, readPlayer, existplayer, keys } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
-import type { AssociationDetailData } from '@src/types';
-import mw from '@src/response/mw';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?入驻洞天.*$/;
-
-interface PlayerGuildRef {
-  宗门名称: string;
-  职位: string;
-}
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
-interface ExtAss extends AssociationDetailData {
-  宗门驻地?: string;
-  宗门建设等级?: number;
-  大阵血量?: number;
-  所有成员?: string[];
-  宗门名称: string;
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v && '宗门名称' in v;
-}
-interface BlessPlace {
-  name: string;
-}
-function isBlessPlace(v): v is BlessPlace {
-  return !!v && typeof v === 'object' && 'name' in v;
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
@@ -39,83 +15,101 @@ const res = onResponse(selects, async e => {
   if (!(await existplayer(userId))) {
     return false;
   }
+
   const player = await readPlayer(userId);
 
-  if (!player || !notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+  if (!player || !isKeys(player['宗门'], ['宗门名称', '职位'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
-  if (player.宗门.职位 !== '宗主') {
+
+  const playerGuild = player['宗门'] as any;
+  const role = playerGuild.职位;
+
+  if (role !== '宗主') {
     void Send(Text('只有宗主可以操作'));
 
     return false;
   }
 
-  const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
+  const assRaw = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
 
-  if (!assRaw) {
+  if (!assRaw || !isKeys(assRaw, ['宗门名称', '宗门驻地', '宗门建设等级', '大阵血量', '所有成员'])) {
     void Send(Text('宗门数据不存在'));
 
     return false;
   }
-  const ass = assRaw;
 
-  const blessed_name = e.MessageText.replace(/^(#|＃|\/)?入驻洞天/, '').trim();
+  const ass = assRaw as any;
 
-  if (!blessed_name) {
+  const blessedName = e.MessageText.replace(/^(#|＃|\/)?入驻洞天/, '').trim();
+
+  if (!blessedName) {
     void Send(Text('请在指令后补充洞天名称'));
 
     return false;
   }
+
   const blessRaw = await getDataList('Bless');
-  const dongTan = blessRaw?.find(i => isBlessPlace(i) && i.name === blessed_name) as BlessPlace | undefined;
+  const dongTan = blessRaw?.find(i => isKeys(i, ['name']) && i.name === blessedName);
 
   if (!dongTan) {
     void Send(Text('未找到该洞天'));
 
     return false;
   }
+
   if (ass.宗门驻地 === dongTan.name) {
     void Send(Text('该洞天已是你宗门的驻地'));
 
     return false;
   }
 
-  // 查询所有宗门，判断洞天是否被占据
   const guildNames = await keysByPath(__PATH.association);
   const assDatas = await Promise.all(guildNames.map(n => getDataJSONParseByKey(keys.association(n))));
   const assListRaw = assDatas.filter(Boolean);
 
   for (const other of assListRaw) {
-    if (other === 'error' || !isExtAss(other)) {
+    if (!other || !isKeys(other, ['power', '宗门名称', '宗门驻地', '宗门建设等级', '大阵血量', '所有成员'])) {
       continue;
     }
-    if (other.宗门名称 === ass.宗门名称) {
+
+    const otherData = other as any;
+
+    if (otherData.宗门名称 === ass.宗门名称) {
       continue;
     }
-    if (other.宗门驻地 !== dongTan.name) {
+
+    if (otherData.宗门驻地 !== dongTan.name) {
       continue;
     }
-    // 发生争夺
+
     const attackMembers = Array.isArray(ass.所有成员) ? ass.所有成员 : [];
-    const defendMembers = Array.isArray(other.所有成员) ? other.所有成员 : [];
+    const defendMembers = Array.isArray(otherData.所有成员) ? otherData.所有成员 : [];
 
     let attackPower = 0;
 
     for (const m of attackMembers) {
       const memberData = await readPlayer(m);
-      const val = Math.trunc(memberData.攻击 + memberData.血量上限 * 0.5);
 
-      attackPower += val;
+      if (memberData) {
+        const val = Math.trunc(memberData.攻击 + memberData.血量上限 * 0.5);
+
+        attackPower += val;
+      }
     }
+
     let defendPower = 0;
 
     for (const m of defendMembers) {
       const memberData = await readPlayer(m);
-      const val = Math.trunc(memberData.防御 + memberData.血量上限 * 0.5);
 
-      defendPower += val;
+      if (memberData) {
+        const val = Math.trunc(memberData.防御 + memberData.血量上限 * 0.5);
+
+        defendPower += val;
+      }
     }
 
     const randA = Math.random();
@@ -126,44 +120,48 @@ const res = onResponse(selects, async e => {
     } else if (randA < 0.25) {
       attackPower = Math.trunc(attackPower * 0.9);
     }
+
     if (randB > 0.75) {
       defendPower = Math.trunc(defendPower * 1.1);
     } else if (randB < 0.25) {
       defendPower = Math.trunc(defendPower * 0.9);
     }
 
-    const ass阵血 = Math.max(0, Number(ass.大阵血量 || 0));
-    const other阵血 = Math.max(0, Number(other.大阵血量 || 0));
-    const ass建设 = Math.max(0, Number(ass.宗门建设等级 || 0));
-    const other建设 = Math.max(0, Number(other.宗门建设等级 || 0));
+    const ass阵血 = Math.max(0, Number(ass.大阵血量 ?? 0));
+    const other阵血 = Math.max(0, Number(otherData.大阵血量 ?? 0));
+    const ass建设 = Math.max(0, Number(ass.宗门建设等级 ?? 0));
+    const other建设 = Math.max(0, Number(otherData.宗门建设等级 ?? 0));
 
     attackPower += ass建设 * 100 + Math.trunc(ass阵血 / 2);
     defendPower += other建设 * 100 + other阵血;
 
     if (attackPower > defendPower) {
-      // 抢夺成功
       const oldSite = ass.宗门驻地;
 
-      other.宗门驻地 = oldSite;
+      otherData.宗门驻地 = oldSite;
       ass.宗门驻地 = dongTan.name;
       ass.宗门建设等级 = other建设;
-      other.宗门建设等级 = Math.max(0, other建设 - 10);
-      other.大阵血量 = 0;
+      otherData.宗门建设等级 = Math.max(0, other建设 - 10);
+      otherData.大阵血量 = 0;
+
       await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
-      await setDataJSONStringifyByKey(keys.association(other.宗门名称), other);
-      void Send(Text(`洞天被占据！${ass.宗门名称} 发动进攻 (战力${attackPower}) 攻破 ${other.宗门名称} (防御${defendPower})，夺取了 ${dongTan.name}`));
+      await setDataJSONStringifyByKey(keys.association(otherData.宗门名称), otherData);
+
+      void Send(Text(`洞天被占据！${ass.宗门名称} 发动进攻 (战力${attackPower}) 攻破 ${otherData.宗门名称} (防御${defendPower})，夺取了 ${dongTan.name}`));
     } else {
-      await setDataJSONStringifyByKey(keys.association(other.宗门名称), other);
-      void Send(Text(`${ass.宗门名称} 进攻 ${other.宗门名称} 失败 (进攻${attackPower} / 防御${defendPower})`));
+      await setDataJSONStringifyByKey(keys.association(otherData.宗门名称), otherData);
+
+      void Send(Text(`${ass.宗门名称} 进攻 ${otherData.宗门名称} 失败 (进攻${attackPower} / 防御${defendPower})`));
     }
 
     return false;
   }
 
-  // 无主洞天 -> 直接入驻
   ass.宗门驻地 = dongTan.name;
   ass.宗门建设等级 = 0;
+
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
+
   void Send(Text(`入驻成功，${ass.宗门名称} 当前驻地为：${dongTan.name}`));
 
   return false;

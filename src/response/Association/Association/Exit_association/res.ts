@@ -1,14 +1,15 @@
 import { Text, useSend } from 'alemonjs';
 import { __PATH, keys } from '@src/model/keys';
 import { getRandomFromARR, notUndAndNull } from '@src/model/common';
-import { readPlayer, writePlayer } from '@src/model/';
+import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model/';
 import { redis } from '@src/model/api';
-import type { AssociationDetailData, Player } from '@src/types';
+import type { AssociationDetailData } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { getConfig } from '@src/model';
 import { playerEfficiency } from '@src/model';
+import { isKeys } from '@src/model/utils/isKeys';
 export const regular = /^(#|＃|\/)?退出宗门$/;
 
 // 成员宗门信息运行期形状（旧数据兼容）
@@ -45,16 +46,25 @@ const res = onResponse(selects, async e => {
   if (!player) {
     return;
   }
-  if (!notUndAndNull(player.宗门)) {
+
+  if (!notUndAndNull(player?.宗门)) {
     return;
   }
-  if (!isPlayerGuildInfo(player.宗门)) {
+
+  if (!isKeys(player.宗门, ['宗门名称', '职位'])) {
+    void Send(Text('宗门信息不完整'));
+
     return;
   }
 
   const guildInfo = player.宗门;
+
   const nowTime = Date.now();
-  const timeCfg = (await getConfig('xiuxian', 'xiuxian')).CD.joinassociation; // 分钟
+
+  const cfg = await getConfig('xiuxian', 'xiuxian');
+
+  const timeCfg = cfg.CD.joinassociation; // 分钟
+
   const joinTuple = guildInfo.time || guildInfo.加入时间;
 
   if (joinTuple && Array.isArray(joinTuple) && joinTuple.length >= 2) {
@@ -68,45 +78,44 @@ const res = onResponse(selects, async e => {
   }
 
   const role = guildInfo.职位;
-  const assData = await redis.get(`${__PATH.association}:${guildInfo.宗门名称}`);
 
-  if (!assData) {
-    void Send(Text('宗门数据异常'));
+  const ass: AssociationDetailData | null = await getDataJSONParseByKey(keys.association(guildInfo.宗门名称));
 
+  if (!ass) {
     return;
   }
-  const assRaw = JSON.parse(assData);
-
-  if (assRaw === 'error') {
-    void Send(Text('宗门数据错误'));
-
-    return false;
-  }
-  const ass = assRaw as AssociationDetailData;
 
   if (role !== '宗主') {
     const roleList = getRoleList(ass, role).filter(item => item !== userId);
 
     setRoleList(ass, role, roleList);
     ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== userId);
-    await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
-    delete (player as Player & { 宗门? }).宗门;
+    void setDataJSONStringifyByKey(keys.association(guildInfo.宗门名称), ass);
+
+    delete player.宗门;
+
     await writePlayer(userId, player);
+    //
     await playerEfficiency(userId);
+
+    //
     void Send(Text('退出宗门成功'));
   } else {
     ass.所有成员 = ensureStringArray(ass.所有成员);
     if (ass.所有成员.length < 2) {
       await redis.del(keys.association(guildInfo.宗门名称));
-      delete (player as Player & { 宗门? }).宗门;
+      delete player.宗门;
+      player.favorability = 0;
       await writePlayer(userId, player);
       await playerEfficiency(userId);
       void Send(Text('退出宗门成功,退出后宗门空无一人。\n一声巨响,原本的宗门轰然倒塌,随着流沙沉没,世间再无半分痕迹'));
     } else {
       ass.所有成员 = ass.所有成员.filter(item => item !== userId);
-      delete (player as Player & { 宗门? }).宗门;
+      delete player.宗门;
+      player.favorability = 0;
       await writePlayer(userId, player);
       await playerEfficiency(userId);
+      //
       const fz = getRoleList(ass, '副宗主');
       const zl = getRoleList(ass, '长老');
       const nmdz = getRoleList(ass, '内门弟子');
@@ -129,20 +138,21 @@ const res = onResponse(selects, async e => {
 
         return false;
       }
+
+      //
       const rGuild = randmember.宗门;
       const oldList = getRoleList(ass, rGuild.职位).filter(i => i !== randmemberId);
 
       setRoleList(ass, rGuild.职位, oldList);
       setRoleList(ass, '宗主', [randmemberId]);
       rGuild.职位 = '宗主';
+
       await writePlayer(randmemberId, randmember);
       await writePlayer(userId, player);
-      await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
+      void setDataJSONStringifyByKey(keys.association(guildInfo.宗门名称), ass);
       void Send(Text(`退出宗门成功,退出后,宗主职位由${randmember.名号}接管`));
     }
   }
-  player.favorability = 0;
-  await writePlayer(userId, player);
 });
 
 export default onResponse(selects, [mw.current, res.current]);

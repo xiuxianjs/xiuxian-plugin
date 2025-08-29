@@ -1,58 +1,51 @@
 import { Text, useSend } from 'alemonjs';
-
-import { redis } from '@src/model/api';
-import { notUndAndNull, shijianc, existplayer, readPlayer, writePlayer } from '@src/model/index';
-import { getLastsign_Asso, isNotMaintenance } from '../../ass';
-import type { AssociationDetailData } from '@src/types';
-
+import { shijianc, readPlayer, writePlayer, getDataJSONParseByKey, setDataJSONStringifyByKey, setDataByKey } from '@src/model/index';
+import { getLastsignAsso, isNotMaintenance } from '../../../../model/ass';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { getRedisKey, __PATH } from '@src/model/keys';
+import { __PATH, keys, keysAction } from '@src/model/keys';
+import { isKeys } from '@src/model/utils/isKeys';
+import { ZongMen } from '@src/types';
+
 export const regular = /^(#|＃|\/)?宗门俸禄$/;
 
-interface DateParts {
+function isDateParts(v): v is {
   Y: number;
   M: number;
   D: number;
   h: number;
   m: number;
   s: number;
-}
-function isDateParts(v): v is DateParts {
+} {
   return !!v && typeof v === 'object' && 'Y' in v && 'M' in v && 'D' in v;
-}
-function isGuildInfo(v): v is { 宗门名称: string; 职位: string } {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
-  const ifexistplay = await existplayer(userId);
 
-  if (!ifexistplay) {
-    return false;
-  }
   const player = await readPlayer(userId);
 
-  if (!player || !notUndAndNull(player.宗门) || !isGuildInfo(player.宗门)) {
+  if (!player) {
     return false;
   }
-  const assData = await redis.get(`${__PATH.association}:${player.宗门.宗门名称}`);
 
-  if (!assData) {
+  if (!isKeys(player['宗门'], ['宗门名称', '职位'])) {
+    void Send(Text('宗门信息不完整'));
+
+    return false;
+  }
+
+  const playerGuild = player['宗门'] as any;
+
+  const ass: ZongMen | null = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!ass) {
     void Send(Text('宗门数据异常'));
 
-    return;
-  }
-  const assRaw = JSON.parse(assData);
-
-  if (assRaw === 'error') {
-    void Send(Text('宗门数据不存在或已损坏'));
-
     return false;
   }
-  const ass = assRaw as AssociationDetailData;
+
   const ismt = isNotMaintenance(ass);
 
   if (ismt) {
@@ -60,24 +53,27 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   const nowTime = Date.now();
   const Today = shijianc(nowTime);
-  const lastsign_time = await getLastsign_Asso(userId);
+  const lastsignTime = await getLastsignAsso(userId);
 
-  if (isDateParts(Today) && isDateParts(lastsign_time)) {
-    if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
+  if (isDateParts(Today) && isDateParts(lastsignTime)) {
+    if (Today.Y === lastsignTime.Y && Today.M === lastsignTime.M && Today.D === lastsignTime.D) {
       void Send(Text('今日已经领取过了'));
 
       return false;
     }
   }
-  const role = player.宗门.职位;
+
+  const role = playerGuild.职位;
 
   if (role === '外门弟子' || role === '内门弟子') {
     void Send(Text('没有资格领取俸禄'));
 
     return false;
   }
+
   let n = 1;
 
   if (role === '长老') {
@@ -88,30 +84,31 @@ const res = onResponse(selects, async e => {
     n = 5;
   }
 
-  interface ExtendedAss extends AssociationDetailData {
-    宗门建设等级?: number;
-    宗门等级?: number;
-  }
-  const exAss = ass as ExtendedAss;
+  const exAss = ass;
   const buildLevel = Number(exAss.宗门建设等级 ?? 0);
   const guildLevel = Number(exAss.宗门等级 ?? 0);
   const fuli = Math.trunc(buildLevel * 2000);
-  let gift_lingshi = Math.trunc(guildLevel * 1200 * n + fuli);
+  let giftLingshi = Math.trunc(guildLevel * 1200 * n + fuli);
 
-  gift_lingshi = Math.trunc(gift_lingshi / 2);
-  const pool = Number(ass.灵石池 || 0);
+  giftLingshi = Math.trunc(giftLingshi / 2);
+  const pool = Number(ass.灵石池 ?? 0);
 
-  if (pool - gift_lingshi < 0) {
+  if (pool - giftLingshi < 0) {
     void Send(Text('宗门灵石池不够发放俸禄啦，快去为宗门做贡献吧'));
 
     return false;
   }
-  ass.灵石池 = pool - gift_lingshi;
-  player.灵石 += gift_lingshi;
-  await redis.set(getRedisKey(userId, 'lastsign_Asso_time'), nowTime);
+
+  ass.灵石池 = pool - giftLingshi;
+  player.灵石 += giftLingshi;
+
+  await setDataByKey(keysAction.lastSignAssoTime(userId), nowTime);
+
   await writePlayer(userId, player);
-  await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
-  void Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`));
+
+  await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
+
+  void Send(Text(`宗门俸禄领取成功,获得了${giftLingshi}灵石`));
 
   return false;
 });

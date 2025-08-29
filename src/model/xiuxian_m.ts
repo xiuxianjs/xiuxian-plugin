@@ -1,5 +1,3 @@
-import { createPlayerRepository } from './repository/playerRepository.js';
-import { createNajieRepository } from './repository/najieRepository.js';
 import { keys } from './keys.js';
 import { getDataList } from './DataList.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
@@ -8,21 +6,53 @@ import { readDanyao } from './danyao.js';
 import { notUndAndNull } from './common.js';
 import { readPlayer } from './xiuxiandata.js';
 
-const experienceList = (await getDataList('experience')) as Array<{
-  id: number;
-  name: string;
-  experience: number;
-  rate: number;
-}>;
-
-const playerRepo = createPlayerRepository(() => experienceList);
-const najieRepo = createNajieRepository();
-
 export async function addExp4(usrid: string, exp = 0) {
   if (exp === 0 || isNaN(exp)) {
     return;
   }
-  await playerRepo.addOccupationExp(usrid, exp);
+  const experienceList = (await getDataList('experience')) as Array<{
+    id: number;
+    name: string;
+    experience: number;
+    rate: number;
+  }>;
+
+  if (exp === 0) {
+    return null;
+  }
+
+  // 传统的读取-修改-写入方式
+  const player = await getDataJSONParseByKey(keys.player(usrid));
+
+  if (!player) {
+    return null;
+  }
+
+  const occupationTable = experienceList;
+  let occExp = Number(player.occupation_exp ?? 0);
+  let occLevel = Number(player.occupation_level ?? 0);
+
+  occExp = occExp + exp;
+
+  // 处理升级逻辑
+  while (true) {
+    const expRow = occupationTable.find(row => row.id === occLevel);
+    const nextRow = occupationTable.find(row => row.id === occLevel + 1);
+
+    if (!expRow || !nextRow || expRow.experience > occExp) {
+      break;
+    }
+
+    occExp = occExp - expRow.experience;
+    occLevel = occLevel + 1;
+  }
+
+  // 更新玩家数据
+  player.occupation_exp = occExp;
+  player.occupation_level = occLevel;
+
+  // 保存回 Redis
+  await setDataJSONStringifyByKey(keys.player(usrid), player);
 }
 
 export async function addConFaByUser(usrid: string, gongfaName: string) {
@@ -46,7 +76,26 @@ export async function addBagCoin(usrid: string, lingshi: number) {
   if (delta === 0) {
     return;
   }
-  await najieRepo.addLingShi(usrid, delta);
+
+  if (delta === 0) {
+    return null;
+  }
+  //
+  const obj = await getDataJSONParseByKey(keys.najie(usrid));
+
+  if (!obj) {
+    return null;
+  }
+  const cur = typeof obj['灵石'] === 'number' ? obj['灵石'] : 0;
+  const next = cur + delta;
+
+  if (next < 0) {
+    return null;
+  }
+  obj['灵石'] = next;
+
+  //
+  await setDataJSONStringifyByKey(keys.najie(usrid), obj);
 }
 
 export async function playerEfficiency(userId: string): Promise<null | undefined> {

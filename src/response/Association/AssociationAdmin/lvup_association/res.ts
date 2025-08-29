@@ -1,45 +1,46 @@
 import { Text, useSend } from 'alemonjs';
-import { keys, notUndAndNull } from '@src/model/index';
+import { keys, playerEfficiency, 宗门人数上限 } from '@src/model/index';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
+
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/;
-
-const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27];
-
-interface PlayerGuildRef {
-  宗门名称: string;
-  职位: string;
-}
-
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
   }
-  if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+
+  if (!isKeys(player['宗门'], ['宗门名称', '职位'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
-  if (player.宗门.职位 !== '宗主' && player.宗门.职位 !== '副宗主') {
+
+  const playerGuild = player['宗门'] as any;
+  const role = playerGuild.职位;
+
+  if (role !== '宗主' && role !== '副宗主') {
     void Send(Text('只有宗主、副宗主可以操作'));
 
     return false;
   }
-  const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-  if (!assRaw) {
+  const assRaw = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!assRaw || !isKeys(assRaw, ['宗门名称', '宗门等级', '灵石池', 'power'])) {
     void Send(Text('宗门数据不存在'));
 
     return false;
   }
-  const ass = assRaw;
+
+  const ass = assRaw as any;
   const level = Number(ass.宗门等级 ?? 1);
   const pool = Number(ass.灵石池 ?? 0);
   const topLevel = 宗门人数上限.length;
@@ -49,6 +50,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   const xian = ass.power === 1 ? 10 : 1;
   const need = level * 300000 * xian;
 
@@ -57,11 +59,14 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   ass.灵石池 = pool - need;
   ass.宗门等级 = level + 1;
+
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
   await setDataJSONStringifyByKey(keys.player(userId), player);
   await playerEfficiency(userId);
+
   const newCapIndex = Math.max(0, Math.min(宗门人数上限.length - 1, ass.宗门等级 - 1));
 
   void Send(Text(`宗门升级成功当前宗门等级为${ass.宗门等级},宗门人数上限提高到:${宗门人数上限[newCapIndex]}`));
@@ -69,7 +74,4 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

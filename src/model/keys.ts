@@ -9,7 +9,7 @@ import { ActionType } from '@src/types/keys';
 const baseDataKey = 'data:alemonjs-xiuxian';
 
 // 存档存放路径
-const __PATH = {
+export const __PATH = {
   player_path: `${baseDataKey}:player`,
   equipment_path: `${baseDataKey}:equipment`,
   najie_path: `${baseDataKey}:xiuxian_najie`,
@@ -80,54 +80,52 @@ export const keys = {
 export const baseKey = 'xiuxian@1.3.0';
 
 export const keysAction = {
-  lunhui: (id: string) => `${baseKey}:lunhui:${id}`,
-  action10: (id: string) => `${baseKey}:action10:${id}`,
+  lunhui: (id: string) => `${baseKey}:${id}:lunhui`,
+  action10: (id: string) => `${baseKey}:${id}:action10`,
   action: (id: string) => `${baseKey}:${id}:action`,
-  xijie: (id: string) => `${baseKey}:xijie:${id}`,
-  lastDajieTime: (id: string) => `${baseKey}:last_dajie_time:${id}`,
-  lastBiwuTime: (id: string) => `${baseKey}:last_biwu_time:${id}`,
-  shangjing: (id: string) => `${baseKey}:shangjing:${id}`,
-  lastShuangxiuTime: (id: string) => `${baseKey}:last_shuangxiu_time:${id}`,
-  couple: (id: string) => `${baseKey}:couple:${id}`,
-  record: (id: string) => `${baseKey}:Record:${id}`,
-  record2: (id: string) => `${baseKey}:Record2:${id}`,
-  exchange: (id: string) => `${baseKey}:Exchange:${id}`,
-  lastXijieTime: (id: string) => `${baseKey}:lastxijie_time:${id}`,
-  lastReCreateTime: (id: string) => `${baseKey}:last_reCreate_time:${id}`,
-  reCreateAcount: (id: string) => `${baseKey}:reCreate_acount:${id}`,
-  lastSignTime: (id: string) => `${baseKey}:lastsign_time:${id}`,
-  lastSetXuanyanTime: (id: string) => `${baseKey}:last_setxuanyan_time:${id}`,
-  lastSetNameTime: (id: string) => `${baseKey}:last_setname_time:${id}`,
-  duihuan: (id: string) => `${baseKey}:duihuan:${id}`,
-  showNajieCD: (id: string) => `${baseKey}:showNajieCD:${id}`,
-  lastBisaiTime: (id: string) => `${baseKey}:lastbisai_time:${id}`,
-  petShowCD: (id: string) => `${baseKey}:petShowCD:${id}`,
-  gameAction: (id: string) => `${baseKey}:game_action:${id}`,
-  lastDagongTime: (id: string) => `${baseKey}:lastdagong_time:${id}`,
-  bisai: (id: string) => `${baseKey}:bisai:${id}`,
-  lastGameTime: (id: string) => `${baseKey}:last_game_time:${id}`,
-  lastSignAssoTime: (id: string) => `${baseKey}:lastsign_Asso_time:${id}`,
-  getLastSignExplor: (id: string) => `${baseKey}:getLastsign_Explor:${id}`,
-  zytCd: (id: string) => `${baseKey}:zyt_cd:${id}`,
-  dscCd: (id: string) => `${baseKey}:dsc_cd:${id}`,
-  lastGardenTime: (id: string) => `${baseKey}:last_garden_time:${id}`,
-  forumShowCD: (id: string) => `${baseKey}:forumShowCD:${id}`,
-  supermarketCD: (id: string) => `${baseKey}:supermarketCD:${id}`,
-  exchangeCD: (id: string) => `${baseKey}:ExchangeCD:${id}`,
-  forumCD: (id: string) => `${baseKey}:ForumCD:${id}`,
-  moneyGame: (id: string) => `${baseKey}:money_game:${id}`,
-  getLastSignBonus: (id: string) => `${baseKey}:getLastsign_Bonus:${id}`,
-  bossCD: (id: string) => `${baseKey}:BOSSCD:${id}`,
-  system: (id: string, botId?: string) => `${baseKey}:system:${botId ? `${id}_${botId}` : id}`,
-  config: (id: string) => `${baseKey}:config:${id}`
+  xijie: (id: string) => `${baseKey}:${id}:xijie`,
+  lastDajieTime: (id: string) => `${baseKey}:${id}:last_dajie_time`,
+  lastBiwuTime: (id: string) => `${baseKey}:${id}:last_biwu_time`,
+  shangjing: (id: string) => `${baseKey}:${id}:shangjing`,
+  lastShuangxiuTime: (id: string) => `${baseKey}:${id}:last_shuangxiu_time`,
+  couple: (id: string) => `${baseKey}:${id}:couple`,
+  record: (id: string) => `${baseKey}:${id}:record`,
+  record2: (id: string) => `${baseKey}:${id}:record2`,
+  exchange: (id: string) => `${baseKey}:${id}:exchange`,
+  lastXijieTime: (id: string) => `${baseKey}:${id}:lastxijie_time`,
+  lastReCreateTime: (id: string) => `${baseKey}:${id}:last_reCreate_time`,
+  reCreateAcount: (id: string) => `${baseKey}:${id}:reCreate_acount`,
+  lastSignTime: (id: string) => `${baseKey}:${id}:lastsign_time`,
+  lastSetXuanyanTime: (id: string) => `${baseKey}:${id}:last_setxuanyan_time`,
+  lastSetNameTime: (id: string) => `${baseKey}:${id}:last_setname_time`,
+  duihuan: (id: string) => `${baseKey}:${id}:duihuan`,
+  showNajieCD: (id: string) => `${baseKey}:${id}:showNajieCD`,
+  lastBisaiTime: (id: string) => `${baseKey}:${id}:lastbisai_time`,
+  petShowCD: (id: string) => `${baseKey}:${id}:petShowCD`,
+  gameAction: (id: string) => `${baseKey}:${id}:game_action`,
+  lastDagongTime: (id: string) => `${baseKey}:${id}:lastdagong_time`,
+  bisai: (id: string) => `${baseKey}:${id}:bisai`,
+  lastGameTime: (id: string) => `${baseKey}:${id}:last_game_time`,
+  lastSignAssoTime: (id: string) => `${baseKey}:${id}:lastsign_Asso_time`,
+  getLastSignExplor: (id: string) => `${baseKey}:${id}:getLastsign_Explor`,
+  zytCd: (id: string) => `${baseKey}:${id}:zyt_cd`,
+  dscCd: (id: string) => `${baseKey}:${id}:dsc_cd`,
+  lastGardenTime: (id: string) => `${baseKey}:${id}:last_garden_time`,
+  forumShowCD: (id: string) => `${baseKey}:${id}:forumShowCD`,
+  supermarketCD: (id: string) => `${baseKey}:${id}:supermarketCD`,
+  exchangeCD: (id: string) => `${baseKey}:${id}:ExchangeCD`,
+  forumCD: (id: string) => `${baseKey}:${id}:ForumCD`,
+  moneyGame: (id: string) => `${baseKey}:${id}:money_game`,
+  getLastSignBonus: (id: string) => `${baseKey}:${id}:getLastsign_Bonus`,
+  bossCD: (id: string) => `${baseKey}:${id}:BOSSCD`,
+  system: (id: string, botId?: string) => `${baseKey}:${botId ? `${id}_${botId}` : id}:system`,
+  config: (id: string) => `${baseKey}:${id}:config`
 };
 
 export const keysTask = {
   // 洗劫任务数据队列
   xijie: () => `${baseKey}:task:xijie`
 };
-
-export { __PATH };
 
 export const __PATH_CONFIG = {
   Association,

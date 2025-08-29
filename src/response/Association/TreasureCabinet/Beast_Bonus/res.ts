@@ -1,39 +1,24 @@
 import { Text, useSend } from 'alemonjs';
-import { redis } from '@src/model/api';
-import { notUndAndNull, shijianc, addNajieThing } from '@src/model/index';
-import type { AssociationDetailData } from '@src/types';
+import { shijianc, addNajieThing } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
-
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { selects } from '@src/response/mw';
-import { getRedisKey, keys } from '@src/model/keys';
+import mw from '@src/response/mw';
+import { keys, keysAction } from '@src/model/keys';
+import { isKeys } from '@src/model/utils/isKeys';
+import { getDataByKey, setDataByKey } from '@src/model/DataControl';
+
 export const regular = /^(#|＃|\/)?神兽赐福$/;
 
-interface PlayerGuildRef {
-  宗门名称: string;
-  职位: string;
-}
-function isPlayerGuildRef(v): v is PlayerGuildRef {
-  return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
-interface ExtAss extends AssociationDetailData {
-  宗门神兽?: string;
-}
-function isExtAss(v): v is ExtAss {
-  return !!v && typeof v === 'object' && 'power' in v;
-}
-interface DateParts {
+function isDateParts(v): v is {
   Y: number;
   M: number;
   D: number;
-}
-function isDateParts(v): v is DateParts {
+} {
   return !!v && typeof v === 'object' && 'Y' in v && 'M' in v && 'D' in v;
 }
-interface NamedClassItem {
-  name: string;
-  class?: string;
-}
-function toNamedList(arr): NamedClassItem[] {
+
+function toNamedList(arr): Array<{ name: string; class?: string }> {
   if (!Array.isArray(arr)) {
     return [];
   }
@@ -53,30 +38,36 @@ function toNamedList(arr): NamedClassItem[] {
 
       return undefined;
     })
-    .filter(v => v !== undefined) as NamedClassItem[];
+    .filter(v => v !== undefined) as Array<{ name: string; class?: string }>;
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
-    return;
+    return false;
   }
-  if (!notUndAndNull(player.宗门) || !isPlayerGuildRef(player.宗门)) {
+
+  if (!isKeys(player['宗门'], ['宗门名称'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
-  const assRaw = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
 
-  if (assRaw === 'error' || !isExtAss(assRaw)) {
+  const playerGuild = player['宗门'] as any;
+
+  const assRaw = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!assRaw || !isKeys(assRaw, ['power', '宗门神兽'])) {
     void Send(Text('宗门数据不存在'));
 
     return false;
   }
-  const ass = assRaw;
+
+  const ass = assRaw as any;
 
   if (!ass.宗门神兽 || ass.宗门神兽 === '0' || ass.宗门神兽 === '无') {
     void Send(Text('你的宗门还没有神兽的护佑，快去召唤神兽吧'));
@@ -86,17 +77,17 @@ const res = onResponse(selects, async e => {
 
   const nowTime = Date.now();
   const Today = shijianc(nowTime);
-  const lastsign_time = await getLastsign_Bonus(userId);
+  const lastsignTime = await getLastsignBonus(userId);
 
-  if (isDateParts(Today) && isDateParts(lastsign_time)) {
-    if (Today.Y === lastsign_time.Y && Today.M === lastsign_time.M && Today.D === lastsign_time.D) {
+  if (isDateParts(Today) && isDateParts(lastsignTime)) {
+    if (Today.Y === lastsignTime.Y && Today.M === lastsignTime.M && Today.D === lastsignTime.D) {
       void Send(Text('今日已经接受过神兽赐福了，明天再来吧'));
 
       return false;
     }
   }
 
-  await redis.set(getRedisKey(userId, 'getLastsign_Bonus'), String(nowTime));
+  await setDataByKey(keysAction.getLastSignBonus(userId), nowTime);
 
   const random = Math.random();
 
@@ -108,17 +99,6 @@ const res = onResponse(selects, async e => {
 
   const beast = ass.宗门神兽;
 
-  // const data = {
-  //   qilin: await getDataList('qilin'),
-  //   qinlong: await getDataList('qinlong'),
-  //   xuanwu: await getDataList('xuanwu'),
-  //   zhuque: await getDataList('zhuque'),
-  //   baihu: await getDataList('baihu'),
-  //   Danyao: await getDataList('Danyao'),
-  //   Gongfa: await getDataList('Gongfa'),
-  //   Equipment: await getDataList('Equipment')
-  // }
-
   const qilinData = await getDataList('Qilin');
   const qinlongData = await getDataList('Qinglong');
   const xuanwuData = await getDataList('Xuanwu');
@@ -126,20 +106,22 @@ const res = onResponse(selects, async e => {
   const gongfaData = await getDataList('Gongfa');
   const equipmentData = await getDataList('Equipment');
 
-  const highProbLists: Record<string, NamedClassItem[]> = {
+  const highProbLists: Record<string, Array<{ name: string; class?: string }>> = {
     麒麟: toNamedList(qilinData),
     青龙: toNamedList(qinlongData),
     玄武: toNamedList(xuanwuData),
-    朱雀: toNamedList(xuanwuData), // 原逻辑同 xuanwu
+    朱雀: toNamedList(xuanwuData),
     白虎: toNamedList(xuanwuData)
   };
-  const normalLists: Record<string, NamedClassItem[]> = {
+
+  const normalLists: Record<string, Array<{ name: string; class?: string }>> = {
     麒麟: toNamedList(danyaoData),
     青龙: toNamedList(gongfaData),
     玄武: toNamedList(equipmentData),
-    朱雀: toNamedList(equipmentData), // 原逻辑同 equipment
+    朱雀: toNamedList(equipmentData),
     白虎: toNamedList(equipmentData)
   };
+
   const highList = highProbLists[beast] || [];
   const normalList = normalLists[beast] || [];
 
@@ -158,9 +140,11 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   const category = item.class && typeof item.class === 'string' ? item.class : '道具';
 
-  await addNajieThing(userId, item.name, category, 1);
+  await addNajieThing(userId, item.name, category as any, 1);
+
   if (randomB > 0.9) {
     void Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`));
   } else {
@@ -170,11 +154,15 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-async function getLastsign_Bonus(userId: string): Promise<DateParts | null> {
-  const time = await redis.get(getRedisKey(userId, 'getLastsign_Bonus'));
+async function getLastsignBonus(userId: string): Promise<{
+  Y: number;
+  M: number;
+  D: number;
+} | null> {
+  const time = await getDataByKey(keysAction.getLastSignBonus(userId));
 
   if (time) {
-    const parts = shijianc(parseInt(time, 10));
+    const parts = shijianc(Number(time));
 
     if (isDateParts(parts)) {
       return parts;
@@ -183,6 +171,5 @@ async function getLastsign_Bonus(userId: string): Promise<DateParts | null> {
 
   return null;
 }
-import mw from '@src/response/mw';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
+
 export default onResponse(selects, [mw.current, res.current]);

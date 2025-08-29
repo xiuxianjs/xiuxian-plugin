@@ -1,13 +1,15 @@
 import { Text, useSend } from 'alemonjs';
-import { keys, notUndAndNull } from '@src/model/index';
-import mw, { selects } from '@src/response/mw';
+import { keys } from '@src/model/index';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
+
 export const regular = /^(#|＃|\/)?我的贡献$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
-  // 用户不存在
 
   const player = await getDataJSONParseByKey(keys.player(userId));
 
@@ -15,22 +17,27 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  // 无宗门
-  if (!notUndAndNull(player.宗门)) {
+  if (!isKeys(player['宗门'], ['lingshi_donate'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
-  if (!notUndAndNull(player.宗门.lingshi_donate)) {
-    player.宗门.lingshi_donate = 0;
+
+  const playerGuild = player['宗门'] as any;
+
+  if (!playerGuild.lingshi_donate) {
+    playerGuild.lingshi_donate = 0;
   }
-  if (player.宗门.lingshi_donate < 0) {
-    player.宗门.lingshi_donate = 0;
+
+  if (playerGuild.lingshi_donate < 0) {
+    playerGuild.lingshi_donate = 0;
   }
-  // 贡献值为捐献灵石除10000
-  const gonxianzhi = Math.trunc(player.宗门.lingshi_donate / 10000);
+
+  const gonxianzhi = Math.trunc(playerGuild.lingshi_donate / 10000);
 
   void Send(Text('你为宗门的贡献值为[' + gonxianzhi + '],可以在#宗门藏宝阁 使用贡献值兑换宗门物品,感谢您对宗门做出的贡献'));
+
+  return false;
 });
 
 export default onResponse(selects, [mw.current, res.current]);

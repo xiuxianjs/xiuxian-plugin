@@ -1,6 +1,5 @@
-import { redis } from '@src/model/api';
-import { shijianc } from '@src/model/index';
-import { getRedisKey } from '@src/model/keys';
+import { getDataByKey, shijianc } from '@src/model/index';
+import { keysAction } from '@src/model/keys';
 
 /**
  * 判断宗门是否需要维护
@@ -40,9 +39,10 @@ export function sortBy(field) {
 }
 
 // 获取上次签到时间
-export async function getLastsign_Asso(userId) {
+export async function getLastsignAsso(userId) {
   // 查询redis中的人物动作
-  const time = await redis.get(getRedisKey(userId, 'lastsign_Asso_time'));
+
+  const time = await getDataByKey(keysAction.lastSignAssoTime(userId));
 
   if (time !== null) {
     const data = shijianc(parseInt(time));

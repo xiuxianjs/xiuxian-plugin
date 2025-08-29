@@ -43,6 +43,10 @@ export interface ZongMen {
   所有成员: any;
   宗门等级: number;
   药园: undefined;
+  宗门建设等级?: number;
+  灵石池?: number;
+  power?: number;
+  lingshi_donate?: number;
 }
 
 export interface Player {

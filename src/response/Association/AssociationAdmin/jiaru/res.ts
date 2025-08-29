@@ -1,26 +1,31 @@
 import { Text, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { keys } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { keys } from '@src/model';
+import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?设置门槛.*$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     return false;
   }
-  if (!player.宗门) {
+
+  if (!isKeys(player['宗门'], ['宗门名称', '职位'])) {
     void Send(Text('你尚未加入宗门'));
 
     return false;
   }
-  const role = player.宗门?.职位;
+
+  const playerGuild = player['宗门'] as any;
+  const role = playerGuild.职位;
   const allow = role === '宗主' || role === '副宗主' || role === '长老';
 
   if (!allow) {
@@ -36,6 +41,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   const levelList = await getDataList('Level1');
   const levelInfo = levelList.find(item => item.level === jiar);
 
@@ -44,24 +50,30 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  let jr_level_id = levelInfo.level_id;
 
-  const ass = await getDataJSONParseByKey(keys.association(player.宗门.宗门名称));
+  let jrLevelId = levelInfo.level_id;
 
-  if (!ass) {
+  const ass = await getDataJSONParseByKey(keys.association(playerGuild.宗门名称));
+
+  if (!ass || !isKeys(ass, ['宗门名称', 'power', '最低加入境界'])) {
+    void Send(Text('宗门数据异常'));
+
     return false;
   }
-  if (ass.power === 0 && jr_level_id > 41) {
-    jr_level_id = 41;
+
+  if (ass.power === 0 && jrLevelId > 41) {
+    jrLevelId = 41;
     void Send(Text('不知哪位大能立下誓言：凡界无仙！'));
   }
-  if (ass.power === 1 && jr_level_id < 42) {
-    jr_level_id = 42;
+
+  if (ass.power === 1 && jrLevelId < 42) {
+    jrLevelId = 42;
     void Send(Text('仅仙人可加入仙宗'));
   }
 
-  ass.最低加入境界 = jr_level_id;
+  ass.最低加入境界 = jrLevelId;
   await setDataJSONStringifyByKey(keys.association(ass.宗门名称), ass);
+
   void Send(Text('已成功设置宗门门槛，当前门槛:' + jiar));
 
   return false;
