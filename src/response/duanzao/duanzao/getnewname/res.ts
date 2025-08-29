@@ -9,15 +9,6 @@ import {
   readNajie,
   writeNajie
 } from '@src/model/index';
-// 移除无效的外部类型导入，自定义最小结构
-interface CustomEquipRecord {
-  name: string;
-  type: string;
-  atk: number;
-  def: number;
-  HP: number;
-  author_name?: string;
-}
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?赋名.*$/;
@@ -98,14 +89,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 读取已命名记录
-  let records: CustomEquipRecord[] = [];
-
-  try {
-    records = await readItTyped();
-  } catch {
-    await writeIt([]);
-    records = [];
-  }
+  const records = await readItTyped();
 
   // 防止重复赋名（用旧名或已改名后的新名都算）
   if (records.some(r => r.name === thingName || r.name === newName)) {

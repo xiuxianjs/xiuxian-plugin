@@ -40,7 +40,7 @@ export async function readForum(): Promise<ForumRecord[]> {
 export async function openAU(): Promise<ExchangeRecord> {
   // 获取星阁key管理器，支持多机器人部署和自动数据迁移
   const auctionKeyManager = getAuctionKeyManager();
-  
+
   const data = {
     xingge: await getDataList('Xingge')
   };
@@ -69,6 +69,7 @@ export async function openAU(): Promise<ExchangeRecord> {
   };
 
   const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
+
   await setDataJSONStringifyByKey(auctionTaskKey, wupin);
 
   return wupin;

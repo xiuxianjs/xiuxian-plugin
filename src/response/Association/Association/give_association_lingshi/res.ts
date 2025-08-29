@@ -4,7 +4,7 @@ import { notUndAndNull } from '@src/model/common';
 import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
 import { redis } from '@src/model/api';
 import { __PATH } from '@src/model/keys';
-import type { AssociationDetailData, Player, JSONValue } from '@src/types';
+import type { AssociationDetailData } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -20,22 +20,6 @@ interface GuildInfo {
 }
 function isGuildInfo(v): v is GuildInfo {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {};
-
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') {
-      continue;
-    }
-    if (v && typeof v === 'object') {
-      r[k] = JSON.parse(JSON.stringify(v));
-    } else {
-      r[k] = v as JSONValue;
-    }
-  }
-
-  return r;
 }
 
 const res = onResponse(selects, async e => {
@@ -108,7 +92,7 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool + lingshi;
   player.宗门.lingshi_donate = (player.宗门.lingshi_donate || 0) + lingshi;
   player.灵石 -= lingshi;
-  await writePlayer(userId, serializePlayer(player));
+  await writePlayer(userId, player);
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
   void Send(Text(`捐赠成功,你身上还有${player.灵石}灵石,宗门灵石池目前有${ass.灵石池}灵石`));
 

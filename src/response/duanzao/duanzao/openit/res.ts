@@ -35,7 +35,6 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  let newtripod = [];
   const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
@@ -46,11 +45,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  try {
-    newtripod = await readTripod();
-  } catch {
-    await writeDuanlu([]);
-  }
+
+  const newtripod = await readTripod();
+
   for (const item of newtripod) {
     if (userId === item.qq) {
       if (item.TIME === 0) {

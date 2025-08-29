@@ -11,13 +11,7 @@ import { ExchangeRecord } from '@src/types';
  */
 export const ExchangeTask = async () => {
   console.log('ExchangeTask');
-  let Exchange: ExchangeRecord[] = [];
-
-  try {
-    Exchange = await readExchange();
-  } catch {
-    await writeExchange([]);
-  }
+  const Exchange: ExchangeRecord[] = await readExchange();
   const now_time = Date.now();
 
   // 现行 ExchangeRecord 不含旧逻辑字段，保持向前兼容：若首条具备 now_time/qq 等字段则按旧规则回退

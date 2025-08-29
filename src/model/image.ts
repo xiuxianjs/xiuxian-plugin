@@ -8,14 +8,13 @@ import type {
   PlayerStatus,
   SendFn,
   AssociationInfo,
-  ExchangeView,
   ForumView
 } from '../types/model.js';
 import { getEquipmentDataSafe, getPlayerDataSafe, readPlayer, readNajie } from './xiuxian_impl.js';
 import { getPlayerAction, notUndAndNull } from './common.js';
 import { playerEfficiency } from './efficiency.js';
 import { readEquipment } from './equipment.js';
-import { readExchange, writeExchange, readForum, writeForum } from './trade.js';
+import { readExchange, readForum } from './trade.js';
 import { GetPower, bigNumberTransform } from './utils/number.js';
 import { readQinmidu, writeQinmidu } from './qinmidu.js';
 import { getConfig } from './Config.js';
@@ -27,17 +26,17 @@ import { getDataJSONParseByKey } from './DataControl.js';
 
 function isAssociationInfo(v): v is AssociationInfo {
   return (
-    !!v
-    && typeof v === 'object'
-    && '宗主' in v
-    && '副宗主' in v
-    && '长老' in v
-    && '内门弟子' in v
-    && '外门弟子' in v
-    && '维护时间' in v
-    && '宗门驻地' in v
-    && '宗门等级' in v
-    && 'power' in v
+    !!v &&
+    typeof v === 'object' &&
+    '宗主' in v &&
+    '副宗主' in v &&
+    '长老' in v &&
+    '内门弟子' in v &&
+    '外门弟子' in v &&
+    '维护时间' in v &&
+    '宗门驻地' in v &&
+    '宗门等级' in v &&
+    'power' in v
   );
 }
 
@@ -52,20 +51,14 @@ export async function getSupermarketImage(
   if (!ifexistplay) {
     return;
   }
-  let Exchange_list: ExchangeView[] = [];
+  const raw = await readExchange();
 
-  try {
-    const raw = await readExchange();
+  let Exchange_list = raw.map((rec, idx) => ({
+    ...rec,
+    num: idx + 1,
+    name: rec.thing
+  }));
 
-    Exchange_list = raw.map((rec, idx) => ({
-      ...rec,
-      num: idx + 1,
-      // now_time: rec.now_time,
-      name: rec.thing
-    }));
-  } catch {
-    await writeExchange([]);
-  }
   if (thingClass) {
     Exchange_list = Exchange_list.filter(item => item.name.class === thingClass);
   }
@@ -90,19 +83,16 @@ export async function getForumImage(
   if (!ifexistplay) {
     return;
   }
+
+  const raw = await readForum();
   let Forum: ForumView[] = [];
 
-  try {
-    const raw = await readForum();
+  Forum = raw.map((rec, idx) => ({
+    ...rec,
+    num: idx + 1,
+    now_time: rec.last_offer_price
+  }));
 
-    Forum = raw.map((rec, idx) => ({
-      ...rec,
-      num: idx + 1,
-      now_time: rec.last_offer_price
-    }));
-  } catch {
-    await writeForum([]);
-  }
   if (thingClass) {
     Forum = Forum.filter(item => item.thing.class === thingClass);
   }
@@ -176,21 +166,21 @@ export async function getNingmenghomeImage(
 
   if (thing_type !== '') {
     if (
-      thing_type === '装备'
-      || thing_type === '丹药'
-      || thing_type === '功法'
-      || thing_type === '道具'
-      || thing_type === '草药'
+      thing_type === '装备' ||
+      thing_type === '丹药' ||
+      thing_type === '功法' ||
+      thing_type === '道具' ||
+      thing_type === '草药'
     ) {
       commodities_list = commodities_list.filter(item => item.class === thing_type);
     } else if (
-      thing_type === '武器'
-      || thing_type === '护具'
-      || thing_type === '法宝'
-      || thing_type === '修为'
-      || thing_type === '血量'
-      || thing_type === '血气'
-      || thing_type === '天赋'
+      thing_type === '武器' ||
+      thing_type === '护具' ||
+      thing_type === '法宝' ||
+      thing_type === '修为' ||
+      thing_type === '血量' ||
+      thing_type === '血气' ||
+      thing_type === '天赋'
     ) {
       commodities_list = commodities_list.filter(item => item.type === thing_type);
     }
@@ -385,15 +375,15 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
     }
     for (const j of arr as NamedItem[]) {
       if (
-        najie['装备'].find(item => item.name === j.name)
-        && !wuqi_have.find(item => item.name === j.name)
+        najie['装备'].find(item => item.name === j.name) &&
+        !wuqi_have.find(item => item.name === j.name)
       ) {
         wuqi_have.push(j);
       } else if (
-        (equipment['武器'].name === j.name
-          || equipment['法宝'].name === j.name
-          || equipment['护具'].name === j.name)
-        && !wuqi_have.find(item => item.name === j.name)
+        (equipment['武器'].name === j.name ||
+          equipment['法宝'].name === j.name ||
+          equipment['护具'].name === j.name) &&
+        !wuqi_have.find(item => item.name === j.name)
       ) {
         wuqi_have.push(j);
       } else if (!wuqi_need.find(item => item.name === j.name)) {
@@ -446,8 +436,8 @@ export async function getDanyaoImage(e: EventsMessageCreateEnum): Promise<Screen
     }
     for (const j of arr as NamedItem[]) {
       if (
-        najie['丹药'].find(item => item.name === j.name)
-        && !danyao_have.find(item => item.name === j.name)
+        najie['丹药'].find(item => item.name === j.name) &&
+        !danyao_have.find(item => item.name === j.name)
       ) {
         danyao_have.push(j);
       } else if (!danyao_need.find(item => item.name === j.name)) {
@@ -681,12 +671,12 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   // 境界名字需要查找境界名
   const level = levelList.find(item => item.level_id === player.level_id).level;
   const power = (
-    (player.攻击 * 0.9
-      + player.防御 * 1.1
-      + player.血量上限 * 0.6
-      + player.暴击率 * player.攻击 * 0.5
-      + Number(player.灵根?.法球倍率 || 0) * player.攻击)
-    / 10000
+    (player.攻击 * 0.9 +
+      player.防御 * 1.1 +
+      player.血量上限 * 0.6 +
+      player.暴击率 * player.攻击 * 0.5 +
+      Number(player.灵根?.法球倍率 || 0) * player.攻击) /
+    10000
   ).toFixed(2);
   const power2 = ((player.攻击 + player.防御 * 1.1 + player.血量上限 * 0.5) / 10000).toFixed(2);
   const level2 = physiqueList.find(item => item.level_id === player.Physique_id).level;

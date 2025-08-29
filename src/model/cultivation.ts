@@ -1,6 +1,6 @@
 import { useSend, Text, EventsMessageCreateEnum } from 'alemonjs';
 import type { Player, TalentInfo } from '../types/player.js';
-import { writePlayer, writeIt } from './pub.js';
+import { writePlayer } from './pub.js';
 import { readItTyped } from './duanzaofu.js';
 import { existNajieThing, addNajieThing } from './najie.js';
 import { readPlayer } from './xiuxian_impl.js';
@@ -223,7 +223,8 @@ export async function foundthing(thingName: string): Promise<FoundThing | false>
     duanzhaocailiao: await getDataList('Duanzhaocailiao'),
     zalei: await getDataList('Zalei')
   };
-  const hasName = (obj): obj is FoundThing => typeof obj === 'object' && obj !== null && 'name' in obj;
+  const hasName = (obj): obj is FoundThing =>
+    typeof obj === 'object' && obj !== null && 'name' in obj;
 
   for (const key of primaryGroups) {
     const arr = data[key];
@@ -236,14 +237,8 @@ export async function foundthing(thingName: string): Promise<FoundThing | false>
       }
     }
   }
-  let customList;
+  const customList = await readItTyped();
 
-  try {
-    customList = await readItTyped();
-  } catch {
-    await writeIt([]);
-    customList = [];
-  }
   if (Array.isArray(customList)) {
     for (const j of customList) {
       if (hasName(j) && j.name === thingName) {

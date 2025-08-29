@@ -35,13 +35,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  let newtripod = [];
+  const newtripod = await readTripod();
 
-  try {
-    newtripod = await readTripod();
-  } catch {
-    await writeDuanlu([]);
-  }
   for (const item of newtripod) {
     if (userId === item.qq) {
       if (item.材料.length === 0) {

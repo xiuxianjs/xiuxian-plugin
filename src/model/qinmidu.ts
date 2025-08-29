@@ -15,13 +15,8 @@ export async function writeQinmidu(qinmidu: QinmiduRecord[]) {
 }
 
 export async function fstaddQinmidu(A: string, B: string) {
-  let list: QinmiduRecord[] = [];
+  const list: QinmiduRecord[] = await readQinmidu();
 
-  try {
-    list = await readQinmidu();
-  } catch {
-    await writeQinmidu([]);
-  }
   const rec: QinmiduRecord = { QQ_A: A, QQ_B: B, 亲密度: 0, 婚姻: 0 };
 
   list.push(rec);
@@ -29,13 +24,8 @@ export async function fstaddQinmidu(A: string, B: string) {
 }
 
 export async function addQinmidu(A: string, B: string, qinmi: number) {
-  let list: QinmiduRecord[] = [];
+  let list: QinmiduRecord[] = await readQinmidu();
 
-  try {
-    list = await readQinmidu();
-  } catch {
-    await writeQinmidu([]);
-  }
   let i: number;
 
   for (i = 0; i < list.length; i++) {
@@ -52,13 +42,8 @@ export async function addQinmidu(A: string, B: string, qinmi: number) {
 }
 
 export async function findQinmidu(A: string, B: string) {
-  let list: QinmiduRecord[] = [];
+  const list: QinmiduRecord[] = await readQinmidu();
 
-  try {
-    list = await readQinmidu();
-  } catch {
-    await writeQinmidu([]);
-  }
   let i: number;
   const QQ: string[] = [];
 
@@ -92,13 +77,8 @@ export async function findQinmidu(A: string, B: string) {
 
 // 查询道侣亲密度
 export async function findDaolvQinmidu(A: string) {
-  let list: QinmiduRecord[] = [];
+  const list: QinmiduRecord[] = await readQinmidu();
 
-  try {
-    list = await readQinmidu();
-  } catch {
-    await writeQinmidu([]);
-  }
   for (let i = 0; i < list.length; i++) {
     if ((list[i].QQ_A === A || list[i].QQ_B === A) && list[i].婚姻 !== 0) {
       return list[i].亲密度;
@@ -114,13 +94,8 @@ export async function findDaolvQinmidu(A: string) {
  * @returns 有婚返回对方QQ，无婚返回空字符串
  */
 export async function existHunyin(A: string) {
-  let list: QinmiduRecord[] = [];
+  const list: QinmiduRecord[] = await readQinmidu();
 
-  try {
-    list = await readQinmidu();
-  } catch {
-    await writeQinmidu([]);
-  }
   for (let i = 0; i < list.length; i++) {
     if (list[i].QQ_A === A) {
       if (list[i].婚姻 !== 0) {

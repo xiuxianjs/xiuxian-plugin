@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { existplayer, readPlayer, addCoin } from '@src/model/index';
+import { readPlayer, addCoin } from '@src/model/index';
 import {
   readAction,
   isActionRunning,
@@ -18,9 +18,12 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId; // 用户qq
 
-  if (!(await existplayer(userId))) {
-    return false;
+  const player = await readPlayer(userId);
+
+  if (!player) {
+    return;
   }
+
   // 获取游戏状态
   const game_action = await getString(userKey(userId, 'game_action'));
 
@@ -30,7 +33,6 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await readPlayer(userId);
 
   if (player.occupation !== '采矿师') {
     void Send(Text('你挖矿许可证呢？非法挖矿，罚款200灵石'));
@@ -38,6 +40,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   // 获取时间
   const timeRaw = e.MessageText.replace(/^(#|＃|\/)?采矿/, '').replace('分钟', '');
   const time = normalizeDurationMinutes(timeRaw, 30, 24, 30);

@@ -20,7 +20,7 @@ interface PlantAction {
 }
 
 const res = onResponse(selects, async e => {
-  const raw = (await getPlayerAction(e.UserId)) as unknown as PlantAction | null;
+  const raw = await getPlayerAction(e.UserId);
 
   if (!raw) {
     return false;

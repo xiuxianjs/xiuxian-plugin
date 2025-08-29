@@ -118,7 +118,6 @@ const res = onResponse(selects, async e => {
     await mine_jiesuan(e.UserId, minutes);
   }
 
-  // 标记结束; 统一写入 end_time/time 结构方便后续命令
   action.is_jiesuan = 1;
   action.mine = 1;
   action.plant = 1;
@@ -127,8 +126,9 @@ const res = onResponse(selects, async e => {
   action.power_up = 1;
   action.Place_action = 1;
   action.end_time = now;
-  action.time
-    = (action.time && action.end_time && action.time) || action.duration || minutes * 60000; // 记录原始或推导时长
+  const time = (action.time && action.end_time) ?? action.duration ?? minutes * 60000; // 记录原始或推导时长
+
+  action.time = time;
   delete action.group_id;
 
   void redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action));

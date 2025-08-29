@@ -50,8 +50,8 @@ const res = onResponse(selects, async e => {
   const thingName = code[0]; // 物品
   const account = code[1]; // 数量
   const parsedCount = convert2integer(account);
-  const thing_acount
-    = typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
+  const thing_acount =
+    typeof parsedCount === 'number' && !Number.isNaN(parsedCount) ? parsedCount : 1;
   const wupintype = await foundthing(thingName);
 
   if (!wupintype || wupintype.type !== '锻造') {
@@ -87,21 +87,16 @@ const res = onResponse(selects, async e => {
   for (const item in tripod.数量) {
     num += Number(tripod.数量[item]);
   }
-  const shengyu
-    = tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
+  const shengyu =
+    tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
 
   if (num + Number(thing_acount) > tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2)) {
     void Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`));
 
     return false;
   }
-  let newtripod = [];
+  const newtripod = await readTripod();
 
-  try {
-    newtripod = await readTripod();
-  } catch {
-    await writeDuanlu([]);
-  }
   for (const item of newtripod) {
     if (userId === item.qq) {
       item.材料.push(thingName);

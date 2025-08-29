@@ -220,17 +220,7 @@ const res = onResponse(selects, async e => {
   }
   await addCoin(userId, -fee);
 
-  let exchange: ExchangeRecord[] = [];
-
-  try {
-    const data = await readExchange();
-
-    if (Array.isArray(data)) {
-      exchange = data;
-    }
-  } catch {
-    await writeExchange([]);
-  }
+  const exchange: ExchangeRecord[] = await readExchange();
 
   const nowTime = Date.now();
   let newRecord: ExchangeRecord;

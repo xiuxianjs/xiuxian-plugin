@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { notUndAndNull, shijianc, existplayer, readPlayer, writePlayer } from '@src/model/index';
 import { getLastsign_Asso, isNotMaintenance } from '../../ass';
-import type { AssociationDetailData, Player, JSONValue } from '@src/types';
+import type { AssociationDetailData } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -23,22 +23,6 @@ function isDateParts(v): v is DateParts {
 }
 function isGuildInfo(v): v is { 宗门名称: string; 职位: string } {
   return !!v && typeof v === 'object' && '宗门名称' in v && '职位' in v;
-}
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {};
-
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') {
-      continue;
-    }
-    if (v && typeof v === 'object') {
-      r[k] = JSON.parse(JSON.stringify(v));
-    } else {
-      r[k] = v as JSONValue;
-    }
-  }
-
-  return r;
 }
 
 const res = onResponse(selects, async e => {
@@ -125,7 +109,7 @@ const res = onResponse(selects, async e => {
   ass.灵石池 = pool - gift_lingshi;
   player.灵石 += gift_lingshi;
   await redis.set(getRedisKey(userId, 'lastsign_Asso_time'), nowTime);
-  await writePlayer(userId, serializePlayer(player));
+  await writePlayer(userId, player);
   await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
   void Send(Text(`宗门俸禄领取成功,获得了${gift_lingshi}灵石`));
 

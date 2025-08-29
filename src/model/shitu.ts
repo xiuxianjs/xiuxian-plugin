@@ -14,13 +14,8 @@ export async function readShitu(): Promise<ShituRecord[]> {
 }
 
 export async function fstaddShitu(A: string) {
-  let list: ShituRecord[] = [];
+  const list: ShituRecord[] = await readShitu();
 
-  try {
-    list = await readShitu();
-  } catch {
-    await writeShitu([]);
-  }
   const rec: ShituRecord = {
     师傅: A,
     收徒: 0,
@@ -38,13 +33,8 @@ export async function fstaddShitu(A: string) {
 }
 
 export async function addShitu(A: string, num: number) {
-  let list: ShituRecord[] = [];
+  let list: ShituRecord[] = await readShitu();
 
-  try {
-    list = await readShitu();
-  } catch {
-    await writeShitu([]);
-  }
   let i: number;
 
   for (i = 0; i < list.length; i++) {
@@ -61,13 +51,8 @@ export async function addShitu(A: string, num: number) {
 }
 
 export async function findShitu(A: string): Promise<string | false> {
-  let list: ShituRecord[] = [];
+  const list: ShituRecord[] = await readShitu();
 
-  try {
-    list = await readShitu();
-  } catch {
-    await writeShitu([]);
-  }
   let i: number;
 
   for (i = 0; i < list.length; i++) {

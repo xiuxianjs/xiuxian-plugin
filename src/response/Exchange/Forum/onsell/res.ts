@@ -44,16 +44,11 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const thing_value = convert2integer(value);
-  const thing_amount = convert2integer(amount);
-  let Forum = [];
+  const thingCount = convert2integer(amount);
+  const Forum = await readForum();
 
-  try {
-    Forum = await readForum();
-  } catch {
-    await writeForum([]);
-  }
   const now_time = Date.now();
-  const whole = Math.trunc(thing_value * thing_amount);
+  const whole = Math.trunc(thing_value * thingCount);
   let off = Math.trunc(whole * 0.03);
 
   if (off < 100000) {
@@ -72,7 +67,7 @@ const res = onResponse(selects, async e => {
     name: thingName,
     price: thing_value,
     class: thingExist.class,
-    aconut: thing_amount,
+    aconut: thingCount,
     whole: whole,
     now_time: now_time
   };

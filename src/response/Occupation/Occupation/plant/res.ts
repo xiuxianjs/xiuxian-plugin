@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { existplayer, readPlayer } from '@src/model/index';
+import { readPlayer } from '@src/model/index';
 import {
   readAction,
   isActionRunning,
@@ -19,10 +19,11 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId; // 用户qq
 
-  if (!(await existplayer(userId))) {
-    return false;
+  const player = await readPlayer(userId);
+
+  if (!player) {
+    return;
   }
-  // 不开放私聊
 
   // 获取游戏状态
   const game_action = await getGameFlag(userId);
@@ -33,13 +34,13 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const player = await readPlayer(userId);
 
   if (player.occupation !== '采药师') {
     void Send(Text('您采药，您配吗?'));
 
     return false;
   }
+
   // 获取时间
   const timeRaw = e.MessageText.replace(/^(#|＃|\/)?采药/, '').replace('分钟', '');
   const time = normalizeDurationMinutes(timeRaw, 15, 48, 30);
@@ -75,6 +76,7 @@ export default onResponse(selects, [mw.current, res.current]);
 
 // 兼容读取 game_action 标志（保持旧 key）
 async function getGameFlag(userId: string | number) {
-  return await import('@src/model/utils/redisHelper').then(m => m.getString(userKey(userId, 'game_action'))
+  return await import('@src/model/utils/redisHelper').then(m =>
+    m.getString(userKey(userId, 'game_action'))
   );
 }

@@ -108,14 +108,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  let forum: ForumRecord[] = [];
+  const forum: ForumRecord[] = await readForum();
 
-  try {
-    forum = await readForum();
-  } catch {
-    await writeForum([]);
-    forum = [];
-  }
   if (orderIndex >= forum.length) {
     void Send(Text('没有该编号的求购单'));
 

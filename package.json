@@ -19,7 +19,7 @@
     "bundle": "yarn --cwd frontend build",
     "lint": "eslint src --ext .ts,.tsx,.js",
     "lint:fix": "eslint src --ext .ts,.tsx,.js --fix",
-    "lint:fix:quiet": "eslint src --ext .ts,.tsx,.js --fix --quiet",
+    "fix:code": "eslint src --ext .ts,.tsx,.js --fix --quiet",
     "lint:check": "eslint src --ext .ts,.tsx,.js",
     "lint:fix-all": "eslint . --ext .ts,.tsx,.js --fix",
     "lint:staged": "lint-staged",

@@ -1,10 +1,10 @@
 import { Text, useSend } from 'alemonjs';
 import { __PATH, keys } from '@src/model/keys';
 import { getRandomFromARR, notUndAndNull } from '@src/model/common';
-import { existplayer, readPlayer, writePlayer } from '@src/model/xiuxian_impl';
+import { readPlayer, writePlayer } from '@src/model/xiuxian_impl';
 import { playerEfficiency } from '@src/model/efficiency';
 import { redis } from '@src/model/api';
-import type { AssociationDetailData, Player, JSONValue } from '@src/types';
+import type { AssociationDetailData, Player } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -37,59 +37,19 @@ function ensureStringArray(v): string[] {
   return Array.isArray(v) ? v.filter(i => typeof i === 'string') : [];
 }
 
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const result: Record<string, JSONValue> = {};
-
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') {
-      continue;
-    }
-    // 简单递归：仅处理对象/数组基础可序列化部分
-    if (v && typeof v === 'object') {
-      if (Array.isArray(v)) {
-        result[k] = v.filter(x => typeof x !== 'function') as JSONValue;
-      } else {
-        const obj: Record<string, JSONValue> = {};
-
-        for (const [ik, iv] of Object.entries(v)) {
-          if (typeof iv === 'function') {
-            continue;
-          }
-          if (iv && typeof iv === 'object') {
-            // 深层再做一次浅拷贝（避免过度复杂）
-            obj[ik] = JSON.parse(JSON.stringify(iv));
-          } else {
-            obj[ik] = iv as JSONValue;
-          }
-        }
-        result[k] = obj as JSONValue;
-      }
-    } else {
-      result[k] = v as JSONValue;
-    }
-  }
-
-  return result;
-}
-
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
-  const ifexistplay = await existplayer(userId);
-
-  if (!ifexistplay) {
-    return false;
-  }
   const player = await readPlayer(userId);
 
   if (!player) {
-    return false;
+    return;
   }
   if (!notUndAndNull(player.宗门)) {
-    return false;
+    return;
   }
   if (!isPlayerGuildInfo(player.宗门)) {
-    return false;
+    return;
   }
 
   const guildInfo = player.宗门;
@@ -131,7 +91,7 @@ const res = onResponse(selects, async e => {
     ass.所有成员 = ensureStringArray(ass.所有成员).filter(i => i !== userId);
     await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
     delete (player as Player & { 宗门? }).宗门;
-    await writePlayer(userId, serializePlayer(player));
+    await writePlayer(userId, player);
     await playerEfficiency(userId);
     void Send(Text('退出宗门成功'));
   } else {
@@ -139,7 +99,7 @@ const res = onResponse(selects, async e => {
     if (ass.所有成员.length < 2) {
       await redis.del(keys.association(guildInfo.宗门名称));
       delete (player as Player & { 宗门? }).宗门;
-      await writePlayer(userId, serializePlayer(player));
+      await writePlayer(userId, player);
       await playerEfficiency(userId);
       void Send(
         Text(
@@ -149,7 +109,7 @@ const res = onResponse(selects, async e => {
     } else {
       ass.所有成员 = ass.所有成员.filter(item => item !== userId);
       delete (player as Player & { 宗门? }).宗门;
-      await writePlayer(userId, serializePlayer(player));
+      await writePlayer(userId, player);
       await playerEfficiency(userId);
       const fz = getRoleList(ass, '副宗主');
       const zl = getRoleList(ass, '长老');
@@ -179,14 +139,14 @@ const res = onResponse(selects, async e => {
       setRoleList(ass, rGuild.职位, oldList);
       setRoleList(ass, '宗主', [randmemberId]);
       rGuild.职位 = '宗主';
-      await writePlayer(randmemberId, serializePlayer(randmember));
-      await writePlayer(userId, serializePlayer(player));
+      await writePlayer(randmemberId, randmember);
+      await writePlayer(userId, player);
       await redis.set(`${__PATH.association}:${ass.宗门名称}`, JSON.stringify(ass));
       void Send(Text(`退出宗门成功,退出后,宗主职位由${randmember.名号}接管`));
     }
   }
   player.favorability = 0;
-  await writePlayer(userId, serializePlayer(player));
+  await writePlayer(userId, player);
 });
 
 export default onResponse(selects, [mw.current, res.current]);

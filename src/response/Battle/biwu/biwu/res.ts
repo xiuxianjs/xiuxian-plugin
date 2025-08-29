@@ -177,11 +177,11 @@ async function battle(e, num: number) {
   await sleep(40000); // 技能选择时间
 
   let cnt = 1;
-  let action_A: ActionState = { cnt, 技能: A_QQ[num].选择技能, use: -1 };
-  let action_B: ActionState = { cnt, 技能: B_QQ[num].选择技能, use: -1 };
+  let actionA: ActionState = { cnt, 技能: A_QQ[num].选择技能, use: -1 };
+  let actionB: ActionState = { cnt, 技能: B_QQ[num].选择技能, use: -1 };
 
-  await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(action_A));
-  await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(action_B));
+  await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(actionA));
+  await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(actionB));
 
   const buff_A: BuffMap = {};
   const buff_B: BuffMap = {};
@@ -190,23 +190,23 @@ async function battle(e, num: number) {
   while (playerA.当前血量 > 0 && playerB.当前血量 > 0) {
     const roundMsgs: string[] = [];
     // A 回合展示
-    const round_A = buildRoundMsg(action_A.技能, cnt);
+    const round_A = buildRoundMsg(actionA.技能, cnt);
 
-    await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(action_A));
+    await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(actionA));
     pushInfo(A_QQ[num].QQ, false, round_A);
     // B 回合展示
-    const round_B = buildRoundMsg(action_B.技能, cnt);
+    const round_B = buildRoundMsg(actionB.技能, cnt);
 
-    await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(action_B));
+    await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(actionB));
     pushInfo(B_QQ[num].QQ, false, round_B);
     await sleep(20000);
 
     // 读取操作
-    action_A = JSON.parse((await redis.get(getRedisKey(A_QQ[num].QQ, 'bisai'))) || '{}');
-    action_B = JSON.parse((await redis.get(getRedisKey(B_QQ[num].QQ, 'bisai'))) || '{}');
+    actionA = JSON.parse((await redis.get(getRedisKey(A_QQ[num].QQ, 'bisai'))) || '{}');
+    actionB = JSON.parse((await redis.get(getRedisKey(B_QQ[num].QQ, 'bisai'))) || '{}');
     // 清空上次技能 cd
-    if (action_A.技能?.[action_A.use]) {
-      action_A.技能[action_A.use].cd = 0;
+    if (actionA.技能?.[actionA.use]) {
+      actionA.技能[actionA.use].cd = 0;
     }
 
     // Buff 处理 (B 对 A 的控制 / 降低)
@@ -215,7 +215,7 @@ async function battle(e, num: number) {
       playerA,
       '四象封印',
       () => {
-        action_A.use = -1;
+        actionA.use = -1;
       },
       roundMsgs,
       `${playerA.名号}因为四象封印之力，技能失效,剩余回合{left}`
@@ -313,8 +313,8 @@ async function battle(e, num: number) {
     A_harm = Math.trunc(A_baoji * A_harm + A_faqiu + playerA.防御 * 0.1);
 
     // A 技能释放
-    if (action_A.use !== -1 && action_A.技能?.[action_A.use]) {
-      const sk = action_A.技能[action_A.use];
+    if (actionA.use !== -1 && actionA.技能?.[actionA.use]) {
+      const sk = actionA.技能[actionA.use];
 
       switch (sk.name) {
         case '四象封印':
@@ -375,15 +375,15 @@ async function battle(e, num: number) {
     }
 
     // B 方
-    if (action_B.技能?.[action_B.use]) {
-      action_B.技能[action_B.use].cd = 0;
+    if (actionB.技能?.[actionB.use]) {
+      actionB.技能[actionB.use].cd = 0;
     }
     applyBuffDecay(
       buff_A,
       playerB,
       '四象封印',
       () => {
-        action_B.use = -1;
+        actionB.use = -1;
       },
       roundMsgs,
       `${playerB.名号}因为四象封印之力，技能失效,剩余回合{left}`
@@ -479,8 +479,8 @@ async function battle(e, num: number) {
 
     B_harm = Math.trunc(B_baoji * B_harm + B_faqiu + playerB.防御 * 0.1);
 
-    if (action_B.use !== -1 && action_B.技能 && action_B.技能[action_B.use]) {
-      const sk = action_B.技能[action_B.use];
+    if (actionB.use !== -1 && actionB.技能?.[actionB.use]) {
+      const sk = actionB.技能[actionB.use];
 
       switch (sk.name) {
         case '四象封印':
@@ -541,10 +541,10 @@ async function battle(e, num: number) {
     pushInfo(B_QQ[num].QQ, false, roundMsgs);
     history.push(roundMsgs);
 
-    action_A.use = -1;
-    action_B.use = -1;
-    await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(action_A));
-    await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(action_B));
+    actionA.use = -1;
+    actionB.use = -1;
+    await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(actionA));
+    await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(actionB));
 
     // 恢复基础属性 (防止叠加)
     playerA.攻击 = A_init.攻击;
@@ -584,8 +584,8 @@ async function battle(e, num: number) {
   const aQQ = A_QQ[num].QQ;
   const bQQ = B_QQ[num].QQ;
 
-  A_QQ[num].QQ = null as string;
-  B_QQ[num].QQ = null as string;
+  A_QQ[num].QQ = null;
+  B_QQ[num].QQ = null;
   await redis.set(getRedisKey(aQQ, 'bisai'), '');
   await redis.set(getRedisKey(bQQ, 'bisai'), '');
 

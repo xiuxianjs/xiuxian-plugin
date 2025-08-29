@@ -29,7 +29,7 @@ const res = onResponse(selects, async e => {
   const b = action.职业经验;
   const c = action.职业等级;
 
-  action.职业名 = player.occupation as string;
+  action.职业名 = player.occupation;
   action.职业经验 = player.occupation_exp;
   action.职业等级 = player.occupation_level;
   player.occupation = a;

@@ -1,6 +1,4 @@
-// 玩家相关类型定义
-
-import { readQinmidu, writeQinmidu } from '@src/model/qinmidu';
+import { readQinmidu } from '@src/model/qinmidu';
 import type { QinmiduRecord } from './model';
 import XianChong from '@src/resources/html/xianchong';
 
@@ -187,13 +185,8 @@ export interface DanyaoStatus {
 }
 
 export async function findQinmidu(A: string, B: string) {
-  let list: QinmiduRecord[] = [];
+  const list: QinmiduRecord[] = await readQinmidu();
 
-  try {
-    list = await readQinmidu();
-  } catch {
-    await writeQinmidu([]);
-  }
   let i: number;
   const QQ: string[] = [];
 

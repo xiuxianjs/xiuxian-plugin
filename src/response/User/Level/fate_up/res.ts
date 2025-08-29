@@ -156,7 +156,9 @@ const res = onResponse(selects, async e => {
 
       return;
     }
-    setTimeout(doStrike, STRIKE_DELAY_MS);
+    setTimeout(() => {
+      void doStrike();
+    }, STRIKE_DELAY_MS);
   };
 
   const release = (_reason: string) => {
@@ -168,7 +170,9 @@ const res = onResponse(selects, async e => {
     // 可选调试: console.debug('渡劫结束:', userId, reason)
   };
 
-  setTimeout(doStrike, STRIKE_DELAY_MS);
+  setTimeout(() => {
+    void doStrike();
+  }, STRIKE_DELAY_MS);
 
   return false;
 });

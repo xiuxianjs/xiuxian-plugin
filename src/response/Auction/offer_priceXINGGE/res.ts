@@ -22,13 +22,15 @@ const res = onResponse(selects, async e => {
   }
   // 获取星阁key管理器，支持多机器人部署和自动数据迁移
   const auctionKeyManager = getAuctionKeyManager();
-  
+
   const isGroupEnabled = await auctionKeyManager.isGroupAuctionEnabled(String(e.ChannelId));
+
   if (!isGroupEnabled) {
     void Send(Text('本群未开启星阁拍卖'));
+
     return false;
   }
-  
+
   const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
   const auction = await redis.get(auctionTaskKey);
 
@@ -74,6 +76,7 @@ const res = onResponse(selects, async e => {
   // 关掉了
   // await redis.sAdd(auctionKeys.AUCTION_GROUP_LIST, String(e.group_id));
   const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+
   auctionData.groupList = await redis.smembers(groupListKey);
 
   const msg = `${player.名号}叫价${new_price} `;

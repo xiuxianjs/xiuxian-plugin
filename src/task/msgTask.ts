@@ -11,13 +11,8 @@ import { screenshot } from '@src/image';
  * 推送完成后，清空临时消息记录。
  */
 export const MsgTask = async () => {
-  let temp: TempMessage[] = [];
+  const temp: TempMessage[] = await readTemp();
 
-  try {
-    temp = await readTemp();
-  } catch {
-    await writeTemp([]);
-  }
   if (temp.length > 0) {
     const group: string[] = [];
 

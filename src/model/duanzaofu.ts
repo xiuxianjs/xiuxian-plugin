@@ -9,13 +9,8 @@ import { readPlayer } from './xiuxian_impl.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 
 export async function settripod(qq: string): Promise<string> {
-  let tripod1: Tripod[] = [];
+  const tripod1: Tripod[] = await readTripod();
 
-  try {
-    tripod1 = await readTripod();
-  } catch {
-    await writeDuanlu([]);
-  }
   const A = await looktripod(qq);
 
   if (A !== 1) {
@@ -46,7 +41,8 @@ export async function settripod(qq: string): Promise<string> {
   const a = await readAll('隐藏灵根');
   const newa = Math.floor(Math.random() * a.length);
   const candidate = a[newa];
-  const isTalentInfo = (x): x is TalentInfo => !!x && typeof x === 'object' && 'type' in x && 'name' in x;
+  const isTalentInfo = (x): x is TalentInfo =>
+    !!x && typeof x === 'object' && 'type' in x && 'name' in x;
 
   if (isTalentInfo(candidate)) {
     player.隐藏灵根 = candidate;
@@ -58,13 +54,8 @@ export async function settripod(qq: string): Promise<string> {
 }
 
 export async function looktripod(qq: string): Promise<number> {
-  let tripod: Tripod[] = [];
+  const tripod: Tripod[] = await readTripod();
 
-  try {
-    tripod = await readTripod();
-  } catch {
-    await writeDuanlu([]);
-  }
   for (const item of tripod) {
     if (qq === item.qq) {
       return 1;
@@ -75,13 +66,7 @@ export async function looktripod(qq: string): Promise<number> {
 }
 
 export async function readMytripod(qq: string): Promise<Tripod | undefined> {
-  let tripod: Tripod[] = [];
-
-  try {
-    tripod = await readTripod();
-  } catch {
-    await writeDuanlu([]);
-  }
+  const tripod: Tripod[] = await readTripod();
 
   for (const item of tripod) {
     if (qq === item.qq) {
@@ -210,8 +195,8 @@ export function restraint(shuju: number[], main: string): [string, number] {
   // [ '木', '水']
   for (const item in shuzu) {
     if (
-      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 1] === newshuzu[1])
-      || (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 1] === newshuzu[0])
+      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 1] === newshuzu[1]) ||
+      (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 1] === newshuzu[0])
     ) {
       houzui = `毁${main}灭灵`;
       jiaceng = 0.5;
@@ -220,8 +205,8 @@ export function restraint(shuju: number[], main: string): [string, number] {
     }
 
     if (
-      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 2] === newshuzu[1])
-      || (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 2] === newshuzu[0])
+      (shuzu[item] === newshuzu[0] && shuzu[Number(item) + 2] === newshuzu[1]) ||
+      (shuzu[item] === newshuzu[1] && shuzu[Number(item) + 2] === newshuzu[0])
     ) {
       if (main === newshuzu[0]) {
         houzui = `神${main}相生`;

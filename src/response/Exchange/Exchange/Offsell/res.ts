@@ -84,14 +84,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  let rawList = [];
+  const rawList = await readExchange();
 
-  try {
-    rawList = await readExchange();
-  } catch {
-    await writeExchange([] as RawExchangeRecord[]);
-    rawList = [];
-  }
   const list: LegacyRecord[] = rawList.map(mapRecord).filter(Boolean);
 
   console.log('list:', list);
@@ -136,7 +130,7 @@ const res = onResponse(selects, async e => {
   }
 
   rawList.splice(idx, 1);
-  await writeExchange(rawList as RawExchangeRecord[]);
+  await writeExchange(rawList);
   await redis.set(getRedisKey(userId, 'Exchange'), '0');
 
   const player = await readPlayer(userId);

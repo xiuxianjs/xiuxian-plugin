@@ -41,9 +41,7 @@ const res = onResponse(selects, async e => {
     const ExchangeCDs = Math.trunc(((ExchangeCD + transferTimeout - now_time) % 60000) / 1000);
 
     void Send(
-      Text(
-        `每${transferTimeout / 1000 / 60}分钟操作一次，` + `CD: ${ExchangeCDm}分${ExchangeCDs}秒`
-      )
+      Text(`每${transferTimeout / 1000 / 60}分钟操作一次，CD: ${ExchangeCDm}分${ExchangeCDs}秒`)
     );
 
     // 存在CD。直接返回
@@ -52,14 +50,8 @@ const res = onResponse(selects, async e => {
   // 记录本次执行时间
   await redis.set(getRedisKey(userId, 'ExchangeCD'), String(now_time));
   const player = await readPlayer(userId);
-  let Exchange = [];
+  let Exchange = await readExchange();
 
-  try {
-    Exchange = await readExchange();
-  } catch {
-    // 没有表要先建立一个！
-    await writeExchange([]);
-  }
   const t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*');
 
   // 如果t[0]或t[1]不是非0开头的数字, 发送提示并返回
@@ -88,19 +80,19 @@ const res = onResponse(selects, async e => {
   // 根据qq得到物品
   const thingName = Exchange[x].thing.name;
   const thingClass = Exchange[x].thing.class;
-  const thing_amount = Exchange[x].amount;
-  const thing_price = Exchange[x].price;
+  const thingCount = Exchange[x].amount;
+  const thingPrice = Exchange[x].price;
   let n = convert2integer(t[1]);
 
   if (!t[1]) {
-    n = thing_amount;
+    n = thingCount;
   }
-  if (n > thing_amount) {
+  if (n > thingCount) {
     void Send(Text(`冲水堂没有这么多【${thingName}】!`));
 
     return false;
   }
-  const money = n * thing_price;
+  const money = n * thingPrice;
 
   // 查灵石
   if (player.灵石 > money) {

@@ -11,7 +11,6 @@ import {
   readPlayer,
   writePlayer
 } from '@src/model/index';
-import type { Player, JSONValue } from '@src/types';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -19,23 +18,6 @@ import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/Dat
 export const regular = /^(#|＃|\/)?加入宗门.*$/;
 
 const 宗门人数上限 = [6, 9, 12, 15, 18, 21, 24, 27];
-
-function serializePlayer(p: Player): Record<string, JSONValue> {
-  const r: Record<string, JSONValue> = {};
-
-  for (const [k, v] of Object.entries(p)) {
-    if (typeof v === 'function') {
-      continue;
-    }
-    if (v && typeof v === 'object') {
-      r[k] = JSON.parse(JSON.stringify(v));
-    } else {
-      r[k] = v as JSONValue;
-    }
-  }
-
-  return r;
-}
 
 interface PlayerGuildEntry {
   宗门名称: string;
@@ -144,7 +126,7 @@ const res = onResponse(selects, async e => {
   ass.所有成员.push(userId);
   ass.外门弟子.push(userId);
   await playerEfficiency(userId);
-  await writePlayer(userId, serializePlayer(player) as unknown as Player);
+  await writePlayer(userId, player);
   await setDataJSONStringifyByKey(keys.association(association_name), ass);
   void Send(Text(`恭喜你成功加入${association_name}`));
 });

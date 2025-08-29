@@ -16,10 +16,10 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  
+
   // 获取星阁key管理器，支持多机器人部署和自动数据迁移
   const auctionKeyManager = getAuctionKeyManager();
-  
+
   const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
   const res = await redis.get(auctionTaskKey);
 

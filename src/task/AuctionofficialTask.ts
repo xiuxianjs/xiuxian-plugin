@@ -10,7 +10,7 @@ import { getAuctionKeyManager } from '@src/model/constants';
 export const AuctionofficialTask = async () => {
   // 获取星阁key管理器，支持多机器人部署和自动数据迁移
   const auctionKeyManager = getAuctionKeyManager();
-  
+
   const set = await getConfig('xiuxian', 'xiuxian');
   const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
   const wupinStr = await redis.get(auctionTaskKey);
