@@ -6,7 +6,7 @@ import { existplayer, readPlayer, existNajieThing, zdBattle, writePlayer } from 
 
 import { selects } from '@src/response/mw';
 import type { BattleEntity } from '@src/types/model';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?刺杀目标.*$/;
 
 interface ActionState {
@@ -174,8 +174,9 @@ const res = onResponse(selects, async e => {
   }
 
   if (broadcast) {
-    const redisGlKey = KEY_AUCTION_GROUP_LIST;
-    const groupList = await redis.smembers(redisGlKey);
+    const auctionKeyManager = getAuctionKeyManager();
+    const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+    const groupList = await redis.smembers(groupListKey);
 
     for (const group of groupList) {
       pushInfo(group, true, broadcast);

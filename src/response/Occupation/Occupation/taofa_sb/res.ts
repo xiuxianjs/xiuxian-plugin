@@ -6,7 +6,7 @@ import { existplayer, readPlayer, zdBattle, writePlayer, addExp4 } from '@src/mo
 
 import { selects } from '@src/response/mw';
 import type { BattleEntity } from '@src/types/model';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?讨伐目标.*$/;
 
 interface ShangjingTask {
@@ -171,8 +171,9 @@ const res = onResponse(selects, async e => {
   ) {
     void Send(Text(lastMessage));
   } else if (lastMessage) {
-    const redisGlKey = KEY_AUCTION_GROUP_LIST;
-    const groupList = await redis.smembers(redisGlKey);
+    const auctionKeyManager = getAuctionKeyManager();
+    const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+    const groupList = await redis.smembers(groupListKey);
 
     for (const group of groupList) {
       pushInfo(group, true, lastMessage);

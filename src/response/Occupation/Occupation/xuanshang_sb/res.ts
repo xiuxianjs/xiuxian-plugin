@@ -5,7 +5,7 @@ import { existplayer, readPlayer, convert2integer, writePlayer } from '@src/mode
 
 import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?悬赏.*$/;
 
 const res = onResponse(selects, async e => {
@@ -97,8 +97,9 @@ const res = onResponse(selects, async e => {
 
   void Send(Text('悬赏成功!'));
   const msg = `【全服公告】${player_B.名号}被悬赏了${money}灵石`;
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
-  const groupList = await redis.smembers(redisGlKey);
+  const auctionKeyManager = getAuctionKeyManager();
+  const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+  const groupList = await redis.smembers(groupListKey);
 
   for (const group of groupList) {
     pushInfo(group, true, msg);

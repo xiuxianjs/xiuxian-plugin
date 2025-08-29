@@ -20,7 +20,7 @@ export interface AuctionThing {
   class: string;
   pinji?: string | number;
 }
-/** 拍卖运行期缓存结构（Redis: KEY_AUCTION_OFFICIAL_TASK） */
+/** 拍卖运行期缓存结构（Redis: 星阁官方任务key） */
 export interface AuctionSession {
   thing: AuctionThing; // 拍卖物品
   amount: number; // 数量

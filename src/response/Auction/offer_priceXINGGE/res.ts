@@ -5,7 +5,7 @@ import { existplayer, getConfig, notUndAndNull, readPlayer } from '@src/model/in
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 export const regular = /^(#|＃|\/)?星阁出价.*$/;
 
 const res = onResponse(selects, async e => {
@@ -20,14 +20,17 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  // 此群是否开启星阁体系
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
-
-  if (!(await redis.sismember(redisGlKey, String(e.ChannelId)))) {
+  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+  const auctionKeyManager = getAuctionKeyManager();
+  
+  const isGroupEnabled = await auctionKeyManager.isGroupAuctionEnabled(String(e.ChannelId));
+  if (!isGroupEnabled) {
+    void Send(Text('本群未开启星阁拍卖'));
     return false;
   }
-  // 是否到拍卖时间
-  const auction = await redis.get(KEY_AUCTION_OFFICIAL_TASK);
+  
+  const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
+  const auction = await redis.get(auctionTaskKey);
 
   if (!notUndAndNull(auction)) {
     const { openHour, closeHour } = (await getConfig('xiuxian', 'xiuxian')).Auction;
@@ -69,8 +72,9 @@ const res = onResponse(selects, async e => {
   //   auction.group_id += '|' + e.group_id;
   // } NOTE: 过时的
   // 关掉了
-  // await redis.sAdd(redisGlKey, String(e.group_id));
-  auctionData.groupList = await redis.smembers(redisGlKey);
+  // await redis.sAdd(auctionKeys.AUCTION_GROUP_LIST, String(e.group_id));
+  const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+  auctionData.groupList = await redis.smembers(groupListKey);
 
   const msg = `${player.名号}叫价${new_price} `;
 
@@ -80,7 +84,7 @@ const res = onResponse(selects, async e => {
   auctionData.last_price = new_price;
   auctionData.last_offer_player = userId;
   auctionData.last_offer_price = Date.now(); // NOTE: Big SB
-  await redis.set(KEY_AUCTION_OFFICIAL_TASK, JSON.stringify(auctionData));
+  await redis.set(auctionTaskKey, JSON.stringify(auctionData));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

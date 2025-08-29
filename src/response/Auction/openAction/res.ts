@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { getConfig, openAU, readPlayer } from '@src/model/index';
 import type { ExchangeRecord } from '@src/types';
-import { KEY_AUCTION_GROUP_LIST } from '@src/model/constants';
+import { getAuctionKeyManager } from '@src/model/constants';
 import mw from '@src/response/mw';
 
 export const selects = onSelects(['message.create']);
@@ -22,21 +22,23 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const redisGlKey = KEY_AUCTION_GROUP_LIST;
+  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+  const auctionKeyManager = getAuctionKeyManager();
   const channelId = String(e.ChannelId);
 
   // 已存在开启记录 -> 直接加入
-  const already = await redis.sismember(redisGlKey, channelId);
+  const already = await auctionKeyManager.isGroupAuctionEnabled(channelId);
 
   if (already) {
     void Send(Text('星阁拍卖行已经开啦'));
 
     return false;
   }
-  const groupList = await redis.smembers(redisGlKey);
+  const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
+  const groupList = await redis.smembers(groupListKey);
 
   if (groupList.length > 0) {
-    await redis.sadd(redisGlKey, channelId);
+    await auctionKeyManager.enableGroupAuction(channelId);
     void Send(Text('星阁已开启，已将本群添加至星阁体系'));
 
     return false;
@@ -84,11 +86,11 @@ const res = onResponse(selects, async e => {
 
   // 重置并加入当前群
   try {
-    await redis.del(redisGlKey);
+    await redis.del(groupListKey);
   } catch (_err) {
     // 忽略删除失败
   }
-  await redis.sadd(redisGlKey, channelId);
+  await auctionKeyManager.enableGroupAuction(channelId);
   void Send(Text('星阁体系在本群开启！'));
 
   return false;
