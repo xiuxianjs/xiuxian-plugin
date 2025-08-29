@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
-import { getRedisKey, __PATH } from '@src/model/keys';
-import { Go, readPlayer, notUndAndNull, addCoin, getConfig } from '@src/model/index';
+import { __PATH } from '@src/model/keys';
+import { Go, readPlayer, notUndAndNull, addCoin, getConfig, startAction } from '@src/model/index';
 import type { AssociationDetailData } from '@src/types';
 
 import { selects } from '@src/response/mw';
@@ -108,10 +108,8 @@ const res = onResponse(selects, async e => {
   const minute = cfg?.CD?.secretplace;
   const time = typeof minute === 'number' && minute > 0 ? minute : 10;
   const action_time = 60000 * time;
-  const arr = {
-    action: '历练',
-    end_time: Date.now() + action_time,
-    time: action_time,
+
+  void startAction(userId, '历练', action_time, {
     shutup: '1',
     working: '1',
     Place_action: '0',
@@ -120,9 +118,8 @@ const res = onResponse(selects, async e => {
     group_id: e.ChannelId,
     Place_address: weizhi,
     XF: ass.power
-  };
+  });
 
-  await redis.set(getRedisKey(String(userId), 'action'), JSON.stringify(arr));
   void Send(Text(`开始探索 ${didian} 宗门秘境，${time} 分钟后归来! (扣除${price}灵石，上缴宗门${guildGain}灵石)`));
 
   return false;

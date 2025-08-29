@@ -1,9 +1,8 @@
-import { redis } from '@src/model/api';
-import { getPlayerAction } from '@src/model/index';
+import { delDataByKey, getPlayerAction } from '@src/model/index';
 import { mine_jiesuan } from '../../api';
 
 import { selects } from '@src/response/mw';
-import { getRedisKey } from '@src/model/keys';
+import { keysAction } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?结束采矿$/;
 
 interface PlayerAction {
@@ -118,20 +117,8 @@ const res = onResponse(selects, async e => {
     await mine_jiesuan(e.UserId, minutes);
   }
 
-  action.is_jiesuan = 1;
-  action.mine = 1;
-  action.plant = 1;
-  action.shutup = 1;
-  action.working = 1;
-  action.power_up = 1;
-  action.Place_action = 1;
-  action.end_time = now;
-  const time = (action.time && action.end_time) ?? action.duration ?? minutes * 60000; // 记录原始或推导时长
-
-  action.time = time;
-  delete action.group_id;
-
-  void redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(action));
+  // 非任务取消的。直接删除del
+  void delDataByKey(keysAction.action(e.UserId));
 
   return false;
 });

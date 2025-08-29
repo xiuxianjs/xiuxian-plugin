@@ -1,41 +1,27 @@
-import { redis } from '@src/model/api';
-import { getPlayerAction } from '@src/model/index';
+import { delDataByKey, getPlayerAction } from '@src/model/index';
 import { plant_jiesuan, calcEffectiveMinutes } from '../../api';
 
 import { selects } from '@src/response/mw';
-import { getRedisKey } from '@src/model/keys';
+import { keysAction } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?结束采药$/;
-
-interface PlantAction {
-  action: string;
-  time: number;
-  end_time: number;
-  plant: number | string;
-  is_jiesuan?: number;
-  shutup?: number;
-  working?: number;
-  power_up?: number;
-  Place_action?: number;
-  group_id?: string;
-}
 
 const res = onResponse(selects, async e => {
   const raw = await getPlayerAction(e.UserId);
 
   if (!raw) {
-    return false;
+    return;
   }
   if (raw.action === '空闲') {
-    return false;
+    return;
   }
 
   if (raw.plant === '1') {
-    return false;
+    return;
   }
 
   // 若已结算（通过自定义 is_jiesuan 标志）直接返回
   if (raw.is_jiesuan === 1) {
-    return false;
+    return;
   }
 
   const start_time = raw.end_time - raw.time;
@@ -48,19 +34,8 @@ const res = onResponse(selects, async e => {
     await plant_jiesuan(e.UserId, effective);
   }
 
-  const next: PlantAction = { ...raw };
-
-  next.is_jiesuan = 1;
-  next.plant = 1;
-  next.shutup = 1;
-  next.working = 1;
-  next.power_up = 1;
-  next.Place_action = 1;
-  next.end_time = Date.now();
-  delete next.group_id;
-  await redis.set(getRedisKey(e.UserId, 'action'), JSON.stringify(next));
-
-  return false;
+  // 非任务取消的。直接删除del
+  void delDataByKey(keysAction.action(e.UserId));
 });
 
 import mw from '@src/response/mw';
