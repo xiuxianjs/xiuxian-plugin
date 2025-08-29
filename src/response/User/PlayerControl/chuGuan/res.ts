@@ -10,7 +10,8 @@ import {
   addExp2,
   setFileValue,
   writeDanyao,
-  keys
+  keys,
+  keysAction
 } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
 
@@ -83,7 +84,9 @@ const res = onResponse(selects, async e => {
   arr.Place_action = 1; // 秘境
   arr.end_time = Date.now(); // 结束的时间也修改为当前时间
   delete arr.group_id; // 结算完去除group_id
-  await setDataByUserId(e.UserId, 'action', JSON.stringify(arr));
+
+  await setDataJSONStringifyByKey(keysAction.action(e.UserId), arr);
+
   await setDataByUserId(e.UserId, 'game_action', 0);
 });
 
@@ -228,6 +231,6 @@ async function biguanJiesuan(userId, time, isRandom, group_id?) {
 }
 import mw from '@src/response/mw';
 import { getDataList } from '@src/model/DataList';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

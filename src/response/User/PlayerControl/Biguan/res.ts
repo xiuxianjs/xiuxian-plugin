@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 // redis 直接操作被 helper 替代
 import { getString, userKey } from '@src/model/utils/redisHelper';
-import { existplayer } from '@src/model/index';
+import { existplayer, keysAction, setDataJSONStringifyByKey } from '@src/model/index';
 import {
   readAction,
   isActionRunning,
@@ -11,7 +11,6 @@ import {
 } from '@src/model/actionHelper';
 
 import { selects } from '@src/response/mw';
-import { setDataByUserId } from '@src/model/Redis';
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
@@ -65,11 +64,10 @@ const res = onResponse(selects, async e => {
     xijie: '1',
     mine: '1'
   });
-  // 保持 setDataByUserId 兼容写入
   const mirror = await readAction(userId);
 
   if (mirror) {
-    await setDataByUserId(userId, 'action', JSON.stringify(mirror));
+    await setDataJSONStringifyByKey(keysAction.action(userId), mirror);
   }
   void Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`));
 });

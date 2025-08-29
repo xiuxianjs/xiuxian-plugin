@@ -1,16 +1,6 @@
 import { getIoRedis } from '@alemonjs/db';
-import { ActionType, getRedisKey } from './keys';
-
-/**
- * @param user_id
- * @param action
- * @returns
- */
-export const getDataByUserId = async (userId: string, action: ActionType) => {
-  const redis = getIoRedis();
-
-  return await redis.get(getRedisKey(userId, action));
-};
+import { getRedisKey } from './keys';
+import { ActionType } from '@src/types/keys';
 
 export const setDataByUserId = async <T extends string | number | boolean | object>(
   userId: string,

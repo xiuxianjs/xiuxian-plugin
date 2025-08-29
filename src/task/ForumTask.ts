@@ -8,15 +8,8 @@ import { addCoin } from '@src/model/economy';
  * @returns
  */
 export const ForumTask = async () => {
-  let Forum;
+  const Forum = await readForum();
 
-  try {
-    Forum = await readForum();
-  } catch {
-    // 没有表要先建立一个！
-    await writeForum([]);
-    Forum = await readForum();
-  }
   const now_time = Date.now();
 
   for (let i = 0; i < Forum.length; i++) {
@@ -32,6 +25,7 @@ export const ForumTask = async () => {
     Forum.splice(i, 1);
     i--;
   }
+
   await writeForum(Forum);
 
   return false;

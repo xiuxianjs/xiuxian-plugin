@@ -1,8 +1,6 @@
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model';
-import { __PATH, keysByPath } from '@src/model/keys';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import { safeParse } from '@src/model/utils/safe';
+import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import type { ActionState } from '@src/types';
 import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
 
@@ -18,8 +16,7 @@ export const OccupationTask = async () => {
 
   for (const playerId of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(playerId, 'action');
-    const action = safeParse<ActionState | null>(actionRaw, null);
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
 
     // 不为空，存在动作
     if (!action) {
@@ -65,7 +62,7 @@ export const OccupationTask = async () => {
         arr.Place_action = 1;
         arr.Place_actionplus = 1;
         delete (arr as Partial<ActionState>).group_id;
-        await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+        await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
       }
     }
 
@@ -147,7 +144,7 @@ export const OccupationTask = async () => {
         arr.Place_action = 1;
         arr.Place_actionplus = 1;
         delete (arr as Partial<ActionState>).group_id;
-        await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+        await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
         // if (isGroup && push_address) {
         //   pushInfo(push_address, isGroup, msg)
         // } else {

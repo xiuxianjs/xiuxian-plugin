@@ -1,15 +1,18 @@
 import { pushInfo } from '@src/model/api';
 // 直接从具体模块导入，避免经由 barrel 产生的 re-export 循环
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, writePlayer } from '@src/model';
+import {
+  getDataJSONParseByKey,
+  readPlayer,
+  setDataJSONStringifyByKey,
+  writePlayer
+} from '@src/model';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
 import { setFileValue } from '@src/model/cultivation';
-import { __PATH, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import type { ActionState } from '@src/types';
 import { getConfig } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 
@@ -34,14 +37,13 @@ export const PlayerControlTask = async () => {
 
   for (const playerId of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(playerId, 'action');
-    let action: ActionState | null = null;
 
-    try {
-      action = actionRaw ? (JSON.parse(actionRaw) as ActionState) : null;
-    } catch {
-      action = null;
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
+
+    if (!action) {
+      continue;
     }
+
     // 不为空，存在动作
     if (action !== null) {
       let push_address; // 消息推送地址
@@ -154,7 +156,7 @@ export const PlayerControlTask = async () => {
           arr.Place_action = 1; // 秘境
           arr.Place_actionplus = 1; // 沉迷状态
           delete arr.group_id; // 结算完去除group_id
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           xueqi = Math.trunc(xiuwei * time * dy.beiyong4);
           if (transformation === '血气') {
             await setFileValue(playerId, (xiuwei * time + otherEXP) * dy.beiyong4, transformation);
@@ -163,7 +165,7 @@ export const PlayerControlTask = async () => {
             await setFileValue(playerId, xiuwei * time + otherEXP, transformation);
             msg.push('\n增加修为:' + xiuwei * time, '血量增加:' + blood * time);
           }
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           if (isGroup) {
             pushInfo(push_address, isGroup, msg);
           } else {
@@ -243,7 +245,7 @@ export const PlayerControlTask = async () => {
           arr.Place_action = 1; // 秘境
           arr.Place_actionplus = 1; // 沉迷状态
           delete arr.group_id; // 结算完去除group_id
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           msg.push('\n降妖得到' + get_lingshi + '灵石');
           if (isGroup) {
             pushInfo(push_address, isGroup, msg);

@@ -1,6 +1,6 @@
 import { getIoRedis } from '@alemonjs/db';
 import { getAppCofig } from './Config';
-import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK, keysActionWithBotId } from './keys';
+import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK, keysAction } from './keys';
 
 /**
  * 星阁系统Redis Key管理器
@@ -14,7 +14,7 @@ export class AuctionKeyManager {
   private constructor() {
     const { botId } = getAppCofig();
 
-    this.botId = botId || 'default';
+    this.botId = botId ?? 'default';
   }
 
   /**
@@ -33,8 +33,8 @@ export class AuctionKeyManager {
    */
   private getNewKeys() {
     return {
-      AUCTION_OFFICIAL_TASK: keysActionWithBotId.system('auctionofficialtask', this.botId),
-      AUCTION_GROUP_LIST: keysActionWithBotId.system('auctionofficialtask_grouplist', this.botId)
+      AUCTION_OFFICIAL_TASK: keysAction.system('auctionofficialtask', this.botId),
+      AUCTION_GROUP_LIST: keysAction.system('auctionofficialtask_grouplist', this.botId)
     };
   }
 

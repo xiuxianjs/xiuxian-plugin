@@ -1,15 +1,13 @@
 import { pushInfo } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model';
+import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { addExp2, addExp, addHP } from '@src/model/economy';
-import { __PATH, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import { safeParse } from '@src/model/utils/safe';
 import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types';
 import { writePlayer } from '@src/model';
 import { getConfig } from '@src/model';
@@ -40,8 +38,8 @@ export const SecretPlaceTask = async () => {
 
   for (const playerId of playerList) {
     // 得到动作
-    const actionRaw = await getDataByUserId(playerId, 'action');
-    const action = safeParse<ActionState | null>(actionRaw, null);
+
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
 
     // 不为空，存在动作
     if (action) {
@@ -290,7 +288,7 @@ export const SecretPlaceTask = async () => {
           arr.Place_actionplus = 1;
           arr.end_time = Date.now();
           delete arr.group_id;
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           await addExp2(playerId, qixue);
           await addExp(playerId, xiuwei);
           await addHP(playerId, dataBattle.A_xue);

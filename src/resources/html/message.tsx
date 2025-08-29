@@ -1,5 +1,6 @@
 import React from 'react';
 import HTML from './HTML';
+import classNames from 'classnames';
 
 interface MessageProps {
   userId: string;
@@ -177,12 +178,18 @@ const Message: React.FC<MessageProps> = ({ stats, messages, pagination }) => {
 
                     <div className='flex gap-2 items-center'>
                       <span
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold text-white drop-shadow-sm tracking-wide ${getPriorityColor(message.priority)}`}
+                        className={classNames(
+                          'px-3 py-1.5 rounded-md text-xs font-bold text-white drop-shadow-sm tracking-wide',
+                          getPriorityColor(message.priority)
+                        )}
                       >
                         {message.priority}
                       </span>
                       <span
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold text-white drop-shadow-sm tracking-wide ${getStatusColor(message.status)}`}
+                        className={classNames(
+                          'px-3 py-1.5 rounded-md text-xs font-bold text-white drop-shadow-sm tracking-wide',
+                          getStatusColor(message.status)
+                        )}
                       >
                         {message.status}
                       </span>

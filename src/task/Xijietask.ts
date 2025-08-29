@@ -3,13 +3,12 @@ import { notUndAndNull } from '@src/model/common';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { readShop, writeShop, existshop } from '@src/model/shop';
-import { __PATH, keysByPath } from '@src/model/keys';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import type { RaidActionState } from '@src/types';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import { screenshot } from '@src/image';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { getDataList } from '@src/model/DataList';
 import { getAuctionKeyManager } from '@src/model/auction';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model';
 
 /**
  * 获取所有玩家，逐个检查其当前动作（action）。
@@ -26,14 +25,12 @@ export const Xijietask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const playerId of playerList) {
-    const raw = await getDataByUserId(playerId, 'action');
-    let action: RaidActionState | null = null;
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
 
-    try {
-      action = raw ? (JSON.parse(raw) as RaidActionState) : null;
-    } catch {
-      action = null;
+    if (!action) {
+      continue;
     }
+
     // 不为空，存在动作
     if (action !== null) {
       let push_address; // 消息推送地址
@@ -231,7 +228,9 @@ export const Xijietask = async () => {
             }
           }
           // 写入redis
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+
           msg.push('\n' + lastMessage);
           if (isGroup) {
             pushInfo(push_address, isGroup, msg.join('\n'));
@@ -306,7 +305,8 @@ export const Xijietask = async () => {
 
           arr.cishu = gradeNumFinal + 1;
           // 写入redis
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
 
           msg.push('\n' + lastMessage);
           if (isGroup) {

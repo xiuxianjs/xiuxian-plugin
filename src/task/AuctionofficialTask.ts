@@ -37,7 +37,9 @@ export const AuctionofficialTask = async () => {
     } else {
       const player = await readPlayer(String(auction.last_offer_player));
 
-      msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+      if (player) {
+        msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+      }
     }
     auction.groupList.forEach(g => pushInfo(String(g), true, msg));
 
@@ -85,17 +87,14 @@ export const AuctionofficialTask = async () => {
 
       return (list as string[]).includes(raw) ? (raw as NajieCategory) : '道具';
     })();
-    const pinji =
-      typeof wupin.thing.pinji === 'number'
-        ? wupin.thing.pinji
-        : typeof wupin.thing.pinji === 'string'
-          ? Number(wupin.thing.pinji)
-          : undefined;
+    const pinji = Number(wupin.thing.pinji);
 
-    await addNajieThing(pid, wupin.thing.name, cls, wupin.amount, pinji);
+    await addNajieThing(pid, wupin.thing.name, cls, wupin.amount, isNaN(pinji) ? 0 : pinji);
     const player = await readPlayer(pid);
 
-    msg = `拍卖结束，${player.名号}最终拍得该物品！`;
+    if (player) {
+      msg = `拍卖结束，${player.名号}最终拍得该物品！`;
+    }
   }
   wupin.groupList.forEach(g => pushInfo(String(g), true, msg));
   await redis.del(auctionTaskKey);

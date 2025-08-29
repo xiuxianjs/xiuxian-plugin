@@ -1,14 +1,18 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, writePlayer } from '@src/model';
+import {
+  getDataJSONParseByKey,
+  readPlayer,
+  setDataJSONStringifyByKey,
+  writePlayer
+} from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { zdBattle } from '@src/model/battle';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { addExp2, addExp, addHP } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import type { CoreNajieCategory as NajieCategory } from '@src/types';
 import { getConfig } from '@src/model';
 import { getDataList } from '@src/model/DataList';
@@ -59,14 +63,8 @@ export const SecretPlaceplusTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const playerId of playerList) {
-    const raw = await getDataByUserId(playerId, 'action');
-    let action: ActionLike | null = null;
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
 
-    try {
-      action = raw ? (JSON.parse(raw) as ActionLike) : null;
-    } catch {
-      action = null;
-    }
     if (!action) {
       continue;
     }
@@ -291,7 +289,7 @@ export const SecretPlaceplusTask = async () => {
           arr.Place_actionplus = 1;
           arr.end_time = Date.now();
           delete arr.group_id;
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           await addExp2(playerId, qixue);
           await addExp(playerId, xiuwei);
           await addHP(playerId, dataBattle.A_xue);
@@ -302,7 +300,7 @@ export const SecretPlaceplusTask = async () => {
           }
         } else {
           arr.cishu = (arr.cishu || 0) - 1;
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           await addExp2(playerId, qixue);
           await addExp(playerId, xiuwei);
           await addHP(playerId, dataBattle.A_xue);

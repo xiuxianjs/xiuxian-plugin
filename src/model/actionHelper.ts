@@ -1,5 +1,5 @@
-import { ActionType } from '@src/model';
 import { getJSON, setValue, userKey } from '@src/model/utils/redisHelper';
+import { ActionType } from '@src/types/keys';
 
 // 约定：字符串 '0' 表示开启中的状态；'1' 表示关闭或空闲（保持与现有代码一致）
 export interface ActionRecord {

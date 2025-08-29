@@ -76,13 +76,14 @@ const res = onResponse(selects, async e => {
     // 图片生成失败时的降级方案：纯文本展示
     logger.warn('图片生成失败，使用文本降级方案');
 
-    let textMessage = `📬 道友的传信符\n\n`;
+    let textMessage = '📬 道友的传信符\n\n';
+
     textMessage += `📊 统计信息：总消息 ${stats.total} 条，未读 ${stats.unread} 条，已读 ${stats.read} 条\n\n`;
 
     if (messageList.messages.length === 0) {
-      textMessage += `📭 暂无消息记录`;
+      textMessage += '📭 暂无消息记录';
     } else {
-      textMessage += `📋 最新消息列表：\n`;
+      textMessage += '📋 最新消息列表：\n';
       messageList.messages.forEach((msg, index) => {
         const statusText = msg.status === 0 ? '🔴未读' : msg.status === 1 ? '🟢已读' : '⚫已删';
         const priorityText =

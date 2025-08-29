@@ -1,15 +1,13 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model';
+import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { writePlayer } from '@src/model';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
 import type { CoreNajieCategory as NajieCategory, ActionState, ShenjiePlace } from '@src/types';
-import { safeParse } from '@src/model/utils/safe';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getDataList } from '@src/model/DataList';
 
@@ -30,8 +28,7 @@ export const ShenjieTask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const playerId of playerList) {
-    const actionRaw = await getDataByUserId(playerId, 'action');
-    const action = safeParse<ActionState | null>(actionRaw, null);
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
 
     if (!action) {
       continue;
@@ -163,7 +160,7 @@ export const ShenjieTask = async () => {
           arr.mojie = 1;
           arr.end_time = Date.now();
           delete arr.group_id;
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           await addExp2(playerId, qixue);
           await addExp(playerId, xiuwei);
           if (isGroup && push_address) {
@@ -173,7 +170,7 @@ export const ShenjieTask = async () => {
           }
         } else {
           arr.cishu = remain - 1;
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           await addExp2(playerId, qixue);
           await addExp(playerId, xiuwei);
           try {

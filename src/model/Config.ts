@@ -1,7 +1,7 @@
 import { __PATH_CONFIG, keysAction } from './keys';
 import { getIoRedis } from '@alemonjs/db';
 import { getConfigValue } from 'alemonjs';
-import { keysActionWithBotId } from './keys';
+import { keysAction } from './keys';
 
 export type Data = typeof __PATH_CONFIG;
 
@@ -86,8 +86,8 @@ export function getAuctionKeys(botId?: string) {
   const actualBotId = botId ?? getAppCofig()?.botId ?? 'default';
 
   return {
-    AUCTION_OFFICIAL_TASK: keysActionWithBotId.system('auctionofficialtask', actualBotId),
-    AUCTION_GROUP_LIST: keysActionWithBotId.system('auctionofficialtask_grouplist', actualBotId)
+    AUCTION_OFFICIAL_TASK: keysAction.system('auctionofficialtask', actualBotId),
+    AUCTION_GROUP_LIST: keysAction.system('auctionofficialtask_grouplist', actualBotId)
   };
 }
 

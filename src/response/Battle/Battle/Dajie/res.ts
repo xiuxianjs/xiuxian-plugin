@@ -1,4 +1,4 @@
-import { getRedisKey, keys } from '@src/model/keys';
+import { getRedisKey, keys, keysAction } from '@src/model/keys';
 import { Image, Text, useMention, useSend } from 'alemonjs';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { config, redis } from '@src/model/api';
@@ -39,7 +39,6 @@ interface PlayerWithFaQiu extends Player {
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { getDataByUserId } from '@src/model/Redis';
 import { screenshot } from '@src/image';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
@@ -178,10 +177,10 @@ const res = onResponse(selects, async e => {
     return false;
   }
   if (
-    playerAFull?.宗门
-    && playerBFull?.宗门
-    && isPlayerGuildRef(playerAFull.宗门)
-    && isPlayerGuildRef(playerBFull.宗门)
+    playerAFull?.宗门 &&
+    playerBFull?.宗门 &&
+    isPlayerGuildRef(playerAFull.宗门) &&
+    isPlayerGuildRef(playerBFull.宗门)
   ) {
     const assA = await getDataJSONParseByKey(keys.association(playerAFull.宗门.宗门名称));
     const assB = await getDataJSONParseByKey(keys.association(playerBFull.宗门.宗门名称));
@@ -190,11 +189,11 @@ const res = onResponse(selects, async e => {
       return false;
     }
     if (
-      assA !== 'error'
-      && assB !== 'error'
-      && isExtAss(assA)
-      && isExtAss(assB)
-      && assA.宗门名称 === assB.宗门名称
+      assA !== 'error' &&
+      assB !== 'error' &&
+      isExtAss(assA) &&
+      isExtAss(assB) &&
+      assA.宗门名称 === assB.宗门名称
     ) {
       void Send(Text('门派禁止内讧'));
 
@@ -202,29 +201,22 @@ const res = onResponse(selects, async e => {
     }
   }
 
-  // 行动状态冲突检查 A
-  try {
-    const A_action_res = await getDataByUserId(A, 'action');
+  const actionA = await getDataJSONParseByKey(keysAction.action(A));
 
-    if (A_action_res) {
-      const A_action = JSON.parse(A_action_res);
+  if (actionA) {
+    if (actionA && typeof actionA === 'object' && 'end_time' in actionA) {
+      const end = Number(actionA.end_time);
 
-      if (A_action && typeof A_action === 'object' && 'end_time' in A_action) {
-        const end = Number(A_action.end_time);
+      if (!Number.isNaN(end) && Date.now() <= end) {
+        const remain = end - Date.now();
+        const m = Math.floor(remain / 60000);
+        const s = Math.floor((remain % 60000) / 1000);
 
-        if (!Number.isNaN(end) && Date.now() <= end) {
-          const remain = end - Date.now();
-          const m = Math.floor(remain / 60000);
-          const s = Math.floor((remain % 60000) / 1000);
+        void Send(Text(`正在${actionA.action}中,剩余时间:${m}分${s}秒`));
 
-          void Send(Text(`正在${A_action.action}中,剩余时间:${m}分${s}秒`));
-
-          return false;
-        }
+        return false;
       }
     }
-  } catch {
-    /* ignore */
   }
 
   // 被动方小游戏占用
@@ -371,9 +363,9 @@ const res = onResponse(selects, async e => {
     const hasDoll = await existNajieThing(B, '替身人偶', '道具');
 
     if (
-      hasDoll
-      && playerB.魔道值 < 1
-      && (playerB.灵根?.type === '转生' || (playerB.level_id ?? 0) > 41)
+      hasDoll &&
+      playerB.魔道值 < 1 &&
+      (playerB.灵根?.type === '转生' || (playerB.level_id ?? 0) > 41)
     ) {
       void Send(Text(`${playerB.名号}使用了道具替身人偶,躲过了此次打劫`));
       await addNajieThing(B, '替身人偶', '道具', -1);

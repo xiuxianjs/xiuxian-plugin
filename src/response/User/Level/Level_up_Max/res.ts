@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
-import { __PATH, keys } from '@src/model/keys';
+import { __PATH, keys, keysAction } from '@src/model/keys';
 import {
   existplayer,
   readPlayer,
@@ -13,14 +13,8 @@ import {
 } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import { getDataByUserId } from '@src/model/Redis';
 import { getRedisKey } from '@src/model/keys';
 
-// 玩家行动状态（统一抽象）
-interface PlayerActionState {
-  action: string;
-  end_time: number;
-}
 export const regular = /^(#|＃|\/)?登仙$/;
 
 const res = onResponse(selects, async e => {
@@ -55,30 +49,24 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   // 查询redis中的人物动作
+  const actionA = await getDataJSONParseByKey(keysAction.action(userId));
 
-  const actionRaw = await getDataByUserId(userId, 'action');
-  let action: PlayerActionState | null = null;
-
-  try {
-    action = actionRaw ? (JSON.parse(actionRaw) as PlayerActionState) : null;
-  } catch {
-    action = null;
-  }
-  // 不为空
-  if (action !== null) {
-    const action_end_time = action.end_time;
+  if (actionA) {
+    const action_end_time = actionA.end_time;
     const now_time = Date.now();
 
     if (now_time <= action_end_time) {
       const m = Math.floor((action_end_time - now_time) / 1000 / 60);
       const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000);
 
-      void Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
+      void Send(Text('正在' + actionA.action + '中,剩余时间:' + m + '分' + s + '秒'));
 
       return false;
     }
   }
+
   if (player.power_place !== 0) {
     void Send(Text('请先渡劫！'));
 

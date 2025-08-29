@@ -1,11 +1,10 @@
 import { redis, pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer } from '@src/model';
+import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keys as dataKeys, keysByPath } from '@src/model/keys';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
+import { __PATH, keys as dataKeys, keysAction, keysByPath } from '@src/model/keys';
 import type { ExploreActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 
@@ -25,199 +24,195 @@ export const MojiTask = async () => {
 
   for (const playerId of playerList) {
     // 查询当前人物动作（日志变量已移除以减 lint 噪声）
-    // 得到动作
-    const rawAction = await getDataByUserId(playerId, 'action');
-    let action;
 
-    try {
-      action = JSON.parse(rawAction);
-    } catch {
-      action = null;
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
+
+    if (!action) {
+      continue;
     }
+
     // 不为空，存在动作
-    if (action !== null) {
-      let push_address = playerId; // 消息推送地址
-      let isGroup = false; // 是否推送到群
+    let push_address = playerId; // 消息推送地址
+    let isGroup = false; // 是否推送到群
 
-      if (isExploreAction(action) && notUndAndNull(action.group_id)) {
-        isGroup = true;
-        push_address = action.group_id!;
-      }
+    if (isExploreAction(action) && notUndAndNull(action.group_id)) {
+      isGroup = true;
+      push_address = action.group_id!;
+    }
 
-      // 最后发送的消息
-      const msg: string[] = [];
+    // 最后发送的消息
+    const msg: string[] = [];
 
-      // 动作结束时间
-      if (!isExploreAction(action)) {
-        continue;
-      }
-      const act = action;
-      let end_time = act.end_time;
-      // 现在的时间
-      const now_time = Date.now();
-      // 用户信息
-      const player = await readPlayer(playerId);
+    // 动作结束时间
+    if (!isExploreAction(action)) {
+      continue;
+    }
+    const act = action;
+    let end_time = act.end_time;
+    // 现在的时间
+    const now_time = Date.now();
+    // 用户信息
+    const player = await readPlayer(playerId);
 
-      // 有洗劫状态:这个直接结算即可
-      if (String(act.mojie) === '0') {
-        // 5分钟后开始结算阶段一
-        const baseDuration =
-          typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
+    // 有洗劫状态:这个直接结算即可
+    if (String(act.mojie) === '0') {
+      // 5分钟后开始结算阶段一
+      const baseDuration =
+        typeof act.time === 'number' ? act.time : parseInt(String(act.time || 0), 10);
 
-        end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
-        // 时间过了
-        if (now_time > end_time) {
-          let thingName;
-          let thingClass;
-          const x = 0.98;
-          const random1 = Math.random();
-          const y = 0.4;
-          const random2 = Math.random();
-          const z = 0.15;
-          const random3 = Math.random();
-          let random4;
-          let m = '';
-          let n = 1;
-          let t1: number;
-          let t2: number;
-          let lastMessage = '';
-          let fyd_msg = '';
+      end_time = end_time - (isNaN(baseDuration) ? 0 : baseDuration);
+      // 时间过了
+      if (now_time > end_time) {
+        let thingName;
+        let thingClass;
+        const x = 0.98;
+        const random1 = Math.random();
+        const y = 0.4;
+        const random2 = Math.random();
+        const z = 0.15;
+        const random3 = Math.random();
+        let random4;
+        let m = '';
+        let n = 1;
+        let t1: number;
+        let t2: number;
+        let lastMessage = '';
+        let fyd_msg = '';
 
-          const data = {
-            mojie: await getDataList('Mojie')
-          };
+        const data = {
+          mojie: await getDataList('Mojie')
+        };
 
-          if (random1 <= x) {
-            if (random2 <= y) {
-              if (random3 <= z) {
-                random4 = Math.floor(Math.random() * data.mojie[0].three.length);
-                thingName = data.mojie[0].three[random4].name;
-                thingClass = data.mojie[0].three[random4].class;
-                m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thingName}]`;
-                t1 = 2 + Math.random();
-                t2 = 2 + Math.random();
-              } else {
-                random4 = Math.floor(Math.random() * data.mojie[0].two.length);
-                thingName = data.mojie[0].two[random4].name;
-                thingClass = data.mojie[0].two[random4].class;
-                m = `在洞穴中拿到[${thingName}]`;
-                t1 = 1 + Math.random();
-                t2 = 1 + Math.random();
-              }
+        if (random1 <= x) {
+          if (random2 <= y) {
+            if (random3 <= z) {
+              random4 = Math.floor(Math.random() * data.mojie[0].three.length);
+              thingName = data.mojie[0].three[random4].name;
+              thingClass = data.mojie[0].three[random4].class;
+              m = `抬头一看，金光一闪！有什么东西从天而降，定睛一看，原来是[${thingName}]`;
+              t1 = 2 + Math.random();
+              t2 = 2 + Math.random();
             } else {
-              random4 = Math.floor(Math.random() * data.mojie[0].one.length);
-              thingName = data.mojie[0].one[random4].name;
-              thingClass = data.mojie[0].one[random4].class;
-              m = `捡到了[${thingName}]`;
-              t1 = 0.5 + Math.random() * 0.5;
-              t2 = 0.5 + Math.random() * 0.5;
+              random4 = Math.floor(Math.random() * data.mojie[0].two.length);
+              thingName = data.mojie[0].two[random4].name;
+              thingClass = data.mojie[0].two[random4].class;
+              m = `在洞穴中拿到[${thingName}]`;
+              t1 = 1 + Math.random();
+              t2 = 1 + Math.random();
             }
           } else {
-            thingName = '';
-            thingClass = '';
-            m = '走在路上都没看见一只蚂蚁！';
-            t1 = 2 + Math.random();
-            t2 = 2 + Math.random();
+            random4 = Math.floor(Math.random() * data.mojie[0].one.length);
+            thingName = data.mojie[0].one[random4].name;
+            thingClass = data.mojie[0].one[random4].class;
+            m = `捡到了[${thingName}]`;
+            t1 = 0.5 + Math.random() * 0.5;
+            t2 = 0.5 + Math.random() * 0.5;
           }
-          const random = Math.random();
+        } else {
+          thingName = '';
+          thingClass = '';
+          m = '走在路上都没看见一只蚂蚁！';
+          t1 = 2 + Math.random();
+          t2 = 2 + Math.random();
+        }
+        const random = Math.random();
 
-          if (random < player.幸运) {
-            if (random < player.addluckyNo) {
-              lastMessage += '福源丹生效，所以在';
-            } else if (player.仙宠.type === '幸运') {
-              lastMessage += '仙宠使你在探索中欧气满满，所以在';
-            }
-            n++;
-            lastMessage += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
+        if (random < player.幸运) {
+          if (random < player.addluckyNo) {
+            lastMessage += '福源丹生效，所以在';
+          } else if (player.仙宠.type === '幸运') {
+            lastMessage += '仙宠使你在探索中欧气满满，所以在';
           }
-          if (player.islucky > 0) {
-            player.islucky--;
-            if (player.islucky !== 0) {
-              fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
-            } else {
-              fyd_msg = '  \n本次探索后，福源丹已失效\n';
-              player.幸运 -= player.addluckyNo;
-              player.addluckyNo = 0;
-            }
-            await redis.set(dataKeys.player(playerId), JSON.stringify(player));
-          }
-          // 默认结算装备数
-          const now_level_id = player.level_id;
-          const now_physique_id = player.Physique_id;
-          // 结算
-          let qixue = 0;
-          let xiuwei = 0;
-
-          xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
-          qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
-          if (await existNajieThing(playerId, '修魔丹', '道具')) {
-            xiuwei *= 100;
-            xiuwei = Math.trunc(xiuwei);
-            await addNajieThing(playerId, '修魔丹', '道具', -1);
-          }
-          if (await existNajieThing(playerId, '血魔丹', '道具')) {
-            qixue *= 18;
-            qixue = Math.trunc(qixue);
-            await addNajieThing(playerId, '血魔丹', '道具', -1);
-          }
-          if (thingName !== '' || thingClass !== '') {
-            await addNajieThing(playerId, thingName, thingClass, n);
-          }
-          lastMessage +=
-            m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
-          msg.push('\n' + player.名号 + lastMessage + fyd_msg);
-          const arr: ExploreActionState = {
-            ...act
-          };
-
-          if (arr.cishu === 1) {
-            // 把状态都关了
-            arr.shutup = 1; // 闭关状态
-            arr.working = 1; // 降妖状态
-            arr.power_up = 1; // 渡劫状态
-            arr.Place_action = 1; // 秘境
-            arr.Place_actionplus = 1; // 沉迷状态
-            // 魔界状态关闭并更新时间
-            arr.mojie = 1;
-            arr.end_time = Date.now();
-            // 结算完去除group_id
-            delete arr.group_id;
-            // 写入redis
-            await setDataByUserId(playerId, 'action', JSON.stringify(arr));
-            // 先完结再结算
-            await addExp2(playerId, qixue);
-            await addExp(playerId, xiuwei);
-            // 发送消息
-            pushInfo(push_address, isGroup, msg.join(''));
+          n++;
+          lastMessage += '探索过程中意外发现了两份机缘,最终获取机缘数量将翻倍\n';
+        }
+        if (player.islucky > 0) {
+          player.islucky--;
+          if (player.islucky !== 0) {
+            fyd_msg = `  \n福源丹的效力将在${player.islucky}次探索后失效\n`;
           } else {
-            if (typeof arr.cishu === 'number') {
-              arr.cishu--;
-            }
+            fyd_msg = '  \n本次探索后，福源丹已失效\n';
+            player.幸运 -= player.addluckyNo;
+            player.addluckyNo = 0;
+          }
+          await redis.set(dataKeys.player(playerId), JSON.stringify(player));
+        }
+        // 默认结算装备数
+        const now_level_id = player.level_id;
+        const now_physique_id = player.Physique_id;
+        // 结算
+        let qixue = 0;
+        let xiuwei = 0;
 
-            await setDataByUserId(playerId, 'action', JSON.stringify(arr));
-            // 先完结再结算
-            await addExp2(playerId, qixue);
-            await addExp(playerId, xiuwei);
-            try {
-              const temp = await readTemp();
-              const p = {
-                msg: player.名号 + lastMessage + fyd_msg,
-                qq_group: push_address
-              };
+        xiuwei = Math.trunc(2000 + (100 * now_level_id * now_level_id * t1 * 0.1) / 5);
+        qixue = Math.trunc(2000 + 100 * now_physique_id * now_physique_id * t2 * 0.1);
+        if (await existNajieThing(playerId, '修魔丹', '道具')) {
+          xiuwei *= 100;
+          xiuwei = Math.trunc(xiuwei);
+          await addNajieThing(playerId, '修魔丹', '道具', -1);
+        }
+        if (await existNajieThing(playerId, '血魔丹', '道具')) {
+          qixue *= 18;
+          qixue = Math.trunc(qixue);
+          await addNajieThing(playerId, '血魔丹', '道具', -1);
+        }
+        if (thingName !== '' || thingClass !== '') {
+          await addNajieThing(playerId, thingName, thingClass, n);
+        }
+        lastMessage +=
+          m + ',获得修为' + xiuwei + ',气血' + qixue + ',剩余次数' + ((act.cishu ?? 0) - 1);
+        msg.push('\n' + player.名号 + lastMessage + fyd_msg);
+        const arr: ExploreActionState = {
+          ...act
+        };
 
-              temp.push(p);
-              await writeTemp(temp);
-            } catch {
-              const temp: { msg: string; qq?: string; qq_group: string }[] = [];
-              const p = {
-                msg: player.名号 + lastMessage + fyd_msg,
-                qq: playerId,
-                qq_group: push_address
-              };
+        if (arr.cishu === 1) {
+          // 把状态都关了
+          arr.shutup = 1; // 闭关状态
+          arr.working = 1; // 降妖状态
+          arr.power_up = 1; // 渡劫状态
+          arr.Place_action = 1; // 秘境
+          arr.Place_actionplus = 1; // 沉迷状态
+          // 魔界状态关闭并更新时间
+          arr.mojie = 1;
+          arr.end_time = Date.now();
+          // 结算完去除group_id
+          delete arr.group_id;
+          // 写入redis
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+          // 先完结再结算
+          await addExp2(playerId, qixue);
+          await addExp(playerId, xiuwei);
+          // 发送消息
+          pushInfo(push_address, isGroup, msg.join(''));
+        } else {
+          if (typeof arr.cishu === 'number') {
+            arr.cishu--;
+          }
 
-              temp.push(p);
-              await writeTemp(temp);
-            }
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+          // 先完结再结算
+          await addExp2(playerId, qixue);
+          await addExp(playerId, xiuwei);
+          try {
+            const temp = await readTemp();
+            const p = {
+              msg: player.名号 + lastMessage + fyd_msg,
+              qq_group: push_address
+            };
+
+            temp.push(p);
+            await writeTemp(temp);
+          } catch {
+            const temp: { msg: string; qq?: string; qq_group: string }[] = [];
+            const p = {
+              msg: player.名号 + lastMessage + fyd_msg,
+              qq: playerId,
+              qq_group: push_address
+            };
+
+            temp.push(p);
+            await writeTemp(temp);
           }
         }
       }

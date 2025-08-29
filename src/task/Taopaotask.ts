@@ -4,13 +4,12 @@ import { notUndAndNull } from '@src/model/common';
 import { Harm } from '@src/model/battle';
 import { readShop, writeShop } from '@src/model/shop';
 import { addNajieThing } from '@src/model/najie';
-import { __PATH, keysByPath } from '@src/model/keys';
-import { getDataByUserId, setDataByUserId } from '@src/model/Redis';
-import { safeParse } from '@src/model/utils/safe';
+import { __PATH, keysAction, keysByPath } from '@src/model/keys';
 import type { ActionState, CoreNajieCategory as NajieCategory } from '@src/types';
 import { Mention, DataMention } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getAuctionKeyManager } from '@src/model/auction';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model';
 
 function isNajieCategory(v): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -45,13 +44,16 @@ export const Taopaotask = async () => {
   const playerList = await keysByPath(__PATH.player_path);
 
   for (const playerId of playerList) {
+    // 得到动作
+    const action = await getDataJSONParseByKey(keysAction.action(playerId));
+
+    if (!action) {
+      continue;
+    }
+
     let log_mag = ''; // 查询当前人物动作日志信息
 
     log_mag = log_mag + '查询' + playerId + '是否有动作,';
-    // 得到动作
-
-    const actionRaw = await getDataByUserId(playerId, 'action');
-    const action = safeParse<ActionState | null>(actionRaw, null);
 
     if (action) {
       let push_address: string | undefined;
@@ -227,7 +229,7 @@ export const Taopaotask = async () => {
             }
           }
           // 写入redis
-          await setDataByUserId(playerId, 'action', JSON.stringify(arr));
+          await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
           msg.push('\n' + lastMessage);
           if (isGroup && push_address) {
             pushInfo(push_address, isGroup, msg.join('\n'));

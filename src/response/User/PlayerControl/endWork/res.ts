@@ -1,5 +1,5 @@
 import { config, pushInfo } from '@src/model/api';
-import { getPlayerAction, keys, notUndAndNull, setFileValue } from '@src/model/index';
+import { getPlayerAction, keys, keysAction, notUndAndNull, setFileValue } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
 
 import { selects } from '@src/response/mw';
@@ -7,7 +7,7 @@ import mw from '@src/response/mw';
 import { Mention, DataMention } from 'alemonjs';
 import type { ActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?降妖归来$/;
 
 const res = onResponse(selects, async e => {
@@ -80,7 +80,9 @@ const res = onResponse(selects, async e => {
   // 结束的时间也修改为当前时间
   arr.end_time = Date.now();
   delete arr.group_id; // 结算完去除group_id
-  await setDataByUserId(e.UserId, 'action', JSON.stringify(arr));
+
+  await setDataJSONStringifyByKey(keysAction.action(e.UserId), arr);
+
   await setDataByUserId(e.UserId, 'game_action', 0);
 });
 

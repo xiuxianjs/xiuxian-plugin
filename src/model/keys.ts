@@ -4,99 +4,47 @@ import help from '@src/config/help/base';
 import set from '@src/config/help/admin';
 import shituhelp from '@src/config/help/professor';
 import xiuxian from '@src/config/xiuxian';
+import { ActionType } from '@src/types/keys';
 
-// 基础 Redis Key 前缀
-export const baseKey = 'xiuxian@1.3.0';
+const baseDataKey = 'data:alemonjs-xiuxian';
 
 // 存档存放路径
 const __PATH = {
-  player_path: 'data:alemonjs-xiuxian:player',
-  equipment_path: 'data:alemonjs-xiuxian:equipment',
-  najie_path: 'data:alemonjs-xiuxian:xiuxian_najie',
-  danyao_path: 'data:alemonjs-xiuxian:xiuxian_danyao',
-  lib_path: 'data:alemonjs-xiuxian:item',
-  Timelimit: 'data:alemonjs-xiuxian:Timelimit',
-  Exchange: 'data:alemonjs-xiuxian:Exchange',
-  Level: 'data:alemonjs-xiuxian:Level',
-  shop: 'data:alemonjs-xiuxian:shop',
-  log_path: 'data:alemonjs-xiuxian:suduku',
-  association: 'data:alemonjs-xiuxian:association',
-  tiandibang: 'data:alemonjs-xiuxian:tiandibang',
-  qinmidu: 'data:alemonjs-xiuxian:qinmidu',
-  backup: 'data:alemonjs-xiuxian:backup',
-  shitu: 'data:alemonjs-xiuxian:shitu',
-  duanlu: 'data:alemonjs-xiuxian:duanlu',
-  temp_path: 'data:alemonjs-xiuxian:temp',
-  custom: 'data:alemonjs-xiuxian:custom',
-  auto_backup: 'data:alemonjs-xiuxian:auto_backup',
-  occupation: 'data:alemonjs-xiuxian:occupation',
+  player_path: `${baseDataKey}:player`,
+  equipment_path: `${baseDataKey}:equipment`,
+  najie_path: `${baseDataKey}:xiuxian_najie`,
+  danyao_path: `${baseDataKey}:xiuxian_danyao`,
+  lib_path: `${baseDataKey}:item`,
+  Timelimit: `${baseDataKey}:Timelimit`,
+  Exchange: `${baseDataKey}:Exchange`,
+  Level: `${baseDataKey}:Level`,
+  shop: `${baseDataKey}:shop`,
+  log_path: `${baseDataKey}:suduku`,
+  association: `${baseDataKey}:association`,
+  tiandibang: `${baseDataKey}:tiandibang`,
+  qinmidu: `${baseDataKey}:qinmidu`,
+  backup: `${baseDataKey}:backup`,
+  shitu: `${baseDataKey}:shitu`,
+  duanlu: `${baseDataKey}:duanlu`,
+  temp_path: `${baseDataKey}:temp`,
+  custom: `${baseDataKey}:custom`,
+  auto_backup: `${baseDataKey}:auto_backup`,
+  occupation: `${baseDataKey}:occupation`,
   // 用户货币数据
-  player_currency: 'data:alemonjs-xiuxian:currency',
+  player_currency: `${baseDataKey}:currency`,
   // 所有充值记录
-  currency_log: 'data:alemonjs-xiuxian:currency_log',
+  currency_log: `${baseDataKey}:currency_log`,
   // 充值记录索引。根据索引生成。
-  currency_index: 'data:alemonjs-xiuxian:currency_index',
+  currency_index: `${baseDataKey}:currency_index`,
   // 验证码
-  captcha: 'data:alemonjs-xiuxian:captcha',
+  captcha: `${baseDataKey}:captcha`,
   // 禁言
-  mute: 'data:alemonjs-xiuxian:mute',
+  mute: `${baseDataKey}:mute`,
+  // 站内信
+  message: `${baseDataKey}:message`,
   // 副职
-  fuzhi: 'xiuxian:player',
-  message: 'data:alemonjs-xiuxian:message'
+  fuzhi: 'xiuxian:player'
 };
-
-export { __PATH };
-
-export const __PATH_CONFIG = {
-  Association,
-  help,
-  set,
-  shituhelp,
-  xiuxian
-};
-
-export type ActionType =
-  | 'lunhui'
-  | 'action10'
-  | 'action'
-  | 'xijie'
-  | 'last_dajie_time'
-  | 'last_biwu_time'
-  | 'shangjing'
-  | 'last_shuangxiu_time'
-  | 'couple'
-  | 'Record'
-  | 'Record2'
-  | 'Exchange'
-  | 'lastxijie_time'
-  | 'last_reCreate_time'
-  | 'reCreate_acount'
-  | 'lastsign_time'
-  | 'last_setxuanyan_time'
-  | 'last_setname_time'
-  | 'duihuan'
-  | 'showNajieCD'
-  | 'lastbisai_time'
-  | 'petShowCD'
-  | 'game_action'
-  | 'lastdagong_time'
-  | 'bisai'
-  | 'last_game_time'
-  | 'last_dajie_time'
-  | 'lastsign_Asso_time'
-  | 'getLastsign_Explor'
-  | 'zyt_cd'
-  | 'dsc_cd'
-  | 'last_garden_time'
-  | 'forumShowCD'
-  | 'supermarketCD'
-  | 'ExchangeCD'
-  | 'ForumCD'
-  | 'money_game'
-  | 'getLastsign_Bonus'
-  | 'BOSSCD'
-  | 'last_getbung_time'
-  | 'messageShowCD';
 
 export const keys = {
   player: (id: string) => `${__PATH.player_path}:${id}`,
@@ -128,10 +76,13 @@ export const keys = {
   fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
 };
 
+// 基础 Redis Key 前缀
+export const baseKey = 'xiuxian@1.3.0';
+
 export const keysAction = {
   lunhui: (id: string) => `${baseKey}:lunhui:${id}`,
   action10: (id: string) => `${baseKey}:action10:${id}`,
-  action: (id: string) => `${baseKey}:action:${id}`,
+  action: (id: string) => `${baseKey}:${id}:action`,
   xijie: (id: string) => `${baseKey}:xijie:${id}`,
   lastDajieTime: (id: string) => `${baseKey}:last_dajie_time:${id}`,
   lastBiwuTime: (id: string) => `${baseKey}:last_biwu_time:${id}`,
@@ -167,8 +118,18 @@ export const keysAction = {
   moneyGame: (id: string) => `${baseKey}:money_game:${id}`,
   getLastSignBonus: (id: string) => `${baseKey}:getLastsign_Bonus:${id}`,
   bossCD: (id: string) => `${baseKey}:BOSSCD:${id}`,
-  system: (id: string) => `${baseKey}:system:${id}`,
+  system: (id: string, botId?: string) => `${baseKey}:system:${botId ? `${id}_${botId}` : id}`,
   config: (id: string) => `${baseKey}:config:${id}`
+};
+
+export { __PATH };
+
+export const __PATH_CONFIG = {
+  Association,
+  help,
+  set,
+  shituhelp,
+  xiuxian
 };
 
 export type RedisKeyGenerator = typeof keys;
@@ -211,18 +172,6 @@ export const keysByPath = async path => {
 
   return keys.map(key => key.replace(`${path}:`, ''));
 };
-
-/**
- * 带botId的系统key生成器，用于多机器人部署
- * @param botId 机器人ID
- * @param id key标识符
- * @returns 带botId的系统key
- */
-export const keysActionWithBotId = {
-  system: (id: string, botId: string) => `${baseKey}:system:${id}_${botId}`
-};
-
-export const keysFuzhi = (id: string) => `xiuxian:player:${id}:fuzhi`;
 
 // 金银坊 - 资金池 Redis Key
 export const GAME_KEY = keysAction.system('money_game');

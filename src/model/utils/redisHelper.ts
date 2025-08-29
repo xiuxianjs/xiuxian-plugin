@@ -1,7 +1,8 @@
 import { redis } from '../../model/api';
-import { ActionType, getRedisKey } from '../keys';
+import { getRedisKey } from '../keys';
 import type { RedisScalar } from '../../types/model';
 import { getDataJSONParseByKey, setDataByKey, setDataJSONStringifyByKey } from '../DataControl';
+import { ActionType } from '@src/types/keys';
 
 // 通用获取：保留字符串或 null
 export function getString(key: string): Promise<RedisScalar> {
