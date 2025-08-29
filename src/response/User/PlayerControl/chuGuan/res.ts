@@ -3,7 +3,10 @@ import { getJSON, userKey } from '@src/model/utils/redisHelper';
 import type { ActionState } from '@src/types';
 import { notUndAndNull, readDanyao, existNajieThing, addNajieThing, addExp, addExp2, setFileValue, writeDanyao, keys, keysAction } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
-
+import mw from '@src/response/mw';
+import { getDataList } from '@src/model/DataList';
+import { delDataByKey, getDataJSONParseByKey } from '@src/model/DataControl';
+import { playerEfficiency } from '@src/model';
 import { selects } from '@src/response/mw';
 import { DataMention, Mention } from 'alemonjs';
 export const regular = /^(#|＃|\/)?出关$/;
@@ -64,17 +67,9 @@ const res = onResponse(selects, async e => {
   } else {
     await biguanJiesuan(e.UserId, time, false); // 提前闭关结束不会触发随机事件
   }
-  const arr = action;
 
-  // 把状态都关了
-  arr.shutup = 1; // 闭关状态
-  arr.working = 1; // 降妖状态
-  arr.power_up = 1; // 渡劫状态
-  arr.Place_action = 1; // 秘境
-  arr.end_time = Date.now(); // 结束的时间也修改为当前时间
-  delete arr.group_id; // 结算完去除group_id
-
-  await setDataJSONStringifyByKey(keysAction.action(e.UserId), arr);
+  // 直接删除key。不做留存。
+  void delDataByKey(keysAction.action(e.UserId));
 
   await setDataByUserId(e.UserId, 'game_action', 0);
 });
@@ -208,8 +203,4 @@ async function biguanJiesuan(userId, time, isRandom, group_id?) {
 
   return false;
 }
-import mw from '@src/response/mw';
-import { getDataList } from '@src/model/DataList';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { playerEfficiency } from '@src/model';
 export default onResponse(selects, [mw.current, res.current]);

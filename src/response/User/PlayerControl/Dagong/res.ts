@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 // 直接 redis.get 改为 helper
-import { existplayer, keysAction, readPlayer, setDataJSONStringifyByKey } from '@src/model/index';
+import { existplayer, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getString, userKey } from '@src/model/utils/redisHelper';
@@ -48,7 +48,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const action_time = time * 60 * 1000;
-  const arr = await startAction(userId, '降妖', action_time, {
+
+  await startAction(userId, '降妖', action_time, {
     plant: '1',
     shutup: '1',
     working: '0',
@@ -59,8 +60,6 @@ const res = onResponse(selects, async e => {
     xijie: '1',
     mine: '1'
   });
-
-  await setDataJSONStringifyByKey(keysAction.action(userId), arr);
 
   void Send(Text(`现在开始降妖${time}分钟`));
 });

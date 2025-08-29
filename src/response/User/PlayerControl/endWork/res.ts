@@ -7,7 +7,7 @@ import mw from '@src/response/mw';
 import { Mention, DataMention } from 'alemonjs';
 import type { ActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { delDataByKey, getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?降妖归来$/;
 
 const res = onResponse(selects, async e => {
@@ -70,18 +70,7 @@ const res = onResponse(selects, async e => {
     await dagong_jiesuan(e.UserId, time, false); // 提前闭关结束不会触发随机事件
   }
 
-  const arr = action;
-
-  arr.is_jiesuan = 1; // 结算状态
-  arr.shutup = 1; // 闭关状态
-  arr.working = 1; // 降妖状态
-  arr.power_up = 1; // 渡劫状态
-  arr.Place_action = 1; // 秘境
-  // 结束的时间也修改为当前时间
-  arr.end_time = Date.now();
-  delete arr.group_id; // 结算完去除group_id
-
-  await setDataJSONStringifyByKey(keysAction.action(e.UserId), arr);
+  void delDataByKey(keysAction.action(e.UserId));
 
   await setDataByUserId(e.UserId, 'game_action', 0);
 });
