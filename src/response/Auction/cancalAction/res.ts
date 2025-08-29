@@ -1,6 +1,5 @@
 import { Text, useSend } from 'alemonjs';
 
-import { redis } from '@src/model/api';
 import { getAuctionKeyManager } from '@src/model/constants';
 import mw from '@src/response/mw';
 
@@ -19,13 +18,15 @@ const res = onResponse(selects, async e => {
   // 获取星阁key管理器，支持多机器人部署和自动数据迁移
   const auctionKeyManager = getAuctionKeyManager();
   const groupId = String(e.ChannelId);
-  
+
   const isGroupEnabled = await auctionKeyManager.isGroupAuctionEnabled(groupId);
+
   if (!isGroupEnabled) {
     void Send(Text('本群未开启星阁拍卖'));
+
     return false;
   }
-  
+
   await auctionKeyManager.disableGroupAuction(groupId);
   void Send(Text('星阁体系在本群取消了'));
 });
