@@ -15,7 +15,7 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
   // 禁用赠送功能
-  void Send(Text('赠送功能当前已禁止'));
+  void Send(Text('该功能优化中……'));
 
   return false;
 

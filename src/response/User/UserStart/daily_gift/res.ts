@@ -25,6 +25,29 @@ function isLastSignStruct(v): v is LastSignStruct {
 }
 const isSameDay = (a: LastSignStruct, b: LastSignStruct) => a.Y === b.Y && a.M === b.M && a.D === b.D;
 
+const weeklyGift = [
+  {
+    name: '五阶玄元丹',
+    type: '丹药',
+    account: 1
+  },
+  {
+    name: '五阶淬体丹',
+    type: '丹药',
+    account: 1
+  },
+  {
+    name: '仙府通行证',
+    type: '道具',
+    account: 1
+  },
+  {
+    name: '道具盲盒',
+    type: '道具',
+    account: 1
+  }
+];
+
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
@@ -86,9 +109,18 @@ const res = onResponse(selects, async e => {
   await addExp(userId, gift_xiuwei);
 
   void Send(Text(`已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''} ${msg}`));
+  if ((await isUserMonthCard(userId)) && newStreak === 7) {
+    for (const i of weeklyGift) {
+      await addNajieThing(userId, i.name, i.type as NajieCategory, i.account);
+    }
+    const msg = weeklyGift.map(i => `${i.name}*${i.account}`).join('，');
+
+    void Send(Text(`连续签到7天 恭喜您获得${msg}`));
+  }
 
   return false;
 });
 
 import mw from '@src/response/mw';
+import { NajieCategory } from '@src/types';
 export default onResponse(selects, [mw.current, res.current]);

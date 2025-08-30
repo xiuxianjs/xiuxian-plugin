@@ -13,7 +13,6 @@ import { Taopaotask } from './Taopaotask';
 import { SecretPlaceTask } from './SecretPlaceTask';
 import { TiandibangTask } from './Tiandibang';
 import { Xijietask } from './Xijietask';
-import { MonthCardTask } from './MonthCard';
 import { scheduleJob } from 'node-schedule';
 import { getConfig } from '@src/model';
 import { TaskMap } from '@src/model/task';
@@ -34,8 +33,7 @@ const taskFunctions = {
   Taopaotask: Taopaotask,
   SecretPlaceTask: SecretPlaceTask,
   TiandibangTask: TiandibangTask,
-  Xijietask: Xijietask,
-  MonthCardTask: MonthCardTask
+  Xijietask: Xijietask
 };
 
 // 停止指定任务
