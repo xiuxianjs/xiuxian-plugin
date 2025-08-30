@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { startAction } from '@src/model/actionHelper';
-import { Go, convert2integer, notUndAndNull, readPlayer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
+import { Go, convert2integer, notUndAndNull, readPlayer, existNajieThing, addNajieThing, addCoin, isUserMonthCard } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -55,7 +55,9 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 当前境界 id
-  if (didian === '仙界矿场') {
+  const isMonth = await isUserMonthCard(userId);
+
+  if (didian === '仙界矿场' && !isMonth) {
     void Send(Text('打工本不支持沉迷哦'));
 
     return false;

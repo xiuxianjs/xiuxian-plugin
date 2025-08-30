@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { existplayer, shijianc, getLastsign, addNajieThing, addExp, writePlayer, getConfig, readPlayer } from '@src/model/index';
+import { existplayer, shijianc, getLastsign, addNajieThing, addExp, writePlayer, getConfig, readPlayer, isUserMonthCard } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
@@ -77,7 +77,7 @@ const res = onResponse(selects, async e => {
   }
   let msg = '';
 
-  if (player.vip_type && player.vip_type !== 0 && player.vip_time && player.vip_time > 0) {
+  if (await isUserMonthCard(userId)) {
     await addNajieThing(userId, '闪闪发光的石头', '道具', 1);
     await addNajieThing(userId, '秘境之匙', '道具', 10);
     ticketNum += 10;

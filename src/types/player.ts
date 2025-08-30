@@ -106,8 +106,6 @@ export interface Player {
   宗门?: ZongMen;
   法球倍率: number;
   newbie?: number;
-  vip_type?: number;
-  vip_time?: number;
 }
 
 export interface Equipment {
