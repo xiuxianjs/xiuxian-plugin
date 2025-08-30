@@ -84,23 +84,53 @@ const res = onResponse(selects, async e => {
   }
   const money = n * thingPrice;
 
-  // 查灵石
-  if (player.灵石 > money) {
+  // 计算阶梯税收：物品低于100w交易后收3%税，每多100w多收3%
+  const calculateTax = (totalPrice: number): number => {
+    const million = 1000000; // 100w
+    const baseTaxRate = 0.03; // 3%
+
+    if (totalPrice < million) {
+      // 低于100w收3%税
+      return Math.floor(totalPrice * baseTaxRate);
+    }
+
+    // 计算有多少个100w（包含第一个100w）
+    const millionCount = Math.ceil(totalPrice / million);
+    // 税率 = 基础税率 * 100w的个数
+    const taxRate = baseTaxRate * millionCount;
+
+    return Math.floor(totalPrice * taxRate);
+  };
+
+  const tax = calculateTax(money);
+  const sellerReceives = money - tax; // 卖家实际获得的金额（扣除税费后）
+
+  // 查灵石（买家只需支付商品原价）
+  if (player.灵石 >= money) {
     // 加物品
     if (thingClass === '装备' || thingClass === '仙宠') {
       await addNajieThing(userId, Exchange[x].thing.name, thingClass, n, Exchange[x].pinji2);
     } else {
       await addNajieThing(userId, thingName, thingClass, n);
     }
-    // 扣钱
+    // 买家扣钱（只扣商品原价）
     await addCoin(userId, -money);
-    // 加钱
-    await addCoin(thingqq, money);
+    // 卖家获得扣税后的金额
+    await addCoin(thingqq, sellerReceives);
     Exchange[x].amount = Exchange[x].amount - n;
     // 删除该位置信息
     Exchange = Exchange.filter(item => item.amount > 0);
     await writeExchange(Exchange);
-    void Send(Text(`${player.名号}在冲水堂购买了${n}个【${thingName}】！`));
+
+    // 构建购买成功消息
+    let message = `${player.名号}在冲水堂购买了${n}个【${thingName}】！\n支付金额：${money}灵石`;
+
+    if (tax > 0) {
+      message += `\n卖家获得：${sellerReceives}灵石（已扣除${tax}灵石税费）`;
+    } else {
+      message += `\n卖家获得：${sellerReceives}灵石`;
+    }
+    void Send(Text(message));
   } else {
     void Send(Text('醒醒，你没有那么多钱！'));
 

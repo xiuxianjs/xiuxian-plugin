@@ -13,6 +13,12 @@ export const regular = /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
+  // 禁用赠送功能
+  void Send(Text('赠送功能当前已禁止'));
+
+  return false;
+
   const A_qq = e.UserId;
 
   if (!(await existplayer(A_qq))) {

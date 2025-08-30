@@ -124,4 +124,12 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-export default onResponse(selects, [mw.current, res.current]);
+// export default onResponse(selects, [mw.current, res.current]);
+export default onResponse(selects, async e => {
+  const Send = useSend(e);
+
+  // 禁用发红包功能
+  void Send(Text('发红包功能当前已禁止'));
+
+  return false;
+});
