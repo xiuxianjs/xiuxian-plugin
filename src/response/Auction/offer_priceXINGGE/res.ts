@@ -43,8 +43,7 @@ const res = onResponse(selects, async e => {
   }
 
   const auctionData = JSON.parse(auction);
-  // 原数据是last_price
-  const lastPrice = auctionData.last_price;
+  const lastPrice = auctionData.lastPrice;
   const reg = e.MessageText.replace(/^(#|＃|\/)?星阁出价/, '');
 
   if (auctionData.last_offer_player === userId) {

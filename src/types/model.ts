@@ -83,7 +83,7 @@ export interface ExchangeRecord {
   amount: number;
   qq: string;
   start_price: number;
-  last_price: number;
+  lastPrice: number;
   last_offer_price: number;
   last_offer_player: number;
   groupList: string[];

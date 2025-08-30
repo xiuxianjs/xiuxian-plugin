@@ -61,7 +61,7 @@ export async function openAU(): Promise<ExchangeRecord> {
   const wupin: ExchangeRecord = {
     thing: thingData,
     start_price: thingValue,
-    last_price: thingValue,
+    lastPrice: thingValue,
     amount: thingAmount,
     last_offer_price: nowTime,
     last_offer_player: 0,
