@@ -1,16 +1,15 @@
-import { getRedisKey } from '@src/model/keys';
 import { Text, useMention, useSend } from 'alemonjs';
-
-import { redis, config } from '@src/model/api';
-import { notUndAndNull } from '@src/model/common';
+import { existplayer, readPlayer, writePlayer } from '@src/model';
+import { getDataByKey, setDataByKey } from '@src/model/DataControl';
+import { getDataList } from '@src/model/DataList';
+import { keysAction } from '@src/model/keys';
+import { config } from '@src/model/api';
 import { zdBattle } from '@src/model/battle';
 import { addHP, addExp2, addCoin } from '@src/model/economy';
 import { existNajieThing } from '@src/model/najie';
-import { existplayer, readPlayer, writePlayer } from '@src/model';
-
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { getDataList } from '@src/model/DataList';
+
 export const regular = /^(#|＃|\/)?比武$/;
 
 interface ActionState {
@@ -18,22 +17,25 @@ interface ActionState {
   action?: string;
 }
 
-function toInt(v, d = 0) {
+function toInt(v: any, d = 0): number {
   const n = Number(v);
 
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
-function parseJson<T>(raw, fallback: T): T {
+
+function parseJson<T>(raw: any, fallback: T): T {
   if (typeof raw !== 'string' || raw === '') {
     return fallback;
   }
+
   try {
     return JSON.parse(raw) as T;
   } catch {
     return fallback;
   }
 }
-function formatRemain(ms: number) {
+
+function formatRemain(ms: number): string {
   const m = Math.floor(ms / 60000);
   const s = Math.floor((ms % 60000) / 1000);
 
@@ -42,84 +44,90 @@ function formatRemain(ms: number) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const A = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(A))) {
+  if (!(await existplayer(userId))) {
+    void Send(Text('你还未开始修仙'));
+
     return false;
   }
 
   // 猜大小占用检查
-  const last_game_timeA = await redis.get(getRedisKey(A, 'last_game_time'));
+  const lastGameTimeA = await getDataByKey(keysAction.lastGameTime(userId));
 
-  if (toInt(last_game_timeA) === 0) {
+  if (toInt(lastGameTimeA) === 0) {
     void Send(Text('猜大小正在进行哦!'));
 
     return false;
   }
 
   // 目标 @
-
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
 
   if (!target || res.code !== 2000) {
+    void Send(Text('请@要比武的修仙者'));
+
     return false;
   }
 
-  const B = target.UserId;
+  const targetUserId = target.UserId;
 
-  if (A === B) {
+  if (userId === targetUserId) {
     void Send(Text('咋的，自娱自乐？'));
 
     return false;
   }
 
-  if (!(await existplayer(B))) {
+  if (!(await existplayer(targetUserId))) {
     void Send(Text('不可对凡人出手!'));
 
     return false;
   }
 
   // 读取双方玩家
-  const playerA = await readPlayer(A);
-  const playerB = await readPlayer(B);
+  const playerA = await readPlayer(userId);
+  const playerB = await readPlayer(targetUserId);
 
   if (!playerA || !playerB) {
+    void Send(Text('玩家数据异常'));
+
     return false;
   }
 
   // 境界校验
-  if (!notUndAndNull(playerA.level_id) || !notUndAndNull(playerB.level_id)) {
+  if (!playerA.level_id || !playerB.level_id) {
     void Send(Text('请先#同步信息 / 对方为错误存档'));
 
     return false;
   }
 
   // 忙碌状态检查
-  const A_action = parseJson<ActionState | null>(await redis.get(getRedisKey(A, 'action')), null);
+  const aAction = parseJson<ActionState | null>(await getDataByKey(keysAction.action(userId)), null);
 
-  if (A_action?.end_time && Date.now() <= A_action.end_time) {
-    void Send(Text(`正在${A_action.action}中,剩余时间:${formatRemain(A_action.end_time - Date.now())}`));
+  if (aAction?.end_time && Date.now() <= aAction.end_time) {
+    void Send(Text(`正在${aAction.action}中,剩余时间:${formatRemain(aAction.end_time - Date.now())}`));
 
     return false;
   }
-  const B_action = parseJson<ActionState | null>(await redis.get(getRedisKey(B, 'action')), null);
 
-  if (B_action?.end_time && Date.now() <= B_action.end_time) {
-    const hasHide = await existNajieThing(A, '剑xx', '道具');
+  const bAction = parseJson<ActionState | null>(await getDataByKey(keysAction.action(targetUserId)), null);
+
+  if (bAction?.end_time && Date.now() <= bAction.end_time) {
+    const hasHide = await existNajieThing(userId, '剑xx', '道具');
 
     if (!hasHide) {
-      void Send(Text(`对方正在${B_action.action}中,剩余时间:${formatRemain(B_action.end_time - Date.now())}`));
+      void Send(Text(`对方正在${bAction.action}中,剩余时间:${formatRemain(bAction.end_time - Date.now())}`));
 
       return false;
     }
   }
 
   // 猜大小状态检查 (对方)
-  const last_game_timeB = await redis.get(getRedisKey(B, 'last_game_time'));
+  const lastGameTimeB = await getDataByKey(keysAction.lastGameTime(targetUserId));
 
-  if (toInt(last_game_timeB) === 0) {
+  if (toInt(lastGameTimeB) === 0) {
     void Send(Text('对方猜大小正在进行哦，等他结束再来比武吧!'));
 
     return false;
@@ -128,7 +136,7 @@ const res = onResponse(selects, async e => {
   const cf = await config.getConfig('xiuxian', 'xiuxian');
   const biwuCdMs = Math.floor(60000 * toInt(cf?.CD?.biwu, 5));
   const now = Date.now();
-  const lastBiwuA = toInt(await redis.get(getRedisKey(A, 'last_biwu_time')));
+  const lastBiwuA = toInt(await getDataByKey(keysAction.lastBiwuTime(userId)));
 
   if (now < lastBiwuA + biwuCdMs) {
     void Send(Text(`比武正在CD中，剩余cd:  ${formatRemain(lastBiwuA + biwuCdMs - now)}`));
@@ -147,7 +155,8 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
-    const lastB = toInt(await redis.get(getRedisKey(B, 'last_biwu_time')));
+
+    const lastB = toInt(await getDataByKey(keysAction.lastBiwuTime(targetUserId)));
 
     if (now < lastB + coupleMs) {
       void Send(Text(`对方比武冷却:  ${formatRemain(lastB + coupleMs - now)}`));
@@ -164,6 +173,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   if (playerA.当前血量 <= playerA.血量上限 * hpThreshold) {
     void Send(Text('你血量未满，对方不想趁人之危'));
 
@@ -171,15 +181,15 @@ const res = onResponse(selects, async e => {
   }
 
   // 记录开始时间
-  await redis.set(getRedisKey(A, 'last_biwu_time'), String(now));
-  await redis.set(getRedisKey(B, 'last_biwu_time'), String(now));
+  await setDataByKey(keysAction.lastBiwuTime(userId), String(now));
+  await setDataByKey(keysAction.lastBiwuTime(targetUserId), String(now));
 
-  const final_msg: string[] = [];
+  const finalMsg: string[] = [];
 
-  final_msg.push(`${playerA.名号}向${playerB.名号}发起了比武！`);
+  finalMsg.push(`${playerA.名号}向${playerB.名号}发起了比武！`);
 
-  playerA.法球倍率 = Number(playerA.灵根.法球倍率) || 0;
-  playerB.法球倍率 = Number(playerB.灵根.法球倍率) || 0;
+  playerA.法球倍率 = Number(playerA.灵根?.法球倍率) || 0;
+  playerB.法球倍率 = Number(playerB.灵根?.法球倍率) || 0;
 
   const dataBattle = await zdBattle(playerA, playerB);
   const msg = dataBattle.msg;
@@ -187,8 +197,9 @@ const res = onResponse(selects, async e => {
   if (msg.length <= 35) {
     void Send(Text(msg.join('\n')));
   }
-  await addHP(A, dataBattle.A_xue);
-  await addHP(B, dataBattle.B_xue);
+
+  await addHP(userId, dataBattle.A_xue);
+  await addHP(targetUserId, dataBattle.B_xue);
 
   const winA = `${playerA.名号}击败了${playerB.名号}`;
   const winB = `${playerB.名号}击败了${playerA.名号}`;
@@ -202,44 +213,48 @@ const res = onResponse(selects, async e => {
   }
 
   const levelList = await getDataList('Level1');
-  const levelA = levelList.find(l => l.level_id === playerA.level_id)?.level_id || 1;
-  const levelB = levelList.find(l => l.level_id === playerB.level_id)?.level_id || 1;
+  const levelA = levelList.find(l => l.level_id === playerA.level_id)?.level_id ?? 1;
+  const levelB = levelList.find(l => l.level_id === playerB.level_id)?.level_id ?? 1;
 
   if (aWin) {
     const qixueA = Math.trunc(1000 * levelB);
     const qixueB = Math.trunc(500 * levelA);
     const coin = Math.trunc(10 * levelA);
 
-    await addExp2(A, qixueA);
-    await addExp2(B, qixueB);
-    await addCoin(A, coin);
-    await addCoin(B, coin);
-    const pA = await readPlayer(A);
+    await addExp2(userId, qixueA);
+    await addExp2(targetUserId, qixueB);
+    await addCoin(userId, coin);
+    await addCoin(targetUserId, coin);
+
+    const pA = await readPlayer(userId);
 
     if (pA) {
       pA.魔道值 = (Number(pA.魔道值) || 0) + 1;
-      void writePlayer(A, pA);
+      void writePlayer(userId, pA);
     }
-    final_msg.push(` 经过一番大战,${winA}获得了胜利,${playerA.名号}获得${qixueA}气血，${playerB.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`);
+
+    finalMsg.push(` 经过一番大战,${winA}获得了胜利,${playerA.名号}获得${qixueA}气血，${playerB.名号}获得${qixueB}气血，双方都获得了${coin}的灵石。`);
   } else if (bWin) {
     const qixueA = Math.trunc(500 * levelB);
     const qixueB = Math.trunc(1000 * levelA);
     const coin = Math.trunc(10 * levelA);
 
-    await addExp2(A, qixueA);
-    await addExp2(B, qixueB);
-    await addCoin(A, coin);
-    await addCoin(B, coin);
-    const pB = await readPlayer(B);
+    await addExp2(userId, qixueA);
+    await addExp2(targetUserId, qixueB);
+    await addCoin(userId, coin);
+    await addCoin(targetUserId, coin);
+
+    const pB = await readPlayer(targetUserId);
 
     if (pB) {
       pB.魔道值 = (Number(pB.魔道值) || 0) + 1;
-      void writePlayer(B, pB);
+      void writePlayer(targetUserId, pB);
     }
-    final_msg.push(`经过一番大战,${winB}获得了胜利,${playerB.名号}获得${qixueB}气血，${playerA.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`);
+
+    finalMsg.push(`经过一番大战,${winB}获得了胜利,${playerB.名号}获得${qixueB}气血，${playerA.名号}获得${qixueA}气血，双方都获得了${coin}的灵石。`);
   }
 
-  void Send(Text(final_msg.join('')));
+  void Send(Text(finalMsg.join('')));
 
   return false;
 });

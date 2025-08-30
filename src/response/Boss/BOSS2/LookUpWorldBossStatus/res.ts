@@ -1,11 +1,12 @@
 import { Text, useSend } from 'alemonjs';
-
-import { redis } from '@src/model/api';
-import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../../../model/boss';
 import { existplayer } from '@src/model';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../../../model/boss';
 import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
+import mw from '@src/response/mw';
 
-export const selects = onSelects(['message.create']);
+const selects = onSelects(['message.create']);
+
 export const regular = /^(#|＃|\/)?金角大王状态$/;
 
 interface WorldBossStatusInfo {
@@ -13,17 +14,8 @@ interface WorldBossStatusInfo {
   Reward: number;
   KilledTime: number;
 }
-function parseJson<T>(raw, fallback: T): T {
-  if (typeof raw !== 'string' || raw === '') {
-    return fallback;
-  }
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-function formatNum(n) {
+
+function formatNum(n: any): string {
   const v = Number(n);
 
   return Number.isFinite(v) ? v.toLocaleString('zh-CN') : '0';
@@ -31,11 +23,11 @@ function formatNum(n) {
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+  const userId = e.UserId;
 
-  const userId = e.UserId; // 用户qq
-
-  // 有无存档
   if (!(await existplayer(userId))) {
+    void Send(Text('你还未开始修仙'));
+
     return false;
   }
 
@@ -45,8 +37,8 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const statusStr = await redis.get(KEY_WORLD_BOOS_STATUS_TWO);
-  const status = parseJson<WorldBossStatusInfo | null>(statusStr, null);
+  const statusStr = await getDataJSONParseByKey(KEY_WORLD_BOOS_STATUS_TWO);
+  const status = statusStr as WorldBossStatusInfo | null;
 
   if (!status) {
     void Send(Text('状态数据缺失，请联系管理员重新开启！'));
@@ -62,6 +54,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   // 如果已被击杀但冷却结束需要初始化
   if (status.KilledTime !== -1) {
     if ((await InitWorldBoss()) === false) {
@@ -78,5 +71,4 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

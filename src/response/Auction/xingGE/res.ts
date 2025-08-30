@@ -1,7 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import { redis } from '@src/model/api';
-import { existplayer, notUndAndNull, readPlayer } from '@src/model/index';
+import { existplayer, getDataJSONParseByKey, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -21,14 +20,13 @@ const res = onResponse(selects, async e => {
   const auctionKeyManager = getAuctionKeyManager();
 
   const auctionTaskKey = await auctionKeyManager.getAuctionOfficialTaskKey();
-  const res = await redis.get(auctionTaskKey);
+  const auction = await getDataJSONParseByKey(auctionTaskKey);
 
-  if (!notUndAndNull(res)) {
+  if (!auction) {
     void Send(Text('目前没有拍卖正在进行'));
 
     return false;
   }
-  const auction = JSON.parse(res);
 
   let msg = `___[星阁]___\n目前正在拍卖【${auction.thing.name}】\n`;
 
@@ -37,7 +35,9 @@ const res = onResponse(selects, async e => {
   } else {
     const player = await readPlayer(auction.last_offer_player);
 
-    msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+    if (player) {
+      msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+    }
   }
   void Send(Text(msg));
 });

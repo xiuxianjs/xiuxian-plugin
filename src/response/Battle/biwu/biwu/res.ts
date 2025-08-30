@@ -1,18 +1,17 @@
-import { getRedisKey } from '@src/model/keys';
 import { Image, Text, useMention, useSend } from 'alemonjs';
-import * as _ from 'lodash-es';
+import { existplayer, readPlayer } from '@src/model';
+import { delDataByKey, getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
+import { getDataList } from '@src/model/DataList';
+import { keysAction } from '@src/model/keys';
+import { pushInfo } from '@src/model/api';
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle';
 import { sleep } from '@src/model/common';
-import { existplayer, readPlayer } from '@src/model';
-import { pushInfo, redis } from '@src/model/api';
-
+import { screenshot } from '@src/image';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { biwuPlayer } from '../biwu';
-import { screenshot } from '@src/image';
-import { getDataList } from '@src/model/DataList';
+import * as _ from 'lodash-es';
 
-// 修正正则 (去掉重复 ^)
 export const regular = /^(#|＃|\/)?切磋$/;
 
 interface SkillCfg {
@@ -22,6 +21,7 @@ interface SkillCfg {
   last?: number;
   msg?: string;
 }
+
 interface SkillRuntime {
   name: string;
   cd: number;
@@ -29,11 +29,13 @@ interface SkillRuntime {
   last?: number;
   msg?: string;
 }
+
 interface ActionState {
   cnt: number;
   技能: SkillRuntime[];
   use: number;
 }
+
 interface BuffMap {
   [k: string]: number;
 }
@@ -42,7 +44,7 @@ function clonePlayer<T>(p: T): T {
   return _.cloneDeep(p);
 }
 
-function applyBuffDecay(source: BuffMap, _targetUnused, buffName: string, effect: () => void, msgArr: string[], label: string) {
+function applyBuffDecay(source: BuffMap, _targetUnused: any, buffName: string, effect: () => void, msgArr: string[], label: string) {
   if (source[buffName]) {
     effect();
     source[buffName]--;
@@ -58,11 +60,14 @@ const res = onResponse(selects, async e => {
   if (!e.IsMaster) {
     return false;
   }
-  const A_QQ = biwuPlayer.A_QQ;
-  const B_QQ = biwuPlayer.B_QQ;
-  const A = e.UserId;
 
-  if (!(await existplayer(A))) {
+  const aQq = biwuPlayer.A_QQ as any[];
+  const bQq = biwuPlayer.B_QQ as any[];
+  const userId = e.UserId;
+
+  if (!(await existplayer(userId))) {
+    void Send(Text('你还未开始修仙'));
+
     return false;
   }
 
@@ -71,41 +76,45 @@ const res = onResponse(selects, async e => {
   const target = res?.data;
 
   if (!target || res.code !== 2000) {
+    void Send(Text('请@要切磋的修仙者'));
+
     return false;
   }
 
-  const B = target.UserId;
+  const targetUserId = target.UserId;
 
-  if (A === B) {
+  if (userId === targetUserId) {
+    void Send(Text('不能和自己切磋'));
+
     return false;
   }
-  if (!(await existplayer(B))) {
+
+  if (!(await existplayer(targetUserId))) {
     void Send(Text('修仙者不可对凡人出手!'));
 
     return false;
   }
-  if (B_QQ.some(i => i.QQ === A || i.QQ === B) || A_QQ.some(i => i.QQ === A || i.QQ === B)) {
+
+  if (bQq.some(i => i.QQ === userId || i.QQ === targetUserId) || aQq.some(i => i.QQ === userId || i.QQ === targetUserId)) {
     void Send(Text('你或他已经在战斗中了'));
 
     return false;
   }
 
-  A_QQ.push({ QQ: A, 技能: [...BASE_SKILLS], 选择技能: [] });
-  B_QQ.push({ QQ: B, 技能: [...BASE_SKILLS], 选择技能: [] });
-  await battle(e, A_QQ.length - 1);
+  aQq.push({ QQ: userId, 技能: [...BASE_SKILLS], 选择技能: [] });
+  bQq.push({ QQ: targetUserId, 技能: [...BASE_SKILLS], 选择技能: [] });
+  await battle(e, aQq.length - 1);
 
   return false;
 });
 
 export default onResponse(selects, [mw.current, res.current]);
 
-async function battle(e, num: number) {
-  const JinengData = await getDataList('Jineng');
+async function battle(e: any, num: number) {
+  const jinengData = await getDataList('Jineng');
 
   function getSkill(name: string) {
-    const data = JinengData;
-
-    return data.find(s => s.name === name) as SkillCfg;
+    return jinengData.find(s => s.name === name) as SkillCfg;
   }
 
   function buildSelectMsg(list: string[]) {
@@ -114,7 +123,7 @@ async function battle(e, num: number) {
     list.forEach((n, idx) => {
       const cfg = getSkill(n);
 
-      lines.push(`\n${idx + 1}、${n} cd:${cfg ? cfg.cd : 0}`);
+      lines.push(`\n${idx + 1}、${n} cd:${cfg?.cd ?? 0}`);
     });
 
     return lines;
@@ -135,11 +144,17 @@ async function battle(e, num: number) {
   }
 
   const evt = e as Parameters<typeof useSend>[0];
-  const A_QQ = biwuPlayer.A_QQ;
-  const B_QQ = biwuPlayer.B_QQ;
+  const aQq = biwuPlayer.A_QQ as any[];
+  const bQq = biwuPlayer.B_QQ as any[];
   const Send = useSend(evt);
-  const playerA = await readPlayer(A_QQ[num].QQ);
-  const playerB = await readPlayer(B_QQ[num].QQ);
+  const playerA = await readPlayer(aQq[num].QQ);
+  const playerB = await readPlayer(bQq[num].QQ);
+
+  if (!playerA || !playerB) {
+    void Send(Text('玩家数据异常'));
+
+    return false;
+  }
 
   // 同化属性（策划模式）
   playerA.攻击 = playerB.攻击;
@@ -147,45 +162,51 @@ async function battle(e, num: number) {
   playerA.当前血量 = playerB.当前血量;
   playerA.血量上限 = playerB.血量上限;
   playerA.暴击率 = playerB.暴击率;
-  const A_init = clonePlayer(playerA);
-  const B_init = clonePlayer(playerB);
+  const aInit = clonePlayer(playerA);
+  const bInit = clonePlayer(playerB);
 
   // 技能选择提示
-  const msg_A = buildSelectMsg(A_QQ[num].技能);
-  const msg_B = buildSelectMsg(B_QQ[num].技能);
+  const msgA = buildSelectMsg(aQq[num].技能);
+  const msgB = buildSelectMsg(bQq[num].技能);
 
-  pushInfo(A_QQ[num].QQ, false, msg_A);
-  pushInfo(B_QQ[num].QQ, false, msg_B);
+  pushInfo(aQq[num].QQ, false, msgA);
+  pushInfo(bQq[num].QQ, false, msgB);
   await sleep(40000); // 技能选择时间
 
   let cnt = 1;
-  let actionA: ActionState = { cnt, 技能: A_QQ[num].选择技能, use: -1 };
-  let actionB: ActionState = { cnt, 技能: B_QQ[num].选择技能, use: -1 };
+  let actionA: ActionState = { cnt, 技能: aQq[num].选择技能, use: -1 };
+  let actionB: ActionState = { cnt, 技能: bQq[num].选择技能, use: -1 };
 
-  await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(actionA));
-  await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(actionB));
+  await setDataJSONStringifyByKey(keysAction.bisai(aQq[num].QQ), actionA);
+  await setDataJSONStringifyByKey(keysAction.bisai(bQq[num].QQ), actionB);
 
-  const buff_A: BuffMap = {};
-  const buff_B: BuffMap = {};
+  const buffA: BuffMap = {};
+  const buffB: BuffMap = {};
   const history: string[][] = [];
 
   while (playerA.当前血量 > 0 && playerB.当前血量 > 0) {
     const roundMsgs: string[] = [];
+
     // A 回合展示
-    const round_A = buildRoundMsg(actionA.技能, cnt);
+    const roundA = buildRoundMsg(actionA.技能, cnt);
 
-    await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(actionA));
-    pushInfo(A_QQ[num].QQ, false, round_A);
+    await setDataJSONStringifyByKey(keysAction.bisai(aQq[num].QQ), actionA);
+    pushInfo(aQq[num].QQ, false, roundA);
+
     // B 回合展示
-    const round_B = buildRoundMsg(actionB.技能, cnt);
+    const roundB = buildRoundMsg(actionB.技能, cnt);
 
-    await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(actionB));
-    pushInfo(B_QQ[num].QQ, false, round_B);
+    await setDataJSONStringifyByKey(keysAction.bisai(bQq[num].QQ), actionB);
+    pushInfo(bQq[num].QQ, false, roundB);
     await sleep(20000);
 
     // 读取操作
-    actionA = JSON.parse((await redis.get(getRedisKey(A_QQ[num].QQ, 'bisai'))) || '{}');
-    actionB = JSON.parse((await redis.get(getRedisKey(B_QQ[num].QQ, 'bisai'))) || '{}');
+    const actionARaw = (await getDataJSONParseByKey(keysAction.bisai(aQq[num].QQ))) as ActionState;
+    const actionBRaw = (await getDataJSONParseByKey(keysAction.bisai(bQq[num].QQ))) as ActionState;
+
+    actionA = actionARaw ?? { cnt, 技能: [], use: -1 };
+    actionB = actionBRaw ?? { cnt, 技能: [], use: -1 };
+
     // 清空上次技能 cd
     if (actionA.技能?.[actionA.use]) {
       actionA.技能[actionA.use].cd = 0;
@@ -193,7 +214,7 @@ async function battle(e, num: number) {
 
     // Buff 处理 (B 对 A 的控制 / 降低)
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerA,
       '四象封印',
       () => {
@@ -202,8 +223,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerA.名号}因为四象封印之力，技能失效,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerA,
       '阴风蚀骨',
       () => {
@@ -216,8 +238,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerA.名号}受到侵蚀,攻击力降低,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerA,
       '万年俱灰',
       () => {
@@ -230,8 +253,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerA.名号}受到立场影响,攻击力降低,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerA,
       '玄冰封印',
       () => {
@@ -244,8 +268,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerA.名号}暴击率被压制,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerB,
       '心烦意乱',
       () => {
@@ -258,8 +283,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerB.名号}防御力降低,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerB,
       '失魂落魄',
       () => {
@@ -272,8 +298,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerB.名号}防御力下降,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerA,
       '祝水咒',
       () => {
@@ -288,11 +315,11 @@ async function battle(e, num: number) {
     );
 
     // A 造成伤害
-    const A_baoji = baojishanghai(playerA.暴击率);
-    let A_harm = Harm(playerA.攻击, playerB.防御);
-    const A_faqiu = Math.trunc(playerA.攻击 * Number(playerA.灵根?.法球倍率 || 0));
+    const aBaoji = baojishanghai(playerA.暴击率);
+    let aHarm = Harm(playerA.攻击, playerB.防御);
+    const aFaqiu = Math.trunc(playerA.攻击 * Number(playerA.灵根?.法球倍率 ?? 0));
 
-    A_harm = Math.trunc(A_baoji * A_harm + A_faqiu + playerA.防御 * 0.1);
+    aHarm = Math.trunc(aBaoji * aHarm + aFaqiu + playerA.防御 * 0.1);
 
     // A 技能释放
     if (actionA.use !== -1 && actionA.技能?.[actionA.use]) {
@@ -300,7 +327,7 @@ async function battle(e, num: number) {
 
       switch (sk.name) {
         case '四象封印':
-          buff_A.四象封印 = sk.last || 0;
+          buffA.四象封印 = sk.last ?? 0;
           break;
         case '桃园结义':
           if (sk.pr) {
@@ -314,43 +341,48 @@ async function battle(e, num: number) {
           }
           break;
         case '祝水咒':
-          buff_A.祝水咒 = sk.last || 0;
+          buffA.祝水咒 = sk.last ?? 0;
           break;
         case '阴风蚀骨':
-          buff_A.阴风蚀骨 = sk.last || 0;
+          buffA.阴风蚀骨 = sk.last ?? 0;
           break;
         case '万年俱灰':
-          buff_A.万年俱灰 = sk.last || 0;
+          buffA.万年俱灰 = sk.last ?? 0;
           break;
         case '心烦意乱':
-          buff_A.心烦意乱 = sk.last || 0;
+          buffA.心烦意乱 = sk.last ?? 0;
           break;
         case '失魂落魄':
-          buff_A.失魂落魄 = sk.last || 0;
+          buffA.失魂落魄 = sk.last ?? 0;
           break;
         case '玄冰封印':
-          buff_A.玄冰封印 = sk.last || 0;
+          buffA.玄冰封印 = sk.last ?? 0;
           break;
         case '诛仙三剑':
-          buff_A.诛仙三剑 = sk.last || 0;
+          buffA.诛仙三剑 = sk.last ?? 0;
           break;
       }
+
       if (sk.msg) {
         roundMsgs.push(`${playerA.名号}${sk.msg}`);
       }
     }
-    if (buff_A.诛仙三剑) {
+
+    if (buffA.诛仙三剑) {
       const cfg = getSkill('诛仙三剑');
 
       if (cfg?.pr) {
-        A_harm = Math.trunc(A_harm * (1 + cfg.pr));
+        aHarm = Math.trunc(aHarm * (1 + cfg.pr));
       }
-      buff_A.诛仙三剑--;
+      buffA.诛仙三剑--;
     }
-    playerB.当前血量 -= A_harm;
-    roundMsgs.push(`第${cnt}回合,${playerA.名号}普通攻击，${ifbaoji(A_baoji)}造成伤害${A_harm}，${playerB.名号}剩余血量${playerB.当前血量}`);
+
+    playerB.当前血量 -= aHarm;
+    roundMsgs.push(`第${cnt}回合,${playerA.名号}普通攻击，${ifbaoji(aBaoji)}造成伤害${aHarm}，${playerB.名号}剩余血量${playerB.当前血量}`);
+
     if (playerB.当前血量 <= 0) {
       history.push(roundMsgs);
+
       break;
     }
 
@@ -358,8 +390,9 @@ async function battle(e, num: number) {
     if (actionB.技能?.[actionB.use]) {
       actionB.技能[actionB.use].cd = 0;
     }
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerB,
       '四象封印',
       () => {
@@ -368,8 +401,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerB.名号}因为四象封印之力，技能失效,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerB,
       '阴风蚀骨',
       () => {
@@ -382,8 +416,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerB.名号}攻击力降低,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerB,
       '万年俱灰',
       () => {
@@ -396,8 +431,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerB.名号}攻击力下降,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_A,
+      buffA,
       playerB,
       '玄冰封印',
       () => {
@@ -410,8 +446,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerB.名号}暴击率被压制,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerA,
       '心烦意乱',
       () => {
@@ -424,8 +461,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerA.名号}防御力降低,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerA,
       '失魂落魄',
       () => {
@@ -438,8 +476,9 @@ async function battle(e, num: number) {
       roundMsgs,
       `${playerA.名号}防御力下降,剩余回合{left}`
     );
+
     applyBuffDecay(
-      buff_B,
+      buffB,
       playerB,
       '祝水咒',
       () => {
@@ -453,18 +492,18 @@ async function battle(e, num: number) {
       `${playerB.名号}血量回复,剩余回合{left}`
     );
 
-    const B_baoji = baojishanghai(playerB.暴击率);
-    let B_harm = Harm(playerB.攻击, playerA.防御);
-    const B_faqiu = Math.trunc(playerB.攻击 * Number(playerB.灵根?.法球倍率 || 0));
+    const bBaoji = baojishanghai(playerB.暴击率);
+    let bHarm = Harm(playerB.攻击, playerA.防御);
+    const bFaqiu = Math.trunc(playerB.攻击 * Number(playerB.灵根?.法球倍率 ?? 0));
 
-    B_harm = Math.trunc(B_baoji * B_harm + B_faqiu + playerB.防御 * 0.1);
+    bHarm = Math.trunc(bBaoji * bHarm + bFaqiu + playerB.防御 * 0.1);
 
     if (actionB.use !== -1 && actionB.技能?.[actionB.use]) {
       const sk = actionB.技能[actionB.use];
 
       switch (sk.name) {
         case '四象封印':
-          buff_B.四象封印 = sk.last || 0;
+          buffB.四象封印 = sk.last ?? 0;
           break;
         case '桃园结义':
           if (sk.pr) {
@@ -478,72 +517,75 @@ async function battle(e, num: number) {
           }
           break;
         case '祝水咒':
-          buff_B.祝水咒 = sk.last || 0;
+          buffB.祝水咒 = sk.last ?? 0;
           break;
         case '阴风蚀骨':
-          buff_B.阴风蚀骨 = sk.last || 0;
+          buffB.阴风蚀骨 = sk.last ?? 0;
           break;
         case '万年俱灰':
-          buff_B.万年俱灰 = sk.last || 0;
+          buffB.万年俱灰 = sk.last ?? 0;
           break;
         case '心烦意乱':
-          buff_B.心烦意乱 = sk.last || 0;
+          buffB.心烦意乱 = sk.last ?? 0;
           break;
         case '失魂落魄':
-          buff_B.失魂落魄 = sk.last || 0;
+          buffB.失魂落魄 = sk.last ?? 0;
           break;
         case '玄冰封印':
-          buff_B.玄冰封印 = sk.last || 0;
+          buffB.玄冰封印 = sk.last ?? 0;
           break;
         case '诛仙三剑':
-          buff_B.诛仙三剑 = sk.last || 0;
+          buffB.诛仙三剑 = sk.last ?? 0;
           break;
       }
+
       if (sk.msg) {
         roundMsgs.push(`${playerB.名号}${sk.msg}`);
       }
     }
-    if (buff_B.诛仙三剑) {
+
+    if (buffB.诛仙三剑) {
       const cfg = getSkill('诛仙三剑');
 
       if (cfg?.pr) {
-        B_harm = Math.trunc(B_harm * (1 + cfg.pr));
+        bHarm = Math.trunc(bHarm * (1 + cfg.pr));
       }
-      buff_B.诛仙三剑--;
+      buffB.诛仙三剑--;
     }
-    playerA.当前血量 -= B_harm;
-    roundMsgs.push(`第${cnt}回合,${playerB.名号}普通攻击，${ifbaoji(B_baoji)}造成伤害${B_harm}，${playerA.名号}剩余血量${playerA.当前血量}`);
+
+    playerA.当前血量 -= bHarm;
+    roundMsgs.push(`第${cnt}回合,${playerB.名号}普通攻击，${ifbaoji(bBaoji)}造成伤害${bHarm}，${playerA.名号}剩余血量${playerA.当前血量}`);
 
     cnt++;
-    pushInfo(A_QQ[num].QQ, false, roundMsgs);
-    pushInfo(B_QQ[num].QQ, false, roundMsgs);
+    pushInfo(aQq[num].QQ, false, roundMsgs);
+    pushInfo(bQq[num].QQ, false, roundMsgs);
     history.push(roundMsgs);
 
     actionA.use = -1;
     actionB.use = -1;
-    await redis.set(getRedisKey(A_QQ[num].QQ, 'bisai'), JSON.stringify(actionA));
-    await redis.set(getRedisKey(B_QQ[num].QQ, 'bisai'), JSON.stringify(actionB));
+    await setDataJSONStringifyByKey(keysAction.bisai(aQq[num].QQ), actionA);
+    await setDataJSONStringifyByKey(keysAction.bisai(bQq[num].QQ), actionB);
 
     // 恢复基础属性 (防止叠加)
-    playerA.攻击 = A_init.攻击;
-    playerA.防御 = A_init.防御;
-    playerA.暴击率 = A_init.暴击率;
-    playerB.攻击 = B_init.攻击;
-    playerB.防御 = B_init.防御;
-    playerB.暴击率 = B_init.暴击率;
+    playerA.攻击 = aInit.攻击;
+    playerA.防御 = aInit.防御;
+    playerA.暴击率 = aInit.暴击率;
+    playerB.攻击 = bInit.攻击;
+    playerB.防御 = bInit.防御;
+    playerB.暴击率 = bInit.暴击率;
   }
 
-  const img = await screenshot('CombatResult', A_QQ[num].QQ, {
+  const img = await screenshot('CombatResult', aQq[num].QQ, {
     msg: history.flat(),
     playerA: {
-      id: A_QQ[num].QQ,
+      id: aQq[num].QQ,
       name: playerA.名号,
       power: playerA.攻击,
       hp: playerA.当前血量,
       maxHp: playerA.血量上限
     },
     playerB: {
-      id: B_QQ[num].QQ,
+      id: bQq[num].QQ,
       name: playerB.名号,
       power: playerB.攻击,
       hp: playerB.当前血量,
@@ -558,14 +600,8 @@ async function battle(e, num: number) {
     void Send(Text(playerA.当前血量 <= 0 ? `${playerB.名号}win!` : `${playerA.名号}win!`));
   }
 
-  // 清理（记录原 QQ 供删除 redis 用）
-  const aQQ = A_QQ[num].QQ;
-  const bQQ = B_QQ[num].QQ;
-
-  A_QQ[num].QQ = null;
-  B_QQ[num].QQ = null;
-  await redis.set(getRedisKey(aQQ, 'bisai'), '');
-  await redis.set(getRedisKey(bQQ, 'bisai'), '');
+  void delDataByKey(keysAction.bisai(aQq[num].QQ));
+  void delDataByKey(keysAction.bisai(bQq[num].QQ));
 
   return false;
 }

@@ -13,14 +13,14 @@ import { getAuctionKeyManager } from './auction';
 export const WorldBossBattleInfo = {
   CD: {},
   Lock: 0,
-  UnLockTimer: 0,
+  UnLockTimer: null as NodeJS.Timeout | null,
   setCD(userId: string, time: number) {
     this.CD[userId] = time;
   },
   setLock(lock: 0 | 1) {
     this.Lock = lock;
   },
-  setUnLockTimer(timer: NodeJS.Timeout) {
+  setUnLockTimer(timer: NodeJS.Timeout | null) {
     this.UnLockTimer = timer;
   }
 };
@@ -438,14 +438,14 @@ export async function WorldBossBattle(e) {
 
           Reward = Reward < 200000 ? 200000 : Reward;
           Rewardmsg.push(
-            '第'
-              + `${i + 1}`
-              + '名:\n'
-              + `名号:${CurrentPlayer.名号}`
-              + '\n'
-              + `伤害:${PlayerRecordJSON.TotalDamage[PlayerList[i]]}`
-              + '\n'
-              + `获得灵石奖励${Reward}`
+            '第' +
+              `${i + 1}` +
+              '名:\n' +
+              `名号:${CurrentPlayer.名号}` +
+              '\n' +
+              `伤害:${PlayerRecordJSON.TotalDamage[PlayerList[i]]}` +
+              '\n' +
+              `获得灵石奖励${Reward}`
           );
           CurrentPlayer.灵石 += Reward;
           void writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);

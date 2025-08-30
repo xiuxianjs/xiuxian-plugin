@@ -1,72 +1,74 @@
 import { Image, Text, useMention, useSend } from 'alemonjs';
-import { existplayer, keys, redis, zdBattle } from '@src/model/index';
-import type { Player } from '@src/types';
+import { existplayer, keys, zdBattle } from '@src/model/index';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getAvatar } from '@src/model/utils/utilsx.js';
+import { screenshot } from '@src/image';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { screenshot } from '@src/image';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
+import type { Player } from '@src/types';
+
 export const regular = /^(#|＃|\/)?以武会友$/;
-function extractFaQiu(lg): number | undefined {
+
+function extractFaQiu(lg: any): number | undefined {
   if (!lg || typeof lg !== 'object') {
     return undefined;
   }
-  const o = lg;
-  const v = o.法球倍率;
+
+  const v = lg.法球倍率;
 
   return typeof v === 'number' ? v : undefined;
 }
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
-  const A = e.UserId;
+  const userId = e.UserId;
 
-  if (!(await existplayer(A))) {
+  if (!(await existplayer(userId))) {
+    void Send(Text('你还未开始修仙'));
+
     return false;
   }
+
   const [mention] = useMention(e);
   const res = await mention.findOne();
   const target = res?.data;
 
   if (!target || res.code !== 2000) {
+    void Send(Text('请@要切磋的修仙者'));
+
     return false;
   }
-  const B = target.UserId;
 
-  if (A === B) {
+  const targetUserId = target.UserId;
+
+  if (userId === targetUserId) {
     void Send(Text('你还跟自己修炼上了是不是?'));
 
     return false;
   }
-  const ext = await redis.exists(keys.player(A));
 
-  if (ext < 1) {
-    void Send(Text('修仙者不可对凡人出手!'));
-
-    return false;
-  }
-  const player = await getDataJSONParseByKey(keys.player(A));
+  const player = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     void Send(Text('你的数据不存在'));
 
-    return;
+    return false;
   }
 
-  const playerDataB = await getDataJSONParseByKey(keys.player(B));
+  const playerDataB = await getDataJSONParseByKey(keys.player(targetUserId));
 
   if (!playerDataB) {
     void Send(Text('对方数据不存在'));
 
-    return;
+    return false;
   }
 
-  const playerA: Player = player;
-  const playerB: Player = playerDataB;
+  const playerA = player as Player;
+  const playerB = playerDataB as Player;
 
   // 复制（避免副作用）
-  const a = { ...playerA };
-  const b = { ...playerB };
+  const a = { ...playerA } as Player;
+  const b = { ...playerB } as Player;
 
   if (a.灵根) {
     const v = extractFaQiu(a.灵根);
@@ -75,6 +77,7 @@ const res = onResponse(selects, async e => {
       a.法球倍率 = v;
     }
   }
+
   if (b.灵根) {
     const v = extractFaQiu(b.灵根);
 
@@ -82,6 +85,7 @@ const res = onResponse(selects, async e => {
       b.法球倍率 = v;
     }
   }
+
   a.当前血量 = a.血量上限;
   b.当前血量 = b.血量上限;
 
@@ -93,21 +97,21 @@ const res = onResponse(selects, async e => {
     const winA = `${playerA.名号}击败了${playerB.名号}`;
     const winB = `${playerB.名号}击败了${playerA.名号}`;
 
-    const img = await screenshot('CombatResult', A, {
-      msg: [header, ...(dataBattle.msg || [])],
+    const img = await screenshot('CombatResult', userId, {
+      msg: [header, ...(dataBattle.msg ?? [])],
       playerA: {
-        id: A,
+        id: userId,
         name: playerA.名号,
-        avatar: getAvatar(A),
-        power: playerA.战力,
+        avatar: getAvatar(userId),
+        power: (playerA as any).战力,
         hp: playerA.当前血量,
         maxHp: playerA.血量上限
       },
       playerB: {
-        id: B,
+        id: targetUserId,
         name: playerB.名号,
-        avatar: getAvatar(B),
-        power: playerB.战力,
+        avatar: getAvatar(targetUserId),
+        power: (playerB as any).战力,
         hp: playerB.当前血量,
         maxHp: playerB.血量上限
       },

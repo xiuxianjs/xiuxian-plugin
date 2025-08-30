@@ -72,7 +72,9 @@ const res = onResponse(selects, async e => {
       } else {
         const player = await readPlayer(String(auction.last_offer_player));
 
-        msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+        if (player) {
+          msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+        }
       }
       void Send(Text(msg));
     } catch (err) {
@@ -84,12 +86,8 @@ const res = onResponse(selects, async e => {
     void Send(Text('当前不在星阁开启时间，将直接初始化空白场次'));
   }
 
-  // 重置并加入当前群
-  try {
-    await redis.del(groupListKey);
-  } catch (_err) {
-    // 忽略删除失败
-  }
+  void redis.del(groupListKey);
+
   await auctionKeyManager.enableGroupAuction(channelId);
   void Send(Text('星阁体系在本群开启！'));
 

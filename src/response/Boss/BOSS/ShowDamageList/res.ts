@@ -1,114 +1,96 @@
 import { Image, Text, useSend } from 'alemonjs';
-
-import { redis } from '@src/model/api';
 import { existplayer } from '@src/model/index';
+import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { BossIsAlive, SortPlayer } from '../../../../model/boss';
 import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 import { screenshot } from '@src/image';
+import mw from '@src/response/mw';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?妖王贡献榜$/;
 
-interface WorldBossStatus {
-  Reward?: number;
-  Health?: number;
-}
-interface PlayerRecordData {
-  QQ: Array<string | number>;
-  TotalDamage: number[];
-  Name: string[];
-}
-
-function parseJson<T>(raw: string | null): T | null {
-  if (!raw) {
-    return null;
-  }
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
-}
-
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+  const userId = e.UserId;
 
-  const userId = e.UserId; // 用户qq
-
-  // 有无存档
   if (!(await existplayer(userId))) {
+    void Send(Text('你还未开始修仙'));
+
     return false;
   }
+
   if (!(await BossIsAlive())) {
     void Send(Text('妖王未开启！'));
 
     return false;
   }
-  const PlayerRecord = parseJson<PlayerRecordData>(await redis.get(KEY_RECORD));
-  const WorldBossStatusStr = parseJson<WorldBossStatus>(await redis.get(KEY_WORLD_BOOS_STATUS));
 
-  if (!PlayerRecord || !Array.isArray(PlayerRecord.Name)) {
+  const playerRecord = await getDataJSONParseByKey(KEY_RECORD);
+  const worldBossStatus = await getDataJSONParseByKey(KEY_WORLD_BOOS_STATUS);
+
+  if (!playerRecord || !Array.isArray(playerRecord.Name)) {
     void Send(Text('还没人挑战过妖王'));
 
     return false;
   }
-  const PlayerList = SortPlayer(PlayerRecord);
 
-  if (!Array.isArray(PlayerList) || PlayerList.length === 0) {
+  const playerList = SortPlayer(playerRecord);
+
+  if (!Array.isArray(playerList) || playerList.length === 0) {
     void Send(Text('还没人挑战过妖王'));
 
     return false;
   }
-  let TotalDamage = 0;
-  const limit = Math.min(PlayerList.length, 20);
+
+  let totalDamage = 0;
+  const limit = Math.min(playerList.length, 20);
 
   for (let i = 0; i < limit; i++) {
-    const idx = PlayerList[i];
+    const idx = playerList[i];
 
-    TotalDamage += PlayerRecord.TotalDamage[idx] || 0;
+    totalDamage += playerRecord.TotalDamage[idx] || 0;
   }
-  if (TotalDamage <= 0) {
-    TotalDamage = 1;
-  } // 防止除 0
-  const rewardBase = WorldBossStatusStr?.Reward || 0;
-  const bossDead = (WorldBossStatusStr?.Health || 0) === 0;
-  let CurrentQQ: number | undefined;
-  const temp = [];
 
-  for (let i = 0; i < PlayerList.length && i < 20; i++) {
-    const idx = PlayerList[i];
-    const dmg = PlayerRecord.TotalDamage[idx] || 0;
-    let Reward = Math.trunc((dmg / TotalDamage) * rewardBase);
+  if (totalDamage <= 0) {
+    totalDamage = 1; // 防止除 0
+  }
 
-    if (Reward < 200000) {
-      Reward = 200000;
+  const rewardBase = worldBossStatus?.Reward ?? 0;
+  const bossDead = (worldBossStatus?.Health ?? 0) === 0;
+  let currentQq: number | undefined;
+  const temp: any[] = [];
+
+  for (let i = 0; i < playerList.length && i < 20; i++) {
+    const idx = playerList[i];
+    const dmg = playerRecord.TotalDamage[idx] || 0;
+    let reward = Math.trunc((dmg / totalDamage) * rewardBase);
+
+    if (reward < 200000) {
+      reward = 200000;
     }
-    // msg.push(
-    //   `第${i + 1}名:` +
-    //     `\n名号:${PlayerRecord.Name[idx]}` +
-    //     `\n总伤害:${dmg}` +
-    //     `\n${bossDead ? '已得到灵石' : '预计得到灵石'}:${Reward}`
-    // )
+
     temp[i] = {
       power: dmg,
-      qq: PlayerRecord.QQ[idx],
-      name: PlayerRecord.Name[idx],
+      qq: playerRecord.QQ[idx],
+      name: playerRecord.Name[idx],
       sub: [
         {
           label: bossDead ? '已得到灵石' : '预计得到灵石',
-          value: Reward
+          value: reward
         }
       ],
       level_id: 0
     };
-    if (PlayerRecord.QQ[idx] === e.UserId) {
-      CurrentQQ = i + 1;
+
+    if (playerRecord.QQ[idx] === userId) {
+      currentQq = i + 1;
     }
   }
-  if (CurrentQQ) {
-    const idx = PlayerList[CurrentQQ - 1];
 
-    void Send(Text(`你在妖王周本贡献排行榜中排名第${CurrentQQ}，造成伤害${PlayerRecord.TotalDamage[idx] || 0}，再接再厉！`));
+  if (currentQq) {
+    const idx = playerList[currentQq - 1];
+
+    void Send(Text(`你在妖王周本贡献排行榜中排名第${currentQq}，造成伤害${playerRecord.TotalDamage[idx] || 0}，再接再厉！`));
   }
 
   // 生成截图
@@ -121,7 +103,7 @@ const res = onResponse(selects, async e => {
   if (Buffer.isBuffer(image)) {
     void Send(Image(image));
 
-    return;
+    return false;
   }
 
   void Send(Text('图片生产失败'));
@@ -129,5 +111,4 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);
