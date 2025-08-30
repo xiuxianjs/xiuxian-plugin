@@ -40,6 +40,8 @@ export const __PATH = {
   captcha: `${baseDataKey}:captcha`,
   // 禁言
   mute: `${baseDataKey}:mute`,
+  // 快捷指令
+  shortcut: `${baseDataKey}:shortcut`,
   // 站内信
   message: `${baseDataKey}:message`,
   // 副职
@@ -73,6 +75,7 @@ export const keys = {
   captcha: (id: string) => `${__PATH.captcha}:${id}`,
   mute: (id: string) => `${__PATH.mute}:${id}`,
   message: (id: string) => `${__PATH.message}:${id}`,
+  shortcut: (id: string) => `${__PATH.shortcut}:${id}`,
   fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
 };
 
