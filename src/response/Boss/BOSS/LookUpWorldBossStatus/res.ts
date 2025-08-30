@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { BossIsAlive, InitWorldBoss, LookUpWorldBossStatus, checkAndInitBoss } from '../../../../model/boss';
+import { bossStatus, isBossWord } from '../../../../model/boss';
 import { KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 
 export const selects = onSelects(['message.create']);
@@ -10,32 +10,27 @@ export const regular = /^(#|＃|\/)?妖王状态$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  // 检查并初始化妖王（晚上9点）
-  await checkAndInitBoss();
+  if (!(await isBossWord())) {
+    void Send(Text('妖王未刷新'));
 
-  if (await BossIsAlive()) {
-    const WorldBossStatusStr = await redis.get(KEY_WORLD_BOOS_STATUS);
+    return;
+  }
 
-    if (WorldBossStatusStr) {
-      const WorldBossStatus = JSON.parse(WorldBossStatusStr);
+  const initStatus = await bossStatus('1');
 
-      if (Date.now() - WorldBossStatus.KilledTime < 86400000) {
-        void Send(Text('妖王正在刷新,21点开启'));
+  if (!initStatus) {
+    void Send(Text('妖王正在初始化，请稍后'));
 
-        return false;
-      } else if (WorldBossStatus.KilledTime !== -1) {
-        if ((await InitWorldBoss()) === false) {
-          await LookUpWorldBossStatus(e);
-        }
+    return;
+  }
 
-        return false;
-      }
-      const ReplyMsg = [`----妖王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatus.Health}\n奖励:${WorldBossStatus.Reward}`];
+  const WorldBossStatusStr = await redis.get(KEY_WORLD_BOOS_STATUS);
 
-      void Send(Text(ReplyMsg.join('\n')));
-    }
-  } else {
-    void Send(Text('妖王未开启！'));
+  if (WorldBossStatusStr) {
+    const WorldBossStatus = JSON.parse(WorldBossStatusStr);
+    const ReplyMsg = [`----妖王状态----\n攻击:????????????\n防御:????????????\n血量:${WorldBossStatus.Health}\n奖励:${WorldBossStatus.Reward}`];
+
+    void Send(Text(ReplyMsg.join('\n')));
   }
 });
 

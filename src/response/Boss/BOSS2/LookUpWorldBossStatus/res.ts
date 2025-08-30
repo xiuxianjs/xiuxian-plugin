@@ -1,19 +1,12 @@
 import { Text, useSend } from 'alemonjs';
-import { existplayer } from '@src/model';
+import { bossStatus, existplayer, InitWorldBoss, InitWorldBoss2, isBossWord2 } from '@src/model';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus, checkAndInitBoss2 } from '../../../../model/boss';
 import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 import mw from '@src/response/mw';
 
 const selects = onSelects(['message.create']);
 
 export const regular = /^(#|＃|\/)?金角大王状态$/;
-
-interface WorldBossStatusInfo {
-  Health: number;
-  Reward: number;
-  KilledTime: number;
-}
 
 function formatNum(n: any): string {
   const v = Number(n);
@@ -31,43 +24,31 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  // 检查并初始化金角大王（晚上8点）
-  await checkAndInitBoss2();
+  if (!(await isBossWord2())) {
+    void Send(Text('金角大王未刷新'));
 
-  if (!(await Boss2IsAlive())) {
-    void Send(Text('金角大王未开启！'));
+    return;
+  }
 
-    return false;
+  const initStatus = await bossStatus('2');
+
+  if (!initStatus) {
+    void Send(Text('金角大王正在初始化，请稍后'));
+
+    return;
   }
 
   const statusStr = await getDataJSONParseByKey(KEY_WORLD_BOOS_STATUS_TWO);
-  const status = statusStr as WorldBossStatusInfo | null;
 
-  if (!status) {
-    void Send(Text('状态数据缺失，请联系管理员重新开启！'));
+  if (!statusStr) {
+    void InitWorldBoss2();
 
-    return false;
-  }
-
-  const now = Date.now();
-
-  // 24h 内为刷新冷却期
-  if (now - status.KilledTime < 86400000) {
-    void Send(Text('金角大王正在刷新,20点开启'));
+    void Send(Text('状态数据缺失，开始重新初始化！'));
 
     return false;
   }
 
-  // 如果已被击杀但冷却结束需要初始化
-  if (status.KilledTime !== -1) {
-    if ((await InitWorldBoss()) === false) {
-      await LookUpWorldBossStatus(e);
-    }
-
-    return false;
-  }
-
-  const reply = `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${formatNum(status.Health)}\n奖励:${formatNum(status.Reward)}`;
+  const reply = `----金角大王状态----\n攻击:????????????\n防御:????????????\n血量:${formatNum(statusStr.Health)}\n奖励:${formatNum(statusStr.Reward)}`;
 
   void Send(Text(reply));
 

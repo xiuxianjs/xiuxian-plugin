@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs';
 import { existplayer } from '@src/model/index';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import { BossIsAlive, SortPlayer, checkAndInitBoss } from '../../../../model/boss';
+import { bossStatus, isBossWord, SortPlayer } from '../../../../model/boss';
 import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 import { screenshot } from '@src/image';
 import mw from '@src/response/mw';
@@ -19,13 +19,18 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  // 检查并初始化妖王（晚上9点）
-  await checkAndInitBoss();
+  if (!(await isBossWord())) {
+    void Send(Text('妖王未刷新'));
 
-  if (!(await BossIsAlive())) {
-    void Send(Text('妖王未开启！'));
+    return;
+  }
 
-    return false;
+  const initStatus = await bossStatus('1');
+
+  if (!initStatus) {
+    void Send(Text('妖王正在初始化，请稍后'));
+
+    return;
   }
 
   const playerRecord = await getDataJSONParseByKey(KEY_RECORD);

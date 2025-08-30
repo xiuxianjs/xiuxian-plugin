@@ -10,11 +10,15 @@ export const getDataJSONParseByKey = async <T>(key: string): Promise<T | null> =
   const ext = await redis.exists(key);
 
   if (!ext) {
+    logger.warn(`数据不存在 ext: ${key}`);
+
     return null;
   }
   const res = await redis.get(key);
 
   if (!res) {
+    logger.warn(`数据不存在 res: ${key}`);
+
     return null;
   }
   let data = null;
@@ -27,6 +31,8 @@ export const getDataJSONParseByKey = async <T>(key: string): Promise<T | null> =
     return null;
   }
   if (!data) {
+    logger.warn(`数据不存在 data: ${key}`);
+
     return null;
   }
 

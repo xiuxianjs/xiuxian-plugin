@@ -63,9 +63,9 @@ const SecretPlace = {
   three: 0.28 // 0.3出金，0.7小金
 };
 
-const najie_num = [50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000];
+const najieNum = [50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000];
 
-const najie_price = [0, 50000, 100000, 500000, 500000, 1000000, 3000000, 6000000];
+const najiePrice = [0, 50000, 100000, 500000, 500000, 1000000, 3000000, 6000000];
 
 const whitecrowd = [
   767253997 // 白名单群
@@ -88,10 +88,6 @@ const task = {
   ShopTask: '0 0 21 ? * 1,5',
   // 冲水堂清理 - 每天20点59分执行
   ExchangeTask: '0 59 20 * * ?',
-  // BOSS开启 - 每天21点执行
-  BossTask: '0 0 21 * * ?',
-  // BOSS开启2 - 每天20点执行
-  BossTask2: '0 0 20 * * ?',
   // 拍卖任务
   AuctionofficialTask: '0 0/1 * * * ?',
   // 论坛任务
@@ -122,6 +118,37 @@ const task = {
   MonthCardTask: '0 0 0 * * 1'
 };
 
+const bossTime = {
+  1: {
+    start: {
+      hour: 21,
+      minute: 0,
+      second: 0,
+      millisecond: 0
+    },
+    end: {
+      hour: 21,
+      minute: 58,
+      second: 0,
+      millisecond: 0
+    }
+  },
+  2: {
+    start: {
+      hour: 20,
+      minute: 0,
+      second: 0,
+      millisecond: 0
+    },
+    end: {
+      hour: 20,
+      minute: 58,
+      second: 0,
+      millisecond: 0
+    }
+  }
+};
+
 export default {
   CD,
   sw,
@@ -133,9 +160,10 @@ export default {
   Sign,
   Auction,
   SecretPlace,
-  najie_num,
-  najie_price,
+  najie_num: najieNum,
+  najie_price: najiePrice,
   whitecrowd,
   blackid,
-  task
+  task,
+  bossTime
 };

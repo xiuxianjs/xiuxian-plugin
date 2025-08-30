@@ -8,10 +8,9 @@ import { TaskInfo } from '@/types/types';
 import TaskConfig from './TaskConfig';
 import StatusTag from './StatusTag';
 import formatCron from './config';
-import classNames from 'classnames';
 
 // 导入UI组件库
-import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer, XiuxianRefreshButton } from '@/components/ui';
+import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer } from '@/components/ui';
 
 // 获取类型标签
 const getTypeTag = (type: string) => {
@@ -32,8 +31,6 @@ const taskNames: {
 } = {
   ShopTask: '商店刷新',
   ExchangeTask: '冲水堂清理',
-  BossTask: 'BOSS开启',
-  BossTask2: 'BOSS开启2',
   AuctionofficialTask: '拍卖任务',
   ForumTask: '论坛任务',
   MojiTask: '魔界任务',

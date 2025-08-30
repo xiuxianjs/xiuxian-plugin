@@ -185,11 +185,24 @@ export const GAME_KEY = keysAction.system('money_game');
 // 妖王 - demon king
 export const KEY_WORLD_BOOS_STATUS = keysAction.system('world_boss_demon_king_status');
 export const KEY_RECORD = keysAction.system('record_demon_king');
+export const KEY_WORLD_BOOS_STATUS_INIT = keysAction.system('world_boss_demon_king_init');
 
 // 金角 大王 - king
 export const KEY_WORLD_BOOS_STATUS_TWO = keysAction.system('world_boss_king_status');
 export const KEY_RECORD_TWO = keysAction.system('record_king');
+export const KEY_WORLD_BOOS_STATUS_INIT_TWO = keysAction.system('world_boss_king_init');
 
 // 星阁 - 旧版本key（兼容性保留，仅内部使用）
 export const KEY_AUCTION_GROUP_LIST = keysAction.system('auctionofficialtask_grouplist');
 export const KEY_AUCTION_OFFICIAL_TASK = keysAction.system('auctionofficialtask');
+
+/**
+ * 锁相关的 Redis Key 管理
+ */
+export const keysLock = {
+  // 系统相关锁
+  boss: (bossId: 'boss1' | 'boss2') => `${baseKey}:locks:boss:${bossId}`,
+
+  // 紧急锁（用于系统维护等）
+  emergency: (operation: string) => `${baseKey}:locks:emergency:${operation}`
+};

@@ -509,6 +509,76 @@ export const configCategories: ConfigCategory[] = [
         category: 'list'
       }
     ]
+  },
+  {
+    name: 'Boss时间',
+    icon: '👹',
+    items: [
+      {
+        key: 'bossTime.1.start.hour',
+        name: '妖王开启时间（小时）',
+        value: 21,
+        type: 'number',
+        description: '妖王开启时间（小时，24小时制）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.1.start.minute',
+        name: '妖王开启时间（分钟）',
+        value: 0,
+        type: 'number',
+        description: '妖王开启时间（分钟）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.1.end.hour',
+        name: '妖王结束时间（小时）',
+        value: 21,
+        type: 'number',
+        description: '妖王结束时间（小时，24小时制）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.1.end.minute',
+        name: '妖王结束时间（分钟）',
+        value: 58,
+        type: 'number',
+        description: '妖王结束时间（分钟）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.2.start.hour',
+        name: '金角大王开启时间（小时）',
+        value: 20,
+        type: 'number',
+        description: '金角大王开启时间（小时，24小时制）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.2.start.minute',
+        name: '金角大王开启时间（分钟）',
+        value: 0,
+        type: 'number',
+        description: '金角大王开启时间（分钟）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.2.end.hour',
+        name: '金角大王结束时间（小时）',
+        value: 20,
+        type: 'number',
+        description: '金角大王结束时间（小时，24小时制）',
+        category: 'boss'
+      },
+      {
+        key: 'bossTime.2.end.minute',
+        name: '金角大王结束时间（分钟）',
+        value: 58,
+        type: 'number',
+        description: '金角大王结束时间（分钟）',
+        category: 'boss'
+      }
+    ]
   }
 ];
 
