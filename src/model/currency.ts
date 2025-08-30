@@ -600,11 +600,11 @@ export const getAllRechargeRecords = async (limit = 50, offset = 0, status?: Pay
   try {
     const redis = getIoRedis();
     const pattern = REDIS_KEYS.CURRENCY_LOG('*');
-    const keys_list = await redis.keys(pattern);
+    const keysList = await redis.keys(pattern);
 
     const records = [];
 
-    for (const key of keys_list.slice(offset, offset + limit)) {
+    for (const key of keysList.slice(offset, offset + limit)) {
       const recordData = await redis.get(key);
 
       if (recordData) {
@@ -741,6 +741,33 @@ export const checkUserMonthCardStatus = async (userId: string) => {
     logger.warn('Error checking user month card status:', error);
 
     return null;
+  }
+};
+
+// 是否是指定月卡用户
+export const isUserMonthCard = async (userId: string, cardType?: 'small' | 'big'): Promise<boolean> => {
+  try {
+    const userInfo = await checkUserMonthCardStatus(userId);
+
+    if (!userInfo) {
+      return false;
+    }
+
+    if (!cardType) {
+      return userInfo.has_small_month_card ?? userInfo.has_big_month_card;
+    }
+
+    if (cardType === 'small') {
+      return userInfo.has_small_month_card;
+    } else if (cardType === 'big') {
+      return userInfo.has_big_month_card;
+    }
+
+    return false;
+  } catch (error) {
+    logger.warn('Error checking if user is month card holder:', error);
+
+    return false;
   }
 };
 

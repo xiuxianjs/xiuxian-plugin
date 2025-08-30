@@ -162,6 +162,7 @@ const res = onResponse(selects, async e => {
   await writeDanyao(userId, danyaoInit);
   const img = await getPlayerImage(e);
 
+  void Send(Text('发送‘新手引导’进入引导'));
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));
 
