@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs';
-import { bossStatus, existplayer, InitWorldBoss, InitWorldBoss2, isBossWord2 } from '@src/model';
+import { bossStatus, existplayer, InitWorldBoss2, isBossWord2 } from '@src/model';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 import mw from '@src/response/mw';
@@ -30,9 +30,13 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  const initStatus = await bossStatus('2');
+  const bossStatusResult = await bossStatus('2');
 
-  if (!initStatus) {
+  if (bossStatusResult === 'dead') {
+    void Send(Text('金角大王已经被击败了，请等待下次刷新'));
+
+    return;
+  } else if (bossStatusResult === 'initializing') {
     void Send(Text('金角大王正在初始化，请稍后'));
 
     return;

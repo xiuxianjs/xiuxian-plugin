@@ -4,6 +4,7 @@ import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getDataByKey } from '@src/model/DataControl';
 import { keysAction, keysLock } from '@src/model/keys';
 import { WorldBossBattle, WorldBossBattleInfo, bossStatus, isBossWord2 } from '../../../../model/boss';
+
 import mw from '@src/response/mw';
 import { acquireLock, releaseLock, withLock } from '@src/model/locks';
 import * as _ from 'lodash-es';
@@ -122,9 +123,14 @@ const res = onResponse(selects, async e => {
       }
     }
 
-    const initStatus = await bossStatus('2');
+    // 检查Boss状态
+    const bossStatusResult = await bossStatus('2');
 
-    if (!initStatus) {
+    if (bossStatusResult === 'dead') {
+      void Send(Text('金角大王已经被击败了，请等待下次刷新'));
+
+      return;
+    } else if (bossStatusResult === 'initializing') {
       void Send(Text('金角大王正在初始化，请稍后'));
 
       return;

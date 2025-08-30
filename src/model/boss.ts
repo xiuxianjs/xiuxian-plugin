@@ -117,10 +117,17 @@ export const bossStatus = async (key: '1' | '2') => {
       void InitWorldBoss2();
     }
 
-    return false;
+    return 'initializing'; // Boss正在初始化
   }
 
-  return true;
+  // 检查Boss是否已经死亡
+  const statusStr = await getDataJSONParseByKey(bossKeys[key].status);
+
+  if (statusStr && statusStr.Health <= 0) {
+    return 'dead'; // Boss已死亡
+  }
+
+  return ''; // Boss正常，可以攻击
 };
 
 export async function InitWorldBoss2() {
@@ -287,6 +294,11 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   const playerWin = msg.includes(winA);
   const bossWin = msg.includes(winB);
 
+  // 显示Boss当前状态
+  const bossStatus = statusStr as WorldBossStatus;
+
+  const powerA = player.攻击 + player.防御 + player.当前血量;
+  const powerB = boss.攻击 + bossStatus.Health + bossStatus.Healthmax;
   const postImage = async () => {
     const img = await screenshot('CombatResult', userId, {
       msg: msg,
@@ -294,7 +306,7 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
         id: userId,
         name: player.名号,
         avatar: getAvatar(userId),
-        power: player.攻击 + player.防御 + player.当前血量 || 0,
+        power: powerA ?? 0,
         hp: player.当前血量,
         maxHp: player.血量上限
       },
@@ -302,7 +314,7 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
         id: '1715713638',
         name: boss.名号,
         avatar: getAvatar('1715713638'),
-        power: boss.攻击 + boss.防御 + boss.当前血量 || 0,
+        power: powerB ?? 0,
         hp: bossStatus.Health,
         maxHp: bossStatus.Healthmax
       },
@@ -315,9 +327,6 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   };
 
   void postImage();
-
-  // 显示Boss当前状态
-  const bossStatus = statusStr as WorldBossStatus;
 
   void Send(Text(`血量:${bossStatus.Health}\n奖励:${bossStatus.Reward}`));
 

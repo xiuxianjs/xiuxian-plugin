@@ -25,9 +25,13 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  const initStatus = await bossStatus('1');
+  const bossStatusResult = await bossStatus('1');
 
-  if (!initStatus) {
+  if (bossStatusResult === 'dead') {
+    void Send(Text('妖王已经被击败了，请等待下次刷新'));
+
+    return;
+  } else if (bossStatusResult === 'initializing') {
     void Send(Text('妖王正在初始化，请稍后'));
 
     return;
@@ -56,7 +60,7 @@ const res = onResponse(selects, async e => {
   for (let i = 0; i < limit; i++) {
     const idx = playerList[i];
 
-    totalDamage += playerRecord.TotalDamage[idx] || 0;
+    totalDamage += playerRecord.TotalDamage[idx] ?? 0;
   }
 
   if (totalDamage <= 0) {
