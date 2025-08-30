@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl';
 import { Image, Text, useSend } from 'alemonjs';
 import { Player } from '@src/types';
+import { WorldBossStatus, WorldBossPlayerRecord } from '@src/types/task';
 import { screenshot } from '@src/image';
 import { getAvatar } from './utils/utilsx';
 import { zdBattle, Harm } from './battle';
@@ -73,7 +74,7 @@ export async function InitWorldBoss() {
   let reward = 12000000;
 
   if (playerQuantity < 5) {
-    playerQuantity = 10;
+    playerQuantity = 6;
     averageDamage = 6000000;
     reward = 6000000;
   }
@@ -134,7 +135,7 @@ export async function InitWorldBoss2() {
   let reward = 12000000;
 
   if (playerQuantity < 5) {
-    playerQuantity = 10;
+    playerQuantity = 6;
     averageDamage = 6000000;
     reward = 6000000;
   }
@@ -257,16 +258,16 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   const recordStr = await getDataJSONParseByKey(bossKeys[key].record);
 
   // 玩家伤害记录
-  let playerRecordJson = null;
+  let playerRecordJson: WorldBossPlayerRecord | null = null;
   let userIdx = 0;
 
   if (!recordStr || +recordStr === 0) {
-    playerRecordJson = { QQ: [userId], TotalDamage: [0], Name: [player.名号] };
+    playerRecordJson = { QQ: [String(userId)], TotalDamage: [0], Name: [player.名号] };
   } else {
-    playerRecordJson = recordStr;
-    userIdx = playerRecordJson.QQ.indexOf(userId);
+    playerRecordJson = recordStr as WorldBossPlayerRecord;
+    userIdx = playerRecordJson.QQ.indexOf(String(userId));
     if (userIdx === -1) {
-      playerRecordJson.QQ.push(userId);
+      playerRecordJson.QQ.push(String(userId));
       playerRecordJson.Name.push(player.名号);
       playerRecordJson.TotalDamage.push(0);
       userIdx = playerRecordJson.QQ.length - 1;
@@ -286,47 +287,56 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   const playerWin = msg.includes(winA);
   const bossWin = msg.includes(winB);
 
-  const img = await screenshot('CombatResult', userId, {
-    msg: msg,
-    playerA: {
-      id: userId,
-      name: player.名号,
-      avatar: getAvatar(userId),
-      power: player?.战力,
-      hp: player.当前血量,
-      maxHp: player.血量上限
-    },
-    playerB: {
-      id: '1715713638',
-      name: boss.名号,
-      avatar: getAvatar('1715713638'),
-      power: boss.战力,
-      hp: boss.当前血量,
-      maxHp: boss.血量上限
-    },
-    result: msg.includes(winA) ? 'A' : msg.includes(winB) ? 'B' : 'draw'
-  });
+  const postImage = async () => {
+    const img = await screenshot('CombatResult', userId, {
+      msg: msg,
+      playerA: {
+        id: userId,
+        name: player.名号,
+        avatar: getAvatar(userId),
+        power: player.攻击 + player.防御 + player.当前血量 || 0,
+        hp: player.当前血量,
+        maxHp: player.血量上限
+      },
+      playerB: {
+        id: '1715713638',
+        name: boss.名号,
+        avatar: getAvatar('1715713638'),
+        power: boss.攻击 + boss.防御 + boss.当前血量 || 0,
+        hp: bossStatus.Health,
+        maxHp: bossStatus.Healthmax
+      },
+      result: msg.includes(winA) ? 'A' : msg.includes(winB) ? 'B' : 'draw'
+    });
 
-  if (Buffer.isBuffer(img)) {
-    void Send(Image(img));
-  }
+    if (Buffer.isBuffer(img)) {
+      void Send(Image(img));
+    }
+  };
+
+  void postImage();
+
+  // 显示Boss当前状态
+  const bossStatus = statusStr as WorldBossStatus;
+
+  void Send(Text(`血量:${bossStatus.Health}\n奖励:${bossStatus.Reward}`));
 
   if (playerWin) {
     // 玩家胜利时对Boss造成伤害
-    dealt = Math.trunc(statusStr.Healthmax * 0.06 + Harm(player.攻击 * 0.85, boss.防御) * 10);
-    statusStr.Health -= dealt;
+    dealt = Math.trunc(bossStatus.Healthmax * 0.06 + Harm(player.攻击 * 0.85, boss.防御) * 10);
+    bossStatus.Health -= dealt;
     // 确保Boss血量不为负数
-    if (statusStr.Health < 0) {
-      statusStr.Health = 0;
+    if (bossStatus.Health < 0) {
+      bossStatus.Health = 0;
     }
     void Send(Text(`${player.名号}击败了[${boss.名号}],重创[${boss.名号}],造成伤害${dealt}`));
   } else if (bossWin) {
     // Boss胜利时，玩家只造成少量伤害
-    dealt = Math.trunc(statusStr.Healthmax * 0.02 + Harm(player.攻击 * 0.85, boss.防御) * 2);
-    statusStr.Health -= dealt;
+    dealt = Math.trunc(bossStatus.Healthmax * 0.02 + Harm(player.攻击 * 0.85, boss.防御) * 2);
+    bossStatus.Health -= dealt;
     // 确保Boss血量不为负数
-    if (statusStr.Health < 0) {
-      statusStr.Health = 0;
+    if (bossStatus.Health < 0) {
+      bossStatus.Health = 0;
     }
     void Send(Text(`${player.名号}被[${boss.名号}]击败了,只对[${boss.名号}]造成了${dealt}伤害`));
   }
@@ -336,22 +346,22 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   if (random < 0.05 && playerWin) {
     // 玩家胜利时，Boss使用古典秘籍回复血量
     void Send(Text(`这场战斗重创了[${boss.名号}]，${boss.名号}使用了古典秘籍,血量回复了10%`));
-    statusStr.Health += Math.trunc(statusStr.Healthmax * 0.1);
+    bossStatus.Health += Math.trunc(bossStatus.Healthmax * 0.1);
     // 确保Boss血量不超过最大值
-    if (statusStr.Health > statusStr.Healthmax) {
-      statusStr.Health = statusStr.Healthmax;
+    if (bossStatus.Health > bossStatus.Healthmax) {
+      bossStatus.Health = bossStatus.Healthmax;
     }
     // 调整玩家血量
     await addHP(userId, dataBattle.A_xue);
   } else if (random > 0.95 && bossWin) {
     // Boss胜利时，韩立助阵
-    const extra = Math.trunc(statusStr.Health * 0.15);
+    const extra = Math.trunc(bossStatus.Health * 0.15);
 
     dealt += extra;
-    statusStr.Health -= extra;
+    bossStatus.Health -= extra;
     // 确保Boss血量不为负数
-    if (statusStr.Health < 0) {
-      statusStr.Health = 0;
+    if (bossStatus.Health < 0) {
+      bossStatus.Health = 0;
     }
     void Send(Text(`危及时刻,万先盟-韩立前来助阵,对[${boss.名号}]造成${extra}伤害,并治愈了你的伤势`));
     // 恢复玩家部分血量，而不是满血
@@ -366,10 +376,15 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
     playerRecordJson.TotalDamage[userIdx] += dealt;
   }
 
-  // 保存战斗记录
-  await setDataJSONStringifyByKey(bossKeys[key].record, playerRecordJson);
+  // 保存Boss当前状态（每次攻击后都要保存）
+  await setDataJSONStringifyByKey(bossKeys[key].status, bossStatus);
 
-  if (statusStr.Health <= 0) {
+  // 保存战斗记录
+  if (playerRecordJson) {
+    await setDataJSONStringifyByKey(bossKeys[key].record, playerRecordJson);
+  }
+
+  if (bossStatus.Health <= 0) {
     const lingshi = 500000;
 
     await addCoin(userId, lingshi);
@@ -387,18 +402,20 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
       }
     }
 
-    statusStr.KilledTime = Date.now();
+    bossStatus.KilledTime = Date.now();
 
     // 保存记录
-    await setDataJSONStringifyByKey(bossKeys[key].status, statusStr);
+    await setDataJSONStringifyByKey(bossKeys[key].status, bossStatus);
 
     const playerList = SortPlayer(playerRecordJson);
 
     const showMax = Math.min(playerList.length, 20);
     let topSum = 0;
 
-    for (let i = 0; i < showMax; i++) {
-      topSum += playerRecordJson.TotalDamage[playerList[i]];
+    if (playerRecordJson) {
+      for (let i = 0; i < showMax; i++) {
+        topSum += playerRecordJson.TotalDamage[playerList[i]];
+      }
     }
 
     // 如果总伤害为0，则平均分配奖励
@@ -408,43 +425,47 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
 
     const rewardMsg: string[] = [`****${boss.名号}贡献排行榜****`];
 
-    for (let i = 0; i < playerList.length; i++) {
-      const idx = playerList[i];
-      const qq = playerRecordJson.QQ[idx];
-      const cur = await getDataJSONParseByKey(keys.player(qq));
+    if (playerRecordJson) {
+      for (let i = 0; i < playerList.length; i++) {
+        const idx = playerList[i];
+        const qq = String(playerRecordJson.QQ[idx]);
+        const cur = await getDataJSONParseByKey(keys.player(qq));
 
-      if (!cur) {
-        continue;
-      }
+        if (!cur) {
+          continue;
+        }
 
-      const lingshi = 200000;
+        const playerData = cur as Player;
 
-      if (i < showMax) {
-        // 计算奖励，避免除零错误
-        let reward = 0;
+        const lingshi = 200000;
 
-        if (topSum > 0) {
-          reward = Math.trunc((playerRecordJson.TotalDamage[idx] / topSum) * statusStr.Reward);
+        if (i < showMax) {
+          // 计算奖励，避免除零错误
+          let reward = 0;
+
+          if (topSum > 0) {
+            reward = Math.trunc((playerRecordJson.TotalDamage[idx] / topSum) * bossStatus.Reward);
+          } else {
+            // 如果总伤害为0，平均分配奖励
+            reward = Math.trunc(bossStatus.Reward / showMax);
+          }
+
+          // 确保奖励不为负数或无效值
+          if (!Number.isFinite(reward) || reward < lingshi) {
+            reward = lingshi;
+          }
+
+          rewardMsg.push(`第${i + 1}名:\n名号:${playerData.名号}\n伤害:${playerRecordJson.TotalDamage[idx]}\n获得灵石奖励${reward}`);
+          playerData.灵石 += reward;
+          await setDataJSONStringifyByKey(keys.player(qq), playerData);
         } else {
-          // 如果总伤害为0，平均分配奖励
-          reward = Math.trunc(statusStr.Reward / showMax);
-        }
+          // 参与但未进入前20名的玩家获得基础奖励
+          playerData.灵石 += lingshi;
+          await setDataJSONStringifyByKey(keys.player(qq), playerData);
 
-        // 确保奖励不为负数或无效值
-        if (!Number.isFinite(reward) || reward < lingshi) {
-          reward = lingshi;
-        }
-
-        rewardMsg.push(`第${i + 1}名:\n名号:${cur.名号}\n伤害:${playerRecordJson.TotalDamage[idx]}\n获得灵石奖励${reward}`);
-        cur.灵石 += reward;
-        await setDataJSONStringifyByKey(keys.player(qq), cur);
-      } else {
-        // 参与但未进入前20名的玩家获得基础奖励
-        cur.灵石 += lingshi;
-        await setDataJSONStringifyByKey(keys.player(qq), cur);
-
-        if (i === playerList.length - 1) {
-          rewardMsg.push(`其余参与的修仙者均获得${lingshi}灵石奖励！`);
+          if (i === playerList.length - 1) {
+            rewardMsg.push(`其余参与的修仙者均获得${lingshi}灵石奖励！`);
+          }
         }
       }
     }
