@@ -8,6 +8,7 @@ export const handleStudy = async (userId: string, thingName: string, message: an
   if (!nowPlayer) {
     return false;
   }
+
   const islearned = nowPlayer.学习的功法.find(item => item === thingName);
 
   if (islearned) {
@@ -15,6 +16,12 @@ export const handleStudy = async (userId: string, thingName: string, message: an
 
     return false;
   }
+  if (nowPlayer.学习的功法.length >= nowPlayer.level_id) {
+    void message.send(format(Text('您当前学习功法数量已达上限，请突破后再来')));
+
+    return false;
+  }
+
   await addNajieThing(userId, thingName, '功法', -1);
 
   nowPlayer.学习的功法.push(thingName);

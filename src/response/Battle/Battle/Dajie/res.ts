@@ -45,6 +45,12 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
+  if (playerAA.level_id < 17) {
+    void Send(Text('境界不足，暂未开放！'));
+
+    return;
+  }
+
   // 时间窗口校验（星阁开启时禁止）
   const nowDate = new Date();
   const cfg = await config.getConfig('xiuxian', 'xiuxian');
@@ -111,6 +117,11 @@ const res = onResponse(selects, async e => {
     void Send(Text('对方为错误存档！'));
 
     return false;
+  }
+  if (playerBB.level_id < 17) {
+    void Send(Text('对方等级过低！'));
+
+    return;
   }
 
   const levelB = levelList.find(it => it.level_id === playerBB.level_id);

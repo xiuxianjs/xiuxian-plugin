@@ -2,7 +2,7 @@ import { Text, useMessage, useSend, useSubscribe } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { __PATH, keys } from '@src/model/keys';
-import { existplayer, getRandomFromARR, Go, notUndAndNull, writePlayer, getConfig, readPlayer } from '@src/model/index';
+import { existplayer, getRandomFromARR, Go, notUndAndNull, writePlayer, getConfig, readPlayer, readNajie, addNajieThing } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import type { AssociationDetailData } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
@@ -79,6 +79,14 @@ const res = onResponse(selects, async e => {
   if (!(await Go(e))) {
     return false;
   }
+  const najie = await readNajie(userId);
+
+  if (!najie?.道具?.some(item => item.name === '转世卡')) {
+    void Send(Text('您没有转世卡'));
+
+    return false;
+  }
+  await addNajieThing(userId, '转世卡', '道具', -1);
 
   const nowTime = Date.now();
   const lastKey = getRedisKey(userId, 'last_reCreate_time');
