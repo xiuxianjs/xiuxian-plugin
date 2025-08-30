@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { getRedisKey } from '@src/model/keys';
 import { startAction } from '@src/model/actionHelper';
-import { Go, convert2integer, notUndAndNull, readPlayer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
+import { Go, convert2integer, notUndAndNull, readPlayer, existNajieThing, addNajieThing, addCoin, isUserMonthCard } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?沉迷秘境.*$/;
@@ -32,6 +32,10 @@ const res = onResponse(selects, async e => {
     return false;
   }
   const player = await readPlayer(userId);
+
+  if (!player) {
+    return;
+  }
   // weizhi 结构断言（原 data.didian_list 项目应包含 Price:number）
   const placeUnknown = weizhi;
 
@@ -45,11 +49,19 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (didian === '大千世界' || didian === '桃花岛') {
+  const isMonth = await isUserMonthCard(userId);
+
+  if (didian === '大千世界' && !isMonth) {
     void Send(Text('该秘境不支持沉迷哦'));
 
     return false;
   }
+  if (didian === '桃花岛') {
+    void Send(Text('该秘境不支持沉迷哦'));
+
+    return false;
+  }
+
   const keyCount = await existNajieThing(userId, '秘境之匙', '道具');
 
   if (typeof keyCount === 'number' && keyCount >= i) {

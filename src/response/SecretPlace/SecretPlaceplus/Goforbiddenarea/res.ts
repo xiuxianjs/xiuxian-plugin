@@ -18,6 +18,12 @@ const res = onResponse(selects, async e => {
   }
   const player = await readPlayer(userId);
 
+  if (!player) {
+    void Send(Text('请先#踏入仙途'));
+
+    return false;
+  }
+
   // 当前境界 id
   if (!notUndAndNull(player.level_id)) {
     void Send(Text('请先#同步信息'));

@@ -1,9 +1,9 @@
-import { addNajieThing, readPlayer, redis } from '@src/model';
+import { addNajieThing, isUserMonthCard, readPlayer, redis } from '@src/model';
 import mw, { selects } from '@src/response/mw';
 import { useMessage, Text } from 'alemonjs';
 
 export const regular = /^(#|＃|\/)?领取每周礼包$/;
-const baseKey = 'xiuxian@1.3.0:Vip:';
+const baseKey = 'xiuxian@1.3.0:month_card:';
 
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
@@ -14,8 +14,8 @@ const res = onResponse(selects, async e => {
 
     return;
   }
-  if (!user.vip_type || user.vip_type === 0) {
-    void message.send(format(Text('请先成为会员')));
+  if (!(await isUserMonthCard(e.UserId))) {
+    void message.send(format(Text('你没有月卡')));
 
     return;
   }
