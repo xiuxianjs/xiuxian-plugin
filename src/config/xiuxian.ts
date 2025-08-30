@@ -88,10 +88,6 @@ const task = {
   ShopTask: '0 0 21 ? * 1,5',
   // 冲水堂清理 - 每天20点59分执行
   ExchangeTask: '0 59 20 * * ?',
-  // BOSS开启 - 每天21点执行
-  BossTask: '0 0 21 * * ?',
-  // BOSS开启2 - 每天20点执行
-  BossTask2: '0 0 20 * * ?',
   // 拍卖任务
   AuctionofficialTask: '0 0/1 * * * ?',
   // 论坛任务
@@ -117,9 +113,7 @@ const task = {
   // 天地榜任务
   TiandibangTask: '0 0 0 ? * 1',
   // 仙界任务
-  Xijietask: '0 0/1 * * * ?',
-  // 月卡周常礼包
-  MonthCardTask: '0 0 0 * * 1'
+  Xijietask: '0 0/1 * * * ?'
 };
 
 export default {

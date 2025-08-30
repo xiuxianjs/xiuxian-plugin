@@ -226,6 +226,10 @@ export const handleConsume = async (
       await handleDinglingZhu(userId, thingName, player, message);
 
       return true;
+    case '道具盲盒':
+      await handlePropBox(userId, message);
+
+      return true;
   }
 
   // 洗髓道具处理
@@ -240,3 +244,81 @@ export const handleConsume = async (
 
   return true;
 };
+
+async function handlePropBox(userId: string, message: any) {
+  await addNajieThing(userId, '道具盲盒', '道具', -1);
+
+  const propBoxList = [
+    { name: '修仙世界签证', price: 2333, rate: 0.131756 },
+    { name: '神石', price: 288888, rate: 0.001064 },
+    { name: '武神石', price: 288888, rate: 0.001064 },
+    { name: '法神石', price: 288888, rate: 0.001064 },
+    { name: '甲神石', price: 288888, rate: 0.001064 },
+    { name: '仙府通行证', price: 288888, rate: 0.001064 },
+    { name: '仙境优惠券', price: 288888, rate: 0.001064 },
+    { name: '杀神崖通行证', price: 288888, rate: 0.001064 },
+    { name: '神界秘宝', price: 288888, rate: 0.001064 },
+    { name: '闪闪发光的石头', price: 288888, rate: 0.001064 },
+    { name: '替身人偶', price: 288888, rate: 0.001064 },
+    { name: '百合花篮', price: 288888, rate: 0.001064 },
+    { name: '武魂石', price: 288888, rate: 0.001064 },
+    { name: '法魂石', price: 288888, rate: 0.001064 },
+    { name: '甲魂石', price: 288888, rate: 0.001064 },
+    { name: '魔石', price: 288888, rate: 0.001064 },
+    { name: '修魔丹', price: 288888, rate: 0.001064 },
+    { name: '血魔丹', price: 288888, rate: 0.001064 },
+    { name: '魔界秘宝', price: 288888, rate: 0.001064 },
+    { name: '摘榜令', price: 288888, rate: 0.001064 },
+    { name: '定情信物', price: 1314, rate: 0.233932 },
+    { name: '重铸石', price: 288888, rate: 0.001064 },
+    { name: '寻物纸', price: 10000, rate: 0.030739 },
+    { name: '剑帝一剑', price: 28888, rate: 0.010641 },
+    { name: '残卷', price: 1000000, rate: 0.000307 },
+    { name: '隐身水', price: 288800, rate: 0.001064 },
+    { name: '洗根水', price: 188800, rate: 0.001628 },
+    { name: '定灵珠', price: 288800, rate: 0.001064 },
+    { name: '矿渣', price: 70000, rate: 0.004391 },
+    { name: '碎矿', price: 80000, rate: 0.003842 },
+    { name: '小矿', price: 125000, rate: 0.002459 },
+    { name: '金矿', price: 150000, rate: 0.002049 },
+    { name: '1k', price: 1000, rate: 0.307387 },
+    { name: '5k', price: 5000, rate: 0.061477 },
+    { name: '1w', price: 10000, rate: 0.030739 },
+    { name: '攻击强化', price: 600000, rate: 0.000512 },
+    { name: '防御强化', price: 600000, rate: 0.000512 },
+    { name: '生命强化', price: 600000, rate: 0.000512 },
+    { name: '幸运草', price: 888888, rate: 0.000346 },
+    { name: '采药师转职凭证', price: 18880, rate: 0.016281 },
+    { name: '采矿师转职凭证', price: 18880, rate: 0.016281 },
+    { name: '炼丹师转职凭证', price: 18880, rate: 0.016281 },
+    { name: '侠客转职凭证', price: 18880, rate: 0.016281 },
+    { name: '炼器师转职凭证', price: 18880, rate: 0.016281 },
+    { name: '1级仙石', price: 1000000, rate: 0.000307 },
+    { name: '2级仙石', price: 2000000, rate: 0.000154 },
+    { name: '3级仙石', price: 3000000, rate: 0.000102 },
+    { name: '4级仙石', price: 4000000, rate: 0.000077 },
+    { name: '银丝仙网', price: 5000, rate: 0.061477 },
+    { name: '金丝仙网', price: 100000, rate: 0.003074 },
+    { name: '天罗地网', price: 500000, rate: 0.000615 },
+    { name: '长相奇怪的小石头', price: 50000, rate: 0.006148 }
+  ];
+  const getRandomItem = items => {
+    const random = Math.random();
+    let sum = 0;
+
+    for (let i = 0; i < items.length; i++) {
+      sum += items[i].rate;
+      if (random < sum) {
+        return items[i];
+      }
+    }
+
+    return items[items.length - 1];
+  };
+
+  const item = getRandomItem(propBoxList);
+
+  await addNajieThing(userId, item.name, '道具', 1);
+
+  void message.send(format(Text(`恭喜你，获得了${item.name}`)));
+}

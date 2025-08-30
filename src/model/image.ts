@@ -1219,3 +1219,7 @@ export async function goWeizhi(e: EventsMessageCreateEnum, weizhi: NamedItem[]):
   }
   void Send(Text('获取图片失败，请稍后再试'));
 }
+
+export async function getMonthCard(isMonth: boolean, userId: string): Promise<ScreenshotResult> {
+  return await screenshot('Monthcard', userId, { isMonth });
+}

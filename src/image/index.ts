@@ -50,6 +50,7 @@ import jindi from '../resources/html/jindi';
 import CombatResult from '../resources/html/CombatResult';
 import { mkdirSync, writeFileSync } from 'fs';
 import Message from '@src/resources/html/message';
+import Monthcard from '@src/resources/html/monthCard';
 
 const map = {
   help,
@@ -99,7 +100,8 @@ const map = {
   tianditang,
   BlessPlace,
   CombatResult,
-  message: Message
+  message: Message,
+  Monthcard
 } as const;
 
 // 简易内存缓存结构：每种页面+用户 只保存最近一次数据渲染结果
