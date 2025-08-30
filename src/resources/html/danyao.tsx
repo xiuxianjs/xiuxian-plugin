@@ -1,10 +1,6 @@
 import React from 'react';
 import HTML from './HTML';
-import playerURL from '@src/resources/img/player.jpg';
-import playerFooterURL from '@src/resources/img/player_footer.png';
-import { getAvatar } from '@src/model/utils/utilsx.js';
-import { Avatar } from './Avatar';
-
+import fairyrealm from '@src/resources/img/fairyrealm.jpg';
 interface DanyaoItem {
   name: string;
   type: string;
@@ -16,19 +12,16 @@ interface DanyaoItem {
 }
 
 const Danyao = ({
-  user_id,
-  danyao_have = [],
-  danyao2_have = [],
-  danyao_need = []
+  danyao_have: danyaoHave = [],
+  danyao2_have: danyao2Have = [],
+  danyao_need: danyaoNeed = []
 }: {
-  nickname: string;
-  user_id: string;
   danyao_have?: DanyaoItem[];
   danyao2_have?: DanyaoItem[];
   danyao_need?: DanyaoItem[];
 }) => {
   const renderEffect = (item: DanyaoItem) => {
-    const effects = [];
+    const effects: (number | string)[] = [];
 
     if (item.HP) {
       effects.push(item.HP);
@@ -50,7 +43,7 @@ const Danyao = ({
     <HTML
       className='w-full text-center p-4 md:p-8 bg-top bg-no-repeat min-h-screen'
       style={{
-        backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
+        backgroundImage: `url(${fairyrealm}), url(${fairyrealm})`,
         backgroundRepeat: 'no-repeat, repeat',
         backgroundSize: '100%, auto'
       }}
@@ -60,15 +53,8 @@ const Danyao = ({
       <div className='absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),transparent_70%)] pointer-events-none' />
 
       <main className='relative max-w-5xl mx-auto space-y-12 z-10'>
-        {/* 头像 + 标题 */}
-        <header className='space-y-6 flex flex-col items-center'>
-          <div className='relative'>
-            <Avatar src={getAvatar(user_id)} />
-          </div>
-        </header>
-
         {/* 已拥有 */}
-        {(danyao_have.length > 0 || danyao2_have.length > 0) && (
+        {(danyaoHave.length > 0 || danyao2Have.length > 0) && (
           <section className='relative'>
             <div className='absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-emerald-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-emerald-300/20'>
@@ -82,7 +68,7 @@ const Danyao = ({
                 </div>
               </div>
               <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                {[...danyao_have, ...danyao2_have].map((item, index) => (
+                {[...danyaoHave, ...danyao2Have].map((item, index) => (
                   <article
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-emerald-900/40 to-emerald-700/30 p-5 shadow-xl border border-emerald-400/30 backdrop-blur-md'
@@ -120,7 +106,7 @@ const Danyao = ({
         )}
 
         {/* 未拥有 */}
-        {danyao_need.length > 0 && (
+        {danyaoNeed.length > 0 && (
           <section className='relative'>
             <div className='absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-red-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-red-300/20'>
@@ -134,7 +120,7 @@ const Danyao = ({
                 </div>
               </div>
               <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                {danyao_need.map((item, index) => (
+                {danyaoNeed.map((item, index) => (
                   <article
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-red-900/40 to-red-700/30 p-5 shadow-xl border border-red-400/30 backdrop-blur-md'

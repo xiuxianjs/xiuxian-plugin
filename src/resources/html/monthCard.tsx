@@ -1,88 +1,154 @@
 import React from 'react';
 import HTML from './HTML';
+import { Avatar } from './Avatar';
 import supermarketURL from '@src/resources/img/fairyrealm.jpg';
+import userStateURL from '@src/resources/img/user_state2.png';
 
 interface MonthCardProps {
   isMonth: boolean;
+  avatar: string;
 }
 
 const features = [
   {
-    title: '自定义快捷键'
+    title: '自定义快捷键',
+    icon: '⚡',
+    desc: '个性化操作体验'
   },
   {
-    title: '支持打工本沉迷'
+    title: '支持打工本沉迷',
+    icon: '💼',
+    desc: '提升修炼效率'
   },
   {
     title: '签到奖励增加',
-    desc: '（闪闪发光的石头-1，秘境之匙-10）'
+    icon: '💰',
+    desc: '闪闪发光的石头-1，秘境之匙-10'
   },
   {
-    title: '签到每满7天，触发周签到奖励',
-    desc: '（修为丹-n，仙府通行证，道具盲盒）'
+    title: '周签到奖励',
+    icon: '🎁',
+    desc: '修为丹-n，仙府通行证，道具盲盒'
   }
 ];
 
-const Monthcard: React.FC<MonthCardProps> = ({ isMonth }) => {
+const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar }) => {
   return (
     <HTML
-      style={{
-        minHeight: '100vh',
-        minWidth: '375px',
-        maxWidth: '430px',
-        margin: '0 auto',
-        padding: 0,
-        background: `linear-gradient(120deg, #e0e7ff 0%, #f0f9ff 100%), url(${supermarketURL}) center/cover no-repeat`,
-        backgroundBlendMode: 'lighten',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
+      className='p-0 m-0 w-full text-center'
+      dangerouslySetInnerHTML={{
+        __html: `
+          body {
+            background-image: url(${supermarketURL});
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+        `
       }}
     >
-      <div
-        className='w-full  mx-auto p-6 sm:p-8 bg-white/90 rounded-[2.5rem] shadow-2xl border border-blue-100 backdrop-blur-xl flex flex-col items-center'
-        style={{
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
-          marginTop: '5vh',
-          marginBottom: '5vh'
-        }}
-      >
-        <div className='flex flex-col items-center mb-8'>
-          <span className='inline-block mb-2 text-blue-500 drop-shadow-lg'>
-            <svg width='48' height='48' fill='none' viewBox='0 0 24 24'>
-              <path fill='currentColor' d='M12 2l2.09 6.26L20 9.27l-5 3.64L16.18 21 12 17.27 7.82 21 9 12.91l-5-3.64 5.91-.91z' />
-            </svg>
-          </span>
-          <h2 className='text-4xl font-extrabold text-blue-700 tracking-tight drop-shadow'>月卡权益</h2>
-          {isMonth ? (
-            <span className='mt-3 px-6 py-1.5 rounded-full bg-green-100 text-green-700 text-lg font-semibold shadow animate-pulse'>已开通</span>
-          ) : (
-            <span className='mt-3 px-6 py-1.5 rounded-full bg-red-100 text-red-600 text-lg font-semibold shadow'>未开通</span>
-          )}
-        </div>
-
-        <div className='w-full'>
-          <h3 className='text-xl font-semibold text-blue-600 mb-4 text-center'>专属功能</h3>
-          <ul className='space-y-6'>
-            {features.map((f, idx) => (
-              <li key={idx} className='flex flex-col sm:flex-row items-center bg-blue-50/80 rounded-2xl px-5 py-4 shadow-md border border-blue-100'>
-                <div className='flex-1 flex flex-col items-center sm:items-start'>
-                  <span className='font-semibold text-blue-800 text-lg'>{f.title}</span>
-                  {f.desc && <span className='mt-1 text-xs text-gray-500'>{f.desc}</span>}
+      <div className='h-3' />
+      <div className='m-3 mx-auto flex flex-nowrap rounded-3xl z-999 bg-gradient-to-br from-white/60 via-blue-50/50 to-cyan-50/55 backdrop-blur-sm border border-blue-200/30 shadow-xl w-[780px] pb-4'>
+        <div className='m-4 w-[780px]'>
+          {/* 头部区域 */}
+          <div className='flex items-center justify-center mb-6'>
+            <div className='text-center'>
+              <div className='flex justify-center mb-4'>
+                <Avatar src={avatar} stateSrc={userStateURL} rootClassName='w-32 h-32' className='w-24 h-24' />
+              </div>
+              <div className='flex items-center gap-3 mb-3'>
+                <div className='w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg'>
+                  <span className='text-white text-sm'>⭐</span>
                 </div>
-                <span
-                  className={`mt-2 sm:mt-0 sm:ml-auto px-4 py-1 rounded-full font-medium text-base shadow ${
-                    isMonth ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
-                  }`}
+                <h2 className='text-2xl font-bold text-blue-800 drop-shadow-sm'>月卡权益</h2>
+              </div>
+            </div>
+          </div>
+
+          {/* 功能列表 */}
+          <div className='space-y-4'>
+            <div className='flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-blue-500/10 via-cyan-500/8 to-blue-600/10 backdrop-blur-sm rounded-lg border border-blue-200/30 shadow-lg'>
+              <div className='flex items-center gap-3'>
+                <div className='w-6 h-6 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-sm rounded-lg flex items-center justify-center border border-blue-200/30'>
+                  <span className='text-blue-600 text-sm'>🎯</span>
+                </div>
+                <h3 className='text-xl font-bold text-blue-800 drop-shadow-sm'>专属功能</h3>
+              </div>
+              {isMonth ? (
+                <div className='inline-flex items-center px-4 py-1.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-sm border border-emerald-400/30 rounded-full shadow-lg'>
+                  <span className='text-emerald-600 text-sm mr-1'>✅</span>
+                  <span className='text-emerald-700 font-semibold text-sm'>已开通</span>
+                </div>
+              ) : (
+                <div className='inline-flex items-center px-4 py-1.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-blue-400/30 rounded-full shadow-lg'>
+                  <span className='text-blue-600 text-sm mr-1'>🔒</span>
+                  <span className='text-blue-700 font-semibold text-sm'>未开通</span>
+                </div>
+              )}
+            </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className='bg-gradient-to-br from-white/80 via-blue-50/70 to-cyan-50/75 backdrop-blur-xl rounded-xl p-4 border border-blue-200/40 shadow-xl relative overflow-hidden hover:shadow-2xl transition-all duration-300'
                 >
-                  {isMonth ? '已解锁' : '未解锁'}
-                </span>
-              </li>
-            ))}
-          </ul>
+                  {/* 装饰性光效 */}
+                  <div className='absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-400/8 to-cyan-400/8 rounded-full blur-xl' />
+                  <div className='absolute bottom-0 left-0 w-12 h-12 bg-gradient-to-br from-cyan-400/4 to-blue-400/4 rounded-full blur-lg' />
+
+                  <div className='relative z-10 space-y-3'>
+                    <div className='flex items-center gap-3'>
+                      <div className='w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg'>
+                        <span className='text-white text-lg'>{feature.icon}</span>
+                      </div>
+                      <div className='flex-1'>
+                        <h4 className='text-base font-bold text-blue-800 drop-shadow-sm'>{feature.title}</h4>
+                        <p className='text-sm text-blue-600 mt-1'>{feature.desc}</p>
+                      </div>
+                    </div>
+
+                    <div className='relative'>
+                      {isMonth ? (
+                        <div className='flex items-center justify-between'>
+                          <span className='px-3 py-1 rounded-full text-sm font-medium shadow-lg bg-gradient-to-r from-emerald-500/15 to-green-500/15 text-emerald-700 border border-emerald-400/25'>
+                            已解锁
+                          </span>
+                          <div className='flex items-center gap-1'>
+                            <div className='w-2 h-2 bg-emerald-400 rounded-full animate-pulse' />
+                            <span className='text-xs text-emerald-600 font-medium'>激活中</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className='relative'>
+                          <div className='flex items-center justify-between'>
+                            <div />
+                            <div className='flex items-center gap-1'>
+                              <div className='w-2 h-2 bg-blue-400 rounded-full animate-pulse' />
+                              <span className='text-xs text-blue-600 font-medium'>未激活</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 底部信息 */}
+          <div className='mt-6 text-center'>
+            <div className='inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/5 via-cyan-500/5 to-blue-600/5 backdrop-blur-sm rounded-full border border-blue-300/30 shadow-lg'>
+              <span className='text-blue-600 text-lg'>💎</span>
+              <span className='text-blue-800 font-semibold'>月卡特权</span>
+              <span className='text-blue-700 text-sm'>·</span>
+              <span className='text-blue-700 text-sm'>{isMonth ? '享受专属权益，修炼之路更加顺畅！' : '解锁更多修仙法则！'}</span>
+            </div>
+          </div>
         </div>
       </div>
+      <div className='h-3' />
     </HTML>
   );
 };

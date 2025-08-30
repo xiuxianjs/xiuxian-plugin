@@ -1,37 +1,25 @@
 import React from 'react';
 import HTML from './HTML';
-import playerURL from '@src/resources/img/player.jpg';
-import playerFooterURL from '@src/resources/img/player_footer.png';
-import { getAvatar } from '@src/model/utils/utilsx.js';
-import { Avatar } from './Avatar';
-
+import fairyrealm from '@src/resources/img/fairyrealm.jpg';
 interface DaojuItem {
   name: string;
   desc: string;
   出售价: number;
 }
 
-const Daoju = ({ user_id, daoju_have = [], daoju_need = [] }: { user_id: string; daoju_have?: DaojuItem[]; daoju_need?: DaojuItem[] }) => {
+const Daoju = ({ daoju_have: daojuHave = [], daoju_need: daojuNeed = [] }: { user_id: string; daoju_have?: DaojuItem[]; daoju_need?: DaojuItem[] }) => {
   return (
     <HTML
       className='w-full text-center p-4 md:p-8 bg-top bg-no-repeat min-h-screen'
       style={{
-        backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
+        backgroundImage: `url(${fairyrealm}), url(${fairyrealm})`,
         backgroundRepeat: 'no-repeat, repeat',
         backgroundSize: '100%, auto'
       }}
     >
       <main className='max-w-5xl mx-auto space-y-12'>
-        {/* 玩家头像和标题 */}
-        <header className='space-y-6 flex flex-col items-center'>
-          <div className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-r from-emerald-400/30 to-red-400/30 rounded-full blur-xl' />
-            <Avatar src={getAvatar(user_id)} />
-          </div>
-        </header>
-
         {/* 已拥有 */}
-        {daoju_have.length > 0 && (
+        {daojuHave.length > 0 && (
           <section className='relative'>
             <div className='absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-emerald-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-emerald-300/20'>
@@ -45,7 +33,7 @@ const Daoju = ({ user_id, daoju_have = [], daoju_need = [] }: { user_id: string;
                 </div>
               </div>
               <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                {daoju_have.map((item, index) => (
+                {daojuHave.map((item, index) => (
                   <article
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-emerald-900/40 to-emerald-700/30 p-5 shadow-xl border border-emerald-400/30 backdrop-blur-md'
@@ -83,7 +71,7 @@ const Daoju = ({ user_id, daoju_have = [], daoju_need = [] }: { user_id: string;
         )}
 
         {/* 未拥有 */}
-        {daoju_need.length > 0 && (
+        {daojuNeed.length > 0 && (
           <section className='relative'>
             <div className='absolute inset-0 bg-gradient-to-br from-red-600/10 to-red-800/10 rounded-3xl blur-2xl' />
             <div className='relative rounded-3xl bg-white/8 backdrop-blur-xl ring-2 ring-red-400/30 p-6 md:p-8 shadow-2xl space-y-6 border border-red-300/20'>
@@ -97,7 +85,7 @@ const Daoju = ({ user_id, daoju_have = [], daoju_need = [] }: { user_id: string;
                 </div>
               </div>
               <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                {daoju_need.map((item, index) => (
+                {daojuNeed.map((item, index) => (
                   <article
                     key={index}
                     className='relative rounded-2xl bg-gradient-to-br from-red-900/40 to-red-700/30 p-5 shadow-xl border border-red-400/30 backdrop-blur-md'

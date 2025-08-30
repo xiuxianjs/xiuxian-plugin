@@ -23,36 +23,41 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
       />
 
       {/* 轻微渐变遮罩提升对比度 */}
-      <div className='absolute inset-0 bg-gradient-to-b from-sky-900/40 via-sky-800/20 to-transparent' />
+      <div className='absolute inset-0 bg-gradient-to-b from-blue-900/30 via-blue-800/15 to-transparent' />
 
       <main className='relative z-10 max-w-6xl mx-auto space-y-12'>
         {/* 标题 */}
-        <header className='space-y-6 flex flex-col items-center'>
-          <div className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-r from-sky-400/30 to-cyan-400/30 rounded-3xl blur-xl' />
-            <h1
-              className='relative inline-block px-10 py-4 rounded-3xl
-              bg-gradient-to-r from-sky-400/60 via-cyan-300/50 to-sky-400/60
-              backdrop-blur-xl border-2 border-sky-300/50
-              text-3xl md:text-4xl font-extrabold tracking-widest shadow-2xl ring-2 ring-sky-200/60'
-            >
-              <span className='bg-gradient-to-r from-sky-100 to-cyan-100 bg-clip-text text-transparent'>聚宝堂</span>
-            </h1>
-          </div>
-          <div className='relative'>
-            <div className='absolute inset-0 bg-gradient-to-r from-sky-500/10 to-cyan-500/10 rounded-2xl blur-lg' />
-            <div className='relative px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-sky-200/30 text-sky-100/90 text-xs md:text-sm space-y-2 drop-shadow'>
-              <div className='flex items-center justify-center space-x-2'>
-                <span className='text-sky-300'>📜</span>
-                <span>发布指令：#发布+物品名*价格*数量</span>
-              </div>
-              <div className='flex items-center justify-center space-x-2'>
-                <span className='text-sky-300'>🤝</span>
-                <span>接取指令：#接取+编号*数量</span>
-              </div>
-              <div className='flex items-center justify-center space-x-2'>
-                <span className='text-sky-300'>❌</span>
-                <span>取消指令：#取消+编号</span>
+        <header className='flex justify-center'>
+          <div className='flex flex-col md:flex-row items-center gap-6'>
+            {/* 聚宝堂标题 */}
+            <div className='relative'>
+              <div className='absolute inset-0 bg-gradient-to-r from-blue-400/30 to-cyan-400/30 rounded-3xl blur-xl' />
+              <h1
+                className='relative inline-block px-8 py-3 rounded-2xl
+                bg-gradient-to-r from-blue-500/20 to-cyan-500/20
+                backdrop-blur-sm border border-blue-300/30
+                text-3xl md:text-4xl font-bold tracking-wide shadow-lg'
+              >
+                <span className='text-white'>聚宝堂</span>
+              </h1>
+            </div>
+
+            {/* 指令说明 */}
+            <div className='relative'>
+              <div className='absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl blur-lg' />
+              <div className='relative px-6 py-3 rounded-2xl bg-gradient-to-r from-white/35 via-blue-50/25 to-cyan-50/30 backdrop-blur-md border border-blue-200/30 space-y-2 drop-shadow'>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-blue-700'>📜</span>
+                  <span className='text-blue-900 font-medium'>发布指令：#发布+物品名*价格*数量</span>
+                </div>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-blue-700'>🤝</span>
+                  <span className='text-blue-900 font-medium'>接取指令：#接取+编号*数量</span>
+                </div>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-blue-700'>❌</span>
+                  <span className='text-blue-900 font-medium'>取消指令：#取消+编号</span>
+                </div>
               </div>
             </div>
           </div>
@@ -67,51 +72,51 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                 <article
                   key={index}
                   className='relative rounded-2xl p-6 flex flex-col gap-3
-                    bg-white/15 backdrop-blur-xl border border-sky-200/40
+                    bg-gradient-to-br from-white/40 via-blue-50/30 to-cyan-50/35 backdrop-blur-xl border border-blue-200/40
                     shadow-xl overflow-hidden'
                 >
                   {/* 顶部光带 */}
                   <div
                     className='absolute top-0 left-0 w-full h-1
-                    bg-gradient-to-r from-cyan-300 via-sky-400 to-cyan-300 shadow-md'
+                    bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 shadow-md'
                   />
 
                   {/* 右上角装饰 */}
-                  <div className='absolute top-3 right-3 w-3 h-3 bg-cyan-400/50 rounded-full' />
+                  <div className='absolute top-3 right-3 w-3 h-3 bg-blue-400/50 rounded-full' />
 
                   <div className='space-y-3'>
                     <div className='flex items-center space-x-2'>
-                      <span className='text-sky-300 text-lg'>🏪</span>
-                      <h2 className='text-lg font-bold tracking-wide text-cyan-100 drop-shadow'>
+                      <span className='text-blue-600 text-lg'>🏪</span>
+                      <h2 className='text-lg font-bold tracking-wide text-blue-800 drop-shadow'>
                         【{item.class}】{item.name}
                       </h2>
                     </div>
 
-                    <div className='space-y-2 text-sm'>
-                      <div className='flex items-center space-x-2 text-sky-100/90'>
-                        <span className='text-sky-300'>🆔</span>
-                        <span>编号：</span>
-                        <span className='font-semibold text-indigo-200'>No.{item.num}</span>
+                    <div className='space-y-2'>
+                      <div className='flex items-center space-x-2'>
+                        <span className='text-blue-700'>🆔</span>
+                        <span className='text-blue-900 font-medium'>编号：</span>
+                        <span className='font-semibold text-blue-900'>No.{item.num}</span>
                       </div>
-                      <div className='flex items-center space-x-2 text-sky-100/90'>
-                        <span className='text-amber-300'>💰</span>
-                        <span>单价：</span>
-                        <span className='font-semibold text-amber-200'>{item.price}</span>
+                      <div className='flex items-center space-x-2'>
+                        <span className='text-amber-700'>💰</span>
+                        <span className='text-blue-900 font-medium'>单价：</span>
+                        <span className='font-semibold text-amber-800'>{item.price}</span>
                       </div>
-                      <div className='flex items-center space-x-2 text-sky-100/90'>
-                        <span className='text-emerald-300'>📦</span>
-                        <span>数量：</span>
-                        <span className='font-semibold text-emerald-200'>{item.aconut}</span>
+                      <div className='flex items-center space-x-2'>
+                        <span className='text-emerald-700'>📦</span>
+                        <span className='text-blue-900 font-medium'>数量：</span>
+                        <span className='font-semibold text-emerald-800'>{item.aconut}</span>
                       </div>
-                      <div className='flex items-center space-x-2 text-sky-100/90'>
-                        <span className='text-orange-300'>🪙</span>
-                        <span>总价：</span>
-                        <span className='font-semibold text-orange-200'>{item.whole}</span>
+                      <div className='flex items-center space-x-2'>
+                        <span className='text-orange-700'>🪙</span>
+                        <span className='text-blue-900 font-medium'>总价：</span>
+                        <span className='font-semibold text-orange-800'>{item.whole}</span>
                       </div>
-                      <div className='flex items-center space-x-2 text-sky-100/90'>
-                        <span className='text-cyan-300'>✉</span>
-                        <span>账号：</span>
-                        <span className='font-semibold text-cyan-200'>{item.qq}</span>
+                      <div className='flex items-center space-x-2'>
+                        <span className='text-cyan-700'>✉</span>
+                        <span className='text-blue-900 font-medium'>账号：</span>
+                        <span className='font-semibold text-cyan-800'>{item.qq}</span>
                       </div>
                     </div>
                   </div>
@@ -119,16 +124,16 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
               ))
             ) : (
               <div className='col-span-full relative'>
-                <div className='absolute inset-0 bg-gradient-to-br from-sky-600/10 to-cyan-600/10 rounded-2xl blur-xl' />
+                <div className='absolute inset-0 bg-gradient-to-br from-blue-600/10 to-cyan-600/10 rounded-2xl blur-xl' />
                 <div
                   className='relative px-8 py-6 rounded-2xl
-                  border border-sky-200/40 bg-white/10
-                  text-sky-100/80 backdrop-blur-xl'
+                  border border-blue-200/40 bg-gradient-to-r from-white/35 via-blue-50/25 to-cyan-50/30
+                  text-blue-800 backdrop-blur-xl'
                 >
                   <div className='flex items-center justify-center space-x-3'>
-                    <span className='text-sky-300 text-xl'>📭</span>
-                    <span className='text-lg font-semibold'>暂无发布</span>
-                    <span className='text-sky-300 text-xl'>📭</span>
+                    <span className='text-blue-700 text-xl'>📭</span>
+                    <span className='text-lg font-semibold text-blue-900'>暂无发布</span>
+                    <span className='text-blue-700 text-xl'>📭</span>
                   </div>
                 </div>
               </div>
@@ -138,9 +143,9 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
 
         {/* 底部装饰 */}
         <div className='flex justify-center space-x-4 pt-8'>
-          <div className='w-16 h-1 bg-gradient-to-r from-sky-400/50 to-transparent rounded-full' />
-          <div className='w-8 h-8 bg-gradient-to-br from-sky-400/30 to-cyan-400/30 rounded-full flex items-center justify-center'>
-            <span className='text-white/70 text-sm'>💎</span>
+          <div className='w-16 h-1 bg-gradient-to-r from-blue-400/50 to-transparent rounded-full' />
+          <div className='w-8 h-8 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full flex items-center justify-center'>
+            <span className='text-white/70'>💎</span>
           </div>
           <div className='w-16 h-1 bg-gradient-to-l from-cyan-400/50 to-transparent rounded-full' />
         </div>

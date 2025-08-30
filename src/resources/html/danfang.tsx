@@ -1,6 +1,6 @@
 import React from 'react';
 import HTML from './HTML';
-import danfangURL from '@src/resources/img/fairyrealm.jpg';
+import fairyrealm from '@src/resources/img/fairyrealm.jpg';
 
 interface Material {
   name: string;
@@ -29,7 +29,7 @@ const Danfang = ({ danfang_list }: { danfang_list?: DanfangItem[] }) => {
   };
 
   return (
-    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover relative' style={{ backgroundImage: `url(${danfangURL})` }}>
+    <HTML className=' w-full text-center p-4 md:p-8 bg-top bg-cover relative' style={{ backgroundImage: `url(${fairyrealm})` }}>
       {/* 背景渐变遮罩 */}
       <div className='absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-transparent backdrop-blur-sm pointer-events-none' />
 

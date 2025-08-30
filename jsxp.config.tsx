@@ -71,8 +71,11 @@ import temp from './views/temp.json';
 import Temp from '@src/resources/html/temp';
 import combatResult from './views/CombatResult.json';
 import CombatResult from '@src/resources/html/CombatResult';
+import monthCard from './views/Monthcard.json';
+import Monthcard from '@src/resources/html/monthCard';
 export default defineConfig({
   routes: {
+    '/monthCard': { component: <Monthcard {...monthCard} /> },
     '/combatResult': { component: <CombatResult {...combatResult} /> },
     '/temp': { component: <Temp {...temp} /> },
     '/adminset': { component: <Adminset {...adminset} /> },

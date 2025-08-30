@@ -1,7 +1,6 @@
 import React from 'react';
 import HTML from './HTML';
-import playerURL from '@src/resources/img/player.jpg';
-import playerFooterURL from '@src/resources/img/player_footer.png';
+import fairyrealm from '@src/resources/img/fairyrealm.jpg';
 
 interface GongfaItem {
   name: string;
@@ -9,24 +8,17 @@ interface GongfaItem {
   出售价: number;
 }
 
-const Gongfa = ({ nickname, gongfa_need = [], gongfa_have = [] }: { nickname: string; gongfa_need?: GongfaItem[]; gongfa_have?: GongfaItem[] }) => {
+const Gongfa = ({ gongfa_need = [], gongfa_have = [] }: { nickname: string; gongfa_need?: GongfaItem[]; gongfa_have?: GongfaItem[] }) => {
   return (
     <HTML
       className=' w-full text-center p-4 md:p-8 bg-top bg-no-repeat'
       style={{
-        backgroundImage: `url(${playerURL}), url(${playerFooterURL})`,
+        backgroundImage: `url(${fairyrealm}), url(${fairyrealm})`,
         backgroundRepeat: 'no-repeat, repeat',
         backgroundSize: '100%, auto'
       }}
     >
       <main className='max-w-5xl mx-auto space-y-10'>
-        {/* 标题 */}
-        <header className='flex flex-col items-center space-y-4'>
-          <h1 className='px-8 py-3 rounded-2xl bg-gradient-to-r from-green-900/70 to-yellow-900/70 text-3xl md:text-4xl font-extrabold tracking-widest shadow-lg border-2 border-yellow-400/60 text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'>
-            {nickname}的功法
-          </h1>
-        </header>
-
         {/* 未学习 */}
         {gongfa_need.length > 0 && (
           <section className='rounded-2xl bg-black/30 backdrop-blur-lg border border-yellow-500/30 p-6 shadow-2xl space-y-4'>
