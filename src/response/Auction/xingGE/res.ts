@@ -36,7 +36,7 @@ const res = onResponse(selects, async e => {
     const player = await readPlayer(auction.last_offer_player);
 
     if (player) {
-      msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+      msg += `最高出价是${player.名号}叫出的${auction.lastPrice}`;
     }
   }
   void Send(Text(msg));
