@@ -11,6 +11,9 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const UserIdA = e.UserId;
 
+  void Send(Text('该功能暂时禁用'));
+
+  return;
   if (!(await existplayer(UserIdA))) {
     return false;
   }
