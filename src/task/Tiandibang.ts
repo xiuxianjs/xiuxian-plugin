@@ -147,8 +147,6 @@ export const TiandibangTask = async (): Promise<boolean> => {
     // 写入排行榜数据
     await writeTiandibang(rankEntries);
 
-    logger.info(`天帝榜更新完成，共处理 ${rankEntries.length} 名玩家`);
-
     return true;
   } catch (error) {
     logger.error('天帝榜任务执行失败:', error);

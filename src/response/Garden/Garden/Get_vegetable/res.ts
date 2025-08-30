@@ -83,7 +83,6 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  logger.info(rawName);
 
   const crops = Array.isArray(garden.作物) ? garden.作物 : [];
   const targetIndex = crops.findIndex(c => c?.name === rawName);

@@ -40,8 +40,6 @@ export async function InitWorldBoss() {
   }
   const X = AverageDamage * 0.01;
 
-  logger.info(`[妖王] 化神玩家总数：${player_quantity}`);
-  logger.info(`[妖王] 生成基数:${X}`);
   const Health = Math.trunc(X * 150 * player_quantity * 2); // 血量要根据人数来
   const WorldBossStatus = {
     Health: Health,
@@ -407,7 +405,6 @@ export async function WorldBossBattle(e) {
         pushInfo(group, true, msg2);
       }
       await addCoin(userId, 1000000);
-      logger.info(`[妖王] 结算:${userId}增加奖励1000000`);
 
       WorldBossStatus.KilledTime = Date.now();
       void redis.set(KEY_WORLD_BOOS_STATUS, JSON.stringify(WorldBossStatus));
@@ -449,11 +446,9 @@ export async function WorldBossBattle(e) {
           );
           CurrentPlayer.灵石 += Reward;
           void writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
-          logger.info(`[妖王周本] 结算:${PlayerRecordJSON.QQ[PlayerList[i]]}增加奖励${Reward}`);
           continue;
         } else {
           CurrentPlayer.灵石 += 200000;
-          logger.info(`[妖王周本] 结算:${PlayerRecordJSON.QQ[PlayerList[i]]}增加奖励200000`);
           void writePlayer(PlayerRecordJSON.QQ[PlayerList[i]], CurrentPlayer);
         }
         if (i === PlayerList.length - 1) {

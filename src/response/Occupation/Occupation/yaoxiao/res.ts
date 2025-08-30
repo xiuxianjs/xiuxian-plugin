@@ -20,7 +20,6 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  logger.info(dy);
 
   const parts: string[] = ['丹药效果:'];
 

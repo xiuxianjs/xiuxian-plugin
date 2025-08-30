@@ -76,8 +76,6 @@ export const POST = async (ctx: Context) => {
 
     await setUserPassword(user.id, newPassword);
 
-    logger.info(`用户 ${user.username} 修改了密码`);
-
     ctx.status = 200;
     ctx.body = {
       code: 200,

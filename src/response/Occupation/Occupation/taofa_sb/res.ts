@@ -148,7 +148,7 @@ const res = onResponse(selects, async e => {
       lastMessage = `${player_B.名号}反杀了你,只获得了部分辛苦钱`;
     }
     if (msg.length > 100) {
-      logger.info('通过');
+      //
     } else {
       void Send(Text(msg.join('\n')));
     }

@@ -271,7 +271,6 @@ export const initDefaultAdmin = async (): Promise<void> => {
 
     if (!adminUser) {
       await createUser('lemonade', '123456', 'admin');
-      logger.info('默认管理员账户已创建');
     }
   } catch (error) {
     logger.error('初始化默认管理员失败:', error);

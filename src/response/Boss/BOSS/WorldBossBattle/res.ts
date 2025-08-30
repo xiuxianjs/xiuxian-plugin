@@ -269,7 +269,6 @@ const res = onResponse(selects, async e => {
     }
 
     await addCoin(userId, 1000000);
-    logger.info(`[妖王] 结算:${userId}增加奖励1000000`);
 
     worldBossStatus.KilledTime = Date.now();
     await setDataJSONStringifyByKey(KEY_WORLD_BOOS_STATUS, worldBossStatus);
@@ -309,11 +308,9 @@ const res = onResponse(selects, async e => {
         rewardMsg.push(`第${i + 1}名:\n名号:${currentPlayer.名号}\n伤害:${playerRecordJson.TotalDamage[idx]}\n获得灵石奖励${reward}`);
         currentPlayer.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), currentPlayer);
-        logger.info(`[妖王周本] 结算:${qq}增加奖励${reward}`);
       } else {
         currentPlayer.灵石 += 200000;
         await setDataJSONStringifyByKey(keys.player(qq), currentPlayer);
-        logger.info(`[妖王周本] 结算:${qq}增加奖励200000`);
 
         if (i === playerList.length - 1) {
           rewardMsg.push('其余参与的修仙者均获得200000灵石奖励！');

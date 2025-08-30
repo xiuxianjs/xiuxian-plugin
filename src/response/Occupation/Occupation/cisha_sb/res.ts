@@ -161,7 +161,7 @@ const res = onResponse(selects, async e => {
     broadcast = `【全服公告】${player.名号}刺杀失败,${player_B.名号}勃然大怒,单手就反杀了${player.名号}`;
   }
   if (msg.length > 100) {
-    logger.info('通过');
+    //
   } else {
     void Send(Text(msg.join('\n')));
   }

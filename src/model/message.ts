@@ -458,8 +458,6 @@ export const cleanExpiredMessages = async (): Promise<number> => {
       }
     }
 
-    logger.info(`清理过期消息完成，共清理 ${cleanedCount} 条消息`);
-
     return cleanedCount;
   } catch (error) {
     logger.error('清理过期消息失败:', error);

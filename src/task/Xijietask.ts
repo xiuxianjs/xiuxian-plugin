@@ -134,8 +134,6 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
     }
     const msgg: string[] = dataBattle.msg;
 
-    logger.info(msgg);
-
     const winA = `${playerA.名号}击败了${playerB.名号}`;
     const winB = `${playerB.名号}击败了${playerA.名号}`;
 
