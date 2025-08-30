@@ -1,6 +1,7 @@
 import { getDataJSONParseByKey, keys } from '@src/model';
 import mw, { selects } from '../../mw';
 import { Text, useMessage } from 'alemonjs';
+import { cmdMax, lengthMax } from '../config';
 
 export const regular = /^(#|＃|\/)?快捷帮助/;
 
@@ -43,8 +44,8 @@ const res = onResponse(selects, async e => {
   }
 
   helpText += '\n💡 提示：\n';
-  helpText += '- 最多可设置9个快捷指令\n';
-  helpText += '- 每个快捷指令最多包含3个命令\n';
+  helpText += `- 最多可设置${lengthMax}个快捷指令\n`;
+  helpText += `- 每个快捷指令最多包含${cmdMax}个命令\n`;
   helpText += '- 命令之间用逗号分隔\n';
   helpText += '- 指令按前后顺序执行';
 

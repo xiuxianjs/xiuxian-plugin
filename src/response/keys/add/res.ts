@@ -1,11 +1,9 @@
 import { getDataJSONParseByKey, isUserMonthCard, keys, setDataJSONStringifyByKey } from '@src/model';
 import mw, { selects } from '../../mw';
 import { Text, useMessage } from 'alemonjs';
+import { cmdMax, lengthMax } from '../config';
 
 export const regular = /^(#|＃|\/)?添加快捷/;
-
-const max = 9;
-const cmdMax = 3;
 
 const res = onResponse(selects, async e => {
   const player = await getDataJSONParseByKey(keys.player(e.UserId));
@@ -26,7 +24,7 @@ const res = onResponse(selects, async e => {
 
   const shortcuts = await getDataJSONParseByKey(keys.shortcut(e.UserId));
 
-  if (Array.isArray(shortcuts) && shortcuts?.length >= max) {
+  if (Array.isArray(shortcuts) && shortcuts?.length >= lengthMax) {
     void message.send(format(Text('快捷指令已满，无法添加新快捷指令')));
 
     return;

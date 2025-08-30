@@ -78,8 +78,8 @@ const res = onResponse(selects, async e => {
 
         void expendCycle(event, e.name);
       },
-      (i + 1) * 6000
-    ); // 每6秒执行一个
+      (i + 1) * 3600
+    ); // 每3.6秒执行一个
   }
 });
 
