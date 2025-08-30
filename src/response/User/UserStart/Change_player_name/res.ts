@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
-import { existplayer, shijianc, readPlayer, writePlayer } from '@src/model/index';
-import { showSlayer } from '../user';
+import { existplayer, shijianc, readPlayer, writePlayer, readNajie, addNajieThing } from '@src/model/index';
+import { showPlayer } from '../user';
 import { selects } from '@src/response/mw';
 import { getRedisKey } from '@src/model/keys';
 
@@ -31,7 +31,7 @@ function sameDay(a: DateStruct | null, b: DateStruct | null) {
 function cleanInput(raw: string) {
   return raw.replace(regularCut, '').replace(/\s+/g, '').replace(/\+/g, '');
 }
-function isMessageEvent(ev): ev is Parameters<typeof showSlayer>[0] {
+function isMessageEvent(ev): ev is Parameters<typeof showPlayer>[0] {
   return !!ev && typeof ev === 'object' && 'MessageText' in ev;
 }
 
@@ -64,11 +64,11 @@ const res = onResponse(selects, async e => {
     const lastRaw = await redis.get(lastKey);
     const lastStruct = getDayStruct(lastRaw);
 
-    if (sameDay(today, lastStruct)) {
-      void Send(Text('每日只能改名一次'));
+    // if (sameDay(today, lastStruct)) {
+    //   void Send(Text('每日只能改名一次'));
 
-      return false;
-    }
+    //   return false;
+    // }
 
     const player = await readPlayer(userId);
 
@@ -77,6 +77,25 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
+    const najie = await readNajie(userId);
+
+    if (!najie?.道具 || najie.道具.length === 0) {
+      void Send(Text('你没有更名卡'));
+
+      return false;
+    }
+
+    if (najie?.道具 && najie?.道具?.length > 0) {
+      const item = najie.道具.find(i => i.name === '更名卡');
+
+      if (!item) {
+        void Send(Text('你没有更名卡'));
+
+        return false;
+      }
+    }
+    await addNajieThing(userId, '更名卡', '道具', -1);
+
     const cost = 1000;
 
     if (typeof player.灵石 !== 'number' || player.灵石 < cost) {
@@ -89,7 +108,7 @@ const res = onResponse(selects, async e => {
     await writePlayer(userId, player);
     await redis.set(lastKey, String(now));
     if (isMessageEvent(e)) {
-      void showSlayer(e);
+      void showPlayer(e);
     }
 
     return false;
@@ -127,7 +146,7 @@ const res = onResponse(selects, async e => {
   await writePlayer(userId, player);
   await redis.set(lastKey, String(now));
   if (isMessageEvent(e)) {
-    void showSlayer(e);
+    void showPlayer(e);
   }
 
   return false;

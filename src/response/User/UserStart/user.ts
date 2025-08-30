@@ -2,7 +2,7 @@ import { Image, PrivateEventMessageCreate, EventsMessageCreateEnum, useSend, Tex
 import { existplayer } from '@src/model/index';
 import { getPlayerImage } from '@src/model/image';
 
-export async function showSlayer(e: EventsMessageCreateEnum | PrivateEventMessageCreate) {
+export async function showPlayer(e: EventsMessageCreateEnum | PrivateEventMessageCreate) {
   const Send = useSend(e);
   const userId = e.UserId;
 

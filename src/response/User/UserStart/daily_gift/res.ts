@@ -1,10 +1,10 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { existplayer, shijianc, getLastsign, addNajieThing, addExp, writePlayer, getConfig } from '@src/model/index';
+import { existplayer, shijianc, getLastsign, addNajieThing, addExp, writePlayer, getConfig, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
-import { getRedisKey, keys } from '@src/model/keys';
+import { getRedisKey } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?修仙签到$/;
 
 interface LastSignStruct {
@@ -47,7 +47,7 @@ const res = onResponse(selects, async e => {
 
   await redis.set(getRedisKey(userId, 'lastsign_time'), String(nowTime));
 
-  const player = await getDataJSONParseByKey(keys.player(userId));
+  const player = await readPlayer(userId);
 
   if (!player) {
     void Send(Text('玩家数据异常'));
@@ -69,19 +69,26 @@ const res = onResponse(selects, async e => {
   await writePlayer(userId, player);
 
   const cf = (await getConfig('xiuxian', 'xiuxian')) as SignConfig | undefined;
-  const ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0));
+  let ticketNum = Math.max(0, Number(cf?.Sign?.ticket ?? 0));
   const gift_xiuwei = newStreak * 3000;
 
   if (ticketNum > 0) {
     await addNajieThing(userId, '秘境之匙', '道具', ticketNum);
   }
+  let msg = '';
+
+  if (player.vip_type && player.vip_type !== 0 && player.vip_time && player.vip_time > 0) {
+    await addNajieThing(userId, '闪闪发光的石头', '道具', 1);
+    await addNajieThing(userId, '秘境之匙', '道具', 10);
+    ticketNum += 10;
+    msg = ',闪闪发光的石头*1';
+  }
   await addExp(userId, gift_xiuwei);
 
-  void Send(Text(`已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''}`));
+  void Send(Text(`已经连续签到${newStreak}天，获得修为${gift_xiuwei}${ticketNum > 0 ? `，秘境之匙x${ticketNum}` : ''} ${msg}`));
 
   return false;
 });
 
 import mw from '@src/response/mw';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);
