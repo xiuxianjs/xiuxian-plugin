@@ -2,7 +2,7 @@ import { addCoin, addNajieThing, readPlayer, writePlayer } from '@src/model';
 import mw, { selects } from '@src/response/mw';
 import { NajieCategory } from '@src/types/model';
 import { useMessage, Text } from 'alemonjs';
-export const regular = /^(#|＃|\/)?新人礼包$/;
+export const regular = /^(#|＃|\/)?新手礼包$/;
 
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
@@ -14,7 +14,7 @@ const res = onResponse(selects, async e => {
     return;
   }
   if (user.newbie === 1) {
-    await message.send(format(Text('新人礼包已领取！')));
+    await message.send(format(Text('新手礼包已领取！')));
 
     return;
   }
@@ -66,7 +66,7 @@ const res = onResponse(selects, async e => {
     return `${thing.name}*${thing.account}`;
   });
 
-  await message.send(format(Text('新人礼包领取成功！获得: ' + msg.join('\n'))));
+  await message.send(format(Text('新手礼包领取成功！获得: ' + msg.join('\n'))));
 });
 
 export default onResponse(selects, [mw.current, res.current]);
