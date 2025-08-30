@@ -117,7 +117,9 @@ const task = {
   // 天地榜任务
   TiandibangTask: '0 0 0 ? * 1',
   // 仙界任务
-  Xijietask: '0 0/1 * * * ?'
+  Xijietask: '0 0/1 * * * ?',
+  // 月卡周常礼包
+  MonthCardTask: '0 0 0 * * 1'
 };
 
 export default {

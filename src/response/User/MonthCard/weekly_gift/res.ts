@@ -19,7 +19,7 @@ const res = onResponse(selects, async e => {
 
     return;
   }
-  const coolingKey = `${baseKey}weeklyGift:${e.UserId}`;
+  const coolingKey = `${baseKey}weekly_gift:${e.UserId}`;
   const cooling = await redis.get(coolingKey);
   const now = Date.now();
 
