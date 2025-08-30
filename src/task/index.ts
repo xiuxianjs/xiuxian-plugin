@@ -1,7 +1,5 @@
 import { AuctionofficialTask } from './AuctionofficialTask';
-import { BOSS2 } from './BOSS2';
 import { ExchangeTask } from './ExchangeTask';
-import { BOSS } from './BOSS';
 import { ForumTask } from './ForumTask';
 import { MojiTask } from './mojietask';
 import { PlayerControlTask } from './PlayerControlTask';
@@ -24,8 +22,6 @@ import { TaskMap } from '@src/model/task';
 const taskFunctions = {
   ShopTask: Shoptask,
   ExchangeTask: ExchangeTask,
-  BossTask: BOSS,
-  BossTask2: BOSS2,
   AuctionofficialTask: AuctionofficialTask,
   ForumTask: ForumTask,
   MojiTask: MojiTask,

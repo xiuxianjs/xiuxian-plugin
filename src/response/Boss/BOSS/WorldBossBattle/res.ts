@@ -7,7 +7,15 @@ import { pushInfo, redis } from '@src/model/api';
 import { zdBattle, Harm } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { addHP, addCoin } from '@src/model/economy';
-import { BossIsAlive, InitWorldBoss, SetWorldBOSSBattleUnLockTimer, SortPlayer, WorldBossBattle, WorldBossBattleInfo } from '../../../../model/boss';
+import {
+  BossIsAlive,
+  InitWorldBoss,
+  SetWorldBOSSBattleUnLockTimer,
+  SortPlayer,
+  WorldBossBattle,
+  WorldBossBattleInfo,
+  checkAndInitBoss
+} from '../../../../model/boss';
 import { getAuctionKeyManager } from '@src/model/auction';
 import mw from '@src/response/mw';
 import * as _ from 'lodash-es';
@@ -56,6 +64,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
+  // 检查并初始化妖王（晚上9点）
+  await checkAndInitBoss();
 
   if (!(await BossIsAlive())) {
     void Send(Text('妖王未开启！'));

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { BossIsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../../../model/boss';
+import { BossIsAlive, InitWorldBoss, LookUpWorldBossStatus, checkAndInitBoss } from '../../../../model/boss';
 import { KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 
 export const selects = onSelects(['message.create']);
@@ -9,6 +9,9 @@ export const regular = /^(#|＃|\/)?妖王状态$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
+  // 检查并初始化妖王（晚上9点）
+  await checkAndInitBoss();
 
   if (await BossIsAlive()) {
     const WorldBossStatusStr = await redis.get(KEY_WORLD_BOOS_STATUS);

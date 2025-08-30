@@ -10,6 +10,13 @@ import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/
 import { KEY_RECORD, KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/settions';
 import { getAuctionKeyManager } from './auction';
 
+// Redis锁的键名
+const BOSS_INIT_LOCK_KEY = 'boss:init:lock';
+const BOSS2_INIT_LOCK_KEY = 'boss2:init:lock';
+// Boss初始化状态的键名
+const BOSS_INIT_STATUS_KEY = 'boss:init:status';
+const BOSS2_INIT_STATUS_KEY = 'boss2:init:status';
+
 export const WorldBossBattleInfo = {
   CD: {},
   Lock: 0,
@@ -100,6 +107,131 @@ export async function InitWorldBoss2() {
 
   return false;
 }
+
+/**
+ * 检查并初始化妖王（晚上9点）
+ * 如果当前时间已过21:00且Boss未初始化，则进行初始化
+ * 使用Redis锁机制防止并发初始化
+ */
+export async function checkAndInitBoss(): Promise<boolean> {
+  const now = new Date();
+  const currentHour = now.getHours();
+
+  // 检查是否已过晚上9点
+  if (currentHour < 21) {
+    return false;
+  }
+
+  // 检查Boss是否已经存在
+  if (await Boss2IsAlive()) {
+    return false;
+  }
+
+  // 获取今天的日期字符串，用于判断是否已经初始化过
+  const today = now.toDateString();
+  const lastInitDate = await redis.get(BOSS_INIT_STATUS_KEY);
+
+  // 如果今天已经初始化过，则不再初始化
+  if (lastInitDate === today) {
+    return false;
+  }
+
+  // 尝试获取锁，防止并发初始化
+  const lockResult = await redis.set(BOSS_INIT_LOCK_KEY, '1', 'EX', 30, 'NX');
+
+  if (!lockResult) {
+    // 获取锁失败，说明其他进程正在初始化
+    return false;
+  }
+
+  try {
+    // 再次检查Boss是否已经存在（双重检查）
+    if (await Boss2IsAlive()) {
+      return false;
+    }
+
+    // 再次检查今天是否已经初始化过
+    const currentInitDate = await redis.get(BOSS_INIT_STATUS_KEY);
+
+    if (currentInitDate === today) {
+      return false;
+    }
+
+    // 执行初始化
+    await InitWorldBoss();
+
+    // 记录初始化日期
+    await redis.set(BOSS_INIT_STATUS_KEY, today);
+
+    return true;
+  } finally {
+    // 释放锁
+    await redis.del(BOSS_INIT_LOCK_KEY);
+  }
+}
+
+/**
+ * 检查并初始化金角大王（晚上8点）
+ * 如果当前时间已过20:00且Boss未初始化，则进行初始化
+ * 使用Redis锁机制防止并发初始化
+ */
+export async function checkAndInitBoss2(): Promise<boolean> {
+  const now = new Date();
+  const currentHour = now.getHours();
+
+  // 检查是否已过晚上8点
+  if (currentHour < 20) {
+    return false;
+  }
+
+  // 检查Boss是否已经存在
+  if (await Boss2IsAlive()) {
+    return false;
+  }
+
+  // 获取今天的日期字符串，用于判断是否已经初始化过
+  const today = now.toDateString();
+  const lastInitDate = await redis.get(BOSS2_INIT_STATUS_KEY);
+
+  // 如果今天已经初始化过，则不再初始化
+  if (lastInitDate === today) {
+    return false;
+  }
+
+  // 尝试获取锁，防止并发初始化
+  const lockResult = await redis.set(BOSS2_INIT_LOCK_KEY, '1', 'EX', 30, 'NX');
+
+  if (!lockResult) {
+    // 获取锁失败，说明其他进程正在初始化
+    return false;
+  }
+
+  try {
+    // 再次检查Boss是否已经存在（双重检查）
+    if (await Boss2IsAlive()) {
+      return false;
+    }
+
+    // 再次检查今天是否已经初始化过
+    const currentInitDate = await redis.get(BOSS2_INIT_STATUS_KEY);
+
+    if (currentInitDate === today) {
+      return false;
+    }
+
+    // 执行初始化
+    await InitWorldBoss2();
+
+    // 记录初始化日期
+    await redis.set(BOSS2_INIT_STATUS_KEY, today);
+
+    return true;
+  } finally {
+    // 释放锁
+    await redis.del(BOSS2_INIT_LOCK_KEY);
+  }
+}
+
 // 获取玩家平均实力和化神以上人数
 export async function GetAverageDamage() {
   const playerList = await keysByPath(__PATH.player_path);

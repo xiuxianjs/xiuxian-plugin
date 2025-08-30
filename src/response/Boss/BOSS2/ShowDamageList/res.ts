@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs';
 import { existplayer, sortBy } from '@src/model/index';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import { BossIsAlive, SortPlayer } from '../../../../model/boss';
+import { BossIsAlive, SortPlayer, checkAndInitBoss2 } from '../../../../model/boss';
 import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 import { screenshot } from '@src/image';
 import mw from '@src/response/mw';
@@ -30,6 +30,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
+  // 检查并初始化金角大王（晚上8点）
+  await checkAndInitBoss2();
 
   if (!(await BossIsAlive())) {
     void Send(Text('金角大王未开启！'));

@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { existplayer } from '@src/model';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus } from '../../../../model/boss';
+import { Boss2IsAlive, InitWorldBoss, LookUpWorldBossStatus, checkAndInitBoss2 } from '../../../../model/boss';
 import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 import mw from '@src/response/mw';
 
@@ -30,6 +30,9 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
+  // 检查并初始化金角大王（晚上8点）
+  await checkAndInitBoss2();
 
   if (!(await Boss2IsAlive())) {
     void Send(Text('金角大王未开启！'));
