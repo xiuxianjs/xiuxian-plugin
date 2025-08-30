@@ -3,7 +3,7 @@ import { existplayer } from '@src/model';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { getDataByKey } from '@src/model/DataControl';
 import { keys, KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO, keysAction } from '@src/model/keys';
-import { pushInfo } from '@src/model/api';
+import { pushInfo, redis } from '@src/model/api';
 import { zdBattle, Harm } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { addHP, addCoin } from '@src/model/economy';
@@ -249,7 +249,10 @@ const res = onResponse(selects, async e => {
     const killMsg = `【全服公告】${player.名号}亲手结果了金角大王的性命,为民除害,额外获得500000灵石奖励！`;
     const auctionKeyManager = getAuctionKeyManager();
     const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
-    const groups = await getDataByKey(groupListKey);
+
+    // const groups = await getDataByKey(groupListKey);
+    // 集合数据需要使用smembers方法获取成员
+    const groups = await redis.smembers(groupListKey);
 
     if (Array.isArray(groups)) {
       for (const g of groups) {

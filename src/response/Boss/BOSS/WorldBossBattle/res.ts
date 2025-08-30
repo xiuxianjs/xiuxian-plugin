@@ -3,7 +3,7 @@ import { existplayer } from '@src/model';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { getDataByKey } from '@src/model/DataControl';
 import { keys, KEY_RECORD, KEY_WORLD_BOOS_STATUS, keysAction } from '@src/model/keys';
-import { pushInfo } from '@src/model/api';
+import { pushInfo, redis } from '@src/model/api';
 import { zdBattle, Harm } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { addHP, addCoin } from '@src/model/economy';
@@ -260,7 +260,9 @@ const res = onResponse(selects, async e => {
     const msg2 = `【全服公告】${player.名号}亲手结果了妖王的性命,为民除害,额外获得1000000灵石奖励！`;
     const auctionKeyManager = getAuctionKeyManager();
     const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
-    const groupList = await getDataByKey(groupListKey);
+    // const groupList = await getDataByKey(groupListKey);
+    // 集合数据需要使用smembers方法获取成员
+    const groupList = await redis.smembers(groupListKey);
 
     if (Array.isArray(groupList)) {
       for (const group of groupList) {
