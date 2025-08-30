@@ -1,42 +1,46 @@
 import { Text, useSend } from 'alemonjs';
-
-import { existplayer, readPlayer, addNajieThing, addConFaByUser, keys } from '@src/model/index';
-
+import { readPlayer, addNajieThing, keys, addConsFaByUser } from '@src/model/index';
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?一键学习$/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
-  // 有无存档
-  const ifexistplay = await existplayer(userId);
+  const player = await readPlayer(userId);
 
-  if (!ifexistplay) {
-    return false;
-  }
-  // 检索方法
-  const najie = await getDataJSONParseByKey(keys.najie(userId));
-
-  if (!najie) {
+  if (!player) {
     return;
   }
-  const player = await readPlayer(userId);
-  let name = '';
+  // 检索方法
+  const najie: null | { 功法: Array<{ name: string }> } = await getDataJSONParseByKey(keys.najie(userId));
 
-  for (const l of najie.功法) {
+  if (!najie || !Array.isArray(najie?.功法)) {
+    return;
+  }
+
+  const names: string[] = [];
+
+  najie.功法.map(l => {
     const islearned = player.学习的功法.find(item => item === l.name);
 
     if (!islearned) {
-      await addNajieThing(userId, l.name, '功法', -1);
-      await addConFaByUser(userId, l.name);
-      name = name + ' ' + l.name;
+      names.push(l.name);
     }
-  }
-  if (name) {
-    void Send(Text(`你学会了${name},可以在【#我的炼体】中查看`));
-  } else {
+  });
+
+  if (!names.length) {
     void Send(Text('无新功法'));
+
+    return;
   }
+
+  for (const n of names) {
+    await addNajieThing(userId, n, '功法', -1);
+  }
+
+  void addConsFaByUser(userId, names);
+
+  void Send(Text(`你学会了${names.join('|')},可以在【#我的炼体】中查看`));
 });
 
 import mw from '@src/response/mw';

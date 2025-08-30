@@ -70,6 +70,21 @@ export async function addConFaByUser(usrid: string, gongfaName: string) {
   void playerEfficiency(usrid);
 }
 
+export async function addConsFaByUser(usrid: string, gongfaNames: string[]) {
+  const player = await readPlayer(usrid);
+
+  if (!player) {
+    return;
+  }
+  if (!Array.isArray(player.学习的功法)) {
+    player.学习的功法 = [];
+  }
+  player.学习的功法.push(...gongfaNames);
+  await setDataJSONStringifyByKey(keys.player(usrid), player);
+
+  void playerEfficiency(usrid);
+}
+
 export async function addBagCoin(usrid: string, lingshi: number) {
   const delta = Math.trunc(Number(lingshi));
 
