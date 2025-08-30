@@ -10,7 +10,7 @@ import { Image, Text, useSend } from 'alemonjs';
 import { Player } from '@src/types';
 import { screenshot } from '@src/image';
 import { getAvatar } from './utils/utilsx';
-import { zdBattle } from './battle';
+import { zdBattle, Harm } from './battle';
 import { addCoin, addHP } from './economy';
 import { getConfig } from './Config';
 
@@ -208,27 +208,29 @@ export async function GetAverageDamage() {
   return { player_quantity: totalPlayer, AverageDamage: averageDamage };
 }
 
-// 排序
+// 排序 - 修复重复值处理问题
 export function SortPlayer(playerRecordJSON) {
-  if (playerRecordJSON) {
-    const temp0 = _.cloneDeep(playerRecordJSON);
-    const temp = temp0.TotalDamage;
-    const sortResult: number[] = [];
+  if (!playerRecordJSON?.TotalDamage) {
+    return [];
+  }
 
-    temp.sort(function (a, b) {
-      return b - a;
-    });
-    for (let i = 0; i < playerRecordJSON.TotalDamage.length; i++) {
-      for (let s = 0; s < playerRecordJSON.TotalDamage.length; s++) {
-        if (temp[i] === playerRecordJSON.TotalDamage[s]) {
-          sortResult[i] = s;
-          break;
-        }
-      }
+  // 创建索引和伤害的配对数组
+  const indexedDamage = playerRecordJSON.TotalDamage.map((damage, index) => ({
+    index,
+    damage
+  }));
+
+  // 按伤害降序排序，相同伤害按索引升序排序
+  indexedDamage.sort((a, b) => {
+    if (b.damage !== a.damage) {
+      return b.damage - a.damage;
     }
 
-    return sortResult;
-  }
+    return a.index - b.index;
+  });
+
+  // 提取排序后的索引
+  return indexedDamage.map(item => item.index);
 }
 
 /**
@@ -310,37 +312,59 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   }
 
   if (playerWin) {
+    // 玩家胜利时对Boss造成伤害
     dealt = Math.trunc(statusStr.Healthmax * 0.06 + Harm(player.攻击 * 0.85, boss.防御) * 10);
     statusStr.Health -= dealt;
+    // 确保Boss血量不为负数
+    if (statusStr.Health < 0) {
+      statusStr.Health = 0;
+    }
     void Send(Text(`${player.名号}击败了[${boss.名号}],重创[${boss.名号}],造成伤害${dealt}`));
   } else if (bossWin) {
-    dealt = Math.trunc(statusStr.Healthmax * 0.04 + Harm(player.攻击 * 0.85, boss.防御) * 6);
+    // Boss胜利时，玩家只造成少量伤害
+    dealt = Math.trunc(statusStr.Healthmax * 0.02 + Harm(player.攻击 * 0.85, boss.防御) * 2);
     statusStr.Health -= dealt;
+    // 确保Boss血量不为负数
+    if (statusStr.Health < 0) {
+      statusStr.Health = 0;
+    }
     void Send(Text(`${player.名号}被[${boss.名号}]击败了,只对[${boss.名号}]造成了${dealt}伤害`));
   }
 
   const random = Math.random();
 
   if (random < 0.05 && playerWin) {
+    // 玩家胜利时，Boss使用古典秘籍回复血量
     void Send(Text(`这场战斗重创了[${boss.名号}]，${boss.名号}使用了古典秘籍,血量回复了10%`));
     statusStr.Health += Math.trunc(statusStr.Healthmax * 0.1);
-
-    // 调整血量
+    // 确保Boss血量不超过最大值
+    if (statusStr.Health > statusStr.Healthmax) {
+      statusStr.Health = statusStr.Healthmax;
+    }
+    // 调整玩家血量
     await addHP(userId, dataBattle.A_xue);
   } else if (random > 0.95 && bossWin) {
+    // Boss胜利时，韩立助阵
     const extra = Math.trunc(statusStr.Health * 0.15);
 
     dealt += extra;
     statusStr.Health -= extra;
+    // 确保Boss血量不为负数
+    if (statusStr.Health < 0) {
+      statusStr.Health = 0;
+    }
     void Send(Text(`危及时刻,万先盟-韩立前来助阵,对[${boss.名号}]造成${extra}伤害,并治愈了你的伤势`));
-
-    // 恢复血量
-    await addHP(userId, player.血量上限);
+    // 恢复玩家部分血量，而不是满血
+    await addHP(userId, Math.trunc(player.血量上限 * 0.3));
   } else {
+    // 正常情况下的血量调整
     await addHP(userId, dataBattle.A_xue);
   }
 
-  playerRecordJson.TotalDamage[userIdx] += dealt;
+  // 只有在玩家对Boss造成伤害时才记录
+  if (dealt > 0) {
+    playerRecordJson.TotalDamage[userIdx] += dealt;
+  }
 
   // 保存战斗记录
   await setDataJSONStringifyByKey(bossKeys[key].record, playerRecordJson);
@@ -377,8 +401,9 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
       topSum += playerRecordJson.TotalDamage[playerList[i]];
     }
 
+    // 如果总伤害为0，则平均分配奖励
     if (topSum <= 0) {
-      topSum = showMax;
+      topSum = 1; // 避免除零错误
     }
 
     const rewardMsg: string[] = [`****${boss.名号}贡献排行榜****`];
@@ -395,8 +420,17 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
       const lingshi = 200000;
 
       if (i < showMax) {
-        let reward = Math.trunc((playerRecordJson.TotalDamage[idx] / topSum) * statusStr.Reward);
+        // 计算奖励，避免除零错误
+        let reward = 0;
 
+        if (topSum > 0) {
+          reward = Math.trunc((playerRecordJson.TotalDamage[idx] / topSum) * statusStr.Reward);
+        } else {
+          // 如果总伤害为0，平均分配奖励
+          reward = Math.trunc(statusStr.Reward / showMax);
+        }
+
+        // 确保奖励不为负数或无效值
         if (!Number.isFinite(reward) || reward < lingshi) {
           reward = lingshi;
         }
@@ -405,6 +439,7 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
         cur.灵石 += reward;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
       } else {
+        // 参与但未进入前20名的玩家获得基础奖励
         cur.灵石 += lingshi;
         await setDataJSONStringifyByKey(keys.player(qq), cur);
 
