@@ -4,7 +4,7 @@ import { existplayer, readPlayer, foundthing, insteadEquipment, keys } from '@sr
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { getQquipmentImage } from '@src/model/image';
+import { getEquipmentImage } from '@src/model/image';
 import { getDataList } from '@src/model/DataList';
 import { EquipmentLike } from '@src/types/model';
 import { Player } from '@src/types/player';
@@ -144,7 +144,7 @@ const res = onResponse(selects, async e => {
       }
     }
   }
-  const img = await getQquipmentImage(e as Parameters<typeof getQquipmentImage>[0]);
+  const img = await getEquipmentImage(e as Parameters<typeof getEquipmentImage>[0]);
 
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));

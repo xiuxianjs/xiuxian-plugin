@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs';
 import { insteadEquipment } from '@src/model/najie';
-import { getQquipmentImage } from '@src/model/image';
+import { getEquipmentImage } from '@src/model/image';
 
 // 装备处理
 export const handleEquipment = async (userId: string, thingName: string, pinji: number | undefined, najie: any, e: any): Promise<boolean> => {
@@ -15,7 +15,7 @@ export const handleEquipment = async (userId: string, thingName: string, pinji: 
   }
 
   await insteadEquipment(userId, equ);
-  const img = await getQquipmentImage(e);
+  const img = await getEquipmentImage(e);
   const Send = useSend(e);
 
   if (Buffer.isBuffer(img)) {

@@ -1,4 +1,4 @@
-import { Goweizhi } from '@src/model/image';
+import { goWeizhi } from '@src/model/image';
 import { selects } from '@src/response/mw';
 import { existplayer } from '@src/model/index';
 
@@ -15,7 +15,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  await Goweizhi(e, didian);
+  await goWeizhi(e, didian);
 
   return false;
 });

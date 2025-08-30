@@ -1,7 +1,7 @@
 import { Image, useSend } from 'alemonjs';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
-import { getdanfangImage } from '@src/model/image';
+import { getDanfangImage } from '@src/model/image';
 import { existplayer } from '@src/model';
 
 export const regular = /^(#|＃|\/)?丹药配方$/;
@@ -13,7 +13,7 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const img = await getdanfangImage(e);
+  const img = await getDanfangImage(e);
 
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));

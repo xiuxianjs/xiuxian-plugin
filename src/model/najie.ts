@@ -10,7 +10,7 @@ import { readEquipment, writeEquipment } from './equipment.js';
  * @param userId 玩家QQ
  * @param thingName 物品名称
  * @param thingClass 物品类型
- * @param thing_pinji 物品等级
+ * @param thingPinji 物品等级
  * @param lock 物品是否锁定
  * @returns
  */
@@ -18,7 +18,7 @@ export async function updateBagThing(
   userId: string,
   thingName: string,
   thingClass: NajieCategory,
-  thing_pinji: number | undefined,
+  thingPinji: number | undefined,
   lock: number
 ): Promise<boolean> {
   const najie: Najie | null = await readNajie(userId);
@@ -32,9 +32,9 @@ export async function updateBagThing(
     najie[thingClass] = [];
   }
 
-  if (thingClass === '装备' && (thing_pinji || thing_pinji === 0)) {
+  if (thingClass === '装备' && (thingPinji || thingPinji === 0)) {
     for (const i of najie['装备']) {
-      if (i.name === thingName && i.pinji === thing_pinji) {
+      if (i.name === thingName && i.pinji === thingPinji) {
         i.islockd = lock;
       }
     }
@@ -55,10 +55,10 @@ export async function updateBagThing(
  * @param userId 玩家QQ
  * @param thingName 物品名称
  * @param thingClass 物品类型
- * @param thing_pinji 物品等级
+ * @param thingPinji 物品等级
  * @returns
  */
-export async function existNajieThing(userId: string, thingName: string, thingClass: NajieCategory, thing_pinji = 0): Promise<number | false> {
+export async function existNajieThing(userId: string, thingName: string, thingClass: NajieCategory, thingPinji = 0): Promise<number | false> {
   const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
@@ -66,10 +66,10 @@ export async function existNajieThing(userId: string, thingName: string, thingCl
   }
   let ifexist: NajieItem | undefined;
 
-  if (thingClass === '装备' && (thing_pinji || thing_pinji === 0)) {
+  if (thingClass === '装备' && (thingPinji || thingPinji === 0)) {
     const equipList = Array.isArray(najie.装备) ? najie.装备 : [];
 
-    ifexist = equipList.find(item => item.name === thingName && item.pinji === thing_pinji);
+    ifexist = equipList.find(item => item.name === thingName && item.pinji === thingPinji);
   } else {
     const type: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
@@ -166,9 +166,7 @@ export async function addNajieThing(
           }
         }
       } else {
-        if (!name.pinji) {
-          name.pinji = pinji;
-        }
+        name.pinji ??= pinji;
         (name as NajieItem).数量 = x;
         (name as NajieItem).islockd = 0;
         najie[thingClass].push(name as NajieItem);

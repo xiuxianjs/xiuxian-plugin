@@ -1,4 +1,4 @@
-import { Goweizhi } from '@src/model/image';
+import { goWeizhi } from '@src/model/image';
 import { selects } from '@src/response/mw';
 import { existplayer } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
@@ -16,7 +16,7 @@ const res = onResponse(selects, async e => {
   if (!Array.isArray(list) || list.length === 0) {
     return false;
   }
-  await Goweizhi(e, list);
+  await goWeizhi(e, list);
 
   return false;
 });

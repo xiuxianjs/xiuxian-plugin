@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs';
 import { selects } from '@src/response/mw';
-import { getQquipmentImage } from '@src/model/image';
+import { getEquipmentImage } from '@src/model/image';
 import { existplayer } from '@src/model';
 export const regular = /^(#|＃|\/)?我的装备$/;
 
@@ -13,7 +13,7 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  const img = await getQquipmentImage(e);
+  const img = await getEquipmentImage(e);
 
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));
