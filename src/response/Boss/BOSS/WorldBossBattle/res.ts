@@ -40,7 +40,7 @@ const executeBossBattleWithLock = (e: any, userId: string, player: any, boss: an
     lockKey,
     async () => {
       // 在锁保护下执行Boss战斗逻辑
-      await WorldBossBattle(e, userId, player, boss, '1');
+      await WorldBossBattle(e, { userId, player, boss, key: '1', endLingshi: 1000000, averageLingshi: 200000 });
     },
     BOSS_LOCK_CONFIG
   );

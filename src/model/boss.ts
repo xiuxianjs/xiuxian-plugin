@@ -66,7 +66,7 @@ export const WorldBossBattleInfo = {
 export async function InitWorldBoss() {
   const k = bossKeys[1];
 
-  await redis.set(k.init, '1', 'EX', 3600);
+  await redis.set(k.init, '1', 'EX', 10 * 60 * 60);
 
   const averageDamageStruct = await GetAverageDamage();
   let playerQuantity = Math.floor(averageDamageStruct.player_quantity);
@@ -134,12 +134,12 @@ export async function InitWorldBoss2() {
   const k = bossKeys[2];
 
   // 设置 key。并在1h后删除
-  await redis.set(k.init, '1', 'EX', 3600);
+  await redis.set(k.init, '1', 'EX', 10 * 60 * 60);
 
   const averageDamageStruct = await GetAverageDamage();
   let playerQuantity = Math.floor(averageDamageStruct.player_quantity);
   let averageDamage = Math.floor(averageDamageStruct.AverageDamage);
-  let reward = 12000000;
+  let reward = 6000000;
 
   if (playerQuantity < 5) {
     playerQuantity = 6;
@@ -249,7 +249,26 @@ export function SortPlayer(playerRecordJSON) {
  * @param boss
  * @returns
  */
-export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1') => {
+export const WorldBossBattle = async (
+  e,
+  {
+    userId,
+    player,
+    boss,
+    key,
+    // 终结灵石
+    endLingshi,
+    // 均分灵石
+    averageLingshi
+  }: {
+    userId: string;
+    player: Player;
+    boss: WorldBossStatus;
+    key: '1' | '2';
+    endLingshi: number;
+    averageLingshi: number;
+  }
+) => {
   const Send = useSend(e);
 
   // 读取boss数据
@@ -328,8 +347,6 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
 
   void postImage();
 
-  void Send(Text(`血量:${bossStatus.Health}\n奖励:${bossStatus.Reward}`));
-
   if (playerWin) {
     // 玩家胜利时对Boss造成伤害
     dealt = Math.trunc(bossStatus.Healthmax * 0.06 + Harm(player.攻击 * 0.85, boss.防御) * 10);
@@ -394,11 +411,9 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
   }
 
   if (bossStatus.Health <= 0) {
-    const lingshi = 500000;
+    await addCoin(userId, endLingshi);
 
-    await addCoin(userId, lingshi);
-
-    const killMsg = `【全服公告】${player.名号}亲手结果了${boss.名号}的性命,为民除害,额外获得${lingshi}灵石奖励！`;
+    const killMsg = `【全服公告】${player.名号}亲手结果了${boss.名号}的性命,为民除害,额外获得${endLingshi}灵石奖励！`;
     const auctionKeyManager = getAuctionKeyManager();
     const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
 
@@ -446,7 +461,7 @@ export const WorldBossBattle = async (e, userId, player: Player, boss, key = '1'
 
         const playerData = cur as Player;
 
-        const lingshi = 200000;
+        const lingshi = averageLingshi;
 
         if (i < showMax) {
           // 计算奖励，避免除零错误
