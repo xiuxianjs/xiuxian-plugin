@@ -1,4 +1,4 @@
-import { addCoin, addNajieThing, readPlayer, writePlayer } from '@src/model';
+import { addCoin, addNajieThing, isUserMonthCard, readPlayer, writePlayer } from '@src/model';
 import mw, { selects } from '@src/response/mw';
 import { NajieCategory } from '@src/types/model';
 import { useMessage, Text } from 'alemonjs';
@@ -57,13 +57,14 @@ const res = onResponse(selects, async e => {
       account: 1
     }
   ];
+  const isMonth = await isUserMonthCard(e.UserId);
 
   for (const thing of list) {
-    await addNajieThing(e.UserId, thing.name, thing.class as NajieCategory, thing.account);
+    await addNajieThing(e.UserId, thing.name, thing.class as NajieCategory, isMonth ? thing.account * 2 : thing.account);
   }
   await writePlayer(e.UserId, user);
   const msg = list.map(thing => {
-    return `${thing.name}*${thing.account}`;
+    return `${thing.name}*${isMonth ? thing.account * 2 : thing.account}`;
   });
 
   await message.send(format(Text('新手礼包领取成功！获得: ' + msg.join('\n'))));

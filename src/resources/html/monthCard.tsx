@@ -7,6 +7,7 @@ import userStateURL from '@src/resources/img/user_state2.png';
 interface MonthCardProps {
   isMonth: boolean;
   avatar: string;
+  isNewbie?: boolean;
 }
 
 const features = [
@@ -32,7 +33,7 @@ const features = [
   }
 ];
 
-const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar }) => {
+const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie }) => {
   return (
     <HTML
       className='p-0 m-0 w-full text-center'
@@ -134,6 +135,51 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar }) => {
                   </div>
                 </div>
               ))}
+              {isNewbie ? (
+                <div className='bg-gradient-to-br from-white/80 via-blue-50/70 to-cyan-50/75 backdrop-blur-xl rounded-xl p-4 border border-blue-200/40 shadow-xl relative overflow-hidden hover:shadow-2xl transition-all duration-300'>
+                  {/* 装饰性光效 */}
+                  <div className='absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-400/8 to-cyan-400/8 rounded-full blur-xl' />
+                  <div className='absolute bottom-0 left-0 w-12 h-12 bg-gradient-to-br from-cyan-400/4 to-blue-400/4 rounded-full blur-lg' />
+
+                  <div className='relative z-10 space-y-3'>
+                    <div className='flex items-center gap-3'>
+                      <div className='w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg'>
+                        <span className='text-white text-lg'>💴</span>
+                      </div>
+                      <div className='flex-1'>
+                        <h4 className='text-base font-bold text-blue-800 drop-shadow-sm'>双倍新手福利</h4>
+                        <p className='text-sm text-blue-600 mt-1'>新手礼包奖励翻倍</p>
+                      </div>
+                    </div>
+
+                    <div className='relative'>
+                      {isMonth ? (
+                        <div className='flex items-center justify-between'>
+                          <span className='px-3 py-1 rounded-full text-sm font-medium shadow-lg bg-gradient-to-r from-emerald-500/15 to-green-500/15 text-emerald-700 border border-emerald-400/25'>
+                            已解锁
+                          </span>
+                          <div className='flex items-center gap-1'>
+                            <div className='w-2 h-2 bg-emerald-400 rounded-full animate-pulse' />
+                            <span className='text-xs text-emerald-600 font-medium'>激活中</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className='relative'>
+                          <div className='flex items-center justify-between'>
+                            <div />
+                            <div className='flex items-center gap-1'>
+                              <div className='w-2 h-2 bg-blue-400 rounded-full animate-pulse' />
+                              <span className='text-xs text-blue-600 font-medium'>未激活</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                ''
+              )}
             </div>
           </div>
 
