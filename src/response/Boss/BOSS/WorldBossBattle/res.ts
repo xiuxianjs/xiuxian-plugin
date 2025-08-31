@@ -19,8 +19,8 @@ function toInt(v: any, d = 0): number {
 }
 
 // 境界限制
-const isLevelLimit = (levelId: number, lunhui: number) => {
-  return levelId < 42 && lunhui === 0;
+const isLevelMaxLimit = (levelId: number, lunhui: number) => {
+  return levelId > 41 || lunhui > 0;
 };
 
 // Boss战斗锁配置
@@ -87,7 +87,7 @@ const res = onResponse(selects, async e => {
       return;
     }
 
-    if (!isLevelLimit(player.level_id, player.lunhui)) {
+    if (!isLevelMaxLimit(player.level_id, player.lunhui)) {
       void Send(Text('不在仙界'));
 
       return false;

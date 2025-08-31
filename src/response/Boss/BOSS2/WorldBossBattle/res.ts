@@ -20,7 +20,7 @@ function toInt(v: any, d = 0): number {
 }
 
 // 境界限制
-const isLevelLimit = (levelId: number, lunhui: number) => {
+const isLevelMaxLimit = (levelId: number, lunhui: number) => {
   return levelId > 41 || lunhui > 0;
 };
 
@@ -81,7 +81,7 @@ const res = onResponse(selects, async e => {
       return;
     }
 
-    if (isLevelLimit(player.level_id, player.lunhui)) {
+    if (isLevelMaxLimit(player.level_id, player.lunhui)) {
       void Send(Text('仙人不得下凡'));
 
       return false;
