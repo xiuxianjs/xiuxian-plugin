@@ -449,7 +449,7 @@ export async function getGongfaImage(e: EventsMessageCreateEnum): Promise<Screen
 export async function getPowerImage(e: EventsMessageCreateEnum): Promise<ScreenshotResult> {
   const userId = e.UserId;
   const Send: SendFn = useSend(e) as SendFn;
-  const player = await getDataJSONParseByKey(keys.player(userId));
+  const player: Player | null = await getDataJSONParseByKey(keys.player(userId));
 
   if (!player) {
     void Send(Text('玩家数据获取失败'));
@@ -477,10 +477,20 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
   } else {
     association = player.宗门;
   }
+
   const physiqueList = await getDataList('Level2');
+
   // 境界名字需要查找境界名
-  const levelMax = physiqueList.find(item => item.level_id === player.Physique_id).level;
-  const needXueqi = physiqueList.find(item => item.level_id === player.Physique_id).exp;
+  const curLevelMax = physiqueList.find(item => item.level_id === player.Physique_id);
+
+  if (!curLevelMax) {
+    return;
+  }
+
+  // 境界名字需要查找境界名
+  const levelMax = curLevelMax.level;
+  const needXueqi = curLevelMax.exp;
+
   const playerCopy = {
     user_id: userId,
     nickname: player.名号,
@@ -489,6 +499,7 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
     levelMax: levelMax,
     lingshi: lingshi,
     镇妖塔层数: player.镇妖塔层数,
+    levelId: player.level_id,
     神魄段数: player.神魄段数,
     hgd: player.favorability,
     player_maxHP: player.血量上限,

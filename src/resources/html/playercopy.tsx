@@ -3,7 +3,7 @@ import HTML from './HTML';
 import { Avatar } from './Avatar';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 
-const PlayerCopy = ({ user_id, nickname, player_nowHP, player_maxHP, levelMax, xueqi, need_xueqi, lingshi, association, learned_gongfa = [] }) => {
+const PlayerCopy = ({ user_id, nickname, player_nowHP, player_maxHP, levelId, levelMax, xueqi, need_xueqi, lingshi, association, learned_gongfa = [] }) => {
   return (
     <HTML className='p-0 m-0 w-full text-center'>
       {/* 背景装饰层 */}
@@ -169,8 +169,7 @@ const PlayerCopy = ({ user_id, nickname, player_nowHP, player_maxHP, levelMax, x
           <div className='relative z-10'>
             <div className='text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-yellow-600 to-red-600 mb-4 sm:mb-6 tracking-wider drop-shadow-lg flex items-center justify-center gap-3 sm:gap-4'>
               <span className='text-xl sm:text-2xl'>📚</span>
-              【已学功法】
-              <span className='text-xl sm:text-2xl'>📚</span>
+              【已学功法】({learned_gongfa?.length ?? 0}/{levelId})<span className='text-xl sm:text-2xl'>📚</span>
             </div>
 
             <div className='bg-gradient-to-br from-green-100/90 via-yellow-50/90 to-red-100/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl border border-green-300/60 relative overflow-hidden'>

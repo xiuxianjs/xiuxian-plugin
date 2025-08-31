@@ -41,20 +41,48 @@ const res = onResponse(selects, async e => {
 
   const whole = Math.trunc(thingValue * thingCount);
 
-  let off = Math.trunc(whole * 0.03);
+  // 计算阶梯税收：物品低于100w交易后收3%税，每多100w多收3%，最高为15%。
+  const calculateTax = (totalPrice: number): number => {
+    const million = 1000000; // 100w
+    const baseTaxRate = 0.03; // 3%
 
-  if (off < 100000) {
-    off = 100000;
-  }
+    if (totalPrice < million) {
+      // 低于100w收3%税
+      return Math.floor(totalPrice * baseTaxRate);
+    }
+
+    // 计算有多少个100w（包含第一个100w）
+    const millionCount = Math.ceil(totalPrice / million);
+    // 税率 = 基础税率 * 100w的个数
+    const taxRate = baseTaxRate * millionCount;
+
+    // 25%的税
+    if (taxRate > 0.25) {
+      return Math.floor(totalPrice * 0.25);
+    }
+
+    const curPrice = Math.floor(totalPrice * taxRate);
+
+    if (curPrice < 100000) {
+      return 100000;
+    }
+
+    return Math.floor(totalPrice * taxRate);
+  };
+
+  const off = calculateTax(whole);
+
   const player = await readPlayer(userId);
 
-  if (player.灵石 < off + whole) {
-    void Send(Text(`灵石不足,还需要${off + whole - player.灵石}灵石`));
+  const needPrice = off + whole;
+
+  if (player.灵石 < needPrice) {
+    void Send(Text(`灵石不足,需要${needPrice}(+${off})灵石`));
 
     return false;
   }
 
-  await addCoin(userId, -(off + whole));
+  await addCoin(userId, -needPrice);
 
   const wupin = {
     qq: userId,
