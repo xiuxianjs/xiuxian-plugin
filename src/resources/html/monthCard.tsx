@@ -4,11 +4,9 @@ import { Avatar } from './Avatar';
 import supermarketURL from '@src/resources/img/fairyrealm.jpg';
 import userStateURL from '@src/resources/img/user_state2.png';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import classNames from 'classnames';
 
-// 配置dayjs插件
-dayjs.extend(relativeTime);
+// 配置dayjs插件（已去除relativeTime）
 
 interface MonthCardProps {
   isMonth: boolean;
@@ -82,7 +80,7 @@ interface MonthCardItemProps {
   days: number;
   expireInfo: {
     date: string;
-    relative: string;
+    time: string;
   } | null;
 }
 
@@ -123,7 +121,6 @@ const MonthCardItem: React.FC<MonthCardItemProps> = ({ type, config, isActive, d
           <div className={`mt-2 p-2 ${config.colorTheme.expireBg} rounded-lg border ${config.colorTheme.expireBorder}`}>
             <div className={`text-xs ${config.colorTheme.expireText} font-medium mb-1`}>剩余天数: {days}天</div>
             <div className={`text-xs ${config.colorTheme.expireText.replace('700', '600')}`}>过期时间: {expireInfo.date}</div>
-            {type === 'big' && <div className={`text-xs ${config.colorTheme.expireText.replace('700', '500')}`}>{expireInfo.relative}</div>}
           </div>
         )}
       </div>
@@ -321,7 +318,7 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
   const smallExpireTime = data?.small_month_card_days > 0 ? now.add(data.small_month_card_days, 'day') : null;
   const bigExpireTime = data?.big_month_card_days > 0 ? now.add(data.big_month_card_days, 'day') : null;
 
-  // 格式化过期时间显示
+  // 格式化过期时间显示（只用date和time）
   const formatExpireTime = (expireTime: dayjs.Dayjs | null) => {
     if (!expireTime) {
       return null;
@@ -329,8 +326,7 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
 
     return {
       date: expireTime.format('YYYY-MM-DD'),
-      time: expireTime.format('HH:mm:ss'),
-      relative: expireTime.fromNow()
+      time: expireTime.format('HH:mm:ss')
     };
   };
 
@@ -354,11 +350,10 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
       <div className='h-3' />
       <div className='m-3 mx-auto flex flex-nowrap rounded-3xl z-999 bg-gradient-to-br from-white/70 via-blue-50/60 to-cyan-50/65 backdrop-blur-sm border border-blue-200/40 shadow-2xl w-[780px] pb-6'>
         <div className='m-4 w-[780px]'>
-          {/* 头部区域 - 重新设计 */}
+          {/* 头部区域 */}
           <div className='text-center mb-6'>
-            {/* 用户头像和月卡信息 - 左右布局 */}
             <div className='flex items-center justify-between mb-6'>
-              {/* 用户头像 - 左容器居中 */}
+              {/* 用户头像 */}
               <div className='flex-1 flex justify-center'>
                 <div className='relative'>
                   <Avatar src={avatar} stateSrc={userStateURL} rootClassName='w-32 h-32' className='w-28 h-28' />
@@ -369,8 +364,7 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
                   )}
                 </div>
               </div>
-
-              {/* 月卡信息 - 组合按钮样式 */}
+              {/* 月卡信息 */}
               <div className='flex-1 flex items-center justify-center'>
                 <div className='flex items-center rounded-xl overflow-hidden shadow-lg'>
                   <MonthCardItem
@@ -391,7 +385,6 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
               </div>
             </div>
           </div>
-
           {/* 权益功能列表 */}
           <div className='space-y-4'>
             <div className='flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-blue-500/15 via-cyan-500/12 to-blue-600/15 backdrop-blur-sm rounded-lg border border-blue-200/40 shadow-lg'>
@@ -401,8 +394,7 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
                 </div>
                 <h3 className='text-xl font-bold text-blue-800 drop-shadow-sm'>专属权益</h3>
               </div>
-
-              {/* 仙缘币信息组合显示 */}
+              {/* 仙缘币信息 */}
               <div className='flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 backdrop-blur-sm rounded-full border border-yellow-400/40 shadow-lg'>
                 <span className='text-yellow-600 text-lg'>🪙</span>
                 <span className='text-yellow-800 font-semibold text-sm'>仙缘币余额</span>
@@ -410,17 +402,14 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
                 <span className='text-yellow-700 text-sm'>·</span>
                 <span className='text-yellow-700 text-sm'>1¥=10Coin</span>
               </div>
-
               <div className='text-sm text-blue-700 font-medium'>共 {features.length} 项特权</div>
             </div>
-
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               {features.map((feature, index) => (
                 <FeatureItem key={index} feature={feature} isMonth={isMonth} data={data} />
               ))}
             </div>
           </div>
-
           {data?.is_first_recharge === false && (
             <div className='mt-4 text-center'>
               <div className='inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-sm rounded-full border border-orange-400/40 shadow-lg'>
