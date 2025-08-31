@@ -178,7 +178,7 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       arr.action = '搜刮';
       arr.end_time = Date.now() + actionTime;
       arr.time = actionTime;
-      arr.xijie = -1; // 进入二阶段
+      arr.xijie = '-1'; // 进入二阶段
       lastMessage += ',经过一番战斗,击败对手,剩余' + playerA.当前血量 + '血量,开始搜刮物品';
 
       // 进入二阶段
@@ -204,7 +204,7 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       const actionTime = 60000 * time; // 持续时间，单位毫秒
 
       arr.action = '禁闭';
-      arr.xijie = 1; // 关闭洗劫
+      arr.xijie = '1'; // 关闭洗劫
       arr.end_time = Date.now() + actionTime;
       const auctionKeyManager = getAuctionKeyManager();
       const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
@@ -315,7 +315,7 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
 
       arr.end_time = Date.now() + actionTime;
       arr.time = actionTime;
-      arr.xijie = -2; // 进入三阶段
+      arr.xijie = '-2'; // 进入三阶段
       arr.thing = thingName;
       const gradeNumFinal = Number(action.Place_address?.Grade ?? 0) || 0;
 
