@@ -72,6 +72,11 @@ function settleWin(self: RankEntry, isWild: boolean, lastMsg: string[], opponent
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
+
+  // 当前功能正在优化中
+  void Send(Text('当前功能正在优化中...'));
+
+  return;
   const userId = e.UserId;
   const ifexistplay = await existplayer(userId);
 
