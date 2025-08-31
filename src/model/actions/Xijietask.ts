@@ -300,18 +300,27 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
       }
       lastMessage += '\n刚出门就被万仙盟的人盯上了,他们仗着人多，你一人无法匹敌，于是撒腿就跑';
     }
-    arr.action = '逃跑';
-    const time = 30; // 时间（分钟）
-    const actionTime = 60000 * time; // 持续时间，单位毫秒
 
-    arr.end_time = Date.now() + actionTime;
-    arr.time = actionTime;
-    arr.xijie = -2; // 进入三阶段
-    arr.thing = thingName;
-    const gradeNumFinal = Number(action.Place_address?.Grade ?? 0) || 0;
+    /**
+     * 进入逃跑阶段
+     */
+    const handelTaopao = () => {
+      arr.action = '逃跑';
+      const time = 30; // 时间（分钟）
+      const actionTime = 60000 * time; // 持续时间，单位毫秒
 
-    arr.cishu = gradeNumFinal + 1;
-    // 写入redis
+      arr.end_time = Date.now() + actionTime;
+      arr.time = actionTime;
+      arr.xijie = -2; // 进入三阶段
+      arr.thing = thingName;
+      const gradeNumFinal = Number(action.Place_address?.Grade ?? 0) || 0;
+
+      arr.cishu = gradeNumFinal + 1;
+      // 写入redis
+    };
+
+    //
+    handelTaopao();
 
     await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
 

@@ -1,14 +1,14 @@
 import { getConfig, getDataJSONParseByKey, getDataList } from '@src/model';
 import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
 import { withLock } from '@src/model/locks';
-import { handelAction as handelActionMojie } from './mojietask';
-import { handelAction as handelActionOccupation } from './OccupationTask';
-import { handelAction as handelActionPlayerControl } from './PlayerControlTask';
-import { handelAction as handelActionSecretPlace } from './SecretPlaceTask';
-import { handelAction as handelActionSecretPlaceplus } from './SecretPlaceplusTask';
-import { handelAction as handelActionShenjie } from './shenjietask';
-import { handelAction as handelActionTaopaotask } from './Taopaotask';
-import { handelAction as handelActionXijie } from './Xijietask';
+import { handelAction as handelActionMojie } from '../../model/actions/mojietask';
+import { handelAction as handelActionOccupation } from '../../model/actions/OccupationTask';
+import { handelAction as handelActionPlayerControl } from '../../model/actions/PlayerControlTask';
+import { handelAction as handelActionSecretPlace } from '../../model/actions/SecretPlaceTask';
+import { handelAction as handelActionSecretPlaceplus } from '../../model/actions/SecretPlaceplusTask';
+import { handelAction as handelActionShenjie } from '../../model/actions/shenjietask';
+import { handelAction as handelActionTaopaotask } from '../../model/actions/Taopaotask';
+import { handelAction as handelActionXijie } from '../../model/actions/Xijietask';
 
 /**
  * todo

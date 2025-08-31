@@ -1,8 +1,8 @@
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { __PATH, keysAction } from '@src/model/keys';
 import type { ActionState } from '@src/types';
-import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
+import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/model/actions/occupation';
 
 interface OccupationActionState extends ActionState {
   plant?: string | number;
@@ -145,16 +145,10 @@ const handleMineSettlement = async (playerId: string, action: OccupationActionSt
     // 执行采矿结算
     await mine_jiesuan(playerId, timeMin, pushAddress);
 
-    // 重置状态
-    const resetAction = resetAllStates(action);
-
-    resetAction.mine = BASE_CONFIG.ACTIVE_FLAG;
-
-    await setDataJSONStringifyByKey(keysAction.action(playerId), resetAction);
-
-    return { success: true, message: '采矿结算完成' };
+    // 删除状态
+    void delDataByKey(keysAction.action(playerId));
   } catch (error) {
-    return { success: false, message: `采矿结算失败: ${error}` };
+    logger.error(error);
   }
 };
 
@@ -168,19 +162,16 @@ const handleMineSettlement = async (playerId: string, action: OccupationActionSt
 const processPlayerOccupation = async (playerId: string, action: OccupationActionState): Promise<SettlementResult> => {
   try {
     const pushAddress = getPushAddress(action);
-    let settlementResult: SettlementResult = { success: false, message: '无需要结算的状态' };
 
     // 处理采药状态
     if (action.plant === BASE_CONFIG.INACTIVE_FLAG && isSettlementTime(action.end_time)) {
-      settlementResult = await handlePlantSettlement(playerId, action, pushAddress);
+      await handlePlantSettlement(playerId, action, pushAddress);
     }
 
     // 处理采矿状态
     if (action.mine === BASE_CONFIG.INACTIVE_FLAG && isSettlementTime(action.end_time)) {
-      settlementResult = await handleMineSettlement(playerId, action, pushAddress);
+      await handleMineSettlement(playerId, action, pushAddress);
     }
-
-    return settlementResult;
   } catch (error) {
     return { success: false, message: `处理玩家职业状态失败: ${error}` };
   }

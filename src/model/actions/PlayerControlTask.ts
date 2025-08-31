@@ -1,6 +1,6 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model';
+import { delDataByKey, readPlayer, writePlayer } from '@src/model';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
@@ -271,17 +271,8 @@ const handleCultivationSettlement = async (
     // 更新血量
     await setFileValue(playerId, blood * time, '当前血量');
 
-    // 关闭所有状态
-    const arr = action;
-
-    arr.shutup = 1;
-    arr.working = 1;
-    arr.power_up = 1;
-    arr.Place_action = 1;
-    arr.Place_actionplus = 1;
-    delete arr.group_id;
-
-    await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+    // 删除行为
+    void delDataByKey(keysAction.action(playerId));
 
     // 计算最终奖励
     const finalXiuwei = xiuwei * time + otherExp;
@@ -385,17 +376,7 @@ const handleWorkSettlement = async (
 
     await setFileValue(playerId, finalLingshi, '灵石');
 
-    // 关闭所有状态
-    const arr = action;
-
-    arr.shutup = 1;
-    arr.working = 1;
-    arr.power_up = 1;
-    arr.Place_action = 1;
-    arr.Place_actionplus = 1;
-    delete arr.group_id;
-
-    await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
+    void delDataByKey(keysAction.action(playerId));
 
     // 构建消息
     const msg: Array<DataMention | string> = [Mention(playerId)];

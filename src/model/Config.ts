@@ -26,7 +26,6 @@ export const hasConfig = async (name: ConfigKey) => {
  */
 export const setConfig = async (name: ConfigKey, data) => {
   try {
-    console.log(`Setting config for ${name}:`, data);
     const redis = getIoRedis();
 
     await redis.set(keysAction.config(name), JSON.stringify(data));
@@ -46,19 +45,35 @@ export const setConfig = async (name: ConfigKey, data) => {
  * @returns 合并后的对象
  */
 function deepMerge(target: any, source: any): any {
-  const result = { ...target };
-
-  for (const key in source) {
-    if (source[key] !== undefined) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result[key] = deepMerge(result[key] || {}, source[key]);
-      } else {
-        result[key] = source[key];
-      }
-    }
+  // 如果source是数组，直接返回source（不合并数组）
+  if (Array.isArray(source)) {
+    return source;
   }
 
-  return result;
+  // 如果target是数组但source不是数组，返回source
+  if (Array.isArray(target) && !Array.isArray(source)) {
+    return source;
+  }
+
+  // 如果都不是数组，进行对象合并
+  if (typeof target === 'object' && target !== null && typeof source === 'object' && source !== null) {
+    const result = { ...target };
+
+    for (const key in source) {
+      if (source[key] !== undefined) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          result[key] = deepMerge(result[key] || {}, source[key]);
+        } else {
+          result[key] = source[key];
+        }
+      }
+    }
+
+    return result;
+  }
+
+  // 其他情况直接返回source
+  return source;
 }
 
 /**

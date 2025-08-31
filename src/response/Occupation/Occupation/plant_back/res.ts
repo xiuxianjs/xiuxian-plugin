@@ -1,5 +1,5 @@
 import { delDataByKey, getPlayerAction } from '@src/model/index';
-import { plant_jiesuan, calcEffectiveMinutes } from '../../api';
+import { plant_jiesuan, calcEffectiveMinutes } from '../../../../model/actions/occupation';
 
 import { selects } from '@src/response/mw';
 import { keysAction } from '@src/model/keys';
