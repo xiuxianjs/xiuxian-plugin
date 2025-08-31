@@ -43,7 +43,7 @@ const Supermarket = ({ Exchange_list }) => {
                     <div className='bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl p-3 border border-green-400/30 backdrop-blur-sm'>
                       <div className='text-sm text-green-200 font-medium'>上架指令</div>
                       <div className='text-xs text-gray-300'>#上架+物品名*价格*数量</div>
-                      <div className='text-xs text-orange-300 mt-1'>💰 税收：低于100w收3%税，每多100w多收3%</div>
+                      <div className='text-xs text-orange-300 mt-1'>💰 税收：低于100w收3%税，每多100w多收3%，做多不超过45%。</div>
                     </div>
                     <div className='bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl p-3 border border-blue-400/30 backdrop-blur-sm'>
                       <div className='text-sm text-blue-200 font-medium'>选购指令</div>

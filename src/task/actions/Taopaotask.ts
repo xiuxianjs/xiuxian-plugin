@@ -1,5 +1,4 @@
 import { redis, pushInfo } from '@src/model/api';
-import { getDataList } from '@src/model/DataList';
 import { notUndAndNull } from '@src/model/common';
 import { Harm } from '@src/model/battle';
 import { readShop, writeShop } from '@src/model/shop';

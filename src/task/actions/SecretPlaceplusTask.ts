@@ -1,18 +1,16 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model';
+import { readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { zdBattle } from '@src/model/battle';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { __PATH, keysAction } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory } from '@src/types';
-import { getConfig } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
-import { withLock } from '@src/model/locks';
 
 // === 本文件局部类型声明，避免 any ===
 interface SecretPlaceItem {

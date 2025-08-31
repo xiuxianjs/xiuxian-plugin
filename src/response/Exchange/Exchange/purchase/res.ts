@@ -99,6 +99,11 @@ const res = onResponse(selects, async e => {
     // 税率 = 基础税率 * 100w的个数
     const taxRate = baseTaxRate * millionCount;
 
+    // 最高为45%的税
+    if (taxRate > 0.45) {
+      return Math.floor(totalPrice * 0.45);
+    }
+
     return Math.floor(totalPrice * taxRate);
   };
 

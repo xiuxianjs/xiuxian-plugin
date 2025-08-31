@@ -1,9 +1,8 @@
 import { notUndAndNull } from '@src/model/common';
-import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
-import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { __PATH, keysAction } from '@src/model/keys';
 import type { ActionState } from '@src/types';
 import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
-import { withLock } from '@src/model/locks';
 
 interface OccupationActionState extends ActionState {
   plant?: string | number;

@@ -1,17 +1,15 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { writePlayer } from '@src/model';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { __PATH, keysAction } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionState, ShenjiePlace } from '@src/types';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
-import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
-import { withLock } from '@src/model/locks';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);

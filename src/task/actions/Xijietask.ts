@@ -3,15 +3,13 @@ import { notUndAndNull } from '@src/model/common';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { readShop, writeShop, existshop } from '@src/model/shop';
-import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { __PATH, keysAction } from '@src/model/keys';
 import { screenshot } from '@src/image';
 import { getAvatar } from '@src/model/utils/utilsx.js';
-import { getDataList } from '@src/model/DataList';
 import { getAuctionKeyManager } from '@src/model/auction';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model';
+import { setDataJSONStringifyByKey } from '@src/model';
 import type { Player } from '@src/types/player';
 import type { BattleEntity, BattleResult } from '@src/types/model';
-import { withLock } from '@src/model/locks';
 
 interface PlaceAddress {
   name: string;
@@ -246,7 +244,7 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
   const nowTime = Date.now();
 
   // 5分钟后开始结算阶段二
-  const dur2Raw = typeof action.time === 'number' ? action.time : parseInt(String(action.time || 0), 10);
+  const dur2Raw = typeof action.time === 'number' ? action.time : parseInt(String(action.time ?? 0), 10);
   const dur2: number = isNaN(dur2Raw) ? 0 : dur2Raw;
 
   endTime = endTime - dur2 + 60000 * 5;
@@ -332,7 +330,7 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
  * @param action
  * @returns
  */
-export const handelAction = async (playerId: string, action: Action, { npcList }): Promise<void> => {
+export const handelAction = (playerId: string, action: Action, { npcList }) => {
   try {
     if (!npcList || npcList.length === 0) {
       return;

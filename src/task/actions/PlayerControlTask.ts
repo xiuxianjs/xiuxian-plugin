@@ -1,16 +1,14 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model';
+import { readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
 import { setFileValue } from '@src/model/cultivation';
-import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { __PATH, keysAction } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
-import { getConfig } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
-import { withLock } from '@src/model/locks';
 
 interface ActionState {
   end_time: number;

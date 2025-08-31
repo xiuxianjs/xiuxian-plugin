@@ -1,14 +1,12 @@
 import { redis, pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keys as dataKeys, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { __PATH, keys as dataKeys, keysAction } from '@src/model/keys';
 import type { ExploreActionState } from '@src/types';
-import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
-import { withLock } from '@src/model/locks';
 
 interface MojieItem {
   name: string;

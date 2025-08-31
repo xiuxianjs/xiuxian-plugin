@@ -1,18 +1,16 @@
 import { pushInfo } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { notUndAndNull } from '@src/model/common';
-import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp, addHP } from '@src/model/economy';
-import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
+import { __PATH, keysAction } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types';
 import { writePlayer } from '@src/model';
-import { getConfig } from '@src/model';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
-import { withLock } from '@src/model/locks';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
