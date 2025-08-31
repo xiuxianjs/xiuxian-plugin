@@ -39,6 +39,14 @@ const res = onResponse(selects, async e => {
   const thingCount = convert2integer(amount);
   const Forum = await readForum();
 
+  const isMeLength = Forum.filter(item => item.qq === userId)?.length || 0;
+
+  if (isMeLength >= 3) {
+    void Send(Text(`你已发布了${isMeLength}个物品，请先处理`));
+
+    return false;
+  }
+
   const whole = Math.trunc(thingValue * thingCount);
 
   // 计算阶梯税收：物品低于100w交易后收3%税，每多100w多收3%，最高为15%。
@@ -98,7 +106,7 @@ const res = onResponse(selects, async e => {
 
   await writeForum(Forum);
 
-  void Send(Text('发布成功！'));
+  void Send(Text(`你已发布[${thingName}]*${thingCount}，单价${thingValue}灵石，总价${whole}灵石，交税${off}灵石`));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

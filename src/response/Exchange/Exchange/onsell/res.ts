@@ -205,9 +205,12 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
+  // 计算手续费
   let fee = Math.trunc(totalPrice * 0.03);
 
-  if (fee < 100000) {
+  // 固定不超过10w
+  if (fee > 100000) {
     fee = 100000;
   }
 
@@ -218,9 +221,18 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  await addCoin(userId, -fee);
 
   const exchange: ExchangeRecord[] = await readExchange();
+
+  const isMeLength = exchange.filter(item => item.qq === userId)?.length || 0;
+
+  if (isMeLength >= 3) {
+    void Send(Text(`你已发布了${isMeLength}个物品，请先处理`));
+
+    return false;
+  }
+
+  await addCoin(userId, -fee);
 
   const nowTime = Date.now();
   let newRecord: ExchangeRecord;

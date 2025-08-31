@@ -67,7 +67,7 @@ export async function getForumImage(e: EventsMessageCreateEnum, thingClass?: str
 
   const img = await screenshot('forum', e.UserId, {
     user_id: userId,
-    Forum: (thingClass ? forum.filter(item => item.class === thingClass) : forum).sort((a, b) => b.now_time - a.now_time)
+    Forum: (thingClass ? forum.filter(item => item.class === thingClass) : forum).sort((a, b) => a.now_time - b.now_time)
   });
 
   return img;
