@@ -1,16 +1,17 @@
 /* 交易/拍卖相关函数抽离 */
 import { getIoRedis } from '@alemonjs/db';
 import type { AuctionItem } from '../types/data_extra';
-import type { ExchangeRecord, ForumRecord } from '../types/model';
+import type { ExchangeRecord } from '../types/model';
 import { getDataList } from './DataList.js';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from './DataControl.js';
 import { getAuctionKeyManager } from './auction.js';
 import { keys } from './keys.js';
+import { ForumItem } from '@src/types/forum.js';
 
 export async function writeExchange(wupin: ExchangeRecord[]): Promise<void> {
   await setDataJSONStringifyByKey(keys.exchange('Exchange'), wupin);
 }
-export async function writeForum(wupin: ForumRecord[]): Promise<void> {
+export async function writeForum(wupin: ForumItem[]): Promise<void> {
   await setDataJSONStringifyByKey(keys.exchange('Forum'), wupin);
 }
 export async function readExchange(): Promise<ExchangeRecord[]> {
@@ -23,7 +24,7 @@ export async function readExchange(): Promise<ExchangeRecord[]> {
   // 如果不是数组，返回空数组
   return [];
 }
-export async function readForum(): Promise<ForumRecord[]> {
+export async function readForum(): Promise<ForumItem[]> {
   const Forum = await getDataJSONParseByKey(keys.exchange('Forum'));
 
   if (Array.isArray(Forum)) {

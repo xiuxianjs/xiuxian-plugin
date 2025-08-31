@@ -1,7 +1,7 @@
 import React from 'react';
 import HTML from './HTML';
 
-const Supermarket = ({ Exchange_list }) => {
+const Supermarket = ({ Exchange_list: list }) => {
   return (
     <HTML>
       <div className='min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 relative overflow-hidden'>
@@ -43,7 +43,7 @@ const Supermarket = ({ Exchange_list }) => {
                     <div className='bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl p-3 border border-green-400/30 backdrop-blur-sm'>
                       <div className='text-sm text-green-200 font-medium'>上架指令</div>
                       <div className='text-xs text-gray-300'>#上架+物品名*价格*数量</div>
-                      <div className='text-xs text-orange-300 mt-1'>💰 税收：低于100w收3%税，每多100w多收3%，做多不超过45%。</div>
+                      <div className='text-xs text-orange-300 mt-1'>💰 税收：低于100w收3%税，每多100w多收3%，最多不超过45%。</div>
                     </div>
                     <div className='bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl p-3 border border-blue-400/30 backdrop-blur-sm'>
                       <div className='text-sm text-blue-200 font-medium'>选购指令</div>
@@ -58,7 +58,7 @@ const Supermarket = ({ Exchange_list }) => {
 
                 {/* 商品列表 */}
                 <div className='grid grid-cols-2 gap-6'>
-                  {Exchange_list?.map((item, index) => (
+                  {list?.map((item, index) => (
                     <div key={index} className='relative group'>
                       <div className='absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-2xl blur-sm' />
                       <div className='relative backdrop-blur-md bg-white/5 rounded-2xl border border-cyan-400/40 p-6'>

@@ -1,33 +1,34 @@
 import { Text, useSend } from 'alemonjs';
-import { Go, readPlayer, readExchange, writeExchange, convert2integer, addNajieThing, addCoin, keysLock } from '@src/model/index';
+import { Go, readPlayer, readExchange, writeExchange, addNajieThing, addCoin, keysLock, compulsoryToNumber } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { withLock } from '@src/model/locks';
 
 export const regular = /^(#|＃|\/)?选购.*$/;
 
-const byGoods = async ({ e, id: x, code: t }) => {
+const byGoods = async ({ e, index, count }) => {
   const Send = useSend(e);
   const userId = e.UserId;
-  let Exchange = await readExchange();
+  const Exchange = await readExchange();
 
-  if (x >= Exchange.length) {
-    return false;
-  }
-  const thingqq = Exchange[x].qq;
-
-  if (thingqq === userId) {
-    void Send(Text('自己买自己的东西？'));
-
-    return false;
+  if (index >= Exchange.length) {
+    return;
   }
 
-  const goods = Exchange[x];
+  const goods = Exchange[index];
 
   if (!goods) {
     void Send(Text('物品不存在'));
 
-    return false;
+    return;
+  }
+
+  const thingqq = goods.qq;
+
+  if (thingqq === userId) {
+    void Send(Text('自己买自己的东西？'));
+
+    return;
   }
 
   const thingName = goods.thing.name;
@@ -35,17 +36,15 @@ const byGoods = async ({ e, id: x, code: t }) => {
   const thingCount = goods.amount;
   const thingPrice = goods.price;
   const pinji2 = goods?.pinji2;
-  let n = convert2integer(t[1]);
 
-  if (!t[1]) {
-    n = thingCount;
-  }
-  if (n > thingCount) {
+  if (count > thingCount) {
     void Send(Text(`没有这么多【${thingName}】!`));
 
-    return false;
+    return;
   }
-  const money = n * thingPrice;
+
+  //
+  const money = count * thingPrice;
 
   // 计算阶梯税收：物品低于100w交易后收3%税，每多100w多收3%
   const calculateTax = (totalPrice: number): number => {
@@ -83,39 +82,43 @@ const byGoods = async ({ e, id: x, code: t }) => {
 
   // 查灵石（买家只需支付商品原价）
   if (player.灵石 >= money) {
+    const types = ['装备', '仙宠'];
+
     // 加物品
-    if (thingClass === '装备' || thingClass === '仙宠') {
-      await addNajieThing(userId, thingName, thingClass, n, pinji2);
+    if (thingClass && types.includes(thingClass)) {
+      await addNajieThing(userId, thingName, thingClass, count, pinji2);
     } else {
-      await addNajieThing(userId, thingName, thingClass, n);
+      await addNajieThing(userId, thingName, thingClass, count);
     }
+
     // 买家扣钱（只扣商品原价）
     await addCoin(userId, -money);
+
     // 卖家获得扣税后的金额
     await addCoin(thingqq, sellerReceives);
-    Exchange[x].amount = Exchange[x].amount - n;
+
+    Exchange[index].amount = Exchange[index].amount - count;
+
     // 删除该位置信息
-    Exchange = Exchange.filter(item => item.amount > 0);
-    await writeExchange(Exchange);
+    await writeExchange(Exchange.filter(item => item.amount > 0));
 
     // 构建购买成功消息
-    let message = `${player.名号}在冲水堂购买了${n}个【${thingName}】！\n支付金额：${money}灵石`;
+    let message = `${player.名号}在冲水堂购买了${count}个【${thingName}】！\n支付金额：${money}灵石`;
 
     if (tax > 0) {
       message += `\n卖家获得：${sellerReceives}灵石（已扣除${tax}灵石税费）`;
     } else {
       message += `\n卖家获得：${sellerReceives}灵石`;
     }
+
     void Send(Text(message));
   } else {
     void Send(Text('醒醒，你没有那么多钱！'));
-
-    return false;
   }
 };
 
 const executeBattleWithLock = props => {
-  const lockKey = keysLock.exchange(props.id);
+  const lockKey = keysLock.exchange(props.index);
 
   return withLock(
     lockKey,
@@ -149,14 +152,12 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  if (!/^[1-9]\d*$/.test(t[1])) {
-    void Send(Text(`请输入正确的数量,${t[1]}不是合法的数字`));
 
-    return false;
-  }
-  const x = convert2integer(t[0]) - 1;
+  const index = compulsoryToNumber(t[0], 1) - 1;
 
-  void executeBattleWithLock({ e, id: x, code: t });
+  const count = compulsoryToNumber(t[1], 1);
+
+  void executeBattleWithLock({ e, index, count });
 });
 
 export default onResponse(selects, [mw.current, res.current]);

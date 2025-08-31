@@ -1,16 +1,7 @@
 import React from 'react';
 import HTML from './HTML';
 import supermarketURL from '@src/resources/img/fairyrealm.jpg';
-
-interface ForumItem {
-  class: string;
-  name: string;
-  num: number | string;
-  price: number | string;
-  aconut: number | string;
-  whole: number | string;
-  qq: string | number;
-}
+import { ForumItem } from '@src/types/forum';
 
 const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
   return (
@@ -96,7 +87,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                       <div className='flex items-center space-x-2'>
                         <span className='text-blue-700'>🆔</span>
                         <span className='text-blue-900 font-medium'>编号：</span>
-                        <span className='font-semibold text-blue-900'>No.{item.num}</span>
+                        <span className='font-semibold text-blue-900'>No.{index + 1}</span>
                       </div>
                       <div className='flex items-center space-x-2'>
                         <span className='text-amber-700'>💰</span>

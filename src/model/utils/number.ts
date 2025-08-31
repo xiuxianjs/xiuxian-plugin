@@ -69,3 +69,21 @@ export default {
   GetPower,
   datachange
 };
+
+/**
+ *
+ * @param value 输入的值
+ * @param initValue 初始化值
+ * @returns
+ */
+export const compulsoryToNumber = (inputValue: string | number, initValue = 1) => {
+  // iv 至少为1
+  const iv = +initValue < 1 ? 1 : initValue;
+
+  const value = Number(inputValue);
+
+  // 当发现小于iv的值时，使用iv替代
+  const count = isNaN(value) || value < iv ? iv : value;
+
+  return count;
+};

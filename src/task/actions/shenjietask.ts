@@ -293,7 +293,7 @@ const recordTempMessage = async (message: string, playerId: string, pushAddress?
  * @param shenjieData 神界数据
  * @returns 是否处理成功
  */
-const processPlayerExploration = async (playerId: string, action: ActionState, shenjieData: any[]): Promise<boolean> => {
+const processPlayerExploration = async (playerId: string, action: ActionState, place: ShenjiePlace): Promise<boolean> => {
   try {
     let pushAddress: string | undefined;
     let isGroup = false;
@@ -315,8 +315,6 @@ const processPlayerExploration = async (playerId: string, action: ActionState, s
       endTime = endTime - Number(action.time ?? 0);
 
       if (nowTime > endTime) {
-        const place = shenjieData?.[0] as ShenjiePlace | undefined;
-
         if (!place) {
           return false;
         }
@@ -375,7 +373,10 @@ export const handelAction = async (playerId: string, action: ActionState, { shen
     if (!shenjieData || shenjieData.length === 0) {
       return;
     }
-    await processPlayerExploration(playerId, action, shenjieData);
+
+    const place = shenjieData?.[0];
+
+    await processPlayerExploration(playerId, action, place);
   } catch (error) {
     logger.error(error);
   }

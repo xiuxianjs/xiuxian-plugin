@@ -1,12 +1,34 @@
 import { getRedisKey } from '@src/model/keys';
 import { Text, useSend } from 'alemonjs';
-
 import { redis } from '@src/model/api';
-import { existplayer, readPlayer, readExchange, writeExchange, addNajieThing } from '@src/model/index';
+import { existplayer, readPlayer, readExchange, writeExchange, addNajieThing, keysLock, compulsoryToNumber } from '@src/model/index';
+import { withLock } from '@src/model/locks';
 import type { ExchangeRecord as RawExchangeRecord, NajieCategory } from '@src/types/model';
-
 import { selects } from '@src/response/mw';
+import mw from '@src/response/mw';
+
 export const regular = /^(#|＃|\/)?下架[1-9]\d*$/;
+
+// 锁配置
+const EXCHANGE_OFFSELL_LOCK_CONFIG = {
+  timeout: 30000, // 30秒超时
+  retryDelay: 100, // 100ms重试间隔
+  maxRetries: 5, // 最大重试5次
+  enableRenewal: true, // 启用锁续期
+  renewalInterval: 10000 // 10秒续期间隔
+} as const;
+
+// 错误消息常量
+const ERROR_MESSAGES = {
+  PLAYER_NOT_EXIST: '玩家不存在',
+  CD_LIMIT: (cdMinutes: number, remainMinutes: number, remainSeconds: number) => `每${cdMinutes}分钟操作一次，CD: ${remainMinutes}分${remainSeconds}秒`,
+  INVALID_INDEX: '编号格式错误',
+  ITEM_NOT_FOUND: (index: number) => `没有编号为${index}的物品`,
+  NOT_OWNER: '不能下架别人上架的物品',
+  MISSING_NAME: '物品名称缺失',
+  LOCK_ERROR: '系统繁忙，请稍后重试',
+  SUCCESS: (playerName: string, itemName: string) => `${playerName}下架${itemName}成功！`
+} as const;
 
 interface LegacyRecord {
   qq: string;
@@ -16,21 +38,26 @@ interface LegacyRecord {
   class?: NajieCategory;
 }
 
-function toInt(v, d = 0) {
+// 数值转换函数
+function toInt(v: any, d = 0): number {
   const n = Number(v);
 
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
-function mapRecord(r): LegacyRecord | null {
+
+// 记录映射函数
+function mapRecord(r: any): LegacyRecord | null {
   if (!r || typeof r !== 'object') {
     return null;
   }
+
   const rec = r as LegacyRecord;
 
   console.log('rec:', rec, 'qq' in rec, rec.name);
   if ('qq' in rec && rec.name) {
     return rec;
   }
+
   const er = r as RawExchangeRecord;
 
   if (er.thing) {
@@ -39,100 +66,144 @@ function mapRecord(r): LegacyRecord | null {
       class: (er.thing.class || '道具') as NajieCategory
     };
 
-    return { qq: String(er.qq || ''), name, aconut: er.amount };
+    return { qq: String(er.qq || ''), name, amount: er.amount };
   }
 
   return null;
 }
 
-const res = onResponse(selects, async e => {
+// 解析下架索引
+function parseOffsellIndex(messageText: string): number | null {
+  const indexStr = messageText.replace(/^(#|＃|\/)?下架/, '').trim();
+
+  if (!indexStr || !/^[1-9]\d*$/.test(indexStr)) {
+    return null;
+  }
+
+  const index = compulsoryToNumber(indexStr, 1) - 1;
+
+  return index >= 0 ? index : null;
+}
+
+// 验证物品所有权
+function validateItemOwnership(record: LegacyRecord, userId: string): boolean {
+  return String(record.qq) === String(userId);
+}
+
+// 获取物品信息
+function getItemInfo(record: LegacyRecord): { name: string; class: NajieCategory } {
+  let thingName = '';
+  let thingClass: NajieCategory = '道具';
+
+  if (typeof record.name === 'string') {
+    thingName = record.name;
+    thingClass = record.class || '道具';
+  } else {
+    thingName = record.name.name;
+    thingClass = record.name.class;
+  }
+
+  return { name: thingName, class: thingClass };
+}
+
+// 核心下架逻辑（在锁保护下执行）
+const executeOffsellWithLock = async (e: any, userId: string, itemIndex: number) => {
   const Send = useSend(e);
-  const userId = e.UserId;
 
+  // 检查玩家是否存在
   if (!(await existplayer(userId))) {
-    return false;
-  }
+    void Send(Text(ERROR_MESSAGES.PLAYER_NOT_EXIST));
 
-  const now = Date.now();
-  const cdMs = Math.floor(0.5 * 60000);
-  const cdKey = getRedisKey(userId, 'ExchangeCD');
-
-  const lastTs = toInt(await redis.get(cdKey));
-
-  if (now < lastTs + cdMs) {
-    const remain = lastTs + cdMs - now;
-    const m = Math.trunc(remain / 60000);
-    const s = Math.trunc((remain % 60000) / 1000);
-
-    void Send(Text(`每${cdMs / 60000}分钟操作一次，CD: ${m}分${s}秒`));
-
-    return false;
-  }
-  await redis.set(cdKey, String(now));
-
-  const idx = toInt(e.MessageText.replace(/^(#|＃|\/)?下架/, ''), 0) - 1;
-
-  if (idx < 0) {
-    void Send(Text('编号格式错误'));
-
-    return false;
+    return;
   }
 
   const rawList = await readExchange();
-
-  const list: LegacyRecord[] = rawList.map(mapRecord).filter(Boolean);
+  const list: LegacyRecord[] = rawList.map(mapRecord).filter((item): item is LegacyRecord => item !== null);
 
   console.log('list:', list);
-  if (idx >= list.length) {
-    void Send(Text(`没有编号为${idx + 1}的物品`));
+  if (itemIndex >= list.length) {
+    void Send(Text(ERROR_MESSAGES.ITEM_NOT_FOUND(itemIndex + 1)));
 
-    return false;
+    return;
   }
 
-  const rec = list[idx];
+  const record = list[itemIndex];
 
-  if (rec.qq !== userId) {
-    void Send(Text('不能下架别人上架的物品'));
+  // 验证物品所有权
+  if (!validateItemOwnership(record, userId)) {
+    void Send(Text(ERROR_MESSAGES.NOT_OWNER));
 
-    return false;
+    return;
   }
 
-  let thingName = '';
-  let thingClass: NajieCategory | '' = '';
+  const { name: thingName, class: thingClass } = getItemInfo(record);
 
-  if (typeof rec.name === 'string') {
-    thingName = rec.name;
-    thingClass = rec.class || '';
-  } else {
-    thingName = rec.name.name;
-    thingClass = rec.name.class;
-  }
   if (!thingName) {
-    void Send(Text('物品名称缺失'));
+    void Send(Text(ERROR_MESSAGES.MISSING_NAME));
 
-    return false;
+    return;
   }
-  const amount = toInt(rec.amount, 1);
-  const cate: NajieCategory = thingClass || '道具';
 
-  if (cate === '装备' || cate === '仙宠') {
-    const equipName = typeof rec.name === 'string' ? rec.name : rec.name.name;
+  const amount = toInt(record.amount, 1);
+  const category: NajieCategory = thingClass || '道具';
 
-    await addNajieThing(userId, equipName, cate, amount, rec.pinji2);
+  // 返还物品到纳戒
+  if (category === '装备' || category === '仙宠') {
+    const equipName = typeof record.name === 'string' ? record.name : record.name.name;
+
+    await addNajieThing(userId, equipName, category, amount, record.pinji2);
   } else {
-    await addNajieThing(userId, thingName, cate, amount);
+    await addNajieThing(userId, thingName, category, amount);
   }
 
-  rawList.splice(idx, 1);
+  // 从交易所移除物品
+  rawList.splice(itemIndex, 1);
   await writeExchange(rawList);
+
+  // 重置交易所状态
   await redis.set(getRedisKey(userId, 'Exchange'), '0');
 
   const player = await readPlayer(userId);
+  const playerName = player?.名号 || userId;
 
-  void Send(Text(`${player?.名号 || userId}下架${thingName}成功！`));
+  void Send(Text(ERROR_MESSAGES.SUCCESS(playerName, thingName)));
+};
+
+// 使用锁执行下架操作
+const executeOffsellWithLockWrapper = (e: any, userId: string, itemIndex: number) => {
+  const lockKey = keysLock.exchange(String(itemIndex));
+
+  return withLock(
+    lockKey,
+    async () => {
+      await executeOffsellWithLock(e, userId, itemIndex);
+    },
+    EXCHANGE_OFFSELL_LOCK_CONFIG
+  ).catch(error => {
+    const Send = useSend(e);
+
+    console.error('Exchange offsell lock error:', error);
+    void Send(Text(ERROR_MESSAGES.LOCK_ERROR));
+  });
+};
+
+const res = onResponse(selects, e => {
+  const Send = useSend(e);
+  const userId = e.UserId;
+
+  // 解析下架索引
+  const itemIndex = parseOffsellIndex(e.MessageText);
+
+  if (itemIndex === null) {
+    void Send(Text(ERROR_MESSAGES.INVALID_INDEX));
+
+    return false;
+  }
+
+  // 使用锁执行下架操作
+  void executeOffsellWithLockWrapper(e, userId, itemIndex);
 
   return false;
 });
 
-import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

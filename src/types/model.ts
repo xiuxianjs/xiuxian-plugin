@@ -78,16 +78,16 @@ export interface ExchangeThingSnapshot {
   pinji?: number | string;
 }
 export interface ExchangeRecord {
-  thing: ExchangeThingSnapshot;
+  thing: {
+    name: string;
+    class: string;
+  };
   price: number;
   amount: number;
   qq: string;
-  start_price: number;
-  lastPrice: number;
-  last_offer_price: number;
-  last_offer_player: number;
-  groupList: string[];
+  now_time: number;
 }
+
 export type ForumRecord = ExchangeRecord;
 // 新增：Image 视图层扩展条目类型
 export interface ExchangeView extends ExchangeRecord {

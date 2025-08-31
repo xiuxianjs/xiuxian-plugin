@@ -35,12 +35,12 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
-  const thing_value = convert2integer(value);
+  const thingValue = convert2integer(value);
   const thingCount = convert2integer(amount);
   const Forum = await readForum();
 
-  const now_time = Date.now();
-  const whole = Math.trunc(thing_value * thingCount);
+  const whole = Math.trunc(thingValue * thingCount);
+
   let off = Math.trunc(whole * 0.03);
 
   if (off < 100000) {
@@ -53,20 +53,23 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   await addCoin(userId, -(off + whole));
+
   const wupin = {
     qq: userId,
     name: thingName,
-    price: thing_value,
+    price: thingValue,
     class: thingExist.class,
     aconut: thingCount,
     whole: whole,
-    now_time: now_time
+    now_time: Date.now()
   };
 
   Forum.push(wupin);
-  // 写入
+
   await writeForum(Forum);
+
   void Send(Text('发布成功！'));
 });
 

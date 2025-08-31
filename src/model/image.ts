@@ -2,7 +2,7 @@ import { useSend, Text, EventsMessageCreateEnum, Image } from 'alemonjs';
 import { screenshot } from '@src/image/index.js';
 import type { Player, Najie, StrandResult } from '../types/player.js';
 import { getRandomTalent } from './cultivation.js';
-import type { ScreenshotResult, NamedItem, PlayerStatus, SendFn, ForumView } from '../types/model.js';
+import type { ScreenshotResult, NamedItem, PlayerStatus, SendFn } from '../types/model.js';
 import { readPlayer, readNajie } from './xiuxiandata.js';
 import { getPlayerAction, notUndAndNull } from './common.js';
 import { readEquipment } from './equipment.js';
@@ -48,6 +48,12 @@ export async function getSupermarketImage(e: EventsMessageCreateEnum, thingClass
   return img;
 }
 
+/**
+ *
+ * @param e
+ * @param thingClass
+ * @returns
+ */
 export async function getForumImage(e: EventsMessageCreateEnum, thingClass?: string): Promise<ScreenshotResult> {
   const userId = e.UserId;
   const redis = getIoRedis();
@@ -57,22 +63,11 @@ export async function getForumImage(e: EventsMessageCreateEnum, thingClass?: str
     return;
   }
 
-  const raw = await readForum();
-  let forum: ForumView[] = [];
+  const forum = await readForum();
 
-  forum = raw.map((rec, idx) => ({
-    ...rec,
-    num: idx + 1,
-    now_time: rec.last_offer_price
-  }));
-
-  if (thingClass) {
-    forum = forum.filter(item => item.thing.class === thingClass);
-  }
-  forum.sort((a, b) => b.now_time - a.now_time);
   const img = await screenshot('forum', e.UserId, {
     user_id: userId,
-    Forum: forum
+    Forum: (thingClass ? forum.filter(item => item.class === thingClass) : forum).sort((a, b) => b.now_time - a.now_time)
   });
 
   return img;

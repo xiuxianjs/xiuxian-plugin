@@ -29,10 +29,12 @@ const startTask = async (): Promise<void> => {
 
     // 读取必要的任务数据
     const npcList = await getDataList('NPC');
-    const mojieDataList = await getDataList('Mojie');
     const monsterList = await getDataList('Monster');
-    const shenjieData = await getDataList('Shenjie');
     const config = await getConfig('xiuxian', 'xiuxian');
+
+    // tudo 待优化该数据
+    const mojieDataList = await getDataList('Mojie');
+    const shenjieData = await getDataList('Shenjie');
 
     for (const playerId of playerList) {
       try {

@@ -204,6 +204,7 @@ export const keysLock = {
   boss: (bossId: 'boss1' | 'boss2') => `${baseKey}:locks:boss:${bossId}`,
   task: (taskName: string) => `${baseKey}:locks:task:${taskName}`,
   exchange: (goodsId: string) => `${baseKey}:locks:exchange:${goodsId}`,
+  forum: (goodsId: string) => `${baseKey}:locks:forum:${goodsId}`,
 
   // 紧急锁（用于系统维护等）
   emergency: (operation: string) => `${baseKey}:locks:emergency:${operation}`
