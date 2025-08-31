@@ -1,4 +1,4 @@
-import { getAvatar, getMonthCard, isUserMonthCard, readPlayer } from '@src/model';
+import { checkUserMonthCardStatus, getAvatar, getMonthCard, isUserMonthCardByMothData } from '@src/model';
 import mw, { selects } from '@src/response/mw';
 import { Image, useMessage, Text } from 'alemonjs';
 
@@ -7,14 +7,10 @@ export const regular = /^(#|＃|\/)?我的权益$/;
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
 
-  const isMonth = await isUserMonthCard(e.UserId);
-  const player = await readPlayer(e.UserId);
+  const data = await checkUserMonthCardStatus(e.UserId);
+  const isMonth = isUserMonthCardByMothData(data);
 
-  if (!player) {
-    return;
-  }
-  const isNewbie = player.newbie === 1 ? false : true;
-  const img = await getMonthCard(isMonth, { userId: e.UserId, avatar: getAvatar(e.UserId), isNewbie });
+  const img = await getMonthCard(e.UserId, { isMonth, avatar: getAvatar(e.UserId), data });
 
   if (!img) {
     return;

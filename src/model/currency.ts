@@ -729,6 +729,7 @@ export const checkUserMonthCardStatus = async (userId: string) => {
 
     return {
       userId,
+      currency: userInfo.currency,
       small_month_card_days: userInfo.small_month_card_days,
       big_month_card_days: userInfo.big_month_card_days,
       has_small_month_card: userInfo.small_month_card_days > 0,
@@ -744,26 +745,30 @@ export const checkUserMonthCardStatus = async (userId: string) => {
   }
 };
 
+export const isUserMonthCardByMothData = (userInfo, cardType?: 'small' | 'big') => {
+  if (!userInfo) {
+    return false;
+  }
+
+  if (!cardType) {
+    return userInfo.has_small_month_card ?? userInfo.has_big_month_card;
+  }
+
+  if (cardType === 'small') {
+    return userInfo.has_small_month_card;
+  } else if (cardType === 'big') {
+    return userInfo.has_big_month_card;
+  }
+
+  return false;
+};
+
 // 是否是指定月卡用户
 export const isUserMonthCard = async (userId: string, cardType?: 'small' | 'big'): Promise<boolean> => {
   try {
     const userInfo = await checkUserMonthCardStatus(userId);
 
-    if (!userInfo) {
-      return false;
-    }
-
-    if (!cardType) {
-      return userInfo.has_small_month_card ?? userInfo.has_big_month_card;
-    }
-
-    if (cardType === 'small') {
-      return userInfo.has_small_month_card;
-    } else if (cardType === 'big') {
-      return userInfo.has_big_month_card;
-    }
-
-    return false;
+    return isUserMonthCardByMothData(userInfo, cardType);
   } catch (error) {
     logger.warn('Error checking if user is month card holder:', error);
 

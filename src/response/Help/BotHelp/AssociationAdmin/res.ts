@@ -2,7 +2,7 @@ import { Image, useSend } from 'alemonjs';
 import { selects } from '@src/response/mw';
 import { screenshot } from '@src/image';
 import { getConfig } from '@src/model';
-export const regular = /^(#|＃|\/)?宗门管理(\d+)?$/;
+export const regular = /^(#|＃|\/)?宗门(管理|帮助)(\d+)?$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const helpData = await getConfig('help', 'Association');

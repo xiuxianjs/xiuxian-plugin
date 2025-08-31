@@ -4,10 +4,11 @@ const mainHelpConfig: HelpGroup[] = [
   {
     group: '修仙大厅',
     list: [
-      { icon: 'help-icon_44', title: '#宗门管理', desc: '查看宗门指令' },
+      { icon: 'help-icon_44', title: '#宗门帮助', desc: '查看宗门指令' },
       { icon: 'help-icon_14', title: '#师徒帮助', desc: '查看师徒指令' },
       { icon: 'help-icon_14', title: '#活动中心', desc: '查看活动中心' },
-      { icon: 'help-icon_14', title: '#快捷帮助', desc: '查看自定义快捷指令' }
+      { icon: 'help-icon_14', title: '#快捷帮助', desc: '查看自定义快捷指令' },
+      { icon: 'help-icon_14', title: '#我的权益', desc: '查看当前修仙权益' }
     ]
   },
   {
