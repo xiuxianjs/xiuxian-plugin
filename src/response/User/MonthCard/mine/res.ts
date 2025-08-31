@@ -1,4 +1,4 @@
-import { getAvatar, getMonthCard, isUserMonthCard } from '@src/model';
+import { getAvatar, getMonthCard, isUserMonthCard, readPlayer } from '@src/model';
 import mw, { selects } from '@src/response/mw';
 import { Image, useMessage, Text } from 'alemonjs';
 
@@ -8,7 +8,13 @@ const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
 
   const isMonth = await isUserMonthCard(e.UserId);
-  const img = await getMonthCard(isMonth, { userId: e.UserId, avatar: getAvatar(e.UserId) });
+  const player = await readPlayer(e.UserId);
+
+  if (!player) {
+    return;
+  }
+  const isNewbie = player.newbie === 1 ? false : true;
+  const img = await getMonthCard(isMonth, { userId: e.UserId, avatar: getAvatar(e.UserId), isNewbie });
 
   if (!img) {
     return;
