@@ -135,10 +135,10 @@ const startTask = async () => {
   }
 };
 
-const executeBossBattleWithLock = () => {
+const executeBossBattleWithLock = async () => {
   const lockKey = keysLock.task('ForumTask');
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await startTask();
@@ -151,6 +151,10 @@ const executeBossBattleWithLock = () => {
       renewalInterval: 1000 * 10 // 10秒续期间隔
     }
   );
+
+  if (!result.success) {
+    logger.warn('ForumTask lock failed:', result.error);
+  }
 };
 
 /**

@@ -120,7 +120,7 @@ async function biguanJiesuan(userId, time, isRandom, group_id?) {
   let xueqi = 0;
   const dy = await readDanyao(userId);
 
-  console.log('dy', dy);
+  logger.info('dy', dy);
   if (dy.biguan > 0) {
     dy.biguan--;
     if (dy.biguan === 0) {

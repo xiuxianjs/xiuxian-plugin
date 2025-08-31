@@ -117,10 +117,10 @@ const byGoods = async ({ e, index, count }) => {
   }
 };
 
-const executeBattleWithLock = props => {
-  const lockKey = keysLock.exchange(props.index);
+const executeBattleWithLock = async props => {
+  const lockKey = keysLock.exchange(String(props.index));
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await byGoods(props);
@@ -133,6 +133,13 @@ const executeBattleWithLock = props => {
       renewalInterval: 10000 // 10秒续期间隔
     }
   );
+
+  if (!result.success) {
+    const Send = useSend(props.e);
+
+    logger.error('Exchange purchase lock error:', result.error);
+    void Send(Text('操作失败，请稍后再试'));
+  }
 };
 
 const res = onResponse(selects, async e => {

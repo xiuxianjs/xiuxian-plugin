@@ -12,14 +12,14 @@ export async function clearCaptchaRecords(userId?: string) {
     if (userId) {
       // 清理指定用户
       await clearUserCaptchaRecords(redis, userId);
-      console.log(`已清理用户 ${userId} 的验证码记录`);
+      logger.info(`已清理用户 ${userId} 的验证码记录`);
     } else {
       // 清理所有用户
       await clearAllCaptchaRecords(redis);
-      console.log('已清理所有用户的验证码记录');
+      logger.info('已清理所有用户的验证码记录');
     }
   } catch (error) {
-    console.error('清理验证码记录失败:', error);
+    logger.error('清理验证码记录失败:', error);
   }
 }
 
@@ -55,7 +55,7 @@ async function clearAllCaptchaRecords(redis: any) {
 
   if (captchaKeys.length > 0) {
     await redis.del(...captchaKeys);
-    console.log(`清理了 ${captchaKeys.length} 个验证码记录`);
+    logger.info(`清理了 ${captchaKeys.length} 个验证码记录`);
   }
 
   // 清理禁言记录
@@ -63,7 +63,7 @@ async function clearAllCaptchaRecords(redis: any) {
 
   if (muteKeys.length > 0) {
     await redis.del(...muteKeys);
-    console.log(`清理了 ${muteKeys.length} 个禁言记录`);
+    logger.info(`清理了 ${muteKeys.length} 个禁言记录`);
   }
 
   // 清理操作计数
@@ -71,6 +71,6 @@ async function clearAllCaptchaRecords(redis: any) {
 
   if (opKeys.length > 0) {
     await redis.del(...opKeys);
-    console.log(`清理了 ${opKeys.length} 个操作计数记录`);
+    logger.info(`清理了 ${opKeys.length} 个操作计数记录`);
   }
 }

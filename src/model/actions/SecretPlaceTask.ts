@@ -1,7 +1,7 @@
 import { pushInfo } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { delDataByKey, readPlayer } from '@src/model';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp, addHP } from '@src/model/economy';
@@ -418,17 +418,8 @@ const processPlayerExploration = async (playerId: string, action: ActionState, m
         msg.push('\n' + player.名号 + lastMessage);
 
         // 关闭所有状态
-        const arr: ActionState = action;
+        void delDataByKey(keysAction.action(playerId));
 
-        arr.shutup = 1;
-        arr.working = 1;
-        arr.power_up = 1;
-        arr.Place_action = 1;
-        arr.Place_actionplus = 1;
-        arr.end_time = Date.now();
-        delete arr.group_id;
-
-        await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
         await addExp2(playerId, qixue);
         await addExp(playerId, xiuwei);
         await addHP(playerId, dataBattle.A_xue);

@@ -170,10 +170,10 @@ const startTask = async () => {
 };
 
 // 使用锁
-const executeBossBattleWithLock = () => {
+const executeBossBattleWithLock = async () => {
   const lockKey = keysLock.task('ExchangeTask');
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await startTask();
@@ -186,6 +186,10 @@ const executeBossBattleWithLock = () => {
       renewalInterval: 1000 * 10 // 10秒续期间隔
     }
   );
+
+  if (!result.success) {
+    logger.warn('ExchangeTask lock failed:', result.error);
+  }
 };
 
 /**

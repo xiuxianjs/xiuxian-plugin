@@ -106,7 +106,7 @@ const startRenewal = (context: LockContext, lockKey: string, lockValue: string, 
   const newContext = stopRenewal(context, lockKey);
 
   const timer = setInterval(() => {
-    (async () => {
+    void (async () => {
       try {
         const script = `
           if redis.call("get", KEYS[1]) == ARGV[1] then
@@ -122,7 +122,7 @@ const startRenewal = (context: LockContext, lockKey: string, lockValue: string, 
           stopRenewal(newContext, lockKey);
         }
       } catch (error) {
-        console.error('锁续期失败:', error);
+        logger.error('锁续期失败:', error);
         stopRenewal(newContext, lockKey);
       }
     })();
@@ -244,7 +244,7 @@ export const releaseLock = async (key: string, value: string): Promise<boolean> 
 
     return result === 1;
   } catch (error) {
-    console.error('释放锁失败:', error);
+    logger.error('释放锁失败:', error);
 
     return false;
   }
@@ -259,7 +259,7 @@ export const isLocked = async (key: string): Promise<boolean> => {
 
     return exists > 0;
   } catch (error) {
-    console.error('检查锁状态失败:', error);
+    logger.error('检查锁状态失败:', error);
 
     return false;
   }
@@ -274,7 +274,7 @@ export const getLockTTL = async (key: string): Promise<number> => {
 
     return ttl > 0 ? ttl * 1000 : 0;
   } catch (error) {
-    console.error('获取锁TTL失败:', error);
+    logger.error('获取锁TTL失败:', error);
 
     return 0;
   }
@@ -290,27 +290,31 @@ export const forceRelease = async (key: string): Promise<boolean> => {
 
     return result > 0;
   } catch (error) {
-    console.error('强制释放锁失败:', error);
+    logger.error('强制释放锁失败:', error);
 
     return false;
   }
 };
 
 // 高阶函数：使用锁执行函数
-export const withLock = <T>(key: string, fn: () => Promise<T>, options: LockOptions = {}): Promise<T> => {
-  return acquireLock(key, options).then(async lock => {
-    if (!lock.acquired) {
-      throw new Error(lock.error || '无法获取锁');
-    }
+export const withLock = async <T>(key: string, fn: () => Promise<T>, options: LockOptions = {}): Promise<{ success: boolean; data?: T; error?: string }> => {
+  const lock = await acquireLock(key, options);
 
-    try {
-      return await fn();
-    } finally {
-      if (lock.value) {
-        await releaseLock(key, lock.value);
-      }
+  if (!lock.acquired) {
+    return { success: false, error: lock.error || '无法获取锁' };
+  }
+
+  try {
+    const data = await fn();
+
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
+  } finally {
+    if (lock.value) {
+      await releaseLock(key, lock.value);
     }
-  });
+  }
 };
 
 // 函数组合：检查是否可以获取数据

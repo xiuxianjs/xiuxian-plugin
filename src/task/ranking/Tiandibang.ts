@@ -156,10 +156,10 @@ const startTask = async (): Promise<boolean> => {
   }
 };
 
-const executeBossBattleWithLock = () => {
-  const lockKey = keysLock.task('ForumTask');
+const executeBossBattleWithLock = async () => {
+  const lockKey = keysLock.task('Tiandibang');
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await startTask();
@@ -172,6 +172,10 @@ const executeBossBattleWithLock = () => {
       renewalInterval: 1000 * 10 // 10秒续期间隔
     }
   );
+
+  if (!result.success) {
+    logger.warn('Tiandibang lock failed:', result.error);
+  }
 };
 
 /**

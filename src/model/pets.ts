@@ -47,7 +47,7 @@ export async function addPet(usrId: string, thingName: string, n: number, thingL
     const base = Array.isArray(data) ? (data as SourcePetLike[]).find(item => item.name === thingName) : undefined;
 
     if (!notUndAndNull(base)) {
-      console.info('没有这个东西');
+      logger.info('没有这个东西');
 
       return;
     }

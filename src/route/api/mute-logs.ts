@@ -29,7 +29,7 @@ export const GET = async (ctx: Context) => {
           timestamp: new Date(log.timestamp).toISOString()
         });
       } catch (error) {
-        console.error('解析日志失败:', error);
+        logger.error('解析日志失败:', error);
       }
     }
 
@@ -47,7 +47,7 @@ export const GET = async (ctx: Context) => {
       }
     };
   } catch (error) {
-    console.error('获取禁言日志错误:', error);
+    logger.error('获取禁言日志错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,
@@ -90,7 +90,7 @@ export const DELETE = async (ctx: Context) => {
       }
     };
   } catch (error) {
-    console.error('清理日志错误:', error);
+    logger.error('清理日志错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,

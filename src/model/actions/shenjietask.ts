@@ -1,6 +1,6 @@
 import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { writePlayer } from '@src/model';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
@@ -227,16 +227,8 @@ const handleExplorationComplete = async (
 
   if (remain <= 1) {
     // 探索完成，关闭所有状态
-    arr.shutup = 1;
-    arr.working = 1;
-    arr.power_up = 1;
-    arr.Place_action = 1;
-    arr.Place_actionplus = 1;
-    arr.mojie = 1;
-    arr.end_time = Date.now();
-    delete arr.group_id;
+    void delDataByKey(keysAction.action(playerId));
 
-    await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 

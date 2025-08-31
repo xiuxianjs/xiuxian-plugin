@@ -14,10 +14,10 @@ const startTask = async () => {
   await writeShop(shop);
 };
 
-const executeBossBattleWithLock = () => {
+const executeBossBattleWithLock = async () => {
   const lockKey = keysLock.task('Shoptask');
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await startTask();
@@ -30,6 +30,10 @@ const executeBossBattleWithLock = () => {
       renewalInterval: 1000 * 10 // 10秒续期间隔
     }
   );
+
+  if (!result.success) {
+    logger.warn('Shoptask lock failed:', result.error);
+  }
 };
 
 /**

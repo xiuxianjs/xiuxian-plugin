@@ -243,21 +243,22 @@ const executePurchaseWithLock = async (e: any, userId: string, orderIndex: numbe
 };
 
 // 使用锁执行购买操作
-const executePurchaseWithLockWrapper = (e: any, userId: string, orderIndex: number, requestedQty: number) => {
+const executePurchaseWithLockWrapper = async (e: any, userId: string, orderIndex: number, requestedQty: number) => {
   const lockKey = keysLock.forum(String(orderIndex));
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await executePurchaseWithLock(e, userId, orderIndex, requestedQty);
     },
     FORUM_LOCK_CONFIG
-  ).catch(error => {
+  );
+
+  if (!result.success) {
     const Send = useSend(e);
 
-    console.error('Forum purchase lock error:', error);
     void Send(Text(ERROR_MESSAGES.LOCK_ERROR));
-  });
+  }
 };
 
 const res = onResponse(selects, async e => {

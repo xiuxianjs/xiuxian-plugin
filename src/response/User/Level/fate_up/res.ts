@@ -166,7 +166,7 @@ const res = onResponse(selects, async e => {
     }
     active = false;
     dj = 0;
-    // 可选调试: console.debug('渡劫结束:', userId, reason)
+    // 可选调试: logger.debug('渡劫结束:', userId, reason)
   };
 
   setTimeout(() => {

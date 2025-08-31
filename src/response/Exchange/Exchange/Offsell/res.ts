@@ -53,7 +53,7 @@ function mapRecord(r: any): LegacyRecord | null {
 
   const rec = r as LegacyRecord;
 
-  console.log('rec:', rec, 'qq' in rec, rec.name);
+  logger.info('rec:', rec, 'qq' in rec, rec.name);
   if ('qq' in rec && rec.name) {
     return rec;
   }
@@ -120,7 +120,7 @@ const executeOffsellWithLock = async (e: any, userId: string, itemIndex: number)
   const rawList = await readExchange();
   const list: LegacyRecord[] = rawList.map(mapRecord).filter((item): item is LegacyRecord => item !== null);
 
-  console.log('list:', list);
+  logger.info('list:', list);
   if (itemIndex >= list.length) {
     void Send(Text(ERROR_MESSAGES.ITEM_NOT_FOUND(itemIndex + 1)));
 
@@ -170,21 +170,23 @@ const executeOffsellWithLock = async (e: any, userId: string, itemIndex: number)
 };
 
 // 使用锁执行下架操作
-const executeOffsellWithLockWrapper = (e: any, userId: string, itemIndex: number) => {
+const executeOffsellWithLockWrapper = async (e: any, userId: string, itemIndex: number) => {
   const lockKey = keysLock.exchange(String(itemIndex));
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await executeOffsellWithLock(e, userId, itemIndex);
     },
     EXCHANGE_OFFSELL_LOCK_CONFIG
-  ).catch(error => {
+  );
+
+  if (!result.success) {
     const Send = useSend(e);
 
-    console.error('Exchange offsell lock error:', error);
-    void Send(Text(ERROR_MESSAGES.LOCK_ERROR));
-  });
+    logger.error('Exchange offsell lock error:', result.error);
+    void Send(Text('操作失败，请稍后再试'));
+  }
 };
 
 const res = onResponse(selects, e => {

@@ -71,7 +71,7 @@ const handleCanjuan = async (userId: string, message: any, e: any): Promise<void
           subscribe.cancel(sub);
           void message.send(format(Text('已取消操作')));
         } catch (e) {
-          console.error('取消订阅失败', e);
+          logger.error('取消订阅失败', e);
         }
       },
       1000 * 60 * 1

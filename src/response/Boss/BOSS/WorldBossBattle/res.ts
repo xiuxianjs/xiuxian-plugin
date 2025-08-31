@@ -33,10 +33,10 @@ const BOSS_LOCK_CONFIG = {
 };
 
 // 使用锁执行Boss战斗
-const executeBossBattleWithLock = (e: any, userId: string, player: any, boss: any) => {
+const executeBossBattleWithLock = async (e: any, userId: string, player: any, boss: any) => {
   const lockKey = keysLock.boss('boss1');
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       // 在锁保护下执行Boss战斗逻辑
@@ -44,6 +44,13 @@ const executeBossBattleWithLock = (e: any, userId: string, player: any, boss: an
     },
     BOSS_LOCK_CONFIG
   );
+
+  if (!result.success) {
+    logger.warn('Boss battle lock failed:', result.error);
+    const Send = useSend(e);
+
+    void Send(Text('系统繁忙，请稍后再试'));
+  }
 };
 
 const res = onResponse(selects, async e => {

@@ -50,7 +50,7 @@ export const GET = async (ctx: Context) => {
       }
     };
   } catch (error) {
-    console.error('获取禁言列表错误:', error);
+    logger.error('获取禁言列表错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,
@@ -176,7 +176,7 @@ export const POST = async (ctx: Context) => {
       }
     };
   } catch (error) {
-    console.error('设置禁言错误:', error);
+    logger.error('设置禁言错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,
@@ -246,7 +246,7 @@ export const DELETE = async (ctx: Context) => {
       }
     };
   } catch (error) {
-    console.error('解除禁言错误:', error);
+    logger.error('解除禁言错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,
@@ -318,7 +318,7 @@ export const PUT = async (ctx: Context) => {
       }
     };
   } catch (error) {
-    console.error('批量解除禁言错误:', error);
+    logger.error('批量解除禁言错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,

@@ -43,7 +43,7 @@ async function calcOccupationFactor(occupation_level: number) {
   return res.find(r => r.id === occupation_level)?.rate || 0;
 }
 
-export async function plant_jiesuan(user_id: string, time: number, group_id?: string) {
+export async function plantJiesuan(user_id: string, time: number, group_id?: string) {
   const userId = user_id;
   const player = await getDataJSONParseByKey(keys.player(userId));
 
@@ -109,7 +109,7 @@ export async function plant_jiesuan(user_id: string, time: number, group_id?: st
   return false;
 }
 
-export async function mine_jiesuan(user_id: string, time: number, group_id?: string) {
+export async function mineJiesuan(user_id: string, time: number, group_id?: string) {
   const userId = user_id;
   const player = await getDataJSONParseByKey(keys.player(userId));
 

@@ -1,22 +1,7 @@
 import { notUndAndNull } from '@src/model/common';
 import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { __PATH, keysAction } from '@src/model/keys';
-import type { ActionState } from '@src/types';
-import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/model/actions/occupation';
-
-interface OccupationActionState extends ActionState {
-  plant?: string | number;
-  mine?: string | number;
-  is_jiesuan?: number;
-  end_time: number;
-  time: number | string;
-  group_id?: string | number;
-}
-
-interface SettlementResult {
-  success: boolean;
-  message?: string;
-}
+import { mineJiesuan, plantJiesuan, calcEffectiveMinutes } from '@src/model/actions/occupation';
 
 /**
  * 基础配置常量
@@ -45,7 +30,7 @@ const parseTime = (rawTime: number | string): number => {
  * @param action 动作状态
  * @returns 推送地址
  */
-const getPushAddress = (action: OccupationActionState): string | undefined => {
+const getPushAddress = (action): string | undefined => {
   if ('group_id' in action && notUndAndNull(action.group_id)) {
     return String(action.group_id);
   }
@@ -69,7 +54,7 @@ const isSettlementTime = (endTime: number): boolean => {
  * @param action 动作状态
  * @returns 重置后的状态
  */
-const resetAllStates = (action: OccupationActionState): OccupationActionState => {
+const resetAllStates = action => {
   const resetAction = { ...action };
 
   resetAction.shutup = BASE_CONFIG.ACTIVE_FLAG;
@@ -90,11 +75,11 @@ const resetAllStates = (action: OccupationActionState): OccupationActionState =>
  * @param pushAddress 推送地址
  * @returns 结算结果
  */
-const handlePlantSettlement = async (playerId: string, action: OccupationActionState, pushAddress: string | undefined): Promise<SettlementResult> => {
+const handlePlantSettlement = async (playerId: string, action, pushAddress: string | undefined) => {
   try {
     // 检查是否已结算
     if (action.is_jiesuan === BASE_CONFIG.SETTLED_FLAG) {
-      return { success: false, message: '已结算，跳过' };
+      return;
     }
 
     // 计算有效时间
@@ -103,7 +88,7 @@ const handlePlantSettlement = async (playerId: string, action: OccupationActionS
     const timeMin = calcEffectiveMinutes(startTime, action.end_time, now);
 
     // 执行采药结算
-    await plant_jiesuan(playerId, timeMin, pushAddress);
+    await plantJiesuan(playerId, timeMin, pushAddress);
 
     // 重置状态
     const resetAction = resetAllStates(action);
@@ -112,10 +97,8 @@ const handlePlantSettlement = async (playerId: string, action: OccupationActionS
     resetAction.plant = BASE_CONFIG.ACTIVE_FLAG;
 
     await setDataJSONStringifyByKey(keysAction.action(playerId), resetAction);
-
-    return { success: true, message: '采药结算完成' };
   } catch (error) {
-    return { success: false, message: `采药结算失败: ${error}` };
+    logger.error(error);
   }
 };
 
@@ -126,7 +109,7 @@ const handlePlantSettlement = async (playerId: string, action: OccupationActionS
  * @param pushAddress 推送地址
  * @returns 结算结果
  */
-const handleMineSettlement = async (playerId: string, action: OccupationActionState, pushAddress: string | undefined): Promise<SettlementResult> => {
+const handleMineSettlement = async (playerId: string, action, pushAddress: string | undefined) => {
   try {
     // 验证玩家数据
     const playerRaw = await readPlayer(playerId);
@@ -143,7 +126,7 @@ const handleMineSettlement = async (playerId: string, action: OccupationActionSt
     const timeMin = parseTime(action.time);
 
     // 执行采矿结算
-    await mine_jiesuan(playerId, timeMin, pushAddress);
+    await mineJiesuan(playerId, timeMin, pushAddress);
 
     // 删除状态
     void delDataByKey(keysAction.action(playerId));
@@ -159,7 +142,7 @@ const handleMineSettlement = async (playerId: string, action: OccupationActionSt
  * @returns 处理结果
  * @description plant、mine 都为 0 时，不进行结算
  */
-const processPlayerOccupation = async (playerId: string, action: OccupationActionState): Promise<SettlementResult> => {
+const processPlayerOccupation = async (playerId: string, action) => {
   try {
     const pushAddress = getPushAddress(action);
 
@@ -173,7 +156,7 @@ const processPlayerOccupation = async (playerId: string, action: OccupationActio
       await handleMineSettlement(playerId, action, pushAddress);
     }
   } catch (error) {
-    return { success: false, message: `处理玩家职业状态失败: ${error}` };
+    logger.error(error);
   }
 };
 
@@ -181,7 +164,7 @@ const processPlayerOccupation = async (playerId: string, action: OccupationActio
  * 职业任务 - 处理玩家采药和采矿状态
  * 遍历所有玩家，检查处于采药或采矿状态的玩家，进行结算处理
  */
-export const handelAction = async (playerId: string, action: OccupationActionState): Promise<void> => {
+export const handelAction = async (playerId: string, action): Promise<void> => {
   try {
     await processPlayerOccupation(playerId, action);
   } catch (error) {

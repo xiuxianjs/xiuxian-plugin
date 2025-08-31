@@ -1,5 +1,5 @@
 import { delDataByKey, getPlayerAction } from '@src/model/index';
-import { mine_jiesuan } from '../../../../model/actions/occupation';
+import { mineJiesuan } from '../../../../model/actions/occupation';
 
 import { selects } from '@src/response/mw';
 import { keysAction } from '@src/model/keys';
@@ -112,9 +112,9 @@ const res = onResponse(selects, async e => {
   const minutes = calcEffectiveMinutes(action, now);
 
   if (e.name === 'message.create') {
-    await mine_jiesuan(e.UserId, minutes, e.ChannelId);
+    await mineJiesuan(e.UserId, minutes, e.ChannelId);
   } else {
-    await mine_jiesuan(e.UserId, minutes);
+    await mineJiesuan(e.UserId, minutes);
   }
 
   // 非任务取消的。直接删除del

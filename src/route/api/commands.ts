@@ -98,7 +98,7 @@ export const POST = async (ctx: Context) => {
       data: fileList
     };
   } catch (error) {
-    console.error('获取指令列表错误:', error);
+    logger.error('获取指令列表错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,
@@ -169,7 +169,7 @@ export const PUT = async (ctx: Context) => {
       data: null
     };
   } catch (error) {
-    console.error('更新指令状态错误:', error);
+    logger.error('更新指令状态错误:', error);
     ctx.status = 500;
     ctx.body = {
       code: 500,

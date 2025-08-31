@@ -61,13 +61,13 @@ export class AuctionKeyManager {
       if (oldData) {
         // 将数据迁移到新key
         await this.redis.set(newKey, oldData);
-        console.log(`[星阁系统] 数据迁移成功: ${oldKey} -> ${newKey}`);
+        logger.info(`[星阁系统] 数据迁移成功: ${oldKey} -> ${newKey}`);
 
         // 可选：删除旧key（谨慎操作，建议先备份）
         // await this.redis.del(oldKey);
       }
     } catch (error) {
-      console.error(`[星阁系统] 数据迁移失败: ${oldKey} -> ${newKey}`, error);
+      logger.error(`[星阁系统] 数据迁移失败: ${oldKey} -> ${newKey}`, error);
     }
   }
 
@@ -84,13 +84,13 @@ export class AuctionKeyManager {
       if (oldMembers && oldMembers.length > 0) {
         // 将集合数据迁移到新key
         await this.redis.sadd(newKey, ...oldMembers);
-        console.log(`[星阁系统] 集合数据迁移成功: ${oldKey} -> ${newKey}, 迁移${oldMembers.length}个成员`);
+        logger.info(`[星阁系统] 集合数据迁移成功: ${oldKey} -> ${newKey}, 迁移${oldMembers.length}个成员`);
 
         // 可选：删除旧key（谨慎操作，建议先备份）
         // await this.redis.del(oldKey);
       }
     } catch (error) {
-      console.error(`[星阁系统] 集合数据迁移失败: ${oldKey} -> ${newKey}`, error);
+      logger.error(`[星阁系统] 集合数据迁移失败: ${oldKey} -> ${newKey}`, error);
     }
   }
 
@@ -151,7 +151,7 @@ export class AuctionKeyManager {
     if (isInOldKey) {
       // 3. 如果旧key中有该群ID，则将该群ID迁移到新key中
       await this.redis.sadd(newKeys.AUCTION_GROUP_LIST, groupId);
-      console.log(`[星阁系统] 按需迁移群数据: ${groupId} 从旧key迁移到新key`);
+      logger.info(`[星阁系统] 按需迁移群数据: ${groupId} 从旧key迁移到新key`);
 
       return true;
     }

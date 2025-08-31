@@ -180,7 +180,11 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       arr.time = actionTime;
       arr.xijie = -1; // 进入二阶段
       lastMessage += ',经过一番战斗,击败对手,剩余' + playerA.当前血量 + '血量,开始搜刮物品';
+
+      // 进入二阶段
     } else if (msgg.find(item => item === winB)) {
+      // 被关
+
       const num = weizhi.Grade;
 
       lastMessage += ',经过一番战斗,败下阵来,被抓进了地牢\n在地牢中你找到了秘境之匙x' + num;
@@ -212,8 +216,8 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
         pushInfo(groupId, true, tip);
       }
     }
-    // 写入redis
 
+    // 写入redis
     await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
 
     msg.push('\n' + lastMessage);

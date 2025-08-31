@@ -87,21 +87,23 @@ const executeCancelWithLock = async (e: any, userId: string, orderIndex: number)
 };
 
 // 使用锁执行取消操作
-const executeCancelWithLockWrapper = (e: any, userId: string, orderIndex: number) => {
+const executeCancelWithLockWrapper = async (e: any, userId: string, orderIndex: number) => {
   const lockKey = keysLock.forum(String(orderIndex));
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await executeCancelWithLock(e, userId, orderIndex);
     },
     FORUM_CANCEL_LOCK_CONFIG
-  ).catch(error => {
+  );
+
+  if (!result.success) {
     const Send = useSend(e);
 
-    console.error('Forum cancel lock error:', error);
-    void Send(Text(ERROR_MESSAGES.LOCK_ERROR));
-  });
+    logger.error('Forum cancel lock error:', result.error);
+    void Send(Text('操作失败，请稍后再试'));
+  }
 };
 
 const res = onResponse(selects, e => {

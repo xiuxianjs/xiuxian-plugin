@@ -71,10 +71,10 @@ const startTask = async (): Promise<void> => {
   }
 };
 
-const executeBossBattleWithLock = () => {
+const executeBossBattleWithLock = async () => {
   const lockKey = keysLock.task('ActionsTask');
 
-  return withLock(
+  const result = await withLock(
     lockKey,
     async () => {
       await startTask();
@@ -87,6 +87,10 @@ const executeBossBattleWithLock = () => {
       renewalInterval: 1000 * 10 // 10秒续期间隔
     }
   );
+
+  if (!result.success) {
+    logger.warn('ActionsTask lock failed:', result.error);
+  }
 };
 
 export const ActionsTask = () => {
