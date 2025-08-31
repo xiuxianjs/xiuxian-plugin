@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { getDataList } from '@src/model/DataList';
 import { existplayer, addNajieThing } from '@src/model/index';
-import { readTiandibang, writeTiandibang, TiandibangRow } from '../../../../model/tian';
+import { readTiandibang, writeTiandibang } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -57,7 +57,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const rank = (await readTiandibang()) as TiandibangRow[];
+  const rank = await readTiandibang();
 
   if (!Array.isArray(rank) || rank.length === 0) {
     void Send(Text('请先报名!'));

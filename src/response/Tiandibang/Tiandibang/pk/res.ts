@@ -2,7 +2,7 @@ import { Image, Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { existplayer, shijianc, existNajieThing, addNajieThing, zdBattle, addCoin } from '@src/model/index';
-import { readTiandibang, writeTiandibang, getLastbisai, TiandibangRow } from '../../../../model/tian';
+import { readTiandibang, writeTiandibang, getLastbisai } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -10,7 +10,22 @@ import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?比试$/;
 
 // === 类型与工具 ===
-type RankEntry = TiandibangRow;
+type RankEntry = any;
+
+// 添加配置常量
+const CONFIG = {
+  MAX_SCORE: 100000, // 积分上限：10万
+  MAX_LINGSHI: 1000000, // 灵石上限：100万
+  BASE_SCORE_WIN_WILD: 1500, // 击败野生怪物胜利积分
+  BASE_SCORE_WIN_PLAYER: 2000, // 击败玩家胜利积分
+  BASE_SCORE_LOSE_WILD: 800, // 被野生怪物击败积分
+  BASE_SCORE_LOSE_PLAYER: 1000, // 被玩家击败积分
+  LINGSHI_MULTIPLIER_WIN_WILD: 8, // 击败野生怪物胜利灵石倍数
+  LINGSHI_MULTIPLIER_LOSE_WILD: 6, // 被野生怪物击败灵石倍数
+  LINGSHI_MULTIPLIER_WIN_PLAYER: 4, // 击败玩家胜利灵石倍数
+  LINGSHI_MULTIPLIER_LOSE_PLAYER: 2 // 被玩家击败灵石倍数
+} as const;
+
 interface ActionState {
   action: string;
   end_time: number;
@@ -48,23 +63,53 @@ function buildBattlePlayer(src: RankEntry, atkMul = 1, defMul = 1, hpMul = 1): B
     暴击率: toNum(src.暴击率),
     学习的功法: Array.isArray(src.学习的功法) ? src.学习的功法 : [],
     灵根: linggen,
+    血量上限: Math.floor(toNum(src.当前血量) * hpMul), // 使用当前血量作为血量上限
     法球倍率: typeof src.法球倍率 === 'number' ? src.法球倍率 : toNum(src.法球倍率)
   };
 }
+
+/**
+ * 优化后的结算函数，包含积分和灵石上限
+ */
 function settleWin(self: RankEntry, isWild: boolean, lastMsg: string[], opponentName: string, win: boolean) {
-  // wild: k === -1
+  // 计算基础积分增加
+  let scoreIncrease = 0;
+
   if (win) {
-    self.积分 += isWild ? 1500 : 2000;
+    scoreIncrease = isWild ? CONFIG.BASE_SCORE_WIN_WILD : CONFIG.BASE_SCORE_WIN_PLAYER;
   } else {
-    self.积分 += isWild ? 800 : 1000;
+    scoreIncrease = isWild ? CONFIG.BASE_SCORE_LOSE_WILD : CONFIG.BASE_SCORE_LOSE_PLAYER;
   }
+
+  // 检查积分上限
+  const currentScore = self.积分 || 0;
+  const newScore = Math.min(currentScore + scoreIncrease, CONFIG.MAX_SCORE);
+  const actualScoreIncrease = newScore - currentScore;
+
+  // 更新积分
+  self.积分 = newScore;
   self.次数 -= 1;
-  const lingshi = self.积分 * (isWild ? (win ? 8 : 6) : win ? 4 : 2);
+
+  // 计算灵石奖励（基于当前积分，但不超过上限）
+  let lingshiMultiplier = 0;
+
+  if (win) {
+    lingshiMultiplier = isWild ? CONFIG.LINGSHI_MULTIPLIER_WIN_WILD : CONFIG.LINGSHI_MULTIPLIER_WIN_PLAYER;
+  } else {
+    lingshiMultiplier = isWild ? CONFIG.LINGSHI_MULTIPLIER_LOSE_WILD : CONFIG.LINGSHI_MULTIPLIER_LOSE_PLAYER;
+  }
+
+  const lingshi = Math.min(self.积分 * lingshiMultiplier, CONFIG.MAX_LINGSHI);
+
+  // 构建消息
+  const scoreMsg = actualScoreIncrease < scoreIncrease ? `积分已达上限，仅增加${actualScoreIncrease}积分` : `积分增加${actualScoreIncrease}`;
+
+  const lingshiMsg = lingshi >= CONFIG.MAX_LINGSHI ? `灵石已达上限${CONFIG.MAX_LINGSHI}` : `获得${lingshi}灵石`;
 
   lastMsg.push(
     win
-      ? `${self.名号}击败了[${opponentName}],当前积分[${self.积分}],获得了[${lingshi}]灵石`
-      : `${self.名号}被[${opponentName}]打败了,当前积分[${self.积分}],获得了[${lingshi}]灵石`
+      ? `${self.名号}击败了[${opponentName}]，${scoreMsg}，当前积分[${self.积分}]，${lingshiMsg}`
+      : `${self.名号}被[${opponentName}]打败了，${scoreMsg}，当前积分[${self.积分}]，${lingshiMsg}`
   );
 
   return lingshi;
@@ -73,10 +118,6 @@ function settleWin(self: RankEntry, isWild: boolean, lastMsg: string[], opponent
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
 
-  // 当前功能正在优化中
-  void Send(Text('当前功能正在优化中...'));
-
-  return;
   const userId = e.UserId;
   const ifexistplay = await existplayer(userId);
 
@@ -195,16 +236,15 @@ const res = onResponse(selects, async e => {
         blood = 1.3;
       }
       playerB = buildBattlePlayer(tiandibang[k]);
-    }
-    const playerA = buildBattlePlayer(tiandibang[x], atk, def, blood);
-
-    if (k === -1) {
+    } else {
+      // 如果没有找到合适的对手，创建野生怪物
       atk = randomScale();
       def = randomScale();
       blood = randomScale();
       playerB = buildBattlePlayer(tiandibang[x], atk, def, blood);
       playerB.名号 = '灵修兽';
     }
+    const playerA = buildBattlePlayer(tiandibang[x], atk, def, blood);
     const dataBattle = await zdBattle(playerA, playerB);
     const msg: string[] = dataBattle.msg || [];
     const winA = `${playerA.名号}击败了${playerB.名号}`;
@@ -270,7 +310,11 @@ const res = onResponse(selects, async e => {
 
       return false;
     }
+
+    //
     await addCoin(userId, lingshi);
+
+    //
     void Send(Text(lastMessage.join('\n')));
     const img = await screenshot('CombatResult', userId, {
       msg: msg,

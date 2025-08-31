@@ -1,7 +1,7 @@
 import { Image, Text, useSend } from 'alemonjs';
 
 import { existplayer } from '@src/model/index';
-import { readTiandibang, writeTiandibang } from '../../../../model/tian';
+import { readTiandibang } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -17,14 +17,10 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  let tiandibang = [];
 
-  try {
-    tiandibang = await readTiandibang();
-  } catch {
-    // 没有表要先建立一个！
-    await writeTiandibang([]);
-  }
+  //
+  const tiandibang = await readTiandibang();
+
   // 查找用户是否报名
   const userIndex = tiandibang.findIndex(p => p.qq === userId);
 
@@ -33,6 +29,7 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   // 生成图片，传递实际排行榜数据
   const image = await screenshot('immortal_genius', userId, {
     allplayer: tiandibang
@@ -54,6 +51,7 @@ const res = onResponse(selects, async e => {
 
     return;
   }
+
   // 图片生成失败，仅提示错误
   void Send(Text('图片生产失败'));
 });

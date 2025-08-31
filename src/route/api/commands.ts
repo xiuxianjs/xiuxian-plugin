@@ -3,25 +3,25 @@ import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseJsonBody } from '../core/bodyParser';
 import { readdirSync, existsSync } from 'fs';
-import { useState } from 'alemonjs';
+import { getConfigValue, useState } from 'alemonjs';
 import { createRequire } from 'module';
 import { validateRole } from '../core/auth';
 // 获得当前文件目录
 const __filename = fileURLToPath(import.meta.url);
+//
 const __dirname = path.dirname(__filename);
 // 指令目录 - 指向src/response目录
 const RESPONSE_DIR = path.resolve(__dirname, '../../response');
+//
 const require = createRequire(import.meta.url);
+//
 const pkg = require('../../../package.json') as {
   name: string;
 };
-// 获取当前工作目录（项目根目录）
-const cwd = process.cwd();
-// 获取相对于项目根目录的路径
-const relativePath = path.relative(cwd, __filename);
-// 判断是否在 node_modules 中
-const isInNodeModules = /node_modules/.test(relativePath);
-const commandPrefix = !isInNodeModules ? 'main' : pkg.name;
+
+const values = getConfigValue();
+const apps = values.apps ?? [];
+const commandPrefix = apps.includes(pkg.name) ? pkg.name : 'main';
 
 export const POST = async (ctx: Context) => {
   try {

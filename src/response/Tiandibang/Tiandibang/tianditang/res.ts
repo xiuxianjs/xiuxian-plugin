@@ -1,7 +1,7 @@
 import { Text, Image, useSend } from 'alemonjs';
 
 import { existplayer } from '@src/model/index';
-import { readTiandibang, writeTiandibang, getTianditangImage } from '../../../../model/tian';
+import { readTiandibang, getTianditangImage } from '../../../../model/tian';
 
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
@@ -16,31 +16,26 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  let tiandibang = [];
+  const tiandibang = await readTiandibang();
 
-  try {
-    tiandibang = await readTiandibang();
-  } catch {
-    // 没有表要先建立一个！
-    await writeTiandibang([]);
-  }
-  let m = tiandibang.length;
+  // 查找用户是否报名
+  const userIndex = tiandibang.findIndex(p => p.qq === userId);
 
-  for (m = 0; m < tiandibang.length; m++) {
-    if (tiandibang[m].qq === userId) {
-      break;
-    }
-  }
-  if (m === tiandibang.length) {
+  if (userIndex === -1) {
     void Send(Text('请先报名!'));
 
     return false;
   }
-  const img = await getTianditangImage(e, tiandibang[m].积分);
+
+  const img = await getTianditangImage(e, tiandibang[userIndex].积分);
 
   if (Buffer.isBuffer(img)) {
     void Send(Image(img));
+
+    return;
   }
+
+  void Send(Text('图片生成失败'));
 });
 
 export default onResponse(selects, [mw.current, res.current]);
