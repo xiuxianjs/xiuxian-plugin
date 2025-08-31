@@ -1,58 +1,15 @@
 import { Text, useSend } from 'alemonjs';
-
-import { redis } from '@src/model/api';
-import { Go, readPlayer, readExchange, writeExchange, convert2integer, addNajieThing, addCoin } from '@src/model/index';
-
+import { Go, readPlayer, readExchange, writeExchange, convert2integer, addNajieThing, addCoin, keysLock } from '@src/model/index';
 import { selects } from '@src/response/mw';
-import { getRedisKey } from '@src/model/keys';
+import mw from '@src/response/mw';
+import { withLock } from '@src/model/locks';
+
 export const regular = /^(#|＃|\/)?选购.*$/;
 
-const res = onResponse(selects, async e => {
+const byGoods = async ({ e, id: x, code: t }) => {
   const Send = useSend(e);
   const userId = e.UserId;
-  // 全局状态判断
-  const flag = await Go(e);
-
-  if (!flag) {
-    return false;
-  }
-  // 防并发cd
-  const time0 = 0.5; // 分钟cd
-  // 获取当前时间
-  const now_time = Date.now();
-
-  const transferTimeout = Math.floor(60000 * time0);
-
-  const ExchangeCD = await redis.get(getRedisKey(userId, 'ExchangeCD'));
-
-  if (ExchangeCD && now_time < ExchangeCD + transferTimeout) {
-    const ExchangeCDm = Math.trunc((ExchangeCD + transferTimeout - now_time) / 60 / 1000);
-    const ExchangeCDs = Math.trunc(((ExchangeCD + transferTimeout - now_time) % 60000) / 1000);
-
-    void Send(Text(`每${transferTimeout / 1000 / 60}分钟操作一次，CD: ${ExchangeCDm}分${ExchangeCDs}秒`));
-
-    // 存在CD。直接返回
-    return false;
-  }
-  // 记录本次执行时间
-  await redis.set(getRedisKey(userId, 'ExchangeCD'), String(now_time));
-  const player = await readPlayer(userId);
   let Exchange = await readExchange();
-
-  const t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*');
-
-  // 如果t[0]或t[1]不是非0开头的数字, 发送提示并返回
-  if (!/^[1-9]\d*$/.test(t[0])) {
-    void Send(Text(`请输入正确的编号,${t[0]}不是合法的数字`));
-
-    return false;
-  }
-  if (!/^[1-9]\d*$/.test(t[1])) {
-    void Send(Text(`请输入正确的数量,${t[1]}不是合法的数字`));
-
-    return false;
-  }
-  const x = convert2integer(t[0]) - 1;
 
   if (x >= Exchange.length) {
     return false;
@@ -60,22 +17,31 @@ const res = onResponse(selects, async e => {
   const thingqq = Exchange[x].qq;
 
   if (thingqq === userId) {
-    void Send(Text('自己买自己的东西？我看你是闲得蛋疼！'));
+    void Send(Text('自己买自己的东西？'));
 
     return false;
   }
-  // 根据qq得到物品
-  const thingName = Exchange[x].thing.name;
-  const thingClass = Exchange[x].thing.class;
-  const thingCount = Exchange[x].amount;
-  const thingPrice = Exchange[x].price;
+
+  const goods = Exchange[x];
+
+  if (!goods) {
+    void Send(Text('物品不存在'));
+
+    return false;
+  }
+
+  const thingName = goods.thing.name;
+  const thingClass = goods.thing.class;
+  const thingCount = goods.amount;
+  const thingPrice = goods.price;
+  const pinji2 = goods?.pinji2;
   let n = convert2integer(t[1]);
 
   if (!t[1]) {
     n = thingCount;
   }
   if (n > thingCount) {
-    void Send(Text(`冲水堂没有这么多【${thingName}】!`));
+    void Send(Text(`没有这么多【${thingName}】!`));
 
     return false;
   }
@@ -107,11 +73,19 @@ const res = onResponse(selects, async e => {
   const tax = calculateTax(money);
   const sellerReceives = money - tax; // 卖家实际获得的金额（扣除税费后）
 
+  const player = await readPlayer(userId);
+
+  if (!player) {
+    void Send(Text('玩家信息不存在'));
+
+    return;
+  }
+
   // 查灵石（买家只需支付商品原价）
   if (player.灵石 >= money) {
     // 加物品
     if (thingClass === '装备' || thingClass === '仙宠') {
-      await addNajieThing(userId, Exchange[x].thing.name, thingClass, n, Exchange[x].pinji2);
+      await addNajieThing(userId, thingName, thingClass, n, pinji2);
     } else {
       await addNajieThing(userId, thingName, thingClass, n);
     }
@@ -138,7 +112,51 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+};
+
+const executeBattleWithLock = props => {
+  const lockKey = keysLock.exchange(props.id);
+
+  return withLock(
+    lockKey,
+    async () => {
+      await byGoods(props);
+    },
+    {
+      timeout: 30000, // 30秒超时
+      retryDelay: 100, // 100ms重试间隔
+      maxRetries: 5, // 最大重试5次
+      enableRenewal: true, // 启用锁续期
+      renewalInterval: 10000 // 10秒续期间隔
+    }
+  );
+};
+
+const res = onResponse(selects, async e => {
+  const Send = useSend(e);
+  // 全局状态判断
+  const flag = await Go(e);
+
+  if (!flag) {
+    return false;
+  }
+
+  const t = e.MessageText.replace(/^(#|＃|\/)?选购/, '').split('*');
+
+  // 如果t[0]或t[1]不是非0开头的数字, 发送提示并返回
+  if (!/^[1-9]\d*$/.test(t[0])) {
+    void Send(Text(`请输入正确的编号,${t[0]}不是合法的数字`));
+
+    return false;
+  }
+  if (!/^[1-9]\d*$/.test(t[1])) {
+    void Send(Text(`请输入正确的数量,${t[1]}不是合法的数字`));
+
+    return false;
+  }
+  const x = convert2integer(t[0]) - 1;
+
+  void executeBattleWithLock({ e, id: x, code: t });
 });
 
-import mw from '@src/response/mw';
 export default onResponse(selects, [mw.current, res.current]);

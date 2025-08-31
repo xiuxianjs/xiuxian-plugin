@@ -203,6 +203,7 @@ export const keysLock = {
   // 系统相关锁
   boss: (bossId: 'boss1' | 'boss2') => `${baseKey}:locks:boss:${bossId}`,
   task: (taskName: string) => `${baseKey}:locks:task:${taskName}`,
+  exchange: (goodsId: string) => `${baseKey}:locks:exchange:${goodsId}`,
 
   // 紧急锁（用于系统维护等）
   emergency: (operation: string) => `${baseKey}:locks:emergency:${operation}`
