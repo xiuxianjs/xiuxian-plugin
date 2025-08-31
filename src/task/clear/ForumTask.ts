@@ -1,11 +1,8 @@
 import { readForum, writeForum } from '@src/model/trade';
 import { addCoin } from '@src/model/economy';
-
-interface ForumRecord {
-  now_time: number;
-  qq: string;
-  whole: number;
-}
+import { keysLock } from '@src/model';
+import { withLock } from '@src/model/locks';
+import { ForumRecord } from '@src/types';
 
 interface ProcessResult {
   success: boolean;
@@ -114,11 +111,7 @@ const filterValidRecords = (records: ForumRecord[], currentTime: number): ForumR
   });
 };
 
-/**
- * 论坛任务 - 处理论坛奖励记录
- * 读取论坛奖励记录，检查过期记录并发放灵石奖励给用户
- */
-export const ForumTask = async (): Promise<void> => {
+const startTask = async () => {
   try {
     // 读取论坛记录
     const forumRecords: ForumRecord[] = await readForum();
@@ -140,4 +133,37 @@ export const ForumTask = async (): Promise<void> => {
   } catch (error) {
     logger.error(error);
   }
+};
+
+const executeBossBattleWithLock = () => {
+  const lockKey = keysLock.task('ForumTask');
+
+  return withLock(
+    lockKey,
+    async () => {
+      await startTask();
+    },
+    {
+      timeout: 1000 * 25, // 25秒超时
+      retryDelay: 100, // 100ms重试间隔
+      maxRetries: 0, // 不重试
+      enableRenewal: true, // 启用锁续期
+      renewalInterval: 1000 * 10 // 10秒续期间隔
+    }
+  );
+};
+
+/**
+ * 论坛任务 - 处理论记录
+ * 读取记录，检查过期记录。
+ * 多个机器人使用一个数据，
+ * 需要锁来保持数据一致性
+ */
+export const ForumTask = () => {
+  // 随机 延迟 [60,180] 秒再执行。
+  const delay = Math.floor(Math.random() * (180 - 60 + 1)) + 60;
+
+  setTimeout(() => {
+    void executeBossBattleWithLock();
+  }, delay * 1000);
 };

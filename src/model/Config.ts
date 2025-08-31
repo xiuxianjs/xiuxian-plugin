@@ -40,26 +40,59 @@ export const setConfig = async (name: ConfigKey, data) => {
 };
 
 /**
- *
- * @param _app
- * @param name
- * @returns
+ * 深度合并两个对象，支持嵌套结构
+ * @param target 目标对象
+ * @param source 源对象
+ * @returns 合并后的对象
+ */
+function deepMerge(target: any, source: any): any {
+  const result = { ...target };
+
+  for (const key in source) {
+    if (source[key] !== undefined) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        result[key] = deepMerge(result[key] || {}, source[key]);
+      } else {
+        result[key] = source[key];
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * 获取配置，自动补充缺失的配置项
+ * @param _app 应用名称（兼容性参数）
+ * @param name 配置名称
+ * @returns 完整的配置对象
  */
 export async function getConfig<T extends ConfigKey>(_app: string, name: T): Promise<Data[T]> {
   const redis = getIoRedis();
-  const data = __PATH_CONFIG[name];
+  const defaultData = __PATH_CONFIG[name];
   const curData = await redis.get(keysAction.config(name));
 
   if (curData) {
-    const db = JSON.parse(curData);
+    try {
+      const dbData = JSON.parse(curData);
 
-    return {
-      ...data,
-      ...db
-    };
+      // 深度合并本地默认配置和Redis中的配置
+      const mergedData = deepMerge(defaultData, dbData);
+
+      return mergedData;
+    } catch (error) {
+      logger.error(`解析配置 ${name} 失败:`, error);
+      // 如果解析失败，返回默认配置并尝试保存
+      await setConfig(name, defaultData);
+
+      return defaultData;
+    }
+  } else {
+    // Redis中没有配置，保存默认配置并返回
+    await setConfig(name, defaultData);
+
+    return defaultData;
   }
-
-  return data;
 }
 
 /**

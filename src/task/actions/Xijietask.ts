@@ -3,7 +3,7 @@ import { notUndAndNull } from '@src/model/common';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { readShop, writeShop, existshop } from '@src/model/shop';
-import { __PATH, keysAction, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
 import { screenshot } from '@src/image';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { getDataList } from '@src/model/DataList';
@@ -11,6 +11,7 @@ import { getAuctionKeyManager } from '@src/model/auction';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model';
 import type { Player } from '@src/types/player';
 import type { BattleEntity, BattleResult } from '@src/types/model';
+import { withLock } from '@src/model/locks';
 
 interface PlaceAddress {
   name: string;
@@ -325,25 +326,24 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
   }
 };
 
-export const Xijietask = async (): Promise<void> => {
-  const playerList: string[] = await keysByPath(__PATH.player_path);
-
-  const npcList: any[] = await getDataList('NPC');
-
-  for (const playerId of playerList) {
-    const action: Action | null = await getDataJSONParseByKey(keysAction.action(playerId));
-
-    if (!action) {
-      continue;
+/**
+ * @description xijie 为 0 时，进行洗劫,洗劫成功后，不进行结算
+ * @param playerId
+ * @param action
+ * @returns
+ */
+export const handelAction = async (playerId: string, action: Action, { npcList }): Promise<void> => {
+  try {
+    if (!npcList || npcList.length === 0) {
+      return;
     }
-    // 不为空，存在动作
-    if (action !== null) {
-      // 有洗劫状态:这个直接结算即可
-      if (action.xijie === '0') {
-        void onXijie(playerId, action, npcList);
-      } else if (action.xijie === '-1') {
-        void onXijieNext(playerId, action);
-      }
+    // 有洗劫状态:这个直接结算即可
+    if (action.xijie === '0') {
+      void onXijie(playerId, action, npcList);
+    } else if (action.xijie === '-1') {
+      void onXijieNext(playerId, action);
     }
+  } catch (error) {
+    logger.error(error);
   }
 };

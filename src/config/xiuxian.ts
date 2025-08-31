@@ -82,38 +82,52 @@ const sw = {
   Xiuianplay_key: false // 怡红院卡图开关
 };
 
+/**
+ * 类型的任务：
+ *
+ * 1. 计算类：读取玩家的action进行计算，更新玩家数据，mojie、职业、玩家控制、秘境plus、秘境、神届、逃跑、仙届
+ * 2. 消息类：读取临时消息，处理后发送到群聊，消息
+ * 3. 清理类：清理过期数据，冲水堂、论坛、
+ * 4. 刷新类：一些特殊任务，拍卖行。商店刷新。
+ * 5. 排名类：天地榜
+ *
+ */
+
 // 任务定时表达式
 const task = {
-  // 商店刷新 - 每周一、五21点执行
-  ShopTask: '0 0 21 ? * 1,5',
-  // 冲水堂清理 - 每天20点59分执行
-  ExchangeTask: '0 59 20 * * ?',
-  // 拍卖任务
-  AuctionofficialTask: '0 0/1 * * * ?',
-  // 论坛任务
-  ForumTask: '0 0/1 * * * ?',
-  // 魔界任务
-  MojiTask: '0 0/5 * * * ?',
-  // 玩家控制任务
-  PlayerControlTask: '0 0/1 * * * ?',
-  // 秘境任务（plus）
-  SecretPlaceplusTask: '0 0/5 * * * ?',
-  // 职业任务
-  OccupationTask: '0 0/1 * * * ?',
-  // 消息任务
-  MsgTask: '20 0/5 * * * ?',
-  // 神界任务
-  ShenjieTask: '0 0/5 * * * ?',
-  // 商店等级任务
-  ShopGradetask: '0 59 20 * * ?',
-  // 逃跑任务
-  Taopaotask: '0 0/5 * * * ?',
-  // 秘境任务
-  SecretPlaceTask: '0 0/1 * * * ?',
   // 天地榜任务
   TiandibangTask: '0 0 0 ? * 1',
-  // 仙界任务
-  Xijietask: '0 0/1 * * * ?'
+  /**
+   * **********
+   */
+  // 冲水堂清理
+  ExchangeTask: '0 0 0/1 * * ?',
+  // 论坛任务
+  ForumTask: '0 0/3 * * * ?',
+  /**
+   * **********
+   * 存在订阅推送。
+   */
+  // 消息任务
+  MsgTask: '20 0/5 * * * ?',
+  /**
+   * **********
+   */
+  // 玩家行动任务（包含：魔界、玩家控制、职业、秘境、洗劫、神界、逃跑、秘境plus等任务）
+  ActionsTask: '0 0/2 * * * ?',
+  /**
+   * **********
+   */
+  // 商店刷新 - 每周一、五21点执行
+  ShopTask: '0 0 21 ? * 1,5',
+  // 商店等级任务
+  ShopGradetask: '0 59 20 * * ?',
+  /**
+   * **********
+   * 存在订阅推送。
+   */
+  // 拍卖任务
+  AuctionofficialTask: '0 0/1 * * * ?'
 };
 
 const bossTime = {
@@ -146,6 +160,8 @@ const bossTime = {
     }
   }
 };
+
+export type TaskKeys = keyof typeof task;
 
 export default {
   CD,

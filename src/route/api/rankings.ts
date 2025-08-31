@@ -4,7 +4,7 @@ import { __PATH, keys, keysByPath } from '@src/model/keys';
 import { readPlayer } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import { TiandibangTask } from '@src/task/Tiandibang';
+import { TiandibangTask } from '@src/task/ranking/Tiandibang';
 
 // 获取排名数据
 export const GET = async (ctx: Context) => {

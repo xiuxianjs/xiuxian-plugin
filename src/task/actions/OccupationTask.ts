@@ -1,8 +1,9 @@
 import { notUndAndNull } from '@src/model/common';
 import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
-import { __PATH, keysAction, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
 import type { ActionState } from '@src/types';
 import { mine_jiesuan, plant_jiesuan, calcEffectiveMinutes } from '@src/response/Occupation/api';
+import { withLock } from '@src/model/locks';
 
 interface OccupationActionState extends ActionState {
   plant?: string | number;
@@ -163,6 +164,7 @@ const handleMineSettlement = async (playerId: string, action: OccupationActionSt
  * @param playerId 玩家ID
  * @param action 动作状态
  * @returns 处理结果
+ * @description plant、mine 都为 0 时，不进行结算
  */
 const processPlayerOccupation = async (playerId: string, action: OccupationActionState): Promise<SettlementResult> => {
   try {
@@ -189,27 +191,9 @@ const processPlayerOccupation = async (playerId: string, action: OccupationActio
  * 职业任务 - 处理玩家采药和采矿状态
  * 遍历所有玩家，检查处于采药或采矿状态的玩家，进行结算处理
  */
-export const OccupationTask = async (): Promise<void> => {
+export const handelAction = async (playerId: string, action: OccupationActionState): Promise<void> => {
   try {
-    const playerList = await keysByPath(__PATH.player_path);
-
-    if (!playerList || playerList.length === 0) {
-      return;
-    }
-
-    for (const playerId of playerList) {
-      try {
-        const action = await getDataJSONParseByKey(keysAction.action(playerId));
-
-        if (!action) {
-          continue;
-        }
-
-        await processPlayerOccupation(playerId, action);
-      } catch (error) {
-        logger.error(error);
-      }
-    }
+    await processPlayerOccupation(playerId, action);
   } catch (error) {
     logger.error(error);
   }

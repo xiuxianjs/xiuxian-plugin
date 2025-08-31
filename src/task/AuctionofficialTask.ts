@@ -7,8 +7,7 @@ import type { AuctionSession, CoreNajieCategory as NajieCategory } from '@src/ty
 import { getConfig } from '@src/model';
 import { getAuctionKeyManager } from '@src/model/auction';
 
-export const AuctionofficialTask = async () => {
-  // 获取星阁key管理器，支持多机器人部署和自动数据迁移
+const startTask = async () => {
   const auctionKeyManager = getAuctionKeyManager();
 
   const set = await getConfig('xiuxian', 'xiuxian');
@@ -89,6 +88,13 @@ export const AuctionofficialTask = async () => {
   }
   wupin.groupList.forEach(g => pushInfo(String(g), true, msg));
   await redis.del(auctionTaskKey);
+};
 
-  return false;
+/**
+ * 拍卖系统，每个机器人使用的存储不一致。
+ * 在启动时，需要配置 boid: '' 来区别每个机器人使用的存储
+ * @returns
+ */
+export const AuctionofficialTask = () => {
+  void startTask();
 };

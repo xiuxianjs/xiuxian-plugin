@@ -5,13 +5,14 @@ import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@s
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp, addHP } from '@src/model/economy';
-import { __PATH, keysAction, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types';
 import { writePlayer } from '@src/model';
 import { getConfig } from '@src/model';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
+import { withLock } from '@src/model/locks';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -455,39 +456,18 @@ const processPlayerExploration = async (playerId: string, action: ActionState, m
 /**
  * 秘境任务 - 处理玩家秘境探索
  * 遍历所有玩家，检查处于秘境探索状态的玩家，进行结算处理
+ * @description Place_action 为 0 时，进行探索
  */
-export const SecretPlaceTask = async (): Promise<void> => {
+export const handelAction = async (playerId: string, action, { monsterList, config }): Promise<void> => {
   try {
-    const playerList = await keysByPath(__PATH.player_path);
-
-    if (!playerList || playerList.length === 0) {
-      return;
-    }
-
-    const monsterList = await getDataList('Monster');
-
     if (!monsterList || monsterList.length === 0) {
       return;
     }
 
-    const config = await getConfig('xiuxian', 'xiuxian');
-
     if (!config) {
       return;
     }
-
-    for (const playerId of playerList) {
-      try {
-        const action = await getDataJSONParseByKey(keysAction.action(playerId));
-
-        if (!action) {
-          continue;
-        }
-        await processPlayerExploration(playerId, action, monsterList, config);
-      } catch (error) {
-        logger.error(error);
-      }
-    }
+    await processPlayerExploration(playerId, action, monsterList, config);
   } catch (error) {
     logger.error(error);
   }

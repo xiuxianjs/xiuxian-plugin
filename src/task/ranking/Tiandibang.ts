@@ -1,9 +1,10 @@
 import { writeTiandibang } from '@src/model/tian';
-import { __PATH, keys, keysByPath } from '@src/model/keys';
+import { __PATH, keys, keysByPath, keysLock } from '@src/model/keys';
 import type { TiandibangRankEntry as RankEntry } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import type { Player } from '@src/types/player';
+import { withLock } from '@src/model/locks';
 
 /**
  * 计算玩家战力积分
@@ -87,7 +88,7 @@ const bubbleSortByScore = (arr: RankEntry[]): void => {
  * 天帝榜任务 - 生成玩家排行榜
  * 根据玩家战力计算积分，按积分降序排列
  */
-export const TiandibangTask = async (): Promise<boolean> => {
+const startTask = async (): Promise<boolean> => {
   try {
     // 获取所有玩家ID
     const playerList = await keysByPath(__PATH.player_path);
@@ -153,4 +154,34 @@ export const TiandibangTask = async (): Promise<boolean> => {
 
     return false;
   }
+};
+
+const executeBossBattleWithLock = () => {
+  const lockKey = keysLock.task('ForumTask');
+
+  return withLock(
+    lockKey,
+    async () => {
+      await startTask();
+    },
+    {
+      timeout: 1000 * 25, // 25秒超时
+      retryDelay: 100, // 100ms重试间隔
+      maxRetries: 0, // 不重试
+      enableRenewal: true, // 启用锁续期
+      renewalInterval: 1000 * 10 // 10秒续期间隔
+    }
+  );
+};
+
+/**
+ * 榜单
+ */
+export const TiandibangTask = () => {
+  // 随机 延迟 [60,180] 秒再执行。
+  const delay = Math.floor(Math.random() * (180 - 60 + 1)) + 60;
+
+  setTimeout(() => {
+    void executeBossBattleWithLock();
+  }, delay * 1000);
 };

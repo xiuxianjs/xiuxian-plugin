@@ -5,11 +5,12 @@ import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
 import { setFileValue } from '@src/model/cultivation';
-import { __PATH, keysAction, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction, keysByPath, keysLock } from '@src/model/keys';
 import { DataMention, Mention } from 'alemonjs';
 import { getConfig } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
+import { withLock } from '@src/model/locks';
 
 interface ActionState {
   end_time: number;
@@ -200,9 +201,9 @@ const handleSpecialItems = async (
 
   // 神界秘宝效果
   if (
-    (await existNajieThing(playerId, '神界秘宝', '道具'))
-    && player.魔道值 < ITEM_EFFECTS.SHENJIE_THRESHOLD
-    && (player.灵根?.type === '转生' || player.level_id > ITEM_EFFECTS.LEVEL_THRESHOLD)
+    (await existNajieThing(playerId, '神界秘宝', '道具')) &&
+    player.魔道值 < ITEM_EFFECTS.SHENJIE_THRESHOLD &&
+    (player.灵根?.type === '转生' || player.level_id > ITEM_EFFECTS.LEVEL_THRESHOLD)
   ) {
     qixue = Math.trunc(xiuwei * ITEM_EFFECTS.SHENJIE_MIBAO_QIXUE_BONUS * time);
     await addNajieThing(playerId, '神界秘宝', '道具', -1);
@@ -468,33 +469,15 @@ const processPlayerState = async (playerId: string, action: ActionState, config:
 /**
  * 玩家控制任务 - 处理玩家闭关和降妖状态
  * 遍历所有玩家，检查处于闭关或降妖状态的玩家，进行结算处理
+ * @description shutup、working 都为 0 时，不进行结算
  */
-export const PlayerControlTask = async (): Promise<void> => {
+export const handelAction = async (playerId: string, action: ActionState, { config }): Promise<void> => {
   try {
-    const playerList = await keysByPath(__PATH.player_path);
-
-    if (!playerList || playerList.length === 0) {
-      return;
-    }
-
-    const config = await getConfig('xiuxian', 'xiuxian');
-
     if (!config) {
       return;
     }
 
-    for (const playerId of playerList) {
-      try {
-        const action = await getDataJSONParseByKey(keysAction.action(playerId));
-
-        if (!action) {
-          continue;
-        }
-        await processPlayerState(playerId, action, config);
-      } catch (error) {
-        logger.error(error);
-      }
-    }
+    await processPlayerState(playerId, action, config);
   } catch (error) {
     logger.error(error);
   }

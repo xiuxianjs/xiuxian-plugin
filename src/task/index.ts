@@ -1,39 +1,28 @@
-import { AuctionofficialTask } from './AuctionofficialTask';
-import { ExchangeTask } from './ExchangeTask';
-import { ForumTask } from './ForumTask';
-import { MojiTask } from './mojietask';
-import { PlayerControlTask } from './PlayerControlTask';
-import { SecretPlaceplusTask } from './SecretPlaceplusTask';
-import { OccupationTask } from './OccupationTask';
-import { MsgTask } from './msgTask';
-import { ShenjieTask } from './shenjietask';
-import { Shoptask } from './Shoptask';
-import { ShopGradetask } from './ShopGradetask';
-import { Taopaotask } from './Taopaotask';
-import { SecretPlaceTask } from './SecretPlaceTask';
-import { TiandibangTask } from './Tiandibang';
-import { Xijietask } from './Xijietask';
+import { ExchangeTask } from './clear/ExchangeTask';
+import { ForumTask } from './clear/ForumTask';
+import { Shoptask } from './update/Shoptask';
+import { ShopGradetask } from './update/ShopGradetask';
+import { AuctionofficialTask } from '@src/task/AuctionofficialTask';
+import { MsgTask } from '@src/task/msgTask';
+import { TiandibangTask } from '@src/task/ranking/Tiandibang';
 import { scheduleJob } from 'node-schedule';
 import { getConfig } from '@src/model';
 import { TaskMap } from '@src/model/task';
+import { ActionsTask } from './actions/actionsTask';
+import { TaskKeys } from '@src/config/xiuxian';
 
 // 任务函数映射
-const taskFunctions = {
+const taskFunctions: {
+  [key in TaskKeys]: (() => Promise<void>) | (() => void);
+} = {
+  ActionsTask: ActionsTask,
   ShopTask: Shoptask,
   ExchangeTask: ExchangeTask,
   AuctionofficialTask: AuctionofficialTask,
   ForumTask: ForumTask,
-  MojiTask: MojiTask,
-  PlayerControlTask: PlayerControlTask,
-  SecretPlaceplusTask: SecretPlaceplusTask,
-  OccupationTask: OccupationTask,
   MsgTask: MsgTask,
-  ShenjieTask: ShenjieTask,
   ShopGradetask: ShopGradetask,
-  Taopaotask: Taopaotask,
-  SecretPlaceTask: SecretPlaceTask,
-  TiandibangTask: TiandibangTask,
-  Xijietask: Xijietask
+  TiandibangTask: TiandibangTask
 };
 
 // 停止指定任务
@@ -91,14 +80,20 @@ export const startSingleTask = async (taskName: string) => {
     const taskConfig = (await getConfig('', 'xiuxian'))?.task;
 
     if (!taskConfig?.[taskName]) {
-      throw new Error(`任务 ${taskName} 配置不存在`);
+      logger.warn(`任务 ${taskName} 配置不存在`);
+
+      // 使用本地的配置
+
+      return;
     }
 
     // 获取任务函数
     const taskFunction = taskFunctions[taskName as keyof typeof taskFunctions];
 
     if (!taskFunction) {
-      throw new Error(`任务 ${taskName} 函数不存在`);
+      logger.warn(`任务 ${taskName} 函数不存在`);
+
+      return;
     }
 
     const newJob = scheduleJob(taskConfig[taskName], taskFunction);
@@ -133,7 +128,7 @@ export const startAllTasks = async () => {
       if (!TaskMap.has(taskName)) {
         const result = await startSingleTask(taskName);
 
-        if (result.success) {
+        if (result?.success) {
           startedTasks.push(taskName);
         } else {
           failedTasks.push(taskName);
@@ -164,7 +159,7 @@ export const restartTask = async (taskName: string) => {
     // 启动任务
     const result = await startSingleTask(taskName);
 
-    return result.success;
+    return result?.success;
   } catch (error) {
     logger.error(`重启任务 ${taskName} 失败:`, error);
 

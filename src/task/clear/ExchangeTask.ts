@@ -1,6 +1,8 @@
 import { readExchange, writeExchange } from '@src/model/trade';
 import { addNajieThing } from '@src/model/najie';
 import { ExchangeRecord } from '@src/types';
+import { keysLock } from '@src/model';
+import { withLock } from '@src/model/locks';
 
 interface LegacyExchangeRecord {
   now_time: number;
@@ -130,11 +132,7 @@ const validateLegacyFormat = (records: any[]): records is LegacyExchangeRecord[]
   return isLegacyRecord(records[0]);
 };
 
-/**
- * 兑换任务 - 处理兑换记录
- * 读取兑换记录，检查过期记录并发放物品到用户纳戒
- */
-export const ExchangeTask = async () => {
+const startTask = async () => {
   try {
     // 读取兑换记录
     const exchangeRecords: ExchangeRecord[] = await readExchange();
@@ -169,4 +167,38 @@ export const ExchangeTask = async () => {
   } catch (error) {
     logger.error(error);
   }
+};
+
+// 使用锁
+const executeBossBattleWithLock = () => {
+  const lockKey = keysLock.task('ExchangeTask');
+
+  return withLock(
+    lockKey,
+    async () => {
+      await startTask();
+    },
+    {
+      timeout: 1000 * 25, // 25秒超时
+      retryDelay: 100, // 100ms重试间隔
+      maxRetries: 0, // 不重试
+      enableRenewal: true, // 启用锁续期
+      renewalInterval: 1000 * 10 // 10秒续期间隔
+    }
+  );
+};
+
+/**
+ * 兑换任务 - 处理兑换记录
+ * 读取兑换记录，检查过期记录并发放物品到用户纳戒
+ * 多个机器人使用一个数据，
+ * 需要锁来保持数据一致性
+ */
+export const ExchangeTask = () => {
+  // 随机 延迟 [5,35] 秒再执行。
+  const delay = Math.floor(Math.random() * (35 - 5 + 1)) + 5;
+
+  setTimeout(() => {
+    void executeBossBattleWithLock();
+  }, delay * 1000);
 };

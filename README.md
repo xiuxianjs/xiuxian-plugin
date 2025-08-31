@@ -44,64 +44,9 @@ https://www.npmjs.com/package/@alemonjs/db
 
 > 机器人全部使用redis存储，请务必启动redis持久化存储
 
-### 开发
-
-开发环境 https://lvyjs.dev/
-
-开发文档 https://alemonjs.com/
-
-```
-xiuxian-plugin/
-├── frontend/          # 前端React应用
-│   ├── src/
-│   │   ├── api/       # API接口
-│   │   ├── components/ # 通用组件
-│   │   ├── contexts/   # React Context
-│   │   ├── pages/      # 页面组件
-│   │   └── ...
-│   └── ...
-├── src/               # 后端源码
-│   ├── model/         # 数据模型
-│   ├── route/         # API路由
-│   └── ...
-└── ...
-```
-
-```sh
-git clone --depth=10  https://github.com/xiuxianjs/xiuxian-plugin.git
-```
-
-```sh
-yarn install
-```
-
-```sh
-yarn dev
-```
-
-> 可在vscode中安装alemonjs扩展以支持沙河环境登录
-
-> [ALemonTestOne](https://marketplace.visualstudio.com/items?itemName=lemonadex.alemonjs-testone)
-
-- 启动图片开发工具
-
-> 请先触发图片对应指令，生产mock数据后进行
-
-```sh
-yarn view
-```
-
-- 启动管理端
-
-```sh
-yarn bundle-dev
-```
-
 ## 修仙管理
 
 http://127.0.0.1:17117/apps/alemonjs-xiuxian/
-
-> 请注意端口，如果是本地开发模式，可直接访问 http://127.0.0.1:17117/app/
 
 默认账号密码 lemonade、123456
 
@@ -127,8 +72,9 @@ alemonjs-xiuxian:
 alemonjs-xiuxian:
   # 关闭验证码
   close_captcha: true
-  # 不启动 task
-  task: false
+  # 如果同时启动多个机器人，
+  # 请务必填写机器人账号 !!!
+  botId: ''
 ```
 
 ## 其他版本

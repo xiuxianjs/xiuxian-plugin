@@ -4,12 +4,12 @@ import { notUndAndNull } from '@src/model/common';
 import { Harm } from '@src/model/battle';
 import { readShop, writeShop } from '@src/model/shop';
 import { addNajieThing } from '@src/model/najie';
-import { __PATH, keysAction, keysByPath } from '@src/model/keys';
+import { __PATH, keysAction } from '@src/model/keys';
 import type { ActionState, CoreNajieCategory as NajieCategory } from '@src/types';
 import { Mention, DataMention } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getAuctionKeyManager } from '@src/model/auction';
-import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model';
+import { setDataJSONStringifyByKey } from '@src/model';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -342,33 +342,14 @@ const processPlayerEscape = async (playerId: string, action: ActionState, npcLis
 /**
  * 逃跑任务 - 处理玩家逃跑状态
  * 遍历所有玩家，检查处于逃跑状态的玩家，进行结算处理
+ * @description xijie 为 -2 时，进行逃跑,逃跑成功后，不进行结算
  */
-export const Taopaotask = async (): Promise<void> => {
+export const handelAction = async (playerId: string, action: ActionState, { npcList }): Promise<void> => {
   try {
-    const playerList = await keysByPath(__PATH.player_path);
-
-    if (!playerList || playerList.length === 0) {
-      return;
-    }
-
-    const npcList = await getDataList('NPC');
-
     if (!npcList || npcList.length === 0) {
       return;
     }
-
-    for (const playerId of playerList) {
-      try {
-        const action = await getDataJSONParseByKey(keysAction.action(playerId));
-
-        if (!action) {
-          continue;
-        }
-        await processPlayerEscape(playerId, action, npcList);
-      } catch (error) {
-        logger.error(error);
-      }
-    }
+    await processPlayerEscape(playerId, action, npcList);
   } catch (error) {
     logger.error(error);
   }

@@ -4,10 +4,11 @@ import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey } from '@s
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
-import { __PATH, keys as dataKeys, keysAction, keysByPath } from '@src/model/keys';
+import { __PATH, keys as dataKeys, keysAction, keysByPath, keysLock } from '@src/model/keys';
 import type { ExploreActionState } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
+import { withLock } from '@src/model/locks';
 
 interface MojieItem {
   name: string;
@@ -417,39 +418,26 @@ const processPlayerExploration = async (playerId: string, action: ExploreActionS
 };
 
 /**
- * 魔劫任务 - 处理玩家魔劫探索
- * 遍历所有玩家，检查处于魔劫探索状态的玩家，进行结算处理
+ *
+ * @param playerId
+ * @param action
+ * @returns
+ * @description mojie 为 0 时，进行探索
  */
-export const MojiTask = async (): Promise<void> => {
+export const handelAction = async (playerId: string, action, { mojieDataList }) => {
   try {
-    const playerList = await keysByPath(__PATH.player_path);
-
-    if (!playerList || playerList.length === 0) {
-      return;
-    }
-
-    const mojieDataList = await getDataList('Mojie');
-
     if (!mojieDataList || mojieDataList.length === 0) {
       return;
     }
 
     const mojieData = mojieDataList[0] as MojieData;
 
-    for (const playerId of playerList) {
-      try {
-        const action = await getDataJSONParseByKey(keysAction.action(playerId));
+    if (!action || !isExploreAction(action)) {
+      return;
+    }
 
-        if (!action || !isExploreAction(action)) {
-          continue;
-        }
-
-        if (String(action.mojie) === '0') {
-          await processPlayerExploration(playerId, action, mojieData);
-        }
-      } catch (error) {
-        logger.error(error);
-      }
+    if (String(action.mojie) === '0') {
+      await processPlayerExploration(playerId, action, mojieData);
     }
   } catch (error) {
     logger.error(error);

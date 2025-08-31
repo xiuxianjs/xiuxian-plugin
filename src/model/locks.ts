@@ -353,8 +353,3 @@ process.on('SIGTERM', () => {
   cleanup();
   process.exit(0);
 });
-
-// 便捷函数（保持向后兼容）
-export const acquireLockFn = acquireLock;
-export const releaseLockFn = releaseLock;
-export const withLockFn = withLock;

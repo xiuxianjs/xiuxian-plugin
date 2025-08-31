@@ -33,17 +33,10 @@ const taskNames: {
   ExchangeTask: '冲水堂清理',
   AuctionofficialTask: '拍卖任务',
   ForumTask: '论坛任务',
-  MojiTask: '魔界任务',
-  PlayerControlTask: '玩家控制任务',
-  SecretPlaceplusTask: '秘境任务（plus）',
-  OccupationTask: '职业任务',
+  ActionsTask: '玩家行动任务',
   MsgTask: '消息任务',
-  ShenjieTask: '神界任务',
   ShopGradetask: '商店等级任务',
-  Taopaotask: '逃跑任务',
-  SecretPlaceTask: '秘境任务',
-  TiandibangTask: '天地榜任务',
-  Xijietask: '仙界任务'
+  TiandibangTask: '天地榜任务'
 };
 
 export default function TaskManager() {
@@ -66,7 +59,40 @@ export default function TaskManager() {
         description: string;
         type: 'system' | 'game' | 'maintenance';
       };
-    } = {};
+    } = {
+      ActionsTask: {
+        description: '处理玩家行动：魔界、职业、秘境、洗劫、神界、逃跑等任务',
+        type: 'game'
+      },
+      ShopTask: {
+        description: '商店商品刷新',
+        type: 'system'
+      },
+      ExchangeTask: {
+        description: '清理过期数据',
+        type: 'maintenance'
+      },
+      AuctionofficialTask: {
+        description: '拍卖行相关任务',
+        type: 'system'
+      },
+      ForumTask: {
+        description: '论坛数据清理',
+        type: 'maintenance'
+      },
+      MsgTask: {
+        description: '消息推送任务',
+        type: 'system'
+      },
+      ShopGradetask: {
+        description: '商店等级更新',
+        type: 'system'
+      },
+      TiandibangTask: {
+        description: '天地榜排名更新',
+        type: 'game'
+      }
+    };
 
     return Object.entries(config).map(([name, schedule]) => {
       const taskInfo = taskDescriptions[name] || {
