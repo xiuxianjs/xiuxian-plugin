@@ -49,6 +49,12 @@ const res = onResponse(selects, async e => {
 
   const whole = Math.trunc(thingValue * thingCount);
 
+  if (whole < 100000) {
+    void Send(Text('物品总价低于10w灵石的，聚宝堂将不受理'));
+
+    return;
+  }
+
   // 计算阶梯税收：物品低于100w交易后收3%税，每多100w多收3%，最高为15%。
   const calculateTax = (totalPrice: number): number => {
     const million = 1000000; // 100w
@@ -106,7 +112,7 @@ const res = onResponse(selects, async e => {
 
   await writeForum(Forum);
 
-  void Send(Text(`你已发布[${thingName}]*${thingCount}，单价${thingValue}灵石，总价${whole}灵石，交税${off}灵石`));
+  void Send(Text(`你已发布[${thingName}]*${thingCount}，单价${thingValue}灵石，总价${whole}灵石，交纳${off}灵石`));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

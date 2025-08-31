@@ -75,12 +75,12 @@ export async function InitWorldBoss() {
 
   if (playerQuantity < 5) {
     playerQuantity = 6;
-    averageDamage = 6000000;
+    averageDamage = 12000000;
     reward = 6000000;
   }
-  const x = averageDamage * 0.01;
+  const x = averageDamage * 0.05;
 
-  const health = Math.trunc(x * 150 * playerQuantity * 2); // 血量要根据人数来
+  const health = Math.trunc(x * 150 * playerQuantity * 3); // 血量要根据人数来
 
   await redis.set(
     k.status,

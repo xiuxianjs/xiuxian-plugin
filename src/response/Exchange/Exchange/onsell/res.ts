@@ -212,6 +212,9 @@ const res = onResponse(selects, async e => {
   // 固定不超过10w
   if (fee > 100000) {
     fee = 100000;
+  } else if (fee < 10000) {
+    // 最少1w。
+    fee = 10000;
   }
 
   const player = await readPlayer(userId);

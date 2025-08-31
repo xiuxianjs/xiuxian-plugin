@@ -20,7 +20,7 @@ function toInt(v: any, d = 0): number {
 
 // 境界限制
 const isLevelLimit = (levelId: number, lunhui: number) => {
-  return levelId > 42 && lunhui === 0;
+  return levelId < 42 && lunhui === 0;
 };
 
 // Boss战斗锁配置
