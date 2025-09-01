@@ -491,6 +491,26 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
   const levelMax = curLevelMax.level;
   const needXueqi = curLevelMax.exp;
 
+  const learnedGongfa = await getDataList('Gongfa');
+  const TimeGongfa = await getDataList('TimeGongfa');
+  const gongfaMessage = {};
+
+  learnedGongfa.forEach(item => {
+    gongfaMessage[item.name] = item;
+  });
+  TimeGongfa.forEach(item => {
+    gongfaMessage[item.name] = item;
+  });
+  const gongfa = player.学习的功法
+    .map(item => {
+      return {
+        name: item,
+        ...(gongfaMessage[item] ?? {})
+      };
+    })
+    .sort((a, b) => {
+      return (b.修炼加成 ?? 0) - (a.修炼加成 ?? 0);
+    });
   const playerCopy = {
     user_id: userId,
     nickname: player.名号,
@@ -504,7 +524,7 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
     hgd: player.favorability,
     player_maxHP: player.血量上限,
     player_nowHP: player.当前血量,
-    learned_gongfa: player.学习的功法,
+    gongfa: gongfa,
     association: association
   };
 

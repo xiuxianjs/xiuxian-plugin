@@ -1,7 +1,7 @@
 import React from 'react';
 import HTML from './HTML';
 
-const WuQi = ({ nickname, wuqi_have, wuqi_need }) => {
+const WuQi = ({ nickname, wuqi_have: wuqiHave, wuqi_need: wuqiNeed }) => {
   return (
     <HTML>
       <div className='min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 relative overflow-hidden'>
@@ -27,7 +27,7 @@ const WuQi = ({ nickname, wuqi_have, wuqi_need }) => {
 
           <div className='max-w-6xl mx-auto space-y-8'>
             {/* 已拥有装备 */}
-            {wuqi_have && wuqi_have.length > 0 && (
+            {wuqiHave && wuqiHave.length > 0 && (
               <div className='relative'>
                 <div className='absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-sm bg-white/10 rounded-3xl border border-green-400/30 p-8'>
@@ -38,7 +38,7 @@ const WuQi = ({ nickname, wuqi_have, wuqi_need }) => {
                     <h2 className='text-2xl font-bold text-green-300 tracking-wide'>【已拥有装备】</h2>
                   </div>
                   <div className='grid grid-cols-2 gap-6'>
-                    {wuqi_have.map((item, index) => (
+                    {wuqiHave.map((item, index) => (
                       <div key={index} className='group relative'>
                         <div className='absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-600/20 rounded-2xl blur-sm' />
                         <div className='relative backdrop-blur-md bg-white/5 rounded-2xl border border-green-400/40 p-6'>
@@ -101,7 +101,7 @@ const WuQi = ({ nickname, wuqi_have, wuqi_need }) => {
             )}
 
             {/* 未拥有装备 */}
-            {wuqi_need && wuqi_need.length > 0 && (
+            {wuqiNeed && wuqiNeed.length > 0 && (
               <div className='relative'>
                 <div className='absolute inset-0 bg-gradient-to-r from-red-500/20 to-pink-500/20 rounded-3xl blur-xl' />
                 <div className='relative backdrop-blur-sm bg-white/10 rounded-3xl border border-red-400/30 p-8'>
@@ -112,7 +112,7 @@ const WuQi = ({ nickname, wuqi_have, wuqi_need }) => {
                     <h2 className='text-2xl font-bold text-red-300 tracking-wide'>【未拥有装备】</h2>
                   </div>
                   <div className='grid grid-cols-2 gap-6'>
-                    {wuqi_need.map((item, index) => (
+                    {wuqiNeed.map((item, index) => (
                       <div key={index} className='group relative'>
                         <div className='absolute inset-0 bg-gradient-to-br from-red-400/20 to-pink-600/20 rounded-2xl blur-sm' />
                         <div className='relative backdrop-blur-md bg-white/5 rounded-2xl border border-red-400/40 p-6'>

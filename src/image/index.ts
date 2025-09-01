@@ -8,23 +8,23 @@ import danyao from '../resources/html/danyao';
 import daoju from '../resources/html/daoju';
 import equipment from '../resources/html/equipment';
 import fairyrealm from '../resources/html/fairyrealm';
-import forbidden_area from '../resources/html/forbidden_area';
+import ForbiddenArea from '../resources/html/forbidden_area';
 import forum from '../resources/html/forum';
 import genius from '../resources/html/genius';
 import gongfa from '../resources/html/gongfa';
 import help from '../resources/html/help';
-import immortal_genius from '../resources/html/Immortal';
+import ImmortalGenius from '../resources/html/Immortal';
 import log from '../resources/html/log';
 import moneyCheck from '../resources/html/moneyCheck';
 import msg from '../resources/html/msg';
 import najie from '../resources/html/najie';
 import ningmenghome from '../resources/html/ningmenghome';
 import player from '../resources/html/User';
-import playercopy from '../resources/html/playercopy';
-import ranking_money from '../resources/html/ranking_money';
-import ranking_power from '../resources/html/ranking_power';
+import UserBody from '../resources/html/UserBody';
+import RankingMoney from '../resources/html/ranking_money';
+import RankingPower from '../resources/html/ranking_power';
 import searchforum from '../resources/html/searchforum';
-import secret_place from '../resources/html/secret_place';
+import SecretPlace from '../resources/html/secret_place';
 import shenbing from '../resources/html/shenbing';
 import shifu from '../resources/html/shifu';
 import shitu from '../resources/html/shitu';
@@ -38,7 +38,7 @@ import sudoku from '../resources/html/sudoku';
 import supermarket from '../resources/html/supermarket';
 import temp from '../resources/html/temp';
 import tianditang from '../resources/html/tianditang';
-import time_place from '../resources/html/time_place';
+import TimePlace from '../resources/html/time_place';
 import tuzhi from '../resources/html/tuzhi';
 import valuables from '../resources/html/valuables';
 import wuqi from '../resources/html/wuqi';
@@ -68,18 +68,18 @@ const map = {
   daoju,
   equipment,
   fairyrealm,
-  forbidden_area,
-  immortal_genius,
+  forbidden_area: ForbiddenArea,
+  immortal_genius: ImmortalGenius,
   genius,
   gongfa,
-  ranking_money,
-  ranking_power,
+  ranking_money: RankingMoney,
+  ranking_power: RankingPower,
   searchforum,
   shitu,
   shitujifen,
   state,
   statemax,
-  time_place,
+  time_place: TimePlace,
   tuzhi,
   updateRecord,
   valuables,
@@ -89,14 +89,14 @@ const map = {
   shenbing,
   statezhiye,
   ningmenghome,
-  playercopy,
+  playercopy: UserBody,
   supermarket,
   forum,
   jindi,
   sudoku,
   shop,
   moneyCheck,
-  secret_place,
+  secret_place: SecretPlace,
   tianditang,
   BlessPlace,
   CombatResult,

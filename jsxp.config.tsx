@@ -30,7 +30,7 @@ import Ningmenghome from '@src/resources/html/ningmenghome';
 import playerData from './views/player.json';
 import Player from '@src/resources/html/User';
 import playercopyData from './views/playercopy.json';
-import Playercopy from '@src/resources/html/playercopy';
+import Playercopy from '@src/resources/html/UserBody';
 import rankingMoneyData from './views/ranking_money.json';
 import RankingMoney from '@src/resources/html/ranking_money';
 import rankingPowerData from './views/ranking_power.json';

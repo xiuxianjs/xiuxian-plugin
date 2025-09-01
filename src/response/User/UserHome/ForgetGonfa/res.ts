@@ -23,8 +23,8 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  // 判断是否是 仅限中文字符
-  if (!/^[\u4e00-\u9fa5]+$/.test(goodsName)) {
+  // 仅限中文、英文、数字。
+  if (!/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/.test(goodsName)) {
     void message.send(format(Text('非法功法名')));
 
     return;
