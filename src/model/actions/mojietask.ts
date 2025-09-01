@@ -1,6 +1,6 @@
 import { redis, pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
-import { readPlayer, setDataJSONStringifyByKey } from '@src/model';
+import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { readTemp, writeTemp } from '@src/model/temp';
@@ -325,19 +325,12 @@ const handleExplorationComplete = async (
 
   if (arr.cishu === 1) {
     // 探索完成，关闭所有状态
-    arr.shutup = 1;
-    arr.working = 1;
-    arr.power_up = 1;
-    arr.Place_action = 1;
-    arr.Place_actionplus = 1;
-    arr.mojie = 1;
-    arr.end_time = Date.now();
-    delete arr.group_id;
+    void delDataByKey(keysAction.action(playerId));
 
-    await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
+    // todo
     pushInfo(pushAddress, isGroup, msg.join(''));
   } else {
     // 继续探索
@@ -362,7 +355,6 @@ const handleExplorationComplete = async (
  */
 const processPlayerExploration = async (playerId: string, action: ExploreActionState, mojieData: MojieData): Promise<boolean> => {
   try {
-    const { pushAddress, isGroup } = getPushInfo(action, playerId);
     const baseDuration = parseTime(action.time);
     const endTime = action.end_time - baseDuration;
     const nowTime = Date.now();
@@ -376,6 +368,7 @@ const processPlayerExploration = async (playerId: string, action: ExploreActionS
     if (!player) {
       return false;
     }
+    const { pushAddress, isGroup } = getPushInfo(action, playerId);
 
     // 获取随机物品
     const explorationResult = getRandomItem(mojieData);
