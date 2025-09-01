@@ -34,8 +34,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
             </div>
 
             {/* 指令说明 */}
-            <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl blur-lg' />
+            <div className=' flex gap-2'>
               <div className='relative px-6 py-3 rounded-2xl bg-gradient-to-r from-white/35 via-blue-50/25 to-cyan-50/30 backdrop-blur-md border border-blue-200/30 space-y-2 drop-shadow'>
                 <div className='flex items-center justify-center space-x-2'>
                   <span className='text-blue-700'>📜</span>
@@ -48,6 +47,16 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                 <div className='flex items-center justify-center space-x-2'>
                   <span className='text-blue-700'>❌</span>
                   <span className='text-blue-900 font-medium'>取消指令：#取消+编号</span>
+                </div>
+              </div>
+              <div className='relative px-6 py-3 rounded-2xl bg-gradient-to-r from-white/35 via-blue-50/25 to-cyan-50/30 backdrop-blur-md border border-blue-200/30 space-y-2 drop-shadow'>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-blue-700'>📜</span>
+                  <span className='text-blue-900 font-medium'>发布条件：最低10w灵石</span>
+                </div>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-blue-700'>🤝</span>
+                  <span className='text-blue-900 font-medium'>需交付：低于100w按3%收取，每超100w增收3%，最高可达15%</span>
                 </div>
               </div>
             </div>

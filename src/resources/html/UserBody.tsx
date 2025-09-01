@@ -16,6 +16,7 @@ type Props = {
   xueqi: number;
   need_xueqi: number;
   lingshi: number;
+  physiqueId: number;
   association: {
     宗门名称?: string;
     职位?: string;
@@ -95,7 +96,7 @@ const getGongfaColor = (efficiency: number) => {
   return GONGFA_COLORS.blue;
 };
 
-const UserBody = ({ user_id, nickname, player_nowHP, player_maxHP, levelId, levelMax, xueqi, need_xueqi, lingshi, association, gongfa }: Props) => {
+const UserBody = ({ user_id, nickname, player_nowHP, player_maxHP, levelId, levelMax, xueqi, need_xueqi, physiqueId, lingshi, association, gongfa }: Props) => {
   return (
     <HTML
       className='p-0 m-0 w-full text-center'
@@ -268,7 +269,7 @@ const UserBody = ({ user_id, nickname, player_nowHP, player_maxHP, levelId, leve
                 <span className='text-sm'>📚</span>
               </div>
               <h2 className='text-xl font-bold text-gray-900 drop-shadow-sm'>
-                已学功法 ({gongfa?.length ?? 0}/{levelId})
+                已学功法 ({gongfa?.length ?? 0}/{levelId + physiqueId})
               </h2>
             </div>
             <div className='bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg'>

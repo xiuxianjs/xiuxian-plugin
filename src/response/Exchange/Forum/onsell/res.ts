@@ -70,9 +70,11 @@ const res = onResponse(selects, async e => {
     // 税率 = 基础税率 * 100w的个数
     const taxRate = baseTaxRate * millionCount;
 
-    // 25%的税
-    if (taxRate > 0.25) {
-      return Math.floor(totalPrice * 0.25);
+    const max = 0.15;
+
+    // 15%的税
+    if (taxRate > max) {
+      return Math.floor(totalPrice * max);
     }
 
     const curPrice = Math.floor(totalPrice * taxRate);

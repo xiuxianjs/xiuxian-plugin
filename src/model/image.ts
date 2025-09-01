@@ -517,6 +517,7 @@ export async function getPowerImage(e: EventsMessageCreateEnum): Promise<Screens
     need_xueqi: needXueqi,
     xueqi: player.血气,
     levelMax: levelMax,
+    physiqueId: player.Physique_id,
     lingshi: lingshi,
     镇妖塔层数: player.镇妖塔层数,
     levelId: player.level_id,

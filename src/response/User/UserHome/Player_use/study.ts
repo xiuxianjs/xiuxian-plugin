@@ -16,7 +16,11 @@ export const handleStudy = async (userId: string, thingName: string, message: an
 
     return false;
   }
-  if (nowPlayer.学习的功法.length >= nowPlayer.level_id) {
+
+  // 按 练体 + 练气算
+  const max = nowPlayer.level_id + nowPlayer.Physique_id;
+
+  if (nowPlayer.学习的功法.length >= max) {
     void message.send(format(Text('您当前学习功法数量已达上限，请突破后再来')));
 
     return false;
