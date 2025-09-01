@@ -111,162 +111,32 @@ export async function addNajieThing(
   if (x === 0) {
     return;
   }
-  const najie: Najie | null = await readNajie(userId);
 
-  if (!najie) {
+  // 处理对象类型的输入
+  if (typeof name === 'object') {
+    const itemName = (name as NajieItem).name || '';
+
+    await batchAddNajieThings(userId, [
+      {
+        name: itemName,
+        count: x,
+        category: thingClass,
+        pinji: (name as EquipmentLike).pinji ?? pinji
+      }
+    ]);
+
     return;
   }
 
-  // 确保 thingClass 对应的数组存在
-  if (!Array.isArray(najie[thingClass])) {
-    najie[thingClass] = [];
-  }
-  if (thingClass === '装备') {
-    if (!pinji && pinji !== 0) {
-      pinji = Math.trunc(Math.random() * 6);
+  // 处理字符串类型的输入
+  await batchAddNajieThings(userId, [
+    {
+      name: name,
+      count: x,
+      category: thingClass,
+      pinji
     }
-    const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2];
-
-    if (x > 0) {
-      if (typeof name !== 'object') {
-        const data = [];
-
-        data[0] = await getDataList('Equipment');
-        data[1] = await getDataList('TimeEquipment');
-        data[2] = await getDataList('Duanzhaowuqi');
-        data[3] = await getDataList('Duanzhaohuju');
-        data[4] = await getDataList('Duanzhaobaowu');
-        data[5] = await getDataList('Xuanwu');
-
-        for (const i of data) {
-          if (!Array.isArray(i)) {
-            continue;
-          }
-          const thing = (i as NajieItem[]).find(item => item.name === name);
-
-          if (thing) {
-            const equ = _.cloneDeep(thing) as EquipmentLike;
-
-            equ.pinji = pinji;
-            if (typeof equ.atk === 'number') {
-              equ.atk *= z[pinji];
-            }
-            if (typeof equ.def === 'number') {
-              equ.def *= z[pinji];
-            }
-            if (typeof equ.HP === 'number') {
-              equ.HP *= z[pinji];
-            }
-            equ.数量 = x;
-            equ.islockd = 0;
-            najie[thingClass].push(equ);
-            await writeNajie(userId, najie);
-
-            return;
-          }
-        }
-      } else {
-        name.pinji ??= pinji;
-        (name as NajieItem).数量 = x;
-        (name as NajieItem).islockd = 0;
-        najie[thingClass].push(name as NajieItem);
-        await writeNajie(userId, najie);
-
-        return;
-      }
-    }
-    const fb = najie[thingClass].find(item => item.name === ((name as NajieItem).name || name) && item.pinji === pinji);
-
-    if (fb) {
-      fb.数量 = (fb.数量 || 0) + x;
-    }
-    najie.装备 = najie.装备.filter(item => (item.数量 || 0) > 0);
-    await writeNajie(userId, najie);
-
-    return;
-  } else if (thingClass === '仙宠') {
-    if (x > 0) {
-      if (typeof name !== 'object') {
-        const data = {
-          xianchon: await getDataList('Xianchon')
-        };
-        let thing = data.xianchon.find((item: XianchongSource) => item.name === name);
-
-        if (thing) {
-          thing = _.cloneDeep(thing);
-          const copied: NajieItem = {
-            ...(thing as XianchongSource),
-            数量: x,
-            islockd: 0,
-            class: thing.class || '仙宠',
-            name: thing.name
-          };
-
-          najie[thingClass].push(copied);
-          await writeNajie(userId, najie);
-
-          return;
-        }
-      } else {
-        (name as NajieItem).数量 = x;
-        (name as NajieItem).islockd = 0;
-        najie[thingClass].push(name as NajieItem);
-        await writeNajie(userId, najie);
-
-        return;
-      }
-    }
-    const fb = najie[thingClass].find(item => item.name === ((name as NajieItem).name || name));
-
-    if (fb) {
-      fb.数量 = (fb.数量 || 0) + x;
-    }
-    najie.仙宠 = najie.仙宠.filter(item => (item.数量 || 0) > 0);
-    await writeNajie(userId, najie);
-
-    return;
-  }
-  const exist = await existNajieThing(userId, name as string, thingClass);
-
-  if (x > 0 && !exist) {
-    let thing: NajieItem | undefined;
-    const data = [];
-
-    data[0] = await getDataList('Danyao');
-    data[1] = await getDataList('NewDanyao');
-    data[2] = await getDataList('TimeDanyao');
-    data[3] = await getDataList('Daoju');
-    data[4] = await getDataList('Gongfa');
-    data[5] = await getDataList('TimeGongfa');
-    data[6] = await getDataList('Caoyao');
-    data[7] = await getDataList('Xianchonkouliang');
-    data[8] = await getDataList('Duanzhaocailiao');
-    for (const i of data) {
-      if (!Array.isArray(i)) {
-        continue;
-      }
-      thing = (i as NajieItem[]).find(item => item.name === name);
-      if (thing) {
-        najie[thingClass].push(thing);
-        const fb = najie[thingClass].find(item => item.name === name);
-
-        if (fb) {
-          fb.数量 = x;
-          fb.islockd = 0;
-        }
-        await writeNajie(userId, najie);
-
-        return;
-      }
-    }
-  }
-  const fb = najie[thingClass].find(item => item.name === name);
-
-  if (fb) {
-    fb.数量 = (fb.数量 || 0) + x;
-  }
-  najie[thingClass] = najie[thingClass].filter(item => (item.数量 || 0) > 0);
-  await writeNajie(userId, najie);
+  ]);
 }
 
 export async function insteadEquipment(usrId: string, equipmentData: EquipmentLike) {
@@ -327,6 +197,228 @@ export async function insteadEquipment(usrId: string, equipmentData: EquipmentLi
     );
     equipment.法宝 = equipmentData as EquipmentItem;
     await writeEquipment(usrId, equipment);
+  }
+}
+
+/**
+ * 批量添加物品到纳戒
+ * @param userId 玩家QQ
+ * @param items 物品数组，每个物品包含 name、count、category 属性
+ * @returns Promise<void>
+ */
+export async function batchAddNajieThings(
+  userId: string,
+  items: Array<{
+    name: string;
+    count: number;
+    category: NajieCategory;
+    pinji?: number;
+  }>
+): Promise<void> {
+  if (!items || items.length === 0) {
+    return;
+  }
+
+  const najie: Najie | null = await readNajie(userId);
+
+  if (!najie) {
+    return;
+  }
+
+  // 按分类分组处理，减少数据库写入次数
+  const categoryGroups = new Map<
+    NajieCategory,
+    Array<{
+      name: string;
+      count: number;
+      pinji?: number;
+    }>
+  >();
+
+  // 分组物品
+  for (const item of items) {
+    if (item.count === 0) {
+      continue;
+    }
+
+    if (!categoryGroups.has(item.category)) {
+      categoryGroups.set(item.category, []);
+    }
+    categoryGroups.get(item.category)!.push({
+      name: item.name,
+      count: item.count,
+      pinji: item.pinji
+    });
+  }
+
+  // 按分类批量处理
+  for (const [category, categoryItems] of categoryGroups) {
+    // 确保分类数组存在
+    if (!Array.isArray(najie[category])) {
+      najie[category] = [];
+    }
+
+    for (const item of categoryItems) {
+      const { name, count, pinji } = item;
+
+      if (category === '装备') {
+        await processEquipmentItem(najie, name, count, pinji);
+      } else if (category === '仙宠') {
+        await processPetItem(najie, name, count);
+      } else {
+        await processNormalItem(najie, name, count, category);
+      }
+    }
+  }
+
+  // 清理数量为0的物品
+  for (const category of Object.keys(najie)) {
+    if (Array.isArray(najie[category as NajieCategory])) {
+      najie[category as NajieCategory] = najie[category as NajieCategory].filter((item: NajieItem) => (item.数量 || 0) > 0);
+    }
+  }
+
+  // 一次性写入数据库
+  await writeNajie(userId, najie);
+}
+
+/**
+ * 处理装备类物品
+ */
+async function processEquipmentItem(najie: Najie, name: string, count: number, pinji?: number): Promise<void> {
+  if (!pinji && pinji !== 0) {
+    pinji = Math.trunc(Math.random() * 6);
+  }
+  const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2];
+
+  if (count > 0) {
+    const data: any[] = [];
+
+    data[0] = await getDataList('Equipment');
+    data[1] = await getDataList('TimeEquipment');
+    data[2] = await getDataList('Duanzhaowuqi');
+    data[3] = await getDataList('Duanzhaohuju');
+    data[4] = await getDataList('Duanzhaobaowu');
+    data[5] = await getDataList('Xuanwu');
+
+    for (const i of data) {
+      if (!Array.isArray(i)) {
+        continue;
+      }
+      const thing = (i as NajieItem[]).find(item => item.name === name);
+
+      if (thing) {
+        const equ = _.cloneDeep(thing) as EquipmentLike;
+
+        equ.pinji = pinji;
+
+        if (typeof equ.atk === 'number') {
+          equ.atk *= z[pinji];
+        }
+        if (typeof equ.def === 'number') {
+          equ.def *= z[pinji];
+        }
+        if (typeof equ.HP === 'number') {
+          equ.HP *= z[pinji];
+        }
+
+        equ.数量 = count;
+        equ.islockd = 0;
+        najie.装备.push(equ);
+
+        return;
+      }
+    }
+  }
+
+  // 如果已存在，更新数量
+  const existing = najie.装备.find(item => item.name === name && item.pinji === pinji);
+
+  if (existing) {
+    existing.数量 = (existing.数量 ?? 0) + count;
+  }
+}
+
+/**
+ * 处理仙宠类物品
+ */
+async function processPetItem(najie: Najie, name: string, count: number): Promise<void> {
+  if (count > 0) {
+    const data = await getDataList('Xianchon');
+    const thing = data.find((item: XianchongSource) => item.name === name);
+
+    if (thing) {
+      const copied = _.cloneDeep(thing);
+      const petItem: NajieItem = {
+        ...(copied as XianchongSource),
+        数量: count,
+        islockd: 0,
+        class: copied.class || '仙宠',
+        name: copied.name
+      };
+
+      najie.仙宠.push(petItem);
+
+      return;
+    }
+  }
+
+  // 如果已存在，更新数量
+  const existing = najie.仙宠.find(item => item.name === name);
+
+  if (existing) {
+    existing.数量 = (existing.数量 ?? 0) + count;
+  }
+}
+
+/**
+ * 处理普通物品（丹药、道具、功法、草药、材料、仙宠口粮）
+ */
+async function processNormalItem(najie: Najie, name: string, count: number, category: NajieCategory): Promise<void> {
+  if (count > 0) {
+    // 检查是否已存在
+    const existing = najie[category].find(item => item.name === name);
+
+    if (!existing) {
+      // 从数据源查找物品信息
+      const data: any[] = [];
+
+      data[0] = await getDataList('Danyao');
+      data[1] = await getDataList('NewDanyao');
+      data[2] = await getDataList('TimeDanyao');
+      data[3] = await getDataList('Daoju');
+      data[4] = await getDataList('Gongfa');
+      data[5] = await getDataList('TimeGongfa');
+      data[6] = await getDataList('Caoyao');
+      data[7] = await getDataList('Xianchonkouliang');
+      data[8] = await getDataList('Duanzhaocailiao');
+
+      for (const i of data) {
+        if (!Array.isArray(i)) {
+          continue;
+        }
+        const thing = (i as NajieItem[]).find(item => item.name === name);
+
+        if (thing) {
+          najie[category].push(thing);
+          const fb = najie[category].find(item => item.name === name);
+
+          if (fb) {
+            fb.数量 = count;
+            fb.islockd = 0;
+          }
+
+          return;
+        }
+      }
+    }
+  }
+
+  // 如果已存在，更新数量
+  const existing = najie[category].find(item => item.name === name);
+
+  if (existing) {
+    existing.数量 = (existing.数量 ?? 0) + count;
   }
 }
 
