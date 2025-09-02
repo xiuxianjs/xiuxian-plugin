@@ -4,7 +4,7 @@ import type { LastSignTime } from '../types/model.js';
 import { convert2integer } from './utils/number.js';
 import { getIoRedis } from '@alemonjs/db';
 import { getRedisKey, keys, keysAction } from './keys.js';
-import { existDataByKey } from './DataControl.js';
+import { existDataByKey, getDataJSONParseByKey } from './DataControl.js';
 import dayjs from 'dayjs';
 import { ActionRecord } from '@src/types/action.js';
 
@@ -13,6 +13,10 @@ export function getRandomFromARR<T>(arr: T[]): T {
 
   return arr[randIndex];
 }
+
+export const BaseAction = {
+  action: '空闲'
+};
 
 export function sleep(time: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, time));
@@ -47,11 +51,13 @@ export async function getLastsign(usrId: string): Promise<LastSignTime | false> 
 }
 
 export async function getPlayerAction(usrId: string): Promise<ActionRecord> {
-  const redis = getIoRedis();
-  const raw = await redis.get(getRedisKey(usrId, 'action'));
-  const parsed: ActionRecord | null = safeParse(raw, null);
+  const raw: ActionRecord | null = await getDataJSONParseByKey(getRedisKey(usrId, 'action'));
 
-  return parsed;
+  if (raw) {
+    return { ...BaseAction, ...raw };
+  }
+
+  return BaseAction;
 }
 
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
