@@ -1,6 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs';
 
-import { existplayer, addNajieThing, addCoin, sleep, keys } from '@src/model/index';
+import { existplayer, addCoin, sleep, keys } from '@src/model/index';
+import { batchAddNajieThings } from '@src/model/najie';
 
 import { selects } from '@src/response/mw';
 import type { NajieCategory } from '@src/types/model';
@@ -38,6 +39,15 @@ const res = onResponse(selects, async e => {
     } else {
       return false;
     }
+
+    // 收集所有要出售的物品
+    const itemsToSell: Array<{
+      name: string;
+      count: number;
+      category: NajieCategory;
+      pinji?: number;
+    }> = [];
+
     for (const i of wupin) {
       const list = najie[i];
 
@@ -57,11 +67,24 @@ const res = onResponse(selects, async e => {
           const price = typeof l.出售价 === 'number' ? l.出售价 : 0;
           const cls = (l.class as NajieCategory) || i;
 
-          await addNajieThing(userId, l.name, cls, -quantity, l.pinji);
-          commoditiesPrice += price * quantity;
+          if (quantity > 0) {
+            itemsToSell.push({
+              name: l.name,
+              count: -quantity, // 负数表示减少
+              category: cls,
+              pinji: l.pinji
+            });
+            commoditiesPrice += price * quantity;
+          }
         }
       }
     }
+
+    // 批量处理物品出售
+    if (itemsToSell.length > 0) {
+      await batchAddNajieThings(userId, itemsToSell);
+    }
+
     await addCoin(userId, commoditiesPrice);
     void message.send(format(Text(`出售成功!  获得${commoditiesPrice}灵石 `)));
 
@@ -125,6 +148,14 @@ const res = onResponse(selects, async e => {
       let commoditiesPrice = 0;
       const wupin: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
+      // 收集所有要出售的物品
+      const itemsToSell: Array<{
+        name: string;
+        count: number;
+        category: NajieCategory;
+        pinji?: number;
+      }> = [];
+
       for (const i of wupin) {
         const list = najie2[i];
 
@@ -144,11 +175,24 @@ const res = onResponse(selects, async e => {
             const price = typeof l.出售价 === 'number' ? l.出售价 : 0;
             const cls = (l.class as NajieCategory) || i;
 
-            await addNajieThing(userId, l.name, cls, -quantity, l.pinji);
-            commoditiesPrice += price * quantity;
+            if (quantity > 0) {
+              itemsToSell.push({
+                name: l.name,
+                count: -quantity, // 负数表示减少
+                category: cls,
+                pinji: l.pinji
+              });
+              commoditiesPrice += price * quantity;
+            }
           }
         }
       }
+
+      // 批量处理物品出售
+      if (itemsToSell.length > 0) {
+        await batchAddNajieThings(userId, itemsToSell);
+      }
+
       await addCoin(userId, commoditiesPrice);
       void message.send(format(Text(`出售成功!  获得${commoditiesPrice}灵石 `)));
     },

@@ -281,7 +281,7 @@ export async function batchAddNajieThings(
     });
   }
 
-  // 从数据源查找物品信息
+  // 从数据源查找物品信息（仅用于添加新物品时验证）
   const data: any[] = [];
 
   data[0] = await getDataList('Danyao');
@@ -339,13 +339,20 @@ export async function batchAddNajieThings(
 /**
  * 处理装备类物品
  */
-function processEquipmentItem(data, najie: Najie, name: string, count: number, pinji?: number): void {
+function processEquipmentItem(data: any[], najie: Najie, name: string, count: number, pinji?: number): void {
   if (!pinji && pinji !== 0) {
     pinji = Math.trunc(Math.random() * 6);
   }
   const z = [0.8, 1, 1.1, 1.2, 1.3, 1.5, 2];
 
-  if (count > 0) {
+  // 检查纳戒中是否已存在
+  const existing = najie.装备.find(item => item.name === name && item.pinji === pinji);
+
+  if (existing) {
+    // 如果装备已存在，直接更新数量（支持增减）
+    existing.数量 = (existing.数量 ?? 0) + count;
+  } else if (count > 0) {
+    // 如果装备不存在且count > 0，需要从数据表中验证并创建新装备条目
     for (const i of data) {
       if (!Array.isArray(i)) {
         continue;
@@ -375,20 +382,21 @@ function processEquipmentItem(data, najie: Najie, name: string, count: number, p
       }
     }
   }
-
-  // 如果已存在，更新数量
-  const existing = najie.装备.find(item => item.name === name && item.pinji === pinji);
-
-  if (existing) {
-    existing.数量 = (existing.数量 ?? 0) + count;
-  }
+  // 如果count < 0且装备不存在，无法减少（但不会报错）
 }
 
 /**
  * 处理仙宠类物品
  */
 function processPetItem(xianchonData: any[], najie: Najie, name: string, count: number): void {
-  if (count > 0) {
+  // 检查纳戒中是否已存在
+  const existing = najie.仙宠.find(item => item.name === name);
+
+  if (existing) {
+    // 如果仙宠已存在，直接更新数量（支持增减）
+    existing.数量 = (existing.数量 ?? 0) + count;
+  } else if (count > 0) {
+    // 如果仙宠不存在且count > 0，需要从数据表中验证并创建新仙宠条目
     const thing = xianchonData.find((item: XianchongSource) => item.name === name);
 
     if (thing) {
@@ -402,60 +410,47 @@ function processPetItem(xianchonData: any[], najie: Najie, name: string, count: 
       };
 
       najie.仙宠.push(petItem);
-
-      return;
     }
   }
-
-  // 如果已存在，更新数量
-  const existing = najie.仙宠.find(item => item.name === name);
-
-  if (existing) {
-    existing.数量 = (existing.数量 ?? 0) + count;
-  }
+  // 如果count < 0且仙宠不存在，无法减少（但不会报错）
 }
 
 /**
  * 处理普通物品（丹药、道具、功法、草药、材料、仙宠口粮）
  */
 function processNormalItem(data: any[], najie: Najie, name: string, count: number, category: NajieCategory): void {
-  if (count > 0) {
-    // 检查是否已存在
-    const existing = najie[category].find(item => item.name === name);
-
-    if (!existing) {
-      for (const i of data) {
-        if (!Array.isArray(i)) {
-          continue;
-        }
-        const thing = (i as NajieItem[]).find(item => item.name === name);
-
-        if (thing) {
-          najie[category].push(thing);
-          const fb = najie[category].find(item => item.name === name);
-
-          if (fb) {
-            fb.数量 = count;
-            fb.islockd = 0;
-          }
-
-          return;
-        }
-      }
-    }
-  }
-
-  // 如果已存在，更新数量
+  // 检查纳戒中是否已存在
   const existing = najie[category].find(item => item.name === name);
 
   if (existing) {
+    // 如果物品已存在，直接更新数量（支持增减）
     existing.数量 = (existing.数量 ?? 0) + count;
+  } else if (count > 0) {
+    // 如果物品不存在且count > 0，需要从数据表中验证并创建新物品条目
+    for (const i of data) {
+      if (!Array.isArray(i)) {
+        continue;
+      }
+      const thing = (i as NajieItem[]).find(item => item.name === name);
+
+      if (thing) {
+        const newItem = { ...thing };
+
+        newItem.数量 = count;
+        newItem.islockd = 0;
+        najie[category].push(newItem);
+
+        return;
+      }
+    }
   }
+  // 如果count < 0且物品不存在，无法减少（但不会报错）
 }
 
 export default {
   updateBagThing,
   existNajieThing,
   addNajieThing,
-  insteadEquipment
+  insteadEquipment,
+  batchAddNajieThings
 };
