@@ -124,7 +124,12 @@ export async function addNajieThing(
 
     obj.数量 = count;
     obj.islockd = 0;
-    obj.pinji = (name as EquipmentLike).pinji ?? pinji ?? undefined;
+    if (category === '装备') {
+      if (!pinji && pinji !== 0) {
+        pinji = Math.trunc(Math.random() * 6);
+      }
+      obj.pinji = name?.pinji ?? pinji;
+    }
     najie[category].push(obj);
     await writeNajie(userId, najie);
 

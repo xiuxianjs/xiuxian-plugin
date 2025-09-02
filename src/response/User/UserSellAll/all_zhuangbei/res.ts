@@ -66,7 +66,7 @@ function toEquipLike(item: EquipItem, cls: string): EquipmentLike {
     HP: num(item.HP),
     class: cls,
     bao: num(item.bao),
-    pinji: num(item.pinji)
+    pinji: num(item?.pinji ?? 0)
   };
 }
 
