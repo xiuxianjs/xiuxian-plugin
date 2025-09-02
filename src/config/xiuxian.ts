@@ -107,8 +107,9 @@ const task = {
   /**
    * **********
    * 存在订阅推送。
+   * 25s一次
    */
-  PushMessageTask: '0 0/1 * * * ?',
+  PushMessageTask: '0/25 * * * * ?',
   /**
    * **********
    */

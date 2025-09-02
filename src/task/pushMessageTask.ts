@@ -42,7 +42,7 @@ export const PushMessageTask = async (): Promise<void> => {
     const messages: IMessage[] = (await getRecentMessages(windowMinutes)).filter(isMe);
 
     if (messages.length) {
-      await Promise.all(
+      void Promise.all(
         messages.map(item => {
           try {
             const isGroup = !!item.cid;
@@ -69,7 +69,14 @@ export const PushMessageTask = async (): Promise<void> => {
     }
 
     // 更新本次执行时间
-    await redis.set(lastRunKey, now.valueOf());
+    void redis.set(lastRunKey, now.valueOf());
+
+    logger.debug('消息池', {
+      botId,
+      lastRun: lastRunStr,
+      windowMinutes,
+      messages: messages
+    });
   } catch (error) {
     logger.error(error);
   }

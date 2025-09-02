@@ -162,7 +162,7 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
         result: msgg.includes(winA) ? 'A' : msgg.includes(winB) ? 'B' : 'draw'
       });
 
-      if (Buffer.isBuffer(img) && pushAddress) {
+      if (Buffer.isBuffer(img)) {
         void setMessage({
           id: '',
           uid: playerId,

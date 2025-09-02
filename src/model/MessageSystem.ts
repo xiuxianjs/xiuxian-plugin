@@ -73,6 +73,18 @@ export async function setMessage(message: IMessage) {
 
   message.id = message?.id || createMessageId();
 
+  if (!message.id) {
+    return;
+  }
+  // cid 和 uid都为空。则直接返回
+  if (!message.cid && !message.uid) {
+    return;
+  }
+
+  if (!message.data) {
+    return;
+  }
+
   await redis.zadd(zsetKey, now, JSON.stringify(message));
 }
 
