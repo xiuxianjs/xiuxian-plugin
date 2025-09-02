@@ -12,10 +12,6 @@ interface ShangjingTask {
   arm: Array<{ 名号: string; 赏金: number; QQ: string | number }>;
   end_time: number;
 }
-interface ActionState {
-  action: string;
-  end_time: number;
-}
 
 function parseJson<T>(raw: string | null): T | null {
   if (!raw) {
@@ -36,7 +32,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(userId, 'action')));
+  const actionState = parseJson<ActionRecord | null>(await redis.get(getRedisKey(userId, 'action')));
 
   if (actionState) {
     const now_time = Date.now();
@@ -176,4 +172,5 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getAuctionKeyManager } from '@src/model/auction';
+import { ActionRecord } from '@src/types';
 export default onResponse(selects, [mw.current, res.current]);

@@ -1,6 +1,6 @@
 import { config, pushInfo } from '@src/model/api';
 import { getJSON, userKey } from '@src/model/utils/redisHelper';
-import type { ActionState } from '@src/types';
+import type { ActionRecord } from '@src/types';
 import { notUndAndNull, readDanyao, existNajieThing, addNajieThing, addExp, addExp2, setFileValue, writeDanyao, keys, keysAction } from '@src/model/index';
 import { setDataByUserId } from '@src/model/Redis';
 import mw from '@src/response/mw';
@@ -74,8 +74,8 @@ const res = onResponse(selects, async e => {
   await setDataByUserId(e.UserId, 'game_action', 0);
 });
 
-async function getPlayerAction(userId: string): Promise<ActionState | false> {
-  const raw = await getJSON<ActionState>(userKey(userId, 'action'));
+async function getPlayerAction(userId: string): Promise<ActionRecord | false> {
+  const raw = await getJSON<ActionRecord>(userKey(userId, 'action'));
 
   if (!raw) {
     return false;

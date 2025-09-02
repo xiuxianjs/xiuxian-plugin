@@ -9,14 +9,9 @@ import { screenshot } from '@src/image';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { isKeys } from '@src/model/utils/isKeys';
-import type { Player } from '@src/types';
+import type { ActionRecord, Player } from '@src/types';
 
 export const regular = /^(#|＃|\/)?打劫$/;
-
-interface ActionState {
-  action?: string;
-  end_time?: number;
-}
 
 interface PlayerWithFaQiu extends Player {
   法球倍率: number;
@@ -174,10 +169,10 @@ const res = onResponse(selects, async e => {
     }
   }
 
-  const actionA = await getDataJSONParseByKey(keysAction.action(userId));
+  const actionA: ActionRecord | null = await getDataJSONParseByKey(keysAction.action(userId));
 
   if (actionA && isKeys(actionA, ['end_time'])) {
-    const actionAData = actionA as ActionState;
+    const actionAData = actionA as ActionRecord;
     const end = Number(actionAData.end_time);
 
     if (!Number.isNaN(end) && Date.now() <= end) {
@@ -202,7 +197,7 @@ const res = onResponse(selects, async e => {
 
   // 被动方忙碌标记
   let isBbusy = false;
-  const bAction: ActionState | null = null;
+  const bAction: ActionRecord | null = null;
 
   try {
     const bActionRes = await getDataJSONParseByKey(keysAction.action(targetUserId));

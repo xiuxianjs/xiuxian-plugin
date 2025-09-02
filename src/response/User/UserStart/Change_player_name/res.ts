@@ -59,16 +59,7 @@ const res = onResponse(selects, async e => {
     }
 
     const now = Date.now();
-    const today = shijianc(now) as DateStruct;
     const lastKey = getRedisKey(userId, 'last_setname_time');
-    const lastRaw = await redis.get(lastKey);
-    const lastStruct = getDayStruct(lastRaw);
-
-    // if (sameDay(today, lastStruct)) {
-    //   void Send(Text('每日只能改名一次'));
-
-    //   return false;
-    // }
 
     const player = await readPlayer(userId);
 

@@ -106,6 +106,7 @@ export interface Player {
   宗门?: ZongMen;
   法球倍率: number;
   newbie?: number;
+  islucky?: number;
 }
 
 export interface Equipment {

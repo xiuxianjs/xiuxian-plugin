@@ -1,8 +1,5 @@
-// 任务目录专用的补充类型 (不修改现有任务源码，只提供更精细的声明)
-// 若后续需要在任务文件中应用，可按需导入。
-
 import type { TalentInfo } from './player';
-import type { ActionState, PlaceThing, PlaceAddress } from './action';
+import type { ActionRecord, PlaceThing, PlaceAddress } from './action';
 import type { ShopItem } from './data_extra';
 import type { Player } from './player';
 
@@ -55,50 +52,15 @@ export type RaidPhase = '-2' | '-1' | '0' | '1' | -2 | -1 | 0 | 1 | number;
 export interface RaidLoot extends PlaceThing {
   数量: number;
 }
-// 使用交叉+局部重定义以兼容 ActionState 中宽泛 playerA.灵根 定义
-export interface RaidActionState extends Omit<ActionState, 'playerA'> {
-  xijie?: RaidPhase;
-  /** 当前目标据点简单信息 */
-  Place_address?: { name: string; Grade: number };
-  /** 参与战斗的玩家快照（与任务中构造的 playerA 一致） */
-  playerA?: {
-    名号: string;
-    攻击: number;
-    防御: number;
-    当前血量: number;
-    魔值?: number;
-    暴击率?: number;
-    灵根?: TalentInfo | { 法球倍率?: number; name?: string; type?: string };
-  };
-  /** 已在二阶段或三阶段收集到的物品 */
-  thing?: RaidLoot[];
-  /** 剩余判定次数（逃跑/追击回合） */
-  cishu?: number;
-}
 
 /** 探索阶段：0=进行中(多次结算), -1=特殊神界模式, 1=结束 */
 export type ExplorePhase = '-1' | '0' | '1' | -1 | 0 | 1 | number;
-export interface ExploreActionState extends ActionState {
-  mojie?: ExplorePhase; // 兼容 shenjietask 里使用同字段做阶段控制
-  cishu?: number; // 剩余次数
-}
 
 export interface SecretPlaceAddress extends PlaceAddress {
   Grade?: number;
   one?: PlaceThing[];
   two?: PlaceThing[];
   three?: PlaceThing[];
-}
-export interface SecretPlaceActionState extends ActionState {
-  Place_action?: string | number; // 普通秘境执行中标识
-  Place_actionplus?: string | number; // PLUS/多次探索模式标识
-  Place_address?: SecretPlaceAddress;
-  cishu?: number; // plus 模式剩余次数
-}
-
-export interface OccupationActionState extends ActionState {
-  plant?: string | number; // 种植 / 炼丹师特殊闭关扩展
-  mine?: string | number; // 采矿状态
 }
 
 /** **************************** 临时消息 (msgTask / 探索多次写入 temp) ******************************/
@@ -160,7 +122,7 @@ export interface TiandibangRankEntry extends TiandibangRow {
  * 包含闭关(shutup)/降妖(working)/渡劫(power_up)等基础字段（来源于 ActionState），
  * 以及旧逻辑中累积次数 acount（统计某些随机事件出现次数，继续保留以兼容）。
  */
-export interface ControlActionState extends ActionState {
+export interface ControlActionState extends ActionRecord {
   /** 旧逻辑中的累积辅助计数（可能为随机事件触发次数） */
   acount?: number;
 }
@@ -199,20 +161,17 @@ export interface BackupTaskMeta {
   lastRun?: number;
 }
 
-/** **************************** 汇总联合类型（如需在外部做窄化） ******************************/
-export type AnyTaskActionState = RaidActionState | ExploreActionState | SecretPlaceActionState | OccupationActionState | ControlActionState | ActionState; // 兜底
-
 /** **************************** Type Guard 辅助 ******************************/
-export function isRaidActionState(a): a is RaidActionState {
+export function isRaidActionState(a): a is ActionRecord {
   return !!a && typeof a === 'object' && ('xijie' in a || 'Place_address' in a) && 'end_time' in a;
 }
-export function isExploreActionState(a): a is ExploreActionState {
+export function isExploreActionState(a): a is ActionRecord {
   return !!a && typeof a === 'object' && 'mojie' in a;
 }
-export function isSecretPlaceActionState(a): a is SecretPlaceActionState {
+export function isSecretPlaceActionState(a): a is ActionRecord {
   return !!a && typeof a === 'object' && ('Place_action' in a || 'Place_actionplus' in a);
 }
-export function isOccupationActionState(a): a is OccupationActionState {
+export function isOccupationActionState(a): a is ActionRecord {
   return !!a && typeof a === 'object' && ('plant' in a || 'mine' in a);
 }
 export function isControlActionState(a): a is ControlActionState {

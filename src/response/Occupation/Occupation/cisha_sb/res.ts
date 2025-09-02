@@ -8,10 +8,6 @@ import { selects } from '@src/response/mw';
 import type { BattleEntity } from '@src/types/model';
 export const regular = /^(#|＃|\/)?刺杀目标.*$/;
 
-interface ActionState {
-  action: string;
-  end_time: number;
-}
 interface AssassinationTarget {
   名号: string;
   赏金: number;
@@ -37,7 +33,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const actionState = parseJson<ActionState>(await redis.get(getRedisKey(userId, 'action')));
+  const actionState: ActionRecord | null = parseJson<ActionRecord>(await redis.get(getRedisKey(userId, 'action')));
 
   if (actionState) {
     const now = Date.now();
@@ -87,7 +83,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const targetAction = parseJson<ActionState>(await redis.get(getRedisKey(String(qq), 'action')));
+  const targetAction = parseJson<ActionRecord | null>(await redis.get(getRedisKey(String(qq), 'action')));
 
   if (targetAction) {
     const now = Date.now();
@@ -181,4 +177,5 @@ const res = onResponse(selects, async e => {
 
 import mw from '@src/response/mw';
 import { getAuctionKeyManager } from '@src/model/auction';
+import { ActionRecord } from '@src/types';
 export default onResponse(selects, [mw.current, res.current]);

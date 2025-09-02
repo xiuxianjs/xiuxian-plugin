@@ -26,10 +26,6 @@ const CONFIG = {
   LINGSHI_MULTIPLIER_LOSE_PLAYER: 2 // 被玩家击败灵石倍数
 } as const;
 
-interface ActionState {
-  action: string;
-  end_time: number;
-}
 interface BattlePlayer {
   名号: string;
   攻击: number;
@@ -44,6 +40,7 @@ interface BattlePlayer {
 const toNum = (v, d = 0) => (typeof v === 'number' && !isNaN(v) ? v : typeof v === 'string' && !isNaN(+v) ? +v : d);
 
 import { getRedisKey } from '@src/model/keys';
+import { ActionRecord } from '@src/types';
 const randomScale = () => 0.8 + 0.4 * Math.random();
 
 function buildBattlePlayer(src: RankEntry, atkMul = 1, defMul = 1, hpMul = 1): BattlePlayer {
@@ -134,7 +131,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 查询redis中的人物动作
-  let action: ActionState | null = null;
+  let action: ActionRecord | null = null;
   const actionStr = await redis.get(getRedisKey(userId, 'action'));
 
   if (actionStr) {

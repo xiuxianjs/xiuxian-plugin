@@ -8,6 +8,7 @@ import { WorldBossBattle, WorldBossBattleInfo, bossStatus, isBossWord2 } from '.
 import mw from '@src/response/mw';
 import { acquireLock, releaseLock, withLock } from '@src/model/locks';
 import * as _ from 'lodash-es';
+import { ActionRecord } from '@src/types';
 
 const selects = onSelects(['message.create']);
 
@@ -94,7 +95,7 @@ const res = onResponse(selects, async e => {
     }
 
     // 修复类型错误：明确指定ActionState类型
-    const action = await getDataJSONParseByKey(keysAction.action(userId));
+    const action: ActionRecord | null = await getDataJSONParseByKey(keysAction.action(userId));
 
     if (action?.end_time && Date.now() <= action.end_time) {
       const remain = action.end_time - Date.now();

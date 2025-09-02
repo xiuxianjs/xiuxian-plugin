@@ -5,8 +5,8 @@ import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp, addHP } from '@src/model/economy';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention, Text } from 'alemonjs';
-import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types';
+import { DataMention, Text } from 'alemonjs';
+import type { CoreNajieCategory as NajieCategory, ActionRecord } from '@src/types';
 import { writePlayer } from '@src/model';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
@@ -334,7 +334,7 @@ const handleSpecialDrops = async (playerId: string, random: number): Promise<str
  * @param config 配置信息
  * @returns 是否处理成功
  */
-const processPlayerExploration = async (playerId: string, action: ActionState, monsterList: any[], config: any): Promise<boolean> => {
+const processPlayerExploration = async (playerId: string, action: ActionRecord, monsterList: any[], config: any): Promise<boolean> => {
   try {
     let pushAddress: string | undefined;
     let isGroup = false;
@@ -413,7 +413,7 @@ const processPlayerExploration = async (playerId: string, action: ActionState, m
         }
 
         // 发送消息
-        const msg: Array<DataMention | string> = [Mention(playerId)];
+        const msg: Array<DataMention | string> = [];
 
         msg.push('\n' + player.名号 + lastMessage);
 

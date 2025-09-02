@@ -4,8 +4,8 @@ import { writePlayer } from '@src/model';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention, Text } from 'alemonjs';
-import type { CoreNajieCategory as NajieCategory, ActionState, ShenjiePlace } from '@src/types';
+import { DataMention, Text } from 'alemonjs';
+import type { CoreNajieCategory as NajieCategory, ActionRecord, ShenjiePlace } from '@src/types';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
 import { pushMessage } from '../MessageSystem';
@@ -209,19 +209,19 @@ const calculateRewards = (player: Player, t1: number, t2: number): { xiuwei: num
 const handleExplorationComplete = async (
   playerId: string,
   player: Player,
-  action: ActionState,
+  action: ActionRecord,
   result: ExplorationResult,
   luckyMessage: string,
   fydMessage: string,
   pushAddress?: string,
   isGroup = false
 ): Promise<void> => {
-  const msg: Array<DataMention | string> = [Mention(playerId)];
+  const msg: Array<DataMention | string> = [];
   const lastMessage = `${result.message},获得修为${result.xiuwei},气血${result.qixue},剩余次数${(Number(action.cishu) || 0) - 1}`;
 
   msg.push('\n' + player.名号 + luckyMessage + lastMessage + fydMessage);
 
-  const arr: ActionState = action;
+  const arr: ActionRecord = action;
   const remain = Number(arr.cishu) || 0;
 
   if (remain <= 1) {
@@ -262,7 +262,7 @@ const handleExplorationComplete = async (
  * @param shenjieData 神界数据
  * @returns 是否处理成功
  */
-const processPlayerExploration = async (playerId: string, action: ActionState, place: ShenjiePlace): Promise<boolean> => {
+const processPlayerExploration = async (playerId: string, action: ActionRecord, place: ShenjiePlace): Promise<boolean> => {
   try {
     let pushAddress: string | undefined;
     let isGroup = false;
@@ -337,7 +337,7 @@ const processPlayerExploration = async (playerId: string, action: ActionState, p
  * 遍历所有玩家，检查处于神界探索状态的玩家，进行结算处理
  * @description mojie 为 -1 时，进行探索
  */
-export const handelAction = async (playerId: string, action: ActionState, { shenjieData }): Promise<void> => {
+export const handelAction = async (playerId: string, action: ActionRecord, { shenjieData }): Promise<void> => {
   try {
     if (!shenjieData || shenjieData.length === 0) {
       return;

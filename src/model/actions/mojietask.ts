@@ -1,10 +1,10 @@
 import { redis } from '@src/model/api';
-import { notUndAndNull } from '@src/model/common';
+import { getPushInfo } from '@src/model/common';
 import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
 import { __PATH, keys as dataKeys, keysAction } from '@src/model/keys';
-import type { ExploreActionState } from '@src/types';
+import type { ActionRecord } from '@src/types';
 import type { Player } from '@src/types/player';
 import { pushMessage } from '../MessageSystem';
 import { Text } from 'alemonjs';
@@ -69,34 +69,19 @@ const ITEM_EFFECTS = {
  * @param action 动作对象
  * @returns 是否为探索动作
  */
-function isExploreAction(action: any): action is ExploreActionState {
+function isExploreAction(action: any): action is ActionRecord {
   return !!action && typeof action === 'object' && 'end_time' in action;
 }
-
-/**
- * 获取推送信息
- * @param action 动作状态
- * @param playerId 玩家ID
- * @returns 推送信息
- */
-const getPushInfo = (action: ExploreActionState, playerId: string): { pushAddress: string; isGroup: boolean } => {
-  let pushAddress = playerId;
-  let isGroup = false;
-
-  if (notUndAndNull(action.group_id)) {
-    isGroup = true;
-    pushAddress = action.group_id;
-  }
-
-  return { pushAddress, isGroup };
-};
 
 /**
  * 解析时间参数
  * @param time 时间参数
  * @returns 时间数值
  */
-const parseTime = (time: number | string): number => {
+const parseTime = (time: number | string | undefined): number => {
+  if (!time) {
+    return 0;
+  }
   const baseDuration = typeof time === 'number' ? time : parseInt(String(time || 0), 10);
 
   return isNaN(baseDuration) ? 0 : baseDuration;
@@ -280,7 +265,7 @@ const handleItemEffects = async (playerId: string, xiuwei: number, qixue: number
  */
 const handleExplorationComplete = async (
   playerId: string,
-  action: ExploreActionState,
+  action: ActionRecord,
   result: SettlementResult,
   luckyMessage: string,
   fydMessage: string,
@@ -293,7 +278,7 @@ const handleExplorationComplete = async (
 
   msg.push('\n' + luckyMessage + lastMessage + fydMessage);
 
-  const arr: ExploreActionState = { ...action };
+  const arr: ActionRecord = { ...action };
 
   if (arr.cishu === 1) {
     // 探索完成，关闭所有状态
@@ -336,7 +321,7 @@ const handleExplorationComplete = async (
  * @param mojieData 魔劫数据
  * @returns 是否处理成功
  */
-const processPlayerExploration = async (playerId: string, action: ExploreActionState, mojieData: MojieData): Promise<boolean> => {
+const processPlayerExploration = async (playerId: string, action: ActionRecord, mojieData: MojieData): Promise<boolean> => {
   try {
     const baseDuration = parseTime(action.time);
     const endTime = action.end_time - baseDuration;

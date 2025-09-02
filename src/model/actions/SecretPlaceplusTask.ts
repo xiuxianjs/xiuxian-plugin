@@ -5,7 +5,7 @@ import { zdBattle } from '@src/model/battle';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { addExp2, addExp } from '@src/model/economy';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention, Text } from 'alemonjs';
+import { Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
@@ -411,7 +411,7 @@ const handleExplorationComplete = async (
   isGroup: boolean,
   remainingCount: number
 ): Promise<void> => {
-  const msg: Array<DataMention | string> = [Mention(playerId)];
+  const msg: Array<string> = [];
   const lastMessage = `${result.message},获得修为${result.xiuwei},气血${result.qixue},剩余次数${remainingCount}`;
 
   msg.push('\n' + player.名号 + luckyMessage + lastMessage + fydMessage);

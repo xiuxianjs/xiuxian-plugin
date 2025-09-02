@@ -9,13 +9,9 @@ import { addHP, addExp2, addCoin } from '@src/model/economy';
 import { existNajieThing } from '@src/model/najie';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
+import { ActionRecord } from '@src/types';
 
 export const regular = /^(#|＃|\/)?比武$/;
-
-interface ActionState {
-  end_time?: number;
-  action?: string;
-}
 
 function toInt(v: any, d = 0): number {
   const n = Number(v);
@@ -104,7 +100,7 @@ const res = onResponse(selects, async e => {
   }
 
   // 忙碌状态检查
-  const aAction = parseJson<ActionState | null>(await getDataByKey(keysAction.action(userId)), null);
+  const aAction = parseJson<ActionRecord | null>(await getDataByKey(keysAction.action(userId)), null);
 
   if (aAction?.end_time && Date.now() <= aAction.end_time) {
     void Send(Text(`正在${aAction.action}中,剩余时间:${formatRemain(aAction.end_time - Date.now())}`));
@@ -112,7 +108,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const bAction = parseJson<ActionState | null>(await getDataByKey(keysAction.action(targetUserId)), null);
+  const bAction = parseJson<ActionRecord | null>(await getDataByKey(keysAction.action(targetUserId)), null);
 
   if (bAction?.end_time && Date.now() <= bAction.end_time) {
     const hasHide = await existNajieThing(userId, '剑xx', '道具');

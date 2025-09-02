@@ -1,26 +1,15 @@
-import { notUndAndNull } from '@src/model/common';
+import { getPushInfo, notUndAndNull } from '@src/model/common';
 import { delDataByKey, readPlayer, writePlayer } from '@src/model';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
 import { setFileValue } from '@src/model/cultivation';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention, Text } from 'alemonjs';
+import { Text } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
 import { pushMessage } from '../MessageSystem';
-
-interface ActionState {
-  end_time: number;
-  time: number | string;
-  shutup?: string | number;
-  working?: string | number;
-  power_up?: number;
-  Place_action?: number;
-  Place_actionplus?: number;
-  group_id?: string | number;
-  acount?: number | null;
-}
+import { ActionRecord } from '@src/types';
 
 /**
  * 基础配置常量
@@ -73,23 +62,6 @@ const parseTime = (rawTime: number | string): number => {
   const time = typeof rawTime === 'number' ? rawTime : parseInt(String(rawTime) || '0', 10);
 
   return time / BASE_CONFIG.TIME_CONVERSION;
-};
-
-/**
- * 获取推送信息
- * @param action 动作状态
- * @returns 推送信息
- */
-const getPushInfo = (action: ActionState): { pushAddress: string | undefined; isGroup: boolean } => {
-  let pushAddress: string | undefined;
-  let isGroup = false;
-
-  if (Object.prototype.hasOwnProperty.call(action, 'group_id') && notUndAndNull(action.group_id)) {
-    isGroup = true;
-    pushAddress = action.group_id;
-  }
-
-  return { pushAddress, isGroup };
 };
 
 /**
@@ -224,7 +196,7 @@ const handleSpecialItems = async (
  */
 const handleCultivationSettlement = async (
   playerId: string,
-  action: ActionState,
+  action: ActionRecord,
   player: Player,
   config: any,
   pushAddress: string | undefined,
@@ -286,7 +258,7 @@ const handleCultivationSettlement = async (
     }
 
     // 构建消息
-    const msg: Array<DataMention | string> = [Mention(playerId)];
+    const msg: Array<string> = [];
 
     msg.push(eventMessage);
     msg.push(itemResult.message);
@@ -325,7 +297,7 @@ const handleCultivationSettlement = async (
  */
 const handleWorkSettlement = async (
   playerId: string,
-  action: ActionState,
+  action: ActionRecord,
   player: Player,
   config: any,
   pushAddress: string | undefined,
@@ -380,7 +352,7 @@ const handleWorkSettlement = async (
     void delDataByKey(keysAction.action(playerId));
 
     // 构建消息
-    const msg: Array<DataMention | string> = [Mention(playerId)];
+    const msg: Array<string> = [];
 
     msg.push(eventMessage);
     msg.push(`\n降妖得到${finalLingshi}灵石`);
@@ -408,9 +380,9 @@ const handleWorkSettlement = async (
  * @param config 配置信息
  * @returns 是否处理成功
  */
-const processPlayerState = async (playerId: string, action: ActionState, config: any): Promise<boolean> => {
+const processPlayerState = async (playerId: string, action: ActionRecord, config: any): Promise<boolean> => {
   try {
-    const { pushAddress, isGroup } = getPushInfo(action);
+    const { pushAddress, isGroup } = getPushInfo(action, playerId);
     let endTime = action.end_time;
     const nowTime = Date.now();
 
@@ -452,7 +424,7 @@ const processPlayerState = async (playerId: string, action: ActionState, config:
  * 遍历所有玩家，检查处于闭关或降妖状态的玩家，进行结算处理
  * @description shutup、working 都为 0 时，不进行结算
  */
-export const handelAction = async (playerId: string, action: ActionState, { config }): Promise<void> => {
+export const handelAction = async (playerId: string, action: ActionRecord, { config }): Promise<void> => {
   try {
     if (!config) {
       return;

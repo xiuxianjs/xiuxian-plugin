@@ -5,18 +5,18 @@ import { setDataByUserId } from '@src/model/Redis';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { Mention, DataMention } from 'alemonjs';
-import type { ActionState } from '@src/types';
+import type { ActionRecord } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import { delDataByKey, getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?降妖归来$/;
 
 const res = onResponse(selects, async e => {
-  const rawAction = await getPlayerAction(e.UserId);
+  const rawAction: ActionRecord | null = await getPlayerAction(e.UserId);
 
   if (!rawAction) {
     return;
   }
-  const action: ActionState = rawAction as unknown as ActionState;
+  const action: ActionRecord = rawAction;
 
   if (action.action === '空闲') {
     return;

@@ -4,8 +4,8 @@ import { Harm } from '@src/model/battle';
 import { readShop, writeShop } from '@src/model/shop';
 import { addNajieThing } from '@src/model/najie';
 import { __PATH, keysAction } from '@src/model/keys';
-import type { ActionState, CoreNajieCategory as NajieCategory } from '@src/types';
-import { Mention, DataMention, Text } from 'alemonjs';
+import type { ActionRecord, CoreNajieCategory as NajieCategory } from '@src/types';
+import { DataMention, Text } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getAuctionKeyManager } from '@src/model/auction';
 import { setDataJSONStringifyByKey } from '@src/model';
@@ -165,7 +165,7 @@ const handlePlayerCaught = async (
   player: PlayerData,
   monster: MonsterData,
   grade: number,
-  action: ActionState,
+  action: ActionRecord,
   shop: any[],
   slot: ShopSlotLike | undefined
 ): Promise<string> => {
@@ -219,7 +219,7 @@ const handlePlayerCaught = async (
  * @param weizhi 位置信息
  * @returns 消息
  */
-const handlePlayerEscaped = async (playerId: string, action: ActionState, shop: any[], slot: ShopSlotLike | undefined): Promise<string> => {
+const handlePlayerEscaped = async (playerId: string, action: ActionRecord, shop: any[], slot: ShopSlotLike | undefined): Promise<string> => {
   const message = '\n你成功躲过了万仙盟的追杀,躲进了宗门';
 
   action.xijie = 1;
@@ -259,7 +259,7 @@ const handlePlayerEscaped = async (playerId: string, action: ActionState, shop: 
  * @param npcList NPC列表
  * @returns 是否处理成功
  */
-const processPlayerEscape = async (playerId: string, action: ActionState, npcList: any[]): Promise<boolean> => {
+const processPlayerEscape = async (playerId: string, action: ActionRecord, npcList: any[]): Promise<boolean> => {
   try {
     let pushAddress: string | undefined;
     let isGroup = false;
@@ -269,7 +269,7 @@ const processPlayerEscape = async (playerId: string, action: ActionState, npcLis
       pushAddress = action.group_id;
     }
 
-    const msg: Array<DataMention | string> = [Mention(playerId)];
+    const msg: Array<DataMention | string> = [];
     let endTime = action.end_time;
     const nowTime = Date.now();
 
@@ -308,7 +308,7 @@ const processPlayerEscape = async (playerId: string, action: ActionState, npcLis
         playerA.当前血量 = remainingHp;
         let lastMessage = message + remainingHp;
 
-        const arr: ActionState = action;
+        const arr: ActionRecord = action;
         const shop = await readShop();
         const slot = shop.find(s => s.name === weizhi.name) as ShopSlotLike | undefined;
 
@@ -357,7 +357,7 @@ const processPlayerEscape = async (playerId: string, action: ActionState, npcLis
  * 遍历所有玩家，检查处于逃跑状态的玩家，进行结算处理
  * @description xijie 为 -2 时，进行逃跑,逃跑成功后，不进行结算
  */
-export const handelAction = async (playerId: string, action: ActionState, { npcList }): Promise<void> => {
+export const handelAction = async (playerId: string, action: ActionRecord, { npcList }): Promise<void> => {
   try {
     if (!npcList || npcList.length === 0) {
       return;

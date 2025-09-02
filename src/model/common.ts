@@ -1,11 +1,12 @@
 import { useSend, Text } from 'alemonjs';
 import { safeParse } from './utils/safe.js';
-import type { LastSignTime, PlayerActionData } from '../types/model.js';
+import type { LastSignTime } from '../types/model.js';
 import { convert2integer } from './utils/number.js';
 import { getIoRedis } from '@alemonjs/db';
 import { getRedisKey, keys, keysAction } from './keys.js';
 import { existDataByKey } from './DataControl.js';
 import dayjs from 'dayjs';
+import { ActionRecord } from '@src/types/action.js';
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length);
@@ -45,23 +46,12 @@ export async function getLastsign(usrId: string): Promise<LastSignTime | false> 
   return false;
 }
 
-export async function getPlayerAction(usrId: string): Promise<PlayerActionData> {
+export async function getPlayerAction(usrId: string): Promise<ActionRecord> {
   const redis = getIoRedis();
   const raw = await redis.get(getRedisKey(usrId, 'action'));
-  const parsed = safeParse(raw, null);
+  const parsed: ActionRecord | null = safeParse(raw, null);
 
-  if (parsed) {
-    return {
-      action: String(parsed.action),
-      time: parsed.time,
-      end_time: parsed.end_time,
-      plant: parsed.plant,
-      mine: parsed.mine,
-      is_jiesuan: parsed.is_jiesuan ?? 0
-    };
-  }
-
-  return { action: '空闲' };
+  return parsed;
 }
 
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
@@ -121,4 +111,27 @@ export default {
   notUndAndNull,
   Go,
   convert2integer
+};
+
+/**
+ * 获取推送信息
+ * @param action 动作状态
+ * @param playerId 玩家ID
+ * @returns 推送信息
+ */
+export const getPushInfo = (
+  action: {
+    group_id?: string | number;
+  },
+  playerId: string
+): { pushAddress: string; isGroup: boolean } => {
+  let pushAddress = playerId;
+  let isGroup = false;
+
+  if (notUndAndNull(action.group_id)) {
+    isGroup = true;
+    pushAddress = String(action.group_id);
+  }
+
+  return { pushAddress, isGroup };
 };

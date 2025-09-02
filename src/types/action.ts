@@ -30,26 +30,6 @@ export interface ActionPlayerLite {
   血量上限?: number;
 }
 
-export interface ActionState {
-  group_id?: string;
-  end_time: number;
-  time?: number | string;
-  action?: string;
-  shutup?: number | string;
-  working?: number | string;
-  power_up?: number | string;
-  Place_action?: string | number;
-  Place_actionplus?: string | number;
-  Place_address?: PlaceAddress;
-  plant?: string | number;
-  mine?: string | number;
-  cishu?: number;
-  xijie?: string | number;
-  playerA?: ActionPlayerLite;
-  thing?: PlaceThing[];
-  is_jiesuan?: number;
-}
-
 export interface SecretPlacePlusItem {
   name: string;
   class: string;
@@ -59,27 +39,6 @@ export interface SecretPlacePlusAddress {
   one: SecretPlacePlusItem[];
   two: SecretPlacePlusItem[];
   three: SecretPlacePlusItem[];
-}
-export interface SecretPlacePlusAction extends ActionState {
-  Place_actionplus?: number | string;
-  Place_address?: SecretPlacePlusAddress;
-  cishu: number;
-}
-export interface MonsterLike {
-  名号: string;
-  攻击: number;
-  防御: number;
-  当前血量: number;
-  暴击率: number;
-}
-export interface ShenjieTierItem {
-  name: string;
-  class: string;
-}
-export interface ShenjiePlace {
-  one: ShenjieTierItem[];
-  two: ShenjieTierItem[];
-  three: ShenjieTierItem[];
 }
 
 // 约定：字符串 '0' 表示开启中的状态；'1' 表示关闭或空闲（保持与现有代码一致）
@@ -103,4 +62,23 @@ export interface ActionRecord {
   Place_address?: string;
   is_jiesuan?: number;
   // 允许额外字段（保持兼容），使用 unknown 再在使用点断言
+  playerA?: ActionPlayerLite;
+  thing?: PlaceThing[];
+}
+
+export interface MonsterLike {
+  名号: string;
+  攻击: number;
+  防御: number;
+  当前血量: number;
+  暴击率: number;
+}
+export interface ShenjieTierItem {
+  name: string;
+  class: string;
+}
+export interface ShenjiePlace {
+  one: ShenjieTierItem[];
+  two: ShenjieTierItem[];
+  three: ShenjieTierItem[];
 }

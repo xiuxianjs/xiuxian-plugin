@@ -374,7 +374,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    await TiandibangTask();
+    TiandibangTask();
 
     ctx.status = 200;
     ctx.body = {
