@@ -1,16 +1,15 @@
-import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
 import { delDataByKey, readPlayer, setDataJSONStringifyByKey, writePlayer } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { zdBattle } from '@src/model/battle';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { addExp2, addExp } from '@src/model/economy';
-import { readTemp, writeTemp } from '@src/model/temp';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention } from 'alemonjs';
+import { DataMention, Mention, Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
+import { setMessage } from '../MessageSystem';
 
 // === 本文件局部类型声明，避免 any ===
 interface SecretPlaceItem {
@@ -390,35 +389,6 @@ const handleDanyaoEffect = async (playerId: string): Promise<number> => {
 };
 
 /**
- * 记录临时消息
- * @param message 消息内容
- * @param playerId 玩家ID
- * @param pushAddress 推送地址
- */
-const recordTempMessage = async (message: string, playerId: string, pushAddress?: string): Promise<void> => {
-  try {
-    const temp = await readTemp();
-    const p: { msg: string; qq_group?: string | undefined } = {
-      msg: message,
-      qq_group: pushAddress
-    };
-
-    temp.push(p);
-    await writeTemp(temp);
-  } catch {
-    const temp: Array<Record<string, unknown>> = [];
-    const p = {
-      msg: message,
-      qq: playerId,
-      qq_group: pushAddress
-    };
-
-    temp.push(p);
-    await writeTemp(temp);
-  }
-};
-
-/**
  * 处理探索完成
  * @param playerId 玩家ID
  * @param player 玩家数据
@@ -461,11 +431,12 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    if (isGroup && pushAddress) {
-      pushInfo(pushAddress, isGroup, msg);
-    } else {
-      pushInfo(playerId, isGroup, msg);
-    }
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   } else {
     // 继续探索
     arr.cishu = (arr.cishu || 0) - 1;
@@ -473,8 +444,12 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    // 记录临时消息
-    await recordTempMessage(player.名号 + luckyMessage + lastMessage + fydMessage, playerId, pushAddress);
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   }
 };
 

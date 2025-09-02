@@ -1,4 +1,4 @@
-import { redis, pushInfo } from '@src/model/api';
+import { redis } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
@@ -10,6 +10,8 @@ import { getAuctionKeyManager } from '@src/model/auction';
 import { setDataJSONStringifyByKey } from '@src/model';
 import type { Player } from '@src/types/player';
 import type { BattleEntity, BattleResult } from '@src/types/model';
+import { setMessage } from '../MessageSystem';
+import { Image, Mention, Text } from 'alemonjs';
 
 interface PlaceAddress {
   name: string;
@@ -161,7 +163,12 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       });
 
       if (Buffer.isBuffer(img) && pushAddress) {
-        pushInfo(pushAddress, isGroup, img);
+        void setMessage({
+          id: '',
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : '',
+          data: JSON.stringify(isGroup && pushAddress ? format(Image(img), Mention(playerId)) : format(Image(img)))
+        });
       }
     } catch (error) {
       logger.error(error);
@@ -213,19 +220,28 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       const tip = `【全服公告】${playerA.名号}被${playerB.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
 
       for (const groupId of groupList) {
-        pushInfo(groupId, true, tip);
+        void setMessage({
+          id: '',
+          uid: playerId,
+          cid: groupId,
+          data: JSON.stringify(isGroup && pushAddress ? format(Text(tip), Mention(playerId)) : format(Text(tip)))
+        });
       }
+
+      //
     }
 
     // 写入redis
     await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
 
     msg.push('\n' + lastMessage);
-    if (isGroup && pushAddress) {
-      pushInfo(pushAddress, isGroup, msg.join('\n'));
-    } else {
-      pushInfo(playerId, isGroup, msg.join('\n'));
-    }
+
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   }
 };
 
@@ -323,17 +339,18 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
       // 写入redis
     };
 
-    //
     handelTaopao();
 
     await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
 
     msg.push('\n' + lastMessage);
-    if (isGroup && pushAddress) {
-      pushInfo(pushAddress, isGroup, msg.join('\n'));
-    } else {
-      pushInfo(playerId, isGroup, msg.join('\n'));
-    }
+
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   }
 };
 

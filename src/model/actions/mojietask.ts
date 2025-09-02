@@ -1,12 +1,13 @@
-import { redis, pushInfo } from '@src/model/api';
+import { redis } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
 import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
-import { readTemp, writeTemp } from '@src/model/temp';
 import { __PATH, keys as dataKeys, keysAction } from '@src/model/keys';
 import type { ExploreActionState } from '@src/types';
 import type { Player } from '@src/types/player';
+import { setMessage } from '../MessageSystem';
+import { Mention, Text } from 'alemonjs';
 
 interface MojieItem {
   name: string;
@@ -267,35 +268,6 @@ const handleItemEffects = async (playerId: string, xiuwei: number, qixue: number
 };
 
 /**
- * 记录临时消息
- * @param message 消息内容
- * @param playerId 玩家ID
- * @param pushAddress 推送地址
- */
-const recordTempMessage = async (message: string, playerId: string, pushAddress: string): Promise<void> => {
-  try {
-    const temp = await readTemp();
-    const p = {
-      msg: message,
-      qq_group: pushAddress
-    };
-
-    temp.push(p);
-    await writeTemp(temp);
-  } catch {
-    const temp: { msg: string; qq?: string; qq_group: string }[] = [];
-    const p = {
-      msg: message,
-      qq: playerId,
-      qq_group: pushAddress
-    };
-
-    temp.push(p);
-    await writeTemp(temp);
-  }
-};
-
-/**
  * 处理探索完成
  * @param playerId 玩家ID
  * @param action 动作状态
@@ -330,8 +302,12 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    // todo
-    pushInfo(pushAddress, isGroup, msg.join(''));
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   } else {
     // 继续探索
     if (typeof arr.cishu === 'number') {
@@ -342,7 +318,12 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    await recordTempMessage(luckyMessage + lastMessage + fydMessage, playerId, pushAddress);
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   }
 };
 

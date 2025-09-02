@@ -1,14 +1,15 @@
-import { redis, pushInfo } from '@src/model/api';
+import { redis } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
 import { Harm } from '@src/model/battle';
 import { readShop, writeShop } from '@src/model/shop';
 import { addNajieThing } from '@src/model/najie';
 import { __PATH, keysAction } from '@src/model/keys';
 import type { ActionState, CoreNajieCategory as NajieCategory } from '@src/types';
-import { Mention, DataMention } from 'alemonjs';
+import { Mention, DataMention, Text } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getAuctionKeyManager } from '@src/model/auction';
 import { setDataJSONStringifyByKey } from '@src/model';
+import { setMessage } from '../MessageSystem';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -192,7 +193,17 @@ const handlePlayerCaught = async (
   const notice = `【全服公告】${player.名号}被${monster.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
 
   for (const gid of groupList) {
-    pushInfo(gid, true, notice);
+    const isGroup = true;
+    const pushAddress = gid;
+
+    const msg = [notice];
+
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   }
 
   return message;
@@ -320,11 +331,12 @@ const processPlayerEscape = async (playerId: string, action: ActionState, npcLis
         await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
         msg.push('\n' + lastMessage);
 
-        if (isGroup && pushAddress) {
-          pushInfo(pushAddress, isGroup, msg.join('\n'));
-        } else {
-          pushInfo(playerId, isGroup, msg.join('\n'));
-        }
+        void setMessage({
+          id: '',
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : '',
+          data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+        });
 
         return true;
       }

@@ -3,24 +3,24 @@ import { ForumTask } from './clear/ForumTask';
 import { Shoptask } from './update/Shoptask';
 import { ShopGradetask } from './update/ShopGradetask';
 import { AuctionofficialTask } from '@src/task/AuctionofficialTask';
-import { MsgTask } from '@src/task/msgTask';
 import { TiandibangTask } from '@src/task/ranking/Tiandibang';
 import { scheduleJob } from 'node-schedule';
 import { getConfig } from '@src/model';
 import { TaskMap } from '@src/model/task';
 import { ActionsTask } from './actions/actionsTask';
 import { TaskKeys } from '@src/config/xiuxian';
+import { PushMessageTask } from './pushMessageTask';
 
 // 任务函数映射
 const taskFunctions: {
   [key in TaskKeys]: (() => Promise<void>) | (() => void);
 } = {
+  PushMessageTask: PushMessageTask,
   ActionsTask: ActionsTask,
   ShopTask: Shoptask,
   ExchangeTask: ExchangeTask,
   AuctionofficialTask: AuctionofficialTask,
   ForumTask: ForumTask,
-  MsgTask: MsgTask,
   ShopGradetask: ShopGradetask,
   TiandibangTask: TiandibangTask
 };

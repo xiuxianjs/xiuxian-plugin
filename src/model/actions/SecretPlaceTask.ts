@@ -1,4 +1,3 @@
-import { pushInfo } from '@src/model/api';
 import { getDataList } from '@src/model/DataList';
 import { notUndAndNull } from '@src/model/common';
 import { delDataByKey, readPlayer } from '@src/model';
@@ -6,11 +5,12 @@ import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp, addHP } from '@src/model/economy';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention } from 'alemonjs';
+import { DataMention, Mention, Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types';
 import { writePlayer } from '@src/model';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
+import { setMessage } from '../MessageSystem';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -424,11 +424,12 @@ const processPlayerExploration = async (playerId: string, action: ActionState, m
         await addExp(playerId, xiuwei);
         await addHP(playerId, dataBattle.A_xue);
 
-        if (isGroup && pushAddress) {
-          pushInfo(pushAddress, isGroup, msg);
-        } else {
-          pushInfo(playerId, isGroup, msg);
-        }
+        void setMessage({
+          id: '',
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : '',
+          data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+        });
 
         return true;
       }

@@ -1,15 +1,14 @@
-import { pushInfo } from '@src/model/api';
 import { notUndAndNull } from '@src/model/common';
 import { delDataByKey, readPlayer, setDataJSONStringifyByKey } from '@src/model';
 import { writePlayer } from '@src/model';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp } from '@src/model/economy';
-import { readTemp, writeTemp } from '@src/model/temp';
 import { __PATH, keysAction } from '@src/model/keys';
-import { DataMention, Mention } from 'alemonjs';
+import { DataMention, Mention, Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionState, ShenjiePlace } from '@src/types';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
+import { setMessage } from '../MessageSystem';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -232,11 +231,12 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    if (isGroup && pushAddress) {
-      pushInfo(pushAddress, isGroup, msg);
-    } else {
-      pushInfo(playerId, isGroup, msg);
-    }
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   } else {
     // 继续探索
     arr.cishu = remain - 1;
@@ -244,37 +244,12 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    // 记录临时消息
-    await recordTempMessage(player.名号 + luckyMessage + lastMessage + fydMessage, playerId, pushAddress);
-  }
-};
-
-/**
- * 记录临时消息
- * @param message 消息内容
- * @param playerId 玩家ID
- * @param pushAddress 推送地址
- */
-const recordTempMessage = async (message: string, playerId: string, pushAddress?: string): Promise<void> => {
-  try {
-    const temp = await readTemp();
-    const p: { msg: string; qq_group?: string } = {
-      msg: message,
-      qq_group: pushAddress
-    };
-
-    temp.push(p);
-    await writeTemp(temp);
-  } catch {
-    const temp: Array<{ msg: string; qq: string; qq_group?: string }> = [];
-    const p = {
-      msg: message,
-      qq: playerId,
-      qq_group: pushAddress
-    };
-
-    temp.push(p);
-    await writeTemp(temp);
+    void setMessage({
+      id: '',
+      uid: playerId,
+      cid: isGroup && pushAddress ? pushAddress : '',
+      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+    });
   }
 };
 

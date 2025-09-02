@@ -33,7 +33,6 @@ export * from './shitu';
 export * from './trade';
 export * from './shop';
 export * from './task';
-export * from './temp';
 export * from './trade';
 export * from './xiuxian_m';
 export * from './xiuxiandata';

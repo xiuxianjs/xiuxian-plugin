@@ -5,10 +5,14 @@ import { baseKey } from '@src/model/keys';
 import { Image, Mention, Text, useMessage } from 'alemonjs';
 import dayjs from 'dayjs';
 import { isNight, MAX_COUNT, MIN_COUNT, replyCount } from './config';
+import { setIds } from '@src/model/MessageSystem';
 
 export const selects = onSelects(['message.create', 'private.message.create', 'private.interaction.create', 'interaction.create']);
 
 const mw = onResponse(selects, async event => {
+  // 机器人记录自己的userId and channelId
+  void setIds({ uid: event.userId, cid: event.channelId });
+
   const values = getAppCofig();
 
   if (values?.close_captcha) {

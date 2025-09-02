@@ -1,9 +1,9 @@
-import { pushInfo } from '@src/model/api';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
 import { addNajieThing, keys } from '@src/model/index';
 import { addExp4 } from '@src/model';
-import { DataMention, Mention } from 'alemonjs';
+import { DataMention, Mention, Text } from 'alemonjs';
+import { setMessage } from '../MessageSystem';
 
 function toNum(v, d = 0) {
   const n = Number(v);
@@ -100,11 +100,16 @@ export async function plantJiesuan(user_id: string, time: number, group_id?: str
   }
   await addExp4(userId, exp);
 
-  if (group_id) {
-    pushInfo(group_id, true, msg);
-  } else {
-    pushInfo(userId, false, msg);
-  }
+  const playerId = userId;
+  const pushAddress = group_id;
+  const isGroup = !!group_id;
+
+  void setMessage({
+    id: '',
+    uid: playerId,
+    cid: isGroup && pushAddress ? pushAddress : '',
+    data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+  });
 
   return false;
 }
@@ -143,11 +148,17 @@ export async function mineJiesuan(user_id: string, time: number, group_id?: stri
 
   msg.push(`\n采矿归来，${ext}\n收获庚金×${end_amount}\n玄土×${end_amount}`);
   msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`);
-  if (group_id) {
-    pushInfo(group_id, true, msg);
-  } else {
-    pushInfo(userId, false, msg);
-  }
+
+  const playerId = userId;
+  const pushAddress = group_id;
+  const isGroup = !!group_id;
+
+  void setMessage({
+    id: '',
+    uid: playerId,
+    cid: isGroup && pushAddress ? pushAddress : '',
+    data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
+  });
 
   return false;
 }
