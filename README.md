@@ -72,6 +72,8 @@ alemonjs-xiuxian:
 alemonjs-xiuxian:
   # 关闭验证码
   close_captcha: true
+  # 关闭task
+  task: false
   # 如果同时启动多个机器人，
   # 请务必填写机器人账号 !!!
   botId: ''
