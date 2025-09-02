@@ -119,18 +119,40 @@ export async function addNajieThing(
     if (!najie) {
       return;
     }
-    // 这里直接插入，不查找数据源
-    const obj = { ...name } as NajieItem;
 
-    obj.数量 = count;
-    obj.islockd = 0;
+    // 判断“同名同品级”是否已存在
+    let existItem: NajieItem | undefined;
+
     if (category === '装备') {
-      if (!pinji && pinji !== 0) {
-        pinji = Math.trunc(Math.random() * 6);
-      }
-      obj.pinji = name?.pinji ?? pinji;
+      const eqPinji = (name as EquipmentLike).pinji ?? pinji ?? 0;
+
+      existItem = najie[category].find(item => item.name === (name as NajieItem).name && item.pinji === eqPinji);
+    } else {
+      existItem = najie[category].find(item => item.name === (name as NajieItem).name);
     }
-    najie[category].push(obj);
+
+    if (existItem) {
+      // 已有则叠加数量
+      existItem.数量 = (existItem.数量 ?? 0) + count;
+      if (existItem.数量 < 0) {
+        existItem.数量 = 0;
+      }
+    } else {
+      // 没有则插入
+      const obj = { ...name } as NajieItem;
+
+      obj.数量 = count;
+      obj.islockd = 0;
+      if (category === '装备') {
+        obj.pinji = (name as EquipmentLike).pinji ?? pinji;
+      }
+      najie[category].push(obj);
+    }
+
+    // 清理数量为0的
+    najie[category] = najie[category].filter(item => (item.数量 ?? 0) > 0);
+
+    //
     await writeNajie(userId, najie);
 
     return;
