@@ -10,7 +10,7 @@ import type { CoreNajieCategory as NajieCategory, ActionState } from '@src/types
 import { writePlayer } from '@src/model';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
-import { setMessage } from '../MessageSystem';
+import { pushMessage } from '../MessageSystem';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -424,12 +424,13 @@ const processPlayerExploration = async (playerId: string, action: ActionState, m
         await addExp(playerId, xiuwei);
         await addHP(playerId, dataBattle.A_xue);
 
-        void setMessage({
-          id: '',
-          uid: playerId,
-          cid: isGroup && pushAddress ? pushAddress : '',
-          data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-        });
+        void pushMessage(
+          {
+            uid: playerId,
+            cid: isGroup && pushAddress ? pushAddress : ''
+          },
+          [Text(msg.join(''))]
+        );
 
         return true;
       }

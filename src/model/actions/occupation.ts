@@ -3,7 +3,7 @@ import { getDataList } from '@src/model/DataList';
 import { addNajieThing, keys } from '@src/model/index';
 import { addExp4 } from '@src/model';
 import { DataMention, Mention, Text } from 'alemonjs';
-import { setMessage } from '../MessageSystem';
+import { pushMessage } from '../MessageSystem';
 
 function toNum(v, d = 0) {
   const n = Number(v);
@@ -101,15 +101,14 @@ export async function plantJiesuan(user_id: string, time: number, group_id?: str
   await addExp4(userId, exp);
 
   const playerId = userId;
-  const pushAddress = group_id;
-  const isGroup = !!group_id;
 
-  void setMessage({
-    id: '',
-    uid: playerId,
-    cid: isGroup && pushAddress ? pushAddress : '',
-    data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-  });
+  void pushMessage(
+    {
+      uid: playerId,
+      cid: group_id
+    },
+    [Text(msg.join(''))]
+  );
 
   return false;
 }
@@ -150,15 +149,14 @@ export async function mineJiesuan(user_id: string, time: number, group_id?: stri
   msg.push(`\n${A[xuanze]}x${num}\n${B[xuanze]}x${Math.trunc(num / 48)}`);
 
   const playerId = userId;
-  const pushAddress = group_id;
-  const isGroup = !!group_id;
 
-  void setMessage({
-    id: '',
-    uid: playerId,
-    cid: isGroup && pushAddress ? pushAddress : '',
-    data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-  });
+  void pushMessage(
+    {
+      uid: playerId,
+      cid: group_id
+    },
+    [Text(msg.join(''))]
+  );
 
   return false;
 }

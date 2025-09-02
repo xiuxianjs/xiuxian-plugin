@@ -9,7 +9,7 @@ import { Mention, DataMention, Text } from 'alemonjs';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import { getAuctionKeyManager } from '@src/model/auction';
 import { setDataJSONStringifyByKey } from '@src/model';
-import { setMessage } from '../MessageSystem';
+import { pushMessage } from '../MessageSystem';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -198,12 +198,13 @@ const handlePlayerCaught = async (
 
     const msg = [notice];
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   }
 
   return message;
@@ -331,12 +332,13 @@ const processPlayerEscape = async (playerId: string, action: ActionState, npcLis
         await setDataJSONStringifyByKey(keysAction.action(playerId), arr);
         msg.push('\n' + lastMessage);
 
-        void setMessage({
-          id: '',
-          uid: playerId,
-          cid: isGroup && pushAddress ? pushAddress : '',
-          data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-        });
+        void pushMessage(
+          {
+            uid: playerId,
+            cid: isGroup && pushAddress ? pushAddress : ''
+          },
+          [Text(msg.join(''))]
+        );
 
         return true;
       }

@@ -1,7 +1,6 @@
-import { getIoRedis } from '@alemonjs/db';
-import { getAppCofig, keysAction } from '@src/model';
-import { clearOldMessages, getIdsByBotId, getRecentMessages, IMessage, setIds } from '@src/model/MessageSystem';
-import { sendToChannel, sendToUser } from 'alemonjs';
+import { getAppCofig } from '@src/model';
+import { clearOldMessages, getIdsByBotId, getLastRunTime, getRecentMessages, IMessage, setIds, setLastRunTime } from '@src/model/MessageSystem';
+import { DataEnums, sendToChannel, sendToUser } from 'alemonjs';
 import dayjs from 'dayjs';
 
 /**
@@ -10,8 +9,6 @@ import dayjs from 'dayjs';
  * - 推送成功后才记录为已推送
  */
 export const PushMessageTask = async (): Promise<void> => {
-  const redis = getIoRedis();
-
   const value = getAppCofig();
   const botId = value?.botId ?? 'xiuxian';
 
@@ -20,12 +17,11 @@ export const PushMessageTask = async (): Promise<void> => {
   let windowMinutes = 5;
 
   // bot专属上次执行时间key
-  const lastRunKey = keysAction.system('push-lastRunTime', botId);
 
   try {
     await clearOldMessages();
 
-    const lastRunStr = await redis.get(lastRunKey);
+    const lastRunStr = await getLastRunTime();
 
     if (lastRunStr) {
       const lastRun = dayjs(Number(lastRunStr));
@@ -49,13 +45,13 @@ export const PushMessageTask = async (): Promise<void> => {
 
             if (isGroup) {
               const id = String(item.cid);
-              const data = JSON.parse(item.data);
+              const data: DataEnums[] = JSON.parse(item.data);
 
               void sendToChannel(id, data);
             } else {
               const id = String(item.uid);
 
-              const data = JSON.parse(item.data);
+              const data: DataEnums[] = JSON.parse(item.data);
 
               void sendToUser(id, data);
             }
@@ -69,7 +65,7 @@ export const PushMessageTask = async (): Promise<void> => {
     }
 
     // 更新本次执行时间
-    void redis.set(lastRunKey, now.valueOf());
+    void setLastRunTime();
 
     logger.debug('消息池', {
       botId,

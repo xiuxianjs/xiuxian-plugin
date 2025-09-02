@@ -9,7 +9,7 @@ import { DataMention, Mention, Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory } from '@src/types';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
-import { setMessage } from '../MessageSystem';
+import { pushMessage } from '../MessageSystem';
 
 // === 本文件局部类型声明，避免 any ===
 interface SecretPlaceItem {
@@ -431,12 +431,13 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   } else {
     // 继续探索
     arr.cishu = (arr.cishu || 0) - 1;
@@ -444,12 +445,13 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   }
 };
 

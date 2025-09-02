@@ -8,7 +8,7 @@ import { DataMention, Mention, Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionState, ShenjiePlace } from '@src/types';
 import { NAJIE_CATEGORIES } from '@src/model/settions';
 import type { Player } from '@src/types/player';
-import { setMessage } from '../MessageSystem';
+import { pushMessage } from '../MessageSystem';
 
 function isNajieCategory(v: any): v is NajieCategory {
   return typeof v === 'string' && (NAJIE_CATEGORIES as readonly string[]).includes(v);
@@ -231,12 +231,13 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   } else {
     // 继续探索
     arr.cishu = remain - 1;
@@ -244,12 +245,13 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   }
 };
 

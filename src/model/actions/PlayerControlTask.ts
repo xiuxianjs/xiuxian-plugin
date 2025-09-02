@@ -8,7 +8,7 @@ import { __PATH, keysAction } from '@src/model/keys';
 import { DataMention, Mention, Text } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
 import type { Player } from '@src/types/player';
-import { setMessage } from '../MessageSystem';
+import { pushMessage } from '../MessageSystem';
 
 interface ActionState {
   end_time: number;
@@ -297,13 +297,13 @@ const handleCultivationSettlement = async (
       msg.push(`\n增加修为:${finalXiuwei},血量增加:${blood * time}`);
     }
 
-    //
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
 
     return true;
   } catch (error) {
@@ -385,12 +385,13 @@ const handleWorkSettlement = async (
     msg.push(eventMessage);
     msg.push(`\n降妖得到${finalLingshi}灵石`);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
 
     return true;
   } catch (error) {

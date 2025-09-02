@@ -11,7 +11,7 @@ export const selects = onSelects(['message.create', 'private.message.create', 'p
 
 const mw = onResponse(selects, async event => {
   // 机器人记录自己的userId and channelId
-  void setIds({ uid: event.userId, cid: event.channelId });
+  void setIds({ uid: event.UserId, cid: event.ChannelId });
 
   const values = getAppCofig();
 

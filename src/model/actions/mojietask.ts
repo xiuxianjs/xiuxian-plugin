@@ -6,8 +6,8 @@ import { addExp2, addExp } from '@src/model/economy';
 import { __PATH, keys as dataKeys, keysAction } from '@src/model/keys';
 import type { ExploreActionState } from '@src/types';
 import type { Player } from '@src/types/player';
-import { setMessage } from '../MessageSystem';
-import { Mention, Text } from 'alemonjs';
+import { pushMessage } from '../MessageSystem';
+import { Text } from 'alemonjs';
 
 interface MojieItem {
   name: string;
@@ -302,12 +302,13 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   } else {
     // 继续探索
     if (typeof arr.cishu === 'number') {
@@ -318,12 +319,13 @@ const handleExplorationComplete = async (
     await addExp2(playerId, result.qixue);
     await addExp(playerId, result.xiuwei);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   }
 };
 

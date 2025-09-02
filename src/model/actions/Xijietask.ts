@@ -10,8 +10,8 @@ import { getAuctionKeyManager } from '@src/model/auction';
 import { setDataJSONStringifyByKey } from '@src/model';
 import type { Player } from '@src/types/player';
 import type { BattleEntity, BattleResult } from '@src/types/model';
-import { setMessage } from '../MessageSystem';
-import { Image, Mention, Text } from 'alemonjs';
+import { pushMessage } from '../MessageSystem';
+import { Image, Text } from 'alemonjs';
 
 interface PlaceAddress {
   name: string;
@@ -163,12 +163,13 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       });
 
       if (Buffer.isBuffer(img)) {
-        void setMessage({
-          id: '',
-          uid: playerId,
-          cid: isGroup && pushAddress ? pushAddress : '',
-          data: JSON.stringify(isGroup && pushAddress ? format(Image(img), Mention(playerId)) : format(Image(img)))
-        });
+        void pushMessage(
+          {
+            uid: playerId,
+            cid: isGroup && pushAddress ? pushAddress : ''
+          },
+          [Image(img)]
+        );
       }
     } catch (error) {
       logger.error(error);
@@ -217,18 +218,14 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
       const groupListKey = await auctionKeyManager.getAuctionGroupListKey();
       const groupList = await redis.smembers(groupListKey);
 
-      const tip = `【全服公告】${playerA.名号}被${playerB.名号}抓进了地牢,希望大家遵纪守法,引以为戒`;
-
       for (const groupId of groupList) {
-        void setMessage({
-          id: '',
-          uid: playerId,
-          cid: groupId,
-          data: JSON.stringify(isGroup && pushAddress ? format(Text(tip), Mention(playerId)) : format(Text(tip)))
-        });
+        void pushMessage(
+          {
+            cid: groupId
+          },
+          [Text(msg.join(''))]
+        );
       }
-
-      //
     }
 
     // 写入redis
@@ -236,12 +233,13 @@ const onXijie = async (playerId: string, action: Action, npcList: any[]): Promis
 
     msg.push('\n' + lastMessage);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   }
 };
 
@@ -345,12 +343,13 @@ const onXijieNext = async (playerId: string, action: Action): Promise<void> => {
 
     msg.push('\n' + lastMessage);
 
-    void setMessage({
-      id: '',
-      uid: playerId,
-      cid: isGroup && pushAddress ? pushAddress : '',
-      data: JSON.stringify(isGroup && pushAddress ? format(Text(msg.join('')), Mention(playerId)) : format(Text(msg.join(''))))
-    });
+    void pushMessage(
+      {
+        uid: playerId,
+        cid: isGroup && pushAddress ? pushAddress : ''
+      },
+      [Text(msg.join(''))]
+    );
   }
 };
 
