@@ -86,7 +86,7 @@ export async function existNajieThing(userId: string, thingName: string, thingCl
     }
   }
   if (ifexist) {
-    return ifexist.数量 || 0;
+    return ifexist.数量 ?? 0;
   }
 
   return false;
@@ -234,7 +234,7 @@ export async function insteadEquipment(usrId: string, equipmentData: EquipmentLi
  * 批量添加物品到纳戒
  * @param userId 玩家QQ
  * @param items 物品数组，每个物品包含 name、count、category 属性
- * @returns Promise<void>
+ * @returns Promise<Array<{name: string; count: number; category: NajieCategory; pinji?: number}>> 返回操作成功的items数组
  */
 export async function batchAddNajieThings(
   userId: string,
@@ -244,16 +244,31 @@ export async function batchAddNajieThings(
     category: NajieCategory;
     pinji?: number;
   }>
-): Promise<void> {
+): Promise<
+  Array<{
+    name: string;
+    count: number;
+    category: NajieCategory;
+    pinji?: number;
+  }>
+> {
   if (!items || items.length === 0) {
-    return;
+    return [];
   }
 
   const najie: Najie | null = await readNajie(userId);
 
   if (!najie) {
-    return;
+    return [];
   }
+
+  // 跟踪操作成功的items
+  const successfulItems: Array<{
+    name: string;
+    count: number;
+    category: NajieCategory;
+    pinji?: number;
+  }> = [];
 
   // 按分类分组处理，减少数据库写入次数
   const categoryGroups = new Map<
@@ -314,13 +329,24 @@ export async function batchAddNajieThings(
 
     for (const item of categoryItems) {
       const { name, count, pinji } = item;
+      let success = false;
 
       if (category === '装备') {
-        processEquipmentItem(equipmentData, najie, name, count, pinji);
+        success = processEquipmentItem(equipmentData, najie, name, count, pinji);
       } else if (category === '仙宠') {
-        processPetItem(xianchonData, najie, name, count);
+        success = processPetItem(xianchonData, najie, name, count);
       } else {
-        processNormalItem(data, najie, name, count, category);
+        success = processNormalItem(data, najie, name, count, category);
+      }
+
+      // 如果操作成功，添加到成功列表中
+      if (success) {
+        successfulItems.push({
+          name,
+          count,
+          category,
+          pinji
+        });
       }
     }
   }
@@ -328,18 +354,22 @@ export async function batchAddNajieThings(
   // 清理数量为0的物品
   for (const category of Object.keys(najie)) {
     if (Array.isArray(najie[category as NajieCategory])) {
-      najie[category as NajieCategory] = najie[category as NajieCategory].filter((item: NajieItem) => (item.数量 || 0) > 0);
+      najie[category as NajieCategory] = najie[category as NajieCategory].filter((item: NajieItem) => (item.数量 ?? 0) > 0);
     }
   }
 
   // 一次性写入数据库
   await writeNajie(userId, najie);
+
+  // 返回操作成功的items数组
+  return successfulItems;
 }
 
 /**
  * 处理装备类物品
+ * @returns boolean 返回操作是否成功
  */
-function processEquipmentItem(data: any[], najie: Najie, name: string, count: number, pinji?: number): void {
+function processEquipmentItem(data: any[], najie: Najie, name: string, count: number, pinji?: number): boolean {
   if (!pinji && pinji !== 0) {
     pinji = Math.trunc(Math.random() * 6);
   }
@@ -350,7 +380,9 @@ function processEquipmentItem(data: any[], najie: Najie, name: string, count: nu
 
   if (existing) {
     // 如果装备已存在，直接更新数量（支持增减）
-    existing.数量 = (existing.数量 ?? 0) + count;
+    existing.数量 = Math.max(0, (existing.数量 ?? 0) + count);
+
+    return true;
   } else if (count > 0) {
     // 如果装备不存在且count > 0，需要从数据表中验证并创建新装备条目
     for (const i of data) {
@@ -378,17 +410,19 @@ function processEquipmentItem(data: any[], najie: Najie, name: string, count: nu
         equ.islockd = 0;
         najie.装备.push(equ);
 
-        return;
+        return true;
       }
     }
   }
-  // 如果count < 0且装备不存在，无法减少（但不会报错）
+
+  return false;
 }
 
 /**
  * 处理仙宠类物品
+ * @returns boolean 返回操作是否成功
  */
-function processPetItem(xianchonData: any[], najie: Najie, name: string, count: number): void {
+function processPetItem(xianchonData: any[], najie: Najie, name: string, count: number): boolean {
   // 检查纳戒中是否已存在
   const existing = najie.仙宠.find(item => item.name === name);
 
@@ -405,20 +439,24 @@ function processPetItem(xianchonData: any[], najie: Najie, name: string, count: 
         ...(copied as XianchongSource),
         数量: count,
         islockd: 0,
-        class: copied.class || '仙宠',
+        class: copied.class ?? '仙宠',
         name: copied.name
       };
 
       najie.仙宠.push(petItem);
+
+      return true;
     }
   }
-  // 如果count < 0且仙宠不存在，无法减少（但不会报错）
+
+  return false;
 }
 
 /**
  * 处理普通物品（丹药、道具、功法、草药、材料、仙宠口粮）
+ * @returns boolean 返回操作是否成功
  */
-function processNormalItem(data: any[], najie: Najie, name: string, count: number, category: NajieCategory): void {
+function processNormalItem(data: any[], najie: Najie, name: string, count: number, category: NajieCategory): boolean {
   // 检查纳戒中是否已存在
   const existing = najie[category].find(item => item.name === name);
 
@@ -440,11 +478,12 @@ function processNormalItem(data: any[], najie: Najie, name: string, count: numbe
         newItem.islockd = 0;
         najie[category].push(newItem);
 
-        return;
+        return true;
       }
     }
   }
-  // 如果count < 0且物品不存在，无法减少（但不会报错）
+
+  return false;
 }
 
 export default {

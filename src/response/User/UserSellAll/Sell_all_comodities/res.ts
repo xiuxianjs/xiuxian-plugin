@@ -1,4 +1,4 @@
-import { Text, useMessage, useSubscribe } from 'alemonjs';
+import { Text, useMessage, useSubscribe, format, onResponse, logger } from 'alemonjs';
 
 import { existplayer, addCoin, sleep, keys } from '@src/model/index';
 import { batchAddNajieThings } from '@src/model/najie';
@@ -6,6 +6,54 @@ import { batchAddNajieThings } from '@src/model/najie';
 import { selects } from '@src/response/mw';
 import type { NajieCategory } from '@src/types/model';
 export const regular = /^(#|＃|\/)?一键出售(.*)$/;
+
+/**
+ * 根据实际出售成功的物品计算总灵石价格
+ * @param soldItems 实际出售成功的物品数组
+ * @param originalNajie 原始纳戒数据，用于获取物品的出售价
+ * @returns 总灵石价格
+ */
+function calculateSoldItemsPrice(
+  soldItems: Array<{
+    name: string;
+    count: number;
+    category: string;
+    pinji?: number;
+  }>,
+  originalNajie: any
+): number {
+  let totalPrice = 0;
+
+  for (const soldItem of soldItems) {
+    const category = soldItem.category;
+    const list = originalNajie[category];
+
+    if (!Array.isArray(list)) {
+      continue;
+    }
+
+    // 查找对应的物品获取出售价
+    // 对于装备类物品，需要同时匹配名称和品阶才能确定唯一物品
+    let item: any;
+
+    if (category === '装备' && soldItem.pinji !== undefined) {
+      // 装备类物品：同时匹配名称和品阶
+      item = list.find((l: any) => l && l.name === soldItem.name && l.pinji === soldItem.pinji);
+    } else {
+      // 非装备类物品：仅匹配名称
+      item = list.find((l: any) => l && l.name === soldItem.name);
+    }
+
+    if (item && typeof item.出售价 === 'number') {
+      // soldItem.count是负数，表示减少的数量
+      const soldQuantity = Math.abs(soldItem.count);
+
+      totalPrice += item.出售价 * soldQuantity;
+    }
+  }
+
+  return totalPrice;
+}
 
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
@@ -16,7 +64,6 @@ const res = onResponse(selects, async e => {
   if (!ifexistplay) {
     return false;
   }
-  let commoditiesPrice = 0;
   const najie = await getDataJSONParseByKey(keys.najie(userId));
 
   if (!najie) {
@@ -64,7 +111,6 @@ const res = onResponse(selects, async e => {
       }>) {
         if (l && (l.islockd ?? 0) === 0) {
           const quantity = typeof l.数量 === 'number' ? l.数量 : 0;
-          const price = typeof l.出售价 === 'number' ? l.出售价 : 0;
           const cls = (l.class as NajieCategory) || i;
 
           if (quantity > 0) {
@@ -74,19 +120,29 @@ const res = onResponse(selects, async e => {
               category: cls,
               pinji: l.pinji
             });
-            commoditiesPrice += price * quantity;
+            // 价格计算将基于实际出售成功的物品进行
           }
         }
       }
     }
 
-    // 批量处理物品出售
+    // 批量处理物品出售，获取实际出售成功的物品
+    let actualSoldItems: Array<{
+      name: string;
+      count: number;
+      category: string;
+      pinji?: number;
+    }> = [];
+
     if (itemsToSell.length > 0) {
-      await batchAddNajieThings(userId, itemsToSell);
+      actualSoldItems = await batchAddNajieThings(userId, itemsToSell);
     }
 
-    await addCoin(userId, commoditiesPrice);
-    void message.send(format(Text(`出售成功!  获得${commoditiesPrice}灵石 `)));
+    // 根据实际出售成功的物品计算灵石价格
+    const actualPrice = calculateSoldItemsPrice(actualSoldItems, najie);
+
+    await addCoin(userId, actualPrice);
+    void message.send(format(Text(`出售成功!  获得${actualPrice}灵石 `)));
 
     return false;
   }
@@ -104,11 +160,19 @@ const res = onResponse(selects, async e => {
       name: string;
       islockd?: number;
       数量?: number;
+      pinji?: number;
     }>) {
       if (l && (l.islockd ?? 0) === 0) {
         const quantity = typeof l.数量 === 'number' ? l.数量 : 0;
 
-        goods.push('\n' + l.name + '*' + quantity);
+        // 对于装备类物品，显示品阶信息以便区分同名不同品阶的装备
+        let displayName = l.name;
+
+        if (i === '装备' && l.pinji !== undefined) {
+          displayName += `(${l.pinji}品)`;
+        }
+
+        goods.push('\n' + displayName + '*' + quantity);
         goodsNum++;
       }
     }
@@ -145,7 +209,6 @@ const res = onResponse(selects, async e => {
 
         return;
       }
-      let commoditiesPrice = 0;
       const wupin: NajieCategory[] = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'];
 
       // 收集所有要出售的物品
@@ -172,7 +235,6 @@ const res = onResponse(selects, async e => {
         }>) {
           if (l && (l.islockd ?? 0) === 0) {
             const quantity = typeof l.数量 === 'number' ? l.数量 : 0;
-            const price = typeof l.出售价 === 'number' ? l.出售价 : 0;
             const cls = (l.class as NajieCategory) || i;
 
             if (quantity > 0) {
@@ -182,19 +244,29 @@ const res = onResponse(selects, async e => {
                 category: cls,
                 pinji: l.pinji
               });
-              commoditiesPrice += price * quantity;
+              // 价格计算将基于实际出售成功的物品进行
             }
           }
         }
       }
 
-      // 批量处理物品出售
+      // 批量处理物品出售，获取实际出售成功的物品
+      let actualSoldItems: Array<{
+        name: string;
+        count: number;
+        category: string;
+        pinji?: number;
+      }> = [];
+
       if (itemsToSell.length > 0) {
-        await batchAddNajieThings(userId, itemsToSell);
+        actualSoldItems = await batchAddNajieThings(userId, itemsToSell);
       }
 
-      await addCoin(userId, commoditiesPrice);
-      void message.send(format(Text(`出售成功!  获得${commoditiesPrice}灵石 `)));
+      // 根据实际出售成功的物品计算灵石价格
+      const actualPrice = calculateSoldItemsPrice(actualSoldItems, najie2);
+
+      await addCoin(userId, actualPrice);
+      void message.send(format(Text(`出售成功!  获得${actualPrice}灵石 `)));
     },
     ['UserId']
   );
