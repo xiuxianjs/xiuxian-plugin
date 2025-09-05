@@ -51,8 +51,10 @@ import CombatResult from '../resources/html/CombatResult';
 import { mkdirSync, writeFileSync } from 'fs';
 import Message from '@src/resources/html/message';
 import Monthcard from '@src/resources/html/monthCard';
+import MessageBox from '@src/resources/html/Message/index';
 
 const map = {
+  MessageBox,
   help,
   shituhelp,
   log,

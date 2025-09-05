@@ -45,7 +45,9 @@ export const __PATH = {
   // 站内信
   message: `${baseDataKey}:message`,
   // 副职
-  fuzhi: 'xiuxian:player'
+  fuzhi: 'xiuxian:player',
+  // 个人的主动消息发送日志，用于在主动消息又限制的平台。
+  proactive_message_log: 'xiuxian:proactive_message_log'
 };
 
 export const keys = {
@@ -76,7 +78,8 @@ export const keys = {
   mute: (id: string) => `${__PATH.mute}:${id}`,
   message: (id: string) => `${__PATH.message}:${id}`,
   shortcut: (id: string) => `${__PATH.shortcut}:${id}`,
-  fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`
+  fuzhi: (id: string) => `${__PATH.fuzhi}:${id}:fuzhi`,
+  proactiveMessageLog: (id: string) => `${__PATH.proactive_message_log}:${id}`
 };
 
 // 基础 Redis Key 前缀

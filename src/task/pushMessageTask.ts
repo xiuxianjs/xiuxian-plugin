@@ -1,4 +1,4 @@
-import { getAppCofig } from '@src/model';
+import { getAppCofig, keys, redis } from '@src/model';
 import { clearOldMessages, getIdsByBotId, getLastRunTime, getRecentMessages, IMessage, setIds, setLastRunTime } from '@src/model/MessageSystem';
 import { DataEnums, sendToChannel, sendToUser } from 'alemonjs';
 import dayjs from 'dayjs';
@@ -47,6 +47,23 @@ export const PushMessageTask = async (): Promise<void> => {
             const closeProactiveMessage = value?.close_proactive_message ?? false;
 
             if (closeProactiveMessage) {
+              const id = String(item.uid);
+
+              if (!id) {
+                return;
+              }
+
+              // 消息推送到 redis里。
+              const data: DataEnums[] = JSON.parse(item.data);
+
+              void redis.lpush(
+                keys.proactiveMessageLog(id),
+                JSON.stringify({
+                  message: data,
+                  timestamp: Date.now()
+                })
+              );
+
               return;
             }
 
