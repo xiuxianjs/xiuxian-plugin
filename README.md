@@ -77,6 +77,8 @@ alemonjs-xiuxian:
   # 如果同时启动多个机器人，
   # 请务必填写机器人账号 !!!
   botId: ''
+  # 关闭主动消息（用于主动被限制的平台）
+  close_proactive_message: true
 ```
 
 ## 其他版本

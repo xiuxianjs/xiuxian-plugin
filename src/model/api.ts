@@ -1,4 +1,4 @@
-import config from './Config';
+import config, { getAppCofig } from './Config';
 import { getIoRedis } from '@alemonjs/db';
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs';
 import type { MessageEnumsArray, MessageInput } from '../types/model';
@@ -28,6 +28,14 @@ export function pushInfo(guildId: string, isGroup: boolean, msg: MessageInput) {
   if (message.length === 0) {
     return;
   }
+
+  const value = getAppCofig();
+  const closeProactiveMessage = value?.close_proactive_message ?? false;
+
+  if (closeProactiveMessage) {
+    return;
+  }
+
   if (isGroup) {
     // 向指定频道发送消息 。SpaceId 从消息中获得，注意这可能不是 ChannelId
     void sendToChannel(String(guildId), message);

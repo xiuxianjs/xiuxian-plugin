@@ -43,6 +43,13 @@ export const PushMessageTask = async (): Promise<void> => {
           try {
             const isGroup = !!item.cid;
 
+            const value = getAppCofig();
+            const closeProactiveMessage = value?.close_proactive_message ?? false;
+
+            if (closeProactiveMessage) {
+              return;
+            }
+
             if (isGroup) {
               const id = String(item.cid);
               const data: DataEnums[] = JSON.parse(item.data);
