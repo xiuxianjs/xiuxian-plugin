@@ -429,6 +429,8 @@ function processPetItem(xianchonData: any[], najie: Najie, name: string, count: 
   if (existing) {
     // 如果仙宠已存在，直接更新数量（支持增减）
     existing.数量 = (existing.数量 ?? 0) + count;
+
+    return true;
   } else if (count > 0) {
     // 如果仙宠不存在且count > 0，需要从数据表中验证并创建新仙宠条目
     const thing = xianchonData.find((item: XianchongSource) => item.name === name);
@@ -463,6 +465,8 @@ function processNormalItem(data: any[], najie: Najie, name: string, count: numbe
   if (existing) {
     // 如果物品已存在，直接更新数量（支持增减）
     existing.数量 = (existing.数量 ?? 0) + count;
+
+    return true;
   } else if (count > 0) {
     // 如果物品不存在且count > 0，需要从数据表中验证并创建新物品条目
     for (const i of data) {
