@@ -43,13 +43,15 @@ const res = onResponse(selects, async e => {
     clearTimeout(timeout[userId]);
   }
 
-  void Send(Text('已为你开启10次自动升级境界'));
+  let num = 1;
+  const max = e.Platform === 'qqbot' ? 4 : 10;
+
+  void Send(Text(`已为你开启${max}次自动升级境界`));
+
   autoBreakthroughStatus[userId] = true;
 
-  let num = 1;
-
   const performAutoBreakthrough = () => {
-    if (num > 10) {
+    if (num > max) {
       autoBreakthroughStatus[userId] = false;
       if (timeout[userId]) {
         clearTimeout(timeout[userId]);
@@ -66,7 +68,7 @@ const res = onResponse(selects, async e => {
 
     num++;
 
-    if (num <= 10) {
+    if (num <= max) {
       timeout[userId] = setTimeout(performAutoBreakthrough, 185000);
     } else {
       autoBreakthroughStatus[userId] = false;
