@@ -1,18 +1,10 @@
-import { Text, useSend } from 'alemonjs';
-
 import { Go } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?修仙状态$/;
 
-const res = onResponse(selects, async e => {
-  const Send = useSend(e);
-  const flag = await Go(e);
-
-  if (!flag) {
-    return;
-  }
-  void Send(Text('空闲中!'));
+const res = onResponse(selects, e => {
+  void Go(e);
 });
 
 import mw from '@src/response/mw';
