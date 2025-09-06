@@ -314,6 +314,9 @@ export const handleCultivationSettlement = async (
   const msg: Array<string> = [];
 
   try {
+    // 删除行为
+    void delDataByKey(keysAction.action(playerId));
+
     // 计算实际闭关时间
     const actualCultivationTime = calculateActualCultivationTime(action);
 
@@ -392,9 +395,6 @@ export const handleCultivationSettlement = async (
     // 更新血量
     await setFileValue(playerId, Math.floor(blood * time), '当前血量');
 
-    // 删除行为
-    void delDataByKey(keysAction.action(playerId));
-
     // 计算最终奖励（应用收益递减系数）
     const baseFinalXiuwei = Math.floor(xiuwei * time + otherExp);
     const baseFinalQixue = Math.trunc(xiuwei * time * beiyong4);
@@ -468,6 +468,8 @@ export const handleWorkSettlement = async (
   const msg: Array<string> = [];
 
   try {
+    void delDataByKey(keysAction.action(playerId));
+
     // 计算实际降妖时间
     const actualWorkTime = calculateActualWorkTime(action);
 
@@ -554,8 +556,6 @@ export const handleWorkSettlement = async (
 
     await setFileValue(playerId, finalLingshi, '灵石');
 
-    void delDataByKey(keysAction.action(playerId));
-
     msg.push(eventMessage);
 
     msg.push(`\n降妖得到${finalLingshi}灵石`);
@@ -612,6 +612,7 @@ const processPlayerState = async (playerId: string, action: ActionRecord, config
 
     endTime = endTime - BASE_CONFIG.SETTLEMENT_TIME_OFFSET;
 
+    // 是否到收益时间
     if (nowTime > endTime) {
       const player = await readPlayer(playerId);
 
