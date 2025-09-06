@@ -194,14 +194,19 @@ const handleSpecialItems = async (
  * @param isGroup 是否群组
  * @returns 是否处理成功
  */
-const handleCultivationSettlement = async (
+export const handleCultivationSettlement = async (
   playerId: string,
   action: ActionRecord,
   player: Player,
   config: any,
-  pushAddress: string | undefined,
-  isGroup: boolean
+  options: {
+    pushAddress?: string | undefined;
+    isGroup?: boolean;
+    callback?: (msg: string) => void;
+  }
 ): Promise<boolean> => {
+  const { pushAddress = '', isGroup = false, callback } = options;
+
   try {
     const levelList = await getDataList('Level1');
     const levelInfo = levelList.find(item => item.level_id === player.level_id);
@@ -269,6 +274,12 @@ const handleCultivationSettlement = async (
       msg.push(`\n增加修为:${finalXiuwei},血量增加:${blood * time}`);
     }
 
+    if (callback) {
+      callback(msg.join(''));
+
+      return true;
+    }
+
     void pushMessage(
       {
         uid: playerId,
@@ -295,14 +306,19 @@ const handleCultivationSettlement = async (
  * @param isGroup 是否群组
  * @returns 是否处理成功
  */
-const handleWorkSettlement = async (
+export const handleWorkSettlement = async (
   playerId: string,
   action: ActionRecord,
   player: Player,
   config: any,
-  pushAddress: string | undefined,
-  isGroup: boolean
+  options: {
+    pushAddress?: string | undefined;
+    isGroup?: boolean;
+    callback?: (msg: string) => void;
+  }
 ): Promise<boolean> => {
+  const { pushAddress = '', isGroup = false, callback } = options;
+
   try {
     const levelList = await getDataList('Level1');
     const levelInfo = levelList.find(item => item.level_id === player.level_id);
@@ -357,6 +373,12 @@ const handleWorkSettlement = async (
     msg.push(eventMessage);
     msg.push(`\n降妖得到${finalLingshi}灵石`);
 
+    if (callback) {
+      callback(msg.join(''));
+
+      return true;
+    }
+
     void pushMessage(
       {
         uid: playerId,
@@ -400,12 +422,12 @@ const processPlayerState = async (playerId: string, action: ActionRecord, config
 
       // 处理闭关状态
       if (action.shutup === '0') {
-        success = await handleCultivationSettlement(playerId, action, player, config, pushAddress, isGroup);
+        success = await handleCultivationSettlement(playerId, action, player, config, { pushAddress, isGroup });
       }
 
       // 处理降妖状态
       if (action.working === '0') {
-        success = await handleWorkSettlement(playerId, action, player, config, pushAddress, isGroup);
+        success = await handleWorkSettlement(playerId, action, player, config, { pushAddress, isGroup });
       }
 
       return success;

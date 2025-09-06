@@ -19,6 +19,7 @@ interface LingGen {
 }
 
 export interface XianChong {
+  id: number;
   name: string;
   type: string;
   加成: number;
@@ -26,6 +27,7 @@ export interface XianChong {
   每级增加: number;
   灵魂绑定?: number;
   等级上限: number;
+  品级: string;
 }
 
 export interface HiddenLingGen {

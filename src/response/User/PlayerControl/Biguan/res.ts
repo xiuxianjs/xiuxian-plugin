@@ -1,25 +1,41 @@
 import { Text, useSend } from 'alemonjs';
 import { getString, userKey } from '@src/model/utils/redisHelper';
-import { existplayer } from '@src/model/index';
-import { readAction, isActionRunning, startAction, normalizeBiguanMinutes } from '@src/model/actionHelper';
+import { existplayer, getPlayerAction } from '@src/model/index';
+import { isActionRunning, startAction, normalizeBiguanMinutes } from '@src/model/actionHelper';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e);
   const userId = e.UserId;
 
   if (!(await existplayer(userId))) {
     return false;
   }
-  const game_action = await getString(userKey(userId, 'game_action'));
+
+  const Send = useSend(e);
+  const gameAction = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
-  if (game_action === '1') {
+  if (gameAction && +gameAction === 1) {
     void Send(Text('修仙：游戏进行中...'));
 
     return false;
+  }
+
+  const action = await getPlayerAction(e.UserId);
+
+  if (action?.shutup !== undefined && +action.shutup === 0) {
+    // 已经在闭关
+    void Send(Text('已经在闭关'));
+
+    return;
+  }
+
+  if (action?.action && action.action !== '空闲') {
+    void Send(Text('不空闲'));
+
+    return;
   }
 
   // 解析时间并归一化
@@ -29,9 +45,6 @@ const res = onResponse(selects, async e => {
     .trim();
   const parsed = parseInt(timeStr, 10);
   const time = normalizeBiguanMinutes(Number.isNaN(parsed) ? undefined : parsed);
-
-  // 查询redis中的人物动作
-  const action = await readAction(userId);
 
   if (isActionRunning(action)) {
     const now = Date.now();
@@ -44,9 +57,9 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const action_time = time * 60 * 1000; // 持续时间，单位毫秒
+  const actionTime = time * 60 * 1000; // 持续时间，单位毫秒
 
-  await startAction(userId, '闭关', action_time, {
+  await startAction(userId, '闭关', actionTime, {
     plant: '1',
     shutup: '0',
     working: '1',

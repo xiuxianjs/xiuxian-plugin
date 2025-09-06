@@ -58,11 +58,11 @@ export async function useLevelUp(e, luck = false) {
 
   // 真仙突破
   if (
-    now_level_id >= 51
-    && player.灵根.name !== '天五灵根'
-    && player.灵根.name !== '垃圾五灵根'
-    && player.灵根.name !== '九转轮回体'
-    && player.灵根.name !== '九重魔功'
+    now_level_id >= 51 &&
+    player.灵根.name !== '天五灵根' &&
+    player.灵根.name !== '垃圾五灵根' &&
+    player.灵根.name !== '九转轮回体' &&
+    player.灵根.name !== '九重魔功'
   ) {
     void Send(Text('你灵根不齐，无成帝的资格！请先夺天地之造化，修补灵根后再来突破吧'));
 

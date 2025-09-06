@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 // 直接 redis.get 改为 helper
-import { existplayer, readPlayer } from '@src/model/index';
+import { existplayer, getPlayerAction, readPlayer } from '@src/model/index';
 
 import { selects } from '@src/response/mw';
 import { getString, userKey } from '@src/model/utils/redisHelper';
@@ -9,22 +9,37 @@ import { readAction, isActionRunning, startAction, normalizeDurationMinutes, rem
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e);
-  const userId = e.UserId; // 用户qq
+  const userId = e.UserId;
 
-  // 有无存档
   if (!(await existplayer(userId))) {
     return false;
   }
-  // 获取游戏状态
-  const game_action = await getString(userKey(userId, 'game_action'));
+
+  const Send = useSend(e);
+  const gameAction = await getString(userKey(userId, 'game_action'));
 
   // 防止继续其他娱乐行为
-  if (game_action === '1') {
+  if (gameAction && +gameAction === 1) {
     void Send(Text('修仙：游戏进行中...'));
 
     return false;
   }
+
+  const action = await getPlayerAction(e.UserId);
+
+  if (action?.working !== undefined && +action.working === 0) {
+    // 已经在闭关
+    void Send(Text(`正在${action?.action}中,剩余时间:${formatRemaining(remainingMs(action))}`));
+
+    return;
+  }
+
+  if (action?.action && action.action !== '空闲') {
+    void Send(Text(`正在${action?.action}中,剩余时间:${formatRemaining(remainingMs(action))}`));
+
+    return;
+  }
+
   // 获取时间
   let timeStr = e.MessageText.replace(/^(#|＃|\/)?/, '');
 
