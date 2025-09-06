@@ -17,6 +17,10 @@ import { ActionRecord } from '@src/types';
 const BASE_CONFIG = {
   SETTLEMENT_TIME_OFFSET: 60000 * 2, // 提前2分钟结算
   TIME_CONVERSION: 1000 * 60, // 毫秒转分钟
+  MIN_CULTIVATION_TIME: 10 * 60 * 1000, // 最小闭关时间：10分钟（毫秒）
+  OPTIMAL_CULTIVATION_TIME: 30 * 60 * 1000, // 最佳闭关时间：30分钟（毫秒）
+  MIN_WORK_TIME: 5 * 60 * 1000, // 最小降妖时间：5分钟（毫秒）
+  OPTIMAL_WORK_TIME: 15 * 60 * 1000, // 最佳降妖时间：15分钟（毫秒）
   BLOOD_RECOVERY_RATE: 0.02, // 血量恢复比例
   ENLIGHTENMENT_CHANCE: 0.2, // 顿悟概率
   DEMON_CHANCE: 0.8, // 走火入魔概率
@@ -55,13 +59,104 @@ const ITEM_EFFECTS = {
 
 /**
  * 解析时间参数
- * @param rawTime 原始时间参数
+ * @param rawTime 原始时间参数（毫秒）
  * @returns 分钟数
  */
-const parseTime = (rawTime: number | string): number => {
+const _parseTime = (rawTime: number | string): number => {
   const time = typeof rawTime === 'number' ? rawTime : parseInt(String(rawTime) || '0', 10);
 
-  return time / BASE_CONFIG.TIME_CONVERSION;
+  // 确保时间不为负数
+  const validTime = Math.max(0, time);
+
+  return validTime / BASE_CONFIG.TIME_CONVERSION;
+};
+
+/**
+ * 计算实际闭关时间（毫秒）
+ * @param action 动作记录
+ * @returns 实际闭关时间（毫秒）
+ */
+const calculateActualCultivationTime = (action: ActionRecord): number => {
+  const now = Date.now();
+  const startTime = action.end_time - action.time;
+  const actualTime = now - startTime;
+
+  // 添加调试日志
+  logger.debug(`闭关时间计算 - 当前时间: ${now}, 结束时间: ${action.end_time}, 持续时间: ${action.time}, 开始时间: ${startTime}, 实际时间: ${actualTime}`);
+
+  return Math.max(0, actualTime);
+};
+
+/**
+ * 计算实际降妖时间（毫秒）
+ * @param action 动作记录
+ * @returns 实际降妖时间（毫秒）
+ */
+const calculateActualWorkTime = (action: ActionRecord): number => {
+  const now = Date.now();
+  const startTime = action.end_time - action.time;
+  const actualTime = now - startTime;
+
+  // 添加调试日志
+  logger.debug(`降妖时间计算 - 当前时间: ${now}, 结束时间: ${action.end_time}, 持续时间: ${action.time}, 开始时间: ${startTime}, 实际时间: ${actualTime}`);
+
+  return Math.max(0, actualTime);
+};
+
+/**
+ * 计算闭关收益递减系数
+ * @param actualTime 实际闭关时间（毫秒）
+ * @returns 收益系数
+ */
+const calculateCultivationEfficiency = (actualTime: number): number => {
+  const timeMinutes = actualTime / BASE_CONFIG.TIME_CONVERSION;
+  const optimalMinutes = BASE_CONFIG.OPTIMAL_CULTIVATION_TIME / BASE_CONFIG.TIME_CONVERSION;
+
+  if (timeMinutes <= 10) {
+    // 10分钟以内不给收益
+    return 0;
+  }
+
+  if (timeMinutes <= optimalMinutes) {
+    // 10-30分钟：线性增长到最佳效率
+    return (timeMinutes - 10) / (optimalMinutes - 10);
+  }
+
+  // 30分钟以上：收益递减
+  // 使用对数函数实现递减效果
+  const excessTime = timeMinutes - optimalMinutes;
+  const decayFactor = Math.log(1 + excessTime / 60) / Math.log(2); // 每60分钟衰减一半
+  const efficiency = Math.max(0.1, 1 - decayFactor * 0.3); // 最多衰减30%，最低保持10%
+
+  return efficiency;
+};
+
+/**
+ * 计算降妖收益递减系数
+ * @param actualTime 实际降妖时间（毫秒）
+ * @returns 收益系数
+ */
+const calculateWorkEfficiency = (actualTime: number): number => {
+  const timeMinutes = actualTime / BASE_CONFIG.TIME_CONVERSION;
+  const optimalMinutes = BASE_CONFIG.OPTIMAL_WORK_TIME / BASE_CONFIG.TIME_CONVERSION;
+
+  if (timeMinutes <= 5) {
+    // 5分钟以内不给收益
+    return 0;
+  }
+
+  if (timeMinutes <= optimalMinutes) {
+    // 5-15分钟：线性增长到最佳效率
+    return (timeMinutes - 5) / (optimalMinutes - 5);
+  }
+
+  // 15分钟以上：收益递减
+  // 使用对数函数实现递减效果
+  const excessTime = timeMinutes - optimalMinutes;
+  const decayFactor = Math.log(1 + excessTime / 30) / Math.log(2); // 每30分钟衰减一半
+  const efficiency = Math.max(0.1, 1 - decayFactor * 0.4); // 最多衰减40%，最低保持10%
+
+  return efficiency;
 };
 
 /**
@@ -72,7 +167,7 @@ const parseTime = (rawTime: number | string): number => {
  */
 const handleDanyaoEffects = async (playerId: string, dy: any): Promise<{ transformation: string; beiyong4: number }> => {
   let transformation = '修为';
-  let beiyong4 = dy.beiyong4 || 0;
+  let beiyong4 = dy.beiyong4 ?? 0;
 
   if (dy.biguan > 0) {
     dy.biguan--;
@@ -208,6 +303,34 @@ export const handleCultivationSettlement = async (
   const { pushAddress = '', isGroup = false, callback } = options;
 
   try {
+    // 计算实际闭关时间
+    const actualCultivationTime = calculateActualCultivationTime(action);
+
+    // 检查是否达到最小闭关时间（10分钟）
+    if (actualCultivationTime < BASE_CONFIG.MIN_CULTIVATION_TIME) {
+      const remainingTime = Math.ceil((BASE_CONFIG.MIN_CULTIVATION_TIME - actualCultivationTime) / 60000);
+      const message = `闭关时间不足，需要至少闭关10分钟才能获得收益。还需闭关${remainingTime}分钟。`;
+
+      if (callback) {
+        callback(message);
+
+        return true;
+      }
+
+      void pushMessage(
+        {
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : ''
+        },
+        [Text(message)]
+      );
+
+      return false;
+    }
+
+    // 计算收益递减系数
+    const efficiency = calculateCultivationEfficiency(actualCultivationTime);
+
     const levelList = await getDataList('Level1');
     const levelInfo = levelList.find(item => item.level_id === player.level_id);
 
@@ -217,9 +340,14 @@ export const handleCultivationSettlement = async (
 
     const nowLevelId = levelInfo.level_id;
     const size = config?.biguan?.size ?? 1;
-    const xiuwei = Math.floor(size * nowLevelId * (player.修炼效率提升 + 1));
+    const baseXiuwei = Math.floor(size * nowLevelId * (player.修炼效率提升 + 1));
     const blood = Math.floor(player.血量上限 * BASE_CONFIG.BLOOD_RECOVERY_RATE);
-    const time = parseTime(action.time);
+
+    // 使用实际闭关时间计算收益（转换为分钟）
+    const time = actualCultivationTime / BASE_CONFIG.TIME_CONVERSION;
+
+    // 基础收益（不应用递减系数）
+    const xiuwei = baseXiuwei;
 
     // 处理炼丹师丹药效果
     const dy = await readDanyao(playerId);
@@ -251,9 +379,13 @@ export const handleCultivationSettlement = async (
     // 删除行为
     void delDataByKey(keysAction.action(playerId));
 
-    // 计算最终奖励
-    const finalXiuwei = xiuwei * time + otherExp;
-    const finalQixue = Math.trunc(xiuwei * time * beiyong4);
+    // 计算最终奖励（应用收益递减系数）
+    const baseFinalXiuwei = Math.floor(xiuwei * time + otherExp);
+    const baseFinalQixue = Math.trunc(xiuwei * time * beiyong4);
+
+    // 应用收益递减系数到最终收益
+    const finalXiuwei = Math.floor(baseFinalXiuwei * efficiency);
+    const finalQixue = Math.trunc(baseFinalQixue * efficiency);
 
     // 设置修为或血气
     if (transformation === '血气') {
@@ -320,6 +452,34 @@ export const handleWorkSettlement = async (
   const { pushAddress = '', isGroup = false, callback } = options;
 
   try {
+    // 计算实际降妖时间
+    const actualWorkTime = calculateActualWorkTime(action);
+
+    // 检查是否达到最小降妖时间（5分钟）
+    if (actualWorkTime < BASE_CONFIG.MIN_WORK_TIME) {
+      const remainingTime = Math.ceil((BASE_CONFIG.MIN_WORK_TIME - actualWorkTime) / 60000);
+      const message = `降妖时间不足，需要至少降妖5分钟才能获得收益。还需降妖${remainingTime}分钟。`;
+
+      if (callback) {
+        callback(message);
+
+        return true;
+      }
+
+      void pushMessage(
+        {
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : ''
+        },
+        [Text(message)]
+      );
+
+      return false;
+    }
+
+    // 计算收益递减系数
+    const efficiency = calculateWorkEfficiency(actualWorkTime);
+
     const levelList = await getDataList('Level1');
     const levelInfo = levelList.find(item => item.level_id === player.level_id);
 
@@ -329,8 +489,13 @@ export const handleWorkSettlement = async (
 
     const nowLevelId = levelInfo.level_id;
     const size = config.work.size;
-    const lingshi = Math.floor(size * nowLevelId * (1 + player.修炼效率提升) * 0.5);
-    const time = parseTime(action.time);
+    const baseLingshi = Math.floor(size * nowLevelId * (1 + player.修炼效率提升) * 0.5);
+
+    // 使用实际降妖时间计算收益（转换为分钟）
+    const time = actualWorkTime / BASE_CONFIG.TIME_CONVERSION;
+
+    // 基础收益（不应用递减系数）
+    const lingshi = baseLingshi;
 
     // 处理随机事件
     const rand = Math.random();
@@ -360,8 +525,9 @@ export const handleWorkSettlement = async (
     player.血气 += otherQixue;
     await writePlayer(playerId, player);
 
-    // 计算最终灵石
-    const finalLingshi = Math.trunc(lingshi * time + otherLingshi);
+    // 计算最终灵石（应用收益递减系数）
+    const baseFinalLingshi = Math.trunc(lingshi * time + otherLingshi);
+    const finalLingshi = Math.trunc(baseFinalLingshi * efficiency);
 
     await setFileValue(playerId, finalLingshi, '灵石');
 
@@ -371,6 +537,7 @@ export const handleWorkSettlement = async (
     const msg: Array<string> = [];
 
     msg.push(eventMessage);
+
     msg.push(`\n降妖得到${finalLingshi}灵石`);
 
     if (callback) {
@@ -405,10 +572,28 @@ export const handleWorkSettlement = async (
 const processPlayerState = async (playerId: string, action: ActionRecord, config: any): Promise<boolean> => {
   try {
     const { pushAddress, isGroup } = getPushInfo(action, playerId);
-    let endTime = action.end_time;
     const nowTime = Date.now();
 
-    // 提前2分钟结算
+    // 计算实际闭关时间
+    const actualCultivationTime = calculateActualCultivationTime(action);
+    // 计算实际降妖时间
+    const actualWorkTime = calculateActualWorkTime(action);
+
+    // 检查是否达到最小闭关时间（10分钟）
+    if (action.shutup === '0' && actualCultivationTime < BASE_CONFIG.MIN_CULTIVATION_TIME) {
+      // 闭关时间不足，不进行结算
+      return false;
+    }
+
+    // 检查是否达到最小降妖时间（5分钟）
+    if (action.working === '0' && actualWorkTime < BASE_CONFIG.MIN_WORK_TIME) {
+      // 降妖时间不足，不进行结算
+      return false;
+    }
+
+    // 检查是否到了结算时间（提前2分钟结算）
+    let endTime = action.end_time;
+
     endTime = endTime - BASE_CONFIG.SETTLEMENT_TIME_OFFSET;
 
     if (nowTime > endTime) {

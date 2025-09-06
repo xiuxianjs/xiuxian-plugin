@@ -49,6 +49,21 @@ const res = onResponse(selects, async e => {
 
   const config = await getConfig('', 'xiuxian');
 
+  // 计算实际降妖时间
+  const now = Date.now();
+  const startTime = action.end_time - action.time;
+  const actualWorkTime = now - startTime;
+  const minWorkTime = 5 * 60 * 1000; // 5分钟
+
+  // 检查是否达到最小降妖时间
+  if (actualWorkTime < minWorkTime) {
+    const remainingTime = Math.ceil((minWorkTime - actualWorkTime) / 60000);
+
+    void Send(Text(`降妖时间不足，需要至少降妖5分钟才能获得收益。还需降妖${remainingTime}分钟。`));
+
+    return;
+  }
+
   void handleWorkSettlement(userId, action, player, config, {
     callback: (msg: string) => {
       void Send(Text(msg));

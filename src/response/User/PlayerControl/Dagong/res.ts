@@ -48,7 +48,7 @@ const res = onResponse(selects, async e => {
 
   // working === 0 表示在降妖
   if (action?.working !== undefined && +action.working === 0) {
-    void Send(Text('不在降妖'));
+    void Send(Text('已经在降妖'));
 
     return;
   }

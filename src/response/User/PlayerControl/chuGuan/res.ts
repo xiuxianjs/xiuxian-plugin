@@ -51,6 +51,21 @@ const res = onResponse(selects, async e => {
 
   const config = await getConfig('', 'xiuxian');
 
+  // 计算实际闭关时间
+  const now = Date.now();
+  const startTime = action.end_time - action.time;
+  const actualCultivationTime = now - startTime;
+  const minCultivationTime = 10 * 60 * 1000; // 10分钟
+
+  // 检查是否达到最小闭关时间
+  if (actualCultivationTime < minCultivationTime) {
+    const remainingTime = Math.ceil((minCultivationTime - actualCultivationTime) / 60000);
+
+    void Send(Text(`闭关时间不足，需要至少闭关10分钟才能获得收益。还需闭关${remainingTime}分钟。`));
+
+    return;
+  }
+
   void handleCultivationSettlement(userId, action, player, config, {
     callback: (msg: string) => {
       void Send(Text(msg));
