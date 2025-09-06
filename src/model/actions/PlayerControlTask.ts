@@ -29,8 +29,8 @@ const BASE_CONFIG = {
   SPECIAL_CHANCE_MIN: 0.5, // 特殊事件最小概率
   SPECIAL_CHANCE_MAX: 0.6, // 特殊事件最大概率
   // 收益倍率调整 - 用于实现100万/小时收益目标
-  CULTIVATION_INCOME_MULTIPLIER: 20, // 闭关收益倍率调整系数
-  WORK_INCOME_MULTIPLIER: 25 // 降妖收益倍率调整系数
+  CULTIVATION_INCOME_MULTIPLIER: 13, // 闭关收益倍率调整系数
+  WORK_INCOME_MULTIPLIER: 8 // 降妖收益倍率调整系数
 } as const;
 
 /**
