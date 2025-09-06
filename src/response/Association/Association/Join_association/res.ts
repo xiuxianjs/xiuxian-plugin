@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
 import { keys } from '@src/model/keys';
-import { timestampToTime, readPlayer, writePlayer, 宗门人数上限 } from '@src/model/index';
+import { timestampToTime, readPlayer, writePlayer, 宗门人数上限, notUndAndNull } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
@@ -15,6 +15,12 @@ const res = onResponse(selects, async e => {
   const player = await readPlayer(userId);
 
   if (!player) {
+    return false;
+  }
+
+  if (notUndAndNull(player.宗门)) {
+    void Send(Text('已经加入宗门'));
+
     return false;
   }
 
@@ -56,7 +62,6 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  //
   if (nowLevelId < 42 && ass.power === 1) {
     void Send(Text('你在仙界吗？就去仙界宗门'));
 
@@ -72,6 +77,8 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
+  //
   const capIndex = Math.max(0, Math.min(宗门人数上限.length - 1, guildLevel - 1));
   const mostmem = 宗门人数上限[capIndex];
   const nowmem = ass.所有成员.length;
