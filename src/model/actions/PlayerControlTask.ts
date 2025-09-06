@@ -27,7 +27,28 @@ const BASE_CONFIG = {
   LUCKY_CHANCE: 0.2, // 幸运事件概率
   UNLUCKY_CHANCE: 0.8, // 不幸事件概率
   SPECIAL_CHANCE_MIN: 0.5, // 特殊事件最小概率
-  SPECIAL_CHANCE_MAX: 0.6 // 特殊事件最大概率
+  SPECIAL_CHANCE_MAX: 0.6, // 特殊事件最大概率
+  // 收益倍率调整 - 用于实现100万/小时收益目标
+  CULTIVATION_INCOME_MULTIPLIER: 20, // 闭关收益倍率调整系数
+  WORK_INCOME_MULTIPLIER: 25 // 降妖收益倍率调整系数
+} as const;
+
+/**
+ * 收益曲线配置常量
+ */
+const INCOME_CURVE_CONFIG = {
+  // 闭关收益曲线参数
+  CULTIVATION: {
+    GROWTH_DECAY_PERIOD: 30, // 增长衰减周期（分钟）
+    MAX_EXTRA_GROWTH: 0.5, // 最大额外增长比例（50%）
+    GROWTH_DECAY_BASE: 2 // 增长衰减基数
+  },
+  // 降妖收益曲线参数
+  WORK: {
+    GROWTH_DECAY_PERIOD: 15, // 增长衰减周期（分钟）
+    MAX_EXTRA_GROWTH: 0.3, // 最大额外增长比例（30%）
+    GROWTH_DECAY_BASE: 2 // 增长衰减基数
+  }
 } as const;
 
 /**
@@ -111,8 +132,9 @@ const calculateCultivationEfficiency = (actualTime: number): number => {
   // 30分钟以上：仍有增长，但增长变少
   // 使用对数函数实现增长递减效果
   const excessTime = timeMinutes - optimalMinutes;
-  const growthFactor = Math.log(1 + excessTime / 30) / Math.log(2); // 每30分钟增长减半
-  const efficiency = 1 + growthFactor * 0.5; // 最多额外增长50%
+  const growthFactor =
+    Math.log(1 + excessTime / INCOME_CURVE_CONFIG.CULTIVATION.GROWTH_DECAY_PERIOD) / Math.log(INCOME_CURVE_CONFIG.CULTIVATION.GROWTH_DECAY_BASE);
+  const efficiency = 1 + growthFactor * INCOME_CURVE_CONFIG.CULTIVATION.MAX_EXTRA_GROWTH;
 
   return efficiency;
 };
@@ -139,8 +161,8 @@ const calculateWorkEfficiency = (actualTime: number): number => {
   // 15分钟以上：仍有增长，但增长变少
   // 使用对数函数实现增长递减效果
   const excessTime = timeMinutes - optimalMinutes;
-  const growthFactor = Math.log(1 + excessTime / 15) / Math.log(2); // 每15分钟增长减半
-  const efficiency = 1 + growthFactor * 0.3; // 最多额外增长30%
+  const growthFactor = Math.log(1 + excessTime / INCOME_CURVE_CONFIG.WORK.GROWTH_DECAY_PERIOD) / Math.log(INCOME_CURVE_CONFIG.WORK.GROWTH_DECAY_BASE);
+  const efficiency = 1 + growthFactor * INCOME_CURVE_CONFIG.WORK.MAX_EXTRA_GROWTH;
 
   return efficiency;
 };
@@ -326,7 +348,7 @@ export const handleCultivationSettlement = async (
 
     const nowLevelId = levelInfo.level_id;
     const size = config?.biguan?.size ?? 1;
-    const baseXiuwei = Math.floor(size * nowLevelId * (player.修炼效率提升 + 1));
+    const baseXiuwei = Math.floor(size * nowLevelId * (player.修炼效率提升 + 1) * BASE_CONFIG.CULTIVATION_INCOME_MULTIPLIER);
     const blood = Math.floor(player.血量上限 * BASE_CONFIG.BLOOD_RECOVERY_RATE);
 
     // 使用实际闭关时间计算收益（转换为分钟）
@@ -475,7 +497,7 @@ export const handleWorkSettlement = async (
 
     const nowLevelId = levelInfo.level_id;
     const size = config.work.size;
-    const baseLingshi = Math.floor(size * nowLevelId * (1 + player.修炼效率提升) * 0.5);
+    const baseLingshi = Math.floor(size * nowLevelId * (1 + player.修炼效率提升) * 0.5 * BASE_CONFIG.WORK_INCOME_MULTIPLIER);
 
     // 使用实际降妖时间计算收益（转换为分钟）
     const time = actualWorkTime / BASE_CONFIG.TIME_CONVERSION;

@@ -90,13 +90,13 @@ export async function Go(e): Promise<boolean | 0> {
   if (!action) {
     void Send(Text('空闲中'));
 
-    return 0;
+    return true;
   }
 
   if (!action && action?.action === '空闲') {
     void Send(Text('空闲中'));
 
-    return 0;
+    return true;
   }
 
   const actionEndTime = action?.end_time ?? 0;
