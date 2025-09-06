@@ -63,7 +63,7 @@ const res = onResponse(selects, async e => {
 
     void Send(Text(`闭关时间不足，需要至少闭关10分钟才能获得收益。还需闭关${remainingTime}分钟。`));
 
-    return;
+    // 仍然执行结算，但会获得0收益
   }
 
   void handleCultivationSettlement(userId, action, player, config, {

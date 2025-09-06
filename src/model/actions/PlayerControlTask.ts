@@ -58,20 +58,6 @@ const ITEM_EFFECTS = {
 } as const;
 
 /**
- * 解析时间参数
- * @param rawTime 原始时间参数（毫秒）
- * @returns 分钟数
- */
-const _parseTime = (rawTime: number | string): number => {
-  const time = typeof rawTime === 'number' ? rawTime : parseInt(String(rawTime) || '0', 10);
-
-  // 确保时间不为负数
-  const validTime = Math.max(0, time);
-
-  return validTime / BASE_CONFIG.TIME_CONVERSION;
-};
-
-/**
  * 计算实际闭关时间（毫秒）
  * @param action 动作记录
  * @returns 实际闭关时间（毫秒）
@@ -104,7 +90,7 @@ const calculateActualWorkTime = (action: ActionRecord): number => {
 };
 
 /**
- * 计算闭关收益递减系数
+ * 计算闭关收益系数（30分钟后仍有增长，但增长变少）
  * @param actualTime 实际闭关时间（毫秒）
  * @returns 收益系数
  */
@@ -122,17 +108,17 @@ const calculateCultivationEfficiency = (actualTime: number): number => {
     return (timeMinutes - 10) / (optimalMinutes - 10);
   }
 
-  // 30分钟以上：收益递减
-  // 使用对数函数实现递减效果
+  // 30分钟以上：仍有增长，但增长变少
+  // 使用对数函数实现增长递减效果
   const excessTime = timeMinutes - optimalMinutes;
-  const decayFactor = Math.log(1 + excessTime / 60) / Math.log(2); // 每60分钟衰减一半
-  const efficiency = Math.max(0.1, 1 - decayFactor * 0.3); // 最多衰减30%，最低保持10%
+  const growthFactor = Math.log(1 + excessTime / 30) / Math.log(2); // 每30分钟增长减半
+  const efficiency = 1 + growthFactor * 0.5; // 最多额外增长50%
 
   return efficiency;
 };
 
 /**
- * 计算降妖收益递减系数
+ * 计算降妖收益系数（15分钟后仍有增长，但增长变少）
  * @param actualTime 实际降妖时间（毫秒）
  * @returns 收益系数
  */
@@ -150,11 +136,11 @@ const calculateWorkEfficiency = (actualTime: number): number => {
     return (timeMinutes - 5) / (optimalMinutes - 5);
   }
 
-  // 15分钟以上：收益递减
-  // 使用对数函数实现递减效果
+  // 15分钟以上：仍有增长，但增长变少
+  // 使用对数函数实现增长递减效果
   const excessTime = timeMinutes - optimalMinutes;
-  const decayFactor = Math.log(1 + excessTime / 30) / Math.log(2); // 每30分钟衰减一半
-  const efficiency = Math.max(0.1, 1 - decayFactor * 0.4); // 最多衰减40%，最低保持10%
+  const growthFactor = Math.log(1 + excessTime / 15) / Math.log(2); // 每15分钟增长减半
+  const efficiency = 1 + growthFactor * 0.3; // 最多额外增长30%
 
   return efficiency;
 };
@@ -201,7 +187,7 @@ const handleDanyaoEffects = async (playerId: string, dy: any): Promise<{ transfo
  */
 const handleEnlightenment = (time: number, transformation: string, beiyong4: number): { otherExp: number; qixue: number; message: string } => {
   const rand = Math.trunc(Math.random() * 10) + REWARD_MULTIPLIERS.ENLIGHTENMENT_MIN;
-  const otherExp = rand * time;
+  const otherExp = Math.trunc(rand * time);
   const qixue = Math.trunc(rand * time * beiyong4);
 
   let message = '';
@@ -224,7 +210,7 @@ const handleEnlightenment = (time: number, transformation: string, beiyong4: num
  */
 const handleDemonState = (time: number, transformation: string, beiyong4: number): { otherExp: number; qixue: number; message: string } => {
   const rand = Math.trunc(Math.random() * 10) + REWARD_MULTIPLIERS.DEMON_MIN;
-  const otherExp = -1 * rand * time;
+  const otherExp = Math.trunc(-1 * rand * time);
   const qixue = Math.trunc(rand * time * beiyong4);
 
   let message = '';
@@ -325,7 +311,7 @@ export const handleCultivationSettlement = async (
         [Text(message)]
       );
 
-      return false;
+      // 仍然执行结算，但会获得0收益
     }
 
     // 计算收益递减系数
@@ -374,7 +360,7 @@ export const handleCultivationSettlement = async (
     const itemResult = await handleSpecialItems(playerId, player, xiuwei, time);
 
     // 更新血量
-    await setFileValue(playerId, blood * time, '当前血量');
+    await setFileValue(playerId, Math.floor(blood * time), '当前血量');
 
     // 删除行为
     void delDataByKey(keysAction.action(playerId));
@@ -401,9 +387,9 @@ export const handleCultivationSettlement = async (
     msg.push(itemResult.message);
 
     if (transformation === '血气') {
-      msg.push(`\n受到炼神之力的影响,增加气血:${finalQixue},血量增加:${blood * time}`);
+      msg.push(`\n受到炼神之力的影响,增加气血:${finalQixue},血量增加:${Math.floor(blood * time)}`);
     } else {
-      msg.push(`\n增加修为:${finalXiuwei},血量增加:${blood * time}`);
+      msg.push(`\n增加修为:${finalXiuwei},血量增加:${Math.floor(blood * time)}`);
     }
 
     if (callback) {
@@ -474,7 +460,7 @@ export const handleWorkSettlement = async (
         [Text(message)]
       );
 
-      return false;
+      // 仍然执行结算，但会获得0收益
     }
 
     // 计算收益递减系数
@@ -506,23 +492,23 @@ export const handleWorkSettlement = async (
     if (rand < BASE_CONFIG.LUCKY_CHANCE) {
       const luckyRand = Math.trunc(Math.random() * 10) + REWARD_MULTIPLIERS.LUCKY_MIN;
 
-      otherLingshi = luckyRand * time;
+      otherLingshi = Math.trunc(luckyRand * time);
       eventMessage = `\n降妖路上途径金银坊，一时手痒入场一掷：6 6 6，额外获得灵石${otherLingshi}`;
     } else if (rand > BASE_CONFIG.UNLUCKY_CHANCE) {
       const unluckyRand = Math.trunc(Math.random() * 10) + REWARD_MULTIPLIERS.UNLUCKY_MIN;
 
-      otherLingshi = -1 * unluckyRand * time;
+      otherLingshi = Math.trunc(-1 * unluckyRand * time);
       eventMessage = `\n途径盗宝团营地，由于你的疏忽,货物被人顺手牵羊,老板大发雷霆,灵石减少${Math.abs(otherLingshi)}`;
     } else if (rand > BASE_CONFIG.SPECIAL_CHANCE_MIN && rand < BASE_CONFIG.SPECIAL_CHANCE_MAX) {
       const specialRand = Math.trunc(Math.random() * 10) + REWARD_MULTIPLIERS.SPECIAL_MIN;
 
-      otherLingshi = -1 * specialRand * time;
-      otherQixue = -2 * specialRand * time;
+      otherLingshi = Math.trunc(-1 * specialRand * time);
+      otherQixue = Math.trunc(-2 * specialRand * time);
       eventMessage = `\n归来途中经过怡红院，你抵挡不住诱惑，进去大肆消费了${Math.abs(otherLingshi)}灵石，早上醒来，气血消耗了${Math.abs(otherQixue)}`;
     }
 
     // 更新玩家血气
-    player.血气 += otherQixue;
+    player.血气 += Math.floor(otherQixue);
     await writePlayer(playerId, player);
 
     // 计算最终灵石（应用收益递减系数）
@@ -581,14 +567,12 @@ const processPlayerState = async (playerId: string, action: ActionRecord, config
 
     // 检查是否达到最小闭关时间（10分钟）
     if (action.shutup === '0' && actualCultivationTime < BASE_CONFIG.MIN_CULTIVATION_TIME) {
-      // 闭关时间不足，不进行结算
-      return false;
+      // 闭关时间不足，仍然进行结算但会获得0收益
     }
 
     // 检查是否达到最小降妖时间（5分钟）
     if (action.working === '0' && actualWorkTime < BASE_CONFIG.MIN_WORK_TIME) {
-      // 降妖时间不足，不进行结算
-      return false;
+      // 降妖时间不足，仍然进行结算但会获得0收益
     }
 
     // 检查是否到了结算时间（提前2分钟结算）

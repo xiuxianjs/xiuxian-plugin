@@ -1,5 +1,4 @@
 import { useSend, Text } from 'alemonjs';
-import { safeParse } from './utils/safe.js';
 import type { LastSignTime } from '../types/model.js';
 import { convert2integer } from './utils/number.js';
 import { getIoRedis } from '@alemonjs/db';
@@ -78,28 +77,35 @@ export async function Go(e): Promise<boolean | 0> {
     return 0;
   }
   const redis = getIoRedis();
-  const game_action = await redis.get(keysAction.gameAction(userId));
+  const gameAction = await redis.get(keysAction.gameAction(userId));
 
-  if (game_action === '1') {
+  if (gameAction && +gameAction === 1) {
     void Send(Text('修仙：游戏进行中...'));
 
     return 0;
   }
-  const actionRaw = await redis.get(getRedisKey(userId, 'action'));
-  const action = safeParse(actionRaw, null);
 
-  if (action) {
-    const action_end_time = action.end_time ?? 0;
-    const now_time = Date.now();
+  const action = await getDataJSONParseByKey(keysAction.action(userId));
 
-    if (now_time <= action_end_time) {
-      const m = Math.floor((action_end_time - now_time) / 1000 / 60);
-      const s = Math.floor((action_end_time - now_time - m * 60 * 1000) / 1000);
+  if (!action) {
+    void Send(Text('空闲中'));
 
-      void Send(Text('正在' + action.action + '中,剩余时间:' + m + '分' + s + '秒'));
+    return 0;
+  }
 
-      return 0;
-    }
+  if (!action && action?.action === '空闲') {
+    void Send(Text('空闲中'));
+
+    return 0;
+  }
+
+  const actionEndTime = action?.end_time ?? 0;
+  const nowTime = Date.now();
+
+  if (nowTime <= actionEndTime) {
+    void Send(Text('正在' + action.action + '中,剩余时间:' + dayjs(actionEndTime - nowTime).format('mm:ss')));
+
+    return 0;
   }
 
   return true;

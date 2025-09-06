@@ -60,8 +60,7 @@ const res = onResponse(selects, async e => {
     const remainingTime = Math.ceil((minWorkTime - actualWorkTime) / 60000);
 
     void Send(Text(`降妖时间不足，需要至少降妖5分钟才能获得收益。还需降妖${remainingTime}分钟。`));
-
-    return;
+    // 仍然执行结算，但会获得0收益
   }
 
   void handleWorkSettlement(userId, action, player, config, {
