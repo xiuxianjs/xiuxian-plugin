@@ -310,6 +310,9 @@ export const handleCultivationSettlement = async (
 ): Promise<boolean> => {
   const { pushAddress = '', isGroup = false, callback } = options;
 
+  // 构建消息
+  const msg: Array<string> = [];
+
   try {
     // 计算实际闭关时间
     const actualCultivationTime = calculateActualCultivationTime(action);
@@ -319,25 +322,30 @@ export const handleCultivationSettlement = async (
       const remainingTime = Math.ceil((BASE_CONFIG.MIN_CULTIVATION_TIME - actualCultivationTime) / 60000);
       const message = `闭关时间不足，需要至少闭关10分钟才能获得收益。还需闭关${remainingTime}分钟。`;
 
-      if (callback) {
-        callback(message);
-
-        return true;
-      }
-
-      void pushMessage(
-        {
-          uid: playerId,
-          cid: isGroup && pushAddress ? pushAddress : ''
-        },
-        [Text(message)]
-      );
-
-      // 仍然执行结算，但会获得0收益
+      msg.push(message);
     }
 
     // 计算收益递减系数
     const efficiency = calculateCultivationEfficiency(actualCultivationTime);
+
+    // 如果效率为0（时间不足），直接返回，不进行收益计算
+    if (efficiency === 0) {
+      if (callback) {
+        callback(msg.join(''));
+
+        return true;
+      } else {
+        void pushMessage(
+          {
+            uid: playerId,
+            cid: isGroup && pushAddress ? pushAddress : ''
+          },
+          [Text(msg.join(''))]
+        );
+
+        return true;
+      }
+    }
 
     const levelList = await getDataList('Level1');
     const levelInfo = levelList.find(item => item.level_id === player.level_id);
@@ -402,9 +410,6 @@ export const handleCultivationSettlement = async (
       await setFileValue(playerId, finalXiuwei, transformation);
     }
 
-    // 构建消息
-    const msg: Array<string> = [];
-
     msg.push(eventMessage);
     msg.push(itemResult.message);
 
@@ -418,17 +423,17 @@ export const handleCultivationSettlement = async (
       callback(msg.join(''));
 
       return true;
+    } else {
+      void pushMessage(
+        {
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : ''
+        },
+        [Text(msg.join(''))]
+      );
+
+      return true;
     }
-
-    void pushMessage(
-      {
-        uid: playerId,
-        cid: isGroup && pushAddress ? pushAddress : ''
-      },
-      [Text(msg.join(''))]
-    );
-
-    return true;
   } catch (error) {
     logger.error(error);
 
@@ -459,6 +464,9 @@ export const handleWorkSettlement = async (
 ): Promise<boolean> => {
   const { pushAddress = '', isGroup = false, callback } = options;
 
+  // 构建消息
+  const msg: Array<string> = [];
+
   try {
     // 计算实际降妖时间
     const actualWorkTime = calculateActualWorkTime(action);
@@ -468,25 +476,32 @@ export const handleWorkSettlement = async (
       const remainingTime = Math.ceil((BASE_CONFIG.MIN_WORK_TIME - actualWorkTime) / 60000);
       const message = `降妖时间不足，需要至少降妖5分钟才能获得收益。还需降妖${remainingTime}分钟。`;
 
-      if (callback) {
-        callback(message);
-
-        return true;
-      }
-
-      void pushMessage(
-        {
-          uid: playerId,
-          cid: isGroup && pushAddress ? pushAddress : ''
-        },
-        [Text(message)]
-      );
+      msg.push(message);
 
       // 仍然执行结算，但会获得0收益
     }
 
     // 计算收益递减系数
     const efficiency = calculateWorkEfficiency(actualWorkTime);
+
+    // 如果效率为0（时间不足），直接返回，不进行收益计算
+    if (efficiency === 0) {
+      if (callback) {
+        callback(msg.join(''));
+
+        return true;
+      } else {
+        void pushMessage(
+          {
+            uid: playerId,
+            cid: isGroup && pushAddress ? pushAddress : ''
+          },
+          [Text(msg.join(''))]
+        );
+
+        return true;
+      }
+    }
 
     const levelList = await getDataList('Level1');
     const levelInfo = levelList.find(item => item.level_id === player.level_id);
@@ -541,26 +556,21 @@ export const handleWorkSettlement = async (
 
     void delDataByKey(keysAction.action(playerId));
 
-    // 构建消息
-    const msg: Array<string> = [];
-
     msg.push(eventMessage);
 
     msg.push(`\n降妖得到${finalLingshi}灵石`);
 
     if (callback) {
       callback(msg.join(''));
-
-      return true;
+    } else {
+      void pushMessage(
+        {
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : ''
+        },
+        [Text(msg.join(''))]
+      );
     }
-
-    void pushMessage(
-      {
-        uid: playerId,
-        cid: isGroup && pushAddress ? pushAddress : ''
-      },
-      [Text(msg.join(''))]
-    );
 
     return true;
   } catch (error) {
