@@ -1,6 +1,5 @@
-import { config } from '@src/model/api';
 import { getString, userKey } from '@src/model/utils/redisHelper';
-import { getPlayerAction, readPlayer } from '@src/model/index';
+import { getConfig, getPlayerAction, readPlayer } from '@src/model/index';
 import mw from '@src/response/mw';
 import { selects } from '@src/response/mw';
 import { Text, useSend } from 'alemonjs';
@@ -28,23 +27,29 @@ const res = onResponse(selects, async e => {
 
   const action = await getPlayerAction(e.UserId);
 
+  // 没有动作
   if (!action) {
     // 没有动作
     void Send(Text('空闲中'));
 
     return;
   }
-  if (action?.shutup !== undefined && +action.shutup === 1) {
-    void Send(Text('不空闲'));
 
-    return;
-  }
-
+  // action === '空闲' 表示空闲
   if (action?.action && action.action === '空闲') {
     void Send(Text('空闲中'));
 
     return;
   }
+
+  // shutup !== 0 表示不在闭关
+  if (action?.shutup !== undefined && +action.shutup !== 0) {
+    void Send(Text('不在闭关'));
+
+    return;
+  }
+
+  const config = await getConfig('', 'xiuxian');
 
   void handleCultivationSettlement(userId, action, player, config, {
     callback: (msg: string) => {

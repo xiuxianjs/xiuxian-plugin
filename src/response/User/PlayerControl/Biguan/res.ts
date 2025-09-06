@@ -25,13 +25,26 @@ const res = onResponse(selects, async e => {
 
   const action = await getPlayerAction(e.UserId);
 
+  // 有动作
+  if (isActionRunning(action)) {
+    const now = Date.now();
+    const rest = action.end_time - now;
+    const m = Math.floor(rest / 60000);
+    const s = Math.floor((rest - m * 60000) / 1000);
+
+    void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
+
+    return false;
+  }
+
+  // shutup === 0 表示在闭关
   if (action?.shutup !== undefined && +action.shutup === 0) {
-    // 已经在闭关
     void Send(Text('已经在闭关'));
 
     return;
   }
 
+  // action !== '空闲' 表示不空闲
   if (action?.action && action.action !== '空闲') {
     void Send(Text('不空闲'));
 
@@ -45,17 +58,6 @@ const res = onResponse(selects, async e => {
     .trim();
   const parsed = parseInt(timeStr, 10);
   const time = normalizeBiguanMinutes(Number.isNaN(parsed) ? undefined : parsed);
-
-  if (isActionRunning(action)) {
-    const now = Date.now();
-    const rest = action.end_time - now;
-    const m = Math.floor(rest / 60000);
-    const s = Math.floor((rest - m * 60000) / 1000);
-
-    void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
-
-    return false;
-  }
 
   const actionTime = time * 60 * 1000; // 持续时间，单位毫秒
 

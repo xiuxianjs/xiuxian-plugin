@@ -1,24 +1,31 @@
 import { Text, useSend } from 'alemonjs';
-
-// 直接 redis.get 改为 helper
-import { existplayer, getPlayerAction, readPlayer } from '@src/model/index';
-
+import { getPlayerAction, readPlayer } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import { getString, userKey } from '@src/model/utils/redisHelper';
-import { readAction, isActionRunning, startAction, normalizeDurationMinutes, remainingMs, formatRemaining } from '@src/model/actionHelper';
+import { isActionRunning, startAction, normalizeDurationMinutes } from '@src/model/actionHelper';
+
 export const regular = /^(#|＃|\/)?(降妖$)|(降妖(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
   const userId = e.UserId;
 
-  if (!(await existplayer(userId))) {
+  const player = await readPlayer(userId);
+
+  if (!player) {
     return false;
   }
 
   const Send = useSend(e);
+
+  if (player.当前血量 < 200) {
+    void Send(Text('你都伤成这样了,先去疗伤吧'));
+
+    return false;
+  }
+
   const gameAction = await getString(userKey(userId, 'game_action'));
 
-  // 防止继续其他娱乐行为
+  // 游戏状态
   if (gameAction && +gameAction === 1) {
     void Send(Text('修仙：游戏进行中...'));
 
@@ -27,15 +34,28 @@ const res = onResponse(selects, async e => {
 
   const action = await getPlayerAction(e.UserId);
 
+  // 有其他动作
+  if (isActionRunning(action)) {
+    const now = Date.now();
+    const rest = action.end_time - now;
+    const m = Math.floor(rest / 60000);
+    const s = Math.floor((rest - m * 60000) / 1000);
+
+    void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
+
+    return false;
+  }
+
+  // working === 0 表示在降妖
   if (action?.working !== undefined && +action.working === 0) {
-    // 已经在闭关
-    void Send(Text(`正在${action?.action}中,剩余时间:${formatRemaining(remainingMs(action))}`));
+    void Send(Text('不在降妖'));
 
     return;
   }
 
+  // action !== '空闲' 表示不空闲
   if (action?.action && action.action !== '空闲') {
-    void Send(Text(`正在${action?.action}中,剩余时间:${formatRemaining(remainingMs(action))}`));
+    void Send(Text('不空闲'));
 
     return;
   }
@@ -45,29 +65,12 @@ const res = onResponse(selects, async e => {
 
   timeStr = timeStr.replace('降妖', '').replace('分', '').replace('钟', '');
   const time = normalizeDurationMinutes(timeStr, 15, 48, 15);
+  const actionTime = time * 60 * 1000;
 
-  const player = await readPlayer(userId);
-
-  if (player.当前血量 < 200) {
-    void Send(Text('你都伤成这样了,先去疗伤吧'));
-
-    return false;
-  }
-  // 查询redis中的人物动作
-
-  const current = await readAction(userId);
-
-  if (isActionRunning(current)) {
-    void Send(Text(`正在${current?.action}中,剩余时间:${formatRemaining(remainingMs(current))}`));
-
-    return false;
-  }
-  const action_time = time * 60 * 1000;
-
-  await startAction(userId, '降妖', action_time, {
+  await startAction(userId, '降妖', actionTime, {
     plant: '1',
     shutup: '1',
-    working: '0',
+    working: '0', // 降妖
     Place_action: '1',
     Place_actionplus: '1',
     power_up: '1',

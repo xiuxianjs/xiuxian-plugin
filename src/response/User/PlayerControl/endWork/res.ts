@@ -1,5 +1,4 @@
-import { config } from '@src/model/api';
-import { getPlayerAction, getString, readPlayer, userKey } from '@src/model/index';
+import { getConfig, getPlayerAction, getString, readPlayer, userKey } from '@src/model/index';
 import { selects } from '@src/response/mw';
 import mw from '@src/response/mw';
 import { useSend, Text } from 'alemonjs';
@@ -27,24 +26,28 @@ const res = onResponse(selects, async e => {
 
   const action = await getPlayerAction(e.UserId);
 
+  // 没有动作
   if (!action) {
-    // 没有动作
     void Send(Text('空闲中'));
 
     return;
   }
 
-  if (action?.working !== undefined && +action.working === 1) {
-    void Send(Text('不在降妖'));
-
-    return;
-  }
-
+  // action === '空闲' 表示空闲
   if (action?.action && action.action === '空闲') {
     void Send(Text('空闲中'));
 
     return;
   }
+
+  // working !== 0 表示不在降妖
+  if (action?.working !== undefined && +action.working !== 0) {
+    void Send(Text('不在降妖'));
+
+    return;
+  }
+
+  const config = await getConfig('', 'xiuxian');
 
   void handleWorkSettlement(userId, action, player, config, {
     callback: (msg: string) => {
