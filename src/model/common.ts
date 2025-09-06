@@ -6,6 +6,7 @@ import { getRedisKey, keys, keysAction } from './keys.js';
 import { existDataByKey, getDataJSONParseByKey } from './DataControl.js';
 import dayjs from 'dayjs';
 import { ActionRecord } from '@src/types/action.js';
+import { formatRemaining } from './actionHelper.js';
 
 export function getRandomFromARR<T>(arr: T[]): T {
   const randIndex = Math.trunc(Math.random() * arr.length);
@@ -103,7 +104,9 @@ export async function Go(e): Promise<boolean | 0> {
   const nowTime = Date.now();
 
   if (nowTime <= actionEndTime) {
-    void Send(Text('正在' + action.action + '中,剩余时间:' + dayjs(actionEndTime - nowTime).format('mm:ss')));
+    const timeTuple = formatRemaining(actionEndTime - nowTime);
+
+    void Send(Text('正在' + action.action + '中,剩余时间:' + timeTuple));
 
     return 0;
   }

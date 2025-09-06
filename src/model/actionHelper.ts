@@ -102,12 +102,12 @@ export function remainingMs(record: ActionRecord, now = Date.now()): number {
 
 // 格式化剩余 mm分ss秒
 export function formatRemaining(ms: number) {
-  const total = Math.floor(ms / 1000);
-  const m = Math.floor(total / 60);
+  // 转为 时 分 秒 格式
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
 
-  const s = total - m * 60;
-
-  return `${m}分${s}秒`;
+  return `${h}时${m}分${s}秒`;
 }
 
 // 通用更新：传入回调，回调返回新的记录（或 null 代表不更新）
