@@ -61,7 +61,11 @@ export async function getPlayerAction(usrId: string): Promise<ActionRecord> {
 }
 
 export function notUndAndNull<T>(obj: T | null | undefined): obj is T {
-  return !(obj === null || obj === undefined);
+  return !isUndAndNull(obj);
+}
+
+export function isUndAndNull<T>(obj: T | null | undefined): obj is T {
+  return obj === null || obj === undefined;
 }
 
 /**
@@ -89,14 +93,10 @@ export async function Go(e): Promise<boolean | 0> {
   const action = await getDataJSONParseByKey(keysAction.action(userId));
 
   if (!action) {
-    void Send(Text('空闲中'));
-
     return true;
   }
 
   if (!action && action?.action === '空闲') {
-    void Send(Text('空闲中'));
-
     return true;
   }
 

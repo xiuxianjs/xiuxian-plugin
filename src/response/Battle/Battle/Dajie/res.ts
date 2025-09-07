@@ -1,5 +1,5 @@
 import { Image, Text, useMention, useSend } from 'alemonjs';
-import { existplayer, readPlayer, existNajieThing, addNajieThing, zdBattle, addHP, writePlayer } from '@src/model/index';
+import { existplayer, readPlayer, existNajieThing, addNajieThing, zdBattle, addHP, writePlayer, formatRemaining } from '@src/model/index';
 import { getDataByKey, getDataJSONParseByKey, setDataByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
 import { keys, keysAction } from '@src/model/keys';
@@ -177,10 +177,8 @@ const res = onResponse(selects, async e => {
 
     if (!Number.isNaN(end) && Date.now() <= end) {
       const remain = end - Date.now();
-      const m = Math.floor(remain / 60000);
-      const s = Math.floor((remain % 60000) / 1000);
 
-      void Send(Text(`正在${actionAData.action}中,剩余时间:${m}分${s}秒`));
+      void Send(Text(`正在${actionAData.action}中,剩余时间:${formatRemaining(remain)}`));
 
       return false;
     }
@@ -209,10 +207,8 @@ const res = onResponse(selects, async e => {
 
         if (!haveYSS) {
           const remain = Number(bAction.end_time) - Date.now();
-          const m = Math.floor(remain / 60000);
-          const s = Math.floor((remain % 60000) / 1000);
 
-          void Send(Text(`对方正在${bAction.action}中,剩余时间:${m}分${s}秒`));
+          void Send(Text(`对方正在${bAction.action}中,剩余时间:${formatRemaining(remain)}`));
 
           return false;
         }
@@ -230,10 +226,8 @@ const res = onResponse(selects, async e => {
 
   if (Date.now() < lastDajieTime + robTimeout) {
     const remain = lastDajieTime + robTimeout - Date.now();
-    const m = Math.trunc(remain / 60000);
-    const s = Math.trunc((remain % 60000) / 1000);
 
-    void Send(Text(`打劫正在CD中，剩余cd:  ${m}分 ${s}秒`));
+    void Send(Text(`打劫正在CD中，剩余cd:${formatRemaining(remain)}`));
 
     return false;
   }

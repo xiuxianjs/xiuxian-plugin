@@ -2,7 +2,18 @@ import { Text, useMessage, useSend, useSubscribe } from 'alemonjs';
 
 import { redis } from '@src/model/api';
 import { __PATH, keys } from '@src/model/keys';
-import { existplayer, getRandomFromARR, Go, notUndAndNull, writePlayer, getConfig, readPlayer, readNajie, addNajieThing } from '@src/model/index';
+import {
+  existplayer,
+  getRandomFromARR,
+  Go,
+  notUndAndNull,
+  writePlayer,
+  getConfig,
+  readPlayer,
+  readNajie,
+  addNajieThing,
+  formatRemaining
+} from '@src/model/index';
 import { selects } from '@src/response/mw';
 import type { AssociationDetailData } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
@@ -100,10 +111,8 @@ const res = onResponse(selects, async e => {
 
   if (nowTime < lastRestart + rebornTime) {
     const remain = lastRestart + rebornTime - nowTime;
-    const m = Math.trunc(remain / 60000);
-    const s = Math.trunc((remain % 60000) / 1000);
 
-    void Send(Text(`每${rebornTime / 60000}分钟只能转世一次 剩余cd:${m}分 ${s}秒`));
+    void Send(Text(`每${rebornTime / 60000}分钟只能转世一次 剩余cd:${formatRemaining(remain)}`));
 
     return false;
   }

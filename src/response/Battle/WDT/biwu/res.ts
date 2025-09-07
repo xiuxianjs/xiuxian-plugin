@@ -1,5 +1,5 @@
 import { Text, useMention, useSend } from 'alemonjs';
-import { existplayer, readPlayer, writePlayer } from '@src/model';
+import { existplayer, formatRemaining, readPlayer, writePlayer } from '@src/model';
 import { getDataByKey, setDataByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
 import { keysAction } from '@src/model/keys';
@@ -29,13 +29,6 @@ function parseJson<T>(raw: any, fallback: T): T {
   } catch {
     return fallback;
   }
-}
-
-function formatRemain(ms: number): string {
-  const m = Math.floor(ms / 60000);
-  const s = Math.floor((ms % 60000) / 1000);
-
-  return `${m}分${s}秒`;
 }
 
 const res = onResponse(selects, async e => {
@@ -103,7 +96,7 @@ const res = onResponse(selects, async e => {
   const aAction = parseJson<ActionRecord | null>(await getDataByKey(keysAction.action(userId)), null);
 
   if (aAction?.end_time && Date.now() <= aAction.end_time) {
-    void Send(Text(`正在${aAction.action}中,剩余时间:${formatRemain(aAction.end_time - Date.now())}`));
+    void Send(Text(`正在${aAction.action}中,剩余时间:${formatRemaining(aAction.end_time - Date.now())}`));
 
     return false;
   }
@@ -114,7 +107,7 @@ const res = onResponse(selects, async e => {
     const hasHide = await existNajieThing(userId, '剑xx', '道具');
 
     if (!hasHide) {
-      void Send(Text(`对方正在${bAction.action}中,剩余时间:${formatRemain(bAction.end_time - Date.now())}`));
+      void Send(Text(`对方正在${bAction.action}中,剩余时间:${formatRemaining(bAction.end_time - Date.now())}`));
 
       return false;
     }
@@ -135,7 +128,7 @@ const res = onResponse(selects, async e => {
   const lastBiwuA = toInt(await getDataByKey(keysAction.lastBiwuTime(userId)));
 
   if (now < lastBiwuA + biwuCdMs) {
-    void Send(Text(`比武正在CD中，剩余cd:  ${formatRemain(lastBiwuA + biwuCdMs - now)}`));
+    void Send(Text(`比武正在CD中，剩余cd:  ${formatRemaining(lastBiwuA + biwuCdMs - now)}`));
 
     return false;
   }
@@ -147,7 +140,7 @@ const res = onResponse(selects, async e => {
     const lastA = lastBiwuA; // 与比武 CD 存同 key
 
     if (now < lastA + coupleMs) {
-      void Send(Text(`比武冷却:  ${formatRemain(lastA + coupleMs - now)}`));
+      void Send(Text(`比武冷却:  ${formatRemaining(lastA + coupleMs - now)}`));
 
       return false;
     }
@@ -155,7 +148,7 @@ const res = onResponse(selects, async e => {
     const lastB = toInt(await getDataByKey(keysAction.lastBiwuTime(targetUserId)));
 
     if (now < lastB + coupleMs) {
-      void Send(Text(`对方比武冷却:  ${formatRemain(lastB + coupleMs - now)}`));
+      void Send(Text(`对方比武冷却:  ${formatRemaining(lastB + coupleMs - now)}`));
 
       return false;
     }

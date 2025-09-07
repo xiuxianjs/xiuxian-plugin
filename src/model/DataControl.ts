@@ -1,5 +1,4 @@
 import { getIoRedis } from '@alemonjs/db';
-import { __PATH } from './keys.js';
 
 /**
  * @param key

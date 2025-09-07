@@ -57,10 +57,8 @@ const res = onResponse(selects, async e => {
 
   if (now_time < lastxijie_time + cdMs) {
     const remain = lastxijie_time + cdMs - now_time;
-    const m = Math.trunc(remain / 60000);
-    const s = Math.trunc((remain % 60000) / 1000);
 
-    void Send(Text(`每120分钟洗劫一次，正在CD中，剩余cd: ${m}分${s}秒`));
+    void Send(Text(`每120分钟洗劫一次，正在CD中，剩余cd: ${formatRemaining(remain)}`));
 
     return false;
   }

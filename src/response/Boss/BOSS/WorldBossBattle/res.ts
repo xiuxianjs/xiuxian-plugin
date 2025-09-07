@@ -1,5 +1,5 @@
 import { Text, useSend } from 'alemonjs';
-import { readPlayer } from '@src/model';
+import { formatRemaining, readPlayer } from '@src/model';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getDataByKey } from '@src/model/DataControl';
 import { keysAction, keysLock } from '@src/model/keys';
@@ -97,10 +97,8 @@ const res = onResponse(selects, async e => {
 
     if (action?.end_time && Date.now() <= action.end_time) {
       const remain = action.end_time - Date.now();
-      const m = Math.floor(remain / 60000);
-      const s = Math.floor((remain % 60000) / 1000);
 
-      void Send(Text(`正在${action.action || '行动'}中,剩余时间:${m}分${s}秒`));
+      void Send(Text(`正在${action.action || '行动'}中,剩余时间:${formatRemaining(remain)}`));
 
       return false;
     }

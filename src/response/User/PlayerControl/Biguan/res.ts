@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { getString, userKey } from '@src/model/utils/redisHelper';
 import { existplayer, getPlayerAction } from '@src/model/index';
-import { isActionRunning, startAction, normalizeBiguanMinutes } from '@src/model/actionHelper';
+import { isActionRunning, startAction, normalizeBiguanMinutes, formatRemaining } from '@src/model/actionHelper';
 
 import { selects } from '@src/response/mw';
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/;
@@ -28,11 +28,9 @@ const res = onResponse(selects, async e => {
   // 有动作
   if (isActionRunning(action)) {
     const now = Date.now();
-    const rest = action.end_time - now;
-    const m = Math.floor(rest / 60000);
-    const s = Math.floor((rest - m * 60000) / 1000);
+    const remain = action.end_time - now;
 
-    void Send(Text(`正在${action.action}中,剩余时间:${m}分${s}秒`));
+    void Send(Text(`正在${action.action}中,剩余时间:${formatRemaining(remain)}`));
 
     return false;
   }
