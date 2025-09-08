@@ -36,6 +36,8 @@ interface LegacyRecord {
   amount?: number;
   pinji2?: number;
   class?: NajieCategory;
+  // 新增：保存完整装备属性信息
+  fullEquipment?: any;
 }
 
 // 数值转换函数
@@ -45,7 +47,14 @@ function toInt(v: any, d = 0): number {
   return Number.isFinite(n) ? Math.trunc(n) : d;
 }
 
-// 记录映射函数
+/**
+ * 记录映射函数 - 修复装备属性丢失问题
+ *
+ * 问题描述：原函数在处理新格式ExchangeRecord时，只提取了基本的name和class信息，
+ * 丢失了装备的完整属性（攻击、防御、血量等），导致下架后装备属性重置。
+ *
+ * 解决方案：检查并保存装备的完整属性信息，确保下架时能正确返还原装备。
+ */
 function mapRecord(r: any): LegacyRecord | null {
   if (!r || typeof r !== 'object') {
     return null;
@@ -66,7 +75,32 @@ function mapRecord(r: any): LegacyRecord | null {
       class: (er.thing.class || '道具') as NajieCategory
     };
 
-    return { qq: String(er.qq || ''), name, amount: er.amount };
+    // 检查是否有完整的装备属性（新格式记录）
+    let fullEquipment: any = null;
+
+    if (er.thing.atk !== undefined || er.thing.def !== undefined || er.thing.HP !== undefined || er.thing.bao !== undefined) {
+      // 保存完整装备对象，包含所有属性
+      fullEquipment = {
+        name: er.thing.name,
+        class: er.thing.class,
+        pinji: er.thing.pinji2, // 使用数字品阶
+        atk: er.thing.atk, // 攻击力
+        def: er.thing.def, // 防御力
+        HP: er.thing.HP, // 血量
+        bao: er.thing.bao, // 暴击
+        type: er.thing.type, // 装备类型
+        数量: er.amount, // 数量
+        出售价: er.thing.出售价 // 出售价
+      };
+    }
+
+    return {
+      qq: String(er.qq || ''),
+      name,
+      amount: er.amount,
+      pinji2: er.thing.pinji2,
+      fullEquipment // 保存完整装备信息
+    };
   }
 
   return null;
@@ -147,11 +181,28 @@ const executeOffsellWithLock = async (e: any, userId: string, itemIndex: number)
   const amount = toInt(record.amount, 1);
   const category: NajieCategory = thingClass || '道具';
 
-  // 返还物品到纳戒
+  /**
+   * 返还物品到纳戒 - 修复装备属性丢失问题
+   *
+   * 问题描述：原逻辑在返还装备时只传递装备名称和品阶，导致addNajieThing函数
+   * 从数据表中查找基础模板，丢失了装备的强化属性。
+   *
+   * 解决方案：
+   * 1. 检查是否有完整装备属性（新格式记录）
+   * 2. 如果有，使用完整装备对象调用addNajieThing
+   * 3. 如果没有，使用原有逻辑保持向后兼容性
+   */
   if (category === '装备' || category === '仙宠') {
     const equipName = typeof record.name === 'string' ? record.name : record.name.name;
 
-    await addNajieThing(userId, equipName, category, amount, record.pinji2);
+    // 检查是否有完整的装备属性（新格式记录）
+    if (record.fullEquipment) {
+      // 使用保存的完整装备对象，确保所有属性正确返还
+      await addNajieThing(userId, record.fullEquipment, category, amount);
+    } else {
+      // 向后兼容：旧格式记录使用原有逻辑
+      await addNajieThing(userId, equipName, category, amount, record.pinji2);
+    }
   } else {
     await addNajieThing(userId, thingName, category, amount);
   }
