@@ -1,104 +1,53 @@
-import { Text, useMention, useSend } from 'alemonjs';
+import { Text, useMessage } from 'alemonjs';
 
-import { redis, config } from '@src/model/api';
-import { existplayer, addCoin } from '@src/model/index';
-
-import { selects } from '@src/response/mw';
-import { getRedisKey, keys } from '@src/model/keys';
-export const regular = /^(#|＃|\/)?抢红包$/;
-
-function toInt(v, d = 0) {
-  const n = Number(v);
-
-  return Number.isFinite(n) ? Math.trunc(n) : d;
-}
+import { RedEnvelopesKey } from '../Give_honbao/res';
+import { addUserCurrency, redis } from '@src/model';
+import mw, { selects } from '@src/response/mw';
+export const regular = /^(#|＃|\/)?抢红包/;
 
 const res = onResponse(selects, async e => {
-  const Send = useSend(e);
-  const userId = e.UserId;
+  const [message] = useMessage(e);
+  const redEnvelopesId = e.MessageText.replace(/^(#|＃|\/)?抢红包/, '').trim();
 
-  if (!(await existplayer(userId))) {
-    return false;
-  }
+  if (!redEnvelopesId) {
+    void message.send(format(Text('红包ID不能为空，请使用 #抢红包 <红包ID>，如 #抢红包 1234567')));
 
-  // 读取玩家（仅用于名字展示）
-  const player = await getDataJSONParseByKey(keys.player(userId));
-
-  if (!player) {
     return;
   }
-  const now = Date.now();
-  const lastKey = getRedisKey(userId, 'last_getbung_time');
-  const lastStr = await redis.get(lastKey);
-  const lastTime = toInt(lastStr);
-  const cf = (await config.getConfig('xiuxian', 'xiuxian')) || {};
-  const cdMinutes = toInt(cf?.CD?.honbao, 1);
-  const cdMs = cdMinutes * 60000;
+  const redEnvelopes = await redis.get(`${RedEnvelopesKey}${redEnvelopesId}`);
 
-  if (now < lastTime + cdMs) {
-    const remain = lastTime + cdMs - now;
-    const m = Math.trunc(remain / 60000);
-    const s = Math.trunc((remain % 60000) / 1000);
+  if (!redEnvelopes) {
+    void message.send(format(Text('红包不存在，请检查红包ID是否正确')));
 
-    void Send(Text(`每${cdMinutes}分钟抢一次，正在CD中，剩余cd: ${m}分${s}秒`));
+    return;
+  }
+  const { num, currency, userId, time } = JSON.parse(redEnvelopes) as {
+    num: number;
+    currency: number;
+    userId: string;
+    time: number;
+  };
 
-    return false;
+  if (num <= 0) {
+    void message.send(format(Text('红包已被抢完')));
+    await redis.del(`${RedEnvelopesKey}${redEnvelopesId}`);
+
+    return;
+  }
+  if (userId === e.UserId) {
+    void message.send(format(Text('不能抢自己的红包')));
+
+    return;
+  }
+  await redis.set(`${RedEnvelopesKey}${redEnvelopesId}`, JSON.stringify({ num: num - 1, currency, userId, time }));
+  await addUserCurrency(e.UserId, currency);
+  if (num - 1 <= 0) {
+    await redis.del(`${RedEnvelopesKey}${redEnvelopesId}`);
   }
 
-  const [mention] = useMention(e);
-  const res = await mention.findOne();
-  const target = res?.data;
-
-  if (!target || res.code !== 2000) {
-    return false;
-  }
-
-  const honbao_qq = target.UserId;
-
-  if (honbao_qq === userId) {
-    void Send(Text('不能抢自己的红包'));
-
-    return false;
-  }
-  if (!(await existplayer(honbao_qq))) {
-    return false;
-  }
-
-  // 使用原子操作检查并扣减红包数量
-  const countKey = getRedisKey(honbao_qq, 'honbaoacount');
-  const remainingCount = await redis.decr(countKey);
-
-  // 如果扣减后小于0，说明红包已经被抢完
-  if (remainingCount < 0) {
-    // 恢复计数器（因为我们多扣了一次）
-    await redis.incr(countKey);
-    void Send(Text('他的红包被光啦！'));
-
-    return false;
-  }
-
-  // 单个红包金额
-  const valueKey = getRedisKey(honbao_qq, 'honbao');
-  const valStr = await redis.get(valueKey);
-  const lingshi = toInt(valStr);
-
-  if (lingshi <= 0) {
-    void Send(Text('这个红包里居然是空的...'));
-    // 设置CD时间（防刷机制）
-    await redis.set(lastKey, now);
-
-    return false;
-  }
-
-  // 结算：增加用户灵石并设置CD
-  await addCoin(userId, lingshi);
-  await redis.set(lastKey, now);
-
-  void Send(Text(`【全服公告】${player.名号 || userId}抢到一个${lingshi}灵石的红包！`));
+  void message.send(format(Text(`恭喜你抢到一个${currency}仙缘的红包`)));
 
   return false;
 });
 
-import mw from '@src/response/mw';
-import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

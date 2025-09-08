@@ -1,135 +1,60 @@
-import { Text, useSend } from 'alemonjs';
+import { Text, useMessage } from 'alemonjs';
 
-// import { redis } from '@src/model/api';
-// import { existplayer, Go, convert2integer, addCoin } from '@src/model/index';
-
-import { selects } from '@src/response/mw';
-// import { getRedisKey, keys } from '@src/model/keys';
+import mw, { selects } from '@src/response/mw';
+import { checkUserMonthCardStatus, consumeUserCurrency, redis } from '@src/model';
 export const regular = /^(#|＃|\/)?发红包.*$/;
+export const RedEnvelopesKey = 'xiuxian@1.3.0:red_envelopes:';
+async function getRandomId() {
+  const random = Math.floor(Math.random() * 10000000);
+  const had = await redis.exists(`${RedEnvelopesKey}${random}`);
 
-// function toInt(v, d = 0) {
-//   const n = Number(v);
+  if (had) {
+    return getRandomId();
+  }
 
-//   return Number.isFinite(n) ? Math.trunc(n) : d;
-// }
+  return random;
+}
 
-// const MIN_PER = 10000; // 单个红包最小单位(按原逻辑 取整到万)
-// const MAX_PACKETS = 200;
-// const MAX_TOTAL = 5_000_000_000; // 发放总额上限，防数据溢出
-// const CD_MS = 30 * 1000; // 30 秒发红包冷却
+const res = onResponse(selects, async e => {
+  const [message] = useMessage(e);
 
-// const res = onResponse(selects, async e => {
-//   const Send = useSend(e);
-//   const userId = e.UserId;
+  const [num, currency] = e.MessageText.replace(/^(#|＃|\/)?发红包/, '')
+    .trim()
+    .split(' ')
+    .map(i => Number(i.trim()));
 
-//   if (!(await existplayer(userId))) {
-//     return false;
-//   }
-//   if (!(await Go(e))) {
-//     return false;
-//   }
+  if (Number.isNaN(num) || Number.isNaN(currency) || num <= 0 || currency <= 0) {
+    void message.send(format(Text('红包格式错误，请使用 #发红包 <数量> <金额>，如 #发红包 5 100')));
 
-//   const cdKey = getRedisKey(userId, 'giveHongbaoCD');
+    return;
+  }
+  const UserCurrencyData = await checkUserMonthCardStatus(e.UserId);
 
-//   const now = Date.now();
-//   const lastTs = toInt(await redis.get(cdKey));
+  if (!UserCurrencyData) {
+    void message.send(format(Text('您没有仙缘币')));
 
-//   if (now < lastTs + CD_MS) {
-//     const remain = Math.ceil((lastTs + CD_MS - now) / 1000);
+    return;
+  }
+  // if (!UserCurrencyData.has_big_month_card) {
+  //   void message.send(format(Text('您暂未开通此权益')));
 
-//     void Send(Text(`操作太频繁，请${remain}秒后再发红包`));
+  //   return;
+  // }
+  console.log(UserCurrencyData.currency, currency * num);
 
-//     return false;
-//   }
+  if (UserCurrencyData.currency < currency * num) {
+    void message.send(format(Text('余额不足，发红包失败')));
 
-//   const body = e.MessageText.replace(/^(#|＃|\/)?发红包/, '').trim();
-//   const seg = body
-//     .split('*')
-//     .map(s => s.trim())
-//     .filter(Boolean);
+    return;
+  }
+  const random = await getRandomId();
 
-//   if (seg.length < 2) {
-//     void Send(Text('格式: 发红包金额*个数'));
+  await consumeUserCurrency(e.UserId, currency * num);
+  await redis.set(`${RedEnvelopesKey}${random}`, JSON.stringify({ num, currency, userId: e.UserId, time: Date.now() }));
 
-//     return false;
-//   }
-
-//   let per = toInt(convert2integer(seg[0]), 0);
-//   let count = toInt(convert2integer(seg[1]), 0);
-
-//   if (per <= 0 || count <= 0) {
-//     void Send(Text('金额与个数需为正整数'));
-
-//     return false;
-//   }
-
-//   // 取整到万
-//   per = Math.trunc(per / MIN_PER) * MIN_PER;
-//   if (per < MIN_PER) {
-//     void Send(Text(`单个红包至少 ${MIN_PER} 灵石`));
-
-//     return false;
-//   }
-//   if (count > MAX_PACKETS) {
-//     count = MAX_PACKETS;
-//   }
-
-//   const total = per * count;
-
-//   if (!Number.isFinite(total) || total <= 0) {
-//     void Send(Text('金额异常'));
-
-//     return false;
-//   }
-//   if (total > MAX_TOTAL) {
-//     void Send(Text('总额过大，已拒绝'));
-
-//     return false;
-//   }
-//   const player = await getDataJSONParseByKey(keys.player(userId));
-
-//   if (!player) {
-//     return;
-//   }
-
-//   if (!player || Array.isArray(player)) {
-//     void Send(Text('存档异常'));
-
-//     return false;
-//   }
-//   if (player.灵石 < total) {
-//     void Send(Text('红包数要比自身灵石数小噢'));
-
-//     return false;
-//   }
-
-//   // 并发保护: 使用 setnx 类逻辑 (简化：先检查再写入)
-//   const existing = await redis.get(getRedisKey(userId, 'honbaoacount'));
-
-//   if (existing && Number(existing) > 0) {
-//     void Send(Text('你已有未被抢完的红包，稍后再发'));
-
-//     return false;
-//   }
-
-//   await redis.set(getRedisKey(userId, 'honbao'), String(per));
-//   await redis.set(getRedisKey(userId, 'honbaoacount'), String(count));
-//   await addCoin(userId, -total);
-//   await redis.set(cdKey, String(now));
-
-//   void Send(Text(`【全服公告】${player.名号}发了${count}个${per}灵石的红包！`));
-
-//   return false;
-// });
-
-// import mw from '@src/response/mw';
-// import { getDataJSONParseByKey } from '@src/model/DataControl';
-// export default onResponse(selects, [mw.current, res.current]);
-export default onResponse(selects, e => {
-  const Send = useSend(e);
-
-  // 禁用发红包功能
-  void Send(Text('该功能优化中……'));
+  void message.send(format(Text(`红包已发出，红包ID：${random}，请使用 #抢红包${random} 来抢红包，祝大家好运！`)));
 
   return false;
 });
+
+export default onResponse(selects, [mw.current, res.current]);
