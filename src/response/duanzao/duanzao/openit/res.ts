@@ -188,6 +188,8 @@ const res = onResponse(selects, async e => {
       }
       const newtime1 = Date.now() - Math.floor(Date.now() / 1000) * 1000;
       const sum = jiuwei[0] + jiuwei[1] + jiuwei[2];
+
+      // 创建装备对象，品阶由系统在addNajieThing中自动生成（0-5随机品阶）
       const zhuangbei = {
         id: maxTuple[1],
         name: wuqiname + '·' + houzhui + newtime1,

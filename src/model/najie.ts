@@ -144,7 +144,8 @@ export async function addNajieThing(
       obj.数量 = count;
       obj.islockd = 0;
       if (category === '装备') {
-        obj.pinji = (name as EquipmentLike).pinji ?? pinji;
+        // 如果有品阶就添加品阶，否则随机生成一个品阶
+        obj.pinji = (name as EquipmentLike).pinji ?? pinji ?? Math.floor(Math.random() * 7);
       }
       najie[category].push(obj);
     }
