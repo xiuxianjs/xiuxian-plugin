@@ -47,12 +47,20 @@ export default function UserCurrencyTab({ users, loading, onRefresh: _onRefresh,
           <div className='flex items-center gap-2'>
             <CalendarOutlined className='text-blue-400' />
             <span className='text-sm'>小月卡:</span>
-            <Badge count={record.small_month_card_days} showZero color={record.small_month_card_days > 0 ? 'blue' : 'default'} />
+            <Badge
+              count={dayjs(record.small_month_card_expire_time).diff(dayjs(), 'day') + 1}
+              showZero
+              color={record.small_month_card_expire_time > Date.now() ? 'blue' : 'default'}
+            />
           </div>
           <div className='flex items-center gap-2'>
             <CrownOutlined className='text-purple-400' />
             <span className='text-sm'>大月卡:</span>
-            <Badge count={record.big_month_card_days} showZero color={record.big_month_card_days > 0 ? 'purple' : 'default'} />
+            <Badge
+              count={dayjs(record.big_month_card_expire_time).diff(dayjs(), 'day') + 1}
+              showZero
+              color={record.big_month_card_expire_time > Date.now() ? 'purple' : 'default'}
+            />
           </div>
         </div>
       )

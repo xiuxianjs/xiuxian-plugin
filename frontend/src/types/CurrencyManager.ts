@@ -3,8 +3,8 @@
 export interface CurrencyUser {
   id: string;
   currency: number;
-  big_month_card_days: number;
-  small_month_card_days: number;
+  big_month_card_expire_time: number;
+  small_month_card_expire_time: number;
   is_first_recharge: boolean;
   first_recharge_time: number;
   total_recharge_amount: number;

@@ -6,6 +6,7 @@ import type { CurrencyUser, RechargeFormValues } from '@/types/CurrencyManager';
 
 // 导入UI组件库
 import { XiuxianRadioGroup } from '@/components/ui';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
@@ -189,10 +190,10 @@ export default function RechargeModal({ visible, user, onCancel, onOk, form, con
                   充值次数: <span className='text-blue-400'>{selectedUser.total_recharge_count}</span>
                 </div>
                 <div>
-                  小月卡: <span className='text-blue-400'>{selectedUser.small_month_card_days}天</span>
+                  小月卡: <span className='text-blue-400'>{dayjs(selectedUser.small_month_card_expire_time).diff(dayjs(), 'day') + 1}天</span>
                 </div>
                 <div>
-                  大月卡: <span className='text-purple-400'>{selectedUser.big_month_card_days}天</span>
+                  大月卡: <span className='text-purple-400'>{dayjs(selectedUser.big_month_card_expire_time).diff(dayjs(), 'day') + 1}天</span>
                 </div>
               </div>
             </div>

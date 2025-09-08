@@ -50,8 +50,8 @@ export const REDIS_KEYS = {
 export interface UserCurrencyData {
   id: string;
   currency: number;
-  big_month_card_days: number;
-  small_month_card_days: number;
+  big_month_card_expire_time: number;
+  small_month_card_expire_time: number;
   is_first_recharge: boolean;
   first_recharge_time: number;
   total_recharge_amount: number;
@@ -157,10 +157,10 @@ const initUserCurrencyData: UserCurrencyData = {
   id: '',
   // 金币余额
   currency: 0,
-  // 大月卡剩余天数
-  big_month_card_days: 0,
-  // 小月卡剩余天数
-  small_month_card_days: 0,
+  // 大月卡过期时间
+  big_month_card_expire_time: 0,
+  // 小月卡过期时间
+  small_month_card_expire_time: 0,
   // 是否首次充值
   is_first_recharge: true,
   // 首次充值时间
@@ -432,19 +432,21 @@ export const completeRechargePayment = async (recordId: string, transactionId: s
         break;
 
       case RechargeType.SMALL_MONTH_CARD:
-        userInfo.small_month_card_days += record.month_card_days;
+        userInfo.small_month_card_expire_time =
+          Math.max(Date.now(), userInfo.small_month_card_expire_time) + MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
         break;
 
       case RechargeType.BIG_MONTH_CARD:
-        userInfo.big_month_card_days += record.month_card_days;
+        userInfo.big_month_card_expire_time = Math.max(Date.now(), userInfo.big_month_card_expire_time) + MONTH_CARD_CONFIG.BIG.days * 24 * 60 * 60 * 1000;
         break;
 
       case RechargeType.COMBO:
         userInfo.currency += record.currency_gained;
         if (record.month_card_type === 'small') {
-          userInfo.small_month_card_days += record.month_card_days;
+          userInfo.small_month_card_expire_time =
+            Math.max(Date.now(), userInfo.small_month_card_expire_time) + MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
         } else if (record.month_card_type === 'big') {
-          userInfo.big_month_card_days += record.month_card_days;
+          userInfo.big_month_card_expire_time = Math.max(Date.now(), userInfo.big_month_card_expire_time) + MONTH_CARD_CONFIG.BIG.days * 24 * 60 * 60 * 1000;
         }
         if (record.is_first_recharge) {
           userInfo.currency += record.first_recharge_bonus;
@@ -570,13 +572,13 @@ export const getUserRechargeRecords = async (userId: string, limit = 20, offset 
     const userInfo = await findUserRechargeInfo(userId);
     const recordIds = userInfo.recharge_record_ids.slice(offset, offset + limit);
 
-    const records = [];
+    const records: RechargeRecord[] = [];
 
     for (const recordId of recordIds) {
       const recordData = await redis.get(REDIS_KEYS.CURRENCY_LOG(recordId));
 
       if (recordData) {
-        records.push(JSON.parse(recordData));
+        records.push(JSON.parse(recordData) as RechargeRecord);
       }
     }
 
@@ -602,7 +604,7 @@ export const getAllRechargeRecords = async (limit = 50, offset = 0, status?: Pay
     const pattern = REDIS_KEYS.CURRENCY_LOG('*');
     const keysList = await redis.keys(pattern);
 
-    const records = [];
+    const records: RechargeRecord[] = [];
 
     for (const key of keysList.slice(offset, offset + limit)) {
       const recordData = await redis.get(key);
@@ -730,10 +732,10 @@ export const checkUserMonthCardStatus = async (userId: string) => {
     return {
       userId,
       currency: userInfo.currency,
-      small_month_card_days: userInfo.small_month_card_days,
-      big_month_card_days: userInfo.big_month_card_days,
-      has_small_month_card: userInfo.small_month_card_days > 0,
-      has_big_month_card: userInfo.big_month_card_days > 0,
+      small_month_card_expire_time: userInfo.small_month_card_expire_time,
+      big_month_card_expire_time: userInfo.big_month_card_expire_time,
+      has_small_month_card: userInfo.small_month_card_expire_time > Date.now(),
+      has_big_month_card: userInfo.big_month_card_expire_time > Date.now(),
       is_first_recharge: userInfo.is_first_recharge,
       total_recharge_amount: userInfo.total_recharge_amount,
       total_recharge_count: userInfo.total_recharge_count
@@ -800,15 +802,15 @@ export const consumeMonthCardDays = async (userId: string, cardType: 'small' | '
     const userInfo = await findUserRechargeInfo(userId);
 
     if (cardType === 'small') {
-      if (userInfo.small_month_card_days < days) {
+      if (userInfo.small_month_card_expire_time < Date.now()) {
         return false;
       }
-      userInfo.small_month_card_days -= days;
+      userInfo.small_month_card_expire_time -= days * 24 * 60 * 60 * 1000;
     } else if (cardType === 'big') {
-      if (userInfo.big_month_card_days < days) {
+      if (userInfo.big_month_card_expire_time < Date.now()) {
         return false;
       }
-      userInfo.big_month_card_days -= days;
+      userInfo.big_month_card_expire_time -= days * 24 * 60 * 60 * 1000;
     }
 
     userInfo.updated_at = Date.now();
@@ -877,7 +879,13 @@ export const getAllUsersCurrencyInfo = async (limit = 100, offset = 0): Promise<
       const userInfo = await findUserRechargeInfo(userId);
 
       // 只返回有充值记录的用户
-      if (userInfo.total_recharge_count > 0 || userInfo.currency > 0 || userInfo.small_month_card_days > 0 || userInfo.big_month_card_days > 0) {
+
+      if (
+        userInfo.total_recharge_count > 0 ||
+        userInfo.currency > 0 ||
+        userInfo.small_month_card_expire_time > Date.now() ||
+        userInfo.big_month_card_expire_time > Date.now()
+      ) {
         users.push(userInfo);
       }
     }
@@ -892,3 +900,21 @@ export const getAllUsersCurrencyInfo = async (limit = 100, offset = 0): Promise<
     return [];
   }
 };
+
+/**
+ * 增加用户仙缘币
+ */
+
+export async function addUserCurrency(userId: string, currency: number) {
+  if (currency <= 0) {
+    throw new Error('Invalid currency amount');
+  }
+  const redis = getIoRedis();
+  const userInfo = await findUserRechargeInfo(userId);
+
+  userInfo.currency += currency;
+  userInfo.updated_at = Date.now();
+  await redis.set(REDIS_KEYS.PLAYER_CURRENCY(userId), JSON.stringify(userInfo));
+
+  return true;
+}

@@ -15,8 +15,8 @@ interface MonthCardProps {
   data: {
     userId: string;
     currency: number;
-    small_month_card_days: number;
-    big_month_card_days: number;
+    small_month_card_expire_time: number;
+    big_month_card_expire_time: number;
     has_small_month_card: boolean;
     has_big_month_card: boolean;
     is_first_recharge: boolean;
@@ -314,9 +314,10 @@ const features: Array<{
 
 const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNewbie, data }) => {
   // 计算过期时间（假设从当前时间开始计算）
-  const now = dayjs();
-  const smallExpireTime = data?.small_month_card_days > 0 ? now.add(data.small_month_card_days, 'day') : null;
-  const bigExpireTime = data?.big_month_card_days > 0 ? now.add(data.big_month_card_days, 'day') : null;
+  const smallExpireTime = data?.small_month_card_expire_time > Date.now() ? dayjs(data?.small_month_card_expire_time) : null;
+  const bigExpireTime = data?.big_month_card_expire_time > Date.now() ? dayjs(data?.big_month_card_expire_time) : null;
+  const smallResidue = smallExpireTime ? smallExpireTime.diff(dayjs(), 'day') + 1 : 0;
+  const bigResidue = bigExpireTime ? bigExpireTime.diff(dayjs(), 'day') + 1 : 0;
 
   // 格式化过期时间显示（只用date和time）
   const formatExpireTime = (expireTime: dayjs.Dayjs | null) => {
@@ -371,14 +372,14 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
                     type='small'
                     config={monthCardConfigs.small}
                     isActive={data?.has_small_month_card || false}
-                    days={data?.small_month_card_days || 0}
+                    days={smallResidue || 0}
                     expireInfo={smallExpire}
                   />
                   <MonthCardItem
                     type='big'
                     config={monthCardConfigs.big}
                     isActive={data?.has_big_month_card || false}
-                    days={data?.big_month_card_days || 0}
+                    days={bigResidue || 0}
                     expireInfo={bigExpire}
                   />
                 </div>
