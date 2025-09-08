@@ -35,7 +35,7 @@ const byGoods = async ({ e, index, count }) => {
   const thingClass = goods.thing.class;
   const thingCount = goods.amount;
   const thingPrice = goods.price;
-  const pinji2 = goods?.pinji2;
+  const pinji2 = goods.thing?.pinji2;
 
   if (count > thingCount) {
     void Send(Text(`没有这么多【${thingName}】!`));
@@ -108,7 +108,9 @@ const byGoods = async ({ e, index, count }) => {
           HP: goods.thing.HP, // 血量
           bao: goods.thing.bao, // 暴击
           type: goods.thing.type, // 装备类型
-          数量: count // 购买数量
+          数量: count, // 购买数量
+          // 保存装备的出售价，确保购买后装备保持原有的出售价值
+          出售价: goods.thing.出售价
         };
 
         await addNajieThing(userId, fullEquipment, thingClass, count);

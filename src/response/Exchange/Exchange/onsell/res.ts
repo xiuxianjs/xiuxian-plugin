@@ -261,6 +261,7 @@ const res = onResponse(selects, async e => {
      * - bao: 暴击
      * - type: 装备类型
      * - 数量: 装备数量
+     * - 出售价: 装备出售价（用于记录装备的原始出售价值）
      */
     newRecord = {
       thing: {
@@ -273,6 +274,8 @@ const res = onResponse(selects, async e => {
         atk: (selected as any).atk,
         def: (selected as any).def,
         HP: (selected as any).HP,
+        // 保存装备的出售价（不是交易价格，而是装备本身的出售价值）
+        出售价: (selected as any).出售价,
         bao: (selected as any).bao,
         type: (selected as any).type,
         数量: (selected as any).数量

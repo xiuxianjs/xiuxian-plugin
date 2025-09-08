@@ -91,6 +91,7 @@ export interface ExchangeRecord {
     bao?: number;
     type?: string;
     数量?: number;
+    出售价?: number;
     // 保持向后兼容性，旧记录可能只有基本字段
   };
   price: number;
