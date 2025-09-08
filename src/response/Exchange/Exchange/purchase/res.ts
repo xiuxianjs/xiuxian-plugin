@@ -84,9 +84,38 @@ const byGoods = async ({ e, index, count }) => {
   if (player.灵石 >= money) {
     const types = ['装备', '仙宠'];
 
-    // 加物品
+    /**
+     * 修复装备属性丢失问题：使用完整装备对象而非重新生成
+     *
+     * 问题描述：之前购买装备时只传递装备名称和品阶给addNajieThing函数，
+     * 导致函数从数据表中查找基础装备模板，丢失了原装备的强化属性。
+     *
+     * 解决方案：
+     * 1. 检查交易记录是否包含完整装备属性（新格式）
+     * 2. 如果有完整属性，构造完整装备对象传递给addNajieThing
+     * 3. 如果没有完整属性，使用原有逻辑保持向后兼容性
+     */
     if (thingClass && types.includes(thingClass)) {
-      await addNajieThing(userId, thingName, thingClass, count, pinji2);
+      // 检查是否有完整的装备属性（新格式交易记录）
+      if (goods.thing.atk !== undefined || goods.thing.def !== undefined || goods.thing.HP !== undefined || goods.thing.bao !== undefined) {
+        // 使用保存的完整装备对象，保持所有属性不变
+        const fullEquipment = {
+          name: thingName,
+          class: thingClass,
+          pinji: pinji2,
+          atk: goods.thing.atk, // 攻击力
+          def: goods.thing.def, // 防御力
+          HP: goods.thing.HP, // 血量
+          bao: goods.thing.bao, // 暴击
+          type: goods.thing.type, // 装备类型
+          数量: count // 购买数量
+        };
+
+        await addNajieThing(userId, fullEquipment, thingClass, count);
+      } else {
+        // 向后兼容：旧格式记录（只有基本信息）使用原有逻辑
+        await addNajieThing(userId, thingName, thingClass, count, pinji2);
+      }
     } else {
       await addNajieThing(userId, thingName, thingClass, count);
     }

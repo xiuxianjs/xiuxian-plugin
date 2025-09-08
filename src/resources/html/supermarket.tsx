@@ -78,7 +78,7 @@ const Supermarket = ({ Exchange_list: list }) => {
                             <div>
                               <h3 className='text-lg font-bold text-cyan-200'>
                                 {item.name.class === '装备'
-                                  ? `【${item.name.class}】${item.name.name}【${item.pinji}】`
+                                  ? `【${item.name.class}】${item.name.name}【${item.name.pinji}】`
                                   : `【${item.name.class}】${item.name.name}`}
                               </h3>
                               <span className='text-xs text-gray-400'>{item.name.class}</span>

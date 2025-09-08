@@ -81,6 +81,17 @@ export interface ExchangeRecord {
   thing: {
     name: string;
     class: string;
+    // 装备完整属性支持（用于修复装备交易属性丢失问题）
+    pinji?: number | string;
+    pinji2?: number;
+    名号?: string;
+    atk?: number;
+    def?: number;
+    HP?: number;
+    bao?: number;
+    type?: string;
+    数量?: number;
+    // 保持向后兼容性，旧记录可能只有基本字段
   };
   price: number;
   amount: number;

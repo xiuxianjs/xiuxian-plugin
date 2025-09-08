@@ -248,13 +248,34 @@ const res = onResponse(selects, async e => {
     }
     const pinjiText = PINJI_TEXT[finalPinji ?? 0] ?? '劣';
 
+    /**
+     * 修复装备属性丢失问题：保存装备的完整属性信息
+     *
+     * 问题描述：之前上架时只保存了装备的基本信息（name、class、pinji），
+     * 导致装备的攻击、防御、血量等重要属性丢失，玩家购买后获得的是基础模板装备。
+     *
+     * 解决方案：在交易记录中保存装备的所有属性，包括：
+     * - atk: 攻击力
+     * - def: 防御力
+     * - HP: 血量
+     * - bao: 暴击
+     * - type: 装备类型
+     * - 数量: 装备数量
+     */
     newRecord = {
       thing: {
         name: thingName,
         class: itemClass,
         pinji: pinjiText,
         pinji2: finalPinji,
-        名号: thingName
+        名号: thingName,
+        // 保存装备的完整属性，确保交易后属性不丢失
+        atk: (selected as any).atk,
+        def: (selected as any).def,
+        HP: (selected as any).HP,
+        bao: (selected as any).bao,
+        type: (selected as any).type,
+        数量: (selected as any).数量
       },
       price,
       amount,
