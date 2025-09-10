@@ -1,5 +1,4 @@
 import { useSend, Text } from 'alemonjs';
-import type { LastSignTime } from '../types/model.js';
 import { convert2integer } from './utils/number.js';
 import { getIoRedis } from '@alemonjs/db';
 import { getRedisKey, keys, keysAction } from './keys.js';
@@ -39,15 +38,39 @@ export function shijianc(time: number) {
   };
 }
 
-export async function getLastsign(usrId: string): Promise<LastSignTime | false> {
-  const redis = getIoRedis();
-  const time = await redis.get(getRedisKey(usrId, 'lastsign_time'));
+interface LastSignStruct {
+  time: number;
+  sign: number;
+}
 
-  if (time !== null) {
-    return shijianc(parseInt(time));
+export async function getLastSign(usrId: string): Promise<LastSignStruct | null> {
+  try {
+    const redis = getIoRedis();
+    const time = await redis.get(getRedisKey(usrId, 'lastsign_time'));
+
+    if (time) {
+      if (time.startsWith('{')) {
+        const data: LastSignStruct = JSON.parse(time);
+
+        return data;
+      } else {
+        const data: LastSignStruct = {
+          time: parseInt(time),
+          sign: 1
+        };
+
+        await redis.set(getRedisKey(usrId, 'lastsign_time'), JSON.stringify(data));
+
+        return data;
+      }
+    }
+
+    return null;
+  } catch (e) {
+    logger.error(e);
+
+    return null;
   }
-
-  return false;
 }
 
 export async function getPlayerAction(usrId: string): Promise<ActionRecord> {
@@ -121,7 +144,7 @@ export default {
   sleep,
   timestampToTime,
   shijianc,
-  getLastsign,
+  getLastsign: getLastSign,
   getPlayerAction,
   notUndAndNull,
   Go,
