@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
@@ -134,7 +134,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { associationName } = body as { associationName?: string };
 
     if (!associationName) {

@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
@@ -250,7 +250,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { userId } = body as { userId?: string };
 
     if (!userId) {
@@ -306,7 +306,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { userId, 灵石, 灵石上限, 等级, 装备, 丹药, 道具, 功法, 草药, 材料, 仙宠, 仙宠口粮 } = body as {
       userId: string;
       [key: string]: unknown;

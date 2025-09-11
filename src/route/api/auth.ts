@@ -1,11 +1,10 @@
 import { Context } from 'koa';
 import { validateLogin, validateToken } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
 
 // 登录接口
 export const POST = async (ctx: Context) => {
   try {
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { username, password } = body as {
       username: string;
       password: string;

@@ -1,7 +1,6 @@
 import { Context } from 'koa';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
-import { parseJsonBody } from '../core/bodyParser';
 import { readdirSync, existsSync } from 'fs';
 import { getConfigValue, useState } from 'alemonjs';
 import { createRequire } from 'module';
@@ -31,7 +30,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     if (!body) {
       ctx.status = 400;
@@ -117,7 +116,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     if (!body) {
       ctx.status = 400;

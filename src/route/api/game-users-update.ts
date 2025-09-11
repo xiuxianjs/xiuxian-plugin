@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 import { __PATH, keys } from '@src/model/keys';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { Player } from '@src/types';
@@ -15,7 +15,7 @@ export const PUT = async (ctx: Context) => {
     }
 
     // 解析请求体
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     if (!body) {
       ctx.status = 400;

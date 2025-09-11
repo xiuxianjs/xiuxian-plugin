@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 import { consumeUserCurrency, consumeMonthCardDays } from '@src/model/currency';
 
 // 消费用户货币
@@ -12,7 +12,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { action, userId, amount, cardType, days } = body as {
       action: string;
       userId?: string;

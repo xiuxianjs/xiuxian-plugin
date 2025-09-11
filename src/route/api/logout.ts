@@ -1,10 +1,9 @@
 import { Context } from 'koa';
 import { logout } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
 
 export const POST = async (ctx: Context) => {
   try {
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const token = ctx.request.headers.authorization?.replace('Bearer ', '') || (body.token as string);
 
     if (!token) {

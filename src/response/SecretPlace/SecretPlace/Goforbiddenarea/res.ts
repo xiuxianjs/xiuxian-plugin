@@ -12,28 +12,23 @@ export const regular = /^(#|＃|\/)?前往禁地.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
+
+  const player = await readPlayer(userId);
+
+  if (!player) {
+    return;
+  }
+
   const flag = await Go(e);
 
   if (!flag) {
-    return false;
+    return;
   }
-  const player = await readPlayer(userId);
 
-  // 当前境界 id
-  if (!notUndAndNull(player.level_id)) {
-    void Send(Text('请先#同步信息'));
-
-    return false;
-  }
-  if (!notUndAndNull(player.power_place)) {
-    void Send(Text('请#同步信息'));
-
-    return false;
-  }
   const levelList = await getDataList('Level1');
-  const now_level_id = levelList?.find(item => item.level_id === player.level_id)?.level_id;
+  const nowLevelId = levelList?.find(item => item.level_id === player.level_id)?.level_id;
 
-  if (now_level_id < 22) {
+  if (!nowLevelId || nowLevelId < 22) {
     void Send(Text('没有达到化神之前还是不要去了'));
 
     return false;

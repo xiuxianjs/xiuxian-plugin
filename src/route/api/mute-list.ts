@@ -1,7 +1,6 @@
 import { Context } from 'koa';
 import { getIoRedis } from '@alemonjs/db';
 import { keys } from '@src/model';
-import { parseJsonBody } from '../core/bodyParser';
 import { validateRole } from '../core/auth';
 
 // 获取禁言列表
@@ -69,7 +68,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     if (!body) {
       ctx.status = 400;
@@ -265,7 +264,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     if (!body) {
       ctx.status = 400;

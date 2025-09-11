@@ -1,7 +1,6 @@
 import { Context } from 'koa';
 import { validateRole, validateToken } from '@src/route/core/auth';
 import { getConfig, setConfig } from '@src/model';
-import { parseJsonBody } from '../core/bodyParser';
 import { startSingleTask, stopTask, restartTask, startAllTasks, stopAllTasks, restartAllTasks } from '@src/task/index';
 import { TaskMap } from '@src/model/task';
 // 获取定时任务配置
@@ -43,7 +42,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { taskConfig } = body as {
       taskConfig: { [key: string]: string };
     };
@@ -153,7 +152,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     const { action, taskName } = body as {
       action: 'start' | 'stop' | 'restart' | 'startAll' | 'stopAll' | 'restartAll';

@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { createUser, getAllUsers, deleteUser, validateRole } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 // 获取所有用户
 export const GET = async (ctx: Context) => {
   try {
@@ -39,7 +39,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const {
       username,
       password,
@@ -100,7 +100,7 @@ export const DELETE = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { userId } = body as { userId?: string };
 
     if (!userId) {

@@ -1,6 +1,5 @@
 import { Context } from 'koa';
 import { setUserPassword, validateToken } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
 
 // 修改密码接口
 export const POST = async (ctx: Context) => {
@@ -33,7 +32,7 @@ export const POST = async (ctx: Context) => {
     }
 
     // 解析请求体
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { currentPassword, newPassword } = body as {
       currentPassword: string;
       newPassword: string;

@@ -1,6 +1,6 @@
 import { ConfigKey, getConfig, setConfig } from '@src/model';
 import { Context } from 'koa';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 import { validateRole } from '../core/auth';
 
 export const GET = async (ctx: Context) => {
@@ -33,7 +33,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
 
     if (!body || Object.keys(body).length === 0) {
       ctx.status = 400;

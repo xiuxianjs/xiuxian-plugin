@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { validateRole } from '@src/route/core/auth';
-import { parseJsonBody } from '@src/route/core/bodyParser';
+
 import { getUserMessages, sendMessage, markMessageAsRead, deleteMessage } from '@src/model/message';
 import type { SendMessageParams, MessageQueryParams } from '@src/types/message';
 import { logger } from 'alemonjs';
@@ -83,7 +83,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { title, content, type, priority, receivers, expireTime } = body as SendMessageParams;
 
     // 验证必填字段
@@ -142,7 +142,7 @@ export const PUT = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { userId, messageId } = body as { userId: string; messageId: string };
 
     if (!userId || !messageId) {
@@ -193,7 +193,7 @@ export const DELETE = async (ctx: Context) => {
       return;
     }
 
-    const body = await parseJsonBody(ctx);
+    const body = ctx.request.body;
     const { userId, messageId } = body as { userId: string; messageId: string };
 
     if (!userId || !messageId) {
