@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const n = currentIndex + 1;
+  const n =  Math.max(currentIndex + 1, 1);
   const name = n + '级仙石';
   const quantity = await existNajieThing(userId, name, '道具'); // 查找纳戒
 
