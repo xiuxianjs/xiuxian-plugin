@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { dujie, LevelTask } from '@src/model/cultivation';
 import { existplayer, readPlayer, writePlayer } from '@src/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?渡劫$/;
 let dj = 0; // 同时仅允许一个玩家进行渡劫（简单内存锁）
 
@@ -176,6 +176,6 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export default onResponse(selects, [mw.current, res.current]);

@@ -4,8 +4,8 @@ import { redis } from '@src/model/api';
 import { existplayer, shijianc, existNajieThing, addNajieThing, zdBattle, addCoin } from '@src/model/index';
 import { readTiandibang, writeTiandibang, getLastbisai } from '../../../../model/tian';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?比试$/;
 

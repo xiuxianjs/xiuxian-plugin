@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { getConfig, openAU, readPlayer } from '@src/model/index';
 import type { ExchangeRecord } from '@src/types';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getAuctionKeyManager } from '@src/model/auction';
 
 export const selects = onSelects(['message.create']);

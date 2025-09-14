@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { existplayer, existNajieThing, addNajieThing, sleep, addPet } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/;
 
 const res = onResponse(selects, async e => {
@@ -58,5 +58,5 @@ const res = onResponse(selects, async e => {
   void Send(Text('恭喜获得' + changzhuxianchonData[tianluoRandom].name));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

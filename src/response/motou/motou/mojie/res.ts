@@ -4,7 +4,7 @@ import { existplayer, readPlayer, writePlayer } from '@src/model/index';
 import { readAction, isActionRunning, startAction, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { getString, userKey, setValue } from '@src/model/utils/redisHelper';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?堕入魔界$/;
 
 const res = onResponse(selects, async e => {
@@ -67,5 +67,5 @@ const res = onResponse(selects, async e => {
   void Send(Text(`开始进入魔界,${time}分钟后归来!`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

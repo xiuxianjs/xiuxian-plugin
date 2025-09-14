@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, existNajieThing, readPlayer, writePlayer, addNajieThing } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?供奉神石$/;
 
 const res = onResponse(selects, async e => {
@@ -34,5 +34,5 @@ const res = onResponse(selects, async e => {
   await addNajieThing(userId, '神石', '道具', -x);
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

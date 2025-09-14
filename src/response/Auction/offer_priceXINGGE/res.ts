@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { getConfig, notUndAndNull, readPlayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getAuctionKeyManager } from '@src/model/auction';
 export const regular = /^(#|＃|\/)?星阁出价.*$/;
 

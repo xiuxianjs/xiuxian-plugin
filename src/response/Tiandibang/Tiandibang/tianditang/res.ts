@@ -3,8 +3,8 @@ import { Text, Image, useSend } from 'alemonjs';
 import { existplayer } from '@src/model/index';
 import { readTiandibang, getTianditangImage } from '../../../../model/tian';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?天地堂/;
 
 const res = onResponse(selects, async e => {

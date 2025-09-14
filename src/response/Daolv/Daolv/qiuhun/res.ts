@@ -6,7 +6,7 @@ import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/
 import { existplayer, findQinmidu, existNajieThing, readPlayer } from '@src/model/index';
 import { chaoshi, Daolv } from '../daolv';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?^(结为道侣)$/;
 
 const res = onResponse(selects, async e => {
@@ -96,5 +96,5 @@ const res = onResponse(selects, async e => {
   chaoshi(e);
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

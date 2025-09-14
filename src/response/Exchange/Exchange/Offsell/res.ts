@@ -4,8 +4,8 @@ import { redis } from '@src/model/api';
 import { existplayer, readPlayer, readExchange, writeExchange, addNajieThing, keysLock, compulsoryToNumber } from '@src/model/index';
 import { withLock } from '@src/model/locks';
 import type { ExchangeRecord as RawExchangeRecord, NajieCategory } from '@src/types/model';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?下架[1-9]\d*$/;
 

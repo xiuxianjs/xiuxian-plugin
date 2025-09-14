@@ -9,7 +9,7 @@ import { existplayer, readNajie, readPlayer } from '@src/model';
 import type { NajieItem, Najie } from '@src/types/player';
 import type { NajieCategory, ExchangeRecord } from '@src/types/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?上架.*$/;
 
 interface EquipLike {
@@ -302,5 +302,5 @@ const res = onResponse(selects, async e => {
   void Send(Text('上架成功！'));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

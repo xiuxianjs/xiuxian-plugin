@@ -1,6 +1,6 @@
 import { Text, useMessage, useState } from 'alemonjs';
 import { createRequire } from 'module';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|\/)?close:/;
 export const selects = onSelects(['message.create', 'private.message.create']);
 const require = createRequire(import.meta.url);

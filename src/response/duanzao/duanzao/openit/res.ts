@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, looktripod, readTripod, writeDuanlu, readThat, readAll, getxuanze, restraint, mainyuansu, addNajieThing, addExp4 } from '@src/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { readActionWithSuffix, stopActionWithSuffix } from '@src/model/actionHelper';
 import { userKey, setValue } from '@src/model/utils/redisHelper';
 export const regular = /^(#|＃|\/)?开炉/;
@@ -240,7 +240,7 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { keys } from '@src/model/keys';
 export default onResponse(selects, [mw.current, res.current]);

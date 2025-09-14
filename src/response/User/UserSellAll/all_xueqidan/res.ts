@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, existNajieThing, addNajieThing, addExp2, keys } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?一键服用血气丹$/;
 
 function num(v, d = 0) {
@@ -67,6 +67,6 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

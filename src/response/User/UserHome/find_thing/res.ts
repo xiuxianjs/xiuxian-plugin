@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
 import { foundthing, existNajieThing, addNajieThing, existplayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?哪里有(.*)$/;
 
 // 物品结构与地点结构(最小必要字段)定义

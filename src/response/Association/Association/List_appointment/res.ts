@@ -2,11 +2,11 @@ import { Image, Text, useSend } from 'alemonjs';
 import { existplayer, 宗门人数上限 } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?宗门列表$/;
 import { __PATH, keys, keysByPath } from '@src/model/index';
 import { screenshot } from '@src/image';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 
 const res = onResponse(selects, async e => {

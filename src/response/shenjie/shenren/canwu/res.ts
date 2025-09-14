@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { existplayer, readPlayer, existNajieThing, addNajieThing } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?参悟神石$/;
 
 const res = onResponse(selects, async e => {
@@ -44,5 +44,5 @@ const res = onResponse(selects, async e => {
   await addNajieThing(userId, wuping.name, wuping.class, 1);
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

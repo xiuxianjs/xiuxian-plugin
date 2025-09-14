@@ -1,5 +1,5 @@
 import { getDataJSONParseByKey, keys, setDataJSONStringifyByKey } from '@src/model';
-import mw, { selects } from '../../mw';
+import mw, { selects } from '../../mw-captcha';
 import { Text, useMessage } from 'alemonjs';
 
 export const regular = /^(#|＃|\/)?移除快捷/;

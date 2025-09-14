@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import type { Player, ZongMen } from '@src/types';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { keys } from '@src/model';
 import { GardenCrop, GardenData } from '@src/types/yaoyuan';

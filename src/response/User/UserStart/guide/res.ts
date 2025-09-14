@@ -1,4 +1,4 @@
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { useMessage, Text, useSubscribe } from 'alemonjs';
 
 export const regular = /^(#|＃|\/)?新手引导$/;

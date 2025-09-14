@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getAuctionKeyManager } from '@src/model/auction';
 
 export const selects = onSelects(['message.create']);

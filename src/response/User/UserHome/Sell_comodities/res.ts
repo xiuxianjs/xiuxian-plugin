@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, readNajie, foundthing, convert2integer, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?出售\S+(?:\*\S+){0,2}$/;
 
@@ -175,5 +175,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 import { bossStatus, existplayer, InitWorldBoss2, isBossWord2 } from '@src/model';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 
 const selects = onSelects(['message.create']);
 

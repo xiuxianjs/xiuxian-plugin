@@ -1,7 +1,7 @@
 import { Text, useMessage, useSubscribe } from 'alemonjs';
 import { readPlayer, writePlayer, playerEfficiency } from '@src/model';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?忘掉/;
 

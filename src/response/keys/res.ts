@@ -1,6 +1,6 @@
 import { getDataJSONParseByKey, isUserMonthCard, keys } from '@src/model';
 import { useMessage, Text, expendCycle } from 'alemonjs';
-import mw, { selects } from '../mw';
+import mw, { selects } from '../mw-captcha';
 import _ from 'lodash';
 
 export const regular = /^(#|＃|\/)?快捷\d+/;

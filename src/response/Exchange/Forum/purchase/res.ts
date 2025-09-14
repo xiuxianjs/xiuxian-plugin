@@ -11,8 +11,8 @@ import {
   compulsoryToNumber,
   keysLock
 } from '@src/model/index';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { withLock } from '@src/model/locks';
 import type { NajieCategory } from '@src/types/model';
 import type { ForumOrder } from '@src/types/forum';

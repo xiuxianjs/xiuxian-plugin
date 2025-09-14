@@ -1,7 +1,7 @@
 import { Image, useSend, Text } from 'alemonjs';
 import { __PATH, existplayer, keysByPath, readPlayer, sortBy } from '@src/model/index';
 import { screenshot } from '@src/image/index.js';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?至尊榜$/;
 
 const res = onResponse(selects, async e => {
@@ -57,5 +57,5 @@ const res = onResponse(selects, async e => {
 });
 
 // #至尊榜
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

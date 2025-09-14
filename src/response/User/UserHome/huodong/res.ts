@@ -4,7 +4,7 @@ import { redis } from '@src/model/api';
 import { existplayer, addNajieThing } from '@src/model/index';
 import type { NajieCategory } from '@src/types/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getRedisKey } from '@src/model/keys';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?活动兑换.*$/;
@@ -102,5 +102,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

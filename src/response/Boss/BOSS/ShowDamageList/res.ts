@@ -4,7 +4,7 @@ import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { bossStatus, isBossWord, SortPlayer } from '../../../../model/boss';
 import { KEY_RECORD, KEY_WORLD_BOOS_STATUS } from '@src/model/keys';
 import { screenshot } from '@src/image';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 
 export const selects = onSelects(['message.create']);
 export const regular = /^(#|＃|\/)?妖王贡献榜$/;

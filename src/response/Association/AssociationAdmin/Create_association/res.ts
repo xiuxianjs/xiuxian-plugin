@@ -3,8 +3,8 @@ import { keys, notUndAndNull, setFileValue, timestampToTime } from '@src/model/i
 import { getDataList } from '@src/model/DataList';
 import { readPlayer, writePlayer } from '@src/model/index';
 import { existDataByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?开宗立派$/;
 

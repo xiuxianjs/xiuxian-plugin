@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { existplayer, readPlayer } from '@src/model/index';
 import { useLevelUp, userLevelMaxUp } from '../level';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?自动(突破|破体)$/;
 

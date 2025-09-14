@@ -1,6 +1,6 @@
 import { getConfig, getPlayerAction, getString, readPlayer, userKey } from '@src/model/index';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { useSend, Text } from 'alemonjs';
 import { handleWorkSettlement } from '@src/model/actions/PlayerControlTask';
 export const regular = /^(#|＃|\/)?降妖归来$/;

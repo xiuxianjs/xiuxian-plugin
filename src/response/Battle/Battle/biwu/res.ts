@@ -3,8 +3,8 @@ import { existplayer, keys, zdBattle } from '@src/model/index';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { screenshot } from '@src/image';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import type { Player } from '@src/types';
 
 export const regular = /^(#|＃|\/)?以武会友$/;

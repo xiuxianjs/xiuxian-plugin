@@ -4,7 +4,7 @@ import { existplayer, looktripod, readTripod, writeDuanlu } from '@src/model/ind
 import { stopActionWithSuffix } from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?清空锻炉/;
 
 const res = onResponse(selects, async e => {
@@ -40,5 +40,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs';
 import { readExchange, writeExchange } from '@src/model/trade';
 import { addNajieThing } from '@src/model/najie';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?清除冲水堂$/;
 
 const res = onResponse(selects, async e => {

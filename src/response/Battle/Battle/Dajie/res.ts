@@ -6,8 +6,8 @@ import { keys, keysAction } from '@src/model/keys';
 import { config } from '@src/model/api';
 import { getAvatar } from '@src/model/utils/utilsx.js';
 import { screenshot } from '@src/image';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { isKeys } from '@src/model/utils/isKeys';
 import type { ActionRecord, Player } from '@src/types';
 

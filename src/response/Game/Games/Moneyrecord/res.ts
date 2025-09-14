@@ -1,7 +1,7 @@
 import { Image, useSend, Text } from 'alemonjs';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { keys } from '@src/model';

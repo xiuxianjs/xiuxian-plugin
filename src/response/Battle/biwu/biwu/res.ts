@@ -7,8 +7,8 @@ import { pushInfo } from '@src/model/api';
 import { baojishanghai, Harm, ifbaoji } from '@src/model/battle';
 import { sleep } from '@src/model/common';
 import { screenshot } from '@src/image';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { biwuPlayer } from '../biwu';
 import * as _ from 'lodash-es';
 

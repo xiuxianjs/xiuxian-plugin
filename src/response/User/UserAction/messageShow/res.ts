@@ -4,7 +4,7 @@ import { getUserMessages, markMessageAsRead, getUserMessageStats } from '@src/mo
 import { screenshot } from '@src/image';
 import { getRedisKey } from '@src/model/keys';
 import { getIoRedis } from '@alemonjs/db';
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { CD_MS, PAGINATION_CONFIG } from './constants';
 import { prepareImageData } from './helpers';
 

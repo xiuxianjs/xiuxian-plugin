@@ -4,7 +4,7 @@ import { readPlayer, addCoin } from '@src/model/index';
 import { readAction, isActionRunning, startAction, normalizeDurationMinutes, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { setValue, userKey, getString } from '@src/model/utils/redisHelper';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?(采矿$)|(采矿(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
@@ -64,5 +64,5 @@ const res = onResponse(selects, async e => {
   void Send(Text(`现在开始采矿${time}分钟`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

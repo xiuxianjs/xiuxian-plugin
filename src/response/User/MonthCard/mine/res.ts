@@ -1,5 +1,5 @@
 import { checkUserMonthCardStatus, getAvatar, getMonthCard, isUserMonthCardByMothData } from '@src/model';
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { Image, useMessage, Text } from 'alemonjs';
 
 export const regular = /^(#|＃|\/)?我的权益$/;

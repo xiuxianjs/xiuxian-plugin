@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { clearCaptchaRecords } from '@src/model/clear-captcha';
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?清理验证码(.*)?$/;
 

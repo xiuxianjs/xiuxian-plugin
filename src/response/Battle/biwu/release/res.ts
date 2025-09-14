@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
 import { keysAction } from '@src/model/keys';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?释放技能.*$/;
 

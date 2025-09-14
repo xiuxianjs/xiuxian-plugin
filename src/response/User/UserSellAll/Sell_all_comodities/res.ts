@@ -3,7 +3,7 @@ import { Text, useMessage, useSubscribe, format, onResponse, logger } from 'alem
 import { existplayer, addCoin, sleep, keys } from '@src/model/index';
 import { batchAddNajieThings } from '@src/model/najie';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import type { NajieCategory } from '@src/types/model';
 export const regular = /^(#|＃|\/)?一键出售(.*)$/;
 
@@ -283,6 +283,6 @@ const res = onResponse(selects, async e => {
   );
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

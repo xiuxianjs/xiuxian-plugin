@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, foundthing, readNajie, addNajieThing } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?打磨\S+\*\S+$/;
 
 const PINJI_MAP: Record<string, number> = {
@@ -101,5 +101,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

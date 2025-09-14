@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { __PATH, delDataByKey, keysAction, keysByPath } from '@src/model/index';
 export const regular = /^(#|＃|\/)?解除所有$/;
 const res = onResponse(selects, async e => {

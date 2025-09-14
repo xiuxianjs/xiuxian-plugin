@@ -1,6 +1,6 @@
 import { Text, useMessage, Image } from 'alemonjs';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?禁地$/;

@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, keys, readPlayer } from '@src/model/index';
 
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { setDataJSONStringifyByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?设置性别.*$/;
 

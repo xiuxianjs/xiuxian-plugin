@@ -4,7 +4,7 @@ import { existplayer, looktripod, readTripod, writeDuanlu, readDanyao, writeDany
 import { readActionWithSuffix, isActionRunning, startActionWithSuffix, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?开始炼制/;
 
 const res = onResponse(selects, async e => {
@@ -60,5 +60,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

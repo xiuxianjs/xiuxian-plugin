@@ -2,8 +2,8 @@ import { getRedisKey } from '@src/model/keys';
 import { Text, useMessage } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { compulsoryToNumber, readPlayer } from '@src/model/index';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?(取消)?(梭哈|投入)(\d+)?$/;
 import { game } from '../game';
 

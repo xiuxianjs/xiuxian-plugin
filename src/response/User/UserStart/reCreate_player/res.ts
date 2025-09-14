@@ -14,10 +14,10 @@ import {
   addNajieThing,
   formatRemaining
 } from '@src/model/index';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import type { AssociationDetailData } from '@src/types';
 import { getRedisKey } from '@src/model/keys';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { delDataByKey, getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 
 export const regular = /^(#|＃|\/)?再入仙途$/;

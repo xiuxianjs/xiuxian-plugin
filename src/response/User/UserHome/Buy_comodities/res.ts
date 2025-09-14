@@ -5,7 +5,7 @@ import { addNajieThing, addCoin, convert2integer, existplayer, Go, readPlayer } 
 import { getDataList } from '@src/model/DataList';
 import type { NajieCategory } from '@src/types/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?购买((.*)|(.*)*(.*))$/;
 
 interface Commodity {
@@ -108,5 +108,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

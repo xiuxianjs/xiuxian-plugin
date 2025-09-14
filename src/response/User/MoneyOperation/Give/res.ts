@@ -3,7 +3,7 @@ import { Text, useMention, useSend } from 'alemonjs';
 import { redis, config } from '@src/model/api';
 import { existplayer, addCoin, readNajie, foundthing, existNajieThing, addNajieThing } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { parseUnitNumber } from '@src/model/utils/utilsx';
 import type { NajieCategory } from '@src/types';
 import { getRedisKey, keys } from '@src/model/keys';
@@ -185,6 +185,6 @@ const res = onResponse(selects, async e => {
   void Send(Text(`${playerB.名号} 获得了由 ${playerA.名号}赠送的[${thingName}]×${quantity}`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

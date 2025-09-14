@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { reSetTiandibang } from '@src/model/Tiandibang';
 
 export const regular = /^(#|＃|\/)?重置天地榜/;

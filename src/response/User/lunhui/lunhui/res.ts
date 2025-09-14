@@ -6,8 +6,8 @@ import { existplayer, notUndAndNull, writePlayer, readEquipment, getRandomFromAR
 import type { TalentInfo, Player } from '@src/types/player';
 import type { AssociationData } from '@src/types/domain';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getRedisKey } from '@src/model/keys';
 import { delDataByKey, getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { playerEfficiency } from '@src/model';

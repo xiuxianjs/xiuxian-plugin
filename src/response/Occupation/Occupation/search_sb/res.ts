@@ -2,7 +2,7 @@ import { Image, Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { existplayer, readPlayer, __PATH } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 import { getRedisKey, keysByPath } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?悬赏目标$/;
@@ -85,5 +85,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

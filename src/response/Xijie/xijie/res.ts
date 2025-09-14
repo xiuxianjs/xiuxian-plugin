@@ -6,7 +6,7 @@ import { getDataList } from '@src/model/DataList';
 import { readAction, isActionRunning, startAction, formatRemaining, remainingMs } from '@src/model/actionHelper';
 import { getString, userKey, setValue } from '@src/model/utils/redisHelper';
 
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { setDataByUserId } from '@src/model/Redis';
 import { getRedisKey } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?洗劫.*$/;

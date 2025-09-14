@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, getDataJSONParseByKey, readPlayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getAuctionKeyManager } from '@src/model/auction';
 export const regular = /^(#|＃|\/)?星阁拍卖行$/;
 

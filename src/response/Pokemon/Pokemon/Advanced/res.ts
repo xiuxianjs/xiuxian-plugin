@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existNajieThing, addNajieThing, writePlayer, keys, petGrade, notUndAndNull, petLevel } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?进阶仙宠$/;
 
 const res = onResponse(selects, async e => {
@@ -30,7 +30,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const n =  Math.max(currentIndex + 1, 1);
+  const n = Math.max(currentIndex + 1, 1);
   const name = n + '级仙石';
   const quantity = await existNajieThing(userId, name, '道具'); // 查找纳戒
 
@@ -68,7 +68,7 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getDataList } from '@src/model/DataList';
 export default onResponse(selects, [mw.current, res.current]);

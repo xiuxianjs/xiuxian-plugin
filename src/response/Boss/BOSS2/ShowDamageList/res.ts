@@ -4,7 +4,7 @@ import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { bossStatus, isBossWord2, SortPlayer } from '../../../../model/boss';
 import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 import { screenshot } from '@src/image';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 
 const selects = onSelects(['message.create']);
 

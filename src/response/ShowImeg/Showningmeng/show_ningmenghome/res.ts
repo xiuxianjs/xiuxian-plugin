@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getNingmenghomeImage } from '@src/model/image';
 
 export const regular = /^(#|＃|\/)?柠檬堂(装备|丹药|功法|道具|草药|武器|护具|法宝|血量|修为|血气|天赋)?$/;
@@ -14,5 +14,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

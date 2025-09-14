@@ -6,7 +6,7 @@ import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/
 import { existplayer, readQinmidu, writeQinmidu, findQinmidu, readPlayer } from '@src/model/index';
 import { found, chaoshi, Daolv } from '../daolv';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?^(断绝姻缘)$/;
 
 const res = onResponse(selects, async e => {
@@ -105,5 +105,5 @@ const res = onResponse(selects, async e => {
   chaoshi(e);
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

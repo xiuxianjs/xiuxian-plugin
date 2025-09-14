@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { convert2integer, notUndAndNull, existNajieThing, addNajieThing } from '@src/model/index';
 import { readPlayer, existplayer, writePlayer } from '@src/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 import { PetItem } from '@src/types';
 export const regular = /^(#|＃|\/)?喂给仙宠.*$/;
@@ -104,5 +104,5 @@ const res = onResponse(selects, async e => {
   void Send(Text(`喂养成功，仙宠的等级增加了${jiachen},当前为${player.仙宠.等级}`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

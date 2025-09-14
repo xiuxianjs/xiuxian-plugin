@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { readPlayer, readForum, writeForum, addCoin, keysLock, compulsoryToNumber } from '@src/model/index';
 import { withLock } from '@src/model/locks';
-import mw from '@src/response/mw';
-import { selects } from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
+import { selects } from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?取消[1-9]\d*$/;
 

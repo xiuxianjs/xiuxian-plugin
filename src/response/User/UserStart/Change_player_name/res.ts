@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { existplayer, shijianc, readPlayer, writePlayer, readNajie, addNajieThing } from '@src/model/index';
 import { showPlayer } from '../user';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getRedisKey } from '@src/model/keys';
 
 export const regular = /^(#|＃|\/)?(改名|设置道宣).*$/;
@@ -143,5 +143,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

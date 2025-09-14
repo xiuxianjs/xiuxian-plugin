@@ -4,8 +4,8 @@ import { getDataList } from '@src/model/DataList';
 import { existplayer, addNajieThing } from '@src/model/index';
 import { readTiandibang, writeTiandibang } from '../../../../model/tian';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import type { NajieCategory } from '@src/types/model';
 export const regular = /^(#|＃|\/)?积分兑换(.*)$/;
 

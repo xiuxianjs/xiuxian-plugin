@@ -6,7 +6,7 @@ import { getRedisKey } from '@src/model/keys';
 import { startAction } from '@src/model/actionHelper';
 import { Go, readPlayer, notUndAndNull, existNajieThing, addNajieThing, addCoin } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?镇守仙境.*$/;
 
 const res = onResponse(selects, async e => {
@@ -93,5 +93,5 @@ const res = onResponse(selects, async e => {
   void Send(Text('开始镇守' + didian + ',' + time + '分钟后归来!'));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

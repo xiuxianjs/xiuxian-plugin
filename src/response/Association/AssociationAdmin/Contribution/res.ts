@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 import { readPlayer } from '@src/model';
 import { keys } from '@src/model/keys';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { ZongMen } from '@src/types';
 
 export const regular = /^(#|＃|\/)?查看宗门贡献$/;

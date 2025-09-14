@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 import { getConfig } from '@src/model';
 export const regular = /^(#|＃|\/)?宗门(管理|帮助)(\d+)?$/;
@@ -31,5 +31,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

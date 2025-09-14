@@ -2,8 +2,8 @@ import { getRedisKey } from '@src/model/keys';
 import { Text, useSend } from 'alemonjs';
 import { config, redis } from '@src/model/api';
 import { Go, readPlayer } from '@src/model/index';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { game } from '../game';
 
 export const regular = /^(#|＃|\/)?金银坊$/;

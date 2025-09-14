@@ -3,7 +3,7 @@ import { __PATH, keysByPath, writeDuanlu } from '@src/model/index';
 import { stopActionWithSuffix } from '@src/model/actionHelper';
 import { setValue, userKey } from '@src/model/utils/redisHelper';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?全体清空锻炉/;
 
 const res = onResponse(selects, async e => {
@@ -22,5 +22,5 @@ const res = onResponse(selects, async e => {
   void Send(Text('清除完成'));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

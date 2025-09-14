@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { getPlayerAction, readPlayer } from '@src/model/index';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getString, userKey } from '@src/model/utils/redisHelper';
 import { isActionRunning, startAction, normalizeDurationMinutes } from '@src/model/actionHelper';
 
@@ -82,5 +82,5 @@ const res = onResponse(selects, async e => {
   void Send(Text(`现在开始降妖${time}分钟`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

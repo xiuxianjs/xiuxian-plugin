@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs';
 import { config } from '@src/model/api';
 import { readPlayer, notUndAndNull, Go, addExp, addCoin, existplayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?怡红院$/;
 

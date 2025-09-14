@@ -1,6 +1,6 @@
 import { Image, Text, useSend } from 'alemonjs';
 import { existplayer, __PATH, sortBy, sleep, readPlayer, keysByPath, keys } from '@src/model/index';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getRankingMoneyImage } from '@src/model/image';
 
 export const regular = /^(#|＃|\/)?灵榜$/;
@@ -50,6 +50,6 @@ const res = onResponse(selects, async e => {
   void Send(Text('图片生成错误'));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

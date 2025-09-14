@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { Go, keys, readPlayer, writePlayer } from '@src/model/index';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?转换副职$/;
 
 const res = onResponse(selects, async e => {

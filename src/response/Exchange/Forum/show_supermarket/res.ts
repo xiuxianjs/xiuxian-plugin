@@ -1,5 +1,5 @@
 import { Image, useSend, Text } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getForumImage } from '@src/model/image';
 import { existplayer } from '@src/model/index';
 import type { NajieCategory } from '@src/types/model';
@@ -36,5 +36,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

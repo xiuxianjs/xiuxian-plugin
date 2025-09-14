@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { readPlayer, readQinmidu, writeQinmidu, addNajieThing } from '@src/model/index';
 import { Daolv, found } from '../daolv';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?^(我愿意|我拒绝)$/;
 
 const res = onResponse(selects, async e => {
@@ -36,5 +36,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

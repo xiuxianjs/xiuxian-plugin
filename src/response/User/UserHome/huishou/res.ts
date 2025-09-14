@@ -2,7 +2,7 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, foundthing, readNajie, addNajieThing, addCoin } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import type { NajieCategory } from '@src/types/model';
 export const regular = /^(#|＃|\/)?回收.*$/;
 
@@ -67,5 +67,5 @@ const res = onResponse(selects, async e => {
   void Send(Text(`回收成功,获得${lingshi}灵石`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

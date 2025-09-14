@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { readPlayer } from '@src/model/index';
 import { useLevelUp } from '../Level/level';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?自动突破$/;
 
 const res = onResponse(selects, async e => {
@@ -47,5 +47,5 @@ const res = onResponse(selects, async e => {
   //
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

@@ -1,6 +1,6 @@
 import { Text, useMessage } from 'alemonjs';
 
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { checkUserMonthCardStatus, consumeUserCurrency, redis } from '@src/model';
 export const regular = /^(#|＃|\/)?发红包.*$/;
 export const RedEnvelopesKey = 'xiuxian@1.3.0:red_envelopes:';

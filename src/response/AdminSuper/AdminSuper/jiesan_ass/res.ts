@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { __PATH, keys, readPlayer, writePlayer } from '@src/model/index';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { redis } from '@src/model/api';
 import type { AssociationDetailData } from '@src/types';
 import { getDataJSONParseByKey } from '@src/model/DataControl';

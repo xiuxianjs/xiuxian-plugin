@@ -1,5 +1,5 @@
 import { existplayer, keys } from '@src/model';
-import mw, { selects } from '../../mw';
+import mw, { selects } from '../../mw-captcha';
 import { getIoRedis } from '@alemonjs/db';
 import { Text, useMessage } from 'alemonjs';
 

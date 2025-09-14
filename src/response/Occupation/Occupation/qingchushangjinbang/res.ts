@@ -4,7 +4,7 @@ import { Text, useSend } from 'alemonjs';
 import { existplayer } from '@src/model/index';
 import { redis } from '@src/model/api';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?清空赏金榜$/;
 
 const res = onResponse(selects, async e => {
@@ -27,5 +27,5 @@ const res = onResponse(selects, async e => {
   await redis.set(getRedisKey('1', 'shangjing'), JSON.stringify(action));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

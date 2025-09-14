@@ -1,7 +1,7 @@
 import { delDataByKey, getPlayerAction } from '@src/model/index';
 import { plantJiesuan, calcEffectiveMinutes } from '../../../../model/actions/occupation';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { keysAction } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?结束采药$/;
 
@@ -38,5 +38,5 @@ const res = onResponse(selects, async e => {
   void delDataByKey(keysAction.action(e.UserId));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

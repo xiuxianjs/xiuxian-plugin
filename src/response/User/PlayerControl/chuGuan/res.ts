@@ -1,7 +1,7 @@
 import { getString, userKey } from '@src/model/utils/redisHelper';
 import { getConfig, getPlayerAction, readPlayer } from '@src/model/index';
-import mw from '@src/response/mw';
-import { selects } from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
+import { selects } from '@src/response/mw-captcha';
 import { Text, useSend } from 'alemonjs';
 import { handleCultivationSettlement } from '@src/model/actions/PlayerControlTask';
 export const regular = /^(#|＃|\/)?出关$/;

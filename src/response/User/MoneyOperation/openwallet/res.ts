@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 
 import { existplayer, existNajieThing, addNajieThing, addCoin, keys } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 export const regular = /^(#|＃|\/)?打开钱包$/;
 

@@ -3,8 +3,8 @@ import { Text, useSend } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
 import { existplayer, readPlayer, convert2integer, notUndAndNull, existNajieThing, addNajieThing, addExp4 } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?炼制.*(\*[0-9]*)?$/;
 
 // 类型声明（最小必要字段）

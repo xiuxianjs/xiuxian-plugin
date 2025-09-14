@@ -4,8 +4,8 @@ import { readPlayer } from '@src/model/index';
 import { readAction, isActionRunning, startAction, normalizeDurationMinutes, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { getString, setValue, userKey } from '@src/model/utils/redisHelper';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?(采药$)|(采药(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {

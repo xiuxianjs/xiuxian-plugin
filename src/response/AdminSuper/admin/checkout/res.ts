@@ -2,8 +2,8 @@ import { exec } from 'child_process';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { Text, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const mdDir = join(currentDir, '../../../../../');

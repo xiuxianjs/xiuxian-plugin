@@ -1,6 +1,6 @@
 import { Text, useMessage } from 'alemonjs';
 import { readPlayer, readNajie } from '@src/model';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { parseCommand, validateThing } from './utils';
 import { handleEquipment } from './equipment';
 import { handleConsume } from './consume';
@@ -99,5 +99,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

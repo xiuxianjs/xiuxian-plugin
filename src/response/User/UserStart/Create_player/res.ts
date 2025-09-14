@@ -2,10 +2,10 @@ import { Image, Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { __PATH, getRandomTalent, writePlayer, writeEquipment, writeNajie, addHP, writeDanyao, keysByPath, keys } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getPlayerImage } from '@src/model/image';
 import type { Player } from '@src/types';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getAvatar } from '@src/model/utils/utilsx';
 
 export const regular = /^(#|＃|\/)?(我|我的练气|个人信息|我的信息|踏入仙途)$/;

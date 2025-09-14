@@ -5,8 +5,8 @@ import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey, writePlay
 import { redis } from '@src/model/api';
 import type { AssociationDetailData } from '@src/types';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getConfig } from '@src/model';
 import { playerEfficiency } from '@src/model';
 import { isKeys } from '@src/model/utils/isKeys';

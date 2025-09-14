@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
 import { __PATH, keys } from '@src/model/keys';
 import { Go, readPlayer, addCoin, getConfig, startAction, setDataJSONStringifyByKey, getDataJSONParseByKey } from '@src/model/index';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?探索宗门秘境.*$/;

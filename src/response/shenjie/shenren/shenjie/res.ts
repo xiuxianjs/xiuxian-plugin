@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { existplayer, readPlayer, shijianc, writePlayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?踏入神界$/;
 
 interface ActionState {
@@ -176,5 +176,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

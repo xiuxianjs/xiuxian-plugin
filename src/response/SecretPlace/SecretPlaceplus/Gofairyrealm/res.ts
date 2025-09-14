@@ -5,8 +5,8 @@ import { redis } from '@src/model/api';
 import { startAction } from '@src/model/actionHelper';
 import { Go, convert2integer, notUndAndNull, readPlayer, existNajieThing, addNajieThing, addCoin, isUserMonthCard } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?沉迷仙境.*$/;
 

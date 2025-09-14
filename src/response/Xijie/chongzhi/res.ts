@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { readShop, writeShop } from '@src/model/index';
 import type { ShopData } from '@src/types';
 
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?重置.*$/;
 

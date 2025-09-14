@@ -2,7 +2,7 @@ import { Text, useMessage } from 'alemonjs';
 
 import { RedEnvelopesKey } from '../Give_honbao/res';
 import { addUserCurrency, redis } from '@src/model';
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?抢红包/;
 
 const res = onResponse(selects, async e => {

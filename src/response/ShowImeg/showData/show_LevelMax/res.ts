@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getStatemaxImage } from '@src/model/image';
 export const regular = /^(#|＃|\/)?炼体境界$/;
 
@@ -12,5 +12,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

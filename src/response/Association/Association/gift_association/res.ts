@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { shijianc, readPlayer, writePlayer, getDataJSONParseByKey, setDataJSONStringifyByKey, setDataByKey } from '@src/model/index';
 import { getLastsignAsso, isNotMaintenance } from '../../../../model/ass';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { __PATH, keys, keysAction } from '@src/model/keys';
 import { isKeys } from '@src/model/utils/isKeys';
 import { ZongMen } from '@src/types';

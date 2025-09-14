@@ -4,7 +4,7 @@ import { getString, userKey } from '@src/model/utils/redisHelper';
 import { readAction, isActionRunning, remainingMs, formatRemaining } from '@src/model/actionHelper';
 import { existplayer, readShop, writeShop, readPlayer, addCoin, existshop } from '@src/model/index';
 
-import mw, { selects } from '@src/response/mw';
+import mw, { selects } from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 import { getDataList } from '@src/model/DataList';
 export const regular = /^(#|＃|\/)?探查.*$/;

@@ -2,8 +2,8 @@ import { Text, useMention, useSend } from 'alemonjs';
 
 import { existplayer, addCoin, addExp, addExp2, foundthing, addNajieThing } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 // 允许：#发 灵石*100 | #发 修为*5000 | #发 血气*300 | #发 剑*优*1
 export const regular = /^(#|＃|\/)?发\S+(?:\*\S+){1,2}$/;
 

@@ -4,7 +4,7 @@ import { getDataList } from '@src/model/DataList';
 import { existplayer, readPlayer, existNajieThing, addNajieThing } from '@src/model/index';
 import { NajieCategory } from '@src/types/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?献祭魔石$/;
 
 interface PrizeItem {
@@ -81,5 +81,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { __PATH, addCoin, addExp, addExp2, foundthing, addNajieThing, keysByPath } from '@src/model/index';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import type { NajieCategory } from '@src/types/model';
 
 // 支持更广格式：#全体发灵石*100  / #全体发修为*500 / #全体发血气*200
@@ -149,5 +149,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

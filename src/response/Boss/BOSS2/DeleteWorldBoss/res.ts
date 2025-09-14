@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { redis } from '@src/model/api';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { KEY_RECORD_TWO, KEY_WORLD_BOOS_STATUS_TWO } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?关闭金角大王$/;
 
@@ -15,5 +15,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

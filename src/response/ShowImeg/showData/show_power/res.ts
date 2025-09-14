@@ -1,5 +1,5 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getPowerImage } from '@src/model/image';
 import { existplayer } from '@src/model';
 
@@ -20,5 +20,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

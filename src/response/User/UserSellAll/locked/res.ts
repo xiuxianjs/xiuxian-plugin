@@ -4,7 +4,7 @@ import { foundthing } from '@src/model/cultivation';
 import { updateBagThing } from '@src/model/najie';
 import { existplayer, readNajie } from '@src/model';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?(锁定|解锁).*$/;
 
 interface BagPet {
@@ -122,5 +122,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

@@ -6,7 +6,7 @@ import { readNajie, writePlayer, readPlayer, existplayer } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import type { XianchongInfo } from '@src/types/player';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?出战仙宠.*$/;
 
 interface PetDef {
@@ -176,5 +176,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

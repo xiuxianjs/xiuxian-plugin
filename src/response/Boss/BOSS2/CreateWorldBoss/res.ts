@@ -1,6 +1,6 @@
 import { InitWorldBoss2 } from '../../../../model/boss';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?开启金角大王$/;
 
 const res = onResponse(selects, async e => {
@@ -9,5 +9,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

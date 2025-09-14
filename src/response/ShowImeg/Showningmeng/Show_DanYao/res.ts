@@ -1,7 +1,7 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getDanyaoImage } from '@src/model/image';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?丹药楼$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);

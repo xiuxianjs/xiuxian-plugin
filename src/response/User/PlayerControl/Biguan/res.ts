@@ -3,7 +3,7 @@ import { getString, userKey } from '@src/model/utils/redisHelper';
 import { existplayer, getPlayerAction } from '@src/model/index';
 import { isActionRunning, startAction, normalizeBiguanMinutes, formatRemaining } from '@src/model/actionHelper';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?(闭关$)|(闭关(.*)(分|分钟)$)/;
 
 const res = onResponse(selects, async e => {
@@ -74,5 +74,5 @@ const res = onResponse(selects, async e => {
   void Send(Text(`现在开始闭关${time}分钟,两耳不闻窗外事了`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

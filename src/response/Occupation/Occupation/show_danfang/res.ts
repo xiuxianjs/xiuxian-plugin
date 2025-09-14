@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDanfangImage } from '@src/model/image';
 import { existplayer } from '@src/model';
 

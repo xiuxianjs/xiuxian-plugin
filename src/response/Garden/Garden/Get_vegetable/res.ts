@@ -3,7 +3,7 @@ import { Text, useSend } from 'alemonjs';
 import { redis, config } from '@src/model/api';
 import { addNajieThing } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getRedisKey, keys } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?拔苗助长.*$/;
 
@@ -135,6 +135,6 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 export default onResponse(selects, [mw.current, res.current]);

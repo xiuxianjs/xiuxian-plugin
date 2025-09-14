@@ -4,7 +4,7 @@ import { readEquipment, writeEquipment } from '@src/model/equipment';
 import { writePlayer } from '@src/model';
 import { getRandomTalent, playerEfficiency } from '@src/model';
 import { getDataList } from '@src/model/DataList';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { toNumber, thingType } from './utils';
 
 // 处理轮回阵旗

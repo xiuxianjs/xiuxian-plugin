@@ -4,7 +4,7 @@ import { generateCaptcha, svgToPngBuffer, verifyCaptcha } from '@src/model/captc
 import { baseKey } from '@src/model/keys';
 import { Image, Mention, Text, useMessage } from 'alemonjs';
 import dayjs from 'dayjs';
-import { selects } from './mw';
+import { selects } from './mw-captcha';
 import { captchaTries, MAX_CAPTCHA_TRIES, op, replyCount } from './config';
 
 export const regular = /^[a-zA-Z0-9]{1,9}$/;

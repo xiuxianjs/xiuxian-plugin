@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 import { getDataList } from '@src/model/DataList';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { biwuPlayer } from '../biwu';
 
 export const regular = /^(#|＃|\/)?选择技能.*$/;

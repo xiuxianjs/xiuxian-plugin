@@ -3,8 +3,8 @@ import { Image, Text, useSend } from 'alemonjs';
 import { existplayer } from '@src/model/index';
 import { readTiandibang } from '../../../../model/tian';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?天地榜$/;
 

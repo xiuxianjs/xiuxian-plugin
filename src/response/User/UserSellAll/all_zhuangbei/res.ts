@@ -2,8 +2,8 @@ import { Image, Text, useSend } from 'alemonjs';
 
 import { existplayer, readPlayer, foundthing, insteadEquipment, keys } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getEquipmentImage } from '@src/model/image';
 import { getDataList } from '@src/model/DataList';
 import { EquipmentLike } from '@src/types/model';

@@ -2,7 +2,7 @@ import { Image, Text, useSend } from 'alemonjs';
 
 import { __PATH, existplayer, keysByPath, readPlayer, sortBy } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?封神榜$/;
 
@@ -60,5 +60,5 @@ const res = onResponse(selects, async e => {
   void Send(Text('图片生产失败'));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 import { notUndAndNull } from '@src/model/common';
 import { readPlayer } from '@src/model';
 import { __PATH, keys } from '@src/model/keys';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { isKeys } from '@src/model/utils/isKeys';
 

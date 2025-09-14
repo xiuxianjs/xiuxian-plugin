@@ -3,8 +3,8 @@ import { getDataJSONParseByKey, readPlayer, setDataJSONStringifyByKey, writePlay
 
 import { __PATH, keys } from '@src/model/keys';
 import type { ZongMen } from '@src/types';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?宗门(上交|上缴|捐赠)灵石\d+$/;

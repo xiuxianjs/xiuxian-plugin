@@ -2,8 +2,8 @@ import { Text, useSend } from 'alemonjs';
 import { keys } from '@src/model';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?设置门槛.*$/;

@@ -3,7 +3,7 @@ import { redis } from '@src/model/api';
 import { __PATH, keys, keysAction } from '@src/model/keys';
 import { existplayer, readPlayer, notUndAndNull, writePlayer, readEquipment, writeEquipment, addHP, getRandomFromARR } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getRedisKey } from '@src/model/keys';
 
 export const regular = /^(#|＃|\/)?登仙$/;
@@ -188,7 +188,7 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 import { delDataByKey, getDataJSONParseByKey } from '@src/model/DataControl';
 import { playerEfficiency } from '@src/model';

@@ -3,8 +3,8 @@ import { __PATH, keys, keysByPath } from '@src/model/index';
 import { getDataList } from '@src/model/DataList';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { screenshot } from '@src/image';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?洞天福地列表$/;

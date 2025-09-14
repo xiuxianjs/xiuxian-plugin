@@ -1,6 +1,6 @@
 import { Image, useSend, Text } from 'alemonjs';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getXianChongImage } from '@src/model/image';
 import { existplayer } from '@src/model/index';
 import { redis } from '@src/model/api';
@@ -49,5 +49,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

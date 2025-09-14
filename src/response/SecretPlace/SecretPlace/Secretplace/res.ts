@@ -1,5 +1,5 @@
 import { goWeizhi } from '@src/model/image';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { existplayer } from '@src/model/index';
 
 export const regular = /^(#|＃|\/)?秘境$/;
@@ -20,6 +20,6 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export default onResponse(selects, [mw.current, res.current]);

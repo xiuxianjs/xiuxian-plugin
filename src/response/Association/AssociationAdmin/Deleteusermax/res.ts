@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { keys, playerEfficiency } from '@src/model/index';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import type { Player } from '@src/types';
 import { isKeys } from '@src/model/utils/isKeys';
 

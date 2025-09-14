@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
 import { existplayer, readPlayer, notUndAndNull, writePlayer } from '@src/model/index';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?猎户转.*$/;
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
@@ -38,6 +38,6 @@ const res = onResponse(selects, async e => {
   void Send(Text(`恭喜${player.名号}转职为[${occupation}]`));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 export default onResponse(selects, [mw.current, res.current]);

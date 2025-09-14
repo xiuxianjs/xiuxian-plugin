@@ -1,7 +1,7 @@
 import { Text, useSend } from 'alemonjs';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { closeAuctionKeys } from '@src/model/Config';
 export const regular = /^(#|＃|\/)?关闭星阁体系$/;
 

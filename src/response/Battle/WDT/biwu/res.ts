@@ -7,8 +7,8 @@ import { config } from '@src/model/api';
 import { zdBattle } from '@src/model/battle';
 import { addHP, addExp2, addCoin } from '@src/model/economy';
 import { existNajieThing } from '@src/model/najie';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { ActionRecord } from '@src/types';
 
 export const regular = /^(#|＃|\/)?比武$/;

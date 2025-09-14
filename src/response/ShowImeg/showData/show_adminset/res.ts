@@ -1,6 +1,6 @@
 import { Image, useSend } from 'alemonjs';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getAdminsetImage } from '@src/model/image';
 export const regular = /^(#|＃|\/)?修仙设置$/;
 
@@ -17,5 +17,5 @@ const res = onResponse(selects, async e => {
   }
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

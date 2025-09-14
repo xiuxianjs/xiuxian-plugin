@@ -7,8 +7,8 @@ import { existHunyin, fstaddQinmidu, addQinmidu } from '@src/model/qinmidu';
 import { findQinmidu } from '@src/types/player';
 import { existplayer } from '@src/model';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 // 修复多余 ^ 导致匹配失败
 export const regular = /^(#|＃|\/)?双修$/;
 

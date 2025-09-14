@@ -1,7 +1,7 @@
 import { delDataByKey, getPlayerAction } from '@src/model/index';
 import { mineJiesuan } from '../../../../model/actions/occupation';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { keysAction } from '@src/model/keys';
 export const regular = /^(#|＃|\/)?结束采矿$/;
 
@@ -123,5 +123,5 @@ const res = onResponse(selects, async e => {
   return false;
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

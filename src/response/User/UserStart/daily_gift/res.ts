@@ -1,9 +1,9 @@
 import { Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
 import { existplayer, shijianc, getLastSign, addNajieThing, addExp, writePlayer, getConfig, readPlayer, isUserMonthCard } from '@src/model/index';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getRedisKey } from '@src/model/keys';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { NajieCategory } from '@src/types';
 
 export const regular = /^(#|＃|\/)?修仙签到$/;

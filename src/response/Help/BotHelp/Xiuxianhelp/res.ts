@@ -1,9 +1,9 @@
 import { Image, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { getConfig } from '@src/model/Config';
 import { screenshot } from '@src/image';
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)??(修仙|仙侠)?(帮助|扩展)(\d+)?$/;
 

@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { readPlayer } from '@src/model/index';
 import { readTiandibang, writeTiandibang } from '../../../../model/tian';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { getDataList } from '@src/model/DataList';
 import { createRankEntry } from '@src/model/Tiandibang';
 

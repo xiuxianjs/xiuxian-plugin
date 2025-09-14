@@ -1,10 +1,10 @@
 import { Image, Text, useSend } from 'alemonjs';
 import { redis } from '@src/model/api';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { readItTyped, writeIt, readNajie, readEquipment, existplayer, keys, keysByPath, __PATH } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 import { screenshot } from '@src/image';
 export const regular = /^(#|＃|\/)?神兵榜$/;
 

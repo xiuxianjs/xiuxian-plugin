@@ -1,8 +1,8 @@
 import { Text, useSend } from 'alemonjs';
 import { keys, playerEfficiency, 宗门人数上限 } from '@src/model/index';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 import { isKeys } from '@src/model/utils/isKeys';
 
 export const regular = /^(#|＃|\/)?(升级宗门|宗门升级)$/;

@@ -2,8 +2,8 @@ import { Text, useSend, useMention } from 'alemonjs';
 
 import { readPlayer, writePlayer } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
-import mw from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
+import mw from '@src/response/mw-captcha';
 export const regular = /^(#|\/)打落凡间.*$/;
 
 const res = onResponse(selects, async e => {

@@ -1,7 +1,7 @@
 import { Go } from '@src/model/index';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { Text, useSend } from 'alemonjs';
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 
 export const regular = /^(#|＃|\/)?修仙状态$/;
 

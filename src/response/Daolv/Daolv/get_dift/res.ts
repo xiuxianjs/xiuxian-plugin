@@ -2,7 +2,7 @@ import { Text, useMention, useSend } from 'alemonjs';
 
 import { existplayer, existNajieThing, findQinmidu, fstaddQinmidu, addQinmidu, addNajieThing, existHunyin } from '@src/model/index';
 
-import { selects } from '@src/response/mw';
+import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?^赠予百合花篮$/;
 
 const res = onResponse(selects, async e => {
@@ -62,5 +62,5 @@ const res = onResponse(selects, async e => {
   void Send(Text('你们的亲密度增加了60'));
 });
 
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 export default onResponse(selects, [mw.current, res.current]);

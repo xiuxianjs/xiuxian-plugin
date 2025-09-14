@@ -4,7 +4,7 @@ import { getDataJSONParseByKey } from '@src/model/DataControl';
 import { getDataByKey } from '@src/model/DataControl';
 import { keysAction, keysLock } from '@src/model/keys';
 import { WorldBossBattle, WorldBossBattleInfo, bossStatus, isBossWord } from '../../../../model/boss';
-import mw from '@src/response/mw';
+import mw from '@src/response/mw-captcha';
 import { acquireLock, releaseLock, withLock } from '@src/model/locks';
 import * as _ from 'lodash-es';
 
