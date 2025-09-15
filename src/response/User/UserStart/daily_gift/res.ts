@@ -63,6 +63,11 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
 
+  // 维修中
+  void Send(Text('当前功能正在维护中，请稍后再试'));
+
+  return false;
+
   if (!(await existplayer(userId))) {
     return false;
   }
