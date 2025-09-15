@@ -63,11 +63,6 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
 
-  // 维修中
-  void Send(Text('当前功能正在维护中，请稍后再试'));
-
-  return false;
-
   if (!(await existplayer(userId))) {
     return false;
   }
@@ -85,7 +80,12 @@ const res = onResponse(selects, async e => {
   }
 
   // 处理月卡用户的补签逻辑
-  if (lastSignStruct && isSameDay(lastSignStruct.time, yesterdayTime) && lastSignStruct.sign === 1 && isMonthCard) {
+  if (lastSignStruct && isSameDay(lastSignStruct.time, nowTime) && lastSignStruct.sign === 1) {
+    if (!isMonthCard) {
+      void Send(Text('今日已经签到过了'));
+
+      return false;
+    }
     await redis.set(getRedisKey(userId, 'lastsign_time'), JSON.stringify({ time: nowTime, sign: 2 }));
 
     await addNajieThing(userId, '闪闪发光的石头', '道具', 1);
@@ -93,11 +93,6 @@ const res = onResponse(selects, async e => {
     void Send(Text('补签成功，获得闪闪发光的石头*1，秘境之匙*10'));
 
     await updateMonthCardConnectSign(userId, Send);
-
-    return false;
-  }
-  if (lastSignStruct && isSameDay(lastSignStruct.time, yesterdayTime) && lastSignStruct.sign === 1 && !isMonthCard) {
-    void Send(Text('今日已经签到过了'));
 
     return false;
   }
