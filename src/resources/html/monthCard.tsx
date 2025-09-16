@@ -264,9 +264,9 @@ const features: Array<{
   {
     title: '个性化装扮',
     icon: '📷',
-    type: 'small',
+    type: 'big',
     desc: '自定义背景图等',
-    highlight: false
+    highlight: true
   },
   {
     title: '打工本沉迷',
