@@ -262,13 +262,6 @@ const features: Array<{
     highlight: false
   },
   {
-    title: '个性化装扮',
-    icon: '📷',
-    type: 'big',
-    desc: '自定义背景图等',
-    highlight: true
-  },
-  {
     title: '打工本沉迷',
     icon: '💼',
     type: 'small',
@@ -295,6 +288,13 @@ const features: Array<{
     type: 'small',
     desc: '仅在新人且未领取新人礼包时生效',
     highlight: false
+  },
+  {
+    title: '个性化装扮',
+    icon: '📷',
+    type: 'big',
+    desc: '自定义背景图等',
+    highlight: true
   },
   {
     title: '仙缘红包',
