@@ -35,12 +35,11 @@ const res = onResponse(selects, async e => {
 
     return;
   }
-  // if (!UserCurrencyData.has_big_month_card) {
-  //   void message.send(format(Text('您暂未开通此权益')));
+  if (!UserCurrencyData.has_big_month_card) {
+    void message.send(format(Text('您暂未开通此权益')));
 
-  //   return;
-  // }
-  console.log(UserCurrencyData.currency, currency * num);
+    return;
+  }
 
   if (UserCurrencyData.currency < currency * num) {
     void message.send(format(Text('余额不足，发红包失败')));
