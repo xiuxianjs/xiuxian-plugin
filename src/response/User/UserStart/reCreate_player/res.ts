@@ -97,14 +97,6 @@ const res = onResponse(selects, async e => {
   if (!(await Go(e))) {
     return false;
   }
-  const najie = await readNajie(userId);
-
-  if (!najie?.道具?.some(item => item.name === '转世卡')) {
-    void Send(Text('您没有转世卡'));
-
-    return false;
-  }
-  await addNajieThing(userId, '转世卡', '道具', -1);
 
   const nowTime = Date.now();
   const lastKey = getRedisKey(userId, 'last_reCreate_time');
@@ -123,6 +115,14 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+  const najie = await readNajie(userId);
+
+  if (!najie?.道具?.some(item => item.name === '转世卡')) {
+    void Send(Text('您没有转世卡'));
+
+    return false;
+  }
+  await addNajieThing(userId, '转世卡', '道具', -1);
 
   void Send(Text('一旦转世一切当世与你无缘,你真的要重生吗?回复:【断绝此生】或者【再继仙缘】进行选择'));
   const [subscribe] = useSubscribe(e, selects);
