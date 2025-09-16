@@ -774,7 +774,7 @@ export const isUserMonthCardByMothData = (userInfo, cardType?: 'small' | 'big') 
   }
 
   if (!cardType) {
-    return userInfo.has_small_month_card ?? userInfo.has_big_month_card;
+    return userInfo.has_small_month_card || userInfo.has_big_month_card;
   }
 
   if (cardType === 'small') {
