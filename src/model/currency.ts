@@ -31,7 +31,7 @@ export const MONTH_CARD_CONFIG = {
 
 const BIG_MONTH_CARD_RECHARGE_GIFTS = [
   { name: '更名卡', type: '道具', account: 1 },
-  { name: '重生卡', type: '道具', account: 1 }
+  { name: '转世卡', type: '道具', account: 1 }
 ];
 
 // Redis Key 管理

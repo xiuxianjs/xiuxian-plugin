@@ -307,7 +307,7 @@ const features: Array<{
     title: '一次性获得',
     icon: '🎁',
     type: 'big',
-    desc: '更名卡、重生卡、专属称号',
+    desc: '更名卡、转世卡、专属称号',
     highlight: true
   }
 ];
