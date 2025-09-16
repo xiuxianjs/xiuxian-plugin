@@ -52,7 +52,8 @@ const res = onResponse(selects, async e => {
   const garden = ass.药园;
   const guildLevel = toInt(ass.宗门等级, 1);
 
-  if (!garden) {
+  // 检查药园是否存在或药园等级是否与宗门等级匹配
+  if (!garden || garden.药园等级 === 1 || garden.药园等级 !== guildLevel) {
     ass.药园 = await createGarden(ass, guildName, userId, guildLevel);
     void setDataJSONStringifyByKey(keys.association(guildName), ass);
     void Send(Text('新建药园，种下了一棵草'));
