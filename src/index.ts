@@ -1,4 +1,4 @@
-import { getAppCofig } from './model';
+import { getAppConfig } from './model';
 import { initPostlog } from './model/posthog';
 import { initDefaultAdmin } from './route/core/auth';
 import { startAllTasks } from './task/index';
@@ -12,7 +12,7 @@ export default defineChildren({
       logger.error('初始化默认管理员失败:', error);
     });
     // task是否关闭启动，使用框架层配置
-    const value = getAppCofig();
+    const value = getAppConfig();
 
     /**
      * todo

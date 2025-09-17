@@ -1,4 +1,4 @@
-import config, { getAppCofig } from './Config';
+import config, { getAppConfig } from './Config';
 import { getIoRedis } from '@alemonjs/db';
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs';
 import type { MessageEnumsArray, MessageInput } from '../types/model';
@@ -29,7 +29,7 @@ export function pushInfo(guildId: string, isGroup: boolean, msg: MessageInput) {
     return;
   }
 
-  const value = getAppCofig();
+  const value = getAppConfig();
   const closeProactiveMessage = value?.close_proactive_message ?? false;
 
   if (closeProactiveMessage) {

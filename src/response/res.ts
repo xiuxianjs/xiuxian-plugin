@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import { getAppCofig, keys } from '@src/model';
+import { getAppConfig, keys } from '@src/model';
 import { generateCaptcha, svgToPngBuffer, verifyCaptcha } from '@src/model/captcha';
 import { baseKey } from '@src/model/keys';
 import { Image, Mention, Text, useMessage } from 'alemonjs';
@@ -10,7 +10,7 @@ import { captchaTries, MAX_CAPTCHA_TRIES, op, replyCount } from './config';
 export const regular = /^[a-zA-Z0-9]{1,9}$/;
 
 export default onResponse(selects, async event => {
-  const values = getAppCofig();
+  const values = getAppConfig();
 
   if (values?.close_captcha) {
     return true;

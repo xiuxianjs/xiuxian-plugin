@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import { getAppCofig, keys } from '@src/model';
+import { getAppConfig, keys } from '@src/model';
 import { generateCaptcha, svgToPngBuffer } from '@src/model/captcha';
 import { baseKey } from '@src/model/keys';
 import { Image, Mention, Text, useMessage } from 'alemonjs';
@@ -13,7 +13,7 @@ const mw = onResponse(selects, async event => {
   // 机器人记录自己的userId and channelId
   void setIds({ uid: event.UserId, cid: event.ChannelId });
 
-  const values = getAppCofig();
+  const values = getAppConfig();
 
   if (values?.close_captcha) {
     // 系统关闭了过验证码流程。

@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import { getAppCofig, keysAction } from '@src/model';
+import { getAppConfig, keysAction } from '@src/model';
 import { DataEnums, Mention } from 'alemonjs';
 import dayjs from 'dayjs';
 
@@ -35,7 +35,7 @@ const createMessageId = () => {
 export const getIdsByBotId = async () => {
   const redis = getIoRedis();
 
-  const value = getAppCofig();
+  const value = getAppConfig();
   const botId = value?.botId ?? 'xiuxian';
 
   // 读取推送对象的key都带 botId
@@ -56,7 +56,7 @@ export const getIdsByBotId = async () => {
 
 // 设置cid或uid
 export const setIds = async ({ cid, uid, mid }: { cid?: string; uid?: string; mid?: string }) => {
-  const value = getAppCofig();
+  const value = getAppConfig();
   const botId = value?.botId ?? 'xiuxian';
   const redis = getIoRedis();
 
@@ -123,7 +123,7 @@ export const clearOldMessages = async () => {
 
 export const getLastRunTime = async () => {
   const redis = getIoRedis();
-  const value = getAppCofig();
+  const value = getAppConfig();
   const botId = value?.botId ?? 'xiuxian';
 
   const lastRunKey = keysAction.system('message:lasttime', botId);
@@ -134,7 +134,7 @@ export const getLastRunTime = async () => {
 
 export const setLastRunTime = async () => {
   const redis = getIoRedis();
-  const value = getAppCofig();
+  const value = getAppConfig();
   const botId = value?.botId ?? 'xiuxian';
 
   const lastRunKey = keysAction.system('message:lasttime', botId);

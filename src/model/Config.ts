@@ -114,7 +114,7 @@ export async function getConfig<T extends ConfigKey>(_app: string, name: T): Pro
  *
  * @returns
  */
-export const getAppCofig = () => {
+export const getAppConfig = () => {
   const values = getConfigValue() || {};
   const value = values['alemonjs-xiuxian'] || {};
 
@@ -130,7 +130,7 @@ export default {
  * @deprecated 请使用 getAuctionKeyManager() 替代
  */
 export function getAuctionKeys(botId?: string) {
-  const actualBotId = botId ?? getAppCofig()?.botId ?? 'default';
+  const actualBotId = botId ?? getAppConfig()?.botId ?? 'default';
 
   return {
     AUCTION_OFFICIAL_TASK: keysAction.system('auctionofficialtask', actualBotId),

@@ -1,5 +1,5 @@
 import { getIoRedis } from '@alemonjs/db';
-import { getAppCofig } from './Config';
+import { getAppConfig } from './Config';
 import { KEY_AUCTION_GROUP_LIST, KEY_AUCTION_OFFICIAL_TASK, keysAction } from './keys';
 
 /**
@@ -12,7 +12,7 @@ export class AuctionKeyManager {
   private redis = getIoRedis();
 
   private constructor() {
-    const { botId } = getAppCofig();
+    const { botId } = getAppConfig();
 
     this.botId = botId ?? 'default';
   }

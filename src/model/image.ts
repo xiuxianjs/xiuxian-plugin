@@ -744,6 +744,7 @@ export async function getPlayerImage(e: EventsMessageCreateEnum): Promise<Screen
   const playerData = {
     neidan: nd,
     pifu: action,
+    bg_url: player?.bg_url,
     user_id: userId,
     player, // 玩家数据
     rank_lianqi: rankLianqi, // 练气境界

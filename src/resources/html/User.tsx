@@ -6,6 +6,7 @@ import { Avatar } from './Avatar';
 
 interface PlayerProps {
   avatar: string;
+  bg_url: string;
   PowerMini: number | string;
   player?: {
     名号?: string;
@@ -84,6 +85,7 @@ interface PlayerProps {
 const Player = ({
   avatar,
   PowerMini,
+  bg_url: bgURL,
   player = {},
   user_id,
   strand_hp = {},
@@ -158,13 +160,15 @@ const Player = ({
     <Pets value={player.仙宠} />
   ) : null;
 
+  const curBGImage = bgURL ? `url(${bgURL})` : `url(${playerURL}), url(${playerFooterURL})`;
+
   return (
     <HTML
       className='p-0 m-0 w-full text-center'
       dangerouslySetInnerHTML={{
         __html: `
           body {
-            background-image: url(${playerURL}), url(${playerFooterURL});
+            background-image: ${curBGImage};
             background-repeat: no-repeat, repeat;
             background-size: 100%, auto;
           }
@@ -420,7 +424,7 @@ const Player = ({
                     </div>
                   </div>
                 </div>
-                {player.occupation.length === 0 ? (
+                {player?.occupation.length === 0 ? (
                   <div className='bg-[hsla(42,71%,91%,.502)] backdrop-blur-sm rounded-lg p-3 border border-white/20 shadow-lg'>
                     <div className='space-y-2'>
                       <div className='flex items-center justify-between'>
@@ -441,7 +445,7 @@ const Player = ({
                             <span className='text-purple-500 text-xs'>🧪</span>
                           </span>
                           <span className='text-base font-bold text-gray-900'>{rank_liandan}</span>
-                          {player.occupation_exp >= expmax_liandan && <span className='text-green-600 text-sm font-bold'>[UP]</span>}
+                          {player?.occupation_exp >= expmax_liandan && <span className='text-green-600 text-sm font-bold'>[UP]</span>}
                         </span>
                       </div>
                       {/* 炼丹进度条 - 使用Tailwind CSS */}

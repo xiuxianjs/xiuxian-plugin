@@ -1,4 +1,4 @@
-import { getAppCofig, keys, redis } from '@src/model';
+import { getAppConfig, keys, redis } from '@src/model';
 import { clearOldMessages, getIdsByBotId, getLastRunTime, getRecentMessages, IMessage, setIds, setLastRunTime } from '@src/model/MessageSystem';
 import { DataEnums, sendToChannel, sendToUser } from 'alemonjs';
 import dayjs from 'dayjs';
@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
  * - 推送成功后才记录为已推送
  */
 export const PushMessageTask = async (): Promise<void> => {
-  const value = getAppCofig();
+  const value = getAppConfig();
   const botId = value?.botId ?? 'xiuxian';
 
   // 以 dayjs 获取当前时间
@@ -43,7 +43,7 @@ export const PushMessageTask = async (): Promise<void> => {
           try {
             const isGroup = !!item.cid;
 
-            const value = getAppCofig();
+            const value = getAppConfig();
             const closeProactiveMessage = value?.close_proactive_message ?? false;
 
             if (closeProactiveMessage) {
