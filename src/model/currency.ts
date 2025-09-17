@@ -535,7 +535,7 @@ export const rechargeUserCurrency = async (userId: string, tier: string, payment
  */
 export const rechargeUserSmallMonthCard = async (userId: string, paymentMethod = 'unknown', ipAddress = '', deviceInfo = '') => {
   try {
-    const { days, name } = MONTH_CARD_CONFIG.SMALL;
+    const { price, days, name } = MONTH_CARD_CONFIG.SMALL;
 
     // 创建充值记录
     const record = await createRechargeRecord(userId, {
@@ -545,7 +545,8 @@ export const rechargeUserSmallMonthCard = async (userId: string, paymentMethod =
       month_card_type: 'small',
       payment_method: paymentMethod,
       ip_address: ipAddress,
-      device_info: deviceInfo
+      device_info: deviceInfo,
+      currency_gained: calculateCurrencyGained(price)
     });
 
     return record;
@@ -565,7 +566,7 @@ export const rechargeUserSmallMonthCard = async (userId: string, paymentMethod =
  */
 export const rechargeUserBigMonthCard = async (userId: string, paymentMethod = 'unknown', ipAddress = '', deviceInfo = '') => {
   try {
-    const { days, name } = MONTH_CARD_CONFIG.BIG;
+    const { price, days, name } = MONTH_CARD_CONFIG.BIG;
 
     // 创建充值记录
     const record = await createRechargeRecord(userId, {
@@ -575,7 +576,8 @@ export const rechargeUserBigMonthCard = async (userId: string, paymentMethod = '
       month_card_type: 'big',
       payment_method: paymentMethod,
       ip_address: ipAddress,
-      device_info: deviceInfo
+      device_info: deviceInfo,
+      currency_gained: calculateCurrencyGained(price)
     });
 
     return record;
