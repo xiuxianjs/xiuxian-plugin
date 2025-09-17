@@ -438,11 +438,13 @@ export const completeRechargePayment = async (recordId: string, transactionId: s
         break;
 
       case RechargeType.SMALL_MONTH_CARD:
+        userInfo.currency += record.currency_gained;
         userInfo.small_month_card_expire_time =
           Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time) + MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
         break;
 
       case RechargeType.BIG_MONTH_CARD: {
+        userInfo.currency += record.currency_gained;
         const time = userInfo.big_month_card_expire_time > Date.now() ? userInfo.big_month_card_expire_time : Date.now();
 
         userInfo.big_month_card_expire_time = Math.max(Date.now(), userInfo.big_month_card_expire_time) + MONTH_CARD_CONFIG.BIG.days * 24 * 60 * 60 * 1000;
