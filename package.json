@@ -1,6 +1,6 @@
 {
   "name": "alemonjs-xiuxian",
-  "version": "0.0.118",
+  "version": "0.0.119",
   "description": "凡人修仙文字游戏",
   "author": "ningmengchongshui",
   "type": "module",
@@ -12,7 +12,7 @@
   "dependencies": {
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
-    "jsxp": "^1.2.2",
+    "jsxp": "^1.2.3",
     "koa-bodyparser": "^4.4.1",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
