@@ -10,9 +10,12 @@ import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?出战仙宠.*$/;
 
 interface PetDef {
+  id: number;
   name: string;
   type: string;
   每级增加: number;
+  品级: string;
+  等级上限: number;
 }
 interface BagPetLike {
   name?: string;
@@ -151,12 +154,15 @@ const res = onResponse(selects, async e => {
   const bonus = calcBonus(level, per);
 
   const newPet: XianchongInfo = {
+    id: petDef.id, // 使用配置表中的仙宠ID
     name: input,
     type: petDef.type,
     加成: bonus,
     等级: level,
     每级增加: per,
-    灵魂绑定: bagPet.灵魂绑定
+    灵魂绑定: bagPet.灵魂绑定,
+    等级上限: petDef.等级上限, // 使用配置表中的等级上限
+    品级: petDef.品级 // 使用配置表中的品级
   };
 
   player.仙宠 = newPet;
