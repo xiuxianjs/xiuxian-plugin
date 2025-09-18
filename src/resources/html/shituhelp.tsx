@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import bgURL from '@src/resources/img/shituhelp.jpg';
 import iconURL from '@src/resources/img/icon.png';
 import HTML from './HTML';
+import { Image } from 'jsxp';
 
 const ShituHelp = ({ version, helpData = [] }) => {
   return (
@@ -12,7 +13,7 @@ const ShituHelp = ({ version, helpData = [] }) => {
           <div className='rounded-xl shadow-lg bg-white/80 p-6 mb-6 flex flex-col items-center'>
             <div className='text-2xl font-bold text-blue-700 mb-2 flex items-center gap-2'>
               <span className='flex w-10 h-10 rounded bg-blue-200 items-center justify-center'>
-                <img src={iconURL} alt='icon' className='w-8 h-8' />
+                <Image src={iconURL} alt='icon' className='w-8 h-8' />
               </span>
               #师徒帮助
               <span className='ml-2 text-base text-gray-500'>{version}</span>
@@ -25,7 +26,7 @@ const ShituHelp = ({ version, helpData = [] }) => {
                 {val.list.map((item, i) => (
                   <div className='flex items-start gap-3 p-3 border rounded-lg bg-gray-50' key={i}>
                     <span className={classNames('flex w-10 h-10 rounded bg-blue-100 items-center justify-center', item.icon)}>
-                      <img src={iconURL} alt='icon' className='w-8 h-8' />
+                      <Image src={iconURL} alt='icon' className='w-8 h-8' />
                     </span>
                     <div>
                       <strong className='block text-base text-blue-800 mb-1'>{item.title}</strong>

@@ -3,6 +3,7 @@ import { Buffer } from 'buffer';
 import { type DataEnums } from 'alemonjs';
 import React from 'react';
 import classNames from 'classnames';
+import { Image } from 'jsxp';
 
 // ---------------- Types ----------------
 type MessageBubbleProps = {
@@ -116,7 +117,7 @@ const MARKDOWN_RENDERERS: Record<string, (mdItem: any) => React.ReactNode> = {
     const w = Number(md.options?.width) || 100;
     const h = Number(md.options?.height) || 100;
 
-    return <img style={{ width: `${w}px`, height: `${h}px` }} className='max-w-[15rem] xl:max-w-[20rem] rounded-md' src={url} alt='image' />;
+    return <Image style={{ width: `${w}px`, height: `${h}px` }} className='max-w-[15rem] xl:max-w-[20rem] rounded-md' src={url} alt='image' />;
   },
   'MD.italic': md => <em>{safeString(md.value).slice(0, 500)}</em>,
   'MD.italicStar': md => <em className='italic'>{safeString(md.value).slice(0, 500)}</em>,
@@ -172,7 +173,7 @@ const renderImage = (item: any): React.ReactNode => {
     const base64String = buffer.toString('base64');
     const url = `data:image/png;base64,${base64String}`;
 
-    return <img className='max-w-[15rem] xl:max-w-[20rem] rounded-md' src={url} alt='Image' />;
+    return <Image className='max-w-[15rem] xl:max-w-[20rem] rounded-md' src={url} alt='Image' />;
   } catch (e) {
     console.warn('renderImage error', e);
 
@@ -196,7 +197,7 @@ const renderImageURL = (item: any): React.ReactNode => {
       return null;
     }
 
-    return <img className='max-w-[15rem] xl:max-w-[20rem] rounded-md' src={raw} alt='ImageURL' />;
+    return <Image className='max-w-[15rem] xl:max-w-[20rem] rounded-md' src={raw} alt='ImageURL' />;
   } catch (e) {
     console.warn('renderImageURL error', e);
 
@@ -214,19 +215,19 @@ const renderText = (item: any): React.ReactNode => {
     const styleKey = safeString(item?.options?.style) ?? 'default';
     const styleRenderer = TEXT_STYLES[styleKey] ?? TEXT_STYLES.default;
     const parts = value.split('\n');
-    const content =
-      parts.length > 1 ? (
-        <span>
-          {parts.map((line, i) => (
-            <span key={i}>
-              {line}
-              <br />
-            </span>
-          ))}
-        </span>
-      ) : (
-        value
-      );
+    const isMultiLine = parts.length > 1;
+    const content = isMultiLine ? (
+      <span>
+        {parts.map((line, i) => (
+          <span key={i}>
+            {line}
+            <br />
+          </span>
+        ))}
+      </span>
+    ) : (
+      value
+    );
 
     return <span>{styleRenderer(content)}</span>;
   } catch (e) {

@@ -1,16 +1,12 @@
 import React from 'react';
 import ningmenghomeURL from '@src/resources/img/fairyrealm.jpg';
 import HTML from './HTML';
+import { BackgroundImage } from 'jsxp';
 
 const Ningmenghome = ({ commodities_list }) => {
   return (
     <HTML>
-      <div
-        className=' w-full flex flex-col items-center justify-start p-6 md:p-12 bg-center bg-cover relative'
-        style={{
-          backgroundImage: `url(${ningmenghomeURL})`
-        }}
-      >
+      <BackgroundImage src={ningmenghomeURL} className=' w-full flex flex-col items-center justify-start p-6 md:p-12 bg-center bg-cover relative'>
         {/* 白色居中渐变叠加 */}
         <div className='absolute inset-0 bg-gradient-to-b from-white/95 via-white/80 to-blue-300/90 pointer-events-none' />
 
@@ -59,7 +55,7 @@ const Ningmenghome = ({ commodities_list }) => {
             ))}
           </div>
         </div>
-      </div>
+      </BackgroundImage>
     </HTML>
   );
 };

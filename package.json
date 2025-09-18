@@ -45,7 +45,7 @@
   "dependencies": {
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
-    "jsxp": "^1.2.2",
+    "jsxp": "^1.2.3",
     "koa-bodyparser": "^4.4.1",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",

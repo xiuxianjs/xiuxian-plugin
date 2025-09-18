@@ -1,4 +1,4 @@
-import { renderComponentToBuffer } from 'jsxp';
+import { renderComponentIsHtmlToBuffer } from 'jsxp';
 import md5 from 'md5';
 import type { ComponentType } from 'react';
 import adminset from '../resources/html/adminset';
@@ -133,7 +133,7 @@ export async function screenshot(name: keyof typeof map, uid: number | string, d
   const component = map[name] as ComponentType;
 
   if (!enableCache) {
-    return await renderComponentToBuffer(keyBase, component, data);
+    return await renderComponentIsHtmlToBuffer(component, data);
   }
 
   // 计算数据哈希；若序列化失败则退回不缓存
@@ -142,7 +142,7 @@ export async function screenshot(name: keyof typeof map, uid: number | string, d
   try {
     hash = md5(JSON.stringify(data));
   } catch {
-    return await renderComponentToBuffer(keyBase, component, data);
+    return await renderComponentIsHtmlToBuffer(component, data);
   }
 
   const cacheKey = `${keyBase}`;
@@ -152,7 +152,7 @@ export async function screenshot(name: keyof typeof map, uid: number | string, d
     return existed.buffer;
   }
 
-  const buffer = await renderComponentToBuffer(keyBase, component, data);
+  const buffer = await renderComponentIsHtmlToBuffer(component, data);
 
   shotCache.set(cacheKey, { hash, buffer, at: Date.now() });
 

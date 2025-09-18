@@ -1,6 +1,7 @@
 import React from 'react';
 import stateURL from '@src/resources/img/state.jpg';
 import HTML from './HTML';
+import { BackgroundImage } from 'jsxp';
 
 interface XiuxianSettingsProps {
   // 冷却时间设置
@@ -188,7 +189,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
 
   return (
     <HTML>
-      <div className=' w-full bg-cover bg-center text-center p-4 md:p-8 space-y-8' style={{ backgroundImage: `url(${stateURL})` }}>
+      <BackgroundImage src={[stateURL]} className=' w-full bg-cover bg-center text-center p-4 md:p-8 space-y-8'>
         {/* 头部区域 */}
         <header className='relative text-center space-y-6'>
           {/* 标题区域 */}
@@ -217,7 +218,7 @@ const XiuxianSettings: React.FC<XiuxianSettingsProps> = props => {
             <span className='text-amber-300/80 text-sm tracking-wide'>✨ 修仙之路，道法自然 ✨</span>
           </div>
         </footer>
-      </div>
+      </BackgroundImage>
     </HTML>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import HTML from './HTML';
+import { Image } from 'jsxp';
 
 /**
  * 战斗的2方。
@@ -96,7 +97,7 @@ const CombatResult = ({
                       <div className='w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full p-1 shadow-lg'>
                         <div className='w-full h-full rounded-full overflow-hidden bg-slate-800 flex items-center justify-center'>
                           {playerA.avatar ? (
-                            <img src={playerA.avatar} alt={playerA.name} className='w-full h-full object-cover' />
+                            <Image src={playerA.avatar} alt={playerA.name} className='w-full h-full object-cover' />
                           ) : (
                             <span className='text-white text-2xl'>👤</span>
                           )}
@@ -173,7 +174,7 @@ const CombatResult = ({
                       <div className='w-20 h-20 bg-gradient-to-br from-red-400 to-pink-400 rounded-full p-1 shadow-lg'>
                         <div className='w-full h-full rounded-full overflow-hidden bg-slate-800 flex items-center justify-center'>
                           {playerB.avatar ? (
-                            <img src={playerB.avatar} alt={playerB.name} className='w-full h-full object-cover' />
+                            <Image src={playerB.avatar} alt={playerB.name} className='w-full h-full object-cover' />
                           ) : (
                             <span className='text-white text-2xl'>👹</span>
                           )}

@@ -2,16 +2,17 @@ import React from 'react';
 import { LinkStyleSheet } from 'jsxp';
 import cssURL from '@src/resources/styles/tw.scss';
 import tttgbnumberURL from '@src/resources/font/tttgbnumber.ttf';
+import classNames from 'classnames';
 
 const HTML = (
   props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement> & {
     linkStyleSheets?: string[];
   }
 ) => {
-  const { linkStyleSheets = [], dangerouslySetInnerHTML, ...reSet } = props;
+  const { linkStyleSheets = [], dangerouslySetInnerHTML, children, className, ...reSet } = props;
 
   return (
-    <html>
+    <html className='p-0 m-0'>
       <head>
         <LinkStyleSheet src={cssURL} />
         {linkStyleSheets.map((src, index) => (
@@ -36,7 +37,9 @@ const HTML = (
         />
         {dangerouslySetInnerHTML && <style dangerouslySetInnerHTML={dangerouslySetInnerHTML} />}
       </head>
-      <body {...reSet} />
+      <body className={classNames('p-0 m-0 w-full text-center', className)} {...reSet}>
+        {children}
+      </body>
     </html>
   );
 };

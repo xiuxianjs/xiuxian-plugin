@@ -3,17 +3,12 @@ import playerURL from '@src/resources/img/player.jpg';
 import HTML from './HTML';
 import { Avatar } from './Avatar';
 import { getAvatar } from '@src/model/utils/utilsx.js';
+import { BackgroundImage } from 'jsxp';
 
 const Shitu = ({ user_id, minghao, renwu, tudinum, newchengyuan, shimen, rw1, wancheng1, rw2, wancheng2, rw3, wancheng3, chengyuan }) => {
   return (
     <HTML>
-      <div
-        className=' bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8'
-        style={{
-          backgroundImage: `url('${playerURL}')`,
-          backgroundSize: 'cover'
-        }}
-      >
+      <BackgroundImage src={playerURL} className=' bg-cover bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8'>
         <div className='w-full max-w-2xl mx-auto'>
           {/* 顶部信息 */}
           <div className='flex flex-row items-center gap-6 mb-6'>
@@ -59,7 +54,7 @@ const Shitu = ({ user_id, minghao, renwu, tudinum, newchengyuan, shimen, rw1, wa
             </div>
           </div>
         </div>
-      </div>
+      </BackgroundImage>
     </HTML>
   );
 };

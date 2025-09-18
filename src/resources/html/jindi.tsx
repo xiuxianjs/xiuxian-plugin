@@ -2,6 +2,7 @@ import React from 'react';
 import HTML from './HTML';
 import secretPlaceURL from '@src/resources/img/fairyrealm.jpg';
 import cardURL from '@src/resources/img/road.jpg';
+import { BackgroundImage } from 'jsxp';
 
 interface JindiItem {
   Grade: string | number;
@@ -14,14 +15,7 @@ interface JindiItem {
 const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
   return (
     <HTML>
-      <div
-        className='min-h-screen relative overflow-hidden'
-        style={{
-          backgroundImage: `url(${secretPlaceURL})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
+      <BackgroundImage src={[secretPlaceURL]} className='min-h-screen relative overflow-hidden'>
         {/* 背景遮罩 */}
         <div className='absolute inset-0 bg-gradient-to-br from-black/60 via-gray-900/50 to-black/70' />
 
@@ -214,7 +208,7 @@ const SecretPlace = ({ didian_list }: { didian_list?: JindiItem[] }) => {
             </div>
           </div>
         </div>
-      </div>
+      </BackgroundImage>
     </HTML>
   );
 };

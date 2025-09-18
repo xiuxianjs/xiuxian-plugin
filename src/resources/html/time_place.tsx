@@ -1,17 +1,12 @@
 import React from 'react';
 import timePlaceURL from '@src/resources/img/fairyrealm.jpg';
 import HTML from './HTML';
+import { BackgroundImage } from 'jsxp';
 
 const TimePlace = ({ didian_list }) => {
   return (
     <HTML>
-      <div
-        className=' bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8'
-        style={{
-          backgroundImage: `url('${timePlaceURL}')`,
-          backgroundSize: 'cover'
-        }}
-      >
+      <BackgroundImage src={timePlaceURL} className='bg-cover bg-gradient-to-b from-blue-100 to-blue-300 flex flex-col items-center py-8'>
         <div className='w-full max-w-2xl mx-auto'>
           <div className='rounded-xl shadow-lg bg-white p-6 mb-6 flex flex-col items-center'>
             <div className='text-2xl font-bold text-blue-700 mb-2'>仙府</div>
@@ -60,7 +55,7 @@ const TimePlace = ({ didian_list }) => {
             ))}
           </div>
         </div>
-      </div>
+      </BackgroundImage>
     </HTML>
   );
 };

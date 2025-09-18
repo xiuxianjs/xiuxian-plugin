@@ -1,5 +1,6 @@
 import React from 'react';
 import HTML from './HTML';
+import { Image } from 'jsxp';
 
 // 更新日志组件
 export default ({ Record }) => {
@@ -42,7 +43,7 @@ export default ({ Record }) => {
                               <div className='absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-full blur-sm' />
                               <div className='relative w-16 h-16 rounded-full border-2 border-teal-400/30 overflow-hidden'>
                                 {item.user.avatar ? (
-                                  <img src={item.user.avatar} alt={item.user.name} className='w-full h-full object-cover' />
+                                  <Image src={item.user.avatar} alt={item.user.name} className='w-full h-full object-cover' />
                                 ) : (
                                   <div className='w-full h-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center text-2xl font-bold text-white'>
                                     {item.user.name.charAt(0)}

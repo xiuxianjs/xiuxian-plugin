@@ -5,6 +5,7 @@ import supermarketURL from '@src/resources/img/fairyrealm.jpg';
 import userStateURL from '@src/resources/img/user_state2.png';
 import dayjs from 'dayjs';
 import classNames from 'classnames';
+import { BackgroundImage } from 'jsxp';
 
 // 配置dayjs插件（已去除relativeTime）
 
@@ -335,95 +336,85 @@ const Monthcard: React.FC<MonthCardProps> = ({ isMonth, avatar, isNewbie: _isNew
   const bigExpire = formatExpireTime(bigExpireTime);
 
   return (
-    <HTML
-      className='p-0 m-0 w-full text-center'
-      dangerouslySetInnerHTML={{
-        __html: `
-          body {
-            background-image: url(${supermarketURL});
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-          }
-        `
-      }}
-    >
-      <div className='h-3' />
-      <div className='m-3 mx-auto flex flex-nowrap rounded-3xl z-999 bg-gradient-to-br from-white/70 via-blue-50/60 to-cyan-50/65 backdrop-blur-sm border border-blue-200/40 shadow-2xl w-[780px] pb-6'>
-        <div className='m-4 w-[780px]'>
-          {/* 头部区域 */}
-          <div className='text-center mb-6'>
-            <div className='flex items-center justify-between mb-6'>
-              {/* 用户头像 */}
-              <div className='flex-1 flex justify-center'>
-                <div className='relative'>
-                  <Avatar src={avatar} stateSrc={userStateURL} rootClassName='w-32 h-32' className='w-28 h-28' />
-                  {isMonth && (
-                    <div className='absolute -bottom-0 -right-1 w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center shadow-lg'>
-                      <span className='text-white text-sm'>✓</span>
-                    </div>
-                  )}
+    <HTML>
+      <BackgroundImage src={supermarketURL} className='p-0 m-0 w-full text-center'>
+        <div className='h-3' />
+        <div className='m-3 mx-auto flex flex-nowrap rounded-3xl z-999 bg-gradient-to-br from-white/70 via-blue-50/60 to-cyan-50/65 backdrop-blur-sm border border-blue-200/40 shadow-2xl w-[780px] pb-6'>
+          <div className='m-4 w-[780px]'>
+            {/* 头部区域 */}
+            <div className='text-center mb-6'>
+              <div className='flex items-center justify-between mb-6'>
+                {/* 用户头像 */}
+                <div className='flex-1 flex justify-center'>
+                  <div className='relative'>
+                    <Avatar src={avatar} stateSrc={userStateURL} rootClassName='w-32 h-32' className='w-28 h-28' />
+                    {isMonth && (
+                      <div className='absolute -bottom-0 -right-1 w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center shadow-lg'>
+                        <span className='text-white text-sm'>✓</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              {/* 月卡信息 */}
-              <div className='flex-1 flex items-center justify-center'>
-                <div className='flex items-center rounded-xl overflow-hidden shadow-lg'>
-                  <MonthCardItem
-                    type='small'
-                    config={monthCardConfigs.small}
-                    isActive={data?.has_small_month_card || false}
-                    days={smallResidue || 0}
-                    expireInfo={smallExpire}
-                  />
-                  <MonthCardItem
-                    type='big'
-                    config={monthCardConfigs.big}
-                    isActive={data?.has_big_month_card || false}
-                    days={bigResidue || 0}
-                    expireInfo={bigExpire}
-                  />
+                {/* 月卡信息 */}
+                <div className='flex-1 flex items-center justify-center'>
+                  <div className='flex items-center rounded-xl overflow-hidden shadow-lg'>
+                    <MonthCardItem
+                      type='small'
+                      config={monthCardConfigs.small}
+                      isActive={data?.has_small_month_card || false}
+                      days={smallResidue || 0}
+                      expireInfo={smallExpire}
+                    />
+                    <MonthCardItem
+                      type='big'
+                      config={monthCardConfigs.big}
+                      isActive={data?.has_big_month_card || false}
+                      days={bigResidue || 0}
+                      expireInfo={bigExpire}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+            {/* 权益功能列表 */}
+            <div className='space-y-4'>
+              <div className='flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-blue-500/15 via-cyan-500/12 to-blue-600/15 backdrop-blur-sm rounded-lg border border-blue-200/40 shadow-lg'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-8 h-8 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 backdrop-blur-sm rounded-lg flex items-center justify-center border border-blue-200/40'>
+                    <span className='text-blue-600 text-lg'>🎯</span>
+                  </div>
+                  <h3 className='text-xl font-bold text-blue-800 drop-shadow-sm'>专属权益</h3>
+                </div>
+                {/* 仙缘币信息 */}
+                <div className='flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 backdrop-blur-sm rounded-full border border-yellow-400/40 shadow-lg'>
+                  <span className='text-yellow-600 text-lg'>🪙</span>
+                  <span className='text-yellow-800 font-semibold text-sm'>仙缘币余额</span>
+                  <span className='text-yellow-700 text-sm font-bold'>{data?.currency?.toLocaleString() || 0}</span>
+                  <span className='text-yellow-700 text-sm'>·</span>
+                  <span className='text-yellow-700 text-sm'>1¥=10Coin</span>
+                </div>
+                <div className='text-sm text-blue-700 font-medium'>共 {features.length} 项特权</div>
+              </div>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                {features.map((feature, index) => (
+                  <FeatureItem key={index} feature={feature} isMonth={isMonth} data={data} />
+                ))}
+              </div>
+            </div>
+            {data?.is_first_recharge === false && (
+              <div className='mt-4 text-center'>
+                <div className='inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-sm rounded-full border border-orange-400/40 shadow-lg'>
+                  <span className='text-orange-600 text-lg'>🎁</span>
+                  <span className='text-orange-800 font-semibold'>首充奖励</span>
+                  <span className='text-orange-700 text-sm'>·</span>
+                  <span className='text-orange-700 text-sm'>任何充值都将触发首充奖励(小月卡天数*7)</span>
+                </div>
+              </div>
+            )}
           </div>
-          {/* 权益功能列表 */}
-          <div className='space-y-4'>
-            <div className='flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-blue-500/15 via-cyan-500/12 to-blue-600/15 backdrop-blur-sm rounded-lg border border-blue-200/40 shadow-lg'>
-              <div className='flex items-center gap-3'>
-                <div className='w-8 h-8 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 backdrop-blur-sm rounded-lg flex items-center justify-center border border-blue-200/40'>
-                  <span className='text-blue-600 text-lg'>🎯</span>
-                </div>
-                <h3 className='text-xl font-bold text-blue-800 drop-shadow-sm'>专属权益</h3>
-              </div>
-              {/* 仙缘币信息 */}
-              <div className='flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 backdrop-blur-sm rounded-full border border-yellow-400/40 shadow-lg'>
-                <span className='text-yellow-600 text-lg'>🪙</span>
-                <span className='text-yellow-800 font-semibold text-sm'>仙缘币余额</span>
-                <span className='text-yellow-700 text-sm font-bold'>{data?.currency?.toLocaleString() || 0}</span>
-                <span className='text-yellow-700 text-sm'>·</span>
-                <span className='text-yellow-700 text-sm'>1¥=10Coin</span>
-              </div>
-              <div className='text-sm text-blue-700 font-medium'>共 {features.length} 项特权</div>
-            </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              {features.map((feature, index) => (
-                <FeatureItem key={index} feature={feature} isMonth={isMonth} data={data} />
-              ))}
-            </div>
-          </div>
-          {data?.is_first_recharge === false && (
-            <div className='mt-4 text-center'>
-              <div className='inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-sm rounded-full border border-orange-400/40 shadow-lg'>
-                <span className='text-orange-600 text-lg'>🎁</span>
-                <span className='text-orange-800 font-semibold'>首充奖励</span>
-                <span className='text-orange-700 text-sm'>·</span>
-                <span className='text-orange-700 text-sm'>任何充值都将触发首充奖励(小月卡天数*7)</span>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
-      <div className='h-3' />
+        <div className='h-3' />
+      </BackgroundImage>
     </HTML>
   );
 };

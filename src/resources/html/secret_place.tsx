@@ -1,17 +1,12 @@
 import React from 'react';
 import HTML from './HTML';
 import secretPlaceURL from '@src/resources/img/fairyrealm.jpg';
+import { BackgroundImage } from 'jsxp';
 
 const SecretPlace = ({ didian_list }) => {
   return (
     <HTML>
-      <div
-        className='min-h-screen relative overflow-hidden'
-        style={{
-          backgroundImage: `url(${secretPlaceURL})`,
-          backgroundPosition: 'center'
-        }}
-      >
+      <BackgroundImage src={secretPlaceURL} className='bg-cover min-h-screen relative overflow-hidden'>
         {/* 背景装饰元素 */}
         <div className='absolute inset-0 opacity-20'>
           <div className='absolute top-10 left-10 w-32 h-32 border border-blue-400 rounded-full' />
@@ -203,7 +198,7 @@ const SecretPlace = ({ didian_list }) => {
             </div>
           </div>
         </div>
-      </div>
+      </BackgroundImage>
     </HTML>
   );
 };
