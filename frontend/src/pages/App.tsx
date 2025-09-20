@@ -1,11 +1,16 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import classNames from 'classnames';
 import { menuItems } from '@/config';
 import { useAppCode } from './App.code';
+import { usePermissions } from '@/contexts/PermissionContext';
 
-export default function App() {
+// 内部菜单组件
+function AppContent() {
   const { user, navigate, sidebarCollapsed, isMobile, mobileMenuOpen, handleLogout, toggleSidebar, closeMobileMenu } = useAppCode();
+  const { hasPermission } = usePermissions();
+
+  // 过滤有权限的菜单项
+  const visibleMenuItems = menuItems.filter(item => !item.permission || hasPermission(item.permission));
 
   return (
     <div className='h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'>
@@ -40,11 +45,11 @@ export default function App() {
 
           {/* 导航菜单 */}
           <nav className='px-3 py-2 flex-1 overflow-y-auto max-h-[calc(100vh-5rem)]'>
-            {menuItems.map(item => (
+            {visibleMenuItems.map(item => (
               <button
                 key={item.path}
                 onClick={() => {
-                  navigate(item.path);
+                  void navigate(item.path);
                   closeMobileMenu();
                 }}
                 className='w-full mb-2 group relative overflow-hidden'
@@ -52,7 +57,7 @@ export default function App() {
                 <div className='flex items-center px-3 py-3 text-slate-300 hover:text-white transition-all duration-200 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 border border-transparent hover:border-purple-500/30'>
                   <div className='text-lg flex-shrink-0'>{item.icon}</div>
                   {(!sidebarCollapsed || isMobile) && <span className='ml-3 font-medium truncate'>{item.label}</span>}
-                  <div className='absolute inset-0 bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300'></div>
+                  <div className='absolute inset-0 bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300' />
                 </div>
               </button>
             ))}
@@ -96,14 +101,14 @@ export default function App() {
               <div className='relative group'>
                 <button className='flex items-center space-x-2 px-3 sm:px-4 py-2 bg-slate-700/50 text-white rounded-lg hover:bg-slate-600/50 transition-all duration-200 border border-slate-600/50'>
                   <div className='w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0'>👤</div>
-                  <span className='hidden sm:block truncate max-w-24'>{user?.username || '管理员'}</span>
+                  <span className='hidden sm:block truncate max-w-24'>{user?.username ?? '管理员'}</span>
                   <span className='hidden sm:block'>▼</span>
                 </button>
 
                 <div className='absolute z-10 right-0 top-full w-48 bg-slate-800/95 backdrop-blur-xl rounded-lg shadow-xl border border-slate-700/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200'>
                   <div className='py-2'>
                     <button
-                      onClick={() => navigate('/profile')}
+                      onClick={() => void navigate('/profile')}
                       className='w-full px-4 py-2 text-left text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors duration-200'
                     >
                       👤 个人设置
@@ -128,4 +133,9 @@ export default function App() {
       </div>
     </div>
   );
+}
+
+// 主应用组件
+export default function App() {
+  return <AppContent />;
 }

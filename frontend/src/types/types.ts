@@ -235,10 +235,13 @@ export interface GameUser {
 export interface User {
   id: string;
   username: string;
-  role: string;
+  role: string; // 这里应该使用 UserRole 枚举，但为了兼容性暂时保持 string
   createdAt: number;
   lastLoginAt?: number;
 }
+
+// 导入权限相关类型
+export * from './permissions';
 
 export interface AuthContextType {
   user: User | null;

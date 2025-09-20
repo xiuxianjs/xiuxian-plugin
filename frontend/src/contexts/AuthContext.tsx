@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, PropsWithChildren } from 'react';
+import { createContext, useContext, useState, useEffect, PropsWithChildren } from 'react';
 import { loginAPI, logoutAPI, verifyTokenAPI } from '@/api/auth';
 import { AuthContextType, User } from '@/types/types';
 
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setLoading(false);
     };
 
-    checkAuth();
+    void checkAuth();
   }, []);
 
   const login = async (username: string, password: string) => {
@@ -46,12 +46,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
         setUser(result.user);
         localStorage.setItem('user', JSON.stringify(result.user));
         localStorage.setItem('token', result.token);
+
         return { success: true };
       } else {
         return { success: false, message: result.message };
       }
     } catch (error) {
       console.error('登录失败:', error);
+
       return { success: false, message: '登录失败' };
     }
   };
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const logout = async () => {
     try {
       const token = localStorage.getItem('token');
+
       if (token) {
         await logoutAPI(token);
       }
@@ -84,8 +87,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
   return context;
 }

@@ -6,7 +6,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.0",

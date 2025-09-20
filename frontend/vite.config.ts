@@ -51,14 +51,7 @@ export default defineConfig({
           return 'assets/[name]-[hash][extname]';
         },
         manualChunks: {
-          'react-vendor': [
-            'react',
-            'react-dom',
-            'react-router-dom',
-            'react-router',
-            'react-redux',
-            'redux'
-          ]
+          'react-vendor': ['react', 'react-dom', 'react-router-dom', 'react-router', 'react-redux', 'redux']
         }
       }
     }

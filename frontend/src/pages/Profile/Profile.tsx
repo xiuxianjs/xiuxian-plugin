@@ -1,12 +1,10 @@
-import React from 'react';
 import { useProfileCode } from './Profile.code';
-import classNames from 'classnames';
 
 // 导入UI组件库
 import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTabGroup, XiuxianInfoCard } from '@/components/ui';
 
 export default function Profile() {
-  const { activeTab, setActiveTab, loading, message, passwordForm, handlePasswordChange, handleInputChange, user } = useProfileCode();
+  const { activeTab, setActiveTab, loading, passwordForm, handlePasswordChange, handleInputChange, user } = useProfileCode();
 
   // 构建标签页数据
   const tabs = [
@@ -70,14 +68,14 @@ export default function Profile() {
         <div className='space-y-6'>
           <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg'>
             <h3 className='text-white text-lg font-semibold mb-4'>修改密码</h3>
-            <form className='space-y-4'>
+            <form className='space-y-4' onSubmit={handlePasswordChange}>
               <div>
                 <label className='block text-slate-300 text-sm font-medium mb-2'>当前密码</label>
                 <input
                   type='password'
                   name='currentPassword'
                   value={passwordForm.currentPassword}
-                  onChange={handlePasswordChange}
+                  onChange={handleInputChange('currentPassword')}
                   className='w-full p-3 xiuxian-input rounded-lg'
                   placeholder='请输入当前密码'
                   required
@@ -89,7 +87,7 @@ export default function Profile() {
                   type='password'
                   name='newPassword'
                   value={passwordForm.newPassword}
-                  onChange={handlePasswordChange}
+                  onChange={handleInputChange('newPassword')}
                   className='w-full p-3 xiuxian-input rounded-lg'
                   placeholder='请输入新密码'
                   required
@@ -101,7 +99,7 @@ export default function Profile() {
                   type='password'
                   name='confirmPassword'
                   value={passwordForm.confirmPassword}
-                  onChange={handlePasswordChange}
+                  onChange={handleInputChange('confirmPassword')}
                   className='w-full p-3 xiuxian-input rounded-lg'
                   placeholder='请再次输入新密码'
                   required
@@ -123,9 +121,6 @@ export default function Profile() {
 
   return (
     <XiuxianPageWrapper>
-      {/* 页面标题 */}
-      <XiuxianPageTitle icon='👤' title='个人设置' subtitle='管理您的个人信息和账户设置' />
-
       {/* 标签页组 */}
       <XiuxianTabGroup tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
     </XiuxianPageWrapper>

@@ -36,13 +36,17 @@ export const useUserManagerCode = () => {
 
   // 获取游戏用户数据
   const fetchGameUsers = async (page = 1, pSize = pageSize) => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
@@ -94,22 +98,36 @@ export const useUserManagerCode = () => {
 
   // 获取灵根颜色
   const getLinggenColor = (linggen: unknown) => {
-    if (!linggen) return 'default';
+    if (!linggen) {
+      return 'default';
+    }
     const name = (linggen as { name?: string })?.name || '';
-    if (name.includes('混沌') || name.includes('天五') || name.includes('九转')) return 'gold';
-    if (name.includes('五灵') || name.includes('九重')) return 'purple';
-    if (name.includes('三灵') || name.includes('双灵')) return 'blue';
+
+    if (name.includes('混沌') || name.includes('天五') || name.includes('九转')) {
+      return 'gold';
+    }
+    if (name.includes('五灵') || name.includes('九重')) {
+      return 'purple';
+    }
+    if (name.includes('三灵') || name.includes('双灵')) {
+      return 'blue';
+    }
+
     return 'green';
   };
 
   // 获取统计数据
   const fetchStats = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
@@ -136,12 +154,15 @@ export const useUserManagerCode = () => {
     setEditLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       const result = await updateGameUserAPI(token, updatedUser);
+
       if (result.success) {
         message.success('用户更新成功');
         setUserEditVisible(false);

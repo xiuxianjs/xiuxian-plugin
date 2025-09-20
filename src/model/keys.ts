@@ -10,6 +10,12 @@ const baseDataKey = 'data:alemonjs-xiuxian';
 
 // 存档存放路径
 export const __PATH = {
+  // 服务端用户
+  server_user: `${baseDataKey}:server:auth:user`,
+  // username
+  username: `${baseDataKey}:server:auth:username`,
+  // 服务端会话
+  server_session: `${baseDataKey}:server:auth:session`,
   player_path: `${baseDataKey}:player`,
   equipment_path: `${baseDataKey}:equipment`,
   najie_path: `${baseDataKey}:xiuxian_najie`,
@@ -51,6 +57,9 @@ export const __PATH = {
 };
 
 export const keys = {
+  serverUser: (id: string) => `${__PATH.server_user}:${id}`,
+  serverUsername: (username: string) => `${__PATH.username}:${username}`,
+  serverSession: (id: string) => `${__PATH.server_session}:${id}`,
   player: (id: string) => `${__PATH.player_path}:${id}`,
   equipment: (id: string) => `${__PATH.equipment_path}:${id}`,
   najie: (id: string) => `${__PATH.najie_path}:${id}`,

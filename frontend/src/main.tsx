@@ -4,9 +4,12 @@ import '@/input.scss';
 import route from '@/route';
 import { RouterProvider } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { PermissionProvider } from '@/contexts/PermissionContext';
 
 createRoot(document.getElementById('root')!).render(
   <AuthProvider>
-    <RouterProvider router={route} />
+    <PermissionProvider>
+      <RouterProvider router={route} />
+    </PermissionProvider>
   </AuthProvider>
 );

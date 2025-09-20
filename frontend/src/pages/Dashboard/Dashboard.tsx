@@ -190,50 +190,47 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* 排行榜区域 */}
-          <XiuxianTableContainer title='排行榜数据' icon={<TrophyOutlined />}>
-            <Row gutter={[16, 16]}>
-              {/* 玩家排行榜 */}
-              <Col xs={24} lg={12}>
-                <div className='bg-gradient-to-br from-slate-700/30 to-slate-800/30 backdrop-blur-xl border border-slate-600/50 rounded-xl p-4 shadow-lg'>
-                  <div className='flex items-center gap-2 mb-4'>
-                    <TrophyOutlined className='text-yellow-400' />
-                    <span className='text-lg font-bold text-white'>玩家排行榜 TOP10</span>
-                  </div>
-                  <Table
-                    columns={playerColumns}
-                    dataSource={stats.rankings.topPlayers.slice(0, 10)}
-                    rowKey='id'
-                    pagination={false}
-                    size='small'
-                    scroll={{ x: 300, y: 300 }}
-                    rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-                    className='xiuxian-table'
-                  />
+          <Row gutter={[16, 16]}>
+            {/* 玩家排行榜 */}
+            <Col xs={24} lg={12}>
+              <div className='bg-gradient-to-br from-slate-700/30 to-slate-800/30 backdrop-blur-xl border border-slate-600/50 rounded-xl p-4 shadow-lg'>
+                <div className='flex items-center gap-2 mb-4'>
+                  <TrophyOutlined className='text-yellow-400' />
+                  <span className='text-lg font-bold text-white'>玩家排行榜 TOP10</span>
                 </div>
-              </Col>
+                <Table
+                  columns={playerColumns}
+                  dataSource={stats.rankings.topPlayers.slice(0, 10)}
+                  rowKey='id'
+                  pagination={false}
+                  size='small'
+                  scroll={{ x: 300, y: 300 }}
+                  rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
+                  className='xiuxian-table'
+                />
+              </div>
+            </Col>
 
-              {/* 宗门排行榜 */}
-              <Col xs={24} lg={12}>
-                <div className='bg-gradient-to-br from-slate-700/30 to-slate-800/30 backdrop-blur-xl border border-slate-600/50 rounded-xl p-4 shadow-lg'>
-                  <div className='flex items-center gap-2 mb-4'>
-                    <CrownOutlined className='text-purple-400' />
-                    <span className='text-lg font-bold text-white'>宗门排行榜 TOP10</span>
-                  </div>
-                  <Table
-                    columns={associationColumns}
-                    dataSource={stats.rankings.topAssociations.slice(0, 10)}
-                    rowKey='name'
-                    pagination={false}
-                    size='small'
-                    scroll={{ x: 400, y: 300 }}
-                    rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-                    className='xiuxian-table'
-                  />
+            {/* 宗门排行榜 */}
+            <Col xs={24} lg={12}>
+              <div className='bg-gradient-to-br from-slate-700/30 to-slate-800/30 backdrop-blur-xl border border-slate-600/50 rounded-xl p-4 shadow-lg'>
+                <div className='flex items-center gap-2 mb-4'>
+                  <CrownOutlined className='text-purple-400' />
+                  <span className='text-lg font-bold text-white'>宗门排行榜 TOP10</span>
                 </div>
-              </Col>
-            </Row>
-          </XiuxianTableContainer>
+                <Table
+                  columns={associationColumns}
+                  dataSource={stats.rankings.topAssociations.slice(0, 10)}
+                  rowKey='name'
+                  pagination={false}
+                  size='small'
+                  scroll={{ x: 400, y: 300 }}
+                  rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
+                  className='xiuxian-table'
+                />
+              </div>
+            </Col>
+          </Row>
         </>
       )}
 

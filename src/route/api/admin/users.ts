@@ -13,11 +13,44 @@ export const GET = async (ctx: Context) => {
     const users = await getAllUsers();
     const usersWithoutPassword = users.map(({ password: _, ...user }) => user);
 
+    // 获取查询参数
+    const page = parseInt(ctx.query.page as string) || 1;
+    const pageSize = parseInt(ctx.query.pageSize as string) || 10;
+    const search = ctx.query.search as string;
+    const role = ctx.query.role as string;
+    const status = ctx.query.status as string;
+
+    // 过滤用户
+    let filteredUsers = usersWithoutPassword;
+
+    if (search) {
+      filteredUsers = filteredUsers.filter(user => user.username.toLowerCase().includes(search.toLowerCase()));
+    }
+
+    if (role) {
+      filteredUsers = filteredUsers.filter(user => user.role === role);
+    }
+
+    if (status) {
+      filteredUsers = filteredUsers.filter(user => user.status === status);
+    }
+
+    // 分页
+    const total = filteredUsers.length;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
     ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取用户列表成功',
-      data: usersWithoutPassword
+      data: {
+        users: paginatedUsers,
+        total,
+        page,
+        pageSize
+      }
     };
   } catch (error) {
     logger.error('获取用户列表错误:', error);
@@ -137,7 +170,7 @@ export const DELETE = async (ctx: Context) => {
       ctx.status = 404;
       ctx.body = {
         code: 404,
-        message: '用户不存在',
+        message: '用户不存在或无法删除超级管理员',
         data: null
       };
     }

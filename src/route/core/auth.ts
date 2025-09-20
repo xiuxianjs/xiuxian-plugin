@@ -1,6 +1,6 @@
 import { getIoRedis } from '@alemonjs/db';
+import { keys } from '@src/model';
 import { Context } from 'koa';
-import { KEY_SESSION_PREFIX, KEY_USER_PREFIX } from './config';
 
 const redis = getIoRedis();
 
@@ -9,6 +9,7 @@ export interface User {
   username: string;
   password: string;
   role: string;
+  status?: 'active' | 'inactive' | 'suspended';
   createdAt: number;
   lastLoginAt?: number;
 }
@@ -35,14 +36,32 @@ const generateToken = (): string => {
   return `token_${Date.now()}_${Math.random().toString(36).substr(2, 15)}`;
 };
 
+// 创建用户结果类型
+export interface CreateUserResult {
+  success: boolean;
+  user?: User;
+  error?: 'USERNAME_EXISTS' | 'SUPER_ADMIN_EXISTS' | 'UNKNOWN_ERROR';
+}
+
 // 创建用户
-export const createUser = async (username: string, password: string, role = 'admin'): Promise<User | null> => {
+export const createUser = async (username: string, password: string, role = 'admin'): Promise<CreateUserResult> => {
   try {
     // 检查用户名是否已存在
     const existingUser = await getUserByUsername(username);
 
     if (existingUser) {
-      return null;
+      return { success: false, error: 'USERNAME_EXISTS' };
+    }
+
+    // 如果要创建超级管理员，检查是否已存在超级管理员
+    if (role === 'super_admin') {
+      const hasSuperAdminUser = await hasSuperAdmin();
+
+      if (hasSuperAdminUser) {
+        logger.warn('超级管理员已存在，无法创建新的超级管理员');
+
+        return { success: false, error: 'SUPER_ADMIN_EXISTS' };
+      }
     }
 
     const user: User = {
@@ -50,31 +69,32 @@ export const createUser = async (username: string, password: string, role = 'adm
       username,
       password, // 实际项目中应该加密
       role,
+      status: 'active',
       createdAt: Date.now()
     };
 
     // 存储到Redis
-    await redis.set(`${KEY_USER_PREFIX}${user.id}`, JSON.stringify(user));
-    await redis.set(`${KEY_USER_PREFIX}username:${username}`, user.id);
+    await redis.set(keys.serverUser(user.id), JSON.stringify(user));
+    await redis.set(keys.serverUsername(user.username), user.id);
 
-    return user;
+    return { success: true, user };
   } catch (error) {
     logger.error('创建用户失败:', error);
 
-    return null;
+    return { success: false, error: 'UNKNOWN_ERROR' };
   }
 };
 
 // 根据用户名获取用户
 export const getUserByUsername = async (username: string): Promise<User | null> => {
   try {
-    const userId = await redis.get(`${KEY_USER_PREFIX}username:${username}`);
+    const userId = await redis.get(keys.serverUsername(username));
 
     if (!userId) {
       return null;
     }
 
-    const userData = await redis.get(`${KEY_USER_PREFIX}${userId}`);
+    const userData = await redis.get(keys.serverUser(userId));
 
     if (!userData) {
       return null;
@@ -91,7 +111,7 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
 // 根据ID获取用户
 export const getUserById = async (id: string): Promise<User | null> => {
   try {
-    const userData = await redis.get(`${KEY_USER_PREFIX}${id}`);
+    const userData = await redis.get(keys.serverUser(id));
 
     if (!userData) {
       return null;
@@ -102,6 +122,123 @@ export const getUserById = async (id: string): Promise<User | null> => {
     logger.error('获取用户失败:', error);
 
     return null;
+  }
+};
+
+// 检查是否存在超级管理员
+export const hasSuperAdmin = async (): Promise<boolean> => {
+  try {
+    // 获取所有用户键
+    const userKeys = await redis.keys(keys.serverUser('*'));
+
+    for (const key of userKeys) {
+      const userData = await redis.get(key);
+
+      if (userData) {
+        const user: User = JSON.parse(userData);
+
+        if (user.role === 'super_admin') {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  } catch (error) {
+    logger.error('检查超级管理员失败:', error);
+
+    return false;
+  }
+};
+
+// 更新用户角色
+export const updateUserRole = async (userId: string, newRole: string): Promise<boolean> => {
+  try {
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return false;
+    }
+
+    // 如果当前用户是超级管理员，不允许修改角色
+    if (user.role === 'super_admin') {
+      logger.warn('超级管理员角色不能被修改');
+
+      return false;
+    }
+
+    // 如果要设置为超级管理员，检查是否已存在超级管理员
+    if (newRole === 'super_admin') {
+      const hasSuperAdminUser = await hasSuperAdmin();
+
+      if (hasSuperAdminUser) {
+        logger.warn('超级管理员已存在，无法设置新的超级管理员');
+
+        return false;
+      }
+    }
+
+    // 更新用户角色
+    user.role = newRole;
+    await redis.set(keys.serverUser(userId), JSON.stringify(user));
+
+    return true;
+  } catch (error) {
+    logger.error('更新用户角色失败:', error);
+
+    return false;
+  }
+};
+
+// 删除用户
+export const deleteUser = async (userId: string): Promise<boolean> => {
+  try {
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return false;
+    }
+
+    // 超级管理员不能被删除
+    if (user.role === 'super_admin') {
+      logger.warn('超级管理员不能被删除');
+
+      return false;
+    }
+
+    // 删除用户数据
+    await redis.del(keys.serverUser(userId));
+    await redis.del(keys.serverUsername(user.username));
+
+    return true;
+  } catch (error) {
+    logger.error('删除用户失败:', error);
+
+    return false;
+  }
+};
+
+// 获取所有用户
+export const getAllUsers = async (): Promise<User[]> => {
+  try {
+    const userKeys = await redis.keys(keys.serverUser('*'));
+    const users: User[] = [];
+
+    for (const key of userKeys) {
+      const userData = await redis.get(key);
+
+      if (userData) {
+        const user: User = JSON.parse(userData);
+
+        users.push(user);
+      }
+    }
+
+    return users;
+  } catch (error) {
+    logger.error('获取所有用户失败:', error);
+
+    return [];
   }
 };
 
@@ -129,7 +266,7 @@ export const validateLogin = async (username: string, password: string): Promise
 
     // 更新最后登录时间
     user.lastLoginAt = Date.now();
-    await redis.set(`${KEY_USER_PREFIX}${user.id}`, JSON.stringify(user));
+    await redis.set(keys.serverUser(user.id), JSON.stringify(user));
 
     // 存储会话信息（24小时过期）
     const sessionData = {
@@ -139,7 +276,7 @@ export const validateLogin = async (username: string, password: string): Promise
       createdAt: Date.now()
     };
 
-    await redis.setex(`${KEY_SESSION_PREFIX}${token}`, 86400, JSON.stringify(sessionData));
+    await redis.setex(keys.serverSession(token), 86400, JSON.stringify(sessionData));
 
     const { password: _, ...userWithoutPassword } = user;
 
@@ -162,7 +299,7 @@ export const validateLogin = async (username: string, password: string): Promise
 // 验证token
 export const validateToken = async (token: string): Promise<User | null> => {
   try {
-    const sessionData = await redis.get(`${KEY_SESSION_PREFIX}${token}`);
+    const sessionData = await redis.get(keys.serverSession(token));
 
     if (!sessionData) {
       return null;
@@ -173,7 +310,7 @@ export const validateToken = async (token: string): Promise<User | null> => {
 
     if (!user) {
       // 删除无效的session
-      await redis.del(`${KEY_SESSION_PREFIX}${token}`);
+      await redis.del(keys.serverSession(token));
 
       return null;
     }
@@ -189,38 +326,13 @@ export const validateToken = async (token: string): Promise<User | null> => {
 // 登出
 export const logout = async (token: string): Promise<boolean> => {
   try {
-    await redis.del(`${KEY_SESSION_PREFIX}${token}`);
+    await redis.del(keys.serverSession(token));
 
     return true;
   } catch (error) {
     logger.error('登出失败:', error);
 
     return false;
-  }
-};
-
-// 获取所有用户
-export const getAllUsers = async (): Promise<User[]> => {
-  try {
-    const keys = await redis.keys(`${KEY_USER_PREFIX}*`);
-    const users: User[] = [];
-
-    for (const key of keys) {
-      if (!key.includes('username:')) {
-        // 排除用户名索引
-        const userData = await redis.get(key);
-
-        if (userData) {
-          users.push(JSON.parse(userData));
-        }
-      }
-    }
-
-    return users;
-  } catch (error) {
-    logger.error('获取所有用户失败:', error);
-
-    return [];
   }
 };
 
@@ -233,7 +345,7 @@ export const setUserPassword = async (userId: string, password: string): Promise
       return false;
     }
     user.password = password;
-    await redis.set(`${KEY_USER_PREFIX}${userId}`, JSON.stringify(user));
+    await redis.set(keys.serverUser(userId), JSON.stringify(user));
 
     return true;
   } catch (error) {
@@ -243,40 +355,30 @@ export const setUserPassword = async (userId: string, password: string): Promise
   }
 };
 
-// 删除用户
-export const deleteUser = async (userId: string): Promise<boolean> => {
-  try {
-    const user = await getUserById(userId);
-
-    if (!user) {
-      return false;
-    }
-
-    // 删除用户数据
-    await redis.del(`${KEY_USER_PREFIX}${userId}`);
-    await redis.del(`${KEY_USER_PREFIX}username:${user.username}`);
-
-    return true;
-  } catch (error) {
-    logger.error('删除用户失败:', error);
-
-    return false;
-  }
-};
-
 // 初始化默认管理员账户
 export const initDefaultAdmin = async (): Promise<void> => {
   try {
-    const adminUser = await getUserByUsername('lemonade');
+    // 检查是否已存在超级管理员
+    const hasSuperAdminUser = await hasSuperAdmin();
 
-    if (!adminUser) {
-      await createUser('lemonade', '123456', 'admin');
+    if (!hasSuperAdminUser) {
+      // 如果不存在超级管理员，创建默认超级管理员
+      const result = await createUser('lemonade', '123456', 'super_admin');
+
+      if (result.success && result.user) {
+        logger.info('默认超级管理员创建成功: lemonade');
+      } else {
+        logger.error('创建默认超级管理员失败:', result.error);
+      }
+    } else {
+      logger.info('超级管理员已存在，跳过初始化');
     }
   } catch (error) {
     logger.error('初始化默认管理员失败:', error);
   }
 };
 
+// 权限验证函数
 export const validateRole = async (ctx: Context, role: string) => {
   // 验证管理员权限
   const token = ctx.request.headers.authorization?.replace('Bearer ', '');
@@ -293,7 +395,62 @@ export const validateRole = async (ctx: Context, role: string) => {
   }
   const user = await validateToken(token);
 
-  if (!user || user.role !== role) {
+  if (!user) {
+    ctx.status = 401;
+    ctx.body = {
+      code: 401,
+      message: 'Token无效',
+      data: null
+    };
+
+    return false;
+  }
+
+  // 检查角色权限
+  if (user.role !== role) {
+    ctx.status = 403;
+    ctx.body = {
+      code: 403,
+      message: '权限不足',
+      data: null
+    };
+
+    return false;
+  }
+
+  return true;
+};
+
+// 更灵活的权限验证函数
+export const validatePermission = async (ctx: Context, requiredRoles: string[]) => {
+  const token = ctx.request.headers.authorization?.replace('Bearer ', '');
+
+  if (!token) {
+    ctx.status = 401;
+    ctx.body = {
+      code: 401,
+      message: '需要登录',
+      data: null
+    };
+
+    return false;
+  }
+
+  const user = await validateToken(token);
+
+  if (!user) {
+    ctx.status = 401;
+    ctx.body = {
+      code: 401,
+      message: 'Token无效',
+      data: null
+    };
+
+    return false;
+  }
+
+  // 检查用户角色是否在允许的角色列表中
+  if (!requiredRoles.includes(user.role)) {
     ctx.status = 403;
     ctx.body = {
       code: 403,

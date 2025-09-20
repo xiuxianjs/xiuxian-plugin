@@ -8,9 +8,21 @@ interface XiuxianInputWithIconProps {
   required?: boolean;
   minLength?: number;
   className?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const XiuxianInputWithIcon: React.FC<XiuxianInputWithIconProps> = ({ icon, type = 'text', name, placeholder, required = false, minLength, className = '' }) => {
+const XiuxianInputWithIcon: React.FC<XiuxianInputWithIconProps> = ({
+  icon,
+  type = 'text',
+  name,
+  placeholder,
+  required = false,
+  minLength,
+  className = '',
+  value,
+  onChange
+}) => {
   return (
     <div className={className}>
       <div className='relative'>
@@ -24,6 +36,8 @@ const XiuxianInputWithIcon: React.FC<XiuxianInputWithIconProps> = ({ icon, type 
           minLength={minLength}
           className='w-full pl-10 pr-4 py-3 sm:py-3 xiuxian-input rounded-xl text-sm sm:text-base'
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
         />
       </div>
     </div>

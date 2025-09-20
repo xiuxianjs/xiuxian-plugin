@@ -228,7 +228,7 @@ export default function UserManager() {
       {/* 页面标题和刷新按钮 */}
       <XiuxianPageTitle
         icon={<CrownOutlined />}
-        title='用户管理'
+        title='玩家管理'
         subtitle='管理修仙界众位道友信息'
         actions={<XiuxianRefreshButton loading={loading} onClick={() => fetchGameUsers(1, pagination.pageSize)} />}
       />

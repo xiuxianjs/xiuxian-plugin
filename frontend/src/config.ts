@@ -1,65 +1,78 @@
 import { ConfigCategory } from './types/types';
+import { Permission } from './types/permissions';
 
 export const menuItems = [
   {
     label: '数据板',
     icon: '🏠',
-    path: '/'
+    path: '/',
+    permission: null // 所有登录用户都可以访问
   },
   {
-    label: '用户管理',
+    label: '玩家管理',
     icon: '👥',
-    path: '/users'
+    path: '/users',
+    permission: Permission.GAME_USERS
+  },
+  {
+    label: '账户管理',
+    icon: '👤',
+    path: '/admin-users',
+    permission: Permission.USER_VIEW
   },
   {
     label: '宗门管理',
     icon: '🏛️',
-    path: '/associations'
+    path: '/associations',
+    permission: Permission.GAME_ASSOCIATIONS
   },
   {
     label: '背包管理',
     icon: '🎒',
-    path: '/najie'
+    path: '/najie',
+    permission: Permission.GAME_NAJIE
   },
   {
     label: '排名管理',
     icon: '🏆',
-    path: '/rankings'
+    path: '/rankings',
+    permission: Permission.GAME_RANKINGS
   },
   {
     label: '货币管理',
     icon: '💰',
-    path: '/currency'
+    path: '/currency',
+    permission: Permission.GAME_CURRENCY
   },
   {
     label: '数据查询',
     icon: '📊',
-    path: '/data-query'
-  },
-  {
-    label: '指令响应',
-    icon: '⚡',
-    path: '/commands'
+    path: '/data-query',
+    permission: Permission.GAME_DATA_QUERY
   },
   {
     label: '定时任务',
     icon: '⏰',
-    path: '/tasks'
+    path: '/tasks',
+    permission: Permission.SYSTEM_TASKS
   },
   {
     label: '禁言管理',
     icon: '🔇',
-    path: '/mute'
+    path: '/mute',
+    permission: Permission.MUTE_MANAGE
   },
   {
     label: '站内信管理',
     icon: '📬',
-    path: '/messages'
+    path: '/messages',
+    permission: Permission.MESSAGE_MANAGE
   },
   {
     label: '系统配置',
     icon: '⚙️',
-    path: '/config'
+    path: '/config',
+    permission: Permission.SYSTEM_CONFIG
   }
 ];
 
