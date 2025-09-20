@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { getUserById, validateRole } from '@src/route/core/auth';
+import { getUserById, validatePermission } from '@src/route/core/auth';
 import { getIoRedis } from '@alemonjs/db';
 import { keys } from '@src/model';
 
@@ -8,7 +8,7 @@ const redis = getIoRedis();
 // 更新用户状态
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, ['admin', 'super_admin']);
 
     if (!res) {
       return;

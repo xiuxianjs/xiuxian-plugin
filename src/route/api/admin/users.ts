@@ -1,10 +1,10 @@
 import { Context } from 'koa';
-import { createUser, getAllUsers, deleteUser, validateRole } from '@src/route/core/auth';
+import { createUser, getAllUsers, deleteUser, validatePermission } from '@src/route/core/auth';
 
 // 获取所有用户
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, ['admin', 'super_admin']);
 
     if (!res) {
       return;
@@ -66,7 +66,7 @@ export const GET = async (ctx: Context) => {
 // 创建用户
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, ['admin', 'super_admin']);
 
     if (!res) {
       return;
@@ -137,7 +137,7 @@ export const POST = async (ctx: Context) => {
 // 删除用户
 export const DELETE = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, ['admin', 'super_admin']);
 
     if (!res) {
       return;
