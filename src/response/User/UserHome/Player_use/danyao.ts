@@ -142,14 +142,21 @@ const handleLinggen = async (userId: string, thingName: string, player: any, mes
   const newIndex = Math.floor(Math.random() * list.length);
   const next = list[newIndex] as {
     name: string;
-    type: string;
+    class: string;
+    type: number;
+    控火: number;
+    控器: number;
     法球倍率?: number;
     eff?: number;
   };
 
+  // 创建隐藏灵根对象，包含所有必要属性
   const hidden: TalentInfo = {
     name: next.name,
+    class: next.class,
     type: next.type,
+    控火: next.控火,
+    控器: next.控器,
     法球倍率: next.法球倍率 ?? 1,
     eff: next.eff
   };

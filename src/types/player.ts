@@ -3,10 +3,13 @@ import type { QinmiduRecord } from './model';
 import XianChong from '@src/resources/html/xianchong';
 
 export interface TalentInfo {
-  type: string;
+  type: number;
+  class: string;
   name: string;
   法球倍率: number | string;
   eff?: number;
+  控火: number;
+  控器: number;
 }
 
 export type XianchongInfo = XianChong;
