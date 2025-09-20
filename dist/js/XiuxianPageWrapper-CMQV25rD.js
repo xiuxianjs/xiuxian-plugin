@@ -1,0 +1,1 @@
+import{j as e}from"./index-DqAMoLsJ.js";const l=({children:l,className:a=""})=>e.jsx("div",{className:`h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 ${a}`,children:e.jsx("div",{className:"relative z-10 p-2 md:p-6 h-full overflow-y-auto",children:l})});export{l as X};
