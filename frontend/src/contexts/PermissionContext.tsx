@@ -1,11 +1,14 @@
-import { createContext, useContext, useMemo, PropsWithChildren } from 'react';
+import { createContext, useContext, useMemo, PropsWithChildren, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Permission, UserRole, ROLE_PERMISSIONS, ROUTE_PERMISSIONS, PAGE_PERMISSIONS, PermissionContextType, AdminUser } from '@/types/permissions';
+import { getCurrentUserPermissions, UserPermissionsResponse } from '@/api/auth/user-permissions';
 
 const PermissionContext = createContext<PermissionContextType | undefined>(undefined);
 
 export function PermissionProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
+  const [userPermissions, setUserPermissions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // 将普通User转换为AdminUser（这里需要根据实际API调整）
   const adminUser: AdminUser | null = useMemo(() => {
@@ -23,14 +26,47 @@ export function PermissionProvider({ children }: PropsWithChildren) {
     };
   }, [user]);
 
+  // 从后端获取用户权限
+  useEffect(() => {
+    const fetchUserPermissions = async () => {
+      if (!user) {
+        setUserPermissions([]);
+
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await getCurrentUserPermissions();
+
+        setUserPermissions(response.permissions);
+      } catch (error) {
+        console.error('获取用户权限失败:', error);
+        // 如果后端获取失败，使用前端默认权限配置
+        if (adminUser) {
+          setUserPermissions(ROLE_PERMISSIONS[adminUser.role] || []);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserPermissions();
+  }, [user, adminUser]);
+
   // 获取用户权限
   const permissions = useMemo(() => {
     if (!adminUser) {
       return [];
     }
 
+    // 优先使用从后端获取的权限，如果为空则使用前端默认配置
+    if (userPermissions.length > 0) {
+      return userPermissions as Permission[];
+    }
+
     return ROLE_PERMISSIONS[adminUser.role] || [];
-  }, [adminUser]);
+  }, [adminUser, userPermissions]);
 
   // 检查是否有特定权限
   const hasPermission = (permission: Permission): boolean => {
@@ -69,14 +105,40 @@ export function PermissionProvider({ children }: PropsWithChildren) {
     return hasAnyPermission(pagePermissions);
   };
 
+  // 刷新权限
+  const refreshPermissions = async () => {
+    if (!user) {
+      setUserPermissions([]);
+
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await getCurrentUserPermissions();
+
+      setUserPermissions(response.permissions);
+    } catch (error) {
+      console.error('刷新用户权限失败:', error);
+      // 如果后端获取失败，使用前端默认权限配置
+      if (adminUser) {
+        setUserPermissions(ROLE_PERMISSIONS[adminUser.role] || []);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const value: PermissionContextType = {
     user: adminUser,
     permissions,
+    loading,
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
     canAccessRoute,
-    canAccessPage
+    canAccessPage,
+    refreshPermissions
   };
 
   return <PermissionContext.Provider value={value}>{children}</PermissionContext.Provider>;

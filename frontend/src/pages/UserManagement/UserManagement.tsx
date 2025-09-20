@@ -390,21 +390,12 @@ export default function UserManagement() {
         }
       />
 
-      {/* 统计卡片 */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-6'>
-        <XiuxianStatCard title='总用户数' value={stats.total} icon={<UserOutlined />} gradient='blue' />
-        <XiuxianStatCard title='正常用户' value={stats.active} icon={<CheckCircleOutlined />} gradient='green' />
-        <XiuxianStatCard title='未激活' value={stats.inactive} icon={<ExclamationCircleOutlined />} gradient='orange' />
-        <XiuxianStatCard title='已暂停' value={stats.suspended} icon={<StopOutlined />} gradient='red' />
-      </div>
-
       {/* 搜索和过滤 */}
-      <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6'>
-        <div className='flex flex-col md:flex-row gap-4 items-center'>
-          <div className='flex-1 min-w-0'>
-            <XiuxianSearchBar placeholder='搜索用户名或真实姓名...' value={searchText} onChange={setSearchText} onSearch={handleSearch} className='mb-0' />
-          </div>
-          <div className='flex gap-4'>
+
+      <div className='flex flex-col gap-2'>
+        <XiuxianSearchBar placeholder='搜索用户名或真实姓名...' value={searchText} onChange={setSearchText} onSearch={handleSearch} className='mb-0' />
+        <div className='flex flex-col gap-2 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6'>
+          <div className='flex gap-4 justify-end'>
             <Select placeholder='选择角色' value={selectedRole} onChange={setSelectedRole} className='w-40' allowClear>
               {Object.values(ROLE_INFO).map(role => (
                 <Option key={role.role} value={role.role}>

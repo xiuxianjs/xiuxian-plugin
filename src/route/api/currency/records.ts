@@ -1,11 +1,11 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 import { getAllRechargeRecords, getRechargeRecordDetail, getUserRechargeRecords, PaymentStatus, RechargeType } from '@src/model/currency';
 
 // 获取所有充值记录
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;
@@ -44,7 +44,7 @@ export const GET = async (ctx: Context) => {
 // 获取指定充值记录详情
 export const GET_DETAIL = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;

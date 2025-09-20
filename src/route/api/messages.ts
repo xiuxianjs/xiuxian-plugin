@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 import { getUserMessages, sendMessage, markMessageAsRead, deleteMessage } from '@src/model/message';
 import type { SendMessageParams, MessageQueryParams } from '@src/types/message';
@@ -8,7 +8,7 @@ import { logger } from 'alemonjs';
 // 获取用户站内信列表
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MESSAGE_MANAGE]);
 
     if (!res) {
       return;
@@ -77,7 +77,7 @@ export const GET = async (ctx: Context) => {
 // 发送站内信
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MESSAGE_MANAGE]);
 
     if (!res) {
       return;
@@ -136,7 +136,7 @@ export const POST = async (ctx: Context) => {
 // 标记消息为已读
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MESSAGE_MANAGE]);
 
     if (!res) {
       return;
@@ -187,7 +187,7 @@ export const PUT = async (ctx: Context) => {
 // 删除消息
 export const DELETE = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MESSAGE_MANAGE]);
 
     if (!res) {
       return;

@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 import { __PATH, keys } from '@src/model/keys';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
@@ -8,7 +8,7 @@ import { Player } from '@src/types';
 // 更新游戏用户数据
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_USERS]);
 
     if (!res) {
       return;

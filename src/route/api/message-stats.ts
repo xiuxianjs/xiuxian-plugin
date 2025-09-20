@@ -1,12 +1,12 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 import { logger } from 'alemonjs';
 import { getUserMessageStats, getGlobalMessageStats, cleanExpiredMessages } from '@src/model/message';
 
 // 获取用户消息统计
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MESSAGE_MANAGE]);
 
     if (!res) {
       return;
@@ -61,7 +61,7 @@ export const GET = async (ctx: Context) => {
 // 清理过期消息
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MESSAGE_MANAGE]);
 
     if (!res) {
       return;

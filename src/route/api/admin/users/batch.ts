@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validatePermission, deleteUser, getUserById } from '@src/route/core/auth';
+import { validatePermission, deleteUser, getUserById, Permission } from '@src/route/core/auth';
 import { getIoRedis } from '@alemonjs/db';
 import { keys } from '@src/model';
 
@@ -8,7 +8,7 @@ const redis = getIoRedis();
 // 批量操作用户
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_DELETE]);
 
     if (!res) {
       return;

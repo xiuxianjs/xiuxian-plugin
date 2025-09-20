@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
@@ -10,7 +10,7 @@ const redis = getIoRedis();
 // 获取玩家背包列表（支持分页）
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_NAJIE]);
 
     if (!res) {
       return;
@@ -244,7 +244,7 @@ export const GET = async (ctx: Context) => {
 // 获取单个玩家背包详情
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_NAJIE]);
 
     if (!res) {
       return;
@@ -300,7 +300,7 @@ export const POST = async (ctx: Context) => {
 // 更新背包数据
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_NAJIE]);
 
     if (!res) {
       return;

@@ -1,6 +1,6 @@
 import { DataListKeys, getDataList, hasDataList, setDataList } from '@src/model/DataList';
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 /**
  * 查询数据列表
@@ -9,7 +9,7 @@ import { validateRole } from '@src/route/core/auth';
  */
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_DATA_QUERY]);
 
     if (!res) {
       return;
@@ -94,7 +94,7 @@ export const GET = async (ctx: Context) => {
  */
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_DATA_QUERY]);
 
     if (!res) {
       return;
@@ -183,7 +183,7 @@ export const PUT = async (ctx: Context) => {
  */
 export const PATCH = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_DATA_QUERY]);
 
     if (!res) {
       return;

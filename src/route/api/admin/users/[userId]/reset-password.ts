@@ -1,14 +1,15 @@
 import { Context } from 'koa';
-import { getUserById, validatePermission } from '@src/route/core/auth';
+import { getUserById, validatePermission, Permission } from '@src/route/core/auth';
 import { getIoRedis } from '@alemonjs/db';
 import { keys } from '@src/model';
+import { logger } from 'alemonjs';
 
 const redis = getIoRedis();
 
 // 重置用户密码
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_UPDATE]);
 
     if (!res) {
       return;
@@ -28,7 +29,9 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    if (!body?.newPassword) {
+    const bodyData = body as { newPassword?: string };
+
+    if (!bodyData?.newPassword) {
       ctx.status = 400;
       ctx.body = {
         code: 400,
@@ -39,7 +42,7 @@ export const POST = async (ctx: Context) => {
       return;
     }
 
-    const { newPassword } = body;
+    const { newPassword } = bodyData;
 
     // 获取用户信息
     const user = await getUserById(userId);

@@ -195,11 +195,13 @@ export interface PermissionCheck {
 export interface PermissionContextType {
   user: AdminUser | null;
   permissions: Permission[];
+  loading: boolean;
   hasPermission: (permission: Permission) => boolean;
   hasAnyPermission: (permissions: Permission[]) => boolean;
   hasAllPermissions: (permissions: Permission[]) => boolean;
   canAccessRoute: (route: string) => boolean;
   canAccessPage: (page: string) => boolean;
+  refreshPermissions: () => Promise<void>;
 }
 
 // 路由权限映射

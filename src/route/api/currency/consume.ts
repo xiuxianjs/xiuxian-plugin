@@ -1,12 +1,12 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 import { consumeUserCurrency, consumeMonthCardDays } from '@src/model/currency';
 
 // 消费用户货币
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;

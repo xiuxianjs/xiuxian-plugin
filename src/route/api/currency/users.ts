@@ -1,11 +1,11 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 import { findUserRechargeInfo, getAllUsersCurrencyInfo } from '@src/model/currency';
 
 // 获取所有用户货币信息
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;
@@ -33,7 +33,7 @@ export const GET = async (ctx: Context) => {
 // 获取指定用户货币信息
 export const GET_USER = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;

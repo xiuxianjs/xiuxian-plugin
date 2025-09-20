@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 import {
   rechargeUserCurrency,
@@ -14,7 +14,7 @@ import {
 // 创建充值记录
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;

@@ -1,11 +1,11 @@
 import { Context } from 'koa';
 import { getIoRedis } from '@alemonjs/db';
-import { validateRole } from '../core/auth';
+import { validatePermission, Permission } from '../core/auth';
 
 // 获取禁言日志
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MUTE_MANAGE]);
 
     if (!res) {
       return;
@@ -60,7 +60,7 @@ export const GET = async (ctx: Context) => {
 // 清理日志
 export const DELETE = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.MUTE_MANAGE]);
 
     if (!res) {
       return;

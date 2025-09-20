@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 
 import { getIoRedis } from '@alemonjs/db';
 import { __PATH, keys } from '@src/model/keys';
@@ -10,7 +10,7 @@ const redis = getIoRedis();
 // 获取宗门列表（支持分页）
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_ASSOCIATIONS]);
 
     if (!res) {
       return;
@@ -128,7 +128,7 @@ export const GET = async (ctx: Context) => {
 // 获取单个宗门详情
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_ASSOCIATIONS]);
 
     if (!res) {
       return;
@@ -184,7 +184,7 @@ export const POST = async (ctx: Context) => {
 // 获取宗门统计信息
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_ASSOCIATIONS]);
 
     if (!res) {
       return;

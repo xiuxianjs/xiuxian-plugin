@@ -1,10 +1,10 @@
 import { Context } from 'koa';
-import { getUserById, updateUserRole, validatePermission, deleteUser } from '@src/route/core/auth';
+import { getUserById, updateUserRole, validatePermission, deleteUser, Permission } from '@src/route/core/auth';
 
 // 获取用户详情
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_VIEW]);
 
     if (!res) {
       return;
@@ -58,7 +58,7 @@ export const GET = async (ctx: Context) => {
 // 更新用户信息
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_UPDATE]);
 
     if (!res) {
       return;
@@ -143,7 +143,7 @@ export const PUT = async (ctx: Context) => {
 // 删除用户
 export const DELETE = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_DELETE]);
 
     if (!res) {
       return;

@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 import {
   RECHARGE_TIERS,
   MONTH_CARD_CONFIG,
@@ -14,7 +14,7 @@ import {
 // 获取配置信息
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_CURRENCY]);
 
     if (!res) {
       return;

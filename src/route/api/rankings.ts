@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { validateRole } from '@src/route/core/auth';
+import { validatePermission, Permission } from '@src/route/core/auth';
 import { __PATH, keys, keysByPath } from '@src/model/keys';
 import { readPlayer } from '@src/model';
 import { getDataList } from '@src/model/DataList';
@@ -9,7 +9,7 @@ import { TiandibangTask } from '@src/task/ranking/Tiandibang';
 // 获取排名数据
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_RANKINGS]);
 
     if (!res) {
       return;
@@ -255,7 +255,7 @@ export const GET = async (ctx: Context) => {
 // 获取排名统计信息
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_RANKINGS]);
 
     if (!res) {
       return;
@@ -368,7 +368,7 @@ export const POST = async (ctx: Context) => {
 // 手动触发排名计算
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.GAME_RANKINGS]);
 
     if (!res) {
       return;

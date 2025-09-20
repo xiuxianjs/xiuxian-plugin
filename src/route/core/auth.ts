@@ -14,6 +14,153 @@ export interface User {
   lastLoginAt?: number;
 }
 
+// 权限枚举
+export enum Permission {
+  // 用户管理权限
+  USER_VIEW = 'user:view', // 查看用户列表
+  USER_CREATE = 'user:create', // 创建用户
+  USER_UPDATE = 'user:update', // 更新用户
+  USER_DELETE = 'user:delete', // 删除用户
+  USER_ROLE_MANAGE = 'user:role_manage', // 管理用户角色
+
+  // 系统管理权限
+  SYSTEM_CONFIG = 'system:config', // 系统配置
+  SYSTEM_TASKS = 'system:tasks', // 任务管理
+
+  // 游戏数据权限
+  GAME_USERS = 'game:users', // 游戏用户管理
+  GAME_ASSOCIATIONS = 'game:associations', // 宗门管理
+  GAME_NAJIE = 'game:najie', // 背包管理
+  GAME_RANKINGS = 'game:rankings', // 排行榜管理
+  GAME_CURRENCY = 'game:currency', // 货币管理
+  GAME_DATA_QUERY = 'game:data_query', // 数据查询
+
+  // 消息管理权限
+  MESSAGE_MANAGE = 'message:manage', // 消息管理
+  MUTE_MANAGE = 'mute:manage', // 禁言管理
+
+  // 个人权限
+  PROFILE_VIEW = 'profile:view', // 查看个人资料
+  PROFILE_UPDATE = 'profile:update' // 更新个人资料
+}
+
+// 角色权限映射
+export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
+  super_admin: [
+    // 超级管理员拥有所有权限
+    Permission.USER_VIEW,
+    Permission.USER_CREATE,
+    Permission.USER_UPDATE,
+    Permission.USER_DELETE,
+    Permission.USER_ROLE_MANAGE,
+    Permission.SYSTEM_CONFIG,
+    Permission.SYSTEM_TASKS,
+    Permission.GAME_USERS,
+    Permission.GAME_ASSOCIATIONS,
+    Permission.GAME_NAJIE,
+    Permission.GAME_RANKINGS,
+    Permission.GAME_CURRENCY,
+    Permission.GAME_DATA_QUERY,
+    Permission.MESSAGE_MANAGE,
+    Permission.MUTE_MANAGE,
+    Permission.PROFILE_VIEW,
+    Permission.PROFILE_UPDATE
+  ],
+  admin: [
+    // 管理员权限
+    Permission.USER_VIEW,
+    Permission.USER_CREATE,
+    Permission.USER_UPDATE,
+    Permission.SYSTEM_CONFIG,
+    Permission.SYSTEM_TASKS,
+    Permission.GAME_USERS,
+    Permission.GAME_ASSOCIATIONS,
+    Permission.GAME_NAJIE,
+    Permission.GAME_RANKINGS,
+    Permission.GAME_CURRENCY,
+    Permission.GAME_DATA_QUERY,
+    Permission.MESSAGE_MANAGE,
+    Permission.MUTE_MANAGE,
+    Permission.PROFILE_VIEW,
+    Permission.PROFILE_UPDATE
+  ],
+  operator: [
+    // 运营人员权限
+    Permission.SYSTEM_TASKS,
+    Permission.GAME_USERS,
+    Permission.GAME_ASSOCIATIONS,
+    Permission.GAME_NAJIE,
+    Permission.GAME_RANKINGS,
+    Permission.GAME_CURRENCY,
+    Permission.GAME_DATA_QUERY,
+    Permission.MESSAGE_MANAGE,
+    Permission.MUTE_MANAGE,
+    Permission.PROFILE_VIEW,
+    Permission.PROFILE_UPDATE
+  ],
+  developer: [
+    // 开发人员权限
+    Permission.SYSTEM_CONFIG,
+    Permission.SYSTEM_TASKS,
+    Permission.GAME_DATA_QUERY,
+    Permission.PROFILE_VIEW,
+    Permission.PROFILE_UPDATE
+  ],
+  team_member: [
+    // 普通人员权限
+    Permission.PROFILE_VIEW,
+    Permission.PROFILE_UPDATE
+  ]
+};
+
+// 角色信息
+export interface RoleInfo {
+  role: string;
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
+}
+
+// 角色信息映射
+export const ROLE_INFO: Record<string, RoleInfo> = {
+  super_admin: {
+    role: 'super_admin',
+    name: '超级管理员',
+    description: '拥有系统所有权限，可以管理所有用户和系统设置',
+    color: 'red',
+    icon: '👑'
+  },
+  admin: {
+    role: 'admin',
+    name: '管理员',
+    description: '拥有大部分管理权限，可以管理用户和游戏数据',
+    color: 'purple',
+    icon: '🛡️'
+  },
+  operator: {
+    role: 'operator',
+    name: '运营人员',
+    description: '负责系统运营和游戏数据管理',
+    color: 'blue',
+    icon: '⚙️'
+  },
+  developer: {
+    role: 'developer',
+    name: '开发人员',
+    description: '负责系统开发和配置管理',
+    color: 'green',
+    icon: '💻'
+  },
+  team_member: {
+    role: 'team_member',
+    name: '普通人员',
+    description: '基础权限，只能查看和修改个人资料',
+    color: 'gray',
+    icon: '👤'
+  }
+};
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -378,9 +525,8 @@ export const initDefaultAdmin = async (): Promise<void> => {
   }
 };
 
-// 权限验证函数
-export const validateRole = async (ctx: Context, role: string) => {
-  // 验证管理员权限
+// 基于权限的验证函数
+export const validatePermission = async (ctx: Context, requiredPermissions: Permission[]) => {
   const token = ctx.request.headers.authorization?.replace('Bearer ', '');
 
   if (!token) {
@@ -393,6 +539,7 @@ export const validateRole = async (ctx: Context, role: string) => {
 
     return false;
   }
+
   const user = await validateToken(token);
 
   if (!user) {
@@ -406,13 +553,21 @@ export const validateRole = async (ctx: Context, role: string) => {
     return false;
   }
 
-  // 检查角色权限
-  if (user.role !== role) {
+  // 获取用户权限
+  const userPermissions = getUserPermissionsByRole(user.role);
+
+  // 检查用户是否有任意一个所需权限
+  const hasRequiredPermission = requiredPermissions.some(permission => userPermissions.includes(permission));
+
+  if (!hasRequiredPermission) {
     ctx.status = 403;
     ctx.body = {
       code: 403,
       message: '权限不足',
-      data: null
+      data: {
+        required: requiredPermissions,
+        userPermissions: userPermissions
+      }
     };
 
     return false;
@@ -421,8 +576,8 @@ export const validateRole = async (ctx: Context, role: string) => {
   return true;
 };
 
-// 更灵活的权限验证函数
-export const validatePermission = async (ctx: Context, requiredRoles: string[]) => {
+// 基于角色的验证函数（保持向后兼容）
+export const validateRole = async (ctx: Context, requiredRoles: string[]) => {
   const token = ctx.request.headers.authorization?.replace('Bearer ', '');
 
   if (!token) {
@@ -462,4 +617,35 @@ export const validatePermission = async (ctx: Context, requiredRoles: string[]) 
   }
 
   return true;
+};
+
+// 根据角色获取用户权限
+export const getUserPermissionsByRole = (role: string): Permission[] => {
+  return ROLE_PERMISSIONS[role] || [];
+};
+
+// 获取角色信息
+export const getRoleInfo = (role: string): RoleInfo | null => {
+  return ROLE_INFO[role] || null;
+};
+
+// 检查用户是否有特定权限
+export const hasPermission = (userRole: string, permission: Permission): boolean => {
+  const userPermissions = getUserPermissionsByRole(userRole);
+
+  return userPermissions.includes(permission);
+};
+
+// 检查用户是否有任意一个权限
+export const hasAnyPermission = (userRole: string, permissions: Permission[]): boolean => {
+  const userPermissions = getUserPermissionsByRole(userRole);
+
+  return permissions.some(permission => userPermissions.includes(permission));
+};
+
+// 检查用户是否有所有权限
+export const hasAllPermissions = (userRole: string, permissions: Permission[]): boolean => {
+  const userPermissions = getUserPermissionsByRole(userRole);
+
+  return permissions.every(permission => userPermissions.includes(permission));
 };

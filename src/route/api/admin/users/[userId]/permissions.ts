@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { getUserById, validatePermission } from '@src/route/core/auth';
+import { getUserById, validatePermission, getUserPermissionsByRole, getRoleInfo, Permission } from '@src/route/core/auth';
 import { getIoRedis } from '@alemonjs/db';
 import { keys } from '@src/model';
 
@@ -8,7 +8,7 @@ const redis = getIoRedis();
 // 获取用户权限
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_ROLE_MANAGE]);
 
     if (!res) {
       return;
@@ -40,15 +40,19 @@ export const GET = async (ctx: Context) => {
       return;
     }
 
-    // 这里可以根据用户角色返回对应的权限列表
-    // 暂时返回用户角色信息
+    // 根据用户角色返回对应的权限列表
+    const userPermissions = getUserPermissionsByRole(user.role);
+
     ctx.status = 200;
     ctx.body = {
       code: 200,
       message: '获取用户权限成功',
       data: {
+        userId: user.id,
+        username: user.username,
         role: user.role,
-        permissions: [] // 可以根据角色返回具体权限
+        permissions: userPermissions,
+        roleInfo: getRoleInfo(user.role)
       }
     };
   } catch (error) {
@@ -65,14 +69,14 @@ export const GET = async (ctx: Context) => {
 // 更新用户权限
 export const PUT = async (ctx: Context) => {
   try {
-    const res = await validatePermission(ctx, ['admin', 'super_admin']);
+    const res = await validatePermission(ctx, [Permission.USER_ROLE_MANAGE]);
 
     if (!res) {
       return;
     }
 
     const userId = ctx.params.userId;
-    const body = ctx.request.body;
+    const body = ctx.request.body as { role?: string };
 
     if (!userId) {
       ctx.status = 400;

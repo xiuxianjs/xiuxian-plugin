@@ -1,11 +1,11 @@
 import { ConfigKey, getConfig, setConfig } from '@src/model';
 import { Context } from 'koa';
 
-import { validateRole } from '../core/auth';
+import { validatePermission, Permission } from '../core/auth';
 
 export const GET = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.SYSTEM_CONFIG]);
 
     if (!res) {
       return;
@@ -27,7 +27,7 @@ export const GET = async (ctx: Context) => {
 
 export const POST = async (ctx: Context) => {
   try {
-    const res = await validateRole(ctx, 'admin');
+    const res = await validatePermission(ctx, [Permission.SYSTEM_CONFIG]);
 
     if (!res) {
       return;
@@ -45,8 +45,8 @@ export const POST = async (ctx: Context) => {
 
       return;
     }
-    const name = body.name as ConfigKey;
-    const data = body.data as Record<string, unknown>;
+    const name = (body as { name?: ConfigKey }).name as ConfigKey;
+    const data = (body as { data?: Record<string, unknown> }).data as Record<string, unknown>;
     const setRes = await setConfig(name, data);
 
     if (!setRes) {
