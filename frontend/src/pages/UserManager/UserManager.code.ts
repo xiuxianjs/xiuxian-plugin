@@ -50,7 +50,7 @@ export const useUserManagerCode = () => {
         return;
       }
 
-      const result = await getGameUsersAPI(token, {
+      const result = await getGameUsersAPI({
         page,
         pageSize: pSize,
         search: searchText
@@ -131,9 +131,7 @@ export const useUserManagerCode = () => {
         return;
       }
 
-      const result = await getGameUsersStatsAPI(token, {
-        search: searchText
-      });
+      const result = await getGameUsersStatsAPI(searchText);
 
       if (result.success && result.data) {
         setStats(result.data);
@@ -161,14 +159,14 @@ export const useUserManagerCode = () => {
         return;
       }
 
-      const result = await updateGameUserAPI(token, updatedUser);
+      const result = await updateGameUserAPI(updatedUser.id, updatedUser);
 
       if (result.success) {
         message.success('用户更新成功');
         setUserEditVisible(false);
         // 刷新数据
-        fetchGameUsers(pagination.current, pagination.pageSize);
-        fetchStats();
+        void fetchGameUsers(pagination.current, pagination.pageSize);
+        void fetchStats();
       } else {
         message.error(result.message || '用户更新失败');
       }

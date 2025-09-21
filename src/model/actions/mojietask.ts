@@ -274,7 +274,7 @@ const handleExplorationComplete = async (
   remainingCount: number
 ): Promise<void> => {
   const msg: string[] = [];
-  const lastMessage = `${result.message}，获得[修为${result.xiuwei > 100000 ? (result.xiuwei / 10000).toFixed(1) + "万" : result.xiuwei}]，获得[气血${result.qixue > 100000 ? (result.qixue / 10000).toFixed(1) + "万" : result.qixue}]，剩余次数${remainingCount}`;
+  const lastMessage = `${result.message}，获得[修为${result.xiuwei > 100000 ? (result.xiuwei / 10000).toFixed(1) + '万' : result.xiuwei}]，获得[气血${result.qixue > 100000 ? (result.qixue / 10000).toFixed(1) + '万' : result.qixue}]，剩余次数${remainingCount}`;
 
   msg.push('\n' + luckyMessage + lastMessage + fydMessage);
 

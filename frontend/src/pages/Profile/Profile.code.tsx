@@ -28,17 +28,19 @@ export const useProfileCode = () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setMessage({ type: 'error', text: '新密码与确认密码不匹配' });
       setLoading(false);
+
       return;
     }
 
     if (passwordForm.newPassword.length < 6) {
       setMessage({ type: 'error', text: '新密码长度至少6位' });
       setLoading(false);
+
       return;
     }
 
     try {
-      const result = await changePasswordAPI(token, {
+      const result = await changePasswordAPI({
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
       });

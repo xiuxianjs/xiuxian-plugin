@@ -10,22 +10,26 @@ export const useDashboardCode = () => {
 
   // 获取统计数据
   const fetchStats = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         console.error('未找到登录令牌');
+
         return;
       }
 
       // 并行获取所有统计数据
       const [userStats, associationStats, rankingStats, taskStats] = await Promise.all([
-        getGameUsersStatsAPI(token),
-        getAssociationsStatsAPI(token),
-        getRankingsStatsAPI(token),
-        getTaskStatusAPI(token)
+        getGameUsersStatsAPI(),
+        getAssociationsStatsAPI(),
+        getRankingsStatsAPI(),
+        getTaskStatusAPI()
       ]);
 
       const dashboardStats: DashboardStats = {

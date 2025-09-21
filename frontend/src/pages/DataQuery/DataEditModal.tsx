@@ -68,6 +68,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
           required: false
         };
       });
+
       setFieldConfigs(configs);
       setEditingData([...originalData] as DataItem[]);
       setBatchField(configs[0]?.key || '');
@@ -81,6 +82,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
   const handleUpdateData = (index: number, field: string, value: unknown) => {
     const newData = [...editingData];
     const globalIndex = (currentPage - 1) * pageSize + index;
+
     newData[globalIndex] = { ...newData[globalIndex], [field]: value };
     setEditingData(newData);
   };
@@ -89,10 +91,12 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
   const handleDeleteRow = (index: number) => {
     const globalIndex = (currentPage - 1) * pageSize + index;
     const newData = editingData.filter((_, i) => i !== globalIndex);
+
     setEditingData(newData);
 
     // 调整当前页
     const totalPages = Math.ceil(newData.length / pageSize);
+
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages);
     }
@@ -103,12 +107,15 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
     if (originalData.length > 0) {
       const newRow = Object.keys(originalData[0]).reduce((acc, key) => {
         acc[key] = '';
+
         return acc;
       }, {} as DataItem);
+
       setEditingData([...editingData, newRow]);
 
       // 跳转到最后一页
       const newTotalPages = Math.ceil((editingData.length + 1) / pageSize);
+
       setCurrentPage(newTotalPages);
     }
   };
@@ -117,15 +124,18 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
   const handleBatchUpdate = () => {
     if (selectedRows.length === 0) {
       message.warning('请先选择要更新的行');
+
       return;
     }
 
     if (!batchField) {
       message.warning('请选择要更新的字段');
+
       return;
     }
 
     const newData = [...editingData];
+
     selectedRows.forEach(globalIndex => {
       if (newData[globalIndex]) {
         newData[globalIndex] = {
@@ -145,6 +155,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
   const handleSelectRow = (index: number) => {
     const globalIndex = (currentPage - 1) * pageSize + index;
     const newSelected = selectedRows.includes(globalIndex) ? selectedRows.filter(i => i !== globalIndex) : [...selectedRows, globalIndex];
+
     setSelectedRows(newSelected);
   };
 
@@ -168,6 +179,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
             onChange={e => {
               try {
                 const parsed = JSON.parse(e.target.value);
+
                 handleChange(parsed);
               } catch {
                 handleChange(e.target.value);
@@ -187,12 +199,14 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
-      const result = await updateDataListAPI(token, dataType, editingData);
+      const result = await updateDataListAPI(dataType, editingData);
 
       if (result.success) {
         message.success('数据保存成功');

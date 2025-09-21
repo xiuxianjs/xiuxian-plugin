@@ -28,6 +28,7 @@ export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
     }
   } catch (error) {
     console.error('登录API错误:', error);
+
     return {
       success: false,
       message: '错误，请重试'
@@ -36,7 +37,7 @@ export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
 };
 
 // 登出API
-export const logoutAPI = async (token: string): Promise<{ success: boolean }> => {
+export const logoutAPI = async (): Promise<{ success: boolean }> => {
   try {
     const result = (await authRequest({
       url: '/logout',
@@ -50,6 +51,7 @@ export const logoutAPI = async (token: string): Promise<{ success: boolean }> =>
     }
   } catch (error) {
     console.error('登出API错误:', error);
+
     return { success: false };
   }
 };
@@ -73,18 +75,13 @@ export const verifyTokenAPI = async (token: string): Promise<{ valid: boolean; u
     }
   } catch (error) {
     console.error('Token验证API错误:', error);
+
     return { valid: false };
   }
 };
 
 // 修改密码API
-export const changePasswordAPI = async (
-  token: string,
-  passwordData: {
-    currentPassword: string;
-    newPassword: string;
-  }
-): Promise<{ success: boolean; message: string }> => {
+export const changePasswordAPI = async (passwordData: { currentPassword: string; newPassword: string }): Promise<{ success: boolean; message: string }> => {
   try {
     const result = (await authRequest({
       url: '/change-password',
@@ -105,6 +102,7 @@ export const changePasswordAPI = async (
     }
   } catch (error) {
     console.error('修改密码API错误:', error);
+
     return {
       success: false,
       message: '错误，请重试'

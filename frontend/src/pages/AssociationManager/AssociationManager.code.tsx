@@ -34,17 +34,21 @@ export const useAssociationManagerCode = () => {
 
   // 获取宗门数据
   const fetchAssociations = async (page = 1, pSize = AssociationManagerPageSize) => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
-      const result = await getAssociationsAPI(token, {
+      const result = await getAssociationsAPI({
         page,
         pageSize: pSize,
         search: searchText
@@ -66,16 +70,20 @@ export const useAssociationManagerCode = () => {
 
   // 获取统计数据
   const fetchStats = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
-      const result = await getAssociationsStatsAPI(token, {
+      const result = await getAssociationsStatsAPI({
         search: searchText
       });
 

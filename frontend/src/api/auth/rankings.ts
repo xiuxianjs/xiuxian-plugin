@@ -2,13 +2,10 @@ import { ApiResponse } from '@/types/types';
 import { authRequest } from '../base';
 
 // 获取排名数据API
-export const getRankingsAPI = async (
-  token: string,
-  params: {
-    type: string;
-    limit?: number;
-  }
-): Promise<{
+export const getRankingsAPI = async (params: {
+  type: string;
+  limit?: number;
+}): Promise<{
   success: boolean;
   data?: any[];
   message?: string;
@@ -33,6 +30,7 @@ export const getRankingsAPI = async (
     }
   } catch (error) {
     console.error('获取排名数据API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -41,9 +39,7 @@ export const getRankingsAPI = async (
 };
 
 // 获取排名统计信息API
-export const getRankingsStatsAPI = async (
-  token: string
-): Promise<{
+export const getRankingsStatsAPI = async (): Promise<{
   success: boolean;
   data?: {
     lastUpdate: string;
@@ -79,6 +75,7 @@ export const getRankingsStatsAPI = async (
     }
   } catch (error) {
     console.error('获取排名统计信息API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -87,9 +84,7 @@ export const getRankingsStatsAPI = async (
 };
 
 // 触发排名计算API
-export const triggerRankingCalculationAPI = async (
-  token: string
-): Promise<{
+export const triggerRankingCalculationAPI = async (): Promise<{
   success: boolean;
   data?: {
     timestamp: string;
@@ -117,6 +112,7 @@ export const triggerRankingCalculationAPI = async (
     }
   } catch (error) {
     console.error('触发排名计算API错误:', error);
+
     return {
       success: false,
       message: '网络错误'

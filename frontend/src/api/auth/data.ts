@@ -3,7 +3,6 @@ import { authRequest } from '../base';
 
 // 获取数据列表API（支持分页和搜索）
 export const getDataListAPI = async (
-  token: string,
   dataType: string,
   params: {
     page?: number;
@@ -56,6 +55,7 @@ export const getDataListAPI = async (
     }
   } catch (error) {
     console.error('获取数据列表API错误:', error);
+
     return {
       success: false,
       message: '获取数据失败'
@@ -65,7 +65,6 @@ export const getDataListAPI = async (
 
 // 更新数据列表API
 export const updateDataListAPI = async (
-  token: string,
   dataType: string,
   data: any[],
   batchMode = false
@@ -100,6 +99,7 @@ export const updateDataListAPI = async (
     }
   } catch (error) {
     console.error('更新数据列表API错误:', error);
+
     return {
       success: false,
       message: '更新数据失败'
@@ -146,6 +146,7 @@ export const batchUpdateDataAPI = async (
     }
   } catch (error) {
     console.error('批量更新数据API错误:', error);
+
     return {
       success: false,
       message: '批量更新失败'

@@ -87,18 +87,22 @@ export const useDataQueryCode = () => {
 
   // 获取数据列表
   const fetchDataList = async (dataType: string, page = 1, pSize = pageSize) => {
-    if (!dataType || !user) return;
+    if (!dataType || !user) {
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
         setDataList([]);
+
         return;
       }
 
-      const result = await getDataListAPI(token, dataType, {
+      const result = await getDataListAPI(dataType, {
         page,
         pageSize: pSize,
         search: searchText
@@ -169,10 +173,12 @@ export const useDataQueryCode = () => {
   const handleEdit = () => {
     if (!selectedDataType) {
       message.warning('请先选择数据类型');
+
       return;
     }
     if (!dataList || dataList.length === 0) {
       message.warning('当前没有可编辑的数据');
+
       return;
     }
     setOriginalData(dataList);
@@ -195,7 +201,9 @@ export const useDataQueryCode = () => {
 
   // 动态生成表格列
   const columns = useMemo(() => {
-    if (!dataList || !dataList.length) return [];
+    if (!dataList?.length) {
+      return [];
+    }
 
     const sampleItem = dataList[0];
     const keys = Object.keys(sampleItem);
@@ -224,6 +232,7 @@ export const useDataQueryCode = () => {
         if (typeof value === 'number') {
           return <span className='text-green-400'>{value.toLocaleString()}</span>;
         }
+
         return <span className='text-slate-300'>{String(value)}</span>;
       }
     }));

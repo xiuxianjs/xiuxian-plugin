@@ -3,7 +3,6 @@ import { authRequest } from '../base';
 
 // 获取背包列表API（支持分页）
 export const getNajieAPI = async (
-  token: string,
   params: {
     page?: number;
     pageSize?: number;
@@ -58,6 +57,7 @@ export const getNajieAPI = async (
     }
   } catch (error) {
     console.error('获取背包列表API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -94,6 +94,7 @@ export const getNajieDetailAPI = async (
     }
   } catch (error) {
     console.error('获取背包详情API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -102,14 +103,7 @@ export const getNajieDetailAPI = async (
 };
 
 // 更新背包信息API
-export const updateNajieAPI = async (
-  token: string,
-  najieData: {
-    id: string;
-    name: string;
-    description: string;
-  }
-): Promise<{ success: boolean; message: string }> => {
+export const updateNajieAPI = async (najieData: { id: string; name: string; description: string }): Promise<{ success: boolean; message: string }> => {
   try {
     const result = (await authRequest({
       url: '/najie',
@@ -130,6 +124,7 @@ export const updateNajieAPI = async (
     }
   } catch (error) {
     console.error('更新纳戒信息API错误:', error);
+
     return {
       success: false,
       message: '更新纳戒信息失败'

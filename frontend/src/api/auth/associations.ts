@@ -3,7 +3,6 @@ import { authRequest } from '../base';
 
 // 获取宗门列表API（支持分页）
 export const getAssociationsAPI = async (
-  token: string,
   params: {
     page?: number;
     pageSize?: number;
@@ -50,6 +49,7 @@ export const getAssociationsAPI = async (
     }
   } catch (error) {
     console.error('获取宗门列表API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -86,6 +86,7 @@ export const getAssociationAPI = async (
     }
   } catch (error) {
     console.error('获取宗门详情API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -95,7 +96,6 @@ export const getAssociationAPI = async (
 
 // 获取宗门统计信息API
 export const getAssociationsStatsAPI = async (
-  token: string,
   params: {
     search?: string;
   } = {}
@@ -138,6 +138,7 @@ export const getAssociationsStatsAPI = async (
     }
   } catch (error) {
     console.error('获取宗门统计信息API错误:', error);
+
     return {
       success: false,
       message: '网络错误'

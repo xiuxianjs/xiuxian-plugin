@@ -100,6 +100,7 @@ export default function TaskManager() {
         type: 'system' as const
       };
       const status = taskStatus?.[name];
+
       return {
         name,
         description: taskInfo.description,
@@ -190,12 +191,15 @@ export default function TaskManager() {
   const fetchTaskConfig = async () => {
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
-      const result = await getTaskConfigAPI(token);
+      const result = await getTaskConfigAPI();
+
       if (result.success && result.data) {
         setTaskConfig(result.data);
         setTasks(generateTasksFromConfig(result.data));
@@ -212,11 +216,13 @@ export default function TaskManager() {
   const fetchTaskStatus = async () => {
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         return;
       }
 
-      const result = await getTaskStatusAPI(token);
+      const result = await getTaskStatusAPI();
+
       if (result.success && result.data) {
         setTasks(prevTasks =>
           prevTasks.map(task => ({
@@ -240,13 +246,16 @@ export default function TaskManager() {
   const handleStartAllTasks = async () => {
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       message.loading('正在启动所有任务...', 0);
-      const result = await taskControlAPI(token, 'startAll');
+      const result = await taskControlAPI('startAll');
+
       message.destroy();
 
       if (result.success && result.data?.success) {
@@ -267,19 +276,22 @@ export default function TaskManager() {
   const handleStopAllTasks = async () => {
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       message.loading('正在停止所有任务...', 0);
-      const result = await taskControlAPI(token, 'stopAll');
+      const result = await taskControlAPI('stopAll');
+
       message.destroy();
 
       if (result.success && result.data?.success) {
         message.success('所有任务停止成功');
         // 重新获取配置
-        fetchTaskConfig();
+        void fetchTaskConfig();
       } else {
         message.error(result.message || '停止失败');
       }
@@ -294,19 +306,22 @@ export default function TaskManager() {
   const handleRestartTasks = async () => {
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       message.loading('正在重启所有任务...', 0);
-      const result = await restartTasksAPI(token);
+      const result = await restartTasksAPI();
+
       message.destroy();
 
       if (result.success && result.data?.success) {
         message.success('所有任务重启成功');
         // 重新获取配置
-        fetchTaskConfig();
+        void fetchTaskConfig();
       } else {
         message.error(result.message || '重启失败');
       }
@@ -326,19 +341,22 @@ export default function TaskManager() {
   const handleSaveConfig = async (values: { [key: string]: string }) => {
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       message.loading('正在保存配置...', 0);
-      const result = await updateTaskConfigAPI(token, values);
+      const result = await updateTaskConfigAPI(values);
+
       message.destroy();
 
       if (result.success) {
         message.success('配置保存成功');
         setConfigDrawerVisible(false);
-        fetchTaskConfig();
+        void fetchTaskConfig();
       } else {
         message.error(result.message || '保存失败');
       }

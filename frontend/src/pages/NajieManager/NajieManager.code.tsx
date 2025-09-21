@@ -25,19 +25,23 @@ export const useNajieManagerCode = () => {
 
   // 获取背包数据
   const fetchNajie = async (page = 1, pSize = pageSize) => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       console.log('Fetching najie data with token:', token);
 
-      const result = await getNajieAPI(token, {
+      const result = await getNajieAPI({
         page,
         pageSize: pSize,
         search: searchText
@@ -74,6 +78,7 @@ export const useNajieManagerCode = () => {
   // 计算背包总物品数
   const getTotalItems = (najie: Najie) => {
     const categories = ['装备', '丹药', '道具', '功法', '草药', '材料', '仙宠', '仙宠口粮'] as const;
+
     return categories.reduce((total, cat) => {
       return total + (Array.isArray(najie[cat]) ? najie[cat].length : 0);
     }, 0);
@@ -90,14 +95,17 @@ export const useNajieManagerCode = () => {
     setEditLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       console.log('Saving najie data with token:', token, updatedNajie);
 
-      const result = await updateNajieAPI(token, updatedNajie);
+      const result = await updateNajieAPI(updatedNajie);
+
       if (result.success) {
         message.success('背包更新成功');
         setNajieEditVisible(false);

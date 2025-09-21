@@ -2,9 +2,7 @@ import { ApiResponse } from '@/types/types';
 import { authRequest } from '../base';
 
 // 获取定时任务配置API
-export const getTaskConfigAPI = async (
-  token: string
-): Promise<{
+export const getTaskConfigAPI = async (): Promise<{
   success: boolean;
   data?: { [key: string]: string };
   message?: string;
@@ -28,6 +26,7 @@ export const getTaskConfigAPI = async (
     }
   } catch (error) {
     console.error('获取定时任务配置API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -36,10 +35,9 @@ export const getTaskConfigAPI = async (
 };
 
 // 更新定时任务配置API
-export const updateTaskConfigAPI = async (
-  token: string,
-  taskConfig: { [key: string]: string }
-): Promise<{
+export const updateTaskConfigAPI = async (taskConfig: {
+  [key: string]: string;
+}): Promise<{
   success: boolean;
   data?: {
     timestamp: string;
@@ -68,6 +66,7 @@ export const updateTaskConfigAPI = async (
     }
   } catch (error) {
     console.error('更新定时任务配置API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -76,9 +75,7 @@ export const updateTaskConfigAPI = async (
 };
 
 // 获取任务状态API
-export const getTaskStatusAPI = async (
-  token: string
-): Promise<{
+export const getTaskStatusAPI = async (): Promise<{
   success: boolean;
   data?: {
     [key: string]: {
@@ -112,6 +109,7 @@ export const getTaskStatusAPI = async (
     }
   } catch (error) {
     console.error('获取任务状态API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -121,7 +119,6 @@ export const getTaskStatusAPI = async (
 
 // 任务控制API
 export const taskControlAPI = async (
-  token: string,
   action: 'start' | 'stop' | 'restart' | 'startAll' | 'stopAll' | 'restartAll',
   taskName?: string
 ): Promise<{
@@ -157,6 +154,7 @@ export const taskControlAPI = async (
     }
   } catch (error) {
     console.error('任务控制API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -166,7 +164,6 @@ export const taskControlAPI = async (
 
 // 重启定时任务API (保持兼容性)
 export const restartTasksAPI = async (
-  token: string,
   taskName?: string
 ): Promise<{
   success: boolean;
@@ -177,7 +174,8 @@ export const restartTasksAPI = async (
   };
   message?: string;
 }> => {
-  const result = await taskControlAPI(token, taskName ? 'restart' : 'restartAll', taskName);
+  const result = await taskControlAPI(taskName ? 'restart' : 'restartAll', taskName);
+
   return {
     success: result.success,
     message: result.message,

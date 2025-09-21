@@ -253,7 +253,9 @@ export async function zdBattle(AplayerA: Player | BattleEntity, BplayerB: Player
       playerA.攻击 = BplayerB.攻击;
       playerA.防御 = BplayerB.防御;
     }
-    msg.push(`第${cnt2 + 1}回合：\n  ${playerA.名号}攻击了${playerB.名号}，${ifbaoji(baoji)}造成伤害${伤害 > 100000 ? (伤害 / 10000).toFixed(1) + "万" : 伤害}，${playerB.名号}剩余血量${(playerB.当前血量/playerB.血量上限).toFixed(0)}%`);
+    msg.push(
+      `第${cnt2 + 1}回合：\n  ${playerA.名号}攻击了${playerB.名号}，${ifbaoji(baoji)}造成伤害${伤害 > 100000 ? (伤害 / 10000).toFixed(1) + '万' : 伤害}，${playerB.名号}剩余血量${(playerB.当前血量 / playerB.血量上限).toFixed(0)}%`
+    );
     cnt++;
   }
   if (cnt % 2 === 0) {

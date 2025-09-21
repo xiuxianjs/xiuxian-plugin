@@ -40,16 +40,20 @@ export const useRankingManagerCode = () => {
 
   // 获取排名统计信息
   const fetchRankingStats = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
-      const result = await getRankingsStatsAPI(token);
+      const result = await getRankingsStatsAPI();
 
       if (result.success && result.data) {
         setRankingStats(result.data);
@@ -64,17 +68,21 @@ export const useRankingManagerCode = () => {
 
   // 获取排名数据
   const fetchRankingData = async (type: string, limit: number) => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
-      const result = await getRankingsAPI(token, {
+      const result = await getRankingsAPI({
         type,
         limit
       });
@@ -94,17 +102,22 @@ export const useRankingManagerCode = () => {
 
   // 触发排名计算
   const handleTriggerCalculation = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
+
       if (!token) {
         message.error('未找到登录令牌');
+
         return;
       }
 
       message.loading('正在计算排名...', 0);
-      const result = await triggerRankingCalculationAPI(token);
+      const result = await triggerRankingCalculationAPI();
+
       message.destroy();
 
       if (result.success) {
@@ -142,6 +155,7 @@ export const useRankingManagerCode = () => {
   // 获取排名类型显示名称
   const getRankingTypeLabel = (type: string) => {
     const found = rankingTypes.find(item => item.value === type);
+
     return found ? found.label : type;
   };
 

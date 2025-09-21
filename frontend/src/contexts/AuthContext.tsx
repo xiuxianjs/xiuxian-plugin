@@ -60,11 +60,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const logout = async () => {
     try {
-      const token = localStorage.getItem('token');
-
-      if (token) {
-        await logoutAPI(token);
-      }
+      await logoutAPI();
     } catch (error) {
       console.error('登出失败:', error);
     } finally {
