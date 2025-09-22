@@ -140,9 +140,20 @@ export function stopAction(userId: string | number, extra: Partial<ActionRecord 
       return null;
     }
 
+    // 重置所有状态为空闲
     return {
       ...prev,
+      action: '空闲',
       end_time: Date.now(),
+      shutup: '1', // 闭关状态重置为空闲
+      working: '1', // 降妖状态重置为空闲
+      power_up: '1', // 修炼状态重置为空闲
+      Place_action: '1', // 秘境状态重置为空闲
+      Place_actionplus: '1', // 秘境plus状态重置为空闲
+      plant: '1', // 采药状态重置为空闲
+      mine: '1', // 采矿状态重置为空闲
+      mojie: '1', // 魔界状态重置为空闲
+      xijie: '1', // 洗劫状态重置为空闲
       ...extra
     };
   });
