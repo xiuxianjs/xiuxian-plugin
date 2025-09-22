@@ -13,6 +13,8 @@ import {
   keys
 } from '@src/model/index';
 
+import { readDanyao } from '@src/model/danyao';
+
 import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?熔炼.*$/;
 
@@ -81,14 +83,20 @@ const res = onResponse(selects, async e => {
   if (player.仙宠.type === '炼器') {
     num1 = Math.trunc(player.仙宠.等级 / 33);
   }
+
+  // 获取真器丹提供的额外格子数量
+  const dy = await readDanyao(userId);
+  const extraSlots = dy.beiyong5 || 0;
+
   let num = 0;
 
   for (const item in tripod.数量) {
     num += Number(tripod.数量[item]);
   }
-  const shengyu = tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) - num - Number(thing_acount);
+  const totalCapacity = tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2) + extraSlots;
+  const shengyu = totalCapacity - num - Number(thing_acount);
 
-  if (num + Number(thing_acount) > tripod.容纳量 + num1 + Math.floor(player.occupation_level / 2)) {
+  if (num + Number(thing_acount) > totalCapacity) {
     void Send(Text(`该煅炉当前只能容纳[${shengyu + Number(thing_acount)}]物品`));
 
     return false;
