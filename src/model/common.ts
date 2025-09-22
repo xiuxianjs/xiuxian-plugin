@@ -119,7 +119,7 @@ export async function Go(e): Promise<boolean | 0> {
     return true;
   }
 
-  if (!action && action?.action === '空闲') {
+  if (!action || action?.action === '空闲') {
     return true;
   }
 
