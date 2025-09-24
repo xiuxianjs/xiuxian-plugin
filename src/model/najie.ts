@@ -170,6 +170,12 @@ export async function addNajieThing(
   ]);
 }
 
+/**
+ * 替换装备
+ * @param usrId 玩家QQ
+ * @param equipmentData 装备数据
+ * @returns
+ */
 export async function insteadEquipment(usrId: string, equipmentData: EquipmentLike) {
   await addNajieThing(usrId, equipmentData, '装备', -1, equipmentData.pinji);
   const equipment: Equipment | null = await readEquipment(usrId);
@@ -184,7 +190,8 @@ export async function insteadEquipment(usrId: string, equipmentData: EquipmentLi
         ...equipment.武器,
         name: equipment.武器.name ?? '武器',
         class: '装备',
-        数量: 1
+        数量: 1,
+        出售价: (equipment.武器 as any).出售价 || 0
       },
       '装备',
       1,
@@ -202,7 +209,8 @@ export async function insteadEquipment(usrId: string, equipmentData: EquipmentLi
         ...equipment.护具,
         name: equipment.护具.name ?? '护具',
         class: '装备',
-        数量: 1
+        数量: 1,
+        出售价: (equipment.护具 as any).出售价 || 0
       },
       '装备',
       1,
@@ -220,7 +228,8 @@ export async function insteadEquipment(usrId: string, equipmentData: EquipmentLi
         ...equipment.法宝,
         name: equipment.法宝.name ?? '法宝',
         class: '装备',
-        数量: 1
+        数量: 1,
+        出售价: (equipment.法宝 as any).出售价 || 0
       },
       '装备',
       1,
