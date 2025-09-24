@@ -110,7 +110,9 @@ const byGoods = async ({ e, index, count }) => {
           type: goods.thing.type, // 装备类型
           数量: count, // 购买数量
           // 保存装备的出售价，确保购买后装备保持原有的出售价值
-          出售价: goods.thing.出售价
+          出售价: goods.thing.出售价,
+          // 保存装备的id，确保五行属性正确显示
+          id: goods.thing.id
         };
 
         await addNajieThing(userId, fullEquipment, thingClass, count);
