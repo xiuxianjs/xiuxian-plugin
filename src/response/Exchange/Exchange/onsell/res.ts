@@ -278,7 +278,9 @@ const res = onResponse(selects, async e => {
         出售价: (selected as any).出售价,
         bao: (selected as any).bao,
         type: (selected as any).type,
-        数量: (selected as any).数量
+        数量: (selected as any).数量,
+        // 保存装备的id，用于确定五行属性显示
+        id: (selected as any).id
       },
       price,
       amount,
