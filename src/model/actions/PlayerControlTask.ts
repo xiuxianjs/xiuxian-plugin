@@ -404,7 +404,7 @@ export const handleCultivationSettlement = async (
 
     // 设置修为或血气
     if (transformation === '血气') {
-      await setFileValue(playerId, finalXiuwei * beiyong4, transformation);
+      await setFileValue(playerId, Math.floor(finalXiuwei * beiyong4), transformation);
     } else {
       await setFileValue(playerId, finalXiuwei, transformation);
     }
