@@ -337,13 +337,14 @@ const calculateRewards = (player: Player, t1: number, t2: number, isVictory: boo
  * @param playerId 玩家ID
  * @param random 随机数
  * @param monsterName 怪物名称
+ * @param threshold 掉落阈值，默认为0.995
  * @returns 特殊掉落消息
  */
-const handleSpecialDrops = async (playerId: string, random: number, monsterName: string): Promise<string> => {
+const handleSpecialDrops = async (playerId: string, random: number, monsterName: string, threshold = 0.995): Promise<string> => {
   let message = '';
 
-  // 万分之一出神迹
-  if (random > 0.995) {
+  // 万分之一出神迹（使用动态阈值）
+  if (random > threshold) {
     const xianchonkouliang = await getDataList('Xianchonkouliang');
 
     if (xianchonkouliang.length > 0) {
@@ -374,6 +375,7 @@ const handleDanyaoEffect = async (playerId: string): Promise<number> => {
   const dy = await readDanyao(playerId);
   let newRandom = 0.995;
 
+  // 应用仙缘效果
   newRandom -= Number(dy.beiyong1 || 0);
 
   if (dy.ped > 0) {
@@ -540,8 +542,10 @@ const processPlayerExploration = async (playerId: string, action: ActionLike, mo
           // 处理特殊掉落
           const random = Math.random();
 
-          await handleDanyaoEffect(playerId, random);
-          const specialDropsMessage = await handleSpecialDrops(playerId, random, playerB.名号);
+          // 获取仙缘丹调整后的阈值
+          const adjustedThreshold = await handleDanyaoEffect(playerId);
+
+          const specialDropsMessage = await handleSpecialDrops(playerId, random, playerB.名号, adjustedThreshold);
 
           lastMessage += specialDropsMessage;
         } else {

@@ -7,6 +7,7 @@ import mw from '@src/response/mw-captcha';
 import { keys, keysAction } from '@src/model/keys';
 import { isKeys } from '@src/model/utils/isKeys';
 import { getDataByKey, setDataByKey } from '@src/model/DataControl';
+import { readDanyao, writeDanyao } from '@src/model/actions/danyao';
 
 export const regular = /^(#|＃|\/)?神兽赐福$/;
 
@@ -89,9 +90,21 @@ const res = onResponse(selects, async e => {
 
   await setDataByKey(keysAction.getLastSignBonus(userId), nowTime);
 
-  const random = Math.random();
+  // 检查神赐丹效果
+  const dy = await readDanyao(userId);
+  let bonusProb = 0;
+  let shouldConsumeShenci = false;
 
-  if (random <= 0.7) {
+  if (dy.beiyong2 > 0 && dy.beiyong3 > 0) {
+    bonusProb = Number(dy.beiyong3);
+    shouldConsumeShenci = true;
+  }
+
+  const random = Math.random();
+  const baseProb = 0.3; // 基础成功概率30%
+  const finalProb = Math.min(baseProb + bonusProb, 0.95); // 最高95%概率
+
+  if (random > finalProb) {
     void Send(Text(`${ass.宗门神兽}闭上了眼睛，表示今天不想理你`));
 
     return false;
@@ -145,10 +158,28 @@ const res = onResponse(selects, async e => {
 
   await addNajieThing(userId, item.name, category as any, 1);
 
+  // 消耗神赐丹效果
+  if (shouldConsumeShenci) {
+    dy.beiyong2--;
+    if (dy.beiyong2 <= 0) {
+      dy.beiyong2 = 0;
+      dy.beiyong3 = 0;
+    }
+    await writeDanyao(userId, dy);
+  }
+
   if (randomB > 0.9) {
-    void Send(Text(`看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`));
+    const message = shouldConsumeShenci
+      ? `看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你\n神赐丹生效，剩余次数：${dy.beiyong2}`
+      : `看见你来了, ${beast} 很高兴，仔细挑选了 ${item.name} 给你`;
+
+    void Send(Text(message));
   } else {
-    void Send(Text(`${beast} 今天心情不错，随手丢给了你 ${item.name}`));
+    const message = shouldConsumeShenci
+      ? `${beast} 今天心情不错，随手丢给了你 ${item.name}\n神赐丹生效，剩余次数：${dy.beiyong2}`
+      : `${beast} 今天心情不错，随手丢给了你 ${item.name}`;
+
+    void Send(Text(message));
   }
 
   return false;

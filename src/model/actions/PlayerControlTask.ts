@@ -175,7 +175,7 @@ const calculateWorkEfficiency = (actualTime: number): number => {
  */
 const handleDanyaoEffects = async (playerId: string, dy: any): Promise<{ transformation: string; beiyong4: number }> => {
   let transformation = '修为';
-  let beiyong4 = dy.beiyong4 ?? 0;
+  const beiyong4 = dy.beiyong4 ?? 0;
 
   if (dy.biguan > 0) {
     dy.biguan--;
@@ -192,7 +192,6 @@ const handleDanyaoEffects = async (playerId: string, dy: any): Promise<{ transfo
   if (dy.lianti <= 0) {
     dy.lianti = 0;
     dy.beiyong4 = 0;
-    beiyong4 = 0;
   }
 
   await writeDanyao(playerId, dy);
