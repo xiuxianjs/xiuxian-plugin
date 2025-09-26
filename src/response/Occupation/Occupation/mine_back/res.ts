@@ -1,5 +1,6 @@
-import { delDataByKey, getPlayerAction } from '@src/model/index';
+import { delDataByKey, getPlayerAction, setDataJSONStringifyByKey } from '@src/model/index';
 import { mineJiesuan } from '../../../../model/actions/occupation';
+import { withLock } from '../../../../model/locks.js';
 
 import { selects } from '@src/response/mw-captcha';
 import { keysAction } from '@src/model/keys';
@@ -98,27 +99,55 @@ function calcEffectiveMinutes(act: PlayerAction, now: number): number {
 }
 
 const res = onResponse(selects, async e => {
-  const raw = await getPlayerAction(e.UserId);
-  const action = normalizeAction(raw);
+  // 使用分布式锁防止重复结算
+  const lockKey = `mine_settlement_${e.UserId}`;
+  const result = await withLock(
+    lockKey,
+    async () => {
+      const raw = await getPlayerAction(e.UserId);
+      const action = normalizeAction(raw);
 
-  if (action.action === '空闲') {
+      if (action.action === '空闲') {
+        return false;
+      }
+      if (action.mine === 1) {
+        return false;
+      }
+
+      // 防重复结算：若已结算（通过自定义 is_jiesuan 标志）直接返回
+      if (action.is_jiesuan === 1) {
+        return false;
+      }
+
+      const now = Date.now();
+      const minutes = calcEffectiveMinutes(action, now);
+
+      // 执行采矿结算
+      if (e.name === 'message.create') {
+        await mineJiesuan(e.UserId, minutes, e.ChannelId);
+      } else {
+        await mineJiesuan(e.UserId, minutes);
+      }
+
+      // 防重复结算：设置已结算标志并更新状态，而不是直接删除
+      const updatedAction = { ...raw, is_jiesuan: 1 };
+
+      await setDataJSONStringifyByKey(keysAction.action(e.UserId), updatedAction);
+
+      // 延迟删除action数据，给其他可能的并发请求时间检查is_jiesuan标志
+      setTimeout(() => {
+        void delDataByKey(keysAction.action(e.UserId));
+      }, 1000);
+
+      return false;
+    },
+    { timeout: 5000, maxRetries: 0 }
+  );
+
+  // 如果获取锁失败，说明正在结算中
+  if (!result.success) {
     return false;
   }
-  if (action.mine === 1) {
-    return false;
-  }
-
-  const now = Date.now();
-  const minutes = calcEffectiveMinutes(action, now);
-
-  if (e.name === 'message.create') {
-    await mineJiesuan(e.UserId, minutes, e.ChannelId);
-  } else {
-    await mineJiesuan(e.UserId, minutes);
-  }
-
-  // 非任务取消的。直接删除del
-  void delDataByKey(keysAction.action(e.UserId));
 
   return false;
 });
