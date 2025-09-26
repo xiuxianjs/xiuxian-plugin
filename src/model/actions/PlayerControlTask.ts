@@ -1,5 +1,5 @@
 import { getPushInfo, notUndAndNull } from '@src/model/common';
-import { delDataByKey, readPlayer, writePlayer } from '@src/model';
+import { delDataByKey, readPlayer, writePlayer, setDataJSONStringifyByKey } from '@src/model';
 import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { existNajieThing, addNajieThing } from '@src/model/najie';
 import { addExp, addExp2 } from '@src/model/economy';
@@ -591,6 +591,28 @@ const processPlayerState = async (playerId: string, action: ActionRecord, config
     const { pushAddress, isGroup } = getPushInfo(action, playerId);
     const nowTime = Date.now();
 
+    // 处理天牢状态 - 检查天牢时间是否结束
+    if (action.action === '天牢' && nowTime >= action.end_time) {
+      // 天牢时间结束，将玩家状态设置为空闲
+      action.action = '空闲';
+      action.end_time = Date.now();
+
+      await setDataJSONStringifyByKey(keysAction.action(playerId), action);
+
+      // 推送天牢结束消息
+      const message = '\n天牢时间已到，你重获自由！';
+
+      void pushMessage(
+        {
+          uid: playerId,
+          cid: isGroup && pushAddress ? pushAddress : ''
+        },
+        [Text(message)]
+      );
+
+      return true;
+    }
+
     // 计算实际闭关时间
     const actualCultivationTime = calculateActualCultivationTime(action);
     // 计算实际降妖时间
@@ -643,9 +665,9 @@ const processPlayerState = async (playerId: string, action: ActionRecord, config
 };
 
 /**
- * 玩家控制任务 - 处理玩家闭关和降妖状态
- * 遍历所有玩家，检查处于闭关或降妖状态的玩家，进行结算处理
- * @description shutup、working 都为 0 时，不进行结算
+ * 玩家控制任务 - 处理玩家闭关、降妖和天牢状态
+ * 遍历所有玩家，检查处于闭关、降妖或天牢状态的玩家，进行结算处理
+ * @description shutup、working 都为 0 时，不进行结算；天牢状态到期时自动设置为空闲
  */
 export const handelAction = async (playerId: string, action: ActionRecord, { config }): Promise<void> => {
   try {

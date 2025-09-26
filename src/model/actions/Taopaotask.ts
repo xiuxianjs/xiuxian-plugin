@@ -224,6 +224,7 @@ const handlePlayerEscaped = async (playerId: string, action: ActionRecord, shop:
 
   action.xijie = 1;
   action.end_time = Date.now();
+  action.action = '空闲'; // 逃跑成功后将玩家行动状态设置为空闲
   delete action.group_id;
 
   if (Array.isArray(action.thing)) {
