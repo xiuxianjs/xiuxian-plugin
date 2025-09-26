@@ -7,7 +7,7 @@ import mw from '@src/response/mw-captcha';
 import { keys, keysAction } from '@src/model/keys';
 import { isKeys } from '@src/model/utils/isKeys';
 import { getDataByKey, setDataByKey } from '@src/model/DataControl';
-import { readDanyao, writeDanyao } from '@src/model/actions/danyao';
+import { readDanyao, writeDanyao } from '@src/model/danyao';
 
 export const regular = /^(#|＃|\/)?神兽赐福$/;
 
