@@ -14,11 +14,12 @@ interface BlessPlaceItem {
 const SecretPlace = ({ didian_list }: { didian_list?: BlessPlaceItem[] }) => {
   return (
     <HTML>
-      <BackgroundImage className='absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40 pointer-events-none' src={secretPlaceURL}>
-        {/* 背景渐变遮罩 */}
+      {/* 修复截图高度问题：将absolute定位改为relative，确保Puppeteer能正确获取元素高度 */}
+      <BackgroundImage className='relative w-full min-h-screen bg-gradient-to-b from-black/30 via-black/20 to-black/40' src={secretPlaceURL}>
+        {/* 背景渐变遮罩 - 调整为相对定位 */}
         <div className='absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/20 backdrop-blur-[2px] pointer-events-none' />
 
-        <main className='relative max-w-5xl mx-auto space-y-8'>
+        <main className='relative max-w-5xl mx-auto space-y-8 py-8 min-h-screen'>
           <header className='space-y-4 flex flex-col items-center'>
             <h1
               className='inline-block px-8 py-2 rounded-2xl bg-white/30 backdrop-blur-md
