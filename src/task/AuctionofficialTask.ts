@@ -37,7 +37,7 @@ const startTask = async () => {
       const player = await readPlayer(String(auction.last_offer_player));
 
       if (player) {
-        msg += `最高出价是${player.名号}叫出的${auction.lastPrice}`;
+        msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
       }
     }
     auction.groupList.forEach(g => pushInfo(String(g), true, msg));
