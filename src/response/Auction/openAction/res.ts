@@ -73,7 +73,8 @@ const res = onResponse(selects, async e => {
         const player = await readPlayer(String(auction.last_offer_player));
 
         if (player) {
-          msg += `最高出价是${player.名号}叫出的${auction.last_price}`;
+          // 统一使用 lastPrice 字段命名
+          msg += `最高出价是${player.名号}叫出的${auction.lastPrice}`;
         }
       }
       void Send(Text(msg));

@@ -22,7 +22,7 @@ export interface AuctionSession {
   thing: AuctionThing; // 拍卖物品
   amount: number; // 数量
   last_offer_player: number; // 最后一次出价玩家 QQ
-  lastPrice: number; // 当前最高价
+  lastPrice: number; // 当前最高价（统一使用驼峰命名，避免与 last_price 混淆）
   last_offer_price: number; // 最后一笔出价发生的时间戳（命名沿用旧字段）
   groupList: GroupId[]; // 需要广播的群
 }
