@@ -78,7 +78,9 @@ export async function LevelTask(e: EventsMessageCreateEnum, power_n: number, pow
 
         player.当前血量 = Math.trunc(player.当前血量 - player.当前血量 * act);
         await writePlayer(userId, player);
-        msg.push(`\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`);
+        msg.push(
+          `\n本次雷伤：${variable.toFixed(2)}\n本次雷抗：${power_distortion}\n当前血量：${player.当前血量}\n${player.名号}成功度过了第${aconut}道雷劫！\n下一道雷劫在一分钟后落下！`
+        );
         void Send(Text(msg.join('')));
 
         return 1;
