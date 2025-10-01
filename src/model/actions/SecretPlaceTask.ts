@@ -435,6 +435,9 @@ const processPlayerExploration = async (playerId: string, action: ActionRecord, 
           // 处理特殊掉落
           const random = Math.random();
           const adjustedThreshold = await handleDanyaoEffect(playerId);
+
+          // 仙缘丹生效概率为 adjustedThreshold
+          lastMessage += `\n仙缘丹生效概率为 ${adjustedThreshold < 0 ? '100%' : `${((1 - adjustedThreshold) * 100).toFixed(2)}%。`}`;
           const specialDropsMessage = await handleSpecialDrops(playerId, random, playerB.名号, adjustedThreshold);
 
           lastMessage += specialDropsMessage;
