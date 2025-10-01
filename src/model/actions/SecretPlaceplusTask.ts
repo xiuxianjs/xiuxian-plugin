@@ -375,12 +375,14 @@ const handleDanyaoEffect = async (playerId: string): Promise<number> => {
   const dy = await readDanyao(playerId);
   let newRandom = 0.995;
 
-  // 应用仙缘效果
-  newRandom -= Number(dy.beiyong1 || 0);
-
+  // 只有当仙缘丹次数大于0时才应用效果
   if (dy.ped > 0) {
+    // 应用仙缘效果
+    newRandom -= Number(dy.beiyong1 || 0);
+    // 扣除次数
     dy.ped--;
   } else {
+    // 重置相关数据
     dy.beiyong1 = 0;
     dy.ped = 0;
   }
