@@ -4,6 +4,7 @@ import { delDataByKey, readPlayer } from '@src/model';
 import { zdBattle } from '@src/model/battle';
 import { addNajieThing } from '@src/model/najie';
 import { addExp2, addExp, addHP } from '@src/model/economy';
+import { readDanyao, writeDanyao } from '@src/model/danyao';
 import { __PATH, keysAction } from '@src/model/keys';
 import { DataMention, Text } from 'alemonjs';
 import type { CoreNajieCategory as NajieCategory, ActionRecord } from '@src/types';
@@ -299,13 +300,15 @@ const calculateRewards = (player: Player, t1: number, t2: number, isVictory: boo
  * 处理特殊掉落
  * @param playerId 玩家ID
  * @param random 随机数
+ * @param monsterName 怪物名称
+ * @param threshold 掉落阈值，默认为0.995
  * @returns 特殊掉落消息
  */
-const handleSpecialDrops = async (playerId: string, random: number): Promise<string> => {
+const handleSpecialDrops = async (playerId: string, random: number, monsterName: string, threshold = 0.995): Promise<string> => {
   let message = '';
 
-  // 万分之一出神迹
-  if (random > 0.995) {
+  // 万分之一出神迹（使用动态阈值）
+  if (random > threshold) {
     const xianchonkouliangList = await getDataList('Xianchonkouliang');
 
     if (xianchonkouliangList.length > 0) {
@@ -319,11 +322,35 @@ const handleSpecialDrops = async (playerId: string, random: number): Promise<str
 
   // 特殊石头掉落
   if (random > 0.1 && random < 0.1002) {
-    message += '\n倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。';
+    message += `\n${monsterName}倒下后,你正准备离开此地，看见路边草丛里有个长相奇怪的石头，顺手放进了纳戒。`;
     await addNajieThing(playerId, '长相奇怪的小石头', '道具', 1);
   }
 
   return message;
+};
+
+/**
+ * 处理丹药效果
+ * @param playerId 玩家ID
+ * @returns 调整后的阈值
+ */
+const handleDanyaoEffect = async (playerId: string): Promise<number> => {
+  const dy = await readDanyao(playerId);
+  let newRandom = 0.995;
+
+  // 应用仙缘效果
+  newRandom -= Number(dy.beiyong1 || 0);
+
+  if (dy.ped > 0) {
+    dy.ped--;
+  } else {
+    dy.beiyong1 = 0;
+    dy.ped = 0;
+  }
+
+  await writeDanyao(playerId, dy);
+
+  return newRandom;
 };
 
 /**
@@ -405,7 +432,8 @@ const processPlayerExploration = async (playerId: string, action: ActionRecord, 
 
           // 处理特殊掉落
           const random = Math.random();
-          const specialDropsMessage = await handleSpecialDrops(playerId, random);
+          const adjustedThreshold = await handleDanyaoEffect(playerId);
+          const specialDropsMessage = await handleSpecialDrops(playerId, random, playerB.名号, adjustedThreshold);
 
           lastMessage += specialDropsMessage;
         } else {
