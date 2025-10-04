@@ -72,6 +72,7 @@ export const keys = {
   shop: (id: string) => `${__PATH.shop}:${id}`,
   log: (id: string) => `${__PATH.log_path}:${id}`,
   association: (id: string) => `${__PATH.association}:${id}`,
+  associationAudit: (associationName: string) => `${__PATH.association}:${associationName}:audit`, // 宗门审核列表
   tiandibang: (id: string) => `${__PATH.tiandibang}:${id}`,
   qinmidu: (id: string) => `${__PATH.qinmidu}:${id}`,
   backup: (id: string) => `${__PATH.backup}:${id}`,

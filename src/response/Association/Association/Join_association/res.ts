@@ -6,6 +6,8 @@ import { selects } from '@src/response/mw-captcha';
 import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
 import { playerEfficiency } from '@src/model';
+import { redis } from '@src/model/api';
+import type { AssociationAuditRecord } from '@src/types/ass';
 export const regular = /^(#|＃|\/)?加入宗门.*$/;
 
 const res = onResponse(selects, async e => {
@@ -88,7 +90,55 @@ const res = onResponse(selects, async e => {
 
     return false;
   }
+
   const nowTime = Date.now();
+
+  // 检查是否需要审核
+  if (ass.需要审核) {
+    // 获取练气境界和炼体境界
+    const level2List = await getDataList('Level2');
+    const physiqueEntry = level2List.find((item: { Physique_id: number }) => item.Physique_id === player.Physique_id);
+
+    const auditRecord: AssociationAuditRecord = {
+      userId: userId,
+      name: player.名号,
+      level: levelEntry.level ?? '未知',
+      physique: physiqueEntry?.Physique ?? '未知',
+      applyTime: nowTime
+    };
+
+    // 获取现有审核列表
+    const auditListStr = await redis.get(keys.associationAudit(associationName));
+    let auditList: AssociationAuditRecord[] = [];
+
+    if (auditListStr) {
+      try {
+        auditList = JSON.parse(auditListStr);
+      } catch (error) {
+        console.error('获取宗门审核列表:', error);
+        auditList = [];
+      }
+    }
+
+    // 检查是否已经在审核列表中
+    const existingIndex = auditList.findIndex(record => record.userId === userId);
+
+    if (existingIndex !== -1) {
+      void Send(Text(`你已经提交过加入${associationName}的申请，请耐心等待审核`));
+
+      return false;
+    }
+
+    // 添加到审核列表
+    auditList.push(auditRecord);
+    await redis.set(keys.associationAudit(associationName), JSON.stringify(auditList));
+
+    void Send(Text(`已提交加入${associationName}的申请，请等待宗门长老及以上成员审核`));
+
+    return;
+  }
+
+  // 无需审核，直接加入
   const date = timestampToTime(nowTime);
 
   player.宗门 = {

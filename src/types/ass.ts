@@ -30,4 +30,14 @@ export interface ZongMen {
   大阵血量: number;
   最低加入境界: number;
   power: number;
+  需要审核?: boolean; // 是否开启宗门审核，默认false
+}
+
+// 宗门审核记录
+export interface AssociationAuditRecord {
+  userId: string; // 申请者QQ
+  name: string; // 申请者名号
+  level: string; // 申请时的练气境界
+  physique: string; // 申请时的炼体境界
+  applyTime: number; // 申请时间戳
 }
