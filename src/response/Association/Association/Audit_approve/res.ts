@@ -1,6 +1,6 @@
 import { Text, useSend } from 'alemonjs';
 import { keys } from '@src/model/keys';
-import { timestampToTime, readPlayer, writePlayer, 宗门人数上限, notUndAndNull } from '@src/model/index';
+import { timestampToTime, readPlayer, writePlayer, notUndAndNull, checkPlayerCanJoinAssociation } from '@src/model/index';
 import { selects } from '@src/response/mw-captcha';
 import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey, setDataJSONStringifyByKey } from '@src/model/DataControl';
@@ -153,17 +153,15 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  // 检查宗门人数上限
+  // 初始化宗门成员数组
   ass.所有成员 = Array.isArray(ass.所有成员) ? ass.所有成员 : [];
   ass.外门弟子 = Array.isArray(ass.外门弟子) ? ass.外门弟子 : [];
 
-  const guildLevel = Number(ass.宗门等级 ?? 1);
-  const capIndex = Math.max(0, Math.min(宗门人数上限.length - 1, guildLevel - 1));
-  const mostmem = 宗门人数上限[capIndex];
-  const nowmem = ass.所有成员.length;
+  // 检查玩家是否可以加入宗门
+  const checkResult = await checkPlayerCanJoinAssociation(targetPlayer, ass, targetRecord.name);
 
-  if (mostmem <= nowmem) {
-    void Send(Text(`${guildInfo.宗门名称}的弟子人数已经达到目前等级最大,无法加入`));
+  if (!checkResult.success) {
+    void Send(Text(checkResult.message ?? '无法加入宗门'));
 
     return;
   }
@@ -172,7 +170,7 @@ const res = onResponse(selects, async e => {
   const date = timestampToTime(nowTime);
 
   // 加入宗门
-  targetPlayer.宗门 = {
+  (targetPlayer.宗门 as any) = {
     宗门名称: guildInfo.宗门名称,
     职位: '外门弟子',
     time: [date, nowTime]

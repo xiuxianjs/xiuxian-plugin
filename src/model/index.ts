@@ -4,6 +4,7 @@ export * from './utils/safe';
 export * from './utils/utilsx';
 export * from './actionHelper';
 export * from './api';
+export * from './association';
 export * from './auction';
 export * from './battle';
 export * from './boss';
