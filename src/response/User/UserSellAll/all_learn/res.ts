@@ -3,6 +3,7 @@ import { readPlayer, keys, addConsFaByUser, batchAddNajieThings } from '@src/mod
 import { selects } from '@src/response/mw-captcha';
 import mw from '@src/response/mw-captcha';
 import { getDataJSONParseByKey } from '@src/model/DataControl';
+import { getDataList } from '@src/model/DataList';
 
 export const regular = /^(#|＃|\/)?一键学习$/;
 
@@ -30,29 +31,34 @@ const res = onResponse(selects, async e => {
     return;
   }
 
-  const names: string[] = [];
+  // 获取功法数据列表，用于排序
+  const gongfaDataList = await getDataList('Gongfa');
+  const timeGongfaList = await getDataList('TimeGongfa');
+  const allGongfaData = [...gongfaDataList, ...timeGongfaList];
 
-  for (const l of najie.功法) {
-    const islearned = player.学习的功法.find(item => item === l.name);
+  // 筛选未学习的功法，并附加修炼加成信息
+  const unlearnedGongfa = najie.功法
+    .filter(l => !player.学习的功法.find(item => item === l.name))
+    .map(l => {
+      const gongfaData = allGongfaData.find((g: any) => g.name === l.name);
 
-    if (!islearned) {
-      names.push(l.name);
-    }
-    if (player.学习的功法.length + names.length >= player.level_id) {
-      break;
-    }
-  }
+      return {
+        name: l.name,
+        加成: gongfaData?.修炼加成 ?? 0
+      };
+    })
+    .sort((a, b) => b.加成 - a.加成); // 按修炼加成从高到低排序
+
+  // 选择需要学习的功法
+  const canLearnCount = max - player.学习的功法.length;
+  const names: string[] = unlearnedGongfa.slice(0, canLearnCount).map(g => g.name);
 
   if (!names.length) {
     void Send(Text('无新功法'));
 
     return;
   }
-  if (player.学习的功法.length + names.length >= max) {
-    void Send(Text('你要学习的功法太多，学不进了，请突破后再来'));
 
-    return;
-  }
   void batchAddNajieThings(
     userId,
     names.map(n => ({ name: n, count: -1, category: '功法' }))
