@@ -41,6 +41,9 @@ const res = onResponse(selects, async e => {
   if (player.breakthrough === true) {
     parts.push('破境丹生效中');
   }
+  if (player.breakthroughBody === true) {
+    parts.push('破体丹生效中');
+  }
   if (dy.xingyun > 0) {
     parts.push(`真器丹药力${dy.beiyong5}药效${dy.xingyun}次`);
   }

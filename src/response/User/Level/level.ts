@@ -248,6 +248,12 @@ export async function userLevelMaxUp(e, luck) {
     prob = prob + (1 - prob) * 0.5;
     await addNajieThing(userId, '幸运草', '道具', -1);
   }
+  // 破体丹效果
+  if (player.breakthroughBody) {
+    prob += 0.2;
+    player.breakthroughBody = false;
+    await writePlayer(userId, player);
+  }
   // 失败了
   if (rand > prob) {
     const bad_time = Math.random(); // 增加多种突破失败情况，顺滑突破丢失修为曲线

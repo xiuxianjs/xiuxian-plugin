@@ -70,6 +70,7 @@ export interface Player {
   神石: number;
   favorability: number;
   breakthrough: boolean;
+  breakthroughBody?: boolean; // 破体丹效果，增加炼体突破概率
   linggen: any[]; // 未知类型，留空数组
   linggenshow: number;
   学习的功法: string[];

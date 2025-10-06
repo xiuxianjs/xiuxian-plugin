@@ -252,6 +252,20 @@ const handleTupo = async (userId: string, thingName: string, player: any, messag
   await addNajieThing(userId, thingName, '丹药', -1);
 };
 
+// 处理破体丹药
+const handleTupoBody = async (userId: string, thingName: string, player: any, message: any): Promise<void> => {
+  if (player.breakthroughBody === true) {
+    void message.send(format(Text('你已经吃过破体丹了')));
+
+    return;
+  }
+
+  player.breakthroughBody = true;
+  await writePlayer(userId, player);
+  void message.send(format(Text('服用成功,下次破体概率增加20%')));
+  await addNajieThing(userId, thingName, '丹药', -1);
+};
+
 // 丹药处理主函数
 export const handleDanyao = async (userId: string, thingName: string, thingExist: any, player: any, quantity: number, message: any): Promise<boolean> => {
   const tType = thingType(thingExist);
@@ -323,6 +337,10 @@ export const handleDanyao = async (userId: string, thingName: string, thingExist
 
     case '突破':
       await handleTupo(userId, thingName, player, message);
+      break;
+
+    case '破体':
+      await handleTupoBody(userId, thingName, player, message);
       break;
 
     default:
