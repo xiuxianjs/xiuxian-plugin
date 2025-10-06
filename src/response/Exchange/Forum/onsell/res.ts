@@ -90,6 +90,12 @@ const res = onResponse(selects, async e => {
 
   const player = await readPlayer(userId);
 
+  if (!player) {
+    void Send(Text('玩家数据异常'));
+
+    return false;
+  }
+
   const needPrice = off + whole;
 
   if (player.灵石 < needPrice) {
@@ -100,7 +106,18 @@ const res = onResponse(selects, async e => {
 
   await addCoin(userId, -needPrice);
 
+  // 生成唯一ID：纯数字6位（时间戳后4位+2位随机数）
+  const generateUniqueId = (): string => {
+    // 获取当前时间戳的后4位
+    const timestamp = Date.now() % 10000; // 0-9999
+    // 生成2位随机数 (10-99)
+    const random = Math.floor(Math.random() * 90) + 10;
+
+    return `${timestamp}${random}`;
+  };
+
   const wupin = {
+    id: generateUniqueId(),
     qq: userId,
     name: thingName,
     price: thingValue,
@@ -114,7 +131,7 @@ const res = onResponse(selects, async e => {
 
   await writeForum(Forum);
 
-  void Send(Text(`你已发布[${thingName}]*${thingCount}，单价${thingValue}灵石，总价${whole}灵石，交纳${off}灵石`));
+  void Send(Text(`你已发布[${thingName}]*${thingCount}，单价${thingValue}灵石，总价${whole}灵石，交纳${off}灵石，编号:${wupin.id}`));
 });
 
 export default onResponse(selects, [mw.current, res.current]);

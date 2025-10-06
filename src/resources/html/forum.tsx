@@ -44,11 +44,11 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                   </div>
                   <div className='flex items-center justify-center space-x-2'>
                     <span className='text-blue-700'>🤝</span>
-                    <span className='text-blue-900 font-medium'>接取指令：#接取+编号*数量</span>
+                    <span className='text-blue-900 font-medium'>接取指令：#接取+ID*数量</span>
                   </div>
                   <div className='flex items-center justify-center space-x-2'>
                     <span className='text-blue-700'>❌</span>
-                    <span className='text-blue-900 font-medium'>取消指令：#取消+编号</span>
+                    <span className='text-blue-900 font-medium'>取消指令：#取消+ID</span>
                   </div>
                 </div>
                 <div className='relative px-6 py-3 rounded-2xl bg-gradient-to-r from-white/35 via-blue-50/25 to-cyan-50/30 backdrop-blur-md border border-blue-200/30 space-y-2 drop-shadow'>
@@ -98,7 +98,7 @@ const Forum = ({ Forum: forumData }: { Forum?: ForumItem[] }) => {
                         <div className='flex items-center space-x-2'>
                           <span className='text-blue-700'>🆔</span>
                           <span className='text-blue-900 font-medium'>编号：</span>
-                          <span className='font-semibold text-blue-900'>No.{index + 1}</span>
+                          <span className='font-semibold text-blue-900'>{item.id || `No.${index + 1}`}</span>
                         </div>
                         <div className='flex items-center space-x-2'>
                           <span className='text-amber-700'>💰</span>

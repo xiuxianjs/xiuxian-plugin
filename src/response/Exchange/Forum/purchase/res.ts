@@ -17,7 +17,7 @@ import { withLock } from '@src/model/locks';
 import type { NajieCategory } from '@src/types/model';
 import type { ForumOrder } from '@src/types/forum';
 
-// 正则表达式匹配接取指令
+// 正则表达式匹配接取指令（支持ID格式：短ID或旧格式数字）
 export const regular = /^(#|＃|\/)?接取.*$/;
 
 // 常量定义
@@ -52,8 +52,9 @@ const ERROR_MESSAGES = {
 
 // 解析指令参数
 interface ParsedCommand {
-  orderIndex: number;
+  orderId: string; // 订单ID（支持旧格式数字索引和新格式ID）
   deliverQty: number;
+  isLegacyIndex: boolean; // 是否为旧格式索引
 }
 
 function parseCommand(messageText: string): ParsedCommand | null {
@@ -75,10 +76,19 @@ function parseCommand(messageText: string): ParsedCommand | null {
   const idxRaw = segments[0];
   const qtyRaw = segments[1];
 
-  const orderIndex = compulsoryToNumber(idxRaw, 1) - 1;
+  // 判断是否为旧格式数字索引（纯数字且长度<=3，即1-999）或新格式ID（4-6位数字）
+  // 旧格式：1, 2, 3 ... 999（数组索引）
+  // 新格式：1000-999999（唯一ID）
+  const numValue = parseInt(idxRaw, 10);
+  const isLegacyIndex = /^\d{1,3}$/.test(idxRaw) && numValue >= 1 && numValue <= 999;
+  const orderId = idxRaw;
 
-  if (orderIndex < 0) {
-    return null;
+  if (isLegacyIndex) {
+    const orderIndex = compulsoryToNumber(idxRaw, 1) - 1;
+
+    if (orderIndex < 0) {
+      return null;
+    }
   }
 
   // 解析数量
@@ -93,7 +103,7 @@ function parseCommand(messageText: string): ParsedCommand | null {
     }
   }
 
-  return { orderIndex, deliverQty };
+  return { orderId, deliverQty, isLegacyIndex };
 }
 
 // 验证订单有效性
@@ -166,7 +176,7 @@ function updateOrder(order: ForumOrder, deliverQty: number, gain: number): boole
 }
 
 // 核心业务逻辑（在锁保护下执行）
-const executePurchaseWithLock = async (e: any, userId: string, orderIndex: number, requestedQty: number) => {
+const executePurchaseWithLock = async (e: any, userId: string, orderId: string, requestedQty: number, isLegacyIndex: boolean) => {
   const Send = useSend(e);
 
   const player = await readPlayer(userId);
@@ -180,13 +190,29 @@ const executePurchaseWithLock = async (e: any, userId: string, orderIndex: numbe
   // 读取论坛数据
   const forum = await readForum();
 
-  if (orderIndex >= forum.length) {
+  // 查找订单
+  let orderIndex = -1;
+  let order: ForumOrder | undefined;
+
+  if (isLegacyIndex) {
+    // 旧格式：使用数字索引
+    orderIndex = compulsoryToNumber(orderId, 1) - 1;
+    if (orderIndex >= 0 && orderIndex < forum.length) {
+      order = forum[orderIndex];
+    }
+  } else {
+    // 新格式：使用ID查找
+    orderIndex = forum.findIndex(item => item.id === orderId);
+    if (orderIndex >= 0) {
+      order = forum[orderIndex];
+    }
+  }
+
+  if (!order || orderIndex < 0) {
     void Send(Text(ERROR_MESSAGES.ORDER_NOT_FOUND));
 
     return;
   }
-
-  const order = forum[orderIndex];
 
   // 验证订单
   const validationError = validateOrder(order, userId);
@@ -243,13 +269,13 @@ const executePurchaseWithLock = async (e: any, userId: string, orderIndex: numbe
 };
 
 // 使用锁执行购买操作
-const executePurchaseWithLockWrapper = async (e: any, userId: string, orderIndex: number, requestedQty: number) => {
-  const lockKey = keysLock.forum(String(orderIndex));
+const executePurchaseWithLockWrapper = async (e: any, userId: string, orderId: string, requestedQty: number, isLegacyIndex: boolean) => {
+  const lockKey = keysLock.forum(orderId);
 
   const result = await withLock(
     lockKey,
     async () => {
-      await executePurchaseWithLock(e, userId, orderIndex, requestedQty);
+      await executePurchaseWithLock(e, userId, orderId, requestedQty, isLegacyIndex);
     },
     FORUM_LOCK_CONFIG
   );
@@ -278,10 +304,10 @@ const res = onResponse(selects, async e => {
     return false;
   }
 
-  const { orderIndex, deliverQty: requestedQty } = parsed;
+  const { orderId, deliverQty: requestedQty, isLegacyIndex } = parsed;
 
   // 使用锁执行购买操作
-  void executePurchaseWithLockWrapper(e, userId, orderIndex, requestedQty);
+  void executePurchaseWithLockWrapper(e, userId, orderId, requestedQty, isLegacyIndex);
 
   return false;
 });

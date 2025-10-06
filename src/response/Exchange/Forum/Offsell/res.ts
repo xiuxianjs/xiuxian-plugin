@@ -4,7 +4,7 @@ import { withLock } from '@src/model/locks';
 import mw from '@src/response/mw-captcha';
 import { selects } from '@src/response/mw-captcha';
 
-export const regular = /^(#|＃|\/)?取消[1-9]\d*$/;
+export const regular = /^(#|＃|\/)?取消.+$/;
 
 // 锁配置
 const FORUM_CANCEL_LOCK_CONFIG = {
@@ -25,17 +25,26 @@ const ERROR_MESSAGES = {
   SUCCESS: (playerName: string, itemName: string, refundAmount: number) => `${playerName}取消${itemName}成功,返还${refundAmount}灵石`
 } as const;
 
-// 解析订单索引
-function parseOrderIndex(messageText: string): number | null {
-  const indexStr = messageText.replace(/^(#|＃|\/)?取消/, '').trim();
+// 解析订单ID
+interface ParsedCancelCommand {
+  orderId: string;
+  isLegacyIndex: boolean;
+}
 
-  if (!indexStr || !/^[1-9]\d*$/.test(indexStr)) {
+function parseOrderId(messageText: string): ParsedCancelCommand | null {
+  const idStr = messageText.replace(/^(#|＃|\/)?取消/, '').trim();
+
+  if (!idStr) {
     return null;
   }
 
-  const index = compulsoryToNumber(indexStr, 1) - 1;
+  // 判断是否为旧格式数字索引（纯数字且长度<=3，即1-999）或新格式ID（4-6位数字）
+  // 旧格式：1, 2, 3 ... 999（数组索引）
+  // 新格式：1000-999999（唯一ID）
+  const numValue = parseInt(idStr, 10);
+  const isLegacyIndex = /^\d{1,3}$/.test(idStr) && numValue >= 1 && numValue <= 999;
 
-  return index >= 0 ? index : null;
+  return { orderId: idStr, isLegacyIndex };
 }
 
 // 验证订单所有权
@@ -44,7 +53,7 @@ function validateOrderOwnership(order: any, userId: string): boolean {
 }
 
 // 核心取消逻辑（在锁保护下执行）
-const executeCancelWithLock = async (e: any, userId: string, orderIndex: number) => {
+const executeCancelWithLock = async (e: any, userId: string, orderId: string, isLegacyIndex: boolean) => {
   const Send = useSend(e);
 
   const player = await readPlayer(userId);
@@ -57,13 +66,29 @@ const executeCancelWithLock = async (e: any, userId: string, orderIndex: number)
 
   const forum = await readForum();
 
-  if (orderIndex >= forum.length) {
-    void Send(Text(ERROR_MESSAGES.ORDER_NOT_FOUND(orderIndex + 1)));
+  // 查找订单
+  let orderIndex = -1;
+  let order;
+
+  if (isLegacyIndex) {
+    // 旧格式：使用数字索引
+    orderIndex = compulsoryToNumber(orderId, 1) - 1;
+    if (orderIndex >= 0 && orderIndex < forum.length) {
+      order = forum[orderIndex];
+    }
+  } else {
+    // 新格式：使用ID查找
+    orderIndex = forum.findIndex(item => item.id === orderId);
+    if (orderIndex >= 0) {
+      order = forum[orderIndex];
+    }
+  }
+
+  if (!order || orderIndex < 0) {
+    void Send(Text(ERROR_MESSAGES.ORDER_NOT_FOUND(isLegacyIndex ? compulsoryToNumber(orderId, 0) : 0)));
 
     return;
   }
-
-  const order = forum[orderIndex];
 
   // 验证订单所有权
   if (!validateOrderOwnership(order, userId)) {
@@ -87,13 +112,13 @@ const executeCancelWithLock = async (e: any, userId: string, orderIndex: number)
 };
 
 // 使用锁执行取消操作
-const executeCancelWithLockWrapper = async (e: any, userId: string, orderIndex: number) => {
-  const lockKey = keysLock.forum(String(orderIndex));
+const executeCancelWithLockWrapper = async (e: any, userId: string, orderId: string, isLegacyIndex: boolean) => {
+  const lockKey = keysLock.forum(orderId);
 
   const result = await withLock(
     lockKey,
     async () => {
-      await executeCancelWithLock(e, userId, orderIndex);
+      await executeCancelWithLock(e, userId, orderId, isLegacyIndex);
     },
     FORUM_CANCEL_LOCK_CONFIG
   );
@@ -110,17 +135,19 @@ const res = onResponse(selects, e => {
   const Send = useSend(e);
   const userId = e.UserId;
 
-  // 解析订单索引
-  const orderIndex = parseOrderIndex(e.MessageText);
+  // 解析订单ID
+  const parsed = parseOrderId(e.MessageText);
 
-  if (orderIndex === null) {
+  if (!parsed) {
     void Send(Text(ERROR_MESSAGES.INVALID_INDEX));
 
     return false;
   }
 
+  const { orderId, isLegacyIndex } = parsed;
+
   // 使用锁执行取消操作
-  void executeCancelWithLockWrapper(e, userId, orderIndex);
+  void executeCancelWithLockWrapper(e, userId, orderId, isLegacyIndex);
 
   return false;
 });
