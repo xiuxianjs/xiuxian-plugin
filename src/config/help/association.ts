@@ -55,6 +55,21 @@ const sectHelpConfig: HelpGroup[] = [
         desc: '修为达到化神可以开宗立派'
       },
       {
+        icon: 'help-icon_58',
+        title: '#宗门开启/关闭审核',
+        desc: '开启/关闭宗门审核'
+      },
+      {
+        icon: 'help-icon_58',
+        title: '#宗门审核列表',
+        desc: '宗主、副宗主、长老可以查看宗门审核列表'
+      },
+      {
+        icon: 'help-icon_58',
+        title: '#宗门审核通过/拒绝+账号',
+        desc: '宗主、副宗主、长老可以审核通过/拒绝玩家加入宗门'
+      },
+      {
         icon: 'help-icon_9',
         title: '#宗门升级',
         desc: '提高灵石池上限和人数上限'
