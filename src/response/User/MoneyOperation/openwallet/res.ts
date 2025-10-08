@@ -22,7 +22,7 @@ const res = onResponse(selects, async e => {
   }
   const thingName = '水脚脚的钱包';
   // x是纳戒内有的数量
-  const acount = await existNajieThing(userId, thingName, '装备');
+  const acount = await existNajieThing(userId, thingName, '装备', 0);
 
   // 没有
   if (!acount) {
@@ -31,7 +31,7 @@ const res = onResponse(selects, async e => {
     return false;
   }
   // 扣掉装备
-  await addNajieThing(userId, thingName, '装备', -1);
+  await addNajieThing(userId, thingName, '装备', -1, 0);
   // 获得随机
   const x = 0.4;
   const random1 = Math.random();
