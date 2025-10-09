@@ -5,9 +5,9 @@
 
 import { redis } from './api';
 import { readPlayer, shijianc, writePlayer } from './index';
-import { keysAction, getRedisKey } from './keys';
+import { keysAction } from './keys';
 import { getDataByKey } from './DataControl';
-import { readTiandibang } from './tian';
+import { readTiandibang, writeTiandibang } from './tian';
 
 interface DayInfo {
   Y: number;
@@ -93,7 +93,7 @@ export interface DailyTasksStatus {
  */
 export async function checkSignStatus(userId: string): Promise<SignStatus> {
   const nowTime = Date.now();
-  const lastSignRaw = await redis.get(getRedisKey(userId, 'lastsign_time'));
+  const lastSignRaw = await redis.get(keysAction.lastSignTime(userId));
 
   let completed = false;
 
@@ -141,9 +141,40 @@ export async function checkBiwuStatus(userId: string): Promise<BiwuStatus> {
     };
   }
 
-  // 已报名，获取剩余次数
-  const playerData = tiandibang[playerIndex];
-  const remainingCount = typeof playerData.次数 === 'number' ? Math.max(0, playerData.次数) : 0;
+  // 已报名，需要检查并更新比试次数
+
+  // 检查是否需要重置比试次数（与比试指令中的逻辑保持一致）
+  const now = new Date();
+  const nowTime = now.getTime();
+  const Today = shijianc(nowTime);
+
+  // 获取上次比试时间
+  const timeStr = await redis.get(keysAction.lastBisaiTime(userId));
+  let needsReset = false;
+
+  if (timeStr === null) {
+    // 从未比试过，设置当前时间并重置次数
+    await redis.set(keysAction.lastBisaiTime(userId), nowTime);
+    needsReset = true;
+  } else {
+    // 检查是否跨天
+    const lastBisaiTime = shijianc(parseInt(timeStr, 10));
+
+    if (Today.Y !== lastBisaiTime.Y || Today.M !== lastBisaiTime.M || Today.D !== lastBisaiTime.D) {
+      // 跨天了，更新时间并重置次数
+      await redis.set(keysAction.lastBisaiTime(userId), nowTime);
+      needsReset = true;
+    }
+  }
+
+  // 如果需要重置，更新天地榜数据
+  if (needsReset) {
+    tiandibang[playerIndex].次数 = MAX_BIWU_PER_DAY;
+    await writeTiandibang(tiandibang);
+  }
+
+  // 获取当前剩余次数
+  const remainingCount = typeof tiandibang[playerIndex].次数 === 'number' ? Math.max(0, tiandibang[playerIndex].次数) : 0;
   const currentCount = MAX_BIWU_PER_DAY - remainingCount;
   const completed = remainingCount === 0;
 
@@ -286,11 +317,11 @@ export async function checkShenjieStatus(userId: string): Promise<ShenjieStatus>
   // 每日刷新神界次数：逻辑修正为任一日期字段变化即刷新
   const now = Date.now();
   const today = shijianc(now);
-  const lastTimeRaw = await redis.get(getRedisKey(userId, 'lastdagong_time'));
+  const lastTimeRaw = await redis.get(keysAction.lastDagongTime(userId));
   const lastDay = lastTimeRaw ? shijianc(Number(lastTimeRaw)) : null;
 
   if (isDayChanged(today, lastDay)) {
-    await redis.set(getRedisKey(userId, 'lastdagong_time'), String(now));
+    await redis.set(keysAction.lastDagongTime(userId), String(now));
 
     // 根据灵根计算新的次数
     const newCount = getMaxShenjieCountByLinggen(player);
