@@ -1,4 +1,4 @@
-name: 构建和发布
+name: 发布新版本
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: 结账代码
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # 获取完整 tag 历史
 
@@ -27,15 +27,36 @@ jobs:
           echo "错误: 该工作流只能在 main 分支上运行。"
           exit 1
 
-      - name: 设置Node.js
-        uses: actions/setup-node@v3
+      - name: 设置nodejs版本
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: 安装依赖项
+      - name: 缓存前端依赖
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/yarn.lock') }}
+
+      - name: 缓存游戏依赖
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-root-${{ hashFiles('yarn.lock') }}
+
+      - name: 检查yarn工具
+        run: |
+          if ! command -v yarn &> /dev/null; then
+             npm install -g yarn
+          fi
+
+      - name: 安装前端依赖
+        run: |
+          cd frontend && yarn install --ignore-engines
+
+      - name: 安装游戏依赖
         run: |
           yarn install --ignore-engines
-          yarn bundle-install --ignore-engines # bundle
 
       - name: 自动获取/自增版本号
         id: versioning
@@ -93,16 +114,20 @@ jobs:
           rm -rf node_modules
           rm -rf .gitignore
 
-          # 清理非 git 文件夹的其他内容
-          find . -mindepth 1 ! -path './.git*' -exec rm -rf {} + || {
-            echo "错误: 文件查找并删除出现意外"
-          }
+          # 清理非 git 文件夹的其他内容（保护 .git 目录）
+          find . -mindepth 1 ! -path './.git*' -exec rm -rf {} + || true
 
-          # 移动 dist 文件夹内容到根目录
+          # 移动 dist-release 文件夹内容到根目录
           mv ../dist-release/* ./ || {
             echo "错误: 无法将 'dist-release' 目录中的文件移动到根目录，目录可能为空。"
             exit 1
           }
+
+          # 检查 .git 是否还在
+          if [ ! -d .git ]; then
+            echo "错误：.git 目录已丢失，无法进行后续 git 操作"
+            exit 1
+          fi
 
           # 去除 package.json 中一些字段
           jq 'del(.devDependencies)' package.json > package.json.tmp && mv package.json.tmp package.json

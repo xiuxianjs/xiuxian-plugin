@@ -1,4 +1,4 @@
-name: 开发分支
+name: 创建开发分支
 
 on:
   workflow_dispatch:
@@ -12,11 +12,11 @@ permissions:
 
 jobs:
   create-dev-branch:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: 检出代码库
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: 检查分支
         if: github.ref != 'refs/heads/main'
