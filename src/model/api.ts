@@ -3,7 +3,7 @@ import { getIoRedis } from '@alemonjs/db';
 import { Image, sendToChannel, sendToUser, Text } from 'alemonjs';
 import type { MessageEnumsArray, MessageInput } from '../types/model';
 
-export { config };
+export { config, getAppConfig };
 
 export const redis = getIoRedis();
 

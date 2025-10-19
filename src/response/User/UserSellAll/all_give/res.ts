@@ -1,6 +1,6 @@
 import { Text, useMention, useSend } from 'alemonjs';
 
-import { existplayer, addNajieThing, keys } from '@src/model/index';
+import { existplayer, addNajieThing, keys, getAppConfig } from '@src/model/index';
 
 import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?一键赠送([\u4e00-\u9fa5]+)?$/;
@@ -11,9 +11,14 @@ const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const UserIdA = e.UserId;
 
-  void Send(Text('该功能优化中……'));
+  // 检查赠送功能开关
+  const values = getAppConfig();
 
-  return;
+  if (values?.close_give) {
+    void Send(Text('该功能优化中……'));
+
+    return;
+  }
   if (!(await existplayer(UserIdA))) {
     return false;
   }
