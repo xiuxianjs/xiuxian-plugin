@@ -36,9 +36,11 @@ git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git 
 
 ### Redis
 
-将以默认配置连接本地redis，如需调整，
+将以默认配置连接本地redis,
 
-请阅读@alemonjs/db配置连接,
+如需调整，请阅读@alemonjs/db配置连接,
+
+如需使用docker请参考[docker-compose.yml](./docker-compose.yml)
 
 https://www.npmjs.com/package/@alemonjs/db
 

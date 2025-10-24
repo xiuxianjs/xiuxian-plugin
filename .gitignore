@@ -20,3 +20,4 @@ mysql-connector-j-9.1.0
 *.memory-card.json
 .data
 .eslintcache
+/redis-data

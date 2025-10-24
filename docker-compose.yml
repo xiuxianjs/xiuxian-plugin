@@ -1,12 +1,17 @@
 services:
   redis:
     image: redis:7-alpine
-    container_name: redis-container
+    container_name: redis-persistent
+    command:
+      - redis-server
+      - --appendonly yes # 启用 AOF 持久化
+      - --appendfsync everysec # 每秒同步一次
     ports:
       - '6379:6379'
-    ## 持久化配置
     volumes:
-      - redis-data:/data
+      - ./redis-data:/data
+    restart: unless-stopped
 
 volumes:
-  redis-data:
+  redis_data:
+    driver: local
