@@ -36,9 +36,11 @@ git clone --depth=1 -b release  https://github.com/xiuxianjs/xiuxian-plugin.git 
 
 ### Redis
 
-将以默认配置连接本地redis，如需调整，
+将以默认配置连接本地redis,
 
-请阅读@alemonjs/db配置连接,
+如需调整，请阅读@alemonjs/db配置连接,
+
+如需使用docker请参考[docker-compose.yml](./docker-compose.yml)
 
 https://www.npmjs.com/package/@alemonjs/db
 
@@ -82,8 +84,8 @@ alemonjs-xiuxian:
   # 当配置关闭时。推送的消息。
   # 玩家都可以使用 #我的消息 查看
   # 玩家可发送 #清理消息 来减少消息记录
-  # 关闭赠送功能（包括普通赠送和一键赠送）
-  close_give: true
+  # 开启赠送功能（包括普通赠送和一键赠送）
+  open_give: false
 ```
 
 ## 其他版本
