@@ -17,7 +17,7 @@ const res = onResponse(selects, async e => {
   // 检查赠送功能开关
   const values = getAppConfig();
 
-  if (values?.close_give) {
+  if (!values?.open_give) {
     void Send(Text('该功能优化中……'));
 
     return false;
