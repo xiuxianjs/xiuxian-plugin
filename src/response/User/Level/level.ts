@@ -58,11 +58,11 @@ export async function useLevelUp(e, luck = false) {
 
   // 真仙突破
   if (
-    now_level_id >= 51 &&
-    player.灵根.name !== '天五灵根' &&
-    player.灵根.name !== '垃圾五灵根' &&
-    player.灵根.name !== '九转轮回体' &&
-    player.灵根.name !== '九重魔功'
+    now_level_id >= 51
+    && player.灵根.name !== '天五灵根'
+    && player.灵根.name !== '垃圾五灵根'
+    && player.灵根.name !== '九转轮回体'
+    && player.灵根.name !== '九重魔功'
   ) {
     void Send(Text('你灵根不齐，无成帝的资格！请先夺天地之造化，修补灵根后再来突破吧'));
 
@@ -191,11 +191,14 @@ export async function useLevelUp(e, luck = false) {
 export async function userLevelMaxUp(e, luck) {
   const userId = e.UserId;
   const Send = useSend(e);
-  const ifexistplay = await existplayer(userId);
+  const player = await readPlayer(userId);
 
-  if (!ifexistplay) {
-    return false;
+  if (!player) {
+    void Send(Text('存在不存在'));
+
+    return;
   }
+
   const game_action = await getString(userKey(userId, 'game_action'));
 
   if (game_action === '1') {
@@ -203,7 +206,6 @@ export async function userLevelMaxUp(e, luck) {
 
     return false;
   }
-  const player = await readPlayer(userId);
 
   if (!notUndAndNull(player.Physique_id)) {
     void Send(Text('请先#刷新信息'));
@@ -211,9 +213,13 @@ export async function userLevelMaxUp(e, luck) {
     return false;
   }
   const levelMaxList = await getDataList('Level2');
-  const now_level_id = levelMaxList.find(item => item.level_id === player.Physique_id).level_id;
+
+  if (!levelMaxList) {
+    return;
+  }
+  const now_level_id = levelMaxList.find(item => item.level_id === player.Physique_id)?.level_id;
   const now_exp = player.血气;
-  const needEXP = levelMaxList.find(item => item.level_id === player.Physique_id).exp;
+  const needEXP = levelMaxList.find(item => item.level_id === player.Physique_id)?.exp;
 
   if (now_exp < needEXP) {
     void Send(Text(`血气不足,再积累${needEXP - now_exp}血气后方可突破`));
