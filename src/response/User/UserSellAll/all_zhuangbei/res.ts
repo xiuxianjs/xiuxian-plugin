@@ -119,7 +119,7 @@ const res = onResponse(selects, async e => {
     let best: EquipItem | null = null;
 
     for (const item of bagList) {
-      if (!item || item.type !== slot) {
+      if (item?.type !== slot) {
         continue;
       }
       const thing = await foundthing(item.name);

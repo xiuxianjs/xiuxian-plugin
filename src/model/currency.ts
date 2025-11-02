@@ -439,8 +439,8 @@ export const completeRechargePayment = async (recordId: string, transactionId: s
 
       case RechargeType.SMALL_MONTH_CARD:
         userInfo.currency += record.currency_gained;
-        userInfo.small_month_card_expire_time =
-          Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time) + MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
+        userInfo.small_month_card_expire_time
+          = Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time) + MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
         break;
 
       case RechargeType.BIG_MONTH_CARD: {
@@ -470,16 +470,16 @@ export const completeRechargePayment = async (recordId: string, transactionId: s
             await addNajieThing(userId, gift.name, gift.type, gift.account);
           }
         } else if (record.month_card_type === 'small') {
-          userInfo.small_month_card_expire_time =
-            Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time) +
-            MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
+          userInfo.small_month_card_expire_time
+            = Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time)
+            + MONTH_CARD_CONFIG.SMALL.days * 24 * 60 * 60 * 1000;
         }
         break;
     }
     // 首充额外奖励
     if (record.is_first_recharge) {
-      userInfo.small_month_card_expire_time =
-        Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time) + 7 * 24 * 60 * 60 * 1000;
+      userInfo.small_month_card_expire_time
+        = Math.max(Date.now(), userInfo.small_month_card_expire_time, userInfo.big_month_card_expire_time) + 7 * 24 * 60 * 60 * 1000;
     }
 
     await redis.set(REDIS_KEYS.PLAYER_CURRENCY(userId), JSON.stringify(userInfo));
@@ -911,10 +911,10 @@ export const getAllUsersCurrencyInfo = async (limit = 100, offset = 0): Promise<
       // 只返回有充值记录的用户
 
       if (
-        userInfo.total_recharge_count > 0 ||
-        userInfo.currency > 0 ||
-        userInfo.small_month_card_expire_time > Date.now() ||
-        userInfo.big_month_card_expire_time > Date.now()
+        userInfo.total_recharge_count > 0
+        || userInfo.currency > 0
+        || userInfo.small_month_card_expire_time > Date.now()
+        || userInfo.big_month_card_expire_time > Date.now()
       ) {
         users.push(userInfo);
       }

@@ -65,20 +65,20 @@ const res = onResponse(selects, async e => {
 
   //
   const msg = [
-    '名次：' +
-      (index + 1) +
-      '\n名号：' +
-      refreshed.名号 +
-      '\n攻击：' +
-      refreshed.攻击 +
-      '\n防御：' +
-      refreshed.防御 +
-      '\n血量：' +
-      refreshed.当前血量 +
-      '\n暴击：' +
-      refreshed.暴击率 +
-      '%\n积分：' +
-      refreshed.积分
+    '名次：'
+      + (index + 1)
+      + '\n名号：'
+      + refreshed.名号
+      + '\n攻击：'
+      + refreshed.攻击
+      + '\n防御：'
+      + refreshed.防御
+      + '\n血量：'
+      + refreshed.当前血量
+      + '\n暴击：'
+      + refreshed.暴击率
+      + '%\n积分：'
+      + refreshed.积分
   ];
 
   void Send(Text(msg.join('')));

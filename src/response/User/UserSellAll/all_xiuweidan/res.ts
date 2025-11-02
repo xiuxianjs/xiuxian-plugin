@@ -38,7 +38,7 @@ const res = onResponse(selects, async e => {
   let totalExp = 0;
 
   for (const pill of pills) {
-    if (!pill || pill.type !== '修为') {
+    if (pill?.type !== '修为') {
       continue;
     }
     const category = normalizeCategory(pill.class);

@@ -23,8 +23,7 @@ const Sudoku = ({ sudokuData }) => {
                 ))}
               </div>
               <div className='grid grid-cols-9 grid-rows-9 gap-1'>
-                {sudokuData?.map((row, rowIndex) =>
-                  row.map((cell, colIndex) => (
+                {sudokuData?.map((row, rowIndex) => row.map((cell, colIndex) => (
                     <div
                       key={`${rowIndex}-${colIndex}`}
                       className='w-12 h-12 flex items-center justify-center border border-gray-300 text-xl font-semibold bg-gray-50'

@@ -184,17 +184,17 @@ export async function zdBattle(AplayerA: Player | BattleEntity, BplayerB: Player
 
     for (let i = 0; i < jineng1.length; i++) {
       if (
-        (jineng1[i].class === '常驻' && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1) && Random < jineng1[i].pr) ||
-        (playerA.学习的功法 &&
-          jineng1[i].class === '功法' &&
-          playerA.学习的功法.indexOf(jineng1[i].name) > -1 &&
-          (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1) &&
-          Random < jineng1[i].pr) ||
-        (playerA.灵根 &&
-          jineng1[i].class === '灵根' &&
-          playerA.灵根.name === jineng1[i].name &&
-          (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1) &&
-          Random < jineng1[i].pr)
+        (jineng1[i].class === '常驻' && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1) && Random < jineng1[i].pr)
+        || (playerA.学习的功法
+          && jineng1[i].class === '功法'
+          && playerA.学习的功法.indexOf(jineng1[i].name) > -1
+          && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
+          && Random < jineng1[i].pr)
+        || (playerA.灵根
+          && jineng1[i].class === '灵根'
+          && playerA.灵根.name === jineng1[i].name
+          && (cnt2 === jineng1[i].cnt || jineng1[i].cnt === -1)
+          && Random < jineng1[i].pr)
       ) {
         msg.push(jineng1[i].msg2 === '' ? playerA.名号 + jineng1[i].msg1 : playerA.名号 + jineng1[i].msg1 + playerB.名号 + jineng1[i].msg2);
         伤害 = 伤害 * jineng1[i].beilv + jineng1[i].other;
@@ -206,16 +206,16 @@ export async function zdBattle(AplayerA: Player | BattleEntity, BplayerB: Player
     }
     for (let i = 0; i < jineng2.length; i++) {
       if (
-        (playerB.学习的功法 &&
-          jineng2[i].class === '功法' &&
-          playerB.学习的功法.indexOf(jineng2[i].name) > -1 &&
-          (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1) &&
-          random < jineng2[i].pr) ||
-        (playerB.灵根 &&
-          jineng2[i].class === '灵根' &&
-          playerB.灵根.name === jineng2[i].name &&
-          (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1) &&
-          random < jineng2[i].pr)
+        (playerB.学习的功法
+          && jineng2[i].class === '功法'
+          && playerB.学习的功法.indexOf(jineng2[i].name) > -1
+          && (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1)
+          && random < jineng2[i].pr)
+        || (playerB.灵根
+          && jineng2[i].class === '灵根'
+          && playerB.灵根.name === jineng2[i].name
+          && (cnt2 === jineng2[i].cnt || jineng2[i].cnt === -1)
+          && random < jineng2[i].pr)
       ) {
         msg.push(jineng2[i].msg2 === '' ? playerB.名号 + jineng2[i].msg1 : playerB.名号 + jineng2[i].msg1 + playerA.名号 + jineng2[i].msg2);
         伤害 = 伤害 * jineng2[i].beilv + jineng2[i].other;

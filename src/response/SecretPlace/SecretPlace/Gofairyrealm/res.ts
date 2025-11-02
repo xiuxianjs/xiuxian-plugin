@@ -56,10 +56,10 @@ const res = onResponse(selects, async e => {
   let dazhe = 1;
 
   if (
-    (await existNajieThing(userId, '杀神崖通行证', '道具')) &&
-    player.魔道值 < 1 &&
-    (player.灵根.type === '转生' || player.level_id > 41) &&
-    didian === '杀神崖'
+    (await existNajieThing(userId, '杀神崖通行证', '道具'))
+    && player.魔道值 < 1
+    && (player.灵根.type === '转生' || player.level_id > 41)
+    && didian === '杀神崖'
   ) {
     dazhe = 0;
     void Send(Text(player.名号 + '使用了道具杀神崖通行证,本次仙境免费'));
