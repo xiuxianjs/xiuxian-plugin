@@ -2,15 +2,11 @@
 
 必要环境 `nodejs` 、`redis` 、`chrome`
 
-该扩展推荐使用 `@alemonjs/onebot` 进行连接，其他平台不保证稳定性。
+该扩展推荐使用 [`@alemonjs/onebot`🔗](https://www.npmjs.com/package/@alemonjs/onebot) 进行连接，其他平台不保证稳定性。
 
-该扩展推荐使用 [`alemongo`](https://github.com/lemonade-lab/alemongo/releases) 作为生产环境。
+该扩展推荐使用 [`alemongo`🔗](https://github.com/lemonade-lab/alemongo/releases) 作为生产环境。
 
-如果你是一名非技术人员，可使用 [`alemondesk`](https://github.com/lemonade-lab/alemondesk/releases) 桌面版。
-
-https://github.com/lemonade-lab/alemongo/releases
-
-https://github.com/lemonade-lab/alemondesk/releases
+如果你是一名非技术人员，可使用 [`alemondesk`🔗](https://github.com/lemonade-lab/alemondesk/releases) 桌面版。
 
 ## 安装
 
@@ -36,11 +32,9 @@ release
 
 将以默认配置连接本地redis,
 
-如需调整，请阅读 [`@alemonjs/db`](https://www.npmjs.com/package/@alemonjs/db) 配置连接,
+如需调整，请阅读 [`@alemonjs/db`🔗](https://www.npmjs.com/package/@alemonjs/db) 配置连接,
 
-如需使用docker请参考[docker-compose.yml](./docker-compose.yml)
-
-https://www.npmjs.com/package/@alemonjs/db
+如需使用docker请参考[docker-compose.yml🔗](./docker-compose.yml)
 
 > 机器人全部使用redis存储，请务必启动redis持久化存储
 
@@ -54,7 +48,7 @@ https://www.npmjs.com/package/@alemonjs/db
 
 ### 修仙管理
 
-http://127.0.0.1:18110/apps/alemonjs-xiuxian/
+[http://localhost:18110/apps/alemonjs-xiuxian/ 🔗](http://localhost:18110/apps/alemonjs-xiuxian/) 
 
 默认账号密码 lemonade、123456
 
@@ -103,9 +97,9 @@ alemonjs-xiuxian:
 
 | Project         | Status | Description            |
 | --------------- | ------ | ---------------------- |
-| 👉[yunzaijs/1.2] |        | yunzaijs 版 修仙v1.2   |
-| 👉[version/1.2]  |        | yunzai-bot 版 修仙v1.2 |
-| 👉[version/1.3]  |        | yunzai-bot 版 修仙v1.3 |
+| [yunzaijs/1.2🔗] |        | yunzaijs 版 修仙v1.2   |
+| [version/1.2🔗]  |        | yunzai-bot 版 修仙v1.2 |
+| [version/1.3🔗]  |        | yunzai-bot 版 修仙v1.3 |
 
 [yunzaijs/1.2]: https://github.com/xiuxianjs/xiuxian-plugin/tree/yunzaijs/1.2
 [version/1.2]: https://github.com/xiuxianjs/xiuxian-plugin/tree/version/1.2
