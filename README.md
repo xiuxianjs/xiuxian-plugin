@@ -10,7 +10,7 @@
 
 https://github.com/lemonade-lab/alemongo/releases
 
-https://github.com/lemonade-lab/alemondeskreleases
+https://github.com/lemonade-lab/alemondesk/releases
 
 ## 安装
 
