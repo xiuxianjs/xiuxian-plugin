@@ -4,13 +4,13 @@
 
 该扩展推荐使用 `@alemonjs/onebot` 进行连接，其他平台不保证稳定性。
 
-该扩展推荐使用 [`alemongo`](https://github.com/lemonade-lab/alemongo) 作为生产环境。
+该扩展推荐使用 [`alemongo`](https://github.com/lemonade-lab/alemongo/releases) 作为生产环境。
 
-如果你是一名非技术人员，可使用 [`alemondesk`](https://github.com/lemonade-lab/alemondesk) 桌面版。
+如果你是一名非技术人员，可使用 [`alemondesk`](https://github.com/lemonade-lab/alemondesk/releases) 桌面版。
 
-https://github.com/lemonade-lab/alemongo
+https://github.com/lemonade-lab/alemongo/releases
 
-https://github.com/lemonade-lab/alemondesk
+https://github.com/lemonade-lab/alemondeskreleases
 
 ## 安装
 
@@ -36,7 +36,7 @@ release
 
 将以默认配置连接本地redis,
 
-如需调整，请阅读@alemonjs/db配置连接,
+如需调整，请阅读 [`@alemonjs/db`](https://www.npmjs.com/package/@alemonjs/db) 配置连接,
 
 如需使用docker请参考[docker-compose.yml](./docker-compose.yml)
 
@@ -54,13 +54,18 @@ https://www.npmjs.com/package/@alemonjs/db
 
 ### 修仙管理
 
-http://127.0.0.1:17117/apps/alemonjs-xiuxian/
+http://127.0.0.1:18110/apps/alemonjs-xiuxian/
 
 默认账号密码 lemonade、123456
+
+> 需配置 serverPort: 18110
 
 ### 核心配置
 
 ```yaml
+# 若需要访问管理面板
+serverPort: 18110 
+# 应用配置
 alemonjs-xiuxian:
   # 关闭验证码
   close_captcha: true
