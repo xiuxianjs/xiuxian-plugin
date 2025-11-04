@@ -54,12 +54,6 @@ export default function Login() {
                 </Button>
               </Form.Item>
             </Form>
-
-            <Divider>系统信息</Divider>
-            <Descriptions column={1} size='small' colon={false}>
-              <Descriptions.Item label='系统版本'>v1.3.0</Descriptions.Item>
-              <Descriptions.Item label='技术支持'>lemonade-lab</Descriptions.Item>
-            </Descriptions>
           </div>
         </Card>
 

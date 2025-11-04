@@ -11,3 +11,55 @@ body,
 *::-webkit-scrollbar {
   @apply w-0 h-0;
 }
+
+/* 响应式表格样式 */
+.responsive-table .ant-table-thead > tr > th,
+.responsive-table .ant-table-tbody > tr > td {
+  @apply px-2 sm:px-4 py-2 sm:py-3;
+}
+
+.responsive-table .ant-table-thead > tr > th {
+  @apply text-xs sm:text-sm font-medium;
+}
+
+.responsive-table .ant-table-tbody > tr > td {
+  @apply text-xs sm:text-sm;
+}
+
+/* 移动端表格优化 */
+@media (max-width: 640px) {
+  .responsive-table .ant-table-thead > tr > th,
+  .responsive-table .ant-table-tbody > tr > td {
+    @apply px-1 py-1;
+  }
+
+  .responsive-table .ant-table-thead > tr > th {
+    @apply text-xs;
+  }
+
+  .responsive-table .ant-table-tbody > tr > td {
+    @apply text-xs;
+  }
+}
+
+/* 卡片响应式优化 */
+.ant-card {
+  @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+.ant-card-head {
+  @apply border-b border-gray-200;
+}
+
+.ant-card-head-title {
+  @apply text-sm sm:text-base font-medium;
+}
+
+/* 统计卡片响应式 */
+.ant-statistic-title {
+  @apply text-xs sm:text-sm text-gray-600;
+}
+
+.ant-statistic-content {
+  @apply text-lg sm:text-xl lg:text-2xl;
+}

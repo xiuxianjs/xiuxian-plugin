@@ -32,26 +32,6 @@ export default function Profile() {
               </Card>
             </Col>
           </Row>
-
-          <Card title='系统信息'>
-            <Row gutter={[16, 16]}>
-              <Col xs={24} md={8}>
-                <Descriptions column={1} size='small'>
-                  <Descriptions.Item label='系统版本'>v1.3.0</Descriptions.Item>
-                </Descriptions>
-              </Col>
-              <Col xs={24} md={8}>
-                <Descriptions column={1} size='small'>
-                  <Descriptions.Item label='Node.js版本'>v18.17.0</Descriptions.Item>
-                </Descriptions>
-              </Col>
-              <Col xs={24} md={8}>
-                <Descriptions column={1} size='small'>
-                  <Descriptions.Item label='数据库版本'>MySQL 8.0</Descriptions.Item>
-                </Descriptions>
-              </Col>
-            </Row>
-          </Card>
         </div>
       )
     },

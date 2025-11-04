@@ -233,7 +233,7 @@ export const useDataQueryCode = () => {
           return <span className='text-green-400'>{value.toLocaleString()}</span>;
         }
 
-        return <span className='text-slate-300'>{String(value)}</span>;
+        return <span className=''>{String(value)}</span>;
       }
     }));
   }, [dataList]);
