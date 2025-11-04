@@ -1,31 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Input, Select, Tag, Space, Popconfirm, message, Row, Col } from 'antd';
-import {
-  UserOutlined,
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  KeyOutlined,
-  StopOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined
-} from '@ant-design/icons';
+import { Button, Modal, Form, Input, Select, Tag, Space, Popconfirm, message, Row, Col, Card, Typography, Table, Statistic, Avatar } from 'antd';
+import { UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined, KeyOutlined, StopOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { AdminUser, UserFormData, UserRole, ROLE_INFO } from '@/types/permissions';
 import { getUsersAPI, createUserAPI, updateUserAPI, deleteUserAPI, resetUserPasswordAPI, updateUserStatusAPI, batchUserOperationAPI } from '@/api/auth/users';
 import { PermissionGuard } from '@/components/PermissionGuard';
 import { Permission } from '@/types/permissions';
 
-// 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianTableContainer,
-  XiuxianRefreshButton,
-  XiuxianSearchBar,
-  XiuxianTableWithPagination,
-  XiuxianStatCard
-} from '@/components/ui';
+// 已移除自定义 UI 组件，统一使用 antd
 
 const { Option } = Select;
 
@@ -53,8 +35,8 @@ export default function UserManagement() {
         page,
         pageSize,
         search: searchText,
-        role: selectedRole || undefined,
-        status: (selectedStatus as any) || undefined
+        role: selectedRole === '' ? undefined : selectedRole,
+        status: selectedStatus === '' ? undefined : (selectedStatus as any)
       });
 
       if (result.success && result.data) {
@@ -65,7 +47,7 @@ export default function UserManagement() {
           total: result.data.total
         });
       } else {
-        message.error(result.message || '获取用户列表失败');
+  message.error(result.message ?? '获取用户列表失败');
       }
     } catch (error) {
       console.error('获取用户列表失败:', error);
@@ -93,7 +75,7 @@ export default function UserManagement() {
         setEditingUser(null);
         void fetchUsers(pagination.current, pagination.pageSize);
       } else {
-        message.error(result.message || '操作失败');
+  message.error(result.message ?? '操作失败');
       }
     } catch (error) {
       console.error('保存用户失败:', error);
@@ -108,9 +90,9 @@ export default function UserManagement() {
 
       if (result.success) {
         message.success('用户删除成功');
-        fetchUsers(pagination.current, pagination.pageSize);
+        void fetchUsers(pagination.current, pagination.pageSize);
       } else {
-        message.error(result.message || '删除失败');
+  message.error(result.message ?? '删除失败');
       }
     } catch (error) {
       console.error('删除用户失败:', error);
@@ -126,7 +108,7 @@ export default function UserManagement() {
       if (result.success && result.data) {
         message.success(`密码重置成功，新密码：${result.data.newPassword}`);
       } else {
-        message.error(result.message || '密码重置失败');
+  message.error(result.message ?? '密码重置失败');
       }
     } catch (error) {
       console.error('重置密码失败:', error);
@@ -143,7 +125,7 @@ export default function UserManagement() {
         message.success('状态更新成功');
         void fetchUsers(pagination.current, pagination.pageSize);
       } else {
-        message.error(result.message || '状态更新失败');
+  message.error(result.message ?? '状态更新失败');
       }
     } catch (error) {
       console.error('更新状态失败:', error);
@@ -170,7 +152,7 @@ export default function UserManagement() {
         setSelectedRowKeys([]);
         void fetchUsers(pagination.current, pagination.pageSize);
       } else {
-        message.error(result.message || '批量操作失败');
+  message.error(result.message ?? '批量操作失败');
       }
     } catch (error) {
       console.error('批量操作失败:', error);
@@ -207,7 +189,7 @@ export default function UserManagement() {
       inactive: { color: 'orange', text: '未激活' },
       suspended: { color: 'red', text: '已暂停' }
     };
-    const config = statusMap[status as keyof typeof statusMap] || { color: 'default', text: status };
+  const config = statusMap[status as keyof typeof statusMap] ?? { color: 'default', text: status };
 
     return <Tag color={config.color}>{config.text}</Tag>;
   };
@@ -219,15 +201,13 @@ export default function UserManagement() {
       key: 'userInfo',
       width: 200,
       render: (_, record) => (
-        <div className='flex items-center gap-3'>
-          <div className='w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold'>
-            {record.username.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <div className='font-medium text-white'>{record.username}</div>
-            <div className='text-sm text-slate-400'>{record.realName || '未设置'}</div>
-          </div>
-        </div>
+        <Space align='center'>
+          <Avatar>{record.username?.charAt(0).toUpperCase()}</Avatar>
+          <Space direction='vertical' size={0}>
+            <Typography.Text strong>{record.username}</Typography.Text>
+            <Typography.Text type='secondary'>{record.realName ?? '未设置'}</Typography.Text>
+          </Space>
+        </Space>
       )
     },
     {
@@ -257,7 +237,7 @@ export default function UserManagement() {
       dataIndex: 'department',
       key: 'department',
       width: 120,
-      render: (department: string) => department || '未设置'
+  render: (department: string) => department ?? '未设置'
     },
     {
       title: '创建时间',
@@ -280,18 +260,19 @@ export default function UserManagement() {
       render: (_, record) => (
         <Space>
           <PermissionGuard permission={Permission.USER_UPDATE}>
-            <Button type='text' size='small' icon={<EditOutlined />} onClick={() => handleEditUser(record)} className='text-blue-400 hover:text-blue-300'>
+            <Button type='link' size='small' icon={<EditOutlined />} onClick={() => handleEditUser(record)}>
               编辑
             </Button>
           </PermissionGuard>
 
           <PermissionGuard permission={Permission.USER_UPDATE}>
             <Button
-              type='text'
+              type='link'
               size='small'
               icon={<KeyOutlined />}
-              onClick={() => handleResetPassword(record.id)}
-              className='text-orange-400 hover:text-orange-300'
+              onClick={() => {
+                void handleResetPassword(record.id);
+              }}
             >
               重置密码
             </Button>
@@ -299,19 +280,27 @@ export default function UserManagement() {
 
           <PermissionGuard permission={Permission.USER_UPDATE}>
             <Button
-              type='text'
+              type='link'
               size='small'
               icon={record.status === 'active' ? <StopOutlined /> : <CheckCircleOutlined />}
-              onClick={() => handleUpdateStatus(record.id, record.status === 'active' ? 'suspended' : 'active')}
-              className={record.status === 'active' ? 'text-red-400 hover:text-red-300' : 'text-green-400 hover:text-green-300'}
+              onClick={() => {
+                void handleUpdateStatus(record.id, record.status === 'active' ? 'suspended' : 'active');
+              }}
             >
               {record.status === 'active' ? '暂停' : '激活'}
             </Button>
           </PermissionGuard>
 
           <PermissionGuard permission={Permission.USER_DELETE}>
-            <Popconfirm title='确定要删除这个用户吗？' onConfirm={() => handleDeleteUser(record.id)} okText='确定' cancelText='取消'>
-              <Button type='text' size='small' icon={<DeleteOutlined />} className='text-red-400 hover:text-red-300'>
+            <Popconfirm
+              title='确定要删除这个用户吗？'
+              onConfirm={() => {
+                void handleDeleteUser(record.id);
+              }}
+              okText='确定'
+              cancelText='取消'
+            >
+              <Button type='link' size='small' icon={<DeleteOutlined />}>
                 删除
               </Button>
             </Popconfirm>
@@ -332,17 +321,17 @@ export default function UserManagement() {
   // 搜索和过滤
   const handleSearch = () => {
     setPagination(prev => ({ ...prev, current: 1 }));
-    fetchUsers(1, pagination.pageSize);
+    void fetchUsers(1, pagination.pageSize);
   };
 
   // 分页处理
   const handleTableChange = (page: number, pageSize: number) => {
     setPagination(prev => ({ ...prev, current: page, pageSize }));
-    fetchUsers(page, pageSize);
+    void fetchUsers(page, pageSize);
   };
 
   useEffect(() => {
-    fetchUsers();
+    void fetchUsers();
   }, []);
 
   // 统计信息
@@ -354,70 +343,119 @@ export default function UserManagement() {
   };
 
   return (
-    <XiuxianPageWrapper>
-      {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon={<UserOutlined />}
-        title='账户管理'
-        subtitle='管理系统用户账户和权限'
-        actions={
-          <div className='flex gap-2'>
+    <Space direction='vertical' size='large' className='bg-slate-200 p-4' style={{ width: '100%' }}>
+      <Card
+        title={
+          <Space align='center'>
+            <UserOutlined />
+            <Typography.Text strong>账户管理</Typography.Text>
+          </Space>
+        }
+        extra={
+          <Space>
             <PermissionGuard permission={Permission.USER_CREATE}>
-              <Button
-                type='primary'
-                icon={<PlusOutlined />}
-                onClick={handleCreateUser}
-                className='bg-gradient-to-r from-green-500 to-emerald-500 border-0 hover:from-green-600 hover:to-emerald-600'
-              >
+              <Button type='primary' icon={<PlusOutlined />} onClick={handleCreateUser}>
                 创建用户
               </Button>
             </PermissionGuard>
-
             <PermissionGuard permission={Permission.USER_UPDATE}>
-              <Button danger icon={<CheckCircleOutlined />} disabled={selectedRowKeys.length === 0} onClick={() => handleBatchOperation('activate')}>
+              <Button
+                icon={<CheckCircleOutlined />}
+                disabled={selectedRowKeys.length === 0}
+                onClick={() => {
+                  void handleBatchOperation('activate');
+                }}
+              >
                 批量激活 ({selectedRowKeys.length})
               </Button>
             </PermissionGuard>
-
             <PermissionGuard permission={Permission.USER_UPDATE}>
-              <Button danger icon={<StopOutlined />} disabled={selectedRowKeys.length === 0} onClick={() => handleBatchOperation('suspend')}>
+              <Button
+                icon={<StopOutlined />}
+                disabled={selectedRowKeys.length === 0}
+                onClick={() => {
+                  void handleBatchOperation('suspend');
+                }}
+              >
                 批量暂停 ({selectedRowKeys.length})
               </Button>
             </PermissionGuard>
-
-            <XiuxianRefreshButton loading={loading} onClick={() => fetchUsers(pagination.current, pagination.pageSize)} />
-          </div>
+            <Button
+              type='primary'
+              loading={loading}
+              onClick={() => {
+                void fetchUsers(pagination.current, pagination.pageSize);
+              }}
+            >
+              刷新
+            </Button>
+          </Space>
         }
+      >
+        <Typography.Text type='secondary'>管理系统用户账户和权限</Typography.Text>
+      </Card>
+
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='总用户' value={stats.total} />
+          </Card>
+        </Col>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='正常' value={stats.active} />
+          </Card>
+        </Col>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='未激活' value={stats.inactive} />
+          </Card>
+        </Col>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='已暂停' value={stats.suspended} />
+          </Card>
+        </Col>
+      </Row>
+
+      <Input.Search
+        placeholder='搜索用户名或真实姓名...'
+        value={searchText}
+        onChange={e => setSearchText(e.target.value)}
+        onSearch={() => {
+          void handleSearch();
+        }}
+        onPressEnter={() => {
+          void handleSearch();
+        }}
+        allowClear
       />
 
-      {/* 搜索和过滤 */}
+      <Space align='center'>
+        <Select placeholder='选择角色' value={selectedRole} onChange={setSelectedRole} style={{ width: 200 }} allowClear>
+          {Object.values(ROLE_INFO).map(role => (
+            <Option key={role.role} value={role.role}>
+              {role.icon} {role.name}
+            </Option>
+          ))}
+        </Select>
+        <Select placeholder='选择状态' value={selectedStatus} onChange={setSelectedStatus} style={{ width: 160 }} allowClear>
+          <Option value='active'>正常</Option>
+          <Option value='inactive'>未激活</Option>
+          <Option value='suspended'>已暂停</Option>
+        </Select>
+        <Button
+          type='primary'
+          onClick={() => {
+            void handleSearch();
+          }}
+        >
+          搜索
+        </Button>
+      </Space>
 
-      <div className='flex flex-col gap-2'>
-        <XiuxianSearchBar placeholder='搜索用户名或真实姓名...' value={searchText} onChange={setSearchText} onSearch={handleSearch} className='mb-0' />
-        <div className='flex flex-col gap-2 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg mb-6'>
-          <div className='flex gap-4 justify-end'>
-            <Select placeholder='选择角色' value={selectedRole} onChange={setSelectedRole} className='w-40' allowClear>
-              {Object.values(ROLE_INFO).map(role => (
-                <Option key={role.role} value={role.role}>
-                  {role.icon} {role.name}
-                </Option>
-              ))}
-            </Select>
-            <Select placeholder='选择状态' value={selectedStatus} onChange={setSelectedStatus} className='w-32' allowClear>
-              <Option value='active'>正常</Option>
-              <Option value='inactive'>未激活</Option>
-              <Option value='suspended'>已暂停</Option>
-            </Select>
-            <Button type='primary' onClick={handleSearch}>
-              搜索
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* 用户表格 */}
-      <XiuxianTableContainer title='用户列表' icon={<UserOutlined />}>
-        <XiuxianTableWithPagination
+      <Card title='用户列表'>
+        <Table
           columns={columns}
           dataSource={users}
           rowKey='id'
@@ -431,18 +469,20 @@ export default function UserManagement() {
             showQuickJumper: true,
             showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
           }}
-          onPaginationChange={handleTableChange}
-          rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
+          onChange={p => {
+            void handleTableChange(p.current!, p.pageSize!);
+          }}
+          scroll={{ x: 1000 }}
         />
-      </XiuxianTableContainer>
+      </Card>
 
       {/* 创建/编辑用户模态框 */}
       <Modal
         title={
-          <div className='flex items-center gap-2'>
-            <UserOutlined className='text-purple-400' />
-            <span className='text-white'>{editingUser ? '编辑用户' : '创建用户'}</span>
-          </div>
+          <Space align='center'>
+            <UserOutlined />
+            <Typography.Text>{editingUser ? '编辑用户' : '创建用户'}</Typography.Text>
+          </Space>
         }
         open={modalVisible}
         onCancel={() => {
@@ -452,26 +492,31 @@ export default function UserManagement() {
         }}
         onOk={() => form.submit()}
         width={600}
-        className='xiuxian-modal'
       >
-        <Form form={form} layout='vertical' onFinish={handleSaveUser} className='mt-4'>
+        <Form
+          form={form}
+          layout='vertical'
+          onFinish={values => {
+            void handleSaveUser(values);
+          }}
+        >
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name='username' label={<span className='text-slate-300'>用户名</span>} rules={[{ required: true, message: '请输入用户名' }]}>
-                <Input placeholder='请输入用户名' className='xiuxian-input' />
+              <Form.Item name='username' label='用户名' rules={[{ required: true, message: '请输入用户名' }]}>
+                <Input placeholder='请输入用户名' />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name='email' label={<span className='text-slate-300'>邮箱</span>} rules={[{ type: 'email', message: '请输入有效的邮箱地址' }]}>
-                <Input placeholder='请输入邮箱' className='xiuxian-input' />
+              <Form.Item name='email' label='邮箱' rules={[{ type: 'email', message: '请输入有效的邮箱地址' }]}>
+                <Input placeholder='请输入邮箱' />
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name='role' label={<span className='text-slate-300'>角色</span>} rules={[{ required: true, message: '请选择角色' }]}>
-                <Select placeholder='请选择角色' className='xiuxian-select'>
+              <Form.Item name='role' label='角色' rules={[{ required: true, message: '请选择角色' }]}>
+                <Select placeholder='请选择角色'>
                   {Object.values(ROLE_INFO)
                     .filter(role => role.role !== 'super_admin')
                     .map(role => (
@@ -483,8 +528,8 @@ export default function UserManagement() {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name='status' label={<span className='text-slate-300'>状态</span>} rules={[{ required: true, message: '请选择状态' }]}>
-                <Select placeholder='请选择状态' className='xiuxian-select'>
+              <Form.Item name='status' label='状态' rules={[{ required: true, message: '请选择状态' }]}>
+                <Select placeholder='请选择状态'>
                   <Option value='active'>正常</Option>
                   <Option value='inactive'>未激活</Option>
                   <Option value='suspended'>已暂停</Option>
@@ -495,28 +540,28 @@ export default function UserManagement() {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name='realName' label={<span className='text-slate-300'>真实姓名</span>}>
-                <Input placeholder='请输入真实姓名' className='xiuxian-input' />
+              <Form.Item name='realName' label='真实姓名'>
+                <Input placeholder='请输入真实姓名' />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name='department' label={<span className='text-slate-300'>部门</span>}>
-                <Input placeholder='请输入部门' className='xiuxian-input' />
+              <Form.Item name='department' label='部门'>
+                <Input placeholder='请输入部门' />
               </Form.Item>
             </Col>
           </Row>
 
-          <Form.Item name='phone' label={<span className='text-slate-300'>电话</span>}>
-            <Input placeholder='请输入电话' className='xiuxian-input' />
+          <Form.Item name='phone' label='电话'>
+            <Input placeholder='请输入电话' />
           </Form.Item>
 
           {!editingUser && (
-            <Form.Item name='password' label={<span className='text-slate-300'>密码</span>} rules={[{ required: true, message: '请输入密码' }]}>
-              <Input.Password placeholder='请输入密码' className='xiuxian-input' />
+            <Form.Item name='password' label='密码' rules={[{ required: true, message: '请输入密码' }]}>
+              <Input.Password placeholder='请输入密码' />
             </Form.Item>
           )}
         </Form>
       </Modal>
-    </XiuxianPageWrapper>
+    </Space>
   );
 }

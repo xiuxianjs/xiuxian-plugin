@@ -14,10 +14,11 @@ export const useLoginCode = () => {
 
     try {
       const result = await login(values.username, values.password);
+
       if (result.success) {
-        navigate('/');
+        void navigate('/');
       } else {
-        setError(result.message || '登录失败');
+        setError(result.message ?? '登录失败');
       }
     } catch (_err) {
       setError('错误，请重试');
@@ -34,10 +35,11 @@ export const useLoginCode = () => {
 
     if (!username || !password) {
       setError('请输入用户名和密码');
+
       return;
     }
 
-    onFinish({ username, password });
+    void onFinish({ username, password });
   };
 
   return {

@@ -4,10 +4,8 @@
     "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"]
+      "@src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*", "jsxp.config.tsx"],

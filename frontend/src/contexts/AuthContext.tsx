@@ -58,7 +58,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
-  const logout = async () => {
+  const doLogout = async () => {
     try {
       await logoutAPI();
     } catch (error) {
@@ -74,7 +74,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     user,
     isAuthenticated: !!user,
     login,
-    logout,
+    logout: () => {
+      void doLogout();
+    },
     loading
   };
 

@@ -182,7 +182,7 @@ export const restartTasksAPI = async (
     data: result.data
       ? {
           timestamp: result.data.timestamp,
-          taskName: (result.data.taskName as string) || taskName || 'all',
+          taskName: (result.data.taskName as string) ?? taskName ?? 'all',
           success: result.data.success
         }
       : undefined

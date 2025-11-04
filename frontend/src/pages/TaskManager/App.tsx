@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Table, message, Tag, Form } from 'antd';
+import { useState, useEffect } from 'react';
+import { Table, message, Tag, Form, Button, Card, Space } from 'antd';
 import { ClockCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTaskConfigAPI, updateTaskConfigAPI, restartTasksAPI, getTaskStatusAPI, taskControlAPI } from '@/api/auth';
@@ -8,9 +8,6 @@ import { TaskInfo } from '@/types/types';
 import TaskConfig from './TaskConfig';
 import StatusTag from './StatusTag';
 import formatCron from './config';
-
-// 导入UI组件库
-import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer } from '@/components/ui';
 
 // 获取类型标签
 const getTypeTag = (type: string) => {
@@ -95,7 +92,7 @@ export default function TaskManager() {
     };
 
     return Object.entries(config).map(([name, schedule]) => {
-      const taskInfo = taskDescriptions[name] || {
+  const taskInfo = taskDescriptions[name] ?? {
         description: name,
         type: 'system' as const
       };
@@ -107,7 +104,7 @@ export default function TaskManager() {
         schedule,
         status: status?.running ? 'running' : 'stopped',
         lastRun: new Date().toISOString(),
-        nextRun: status?.nextInvocation || new Date(Date.now() + 60000).toISOString(),
+  nextRun: status?.nextInvocation ?? new Date(Date.now() + 60000).toISOString(),
         type: taskInfo.type
       };
     });
@@ -116,74 +113,50 @@ export default function TaskManager() {
   // 表格列定义
   const columns: ColumnsType<TaskInfo> = [
     {
-      title: (
-        <div className='flex items-center gap-2 text-purple-400 font-bold'>
-          <span>任务名称</span>
-        </div>
-      ),
+      title: '任务名称',
       key: 'name',
       width: 200,
       render: (_, record) => (
         <div>
-          <div className='font-bold text-white'>{taskNames[record.name] || record.name}</div>
-          <div className='text-xs text-slate-400'>{record.description}</div>
+          <div className='font-bold'>{taskNames[record.name] ?? record.name}</div>
+          <div className='text-xs'>{record.description}</div>
         </div>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-blue-400 font-bold'>
-          <span>任务类型</span>
-        </div>
-      ),
+      title: '任务类型',
       key: 'type',
       width: 120,
       render: (_, record) => getTypeTag(record.type)
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-green-400 font-bold'>
-          <span>执行计划</span>
-        </div>
-      ),
+      title: '执行计划',
       key: 'schedule',
       width: 200,
       render: (_, record) => (
         <div>
-          <div className='text-sm font-medium text-white'>{formatCron(record.schedule)}</div>
-          <div className='text-xs text-slate-400'>{record.schedule}</div>
+          <div>{formatCron(record.schedule)}</div>
+          <div className='text-xs'>{record.schedule}</div>
         </div>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-yellow-400 font-bold'>
-          <span>运行状态</span>
-        </div>
-      ),
+      title: '运行状态',
       key: 'status',
       width: 120,
       render: (_, record) => <StatusTag status={record.status} />
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-cyan-400 font-bold'>
-          <span>上次执行</span>
-        </div>
-      ),
+      title: '上次执行',
       key: 'lastRun',
       width: 180,
-      render: (_, record) => <div className='text-sm text-slate-300'>{record.lastRun ? new Date(record.lastRun).toLocaleString('zh-CN') : '未执行'}</div>
+      render: (_, record) => (record.lastRun ? new Date(record.lastRun).toLocaleString('zh-CN') : '未执行')
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-orange-400 font-bold'>
-          <span>下次执行</span>
-        </div>
-      ),
+      title: '下次执行',
       key: 'nextRun',
       width: 180,
-      render: (_, record) => <div className='text-sm text-slate-300'>{record.nextRun ? new Date(record.nextRun).toLocaleString('zh-CN') : '未计划'}</div>
+      render: (_, record) => (record.nextRun ? new Date(record.nextRun).toLocaleString('zh-CN') : '未计划')
     }
   ];
 
@@ -204,7 +177,7 @@ export default function TaskManager() {
         setTaskConfig(result.data);
         setTasks(generateTasksFromConfig(result.data));
       } else {
-        message.error(result.message || '获取配置失败');
+  message.error(result.message ?? '获取配置失败');
       }
     } catch (error) {
       console.error('获取任务配置失败:', error);
@@ -224,11 +197,10 @@ export default function TaskManager() {
       const result = await getTaskStatusAPI();
 
       if (result.success && result.data) {
-        setTasks(prevTasks =>
-          prevTasks.map(task => ({
+        setTasks(prevTasks => prevTasks.map(task => ({
             ...task,
             status: result.data![task.name]?.running ? 'running' : 'stopped',
-            nextRun: result.data![task.name]?.nextInvocation || new Date(Date.now() + 60000).toISOString()
+            nextRun: result.data![task.name]?.nextInvocation ?? new Date(Date.now() + 60000).toISOString()
           }))
         );
       }
@@ -238,8 +210,8 @@ export default function TaskManager() {
   };
 
   useEffect(() => {
-    fetchTaskConfig();
-    fetchTaskStatus(); // 启动时也获取一次状态
+    void fetchTaskConfig();
+    void fetchTaskStatus(); // 启动时也获取一次状态
   }, [user]);
 
   // 启动所有任务
@@ -261,9 +233,9 @@ export default function TaskManager() {
       if (result.success && result.data?.success) {
         message.success('所有任务启动成功');
         // 重新获取配置
-        fetchTaskConfig();
+        void fetchTaskConfig();
       } else {
-        message.error(result.message || '启动失败');
+        message.error(result.message ?? '启动失败');
       }
     } catch (error) {
       message.destroy();
@@ -293,7 +265,7 @@ export default function TaskManager() {
         // 重新获取配置
         void fetchTaskConfig();
       } else {
-        message.error(result.message || '停止失败');
+  message.error(result.message ?? '停止失败');
       }
     } catch (error) {
       message.destroy();
@@ -323,7 +295,7 @@ export default function TaskManager() {
         // 重新获取配置
         void fetchTaskConfig();
       } else {
-        message.error(result.message || '重启失败');
+        message.error(result.message ?? '重启失败');
       }
     } catch (error) {
       message.destroy();
@@ -358,7 +330,7 @@ export default function TaskManager() {
         setConfigDrawerVisible(false);
         void fetchTaskConfig();
       } else {
-        message.error(result.message || '保存失败');
+        message.error(result.message ?? '保存失败');
       }
     } catch (error) {
       message.destroy();
@@ -368,76 +340,42 @@ export default function TaskManager() {
   };
 
   return (
-    <XiuxianPageWrapper>
+    <div className='min-h-screen bg-gray-200 p-4'>
       {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon={<ClockCircleOutlined />}
-        title='定时任务'
-        subtitle='系统定时任务和配置'
-        actions={
-          <div className='flex flex-wrap gap-2'>
-            {[
-              {
-                lable: '启动所有任务',
-                icon: <PlayCircleOutlined />,
-                className:
-                  'px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
-                onClick: handleStartAllTasks
-              },
-              {
-                lable: '停止所有任务',
-                icon: <PauseCircleOutlined />,
-                className:
-                  'px-2 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
-                onClick: handleStopAllTasks
-              },
-              {
-                lable: '编辑配置',
-                icon: <SettingOutlined />,
-                className:
-                  'px-2 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
-                onClick: handleOpenConfig
-              },
-              {
-                lable: '重启所有任务',
-                icon: <ClockCircleOutlined />,
-                className:
-                  'px-2 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
-                onClick: handleRestartTasks
-              },
-              {
-                lable: '刷新数据',
-                icon: <ClockCircleOutlined />,
-                className:
-                  'px-2 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2',
-                onClick: () => {
-                  fetchTaskConfig();
-                  message.success('数据已刷新');
-                }
-              }
-            ].map((item, index) => (
-              <button key={index} className={item.className} onClick={item.onClick}>
-                {item.icon}
-                {item.lable}
-              </button>
-            ))}
-          </div>
-        }
-      />
+      <div className='flex justify-between items-center mb-6 flex-wrap gap-4'>
+        <div>
+          <h1 className='text-2xl font-bold m-0'>定时任务</h1>
+          <p className='text-sm mt-2 mb-0'>系统定时任务和配置</p>
+        </div>
+        <Space wrap>
+          <Button type='primary' icon={<PlayCircleOutlined />} onClick={() => { void handleStartAllTasks(); }}>
+            启动所有任务
+          </Button>
+          <Button danger icon={<PauseCircleOutlined />} onClick={() => { void handleStopAllTasks(); }}>
+            停止所有任务
+          </Button>
+          <Button icon={<SettingOutlined />} onClick={handleOpenConfig}>
+            编辑配置
+          </Button>
+          <Button icon={<ClockCircleOutlined />} onClick={() => { void handleRestartTasks(); }}>
+            重启所有任务
+          </Button>
+          <Button
+            icon={<ClockCircleOutlined />}
+            onClick={() => {
+              void fetchTaskConfig();
+              message.success('数据已刷新');
+            }}
+          >
+            刷新数据
+          </Button>
+        </Space>
+      </div>
 
       {/* 任务表格 */}
-      <XiuxianTableContainer title='定时任务列表' icon={<ClockCircleOutlined />}>
-        <Table
-          columns={columns}
-          dataSource={tasks}
-          rowKey='name'
-          loading={loading}
-          pagination={false}
-          scroll={{ x: 1200 }}
-          rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
-          className='bg-transparent xiuxian-table'
-        />
-      </XiuxianTableContainer>
+      <Card title='定时任务列表'>
+        <Table columns={columns} dataSource={tasks} rowKey='name' loading={loading} pagination={false} scroll={{ x: 1200 }} />
+      </Card>
 
       {/* 配置编辑抽屉 */}
       <TaskConfig
@@ -445,8 +383,8 @@ export default function TaskManager() {
         setConfigDrawerVisible={setConfigDrawerVisible}
         configForm={configForm}
         taskConfig={taskConfig}
-        handleSaveConfig={handleSaveConfig}
+        handleSaveConfig={(values) => { void handleSaveConfig(values); }}
       />
-    </XiuxianPageWrapper>
+    </div>
   );
 }

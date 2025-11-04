@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { message } from 'antd';
 import { useAuth } from '@/contexts/AuthContext';
@@ -58,7 +57,7 @@ export const useRankingManagerCode = () => {
       if (result.success && result.data) {
         setRankingStats(result.data);
       } else {
-        message.error(result.message || '获取排名统计失败');
+        message.error(result.message ?? '获取排名统计失败');
       }
     } catch (error) {
       console.error('获取排名统计失败:', error);
@@ -90,7 +89,7 @@ export const useRankingManagerCode = () => {
       if (result.success && result.data) {
         setRankingData(result.data);
       } else {
-        message.error(result.message || '获取排名数据失败');
+        message.error(result.message ?? '获取排名数据失败');
       }
     } catch (error) {
       console.error('获取排名数据失败:', error);
@@ -123,10 +122,10 @@ export const useRankingManagerCode = () => {
       if (result.success) {
         message.success('排名计算完成');
         // 重新获取数据
-        fetchRankingStats();
-        fetchRankingData(selectedRankingType, rankingLimit);
+        void fetchRankingStats();
+        void fetchRankingData(selectedRankingType, rankingLimit);
       } else {
-        message.error(result.message || '排名计算失败');
+        message.error(result.message ?? '排名计算失败');
       }
     } catch (error) {
       message.destroy();
@@ -136,20 +135,20 @@ export const useRankingManagerCode = () => {
   };
 
   useEffect(() => {
-    fetchRankingStats();
-    fetchRankingData(selectedRankingType, rankingLimit);
+    void fetchRankingStats();
+    void fetchRankingData(selectedRankingType, rankingLimit);
   }, [user]);
 
   // 处理排名类型变化
   const handleRankingTypeChange = (type: string) => {
     setSelectedRankingType(type);
-    fetchRankingData(type, rankingLimit);
+    void fetchRankingData(type, rankingLimit);
   };
 
   // 处理排名数量变化
   const handleRankingLimitChange = (limit: number) => {
     setRankingLimit(limit);
-    fetchRankingData(selectedRankingType, limit);
+    void fetchRankingData(selectedRankingType, limit);
   };
 
   // 获取排名类型显示名称

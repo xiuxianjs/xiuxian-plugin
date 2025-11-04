@@ -17,8 +17,8 @@ export default function ProtectedRoute({ children, requiredPermissions = [], req
 
   // 安全地获取权限上下文
   let user = null;
-  let hasAnyPermission = (permissions: any[]) => false;
-  let canAccessRoute = (route: string) => true;
+  let hasAnyPermission = (_permissions: any[]) => false;
+  let canAccessRoute = (_route: string) => true;
 
   try {
     const permissions = usePermissions();

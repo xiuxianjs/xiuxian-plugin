@@ -6,5 +6,17 @@
   },
   // 启用 ESLint 验证
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "cSpell.words": ["alemongo", "alemonjs", "jsxp", "kurmoc", "kuromc", "lvyjs", "networkidle", "ningmengchongshui", "puppeteerrc", "xiuxian"]
+  "cSpell.words": [
+    "alemongo",
+    "alemonjs",
+    "jsxp",
+    "kurmoc",
+    "kuromc",
+    "lvyjs",
+    "Najie",
+    "networkidle",
+    "ningmengchongshui",
+    "puppeteerrc",
+    "xiuxian"
+  ]
 }

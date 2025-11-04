@@ -60,7 +60,7 @@ export const useUserManagerCode = () => {
         setGameUsers(result.data.list);
         setPagination(result.data.pagination);
       } else {
-        message.error(result.message || '获取用户数据失败');
+  message.error(result.message ?? '获取用户数据失败');
       }
     } catch (error) {
       console.error('获取游戏用户数据失败:', error);
@@ -71,24 +71,24 @@ export const useUserManagerCode = () => {
   };
 
   useEffect(() => {
-    fetchGameUsers(1, 20);
-    fetchStats();
+    void fetchGameUsers(1, 20);
+    void fetchStats();
   }, [user]);
 
   // 处理搜索和筛选变化
-  const handleSearchAndFilter = () => {
-    fetchGameUsers(1, pagination.pageSize);
-    fetchStats();
+  const handleSearchAndFilter = async () => {
+    void fetchGameUsers(1, pagination.pageSize);
+    await fetchStats();
   };
 
   // 处理分页变化
-  const handleTableChange = (page: number, pageSize: number) => {
-    fetchGameUsers(page, pageSize);
+  const handleTableChange = async (page: number, pageSize: number) => {
+    await fetchGameUsers(page, pageSize);
   };
 
   // 获取境界名称
   const getLevelName = (levelId: number) => {
-    return levelNames[levelId] || `境界${levelId}`;
+  return levelNames[levelId] ?? `境界${levelId}`;
   };
 
   // 获取性别显示
@@ -101,7 +101,7 @@ export const useUserManagerCode = () => {
     if (!linggen) {
       return 'default';
     }
-    const name = (linggen as { name?: string })?.name || '';
+  const name = (linggen as { name?: string })?.name ?? '';
 
     if (name.includes('混沌') || name.includes('天五') || name.includes('九转')) {
       return 'gold';
@@ -168,7 +168,7 @@ export const useUserManagerCode = () => {
         void fetchGameUsers(pagination.current, pagination.pageSize);
         void fetchStats();
       } else {
-        message.error(result.message || '用户更新失败');
+  message.error(result.message ?? '用户更新失败');
       }
     } catch (error) {
       console.error('用户更新失败:', error);

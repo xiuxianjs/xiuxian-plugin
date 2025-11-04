@@ -34,25 +34,32 @@ export const useDashboardCode = () => {
 
       const dashboardStats: DashboardStats = {
         users: {
-          total: userStats.success ? userStats.data?.total || 0 : 0,
-          active: userStats.success ? userStats.data?.total || 0 : 0,
-          newToday: 0
+          total: userStats.success ? (userStats.data?.total ?? 0) : 0,
+          active: userStats.success ? (userStats.data?.total ?? 0) : 0,
+          newToday: 0,
+          levelDistribution: {}
         },
         associations: {
-          total: associationStats.success ? associationStats.data?.total || 0 : 0,
-          totalMembers: associationStats.success ? associationStats.data?.totalMembers || 0 : 0,
-          totalPower: associationStats.success ? associationStats.data?.totalPower || 0 : 0,
-          totalLingshi: associationStats.success ? associationStats.data?.totalLingshi || 0 : 0
+          total: associationStats.success ? (associationStats.data?.total ?? 0) : 0,
+          totalMembers: associationStats.success ? (associationStats.data?.totalMembers ?? 0) : 0,
+          totalPower: associationStats.success ? (associationStats.data?.totalPower ?? 0) : 0,
+          totalLingshi: associationStats.success ? (associationStats.data?.totalLingshi ?? 0) : 0
+        },
+        najie: {
+          total: 0,
+          totalLingshi: 0,
+          totalItems: 0,
+          categoryStats: {}
         },
         rankings: {
-          lastUpdate: rankingStats.success ? rankingStats.data?.lastUpdate || '' : '',
-          topAssociations: rankingStats.success ? rankingStats.data?.topAssociations || [] : [],
-          topPlayers: rankingStats.success ? rankingStats.data?.topPlayers || [] : []
+          lastUpdate: rankingStats.success ? (rankingStats.data?.lastUpdate ?? '') : '',
+          topAssociations: rankingStats.success ? (rankingStats.data?.topAssociations ?? []) : [],
+          topPlayers: rankingStats.success ? (rankingStats.data?.topPlayers ?? []) : []
         },
         system: {
           uptime: '7天 12小时 30分钟',
           lastBackup: new Date().toISOString(),
-          activeTasks: taskStats.success ? Object.keys(taskStats.data || {}).length : 0
+          activeTasks: taskStats.success ? Object.keys(taskStats.data ?? {}).length : 0
         }
       };
 
@@ -65,7 +72,7 @@ export const useDashboardCode = () => {
   };
 
   useEffect(() => {
-    fetchStats();
+    void fetchStats();
   }, [user]);
 
   return {

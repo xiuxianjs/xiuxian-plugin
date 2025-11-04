@@ -56,6 +56,7 @@ export const getMuteListAPI = async (): Promise<{
     }
   } catch (error) {
     console.error('获取禁言列表API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -99,6 +100,7 @@ export const addMuteAPI = async (
     }
   } catch (error) {
     console.error('添加禁言API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -137,6 +139,7 @@ export const unmuteAPI = async (
     }
   } catch (error) {
     console.error('解除禁言API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -188,6 +191,7 @@ export const batchUnmuteAPI = async (
     }
   } catch (error) {
     console.error('批量解除禁言API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -198,7 +202,7 @@ export const batchUnmuteAPI = async (
 // 获取禁言日志API
 export const getMuteLogsAPI = async (
   type: 'mute' | 'unmute' = 'mute',
-  limit: number = 100
+  limit = 100
 ): Promise<{
   success: boolean;
   data?: {
@@ -231,6 +235,7 @@ export const getMuteLogsAPI = async (
     }
   } catch (error) {
     console.error('获取禁言日志API错误:', error);
+
     return {
       success: false,
       message: '网络错误'
@@ -269,6 +274,7 @@ export const clearMuteLogsAPI = async (
     }
   } catch (error) {
     console.error('清理禁言日志API错误:', error);
+
     return {
       success: false,
       message: '网络错误'

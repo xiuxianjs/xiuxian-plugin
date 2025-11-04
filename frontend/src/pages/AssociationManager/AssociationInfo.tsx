@@ -1,5 +1,4 @@
-import React from 'react';
-import { Modal, Tag } from 'antd';
+import { Modal, Tag, Typography, Descriptions, Card, Row, Col, Divider, Statistic, Space } from 'antd';
 import { Association } from '@/types/types';
 import { CloseOutlined } from '@ant-design/icons';
 
@@ -18,125 +17,70 @@ const AssociationInfo = ({
 }) => {
   return (
     <Modal
-      title={
-        <div className='flex items-center gap-2'>
-          <span className='text-xl font-bold text-white'>宗门详情</span>
-        </div>
-      }
+      title={<Typography.Text strong>宗门详情</Typography.Text>}
       open={associationDetailVisible}
       onCancel={() => setAssociationDetailVisible(false)}
       footer={null}
-      closeIcon={<CloseOutlined className='text-white' />}
+      closeIcon={<CloseOutlined />}
       width={800}
-      className='xiuxian-modal'
     >
       {selectedAssociation && (
-        <div className='space-y-6'>
+        <Space direction='vertical' size='large' style={{ width: '100%' }}>
           {/* 基础信息 */}
-          <div>
-            <h3 className='text-lg font-semibold mb-4 text-white flex items-center gap-2'>
-              <span className='w-2 h-2 bg-blue-400 rounded-full'></span>
-              基础信息
-            </h3>
-            <div className='grid grid-cols-2 gap-4'>
-              <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
-                <label className='text-sm text-slate-400'>宗门名称</label>
-                <p className='font-medium text-white'>{selectedAssociation.宗门名称}</p>
-              </div>
-              <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
-                <label className='text-sm text-slate-400'>宗门等级</label>
-                <p className='font-medium text-white'>{selectedAssociation.宗门等级}</p>
-              </div>
-              <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
-                <label className='text-sm text-slate-400'>宗主</label>
-                <p className='font-medium text-white'>{selectedAssociation.宗主}</p>
-              </div>
-              <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
-                <label className='text-sm text-slate-400'>宗门类型</label>
-                <Tag
-                  color={selectedAssociation.power > 0 ? 'purple' : 'blue'}
-                  className='border-0'
-                  style={{
-                    background: selectedAssociation.power > 0 ? 'linear-gradient(135deg, #8b5cf6, #ec4899)' : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-                    color: 'white'
-                  }}
-                >
-                  {getAssociationType(selectedAssociation.power)}
-                </Tag>
-              </div>
-              <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
-                <label className='text-sm text-slate-400'>最低加入境界</label>
-                <p className='font-medium text-white'>{getLevelName(selectedAssociation.最低加入境界)}</p>
-              </div>
-              <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4'>
-                <label className='text-sm text-slate-400'>创立时间</label>
-                <p className='font-medium text-white'>{selectedAssociation.创立时间?.[0] || '未知'}</p>
-              </div>
-            </div>
-          </div>
+          <Card title={<Typography.Text strong>基础信息</Typography.Text>} bordered>
+            <Descriptions column={2} labelStyle={{ width: 120 }}>
+              <Descriptions.Item label='宗门名称'>{selectedAssociation.宗门名称}</Descriptions.Item>
+              <Descriptions.Item label='宗门等级'>{selectedAssociation.宗门等级}</Descriptions.Item>
+              <Descriptions.Item label='宗主'>{selectedAssociation.宗主}</Descriptions.Item>
+              <Descriptions.Item label='宗门类型'>
+                <Tag color={selectedAssociation.power > 0 ? 'purple' : 'blue'}>{getAssociationType(selectedAssociation.power)}</Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label='最低加入境界'>{getLevelName(selectedAssociation.最低加入境界)}</Descriptions.Item>
+              <Descriptions.Item label='创立时间'>{selectedAssociation.创立时间?.[0] ?? '未知'}</Descriptions.Item>
+            </Descriptions>
+          </Card>
 
           {/* 成员信息 */}
-          <div>
-            <h3 className='text-lg font-semibold mb-4 text-white flex items-center gap-2'>
-              <span className='w-2 h-2 bg-purple-400 rounded-full'></span>
-              成员信息
-            </h3>
-            <div className='grid grid-cols-2 gap-4'>
-              <div className='bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>总成员数</label>
-                <p className='text-xl font-bold text-blue-400'>{selectedAssociation.所有成员?.length || 0}</p>
-              </div>
-              <div className='bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>副宗主数</label>
-                <p className='text-xl font-bold text-purple-400'>{selectedAssociation.副宗主?.length || 0}</p>
-              </div>
-              <div className='bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>长老数</label>
-                <p className='text-xl font-bold text-green-400'>{selectedAssociation.长老?.length || 0}</p>
-              </div>
-              <div className='bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>内门弟子数</label>
-                <p className='text-xl font-bold text-yellow-400'>{selectedAssociation.内门弟子?.length || 0}</p>
-              </div>
-              <div className='bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl border border-red-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>外门弟子数</label>
-                <p className='text-xl font-bold text-red-400'>{selectedAssociation.外门弟子?.length || 0}</p>
-              </div>
-            </div>
-          </div>
+          <Card title={<Typography.Text strong>成员信息</Typography.Text>} bordered>
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='总成员数' value={selectedAssociation.所有成员?.length ?? 0} />
+              </Col>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='副宗主数' value={selectedAssociation.副宗主?.length ?? 0} />
+              </Col>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='长老数' value={selectedAssociation.长老?.length ?? 0} />
+              </Col>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='内门弟子数' value={selectedAssociation.内门弟子?.length ?? 0} />
+              </Col>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='外门弟子数' value={selectedAssociation.外门弟子?.length ?? 0} />
+              </Col>
+            </Row>
+          </Card>
 
           {/* 资源信息 */}
-          <div>
-            <h3 className='text-lg font-semibold mb-4 text-white flex items-center gap-2'>
-              <span className='w-2 h-2 bg-green-400 rounded-full'></span>
-              资源信息
-            </h3>
-            <div className='grid grid-cols-3 gap-4'>
-              <div className='bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>灵石池</label>
-                <p className='text-xl font-bold text-green-400'>{selectedAssociation.灵石池?.toLocaleString() || 0}</p>
-              </div>
-              <div className='bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl border border-red-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>大阵血量</label>
-                <p className='text-xl font-bold text-red-400'>{selectedAssociation.大阵血量?.toLocaleString() || 0}</p>
-              </div>
-              <div className='bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>宗门驻地</label>
-                <p className='text-xl font-bold text-blue-400'>{selectedAssociation.宗门驻地 || '无驻地'}</p>
-              </div>
-              <div className='bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>宗门神兽</label>
-                <p className='text-xl font-bold text-purple-400'>{selectedAssociation.宗门神兽 || '无'}</p>
-              </div>
-              <div className='bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border border-yellow-500/30 p-4 rounded-xl shadow-lg'>
-                <label className='text-sm text-slate-400'>维护时间</label>
-                <p className='text-xl font-bold text-yellow-400'>
-                  {selectedAssociation.维护时间 ? new Date(selectedAssociation.维护时间).toLocaleString() : '-'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+          <Card title={<Typography.Text strong>资源信息</Typography.Text>} bordered>
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='灵石池' value={selectedAssociation.灵石池 ?? 0} />
+              </Col>
+              <Col xs={24} sm={12} md={8}>
+                <Statistic title='大阵血量' value={selectedAssociation.大阵血量 ?? 0} />
+              </Col>
+            </Row>
+            <Divider style={{ margin: '16px 0' }} />
+            <Descriptions column={2} labelStyle={{ width: 120 }}>
+              <Descriptions.Item label='宗门驻地'>{selectedAssociation.宗门驻地 ?? '无驻地'}</Descriptions.Item>
+              <Descriptions.Item label='宗门神兽'>{selectedAssociation.宗门神兽 ?? '无'}</Descriptions.Item>
+              <Descriptions.Item label='维护时间'>
+                {selectedAssociation.维护时间 ? new Date(selectedAssociation.维护时间).toLocaleString() : '-'}
+              </Descriptions.Item>
+            </Descriptions>
+          </Card>
+        </Space>
       )}
     </Modal>
   );

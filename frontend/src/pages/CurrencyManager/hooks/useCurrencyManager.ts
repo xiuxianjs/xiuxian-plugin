@@ -17,10 +17,11 @@ export const useCurrencyManager = () => {
   // 获取配置信息
   const fetchConfig = async () => {
     const res = await fetchConfigAPI();
+
     if (res.success && res.data) {
       setConfig(res.data);
     } else {
-      message.error(res.message || '获取配置信息失败');
+      message.error(res.message ?? '获取配置信息失败');
     }
   };
 
@@ -29,11 +30,12 @@ export const useCurrencyManager = () => {
     setLoading(true);
     try {
       const res = await fetchUsersAPI();
+
       console.log('获取用户数据结果:', res);
       if (res.success && res.data) {
         setUsers(res.data);
       } else {
-        message.error(res.message || '获取用户数据失败');
+        message.error(res.message ?? '获取用户数据失败');
       }
     } catch (error) {
       console.error('获取用户数据错误:', error);
@@ -47,11 +49,12 @@ export const useCurrencyManager = () => {
     setLoading(true);
     try {
       const res = await fetchRecordsAPI();
+
       console.log('获取充值记录结果:', res);
       if (res.success && res.data) {
         setRecords(res.data);
       } else {
-        message.error(res.message || '获取充值记录失败');
+        message.error(res.message ?? '获取充值记录失败');
       }
     } catch (error) {
       console.error('获取充值记录错误:', error);
@@ -63,10 +66,11 @@ export const useCurrencyManager = () => {
   // 获取全局统计
   const fetchStats = async () => {
     const res = await fetchStatsAPI();
+
     if (res.success && res.data) {
       setStats(res.data);
     } else {
-      message.error(res.message || '获取统计数据失败');
+      message.error(res.message ?? '获取统计数据失败');
     }
   };
 
@@ -95,13 +99,12 @@ export const useCurrencyManager = () => {
           setRechargeModalVisible(false);
           setSelectedUser(null);
           rechargeForm.resetFields();
-          fetchUsers();
-          fetchStats();
+          await Promise.all([fetchUsers(), fetchStats()]);
         } else {
-          message.error(completeRes.message || '支付完成失败');
+          message.error(completeRes.message ?? '支付完成失败');
         }
       } else {
-        message.error(createRes.message || '创建充值记录失败');
+        message.error(createRes.message ?? '创建充值记录失败');
       }
     } catch (error) {
       message.error('充值操作失败，请重试');
@@ -118,7 +121,8 @@ export const useCurrencyManager = () => {
         console.error('初始化数据失败:', error);
       }
     };
-    initData();
+
+    void initData();
   }, []);
 
   return {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { message } from 'antd';
 import { useAuth } from '@/contexts/AuthContext';
 import { getNajieAPI, updateNajieAPI } from '@/api/auth';
@@ -51,7 +51,7 @@ export const useNajieManagerCode = () => {
         setNajieList(result.data.list);
         setPagination(result.data.pagination);
       } else {
-        message.error(result.message || '获取背包数据失败');
+  message.error(result.message ?? '获取背包数据失败');
       }
     } catch (error) {
       console.error('获取背包数据失败:', error);
@@ -62,17 +62,17 @@ export const useNajieManagerCode = () => {
   };
 
   useEffect(() => {
-    fetchNajie(1, pageSize);
+    void fetchNajie(1, pageSize);
   }, [user]);
 
   // 处理搜索变化
   const handleSearchAndFilter = () => {
-    fetchNajie(1, pagination.pageSize);
+    void fetchNajie(1, pagination.pageSize);
   };
 
   // 处理分页变化
   const handleTableChange = (page: number, pageSize: number) => {
-    fetchNajie(page, pageSize);
+    void fetchNajie(page, pageSize);
   };
 
   // 计算背包总物品数
@@ -104,15 +104,15 @@ export const useNajieManagerCode = () => {
 
       console.log('Saving najie data with token:', token, updatedNajie);
 
-      const result = await updateNajieAPI(updatedNajie);
+  const result = await updateNajieAPI(updatedNajie as any);
 
       if (result.success) {
         message.success('背包更新成功');
         setNajieEditVisible(false);
         // 刷新数据
-        fetchNajie(pagination.current, pagination.pageSize);
+        await fetchNajie(pagination.current, pagination.pageSize);
       } else {
-        message.error(result.message || '背包更新失败');
+  message.error(result.message ?? '背包更新失败');
       }
     } catch (error) {
       console.error('背包更新失败:', error);

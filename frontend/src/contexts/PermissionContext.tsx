@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, PropsWithChildren, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Permission, UserRole, ROLE_PERMISSIONS, ROUTE_PERMISSIONS, PAGE_PERMISSIONS, PermissionContextType, AdminUser } from '@/types/permissions';
-import { getCurrentUserPermissions, UserPermissionsResponse } from '@/api/auth/user-permissions';
+import { getCurrentUserPermissions } from '@/api/auth/user-permissions';
 
 const PermissionContext = createContext<PermissionContextType | undefined>(undefined);
 
@@ -44,14 +44,14 @@ export function PermissionProvider({ children }: PropsWithChildren) {
         console.error('获取用户权限失败:', error);
         // 如果后端获取失败，使用前端默认权限配置
         if (adminUser) {
-          setUserPermissions(ROLE_PERMISSIONS[adminUser.role] || []);
+          setUserPermissions(ROLE_PERMISSIONS[adminUser.role] ?? []);
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserPermissions();
+    void fetchUserPermissions();
   }, [user, adminUser]);
 
   // 获取用户权限
@@ -65,7 +65,7 @@ export function PermissionProvider({ children }: PropsWithChildren) {
       return userPermissions as Permission[];
     }
 
-    return ROLE_PERMISSIONS[adminUser.role] || [];
+  return ROLE_PERMISSIONS[adminUser.role] ?? [];
   }, [adminUser, userPermissions]);
 
   // 检查是否有特定权限
@@ -122,7 +122,7 @@ export function PermissionProvider({ children }: PropsWithChildren) {
       console.error('刷新用户权限失败:', error);
       // 如果后端获取失败，使用前端默认权限配置
       if (adminUser) {
-        setUserPermissions(ROLE_PERMISSIONS[adminUser.role] || []);
+  setUserPermissions(ROLE_PERMISSIONS[adminUser.role] ?? []);
       }
     } finally {
       setLoading(false);

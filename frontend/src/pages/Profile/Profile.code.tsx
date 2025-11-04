@@ -5,7 +5,6 @@ import { PasswordForm } from '@/types/types';
 
 export const useProfileCode = () => {
   const { user } = useAuth();
-  const token = localStorage.getItem('token') || '';
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
@@ -18,8 +17,7 @@ export const useProfileCode = () => {
     confirmPassword: ''
   });
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordChange = async () => {
     // e.stopPropagation()
     setLoading(true);
     setMessage(null);
@@ -55,8 +53,8 @@ export const useProfileCode = () => {
       } else {
         setMessage({ type: 'error', text: result.message });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (_error) {
+      console.error(_error);
       setMessage({ type: 'error', text: '密码修改失败，请重试' });
     } finally {
       setLoading(false);
