@@ -59,7 +59,6 @@ export const getAssociationsAPI = async (
 
 // 获取单个宗门详情API
 export const getAssociationAPI = async (
-  token: string,
   associationName: string
 ): Promise<{
   success: boolean;

@@ -23,14 +23,16 @@ export default [
       '*.config.js',
       '*.config.ts',
       '.puppeteerrc.cjs',
-      'src/env.d.ts'
+      'src/env.d.ts',
+      "./*.js",
+      "./*.cjs"
     ]
   },
   // TypeScript 声明文件配置 - 放宽注释规则
   {
     files: ['**/*.d.ts'],
     rules: {
-      'spaced-comment': 'off',
+      'spaced-comment': 'off'
     }
   },
   // 基础 JavaScript 推荐规则
@@ -46,9 +48,9 @@ export default [
       parser: ts.parser,
       parserOptions: {
         project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
+        tsconfigRootDir: import.meta.dirname
+      }
+    }
   },
   // React 相关规则配置
   {
@@ -110,7 +112,7 @@ export default [
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-inferrable-types': 'error',
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
-      '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
@@ -138,19 +140,19 @@ export default [
       'no-useless-return': 'error',
       'prefer-promise-reject-errors': 'error',
       'require-await': 'error',
-      'yoda': 'error',
+      yoda: 'error',
 
       // ===== 最佳实践规则 =====
       // 严格相等比较 - 禁止使用 === 和 !=
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
       'no-multi-spaces': 'error',
       'no-trailing-spaces': 'error',
       'eol-last': 'error',
       'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
       'comma-dangle': ['error', 'never'],
-      'semi': ['error', 'always'],
-      'quotes': ['error', 'single', { avoidEscape: true }],
+      semi: ['error', 'always'],
+      quotes: ['error', 'single', { avoidEscape: true }],
       'object-curly-spacing': ['error', 'always'],
       'array-bracket-spacing': ['error', 'never'],
       'comma-spacing': ['error', { before: false, after: true }],
@@ -162,14 +164,14 @@ export default [
       'arrow-spacing': 'error',
       'block-spacing': 'error',
       'brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      'camelcase': ['warn', { properties: 'never' }],
+      camelcase: ['warn', { properties: 'never' }],
       'comma-style': ['error', 'last'],
       'func-call-spacing': ['error', 'never'],
       'function-paren-newline': 'off',
       'implicit-arrow-linebreak': ['error', 'beside'],
       // 最大行长度限制 - 100字符，忽略URL和字符串
       'max-len': ['warn', { code: 160, ignoreUrls: true, ignoreStrings: true }],
-      
+
       // 禁用混合运算符检查 - 与自动格式化工具冲突
       'no-mixed-operators': 'off',
       // 禁止使用制表符，统一使用空格
@@ -183,7 +185,11 @@ export default [
         'error',
         { blankLine: 'always', prev: '*', next: 'return' },
         { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
-        { blankLine: 'any', prev: ['const', 'let', 'var'], next: ['const', 'let', 'var'] }
+        {
+          blankLine: 'any',
+          prev: ['const', 'let', 'var'],
+          next: ['const', 'let', 'var']
+        }
       ],
       // 对象属性引号规则 - 只在必要时使用引号
       'quote-props': ['error', 'as-needed'],
@@ -192,12 +198,16 @@ export default [
       // 一元运算符空格规则
       'space-unary-ops': 'error',
       // 注释空格规则 - 要求空格，但允许特殊标记
-      'spaced-comment': ['error', 'always', { 
-        line: { 
-          markers: ['/'], 
-          exceptions: ['///'] 
-        } 
-      }],
+      'spaced-comment': [
+        'error',
+        'always',
+        {
+          line: {
+            markers: ['/'],
+            exceptions: ['///']
+          }
+        }
+      ],
       // 模板标签间距规则
       'template-tag-spacing': 'error'
     }

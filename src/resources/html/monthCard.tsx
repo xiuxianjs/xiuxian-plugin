@@ -229,8 +229,8 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ feature, isMonth, data }) => 
                   <span className='text-xs text-blue-600 font-medium'>未激活</span>
                 </>
               )
-            ) : // 大月卡权益：只有大月卡开通时才激活
-            data?.has_big_month_card ? (
+            ) // 大月卡权益：只有大月卡开通时才激活
+            : data?.has_big_month_card ? (
               <>
                 <div className='w-2 h-2 bg-emerald-400 rounded-full animate-pulse' />
                 <span className='text-xs text-emerald-600 font-medium'>已激活</span>

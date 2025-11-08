@@ -1,24 +1,22 @@
 {
-  "editor.formatOnSave": true,
+  // 保存时自动修复
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "always",
+    "source.fixAll": "always"
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  // 启用 ESLint 验证
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
-  "commentTranslate.targetLanguage": "zh-CN",
-  "commentTranslate.hover.enabled": true
+  "cSpell.words": [
+    "alemongo",
+    "alemonjs",
+    "jsxp",
+    "kurmoc",
+    "kuromc",
+    "lvyjs",
+    "Najie",
+    "networkidle",
+    "ningmengchongshui",
+    "puppeteerrc",
+    "xiuxian"
+  ]
 }

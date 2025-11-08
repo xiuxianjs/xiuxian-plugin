@@ -130,13 +130,13 @@ export async function getNingmenghomeImage(e: EventsMessageCreateEnum, thingType
     if (thingType === '装备' || thingType === '丹药' || thingType === '功法' || thingType === '道具' || thingType === '草药') {
       commoditiesList = commoditiesList.filter(item => item.class === thingType);
     } else if (
-      thingType === '武器' ||
-      thingType === '护具' ||
-      thingType === '法宝' ||
-      thingType === '修为' ||
-      thingType === '血量' ||
-      thingType === '血气' ||
-      thingType === '天赋'
+      thingType === '武器'
+      || thingType === '护具'
+      || thingType === '法宝'
+      || thingType === '修为'
+      || thingType === '血量'
+      || thingType === '血气'
+      || thingType === '天赋'
     ) {
       commoditiesList = commoditiesList.filter(item => item.type === thingType);
     }
@@ -325,8 +325,8 @@ export async function getWuqiImage(e: EventsMessageCreateEnum): Promise<Screensh
       if (najie['装备'].find(item => item.name === j.name) && !wuqiHave.find(item => item.name === j.name)) {
         wuqiHave.push(j);
       } else if (
-        (equipment['武器'].name === j.name || equipment['法宝'].name === j.name || equipment['护具'].name === j.name) &&
-        !wuqiHave.find(item => item.name === j.name)
+        (equipment['武器'].name === j.name || equipment['法宝'].name === j.name || equipment['护具'].name === j.name)
+        && !wuqiHave.find(item => item.name === j.name)
       ) {
         wuqiHave.push(j);
       } else if (!wuqiNeed.find(item => item.name === j.name)) {

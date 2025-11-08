@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getConfig, saveConfig } from '@/api/auth/config';
 import { message } from 'antd';
 
@@ -13,8 +13,10 @@ export const useConfigManagerCode = () => {
     setLoading(true);
     try {
       const result = await getConfig('xiuxian');
+
       if (result) {
         const configData = (result.data as Record<string, any>) || (result as unknown as Record<string, any>);
+
         setConfig(configData);
         setJsonConfig(JSON.stringify(configData, null, 2));
       }
@@ -31,7 +33,7 @@ export const useConfigManagerCode = () => {
     try {
       await saveConfig('xiuxian', values);
       message.success('配置保存成功');
-      loadConfig();
+      void loadConfig();
     } catch (error) {
       console.error('保存配置失败:', error);
     } finally {
@@ -40,16 +42,16 @@ export const useConfigManagerCode = () => {
   };
 
   const handleConfigChange = (key: string, value: unknown) => {
-    if (!config) return;
+    if (!config) {
+      return;
+    }
 
     const keys = key.split('.');
     const newConfig = { ...config };
     let current = newConfig as Record<string, unknown>;
 
     for (let i = 0; i < keys.length - 1; i++) {
-      if (!current[keys[i]]) {
-        current[keys[i]] = {};
-      }
+      current[keys[i]] ??= {};
       current = current[keys[i]] as Record<string, unknown>;
     }
 
@@ -59,17 +61,21 @@ export const useConfigManagerCode = () => {
   };
 
   const getConfigValue = (key: string): unknown => {
-    if (!config) return undefined;
+    if (!config) {
+      return undefined;
+    }
     const keys = key.split('.');
     let value: unknown = config;
+
     for (const k of keys) {
       value = (value as Record<string, unknown>)?.[k];
     }
+
     return value;
   };
 
   useEffect(() => {
-    loadConfig();
+    void loadConfig();
   }, []);
 
   return {

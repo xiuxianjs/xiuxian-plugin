@@ -12,6 +12,7 @@ export const getConfig = async (app: string) => {
     return result;
   } catch (error) {
     console.error('获取配置失败:', error);
+
     return null;
   }
 };
@@ -31,6 +32,7 @@ export const saveConfig = async (app: string, data: unknown) => {
     return result;
   } catch (error) {
     console.error('保存配置失败:', error);
+
     return null;
   }
 };

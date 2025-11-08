@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { message } from 'antd';
-
 import { useAuth } from '@/contexts/AuthContext';
 import { getAssociationsAPI, getAssociationsStatsAPI } from '@/api/auth';
 import { AssociationManagerPageSize, levelNames } from '@/config';
@@ -58,7 +57,7 @@ export const useAssociationManagerCode = () => {
         setAssociations(result.data.list);
         setPagination(result.data.pagination);
       } else {
-        message.error(result.message || '获取宗门数据失败');
+        message.error(result.message ?? '获取宗门数据失败');
       }
     } catch (error) {
       console.error('获取宗门数据失败:', error);
@@ -96,24 +95,24 @@ export const useAssociationManagerCode = () => {
   };
 
   useEffect(() => {
-    fetchAssociations(1, AssociationManagerPageSize);
-    fetchStats();
+    void fetchAssociations(1, AssociationManagerPageSize);
+    void fetchStats();
   }, [user]);
 
   // 处理搜索变化
   const handleSearchAndFilter = () => {
-    fetchAssociations(1, pagination.pageSize);
-    fetchStats();
+    void fetchAssociations(1, pagination.pageSize);
+    void fetchStats();
   };
 
   // 处理分页变化
   const handleTableChange = (page: number, pageSize: number) => {
-    fetchAssociations(page, pageSize);
+    void fetchAssociations(page, pageSize);
   };
 
   // 获取境界名称
   const getLevelName = (levelId: number) => {
-    return levelNames[levelId] || `境界${levelId}`;
+    return levelNames[levelId] ?? `境界${levelId}`;
   };
 
   // 获取宗门类型

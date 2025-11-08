@@ -10,13 +10,14 @@ interface PermissionGuardProps {
 }
 
 export function PermissionGuard({ permission, fallback = null, children }: PropsWithChildren<PermissionGuardProps>) {
-  let hasPermission = (perm: Permission) => false;
+  let hasPermission = (_perm: Permission) => false;
 
   try {
     const permissions = usePermissions();
 
     hasPermission = permissions.hasPermission;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, denying permission');
   }
 
@@ -35,8 +36,8 @@ interface MultiPermissionGuardProps {
 }
 
 export function MultiPermissionGuard({ permissions, requireAll = false, fallback = null, children }: PropsWithChildren<MultiPermissionGuardProps>) {
-  let hasAnyPermission = (permissions: Permission[]) => false;
-  let hasAllPermissions = (permissions: Permission[]) => false;
+  let hasAnyPermission = (_permissions: Permission[]) => false;
+  let hasAllPermissions = (_permissions: Permission[]) => false;
 
   try {
     const permissionContext = usePermissions();
@@ -44,6 +45,7 @@ export function MultiPermissionGuard({ permissions, requireAll = false, fallback
     hasAnyPermission = permissionContext.hasAnyPermission;
     hasAllPermissions = permissionContext.hasAllPermissions;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, denying permission');
   }
 
@@ -71,6 +73,7 @@ export function RoleGuard({ roles, requireAll = false, fallback = null, children
 
     user = permissions.user;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, denying access');
   }
 
@@ -94,13 +97,14 @@ interface RouteGuardProps {
 }
 
 export function RouteGuard({ route, fallback = null, children }: PropsWithChildren<RouteGuardProps>) {
-  let canAccessRoute = (route: string) => true;
+  let canAccessRoute = (_route: string) => true;
 
   try {
     const permissions = usePermissions();
 
     canAccessRoute = permissions.canAccessRoute;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, allowing access');
   }
 
@@ -118,13 +122,14 @@ interface PageGuardProps {
 }
 
 export function PageGuard({ page, fallback = null, children }: PropsWithChildren<PageGuardProps>) {
-  let canAccessPage = (page: string) => true;
+  let canAccessPage = (_page: string) => true;
 
   try {
     const permissions = usePermissions();
 
     canAccessPage = permissions.canAccessPage;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, allowing access');
   }
 
@@ -142,13 +147,14 @@ interface PermissionCheckProps {
 }
 
 export function PermissionCheck({ permission, children }: PermissionCheckProps) {
-  let hasPermission = (perm: Permission) => false;
+  let hasPermission = (_perm: Permission) => false;
 
   try {
     const permissions = usePermissions();
 
     hasPermission = permissions.hasPermission;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, denying permission');
   }
 
@@ -170,6 +176,7 @@ export function RoleCheck({ roles, requireAll = false, children }: RoleCheckProp
 
     user = permissions.user;
   } catch (error) {
+    console.error(error);
     console.warn('PermissionProvider not found, denying access');
   }
 

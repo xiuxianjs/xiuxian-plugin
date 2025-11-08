@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { DollarOutlined, PlusOutlined } from '@ant-design/icons';
+import { useEffect } from 'react';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button, Card, Space, Typography } from 'antd';
 import { useCurrencyManager } from './hooks/useCurrencyManager';
 import StatsCards from './components/StatsCards';
 import TabNavigation from './components/TabNavigation';
@@ -7,9 +8,6 @@ import UserCurrencyTab from './components/UserCurrencyTab';
 import RechargeRecordsTab from './components/RechargeRecordsTab';
 import StatsTab from './components/StatsTab';
 import RechargeModal from './components/RechargeModal';
-
-// 导入UI组件库
-import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTableContainer, XiuxianRefreshButton } from '@/components/ui';
 
 export default function CurrencyManager() {
   const {
@@ -33,40 +31,41 @@ export default function CurrencyManager() {
   } = useCurrencyManager();
 
   useEffect(() => {
-    fetchUsers();
-    fetchStats();
+    void fetchUsers();
+    void fetchStats();
   }, []);
 
   const handleRefresh = () => {
-    fetchUsers();
-    fetchRecords();
-    fetchStats();
-    fetchConfig();
+    void fetchUsers();
+    void fetchRecords();
+    void fetchStats();
+    void fetchConfig();
   };
 
   return (
-    <XiuxianPageWrapper>
+    <div className='p-4 bg-slate-200'>
       {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon={<DollarOutlined />}
-        title='货币管理系统'
-        subtitle='管理用户金币、月卡和充值记录'
-        actions={
-          <div className='flex gap-2'>
-            <button
-              className='px-2 py-1 rounded-md bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2'
-              onClick={() => {
-                setSelectedUser(null);
-                setRechargeModalVisible(true);
-              }}
-            >
-              <PlusOutlined />
-              充值
-            </button>
-            <XiuxianRefreshButton loading={loading} onClick={handleRefresh} />
-          </div>
-        }
-      />
+      <div className='flex justify-between items-center mb-6'>
+        <div>
+          <Typography.Title level={3} style={{ margin: 0 }}>货币管理系统</Typography.Title>
+          <Typography.Paragraph style={{ marginTop: 8, marginBottom: 0 }}>管理用户金币、月卡和充值记录</Typography.Paragraph>
+        </div>
+        <Space>
+          <Button
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setSelectedUser(null);
+              setRechargeModalVisible(true);
+            }}
+          >
+            充值
+          </Button>
+          <Button icon={<ReloadOutlined spin={loading} />} loading={loading} onClick={handleRefresh}>
+            刷新数据
+          </Button>
+        </Space>
+      </div>
 
       {/* 统计卡片 */}
       {stats && <StatsCards stats={stats} />}
@@ -77,16 +76,15 @@ export default function CurrencyManager() {
         onTabChange={setSelectedTab}
         onRecordsTabClick={() => {
           setSelectedTab('records');
-          fetchRecords();
+          void fetchRecords();
         }}
       />
 
       {/* 内容区域 */}
-      <XiuxianTableContainer
+      <Card
         title={
           (selectedTab === 'users' && '用户货币管理') || (selectedTab === 'records' && '充值记录管理') || (selectedTab === 'stats' && '统计分析') || '货币管理'
         }
-        icon={<DollarOutlined />}
       >
         {/* 用户货币管理 */}
         {selectedTab === 'users' && <UserCurrencyTab users={users} loading={loading} onRefresh={fetchUsers} onStatsRefresh={fetchStats} />}
@@ -96,7 +94,7 @@ export default function CurrencyManager() {
 
         {/* 统计分析 */}
         {selectedTab === 'stats' && <StatsTab stats={stats} />}
-      </XiuxianTableContainer>
+      </Card>
 
       {/* 充值弹窗 */}
       <RechargeModal
@@ -109,9 +107,9 @@ export default function CurrencyManager() {
           setSelectedUser(null);
           rechargeForm.resetFields();
         }}
-        onOk={handleRechargeOk}
+        onOk={(values) => { void handleRechargeOk(values); }}
         form={rechargeForm}
       />
-    </XiuxianPageWrapper>
+    </div>
   );
 }

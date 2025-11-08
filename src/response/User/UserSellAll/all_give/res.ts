@@ -78,7 +78,7 @@ const res = onResponse(selects, async e => {
     let sent = false;
 
     for (const l of items) {
-      if (l && l.islockd === 0 && Number(l.数量) > 0) {
+      if (l?.islockd === 0 && Number(l.数量) > 0) {
         const quantity = Number(l.数量);
 
         if (type === '装备' || type === '仙宠') {

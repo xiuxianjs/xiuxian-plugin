@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "format": "prettier --write ."
+    "eslint": "eslint src --fix",
+    "format": "prettier --write .",
+    "check-format": "git diff --exit-code"
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
@@ -23,6 +25,10 @@
     "axios": "^1.11.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.2",
     "lodash-es": "^4.17.21",
     "postcss": "^8.4.38",
     "postcss-import": "^16.1.0",

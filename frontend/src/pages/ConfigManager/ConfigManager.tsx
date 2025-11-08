@@ -1,11 +1,9 @@
-import React from 'react';
 import { configCategories } from '@/config';
-import classNames from 'classnames';
 import { useConfigManagerCode } from './ConfigManager.code';
-import { Modal } from 'antd';
+import { Modal, Button, Tabs, Input, InputNumber, Switch, Card, Tag, Space } from 'antd';
+import { ReloadOutlined, SaveOutlined, EditOutlined } from '@ant-design/icons';
 
-// 导入UI组件库
-import { XiuxianPageWrapper, XiuxianPageTitle, XiuxianTabGroup, XiuxianConfigItem } from '@/components/ui';
+const { TextArea } = Input;
 
 export default function ConfigManager() {
   const {
@@ -24,82 +22,106 @@ export default function ConfigManager() {
     setOpen
   } = useConfigManagerCode();
 
+  // 渲染配置项的输入组件
+  const renderConfigInput = (item: any) => {
+    const value = getConfigValue(item.key);
+    const itemType = item.type === 'json' ? 'array' : item.type;
+
+    return (
+      <Card key={item.key} size='small'>
+        <div className='flex justify-between items-center mb-2'>
+          <label className='font-medium'>{item.name}</label>
+          <Tag>{itemType.toUpperCase()}</Tag>
+        </div>
+        <p className='text-xs mb-3'>{item.description}</p>
+
+        {itemType === 'boolean' ? (
+          <div>
+            <Switch checked={!!value} onChange={checked => handleConfigChange(item.key, checked)} />
+            <span className='ml-2'>{value ? '启用' : '禁用'}</span>
+          </div>
+        ) : itemType === 'array' ? (
+          <TextArea
+            value={JSON.stringify(value ?? [], null, 2)}
+            onChange={e => {
+              try {
+                const parsedValue = JSON.parse(e.target.value);
+
+                handleConfigChange(item.key, parsedValue);
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+            rows={3}
+            placeholder='请输入JSON数组格式'
+            className='font-mono text-xs'
+          />
+        ) : itemType === 'number' ? (
+          <InputNumber value={value as number} onChange={val => handleConfigChange(item.key, val ?? 0)} className='w-full' placeholder={`请输入${item.name}`} />
+        ) : (
+          <Input value={String(value ?? '')} onChange={e => handleConfigChange(item.key, e.target.value)} placeholder={`请输入${item.name}`} />
+        )}
+      </Card>
+    );
+  };
+
   // 构建标签页数据
-  const tabs = configCategories.map(category => ({
-    name: category.name,
-    icon: category.icon,
-    content: (
-      <div className='space-y-4'>
-        <h3 className='text-white text-xl font-semibold flex items-center'>
-          <span className='mr-2'>{category.icon}</span>
+  const tabItems = configCategories.map(category => ({
+    key: category.name,
+    label: (
+      <span>
+        {category.icon && <span className='mr-2'>{category.icon}</span>}
+        {category.name}
+      </span>
+    ),
+    children: (
+      <div>
+        <h3 className='mb-4 text-lg font-semibold'>
+          {category.icon && <span className='mr-2'>{category.icon}</span>}
           {category.name}
         </h3>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          {category.items.map(item => (
-            <XiuxianConfigItem
-              key={item.key}
-              name={item.name}
-              description={item.description}
-              type={item.type === 'json' ? 'array' : (item.type as 'string' | 'number' | 'boolean' | 'array')}
-              value={getConfigValue(item.key)}
-              onChange={value => handleConfigChange(item.key, value)}
-            />
-          ))}
-        </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>{category.items.map(item => renderConfigInput(item))}</div>
       </div>
     )
   }));
 
   return (
-    <XiuxianPageWrapper>
+    <div className='min-h-screen bg-gray-200 p-4'>
       {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon='⚙️'
-        title='配置管理'
-        subtitle='管理系统配置参数'
-        actions={
-          <div className='flex space-x-3'>
-            <button
-              onClick={loadConfig}
-              disabled={loading}
-              className='px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50'
-            >
-              <span className='mr-2'>🔄</span>
-              {loading ? '刷新中...' : '刷新配置'}
-            </button>
-            <button
-              onClick={() => setOpen(true)}
-              className='px-2 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-md hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50'
-            >
-              <span className='mr-2'>🔄</span>
-              JSON编辑
-            </button>
-            {activeTab !== 'JSON编辑' && (
-              <button
-                onClick={() => config && handleSave(config)}
-                disabled={loading || !config}
-                className='px-2 py-1 rounded-md bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed'
-              >
-                <span className='mr-2'>💾</span>
-                {loading ? '保存中...' : '保存配置'}
-              </button>
-            )}
-          </div>
-        }
-      />
+      <div className='flex justify-between items-center mb-6 flex-wrap gap-4'>
+        <div>
+          <h1 className='text-2xl font-bold m-0'>配置管理</h1>
+          <p className='text-sm mt-2 mb-0'>管理系统配置参数</p>
+        </div>
+        <Space wrap>
+          <Button icon={<ReloadOutlined spin={loading} />} onClick={() => { void loadConfig(); }} disabled={loading}>
+            {loading ? '刷新中...' : '刷新配置'}
+          </Button>
+          <Button icon={<EditOutlined />} onClick={() => setOpen(true)}>
+            JSON编辑
+          </Button>
+          {activeTab !== 'JSON编辑' && (
+            <Button type='primary' icon={<SaveOutlined />} onClick={() => { if (config) { void handleSave(config); } }} disabled={loading || !config}>
+              {loading ? '保存中...' : '保存配置'}
+            </Button>
+          )}
+        </Space>
+      </div>
 
       {/* 标签页组 */}
-      <XiuxianTabGroup tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+      <Card>
+        <Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
+      </Card>
 
       <Modal
-        className='xiuxian-modal'
         title='JSON配置'
         open={open}
         onCancel={() => setOpen(false)}
         onOk={() => {
           try {
             const parsed = JSON.parse(jsonConfig);
-            handleSave(parsed);
+
+            void handleSave(parsed);
             setOpen(false);
           } catch (error) {
             console.error(error);
@@ -108,18 +130,10 @@ export default function ConfigManager() {
         }}
         cancelText='取消'
         okText='确定'
+        width={800}
       >
-        <div>
-          <div className='mb-4'>
-            <textarea
-              value={jsonConfig}
-              onChange={e => setJsonConfig(e.target.value)}
-              className='w-full h-96 p-4 xiuxian-input rounded-xl font-mono text-sm'
-              placeholder='请输入JSON格式的配置...'
-            />
-          </div>
-        </div>
+        <TextArea value={jsonConfig} onChange={e => setJsonConfig(e.target.value)} rows={20} placeholder='请输入JSON格式的配置...' className='font-mono' />
       </Modal>
-    </XiuxianPageWrapper>
+    </div>
   );
 }

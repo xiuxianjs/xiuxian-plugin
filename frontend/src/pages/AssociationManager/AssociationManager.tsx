@@ -1,23 +1,11 @@
-import React from 'react';
-import { Table, Tag, Tooltip } from 'antd';
-import { EyeOutlined, TeamOutlined, FireOutlined, CrownOutlined, BankOutlined, UserOutlined } from '@ant-design/icons';
+import { Tag, Tooltip, Card, Typography, Space, Button, Input, Table, Row, Col, Statistic } from 'antd';
+import { EyeOutlined, TeamOutlined, FireOutlined, CrownOutlined, BankOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Association } from '@/types/types';
 import AssociationInfo from './AssociationInfo';
 import { useAssociationManagerCode } from './AssociationManager.code';
 
-// 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianStatCard,
-  XiuxianSearchBar,
-  XiuxianTableContainer,
-  XiuxianRefreshButton,
-  XiuxianTableWithPagination
-} from '@/components/ui';
-
-export default function AssociationManager() {
+const AssociationManager = () => {
   const {
     associations,
     loading,
@@ -36,218 +24,149 @@ export default function AssociationManager() {
     setAssociationDetailVisible
   } = useAssociationManagerCode();
 
-  // 表格列定义
   const columns: ColumnsType<Association> = [
     {
-      title: (
-        <div className='flex items-center gap-2 text-purple-400 font-bold'>
-          <span>宗门信息</span>
-        </div>
-      ),
+      title: '宗门信息',
       key: 'associationInfo',
       width: 280,
       render: (_, record) => (
-        <div className='flex items-center space-x-4 p-3 bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-xl border border-slate-700/50 rounded-xl'>
-          <div className='w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg'>
-            {record.宗门名称?.charAt(0) || '宗'}
-          </div>
-          <div className='flex-1'>
-            <div className='text-white font-semibold text-base mb-1'>{record.宗门名称}</div>
-            <div className='text-slate-300 text-sm mb-1'>
-              <CrownOutlined className='mr-1 text-purple-400' />
-              等级: <span className='text-purple-400 font-medium'>{record.宗门等级}</span>
-            </div>
-            <div className='text-slate-300 text-sm'>
-              <UserOutlined className='mr-1 text-blue-400' />
-              宗主: <span className='text-blue-400 font-medium'>{record.宗主}</span>
-            </div>
-          </div>
-        </div>
+        <Space direction='vertical' size={2}>
+          <Typography.Text strong>{record.宗门名称}</Typography.Text>
+          <Typography.Text type='secondary'>等级: {record.宗门等级}</Typography.Text>
+          <Typography.Text type='secondary'>宗主: {record.宗主}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-blue-400 font-bold'>
-          <span>宗门类型</span>
-        </div>
-      ),
+      title: '宗门类型',
       key: 'type',
       width: 120,
-      render: (_, record) => (
-        <div className='flex justify-center'>
-          <Tag
-            color={record.power > 0 ? 'purple' : 'blue'}
-            className='px-3 py-1 rounded-full font-medium text-sm border-0 shadow-lg'
-            style={{
-              background: record.power > 0 ? 'linear-gradient(135deg, #8b5cf6, #ec4899)' : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-              color: 'white'
-            }}
-          >
-            <CrownOutlined className='mr-1' />
-            {getAssociationType(record.power)}
-          </Tag>
-        </div>
-      )
+      render: (_, record) => <Tag color={record.power > 0 ? 'purple' : 'blue'}>{getAssociationType(record.power)}</Tag>
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-green-400 font-bold'>
-          <span>成员统计</span>
-        </div>
-      ),
+      title: '成员统计',
       key: 'members',
       width: 180,
       render: (_, record) => (
-        <div className='bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border border-blue-500/30 rounded-xl p-3'>
-          <div className='space-y-2'>
-            <div className='flex justify-between items-center'>
-              <span className='text-slate-300 text-sm'>总成员</span>
-              <span className='text-white font-bold'>{(record.所有成员?.length || 0).toLocaleString()}</span>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span className='text-slate-300 text-sm'>副宗主</span>
-              <span className='text-purple-400 font-bold'>{(record.副宗主?.length || 0).toLocaleString()}</span>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span className='text-slate-300 text-sm'>长老</span>
-              <span className='text-green-400 font-bold'>{(record.长老?.length || 0).toLocaleString()}</span>
-            </div>
-          </div>
-        </div>
+        <Space direction='vertical' size={0}>
+          <Typography.Text>总成员：{(record.所有成员?.length ?? 0).toLocaleString()}</Typography.Text>
+          <Typography.Text>副宗主：{(record.副宗主?.length ?? 0).toLocaleString()}</Typography.Text>
+          <Typography.Text>长老：{(record.长老?.length ?? 0).toLocaleString()}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-yellow-400 font-bold'>
-          <span>资源信息</span>
-        </div>
-      ),
+      title: '资源信息',
       key: 'resources',
       width: 160,
       render: (_, record) => (
-        <div className='bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/30 rounded-xl p-3'>
-          <div className='space-y-2'>
-            <div className='flex justify-between items-center'>
-              <span className='text-slate-300 text-sm'>灵石池</span>
-              <span className='text-green-400 font-bold text-sm'>{(record.灵石池 || 0).toLocaleString()}</span>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span className='text-slate-300 text-sm'>大阵血量</span>
-              <span className='text-yellow-400 font-bold text-sm'>{(record.大阵血量 || 0).toLocaleString()}</span>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span className='text-slate-300 text-sm'>最低境界</span>
-              <span className='text-purple-400 font-bold text-sm'>{getLevelName(record.最低加入境界)}</span>
-            </div>
-          </div>
-        </div>
+        <Space direction='vertical' size={0}>
+          <Typography.Text>灵石池：{(record.灵石池 ?? 0).toLocaleString()}</Typography.Text>
+          <Typography.Text>大阵血量：{(record.大阵血量 ?? 0).toLocaleString()}</Typography.Text>
+          <Typography.Text>最低境界：{getLevelName(record.最低加入境界)}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-cyan-400 font-bold'>
-          <span>宗门驻地</span>
-        </div>
-      ),
+      title: '宗门驻地',
       key: 'location',
       width: 140,
       render: (_, record) => (
-        <div className='bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/30 rounded-xl p-3'>
-          <div className='space-y-2'>
-            <div className='text-center'>
-              <div className='text-slate-300 text-sm mb-1'>驻地</div>
-              <div className='text-white font-bold text-sm'>{record.宗门驻地 || '无驻地'}</div>
-            </div>
-            <div className='text-center'>
-              <div className='text-slate-300 text-sm mb-1'>神兽</div>
-              <div className='text-pink-400 font-bold text-sm'>{record.宗门神兽 || '无'}</div>
-            </div>
-          </div>
-        </div>
+        <Space direction='vertical' size={0}>
+          <Typography.Text>驻地：{record.宗门驻地 ?? '无驻地'}</Typography.Text>
+          <Typography.Text>神兽：{record.宗门神兽 ?? '无'}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-purple-400 font-bold'>
-          <span>操作</span>
-        </div>
-      ),
+      title: '操作',
       key: 'actions',
       width: 120,
       render: (_, record) => (
-        <div className='flex justify-center'>
-          <Tooltip title='查看详情' placement='top'>
-            <button
-              className='px-3 py-1 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-1'
-              onClick={() => {
-                setSelectedAssociation(record);
-                setAssociationDetailVisible(true);
-              }}
-            >
-              <EyeOutlined />
-              查看
-            </button>
-          </Tooltip>
-        </div>
+        <Tooltip title='查看详情' placement='top'>
+          <Button
+            type='primary'
+            icon={<EyeOutlined />}
+            onClick={() => {
+              setSelectedAssociation(record);
+              setAssociationDetailVisible(true);
+            }}
+          >
+            查看
+          </Button>
+        </Tooltip>
       )
     }
   ];
 
   return (
-    <XiuxianPageWrapper>
-      {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon={<TeamOutlined />}
-        title='宗门管理'
-        subtitle='管理修仙世界的宗门信息'
-        actions={<XiuxianRefreshButton loading={loading} onClick={() => fetchAssociations(1, pagination.pageSize)} />}
-      />
+    <Space direction='vertical' size='large' className='bg-slate-200 p-4' style={{ width: '100%' }}>
+      <Card
+        title={
+          <Space align='center'>
+            <TeamOutlined />
+            <Typography.Text strong>宗门管理</Typography.Text>
+          </Space>
+        }
+        extra={
+          <Button
+            type='primary'
+            loading={loading}
+            onClick={() => {
+              void fetchAssociations(1, pagination.pageSize);
+            }}
+          >
+            刷新
+          </Button>
+        }
+      >
+        <Typography.Text type='secondary'>管理修仙世界的宗门信息</Typography.Text>
+      </Card>
 
-      {/* 统计卡片 */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
-        <XiuxianStatCard
-          title='总宗门数'
-          value={(stats.total || 0).toLocaleString()}
-          icon={<TeamOutlined />}
-          gradient='blue'
-          subtitle={`仙界: ${stats.xianjieCount || 0} | 凡界: ${stats.fanjieCount || 0}`}
-        />
-        <XiuxianStatCard
-          title='仙界宗门'
-          value={(stats.xianjieCount || 0).toLocaleString()}
-          icon={<CrownOutlined />}
-          gradient='purple'
-          subtitle={`占比: ${stats.total ? Math.round((stats.xianjieCount / stats.total) * 100) : 0}%`}
-        />
-        <XiuxianStatCard
-          title='总灵石池'
-          value={(stats.totalLingshi || 0).toLocaleString()}
-          icon={<BankOutlined />}
-          gradient='green'
-          subtitle={`平均: ${stats.total ? Math.round(stats.totalLingshi / stats.total) : 0}`}
-        />
-        <XiuxianStatCard
-          title='总成员数'
-          value={(stats.totalMembers || 0).toLocaleString()}
-          icon={<FireOutlined />}
-          gradient='orange'
-          subtitle={`平均: ${stats.total ? Math.round(stats.totalMembers / stats.total) : 0}`}
-        />
-      </div>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='总宗门数' value={stats.total ?? 0} prefix={<TeamOutlined />} />
+            <Typography.Text type='secondary'>
+              仙界: {stats.xianjieCount ?? 0} | 凡界: {stats.fanjieCount ?? 0}
+            </Typography.Text>
+          </Card>
+        </Col>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='仙界宗门' value={stats.xianjieCount ?? 0} prefix={<CrownOutlined />} />
+            <Typography.Text type='secondary'>占比: {stats.total ? Math.round((stats.xianjieCount / stats.total) * 100) : 0}%</Typography.Text>
+          </Card>
+        </Col>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='总灵石池' value={stats.totalLingshi ?? 0} prefix={<BankOutlined />} />
+            <Typography.Text type='secondary'>平均: {stats.total ? Math.round(stats.totalLingshi / stats.total) : 0}</Typography.Text>
+          </Card>
+        </Col>
+        <Col xs={24} md={6}>
+          <Card>
+            <Statistic title='总成员数' value={stats.totalMembers ?? 0} prefix={<FireOutlined />} />
+            <Typography.Text type='secondary'>平均: {stats.total ? Math.round(stats.totalMembers / stats.total) : 0}</Typography.Text>
+          </Card>
+        </Col>
+      </Row>
 
-      {/* 搜索栏 */}
-      <XiuxianSearchBar
+      <Input.Search
         placeholder='搜索宗门名称、宗主或驻地...'
         value={searchText}
-        onChange={setSearchText}
-        onSearch={handleSearchAndFilter}
-        onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
-        className='mb-6'
+        onChange={e => setSearchText(e.target.value)}
+        onSearch={() => {
+          void handleSearchAndFilter();
+        }}
+        onPressEnter={() => {
+          void handleSearchAndFilter();
+        }}
+        allowClear
       />
 
-      {/* 宗门表格 */}
-      <XiuxianTableContainer title='宗门列表' icon={<TeamOutlined />}>
-        <XiuxianTableWithPagination
+      <Card title='宗门列表'>
+        <Table
           columns={columns}
           dataSource={associations}
           rowKey='宗门名称'
@@ -260,13 +179,13 @@ export default function AssociationManager() {
             showQuickJumper: true,
             showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
           }}
-          onPaginationChange={handleTableChange}
-          scroll={{ x: 1200 }}
-          rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
+          onChange={p => {
+            void handleTableChange(p.current!, p.pageSize!);
+          }}
+          scroll={{ x: 1000 }}
         />
-      </XiuxianTableContainer>
+      </Card>
 
-      {/* 宗门详情弹窗 */}
       <AssociationInfo
         associationDetailVisible={associationDetailVisible}
         setAssociationDetailVisible={setAssociationDetailVisible}
@@ -274,6 +193,8 @@ export default function AssociationManager() {
         getAssociationType={getAssociationType}
         getLevelName={getLevelName}
       />
-    </XiuxianPageWrapper>
+    </Space>
   );
-}
+};
+
+export default AssociationManager;

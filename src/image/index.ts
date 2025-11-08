@@ -148,7 +148,7 @@ export async function screenshot(name: keyof typeof map, uid: number | string, d
   const cacheKey = `${keyBase}`;
   const existed = shotCache.get(cacheKey);
 
-  if (existed && existed.hash === hash) {
+  if (existed?.hash === hash) {
     return existed.buffer;
   }
 

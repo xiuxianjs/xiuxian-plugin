@@ -1,12 +1,9 @@
 import React from 'react';
-import { Table, Button, Input, Select, Tag, Space } from 'antd';
+import { Button, Input, Select, Tag, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { EyeOutlined, GiftOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import type { RechargeRecord } from '@/types/CurrencyManager';
-
-// 导入UI组件库
-import { XiuxianTableWithPagination, XiuxianSearchBar } from '@/components/ui';
 
 const { Option } = Select;
 
@@ -21,21 +18,13 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
   const [statusFilter, setStatusFilter] = React.useState<string>('');
   const [typeFilter, setTypeFilter] = React.useState<string>('');
 
-  // 根据档位获取金额
   const getAmountByTier = (tier: string): number => {
-    if (!config) return 0;
-
-    // 检查月卡
-    if (tier === config.monthCardConfig?.SMALL?.name) {
-      return config.monthCardConfig.SMALL.price;
-    }
-    if (tier === config.monthCardConfig?.BIG?.name) {
-      return config.monthCardConfig.BIG.price;
-    }
-
-    // 检查充值档位
+    if (!config) { return 0; }
+    if (tier === config.monthCardConfig?.SMALL?.name) { return config.monthCardConfig.SMALL.price; }
+    if (tier === config.monthCardConfig?.BIG?.name) { return config.monthCardConfig.BIG.price; }
     const tierData = config.rechargeTiers?.find((t: any) => t.name === tier);
-    return tierData?.amount || 0;
+
+    return tierData?.amount ?? 0;
   };
 
   const columns: ColumnsType<RechargeRecord> = [
@@ -44,14 +33,14 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       dataIndex: 'id',
       key: 'id',
       width: 100,
-      render: id => <div className='font-mono text-xs bg-slate-700/50 px-2 py-1 rounded'>{id}</div>
+      render: id => <span style={{ fontFamily: 'monospace' }}>{id}</span>
     },
     {
       title: '用户ID',
       dataIndex: 'user_id',
       key: 'user_id',
       width: 120,
-      render: userId => <div className='font-mono text-sm bg-slate-700/50 px-2 py-1 rounded'>{userId}</div>
+      render: userId => <span style={{ fontFamily: 'monospace' }}>{userId}</span>
     },
     {
       title: '充值类型',
@@ -59,9 +48,9 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       key: 'type',
       width: 120,
       render: (type, record) => (
-        <div className='space-y-1'>
+        <div>
           <Tag color={getTypeColor(type)}>{getTypeName(type)}</Tag>
-          {record.tier && <div className='text-xs text-slate-400'>{record.tier}</div>}
+          {record.tier && <div style={{ fontSize: 12, opacity: 0.8 }}>{record.tier}</div>}
         </div>
       )
     },
@@ -72,11 +61,12 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       width: 120,
       render: (tier, record) => {
         const amount = getAmountByTier(tier);
+
         return (
-          <div className='space-y-1'>
-            <div className='font-bold text-green-400'>¥{amount}</div>
-            {record.currency_gained > 0 && <div className='text-xs text-yellow-400'>获得金币: {record.currency_gained.toLocaleString()}</div>}
-            {record.month_card_days > 0 && <div className='text-xs text-blue-400'>月卡天数: {record.month_card_days}天</div>}
+          <div>
+            <strong>¥{amount}</strong>
+            {record.currency_gained > 0 && <div style={{ fontSize: 12 }}>获得金币: {record.currency_gained.toLocaleString()}</div>}
+            {record.month_card_days > 0 && <div style={{ fontSize: 12 }}>月卡天数: {record.month_card_days}天</div>}
           </div>
         );
       }
@@ -93,12 +83,12 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       key: 'paymentInfo',
       width: 150,
       render: (_unused, record) => (
-        <div className='space-y-1 text-xs'>
+        <div style={{ fontSize: 12 }}>
           <div>
-            <span className='text-slate-400'>方式:</span>
-            <span className='text-slate-300 ml-1'>{record.payment_method}</span>
+            <span>方式:</span>
+            <span style={{ marginLeft: 4 }}>{record.payment_method}</span>
           </div>
-          {record.transaction_id && <div className='font-mono text-slate-400'>{record.transaction_id.slice(0, 8)}...</div>}
+          {record.transaction_id && <div style={{ fontFamily: 'monospace', opacity: 0.8 }}>{record.transaction_id.slice(0, 8)}...</div>}
         </div>
       )
     },
@@ -107,15 +97,15 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       key: 'timeInfo',
       width: 180,
       render: (_, record) => (
-        <div className='space-y-1 text-xs'>
+        <div style={{ fontSize: 12 }}>
           <div>
-            <span className='text-slate-400'>创建:</span>
-            <div className='text-slate-300'>{dayjs(record.created_at).format('MM-DD HH:mm')}</div>
+            <span>创建:</span>
+            <div>{dayjs(record.created_at).format('MM-DD HH:mm')}</div>
           </div>
           {record.paid_at && (
             <div>
-              <span className='text-slate-400'>支付:</span>
-              <div className='text-slate-300'>{dayjs(record.paid_at).format('MM-DD HH:mm')}</div>
+              <span>支付:</span>
+              <div>{dayjs(record.paid_at).format('MM-DD HH:mm')}</div>
             </div>
           )}
         </div>
@@ -126,13 +116,11 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       key: 'special',
       width: 100,
       render: (_, record) => (
-        <div className='space-y-1'>
+        <div>
           {record.is_first_recharge && (
-            <Tag color='gold' icon={<GiftOutlined />}>
-              首充
-            </Tag>
+            <Tag color='gold' icon={<GiftOutlined />}>首充</Tag>
           )}
-          {record.first_recharge_bonus > 0 && <div className='text-xs text-yellow-400'>奖励: +{record.first_recharge_bonus}</div>}
+          {record.first_recharge_bonus > 0 && <div style={{ fontSize: 12 }}>奖励: +{record.first_recharge_bonus}</div>}
         </div>
       )
     },
@@ -140,17 +128,9 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
       title: '操作',
       key: 'actions',
       width: 100,
-      render: (_, record) => (
+      render: () => (
         <Space>
-          <Button
-            size='small'
-            icon={<EyeOutlined />}
-            onClick={() => {
-              // 查看详情 - 待实现
-            }}
-          >
-            详情
-          </Button>
+          <Button size='small' icon={<EyeOutlined />}>详情</Button>
         </Space>
       )
     }
@@ -160,6 +140,7 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
     const matchesSearch = record.user_id.toLowerCase().includes(searchText.toLowerCase()) || record.id.toLowerCase().includes(searchText.toLowerCase());
     const matchesStatus = !statusFilter || record.payment_status === statusFilter;
     const matchesType = !typeFilter || record.type === typeFilter;
+
     return matchesSearch && matchesStatus && matchesType;
   });
 
@@ -169,29 +150,29 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
         <div className='flex-1 min-w-0'>
           <Input.Search
             placeholder='搜索用户ID或记录ID'
-            className='w-full xiuxian-input'
+            className='w-full'
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
             onSearch={() => {}}
             onKeyPress={e => e.key === 'Enter' && setSearchText((e.target as HTMLInputElement).value)}
           />
         </div>
-        <Select placeholder='支付状态' allowClear className='xiuxian-select' style={{ width: 120 }} onChange={setStatusFilter}>
+        <Select placeholder='支付状态' allowClear style={{ width: 120 }} onChange={setStatusFilter}>
           <Option value='pending'>待支付</Option>
           <Option value='success'>支付成功</Option>
           <Option value='failed'>支付失败</Option>
           <Option value='refunded'>已退款</Option>
         </Select>
-        <Select placeholder='充值类型' allowClear className='xiuxian-select' style={{ width: 120 }} onChange={setTypeFilter}>
+        <Select placeholder='充值类型' allowClear style={{ width: 120 }} onChange={setTypeFilter}>
           <Option value='currency'>金币充值</Option>
           <Option value='small_month_card'>小月卡</Option>
           <Option value='big_month_card'>大月卡</Option>
           <Option value='combo'>组合充值</Option>
         </Select>
-        <div className='text-slate-400 text-sm'>共 {filteredRecords.length} 条记录</div>
+        <div>共 {filteredRecords.length} 条记录</div>
       </div>
 
-      <XiuxianTableWithPagination
+      <Table<RechargeRecord>
         columns={columns}
         dataSource={filteredRecords}
         loading={loading}
@@ -204,13 +185,11 @@ export default function RechargeRecordsTab({ records, loading, config }: Recharg
           showQuickJumper: true,
           showTotal: total => `共 ${total} 条记录`
         }}
-        rowClassName={() => 'bg-slate-700 hover:bg-slate-600'}
       />
     </div>
   );
 }
 
-// 辅助函数
 function getTypeColor(type: string): string {
   switch (type) {
     case 'currency':

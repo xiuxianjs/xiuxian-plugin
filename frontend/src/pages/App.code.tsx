@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -21,12 +21,13 @@ export const useAppCode = () => {
 
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
+
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    void navigate('/login');
   };
 
   const toggleSidebar = () => {

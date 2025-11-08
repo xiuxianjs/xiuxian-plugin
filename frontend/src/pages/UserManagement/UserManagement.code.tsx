@@ -26,8 +26,8 @@ export const useUserManagementCode = () => {
         page,
         pageSize,
         search: searchText,
-        role: selectedRole || undefined,
-        status: (selectedStatus as any) || undefined
+  role: selectedRole === '' ? undefined : selectedRole,
+  status: selectedStatus === '' ? undefined : (selectedStatus as any)
       });
 
       if (result.success && result.data) {
@@ -38,7 +38,7 @@ export const useUserManagementCode = () => {
           total: result.data.total
         });
       } else {
-        message.error(result.message || '获取用户列表失败');
+  message.error(result.message ?? '获取用户列表失败');
       }
     } catch (error) {
       console.error('获取用户列表失败:', error);
@@ -67,7 +67,7 @@ export const useUserManagementCode = () => {
 
         return true;
       } else {
-        message.error(result.message || '操作失败');
+  message.error(result.message ?? '操作失败');
 
         return false;
       }
@@ -90,7 +90,7 @@ export const useUserManagementCode = () => {
 
         return true;
       } else {
-        message.error(result.message || '删除失败');
+  message.error(result.message ?? '删除失败');
 
         return false;
       }
@@ -112,7 +112,7 @@ export const useUserManagementCode = () => {
 
         return result.data.newPassword;
       } else {
-        message.error(result.message || '密码重置失败');
+  message.error(result.message ?? '密码重置失败');
 
         return null;
       }
@@ -135,7 +135,7 @@ export const useUserManagementCode = () => {
 
         return true;
       } else {
-        message.error(result.message || '状态更新失败');
+  message.error(result.message ?? '状态更新失败');
 
         return false;
       }
@@ -168,7 +168,7 @@ export const useUserManagementCode = () => {
 
         return true;
       } else {
-        message.error(result.message || '批量操作失败');
+  message.error(result.message ?? '批量操作失败');
 
         return false;
       }
@@ -217,10 +217,10 @@ export const useUserManagementCode = () => {
 
   // 统计信息
   const stats = {
-    total: users?.length || 0,
-    active: users?.filter(u => u.status === 'active').length || 0,
-    inactive: users?.filter(u => u.status === 'inactive').length || 0,
-    suspended: users?.filter(u => u.status === 'suspended').length || 0
+  total: users?.length ?? 0,
+  active: users?.filter(u => u.status === 'active').length ?? 0,
+  inactive: users?.filter(u => u.status === 'inactive').length ?? 0,
+  suspended: users?.filter(u => u.status === 'suspended').length ?? 0
   };
 
   return {

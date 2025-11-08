@@ -86,12 +86,13 @@ interface ResponsiveDataTableProps {
   pagination?: boolean | object;
 }
 
-export function ResponsiveDataTable({ data, columns, title, loading = false, pagination = false }: ResponsiveDataTableProps) {
+export function ResponsiveDataTable({ data, columns, title, loading = false, pagination: _pagination = false }: ResponsiveDataTableProps) {
   // 过滤响应式列
   const getResponsiveColumns = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
       return columns.filter(col => col.responsive !== false);
     }
+
     return columns;
   };
 
@@ -131,7 +132,7 @@ export function ResponsiveDataTable({ data, columns, title, loading = false, pag
                 <tr key={record.key} className='hover:bg-gray-50 transition-colors duration-150'>
                   {getResponsiveColumns().map(column => (
                     <td key={column.key} className='px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-900'>
-                      {column.render ? column.render(record[column.dataIndex], record, index) : String(record[column.dataIndex] || '')}
+                      {column.render ? column.render(record[column.dataIndex], record, index) : String((record[column.dataIndex] ?? ''))}
                     </td>
                   ))}
                 </tr>
@@ -171,5 +172,5 @@ export function ResponsiveContainer({ children, className = '', maxWidth = 'full
     full: 'max-w-full'
   };
 
-  return <div className={classNames(`mx-auto px-4 sm:px-6 lg:px-8`, maxWidthClasses[maxWidth], className)}>{children}</div>;
+  return <div className={classNames('mx-auto px-4 sm:px-6 lg:px-8', maxWidthClasses[maxWidth], className)}>{children}</div>;
 }

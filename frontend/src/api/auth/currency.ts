@@ -12,10 +12,12 @@ export const fetchConfigAPI = async (): Promise<{
       url: '/currency/config',
       method: 'GET'
     });
+
     if (result.code === 200) {
       return { success: true, data: result.data };
     }
-    return { success: false, message: result.message || '获取配置信息失败' };
+
+  return { success: false, message: result.message ?? '获取配置信息失败' };
   } catch (_e) {
     return { success: false, message: '获取配置信息失败' };
   }
@@ -32,10 +34,12 @@ export const fetchUsersAPI = async (): Promise<{
       url: '/currency/users',
       method: 'GET'
     });
+
     if (result.code === 200) {
       return { success: true, data: result.data };
     }
-    return { success: false, message: result.message || '获取用户数据失败' };
+
+  return { success: false, message: result.message ?? '获取用户数据失败' };
   } catch (_e) {
     return { success: false, message: '获取用户数据失败' };
   }
@@ -52,10 +56,12 @@ export const fetchRecordsAPI = async (): Promise<{
       url: '/currency/records',
       method: 'GET'
     });
+
     if (result.code === 200) {
       return { success: true, data: result.data.records };
     }
-    return { success: false, message: result.message || '获取充值记录失败' };
+
+  return { success: false, message: result.message ?? '获取充值记录失败' };
   } catch (_e) {
     return { success: false, message: '获取充值记录失败' };
   }
@@ -72,10 +78,12 @@ export const fetchStatsAPI = async (): Promise<{
       url: '/currency/stats',
       method: 'GET'
     });
+
     if (result.code === 200) {
       return { success: true, data: result.data };
     }
-    return { success: false, message: result.message || '获取统计数据失败' };
+
+  return { success: false, message: result.message ?? '获取统计数据失败' };
   } catch (_e) {
     return { success: false, message: '获取统计数据失败' };
   }
@@ -95,10 +103,12 @@ export const createRechargeRecordAPI = async (params: {
       method: 'POST',
       data: params
     });
+
     if (result.code === 201) {
       return { success: true, data: result.data };
     }
-    return { success: false, message: result.message || '创建充值记录失败' };
+
+  return { success: false, message: result.message ?? '创建充值记录失败' };
   } catch (_e) {
     return { success: false, message: '创建充值记录失败' };
   }
@@ -119,10 +129,12 @@ export const completePaymentAPI = async (params: {
         ...params
       }
     });
+
     if (result.code === 200) {
       return { success: true };
     }
-    return { success: false, message: result.message || '支付完成失败' };
+
+  return { success: false, message: result.message ?? '支付完成失败' };
   } catch (_e) {
     return { success: false, message: '支付完成失败' };
   }

@@ -4,9 +4,8 @@
     "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
-    "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"]
+      "@src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*", "jsxp.config.tsx"],

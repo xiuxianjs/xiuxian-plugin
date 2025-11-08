@@ -17,30 +17,10 @@
     "bundle-install": "yarn --cwd frontend install",
     "bundle-dev": "yarn --cwd frontend dev",
     "bundle": "yarn --cwd frontend build",
-    "lint": "eslint src --ext .ts,.tsx,.js",
-    "lint:fix": "eslint src --ext .ts,.tsx,.js --fix",
-    "fix:code": "eslint src --ext .ts,.tsx,.js --fix --quiet",
-    "lint:check": "eslint src --ext .ts,.tsx,.js",
-    "lint:fix-all": "eslint . --ext .ts,.tsx,.js --fix",
-    "lint:staged": "lint-staged",
-    "lint:changed": "git diff origin/main...HEAD --name-only --diff-filter=ACMRTUXB | grep -E '\\.(ts|tsx|js)$' | xargs -r eslint",
-    "lint:baseline": "eslint -f json src > eslint-baseline.json || true",
+    "eslint": "eslint src --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "format:fix": "prettier --write .",
-    "code:check": "npm run lint:check && npm run format:check",
-    "code:fix": "npm run lint:fix && npm run format:fix",
-    "code:fix-all": "npm run lint:fix-all && npm run format:fix",
-    "pre-commit": "lint-staged",
-    "prepare": "husky",
-    "clean": "rm -rf dist lib .eslintcache",
-    "clean:all": "rm -rf dist lib .eslintcache node_modules/.cache",
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch",
-    "test": "echo \"No tests specified\" && exit 0",
-    "test:watch": "npm run test -- --watch",
-    "ci:check": "npm run type-check && npm run code:check",
-    "ci:fix": "npm run code:fix-all"
+    "check-format": "git diff --exit-code",
+    "prepare": "husky"
   },
   "dependencies": {
     "classnames": "^2.5.1",
@@ -66,39 +46,25 @@
     "@types/md5": "^2.3.5",
     "@types/node": "^22.10.5",
     "@types/node-schedule": "^2.1.7",
-    "alemonjs": "^2.1.0-alpha.51",
-    "eslint": "^9.18.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-react": "^7.37.3",
+    "alemonjs": "2.1.0-alpha.51",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
-    "lvyjs": "0.2.20",
+    "lvyjs": "0.2.25",
     "prettier": "^3",
     "sass": "^1.90.0",
     "tailwindcss": "3",
-    "typescript-eslint": "^8.19.1"
+    "typescript-eslint": "^8.13.0"
   },
   "alemonjs": {
     "web": {
       "root": "dist"
     }
   },
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix --cache --cache-location .eslintcache",
-      "prettier --write"
-    ],
-    "*.{jsx,tsx}": [
-      "eslint --fix --cache --cache-location .eslintcache",
-      "prettier --write"
-    ],
-    "*.{json,md,yml,yaml,css,scss,html}": [
-      "prettier --write"
-    ],
-    "*.{png,jpg,jpeg,gif,svg}": [
-      "git add"
-    ]
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22"
 }

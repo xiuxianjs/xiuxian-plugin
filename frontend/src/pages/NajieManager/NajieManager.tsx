@@ -1,21 +1,10 @@
-import React from 'react';
-import { Table, Tooltip } from 'antd';
+import { Table, Tooltip, Card, Typography, Space, Button, Input } from 'antd';
 import { EyeOutlined, EditOutlined, ShoppingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Najie } from '@/types/types';
 import NajieInfo from './NajieInfo';
 import NajieEditModal from './NajieEditModal';
 import { useNajieManagerCode } from './NajieManager.code';
-
-// 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianSearchBar,
-  XiuxianTableContainer,
-  XiuxianRefreshButton,
-  XiuxianTableWithPagination
-} from '@/components/ui';
 
 export default function NajieManager() {
   const {
@@ -42,119 +31,107 @@ export default function NajieManager() {
   // 表格列定义
   const columns: ColumnsType<Najie> = [
     {
-      title: (
-        <div className='flex items-center gap-2 text-purple-400 font-bold'>
-          <span>用户信息</span>
-        </div>
-      ),
+      title: '用户信息',
       key: 'userInfo',
       width: 150,
       render: (_, record) => (
-        <div>
-          <div className='font-bold text-white'>用户ID: {record.userId}</div>
-          <div className='text-xs text-slate-400'>背包等级: {record.等级 || 1}</div>
-        </div>
+        <Space direction='vertical' size={0}>
+          <Typography.Text strong>用户ID: {record.userId}</Typography.Text>
+          <Typography.Text type='secondary'>背包等级: {record.等级 ?? 1}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-green-400 font-bold'>
-          <span>灵石信息</span>
-        </div>
-      ),
+      title: '灵石信息',
       key: 'lingshi',
       width: 120,
       render: (_, record) => (
-        <div>
-          <div className='text-xs text-green-500'>当前: {record.灵石?.toLocaleString() || 0}</div>
-          <div className='text-xs text-yellow-500'>上限: {record.灵石上限?.toLocaleString() || 0}</div>
-        </div>
+        <Space direction='vertical' size={0}>
+          <Typography.Text>当前: {(record.灵石 ?? 0).toLocaleString()}</Typography.Text>
+          <Typography.Text>上限: {(record.灵石上限 ?? 0).toLocaleString()}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-blue-400 font-bold'>
-          <span>物品统计</span>
-        </div>
-      ),
+      title: '物品统计',
       key: 'items',
       width: 200,
       render: (_, record) => (
-        <div>
-          <div className='text-xs text-slate-300'>总物品: {getTotalItems(record)}</div>
-          <div className='text-xs text-slate-300'>装备: {record.装备?.length || 0}</div>
-          <div className='text-xs text-slate-300'>丹药: {record.丹药?.length || 0}</div>
-          <div className='text-xs text-slate-300'>道具: {record.道具?.length || 0}</div>
-        </div>
+        <Space direction='vertical' size={0}>
+          <Typography.Text>总物品: {getTotalItems(record)}</Typography.Text>
+          <Typography.Text>装备: {record.装备?.length ?? 0}</Typography.Text>
+          <Typography.Text>丹药: {record.丹药?.length ?? 0}</Typography.Text>
+          <Typography.Text>道具: {record.道具?.length ?? 0}</Typography.Text>
+        </Space>
       )
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-yellow-400 font-bold'>
-          <span>操作</span>
-        </div>
-      ),
+      title: '操作',
       key: 'actions',
       width: 120,
       render: (_, record) => (
-        <div className='flex gap-2'>
+        <Space>
           <Tooltip title='查看详情'>
-            <button
-              className='p-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl'
+            <Button
+              type='primary'
+              icon={<EyeOutlined />}
               onClick={() => {
                 setSelectedNajie(record);
                 setNajieDetailVisible(true);
               }}
-            >
-              <EyeOutlined className='text-lg' />
-            </button>
+            />
           </Tooltip>
           <Tooltip title='编辑背包'>
-            <button
-              className='p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl'
-              onClick={() => handleEditNajie(record)}
-            >
-              <EditOutlined className='text-lg' />
-            </button>
+            <Button icon={<EditOutlined />} onClick={() => handleEditNajie(record)} />
           </Tooltip>
-        </div>
+        </Space>
       )
     }
   ];
 
   return (
-    <XiuxianPageWrapper>
-      {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon={<ShoppingOutlined />}
-        title='背包管理'
-        subtitle='管理修仙界道友的背包物品'
-        actions={<XiuxianRefreshButton loading={loading} onClick={() => fetchNajie(1, pagination.pageSize)} />}
-      />
+    <div className='space-y-6 bg-slate-200 p-4'>
+      <Card
+        title={
+          <Space align='center'>
+            <ShoppingOutlined />
+            <Typography.Text strong>背包管理</Typography.Text>
+          </Space>
+        }
+        extra={
+          <Button
+            type='primary'
+            loading={loading}
+            onClick={() => {
+              void fetchNajie(1, pagination.pageSize);
+            }}
+          >
+            刷新
+          </Button>
+        }
+      >
+        <Typography.Text type='secondary'>管理修仙界道友的背包物品</Typography.Text>
+      </Card>
 
-      {/* 搜索栏 */}
-      <XiuxianSearchBar
+      <Input.Search
         placeholder='搜索用户ID'
         value={searchText}
-        onChange={setSearchText}
-        onSearch={handleSearchAndFilter}
-        onKeyPress={e => e.key === 'Enter' && handleSearchAndFilter()}
-        className='mb-6'
+        onChange={e => setSearchText(e.target.value)}
+        onSearch={() => {
+          void handleSearchAndFilter();
+        }}
+        onPressEnter={() => {
+          void handleSearchAndFilter();
+        }}
+        allowClear
       />
 
-      {/* 背包表格 */}
-      <XiuxianTableContainer title='背包列表' icon={<ShoppingOutlined />}>
-        <XiuxianTableWithPagination
+      <Card title='背包列表'>
+        <Table
           columns={columns}
           dataSource={najieList}
           rowKey='userId'
           loading={loading}
-          rowClassName={record => {
-            // 如果是损坏数据，添加黄色背景
-            return record.数据状态 === 'corrupted'
-              ? 'bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-l-4 border-yellow-400  bg-slate-700 hover:bg-slate-600'
-              : 'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600';
-          }}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
@@ -163,10 +140,12 @@ export default function NajieManager() {
             showQuickJumper: true,
             showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
           }}
-          onPaginationChange={handleTableChange}
-          scroll={{ x: 1200 }}
+          onChange={p => {
+            void handleTableChange(p.current!, p.pageSize!);
+          }}
+          scroll={{ x: 1000 }}
         />
-      </XiuxianTableContainer>
+      </Card>
 
       {/* 背包详情弹窗 */}
       <NajieInfo
@@ -180,10 +159,12 @@ export default function NajieManager() {
       <NajieEditModal
         visible={najieEditVisible}
         onCancel={() => setNajieEditVisible(false)}
-        onSave={handleSaveNajie}
+        onSave={najie => {
+          void handleSaveNajie(najie);
+        }}
         najie={selectedNajie}
         loading={editLoading}
       />
-    </XiuxianPageWrapper>
+    </div>
   );
 }

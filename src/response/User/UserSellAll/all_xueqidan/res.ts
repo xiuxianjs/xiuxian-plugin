@@ -40,7 +40,7 @@ const res = onResponse(selects, async e => {
   let totalGain = 0;
 
   for (const pill of pills) {
-    if (!pill || pill.type !== '血气') {
+    if (pill?.type !== '血气') {
       continue;
     }
     const category = normalizeCategory(pill.class);

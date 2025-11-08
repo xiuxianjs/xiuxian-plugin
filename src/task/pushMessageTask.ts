@@ -38,54 +38,52 @@ export const PushMessageTask = async (): Promise<void> => {
     const messages: IMessage[] = (await getRecentMessages(windowMinutes)).filter(isMe);
 
     if (messages.length) {
-      void Promise.all(
-        messages.map(item => {
-          try {
-            const isGroup = !!item.cid;
+      for (const item of messages) {
+        try {
+          const isGroup = !!item.cid;
 
-            const value = getAppConfig();
-            const closeProactiveMessage = value?.close_proactive_message ?? false;
+          const value = getAppConfig();
+          const closeProactiveMessage = value?.close_proactive_message ?? false;
 
-            if (closeProactiveMessage) {
-              const id = String(item.uid);
+          if (closeProactiveMessage) {
+            const id = String(item.uid);
 
-              if (!id) {
-                return;
-              }
-
-              // 消息推送到 redis里。
-              const data: DataEnums[] = JSON.parse(item.data);
-
-              void redis.lpush(
-                keys.proactiveMessageLog(id),
-                JSON.stringify({
-                  message: data,
-                  timestamp: Date.now()
-                })
-              );
-
-              return;
+            if (!id) {
+              continue;
             }
 
-            if (isGroup) {
-              const id = String(item.cid);
-              const data: DataEnums[] = JSON.parse(item.data);
+            // 消息推送到 redis里。
+            const data: DataEnums[] = JSON.parse(item.data);
 
-              void sendToChannel(id, data);
-            } else {
-              const id = String(item.uid);
+            void redis.lpush(
+              keys.proactiveMessageLog(id),
+              JSON.stringify({
+                message: data,
+                timestamp: Date.now()
+              })
+            );
 
-              const data: DataEnums[] = JSON.parse(item.data);
-
-              void sendToUser(id, data);
-            }
-            // 推送成功后再记录为已推送
-            void setIds({ mid: item.id });
-          } catch (err) {
-            logger.error(`推送单条消息失败: ${item.id}`, err);
+            continue;
           }
-        })
-      );
+
+          if (isGroup) {
+            const id = String(item.cid);
+            const data: DataEnums[] = JSON.parse(item.data);
+
+            void sendToChannel(id, data);
+          } else {
+            const id = String(item.uid);
+
+            const data: DataEnums[] = JSON.parse(item.data);
+
+            void sendToUser(id, data);
+          }
+          // 推送成功后再记录为已推送
+          void setIds({ mid: item.id });
+        } catch (err) {
+          logger.error(`推送单条消息失败: ${item.id}`, err);
+        }
+      }
     }
 
     // 更新本次执行时间

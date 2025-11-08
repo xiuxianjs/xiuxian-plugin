@@ -141,7 +141,7 @@ export const PUT = async (ctx: Context) => {
 
     const user = await validateToken(token);
 
-    if (!user || user.role !== 'admin') {
+    if (user?.role !== 'admin') {
       ctx.status = 403;
       ctx.body = {
         code: 403,

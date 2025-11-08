@@ -1,31 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Input, Select, message, Space, Tag, Tooltip, Popconfirm, Row, Col } from 'antd';
+import { Button, Modal, Form, Input, Select, message, Space, Tag, Tooltip, Popconfirm, Row, Col, Card, Statistic, Table, Empty } from 'antd';
 import {
   PlusOutlined,
   DeleteOutlined,
   EyeOutlined,
   MessageOutlined,
   SendOutlined,
-  UserOutlined,
-  ClockCircleOutlined,
   ExclamationCircleOutlined,
   CheckCircleOutlined,
-  StopOutlined
+  StopOutlined,
+  ReloadOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { getUserMessages, sendMessage, deleteMessage, getMessageStats, cleanExpiredMessages } from '../../api/messages';
 import type { MessageListResponse, SendMessageParams, MessageStats } from '../../types/message';
-
-// 导入UI组件库
-import {
-  XiuxianPageWrapper,
-  XiuxianPageTitle,
-  XiuxianStatCard,
-  XiuxianTableContainer,
-  XiuxianRefreshButton,
-  XiuxianTableWithPagination,
-  XiuxianEmptyState
-} from '@/components/ui';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -47,15 +35,18 @@ const MessagesPage: React.FC = () => {
   const fetchStats = async () => {
     try {
       const response = await getMessageStats({ global: true });
+
       setStats(response.data);
-    } catch (error) {
+    } catch (_error) {
       message.error('获取统计信息失败');
     }
   };
 
   // 获取用户消息列表
   const fetchMessages = async (userId: string, page = 1, pageSize = 10) => {
-    if (!userId) return;
+    if (!userId) {
+      return;
+    }
 
     setLoading(true);
     try {
@@ -64,13 +55,14 @@ const MessagesPage: React.FC = () => {
         page,
         pageSize
       });
+
       setMessages(response.data);
       setPagination({
         current: response.data.page,
         pageSize: response.data.pageSize,
         total: response.data.total
       });
-    } catch (error) {
+    } catch (_error) {
       message.error('获取消息列表失败');
     } finally {
       setLoading(false);
@@ -84,7 +76,7 @@ const MessagesPage: React.FC = () => {
         title: values.title,
         content: values.content,
         type: values.type,
-        priority: values.priority || 2,
+  priority: values.priority ?? 2,
         receivers: values.receivers ? values.receivers.split(',').map((id: string) => id.trim()) : [],
         expireTime: values.expireTime ? new Date(values.expireTime).getTime() : undefined
       };
@@ -95,8 +87,8 @@ const MessagesPage: React.FC = () => {
       form.resetFields();
 
       // 刷新统计
-      fetchStats();
-    } catch (error) {
+      void fetchStats();
+    } catch (_error) {
       message.error('发送消息失败');
     }
   };
@@ -106,8 +98,8 @@ const MessagesPage: React.FC = () => {
     try {
       await deleteMessage({ userId, messageId });
       message.success('删除成功');
-      fetchMessages(userId, pagination.current, pagination.pageSize);
-    } catch (error) {
+      void fetchMessages(userId, pagination.current, pagination.pageSize);
+    } catch (_error) {
       message.error('删除失败');
     }
   };
@@ -116,9 +108,10 @@ const MessagesPage: React.FC = () => {
   const handleCleanExpired = async () => {
     try {
       const response = await cleanExpiredMessages();
+
       message.success(`清理成功，共清理 ${response.data.cleanedCount} 条过期消息`);
-      fetchStats();
-    } catch (error) {
+      void fetchStats();
+    } catch (_error) {
       message.error('清理失败');
     }
   };
@@ -126,40 +119,22 @@ const MessagesPage: React.FC = () => {
   // 表格列定义
   const columns = [
     {
-      title: (
-        <div className='flex items-center gap-2 text-purple-400 font-bold'>
-          <MessageOutlined className='text-lg' />
-          <span>消息标题</span>
-        </div>
-      ),
+      title: '消息标题',
       dataIndex: 'title',
       key: 'title',
       width: 200,
-      ellipsis: true,
-      render: (title: string) => <span className='text-white font-medium'>{title}</span>
+      ellipsis: true
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-blue-400 font-bold'>
-          <span>消息内容</span>
-        </div>
-      ),
+      title: '消息内容',
       dataIndex: 'content',
       key: 'content',
       width: 300,
       ellipsis: true,
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <span className='text-slate-300'>{text.length > 50 ? `${text.substring(0, 50)}...` : text}</span>
-        </Tooltip>
-      )
+      render: (text: string) => <Tooltip title={text}>{text.length > 50 ? `${text.substring(0, 50)}...` : text}</Tooltip>
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-orange-400 font-bold'>
-          <span>消息类型</span>
-        </div>
-      ),
+      title: '消息类型',
       dataIndex: 'type',
       key: 'type',
       width: 120,
@@ -171,17 +146,13 @@ const MessagesPage: React.FC = () => {
           activity: { color: 'orange', text: '活动通知' },
           personal: { color: 'purple', text: '个人消息' }
         };
-        const config = typeMap[type] || { color: 'default', text: type };
+  const config = typeMap[type] ?? { color: 'default', text: type };
+
         return <Tag color={config.color}>{config.text}</Tag>;
       }
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-yellow-400 font-bold'>
-          <ExclamationCircleOutlined className='text-lg' />
-          <span>优先级</span>
-        </div>
-      ),
+      title: '优先级',
       dataIndex: 'priority',
       key: 'priority',
       width: 100,
@@ -192,17 +163,13 @@ const MessagesPage: React.FC = () => {
           3: { color: 'orange', text: '高' },
           4: { color: 'red', text: '紧急' }
         };
-        const config = priorityMap[priority] || { color: 'default', text: '普通' };
+  const config = priorityMap[priority] ?? { color: 'default', text: '普通' };
+
         return <Tag color={config.color}>{config.text}</Tag>;
       }
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-green-400 font-bold'>
-          <CheckCircleOutlined className='text-lg' />
-          <span>状态</span>
-        </div>
-      ),
+      title: '状态',
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -212,193 +179,162 @@ const MessagesPage: React.FC = () => {
           1: { color: 'green', text: '已读' },
           2: { color: 'default', text: '已删除' }
         };
-        const config = statusMap[status] || { color: 'default', text: '未知' };
+  const config = statusMap[status] ?? { color: 'default', text: '未知' };
+
         return <Tag color={config.color}>{config.text}</Tag>;
       }
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-cyan-400 font-bold'>
-          <UserOutlined className='text-lg' />
-          <span>发送者</span>
-        </div>
-      ),
+      title: '发送者',
       dataIndex: 'senderName',
       key: 'senderName',
       width: 120,
-      render: (senderName: string) => <span className='text-slate-300'>{senderName || '系统'}</span>
+  render: (senderName: string) => senderName ?? '系统'
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-pink-400 font-bold'>
-          <ClockCircleOutlined className='text-lg' />
-          <span>创建时间</span>
-        </div>
-      ),
+      title: '创建时间',
       dataIndex: 'createTime',
       key: 'createTime',
       width: 180,
-      render: (time: number) => <span className='text-slate-400 text-sm'>{dayjs(time).format('YYYY-MM-DD HH:mm:ss')}</span>
+      render: (time: number) => dayjs(time).format('YYYY-MM-DD HH:mm:ss')
     },
     {
-      title: (
-        <div className='flex items-center gap-2 text-red-400 font-bold'>
-          <span>操作</span>
-        </div>
-      ),
+      title: '操作',
       key: 'action',
       width: 120,
       render: (_: any, record: any) => (
-        <Space>
-          <Popconfirm title='确定要删除这条消息吗？' onConfirm={() => handleDeleteMessage(currentUserId, record.id)} okText='确定' cancelText='取消'>
-            <Button type='text' size='small' icon={<DeleteOutlined />} className='text-red-400 hover:text-red-300 hover:bg-red-400/10'>
-              删除
-            </Button>
-          </Popconfirm>
-        </Space>
+        <Popconfirm title='确定要删除这条消息吗？' onConfirm={() => { void handleDeleteMessage(currentUserId, record.id); }} okText='确定' cancelText='取消'>
+          <Button type='link' size='small' danger icon={<DeleteOutlined />}>
+            删除
+          </Button>
+        </Popconfirm>
       )
     }
   ];
 
   useEffect(() => {
-    fetchStats();
+    void fetchStats();
   }, []);
 
   return (
-    <XiuxianPageWrapper>
+    <div className='min-h-screen bg-gray-200 p-4'>
       {/* 页面标题和操作按钮 */}
-      <XiuxianPageTitle
-        icon={<MessageOutlined />}
-        title='站内信管理'
-        subtitle='管理修仙界道友的站内信系统'
-        actions={
-          <div className='flex gap-2'>
-            <Button
-              type='primary'
-              icon={<PlusOutlined />}
-              onClick={() => setModalVisible(true)}
-              className='bg-gradient-to-r from-purple-500 to-pink-500 border-0 hover:from-purple-600 hover:to-pink-600'
-            >
-              发送消息
-            </Button>
-            <Button danger icon={<StopOutlined />} onClick={handleCleanExpired} className='hover:bg-red-600'>
-              清理过期
-            </Button>
-            <XiuxianRefreshButton
-              loading={loading}
-              onClick={() => {
-                fetchStats();
-                if (currentUserId) {
-                  fetchMessages(currentUserId, pagination.current, pagination.pageSize);
-                }
-              }}
-            />
-          </div>
-        }
-      />
-
-      <div className='space-y-6'>
-        {/* 统计卡片 */}
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-          <XiuxianStatCard title='总消息数' value={(stats?.total || 0).toLocaleString()} icon={<MessageOutlined />} gradient='blue' />
-          <XiuxianStatCard title='未读消息' value={(stats?.unread || 0).toLocaleString()} icon={<ExclamationCircleOutlined />} gradient='red' />
-          <XiuxianStatCard title='已读消息' value={(stats?.read || 0).toLocaleString()} icon={<CheckCircleOutlined />} gradient='green' />
-          <XiuxianStatCard title='已删除消息' value={(stats?.deleted || 0).toLocaleString()} icon={<DeleteOutlined />} gradient='purple' />
+      <div className='flex justify-between items-center mb-6'>
+        <div>
+          <h1 className='text-2xl font-bold m-0'>站内信管理</h1>
+          <p className='text-sm mt-2 mb-0'>管理修仙界道友的站内信系统</p>
         </div>
-
-        {/* 搜索和查看区域 */}
-        <div className='bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-lg'>
-          <h3 className='text-xl font-bold text-white mb-4 flex items-center gap-2'>
-            <EyeOutlined className='text-blue-400' />
-            查看用户消息
-          </h3>
-          <div className='flex gap-4 items-center'>
-            <Input
-              placeholder='输入用户ID查看消息...'
-              value={currentUserId}
-              onChange={e => setCurrentUserId(e.target.value)}
-              className='xiuxian-input flex-1'
-              onPressEnter={() => fetchMessages(currentUserId)}
-            />
-            <Button
-              type='primary'
-              icon={<EyeOutlined />}
-              onClick={() => fetchMessages(currentUserId)}
-              disabled={!currentUserId}
-              className='bg-gradient-to-r from-blue-500 to-cyan-500 border-0 hover:from-blue-600 hover:to-cyan-600'
-            >
-              查看消息
-            </Button>
-          </div>
-        </div>
-
-        {/* 消息列表表格 */}
-        <XiuxianTableContainer title='消息列表' icon={<MessageOutlined />}>
-          {!currentUserId ? (
-            <XiuxianEmptyState icon='📝' title='请先输入用户ID' description='在上方输入框中输入用户ID来查看该用户的消息列表' />
-          ) : messages?.messages.length === 0 ? (
-            <XiuxianEmptyState icon='📭' title='暂无消息' description='该用户目前没有任何消息记录' />
-          ) : (
-            <XiuxianTableWithPagination
-              columns={columns}
-              dataSource={messages?.messages || []}
-              rowKey='id'
-              loading={loading}
-              pagination={{
-                current: pagination.current,
-                pageSize: pagination.pageSize,
-                total: pagination.total,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
-              }}
-              onPaginationChange={(page, size) => {
-                fetchMessages(currentUserId, page, size || 10);
-              }}
-              rowClassName={() =>
-                'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 bg-slate-700 hover:bg-slate-600'
+        <Space>
+          <Button type='primary' icon={<PlusOutlined />} onClick={() => setModalVisible(true)}>
+            发送消息
+          </Button>
+          <Button danger icon={<StopOutlined />} onClick={() => { void handleCleanExpired(); }}>
+            清理过期
+          </Button>
+          <Button
+            icon={<ReloadOutlined spin={loading} />}
+            onClick={() => {
+              void fetchStats();
+              if (currentUserId) {
+                void fetchMessages(currentUserId, pagination.current, pagination.pageSize);
               }
-            />
-          )}
-        </XiuxianTableContainer>
+            }}
+            loading={loading}
+          >
+            刷新数据
+          </Button>
+        </Space>
       </div>
 
+      {/* 统计卡片 */}
+      <Row gutter={[16, 16]} className='mb-6'>
+        <Col xs={24} sm={12} md={6}>
+          <Card className='shadow-md'>
+            <Statistic title='总消息数' value={stats?.total ?? 0} prefix={<MessageOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card className='shadow-md'>
+            <Statistic title='未读消息' value={stats?.unread ?? 0} prefix={<ExclamationCircleOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card className='shadow-md'>
+            <Statistic title='已读消息' value={stats?.read ?? 0} prefix={<CheckCircleOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card className='shadow-md'>
+            <Statistic title='已删除消息' value={stats?.deleted ?? 0} prefix={<DeleteOutlined />} />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 搜索和查看区域 */}
+      <Card title='查看用户消息' className='mb-6 shadow-md'>
+        <Space.Compact className='w-full'>
+          <Input
+            placeholder='输入用户ID查看消息...'
+            value={currentUserId}
+            onChange={e => setCurrentUserId(e.target.value)}
+            onPressEnter={() => { void fetchMessages(currentUserId); }}
+          />
+          <Button type='primary' icon={<EyeOutlined />} onClick={() => { void fetchMessages(currentUserId); }} disabled={!currentUserId}>
+            查看消息
+          </Button>
+        </Space.Compact>
+      </Card>
+
+      {/* 消息列表表格 */}
+      <Card title='消息列表' className='shadow-md'>
+        {!currentUserId ? (
+          <Empty description='请先输入用户ID来查看该用户的消息列表' />
+        ) : messages?.messages.length === 0 ? (
+          <Empty description='该用户目前没有任何消息记录' />
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={messages?.messages ?? []}
+            rowKey='id'
+            loading={loading}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+              onChange: (page, size) => {
+                void fetchMessages(currentUserId, page, size ?? 10);
+              }
+            }}
+          />
+        )}
+      </Card>
+
       {/* 发送消息模态框 */}
-      <Modal
-        title={
-          <div className='flex items-center gap-2'>
-            <SendOutlined className='text-purple-400' />
-            <span className='text-white'>发送站内信</span>
-          </div>
-        }
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        footer={null}
-        className='xiuxian-modal'
-        width={600}
-      >
+      <Modal title='发送站内信' open={modalVisible} onCancel={() => setModalVisible(false)} footer={null} width={600}>
         <Form
           form={form}
           layout='vertical'
-          onFinish={handleSendMessage}
+          onFinish={(values) => { void handleSendMessage(values); }}
           initialValues={{
             type: 'system',
             priority: 2
           }}
-          className='mt-4'
         >
-          <Form.Item name='title' label={<span className='text-slate-300'>消息标题</span>} rules={[{ required: true, message: '请输入消息标题' }]}>
-            <Input placeholder='请输入消息标题' className='xiuxian-input' />
+          <Form.Item name='title' label='消息标题' rules={[{ required: true, message: '请输入消息标题' }]}>
+            <Input placeholder='请输入消息标题' />
           </Form.Item>
 
-          <Form.Item name='content' label={<span className='text-slate-300'>消息内容</span>} rules={[{ required: true, message: '请输入消息内容' }]}>
-            <TextArea rows={4} placeholder='请输入消息内容' className='xiuxian-input' />
+          <Form.Item name='content' label='消息内容' rules={[{ required: true, message: '请输入消息内容' }]}>
+            <TextArea rows={4} placeholder='请输入消息内容' />
           </Form.Item>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name='type' label={<span className='text-slate-300'>消息类型</span>} rules={[{ required: true, message: '请选择消息类型' }]}>
-                <Select placeholder='请选择消息类型' className='xiuxian-select'>
+              <Form.Item name='type' label='消息类型' rules={[{ required: true, message: '请选择消息类型' }]}>
+                <Select placeholder='请选择消息类型'>
                   <Option value='system'>系统消息</Option>
                   <Option value='announcement'>公告</Option>
                   <Option value='reward'>奖励通知</Option>
@@ -408,8 +344,8 @@ const MessagesPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name='priority' label={<span className='text-slate-300'>优先级</span>} rules={[{ required: true, message: '请选择优先级' }]}>
-                <Select placeholder='请选择优先级' className='xiuxian-select'>
+              <Form.Item name='priority' label='优先级' rules={[{ required: true, message: '请选择优先级' }]}>
+                <Select placeholder='请选择优先级'>
                   <Option value={1}>低</Option>
                   <Option value={2}>普通</Option>
                   <Option value={3}>高</Option>
@@ -419,40 +355,25 @@ const MessagesPage: React.FC = () => {
             </Col>
           </Row>
 
-          <Form.Item
-            name='receivers'
-            label={<span className='text-slate-300'>接收者ID</span>}
-            extra={<span className='text-slate-500'>多个用户ID用逗号分隔，留空表示全服发送</span>}
-          >
-            <Input placeholder='例如: 123456,789012' className='xiuxian-input' />
+          <Form.Item name='receivers' label='接收者ID' extra='多个用户ID用逗号分隔，留空表示全服发送'>
+            <Input placeholder='例如: 123456,789012' />
           </Form.Item>
 
-          <Form.Item
-            name='expireTime'
-            label={<span className='text-slate-300'>过期时间</span>}
-            extra={<span className='text-slate-500'>可选，留空表示永不过期</span>}
-          >
-            <Input type='datetime-local' className='xiuxian-input' />
+          <Form.Item name='expireTime' label='过期时间' extra='可选，留空表示永不过期'>
+            <Input type='datetime-local' />
           </Form.Item>
 
           <Form.Item>
             <Space>
-              <Button
-                type='primary'
-                htmlType='submit'
-                icon={<SendOutlined />}
-                className='bg-gradient-to-r from-purple-500 to-pink-500 border-0 hover:from-purple-600 hover:to-pink-600'
-              >
+              <Button type='primary' htmlType='submit' icon={<SendOutlined />}>
                 发送
               </Button>
-              <Button onClick={() => setModalVisible(false)} className='bg-slate-700 hover:bg-slate-600 border-slate-600'>
-                取消
-              </Button>
+              <Button onClick={() => setModalVisible(false)}>取消</Button>
             </Space>
           </Form.Item>
         </Form>
       </Modal>
-    </XiuxianPageWrapper>
+    </div>
   );
 };
 

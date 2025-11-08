@@ -8,7 +8,7 @@ import { Tag } from 'antd';
  * @returns
  */
 const StatusTag = ({ status }: { status: string }) => {
-  const reanderMap: {
+  const map: {
     [key: string]: React.ReactNode;
   } = {
     running: (
@@ -29,7 +29,7 @@ const StatusTag = ({ status }: { status: string }) => {
     default: <Tag color='default'>未知</Tag>
   };
 
-  return reanderMap[status] || reanderMap.default;
+  return map[status] ?? map.default;
 };
 
 export default StatusTag;

@@ -2,34 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "testone",
+      "name": "dev",
       "type": "node",
       "request": "launch",
       "runtimeArgs": ["dev"],
       "runtimeExecutable": "yarn",
-      "cwd": "${workspaceFolder}",
-      "skipFiles": ["<node_internals>/**"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "discord",
-      "type": "node",
-      "request": "launch",
-      "runtimeArgs": ["dev", "--login", "discord"],
-      "runtimeExecutable": "yarn",
-      "cwd": "${workspaceFolder}",
-      "skipFiles": ["<node_internals>/**"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "onebot",
-      "type": "node",
-      "request": "launch",
-      "runtimeArgs": ["dev", "--login", "onebot"],
-      "runtimeExecutable": "yarn",
-      "cwd": "${workspaceFolder}",
-      "skipFiles": ["<node_internals>/**"],
-      "console": "integratedTerminal"
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "jsxp",
@@ -37,9 +15,8 @@
       "request": "launch",
       "runtimeArgs": ["dev", "--view"],
       "runtimeExecutable": "yarn",
-      "cwd": "${workspaceFolder}",
       "skipFiles": ["<node_internals>/**"],
-      "console": "integratedTerminal"
+      "preLaunchTask": "open-browser"
     }
   ]
 }

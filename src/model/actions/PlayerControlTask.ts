@@ -132,8 +132,8 @@ const calculateCultivationEfficiency = (actualTime: number): number => {
   // 30分钟以上：仍有增长，但增长变少
   // 使用对数函数实现增长递减效果
   const excessTime = timeMinutes - optimalMinutes;
-  const growthFactor =
-    Math.log(1 + excessTime / INCOME_CURVE_CONFIG.CULTIVATION.GROWTH_DECAY_PERIOD) / Math.log(INCOME_CURVE_CONFIG.CULTIVATION.GROWTH_DECAY_BASE);
+  const growthFactor
+    = Math.log(1 + excessTime / INCOME_CURVE_CONFIG.CULTIVATION.GROWTH_DECAY_PERIOD) / Math.log(INCOME_CURVE_CONFIG.CULTIVATION.GROWTH_DECAY_BASE);
   const efficiency = 1 + growthFactor * INCOME_CURVE_CONFIG.CULTIVATION.MAX_EXTRA_GROWTH;
 
   return efficiency;
@@ -273,9 +273,9 @@ const handleSpecialItems = async (
 
   // 神界秘宝效果
   if (
-    (await existNajieThing(playerId, '神界秘宝', '道具')) &&
-    player.魔道值 < ITEM_EFFECTS.SHENJIE_THRESHOLD &&
-    (player.灵根?.type === '转生' || player.level_id > ITEM_EFFECTS.LEVEL_THRESHOLD)
+    (await existNajieThing(playerId, '神界秘宝', '道具'))
+    && player.魔道值 < ITEM_EFFECTS.SHENJIE_THRESHOLD
+    && (player.灵根?.type === '转生' || player.level_id > ITEM_EFFECTS.LEVEL_THRESHOLD)
   ) {
     qixue = Math.trunc(xiuwei * ITEM_EFFECTS.SHENJIE_MIBAO_QIXUE_BONUS * time);
     await addNajieThing(playerId, '神界秘宝', '道具', -1);

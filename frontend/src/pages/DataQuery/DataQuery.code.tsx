@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { message } from 'antd';
 import { useAuth } from '@/contexts/AuthContext';
 import { getDataListAPI } from '@/api/auth';
@@ -82,7 +82,7 @@ export const useDataQueryCode = () => {
 
   // 获取数据类型显示名称
   const getDataTypeDisplayName = (type: string) => {
-    return DATA_TYPE_MAP[type as keyof typeof DATA_TYPE_MAP] || type;
+  return DATA_TYPE_MAP[type as keyof typeof DATA_TYPE_MAP] ?? type;
   };
 
   // 获取数据列表
@@ -109,14 +109,14 @@ export const useDataQueryCode = () => {
       });
 
       if (result.success && result.data) {
-        setDataList(result.data.list || []);
+        setDataList(result.data.list ?? []);
         setPagination({
           current: result.data.pagination.current,
           pageSize: result.data.pagination.pageSize,
           total: result.data.pagination.total
         });
       } else {
-        message.error(result.message || '获取数据失败');
+        message.error(result.message ?? '获取数据失败');
         setDataList([]);
       }
     } catch (error) {
@@ -133,7 +133,7 @@ export const useDataQueryCode = () => {
     setSelectedDataType(value);
     setPagination(prev => ({ ...prev, current: 1 }));
     if (value) {
-      fetchDataList(value, 1, pagination.pageSize);
+      void fetchDataList(value, 1, pagination.pageSize);
     } else {
       setDataList([]);
       setPagination(prev => ({ ...prev, total: 0 }));
@@ -144,7 +144,7 @@ export const useDataQueryCode = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
     if (selectedDataType) {
-      fetchDataList(selectedDataType, 1, pagination.pageSize);
+      void fetchDataList(selectedDataType, 1, pagination.pageSize);
     }
   };
 
@@ -152,14 +152,14 @@ export const useDataQueryCode = () => {
   const handleTableChange = (page: number, pageSize: number) => {
     setPagination(prev => ({ ...prev, current: page, pageSize }));
     if (selectedDataType) {
-      fetchDataList(selectedDataType, page, pageSize);
+      void fetchDataList(selectedDataType, page, pageSize);
     }
   };
 
   // 刷新数据
   const handleRefresh = () => {
     if (selectedDataType) {
-      fetchDataList(selectedDataType, pagination.current, pagination.pageSize);
+      void fetchDataList(selectedDataType, pagination.current, pagination.pageSize);
     }
   };
 
@@ -189,7 +189,7 @@ export const useDataQueryCode = () => {
   const handleEditSuccess = () => {
     // 重新获取数据
     if (selectedDataType) {
-      fetchDataList(selectedDataType, pagination.current, pagination.pageSize);
+      void fetchDataList(selectedDataType, pagination.current, pagination.pageSize);
     }
   };
 
@@ -224,7 +224,7 @@ export const useDataQueryCode = () => {
         }
         if (typeof value === 'boolean') {
           return (
-            <span className={`px-2 py-1 rounded-full text-xs ${value ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+            <span className={`px-2 py-1 rounded-full text-xs ${value ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
               {value ? '是' : '否'}
             </span>
           );
@@ -233,7 +233,7 @@ export const useDataQueryCode = () => {
           return <span className='text-green-400'>{value.toLocaleString()}</span>;
         }
 
-        return <span className='text-slate-300'>{String(value)}</span>;
+        return <span className=''>{String(value)}</span>;
       }
     }));
   }, [dataList]);

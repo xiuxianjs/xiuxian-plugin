@@ -9,7 +9,7 @@ import type { NajieCategory } from '@src/types';
 import { getRedisKey, keys } from '@src/model/keys';
 
 // 支持灵石赠送和物品赠送（*可选品级和可选单位数量）
-export const regular = /^(#|＃|\/)?赠送[\u4e00-\u9fa5a-zA-Z\d]+(\*[\u4e00-\u9fa5]+)?(\*\d+(k|w|e)?)?/;
+export const regular = /^(#|＃|\/)?赠送/;
 
 const res = onResponse(selects, async e => {
   const Send = useSend(e);

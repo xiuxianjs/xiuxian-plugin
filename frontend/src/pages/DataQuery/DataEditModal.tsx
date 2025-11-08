@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Input, InputNumber, Switch, Button, message, Space, Card, Typography, Select } from 'antd';
+import { useState, useEffect } from 'react';
+import { Modal, Input, InputNumber, Switch, Button, message, Space, Card, Typography, Select, Pagination, Checkbox, Empty } from 'antd';
 
 // 导入UI组件库
-import { XiuxianPagination } from '@/components/ui';
 import { EditOutlined, SaveOutlined, CloseOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { updateDataListAPI } from '@/api/auth';
 
@@ -71,7 +70,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
 
       setFieldConfigs(configs);
       setEditingData([...originalData] as DataItem[]);
-      setBatchField(configs[0]?.key || '');
+  setBatchField(configs[0]?.key ?? '');
     }
   }, [originalData]);
 
@@ -213,7 +212,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
         onSuccess();
         onCancel();
       } else {
-        message.error(result.message || '保存失败');
+        message.error(result.message ?? '保存失败');
       }
     } catch (error) {
       console.error('保存数据失败:', error);
@@ -227,15 +226,14 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
     <Modal
       title={
         <div className='flex items-center gap-2'>
-          <EditOutlined className='text-purple-400' />
-          <span>编辑 {dataTypeName}</span>
+          <EditOutlined /> <span>编辑 {dataTypeName}</span>
         </div>
       }
       open={visible}
       onCancel={onCancel}
       width='95%'
       style={{ top: 20 }}
-      className='xiuxian-modal'
+      className=''
       footer={[
         <Button key='cancel' onClick={onCancel} icon={<CloseOutlined />}>
           取消
@@ -244,9 +242,10 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
           key='save'
           type='primary'
           loading={loading}
-          onClick={handleSave}
+          onClick={() => {
+            void handleSave();
+          }}
           icon={<SaveOutlined />}
-          className='bg-gradient-to-r from-purple-500 to-pink-500 border-0 hover:from-purple-600 hover:to-pink-600'
         >
           保存
         </Button>
@@ -256,21 +255,16 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
         {/* 操作按钮 */}
         <div className='mb-4 flex justify-between items-center'>
           <div className='flex items-center gap-4'>
-            <Text className='text-slate-600'>
+            <Text>
               共 {editingData.length} 条数据，当前页 {currentPageData.length} 条
             </Text>
-            <Text className='text-slate-600'>已选择 {selectedRows.length} 行</Text>
+            <Text>已选择 {selectedRows.length} 行</Text>
           </div>
           <Space>
-            <Button
-              type='primary'
-              onClick={handleAddRow}
-              icon={<PlusOutlined />}
-              className='bg-gradient-to-r from-green-500 to-emerald-500 border-0 hover:from-green-600 hover:to-emerald-600'
-            >
+            <Button type='primary' onClick={handleAddRow} icon={<PlusOutlined />}>
               添加行
             </Button>
-            <Button onClick={() => setBatchMode(!batchMode)} className={batchMode ? 'bg-blue-500 text-white' : ''}>
+            <Button onClick={() => setBatchMode(!batchMode)} type={batchMode ? 'primary' : 'default'}>
               批量操作
             </Button>
           </Space>
@@ -278,7 +272,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
 
         {/* 批量操作区域 */}
         {batchMode && (
-          <Card className='mb-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200'>
+          <Card className='mb-4'>
             <div className='flex items-center gap-4'>
               <Text strong>批量更新：</Text>
               <Select value={batchField} onChange={setBatchField} style={{ width: 150 }} placeholder='选择字段'>
@@ -289,12 +283,7 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
                 ))}
               </Select>
               <Input value={batchValue} onChange={e => setBatchValue(e.target.value)} placeholder='输入新值' style={{ width: 200 }} />
-              <Button
-                type='primary'
-                onClick={handleBatchUpdate}
-                disabled={selectedRows.length === 0}
-                className='bg-gradient-to-r from-blue-500 to-indigo-500 border-0'
-              >
+              <Button type='primary' onClick={handleBatchUpdate} disabled={selectedRows.length === 0}>
                 批量更新 ({selectedRows.length})
               </Button>
             </div>
@@ -319,12 +308,12 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
               <Option value={50}>50条</Option>
             </Select>
           </div>
-          <XiuxianPagination
+          <Pagination
             current={currentPage}
             pageSize={pageSize}
             total={editingData.length}
             showSizeChanger={false}
-            showQuickJumper={true}
+            showQuickJumper
             showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
             onChange={page => setCurrentPage(page)}
           />
@@ -341,14 +330,12 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
                 key={globalIndex}
                 title={
                   <div className='flex items-center gap-2'>
-                    <input type='checkbox' checked={isSelected} onChange={() => handleSelectRow(index)} className='mr-2' />
+                    <Checkbox checked={isSelected} onChange={() => handleSelectRow(index)} />
                     <span>第 {globalIndex + 1} 条数据</span>
                   </div>
                 }
                 size='small'
-                className={`border-2 transition-all ${
-                  isSelected ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300' : 'bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200'
-                }`}
+                className={'border'}
                 extra={
                   <Button type='text' danger size='small' icon={<DeleteOutlined />} onClick={() => handleDeleteRow(index)}>
                     删除
@@ -358,9 +345,9 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                   {fieldConfigs.map(field => (
                     <div key={field.key} className='space-y-2'>
-                      <label className='block text-sm font-medium text-slate-700'>
+                      <label className='block text-sm font-medium'>
                         {field.label}
-                        {field.required && <span className='text-red-500 ml-1'>*</span>}
+                        {field.required && <span className='ml-1'>*</span>}
                       </label>
                       {renderFieldInput(field, item[field.key], index)}
                     </div>
@@ -371,16 +358,20 @@ export default function DataEditModal({ visible, onCancel, onSuccess, dataType, 
           })}
         </div>
 
-        {currentPageData.length === 0 && <div className='text-center py-8 text-slate-500'>当前页暂无数据</div>}
+        {currentPageData.length === 0 && (
+          <div className='text-center py-8'>
+            <Empty description='当前页暂无数据' />
+          </div>
+        )}
 
         {/* 底部分页 */}
         <div className='mt-4 flex justify-center'>
-          <XiuxianPagination
+          <Pagination
             current={currentPage}
             pageSize={pageSize}
             total={editingData.length}
             showSizeChanger={false}
-            showQuickJumper={true}
+            showQuickJumper
             showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
             onChange={page => setCurrentPage(page)}
           />

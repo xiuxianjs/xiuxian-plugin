@@ -67,7 +67,6 @@ export const getNajieAPI = async (
 
 // 获取单个背包详情API
 export const getNajieDetailAPI = async (
-  token: string,
   userId: string
 ): Promise<{
   success: boolean;
