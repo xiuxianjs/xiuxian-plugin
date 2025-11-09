@@ -6,6 +6,20 @@ import { getDataList } from './DataList.js';
 import { readEquipment, writeEquipment } from './equipment.js';
 
 /**
+ * 将数量规范化为整数
+ * - 非有限数字返回 0
+ * - 浮点数向零截断为整数（Math.trunc）
+ * - 负数原样保留，用于扣减
+ */
+function normalizeCount(count: number): number {
+  if (typeof count !== 'number' || !Number.isFinite(count)) {
+    return 0;
+  }
+
+  return Math.trunc(count);
+}
+
+/**
  * 更新纳戒物品
  * @param userId 玩家QQ
  * @param thingName 物品名称
@@ -108,6 +122,11 @@ export async function addNajieThing(
   count: number,
   pinji?: number
 ): Promise<void> {
+  /**
+   * 数量必须为整数（内部统一截断为整数）
+   */
+  count = normalizeCount(count);
+
   if (count === 0) {
     return;
   }
@@ -133,7 +152,7 @@ export async function addNajieThing(
 
     if (existItem) {
       // 已有则叠加数量
-      existItem.数量 = (existItem.数量 ?? 0) + count;
+      existItem.数量 = normalizeCount((existItem.数量 ?? 0) + count);
       if (existItem.数量 < 0) {
         existItem.数量 = 0;
       }
@@ -290,9 +309,11 @@ export async function batchAddNajieThings(
     }>
   >();
 
-  // 分组物品
+  // 分组物品（数量截断为整数，0 则跳过）
   for (const item of items) {
-    if (item.count === 0) {
+    const normalized = normalizeCount(item.count);
+
+    if (normalized === 0) {
       continue;
     }
 
@@ -301,7 +322,7 @@ export async function batchAddNajieThings(
     }
     categoryGroups.get(item.category)!.push({
       name: item.name,
-      count: item.count,
+      count: normalized,
       pinji: item.pinji
     });
   }
@@ -377,9 +398,11 @@ export async function batchAddNajieThings(
 
 /**
  * 处理装备类物品
+ * 备注：数量必须为整数，内部统一截断为整数
  * @returns boolean 返回操作是否成功
  */
 function processEquipmentItem(data: any[], najie: Najie, name: string, count: number, pinji?: number): boolean {
+  count = normalizeCount(count);
   if (!pinji && pinji !== 0) {
     pinji = Math.trunc(Math.random() * 6);
   }
@@ -390,7 +413,7 @@ function processEquipmentItem(data: any[], najie: Najie, name: string, count: nu
 
   if (existing) {
     // 如果装备已存在，直接更新数量（支持增减）
-    existing.数量 = Math.max(0, (existing.数量 ?? 0) + count);
+    existing.数量 = Math.max(0, normalizeCount((existing.数量 ?? 0) + count));
 
     return true;
   } else if (count > 0) {
@@ -430,15 +453,17 @@ function processEquipmentItem(data: any[], najie: Najie, name: string, count: nu
 
 /**
  * 处理仙宠类物品
+ * 备注：数量必须为整数，内部统一截断为整数
  * @returns boolean 返回操作是否成功
  */
 function processPetItem(xianchonData: any[], najie: Najie, name: string, count: number): boolean {
+  count = normalizeCount(count);
   // 检查纳戒中是否已存在
   const existing = najie.仙宠.find(item => item.name === name);
 
   if (existing) {
     // 如果仙宠已存在，直接更新数量（支持增减）
-    existing.数量 = (existing.数量 ?? 0) + count;
+    existing.数量 = normalizeCount((existing.数量 ?? 0) + count);
 
     return true;
   } else if (count > 0) {
@@ -466,15 +491,17 @@ function processPetItem(xianchonData: any[], najie: Najie, name: string, count: 
 
 /**
  * 处理普通物品（丹药、道具、功法、草药、材料、仙宠口粮）
+ * 备注：数量必须为整数，内部统一截断为整数
  * @returns boolean 返回操作是否成功
  */
 function processNormalItem(data: any[], najie: Najie, name: string, count: number, category: NajieCategory): boolean {
+  count = normalizeCount(count);
   // 检查纳戒中是否已存在
   const existing = najie[category].find(item => item.name === name);
 
   if (existing) {
     // 如果物品已存在，直接更新数量（支持增减）
-    existing.数量 = (existing.数量 ?? 0) + count;
+    existing.数量 = normalizeCount((existing.数量 ?? 0) + count);
 
     return true;
   } else if (count > 0) {
