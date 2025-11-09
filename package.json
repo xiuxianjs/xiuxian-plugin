@@ -15,6 +15,8 @@
     "view": "npx lvy dev --jsxp",
     "build": "lvy build",
     "bundle-install": "yarn --cwd frontend install",
+    "bundle-desktop": "yarn --cwd frontend-desktop build",
+    "push": "yarn build && yarn bundle-desktop && npm publish",
     "bundle-dev": "yarn --cwd frontend dev",
     "bundle": "yarn --cwd frontend build",
     "eslint": "eslint src --fix",
@@ -39,6 +41,7 @@
     "@alemonjs/db": "^0.0.13",
     "@alemonjs/discord": "^2.1.0-alpha.19",
     "@alemonjs/onebot": "^2.1.0-alpha.11",
+    "@alemonjs/process": "^0.0.7",
     "@eslint/js": "^9.18.0",
     "@types/koa-bodyparser": "^4.3.12",
     "@types/koa-router": "^7.4.8",
@@ -64,6 +67,24 @@
   "alemonjs": {
     "web": {
       "root": "dist"
+    },
+    "desktop": {
+      "logo": "antd.ProjectOutlined",
+      "platform": [],
+      "command": [
+        {
+          "name": "xiuxian",
+          "icon": "antd.ProjectOutlined",
+          "command": "open.xiuxian"
+        }
+      ],
+      "sidebars": [
+        {
+          "name": "xiuxian",
+          "icon": "antd.ProjectOutlined",
+          "command": "open.xiuxian"
+        }
+      ]
     }
   },
   "packageManager": "yarn@1.22.22"
