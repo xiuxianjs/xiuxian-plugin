@@ -67,7 +67,7 @@ alemonjs-xiuxian:
   close_captcha: true
   # --- 定时任务 ---
   # 默认开启，若关闭如下配置
-  task: false
+  open_task: false
   # --- 多机器人部署 ---
   # 如果同时启动多个机器人，
   # 请务必填写机器人账号 !!!
