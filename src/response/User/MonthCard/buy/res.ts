@@ -85,6 +85,13 @@ const appendMonthMarketExchangeRecord = async (record: ExchangeRecord): Promise<
 /**
  * 处理仙缘兑换指令
  */
+/**
+ * 仙缘兑换响应函数
+ * 职责：
+ * 1. 校验玩家与物品信息、扣除仙缘币；
+ * 2. 按分类将物品加入纳戒；
+ * 3. 新增：支持“仙宠”对象类商品（如蛋、灵胎）直接以对象加入纳戒。
+ */
 const res = onResponse(selects, async e => {
   const [message] = useMessage(e);
   const [itemName, itemCount = 1] = e.MessageText.replace(/仙缘兑换/, '')
@@ -142,6 +149,7 @@ const res = onResponse(selects, async e => {
         return;
       }
 
+      // 判断是否为装备（带有数值属性的对象）
       const isEquipment
         = category === '装备' || findItem.atk !== undefined || findItem.def !== undefined || findItem.HP !== undefined || findItem.bao !== undefined;
 
@@ -161,6 +169,38 @@ const res = onResponse(selects, async e => {
         // 装备按件添加
         for (let i = 0; i < count; i++) {
           await addNajieThing(e.UserId, equipmentObj as any, '装备', 1);
+        }
+      } else if (category === '仙宠') {
+        /**
+         * 处理仙宠类商品的兑换
+         * 若商店条目本身为仙宠对象（如“金红的蛋/金黄的蛋/灵胎”），
+         * 则按对象直接加入纳戒，数量一次性累加。
+         * 否则按名称从仙宠列表中检索并添加。
+         */
+        const isPetObject = (findItem as any)?.class === '仙宠';
+
+        if (isPetObject) {
+          // 查询仙宠基础定义以补全等级与加成
+          const xianchonData = await getDataList('Xianchon');
+          const baseDef = Array.isArray(xianchonData) ? (xianchonData as any[]).find(i => i?.name === itemName) : undefined;
+          const level = typeof baseDef?.等级 === 'number' ? Math.trunc(baseDef.等级) : 1;
+          const per = typeof baseDef?.每级增加 === 'number' ? baseDef.每级增加 : typeof baseDef?.初始加成 === 'number' ? baseDef.初始加成 : 0;
+          const bonus = level * (per || 0);
+
+          const petObj = {
+            name: itemName,
+            class: '仙宠',
+            type: (findItem as any).type ?? '孵化',
+            desc: (findItem as any).desc ?? '',
+            等级: level,
+            每级增加: per,
+            加成: bonus,
+            出售价: unitPrice
+          } as any;
+
+          await addNajieThing(e.UserId, petObj, '仙宠', count);
+        } else {
+          await addNajieThing(e.UserId, itemName, '仙宠', count);
         }
       } else {
         await addNajieThing(e.UserId, itemName, category as NajieCategory, count);

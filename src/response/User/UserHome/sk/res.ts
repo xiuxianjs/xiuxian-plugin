@@ -6,6 +6,13 @@ import { getDataList } from '@src/model/DataList';
 import { selects } from '@src/response/mw-captcha';
 export const regular = /^(#|＃|\/)?抽(天地卡池|灵界卡池|凡界卡池)$/;
 
+/**
+ * 抽卡池响应函数
+ * 职责：
+ * 1. 校验并消耗对应网具道具；
+ * 2. 按卡池类型从数据源抽取仙宠；
+ * 3. 修改：天地卡池改为使用“仙宠列表”作为更高阶卡池，其余保持“常驻仙宠”。
+ */
 const res = onResponse(selects, async e => {
   const Send = useSend(e);
   const userId = e.UserId;
@@ -47,15 +54,17 @@ const res = onResponse(selects, async e => {
     }
     await addNajieThing(userId, '银丝仙网', '道具', -1);
   }
-  const changzhuxianchonData = await getDataList('Changzhuxianchon');
+  // 根据卡池类型切换抽取数据源：
+  // 天地卡池改为使用仙宠列表（更高阶卡池），其余仍使用常驻仙宠
+  const poolData = thing === '天地卡池' ? await getDataList('Xianchon') : await getDataList('Changzhuxianchon');
 
-  tianluoRandom = Math.floor(Math.random() * changzhuxianchonData.length);
+  tianluoRandom = Math.floor(Math.random() * poolData.length);
   tianluoRandom = (Math.ceil((tianluoRandom + 1) / 5) - 1) * 5;
   void Send(Text('一道金光从天而降'));
   await sleep(5000);
-  void Send(Text('金光掉落在地上，走近一看是【' + changzhuxianchonData[tianluoRandom].品级 + '】' + changzhuxianchonData[tianluoRandom].name));
-  await addPet(userId, changzhuxianchonData[tianluoRandom].name, 1);
-  void Send(Text('恭喜获得' + changzhuxianchonData[tianluoRandom].name));
+  void Send(Text('金光掉落在地上，走近一看是【' + poolData[tianluoRandom].品级 + '】' + poolData[tianluoRandom].name));
+  await addPet(userId, poolData[tianluoRandom].name, 1);
+  void Send(Text('恭喜获得' + poolData[tianluoRandom].name));
 });
 
 import mw from '@src/response/mw-captcha';

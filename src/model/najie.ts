@@ -456,6 +456,16 @@ function processEquipmentItem(data: any[], najie: Najie, name: string, count: nu
  * 备注：数量必须为整数，内部统一截断为整数
  * @returns boolean 返回操作是否成功
  */
+/**
+ * 处理仙宠类物品
+ * 备注：数量必须为整数，内部统一截断为整数；
+ * 补全必需字段：等级、每级增加、加成、数量、islockd、class、name。
+ * @param xianchonData 仙宠配置数据源（`Xianchon`）
+ * @param najie 玩家纳戒对象
+ * @param name 仙宠名称
+ * @param count 数量（正负皆可，内部取整）
+ * @returns boolean 返回操作是否成功
+ */
 function processPetItem(xianchonData: any[], najie: Najie, name: string, count: number): boolean {
   count = normalizeCount(count);
   // 检查纳戒中是否已存在
@@ -467,13 +477,21 @@ function processPetItem(xianchonData: any[], najie: Najie, name: string, count: 
 
     return true;
   } else if (count > 0) {
-    // 如果仙宠不存在且count > 0，需要从数据表中验证并创建新仙宠条目
+    // 如果仙宠不存在且 count > 0，需要从数据表中验证并创建新仙宠条目
     const thing = xianchonData.find((item: XianchongSource) => item.name === name);
 
     if (thing) {
-      const copied = _.cloneDeep(thing);
-      const petItem: NajieItem = {
-        ...(copied as XianchongSource),
+      const copied = _.cloneDeep(thing) as XianchongSource;
+      // 等级默认 1；每级增加优先使用 `每级增加`，其次 `初始加成`
+      const level = typeof copied.等级 === 'number' ? Math.trunc(copied.等级) : 1;
+      const per = typeof copied.每级增加 === 'number' ? copied.每级增加 : typeof (copied as any).初始加成 === 'number' ? (copied as any).初始加成 : 0;
+      const bonus = level * (per || 0);
+
+      const petItem: XianchongLike = {
+        ...copied,
+        等级: level,
+        每级增加: per,
+        加成: bonus,
         数量: count,
         islockd: 0,
         class: copied.class ?? '仙宠',
