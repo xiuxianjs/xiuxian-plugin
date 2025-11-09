@@ -48,6 +48,7 @@ import 隐藏灵根 from '../resources/data/item/隐藏灵根.json';
 import 锻造杂类 from '../resources/data/item/锻造杂类.json';
 import 技能列表 from '../resources/data/item/技能列表.json';
 import updateRecord from '../resources/data/updateRecord.json';
+import MonthMarket from '../resources/data/item/MothMarket.json';
 import type { TalentItem, LevelStageItem, PhysiqueStageItem, CommodityItem, GongfaItem, EquipmentTuzhiItem, PetItem, PetFoodItem } from '../types/data';
 import type {
   MonsterItem,
@@ -115,7 +116,8 @@ export const DATA_LIST = {
   Yincang: 隐藏灵根,
   Zalei: 锻造杂类,
   Jineng: 技能列表,
-  UpdateRecord: updateRecord
+  UpdateRecord: updateRecord,
+  MonthMarket: MonthMarket
 };
 
 export type DataList = typeof DATA_LIST;

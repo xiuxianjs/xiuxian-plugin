@@ -291,7 +291,7 @@ const handleLuckyPill = async (playerId: string, player: Player, placeName: stri
     return '';
   }
 
-  player.islucky--;
+  player.islucky = (player.islucky ?? 0) - 1;
   let message = '';
 
   if (player.islucky !== 0) {

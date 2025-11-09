@@ -9,8 +9,8 @@ import dayjs from 'dayjs';
  * - 推送成功后才记录为已推送
  */
 export const PushMessageTask = async (): Promise<void> => {
-  const value = getAppConfig();
-  const botId = value?.botId ?? 'xiuxian';
+  // const value = getAppConfig();
+  // const botId = value?.botId ?? 'xiuxian';
 
   // 以 dayjs 获取当前时间
   const now = dayjs();
@@ -89,12 +89,12 @@ export const PushMessageTask = async (): Promise<void> => {
     // 更新本次执行时间
     void setLastRunTime();
 
-    logger.debug('消息池', {
-      botId,
-      lastRun: lastRunStr,
-      windowMinutes,
-      messages: messages
-    });
+    // logger.debug('消息池', {
+    //   botId,
+    //   lastRun: lastRunStr,
+    //   windowMinutes,
+    //   messages: messages
+    // });
   } catch (error) {
     logger.error(error);
   }

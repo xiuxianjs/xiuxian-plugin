@@ -36,7 +36,7 @@
     "svg-captcha": "^1.4.0"
   },
   "devDependencies": {
-    "@alemonjs/db": "^0.0.11",
+    "@alemonjs/db": "^0.0.13",
     "@alemonjs/discord": "^2.1.0-alpha.19",
     "@alemonjs/onebot": "^2.1.0-alpha.11",
     "@eslint/js": "^9.18.0",

@@ -14,8 +14,11 @@ export default defineChildren({
     // task是否关闭启动，使用框架层配置
     const value = getAppConfig();
 
+    const task = value?.task === false ? false : true;
+    const openTask = value?.open_task === false ? false : task;
+
     // 当设置 task 但不为 true 时，定时任务不生效
-    if (typeof value?.task !== 'boolean' || value.task) {
+    if (openTask) {
       // 启动定时任务
       startAllTasks().catch(error => {
         logger.error('启动定时任务失败:', error);
