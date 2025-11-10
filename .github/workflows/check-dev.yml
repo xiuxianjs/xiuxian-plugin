@@ -32,6 +32,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-root-${{ hashFiles('yarn.lock') }}
+      - name: 桌面前端依赖
+        uses: actions/cache@v3
+        with:
+          path: frontend-desktop/node_modules
+          key: ${{ runner.os }}-frontend-desktop-${{ hashFiles('frontend-desktop/yarn.lock') }}
 
       - name: 检查yarn工具
         run: |
@@ -42,6 +47,9 @@ jobs:
       - name: 安装前端依赖
         run: |
           cd frontend && yarn install --ignore-engines --frozen-lockfile
+      - name: 安装桌面前端依赖
+        run: |
+          yarn --cwd frontend-desktop install && yarn install --ignore-engines
 
       - name: 安装游戏依赖
         run: |
@@ -50,4 +58,5 @@ jobs:
       - name: 打包测试
         run: |
           yarn build || echo "build 脚本执行失败或不存在"
-           yarn bundle || echo "bundle 脚本执行失败或不存在"
+          yarn bundle || echo "bundle 脚本执行失败或不存在"
+          yarn bundle-desktop || echo "bundle-desktop 脚本执行失败或不存在"

@@ -63,7 +63,7 @@ serverPort: 18110
 alemonjs-xiuxian:
   # --- 验证码 ---
   # 检查是否是人机行为
-  # 默认开启，若开启可如下配置
+  # 默认开启，若关闭可如下配置
   close_captcha: true
   # --- 定时任务 ---
   # 默认开启，若关闭如下配置
@@ -81,7 +81,7 @@ alemonjs-xiuxian:
   close_proactive_message: true
   # --- 赠送 ---
   # 开启赠送功能（包括普通赠送和一键赠送）
-  # 默认不开启，如下配置开启
+  # 默认关闭，如开启可如下配置
   open_give: true
 ```
 

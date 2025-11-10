@@ -43,6 +43,12 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-root-${{ hashFiles('yarn.lock') }}
+      - name: 桌面前端依赖
+        uses: actions/cache@v3
+        with:
+          path: frontend-desktop/node_modules
+          key: ${{ runner.os }}-frontend-desktop-${{ hashFiles('frontend-desktop/yarn.lock') }}
+
 
       - name: 检查yarn工具
         run: |
@@ -53,6 +59,10 @@ jobs:
       - name: 安装前端依赖
         run: |
           cd frontend && yarn install --ignore-engines
+
+      - name: 安装桌面前端依赖
+        run: |
+          yarn --cwd frontend-desktop install && yarn install --ignore-engines
 
       - name: 安装游戏依赖
         run: |
@@ -85,8 +95,10 @@ jobs:
         run: |
           yarn build
           yarn bundle  # bundle
+          yarn bundle-desktop # bundle desktop
           mkdir -p dist-release
           cp -rf ./dist dist-release/dist # bundle
+          cp -rf ./dist-desktop dist-release/dist-desktop # bundle desktop
           cp -rf ./lib dist-release/lib
           cp -rf ./.puppeteerrc.cjs dist-release/.puppeteerrc.cjs
           cp -rf ./package.json dist-release/package.json

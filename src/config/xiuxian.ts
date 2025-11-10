@@ -82,6 +82,15 @@ const sw = {
   Xiuianplay_key: false // 怡红院卡图开关
 };
 
+// 系统配置
+const systemConfig = {
+  close_captcha: true, // 关闭验证码（人机行为检查），默认开启，设为true则关闭
+  open_task: false, // 定时任务开关，默认开启，设为false则关闭
+  botId: '', // 多机器人部署时的机器人账号，多个机器人同时启动时务必填写
+  close_proactive_message: true, // 关闭主动消息（用于主动消息被限制的平台），默认开启，设为true则关闭
+  open_give: true // 赠送功能开关（包括普通赠送和一键赠送），默认不开启，设为true则开启
+};
+
 /**
  * 类型的任务：
  *
@@ -166,6 +175,7 @@ export type TaskKeys = keyof typeof task;
 export default {
   CD,
   sw,
+  systemConfig,
   percentage,
   size,
   switchConfig,
