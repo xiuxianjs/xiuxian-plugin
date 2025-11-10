@@ -184,6 +184,16 @@ export type FoundThing = {
   name: string;
 };
 
+/**
+ * 根据物品名在各类数据源中检索物品定义
+ * 说明：
+ * - 先在主类目（装备/丹药/道具/功法/草药/限时/新增丹药/仙宠/仙宠口粮/锻造材料/杂类）中检索；
+ * - 若未命中，再在锻造装备类目（锻造武器/锻造护具/锻造宝物）与杂类中继续检索；
+ * - 为支持带数字的物品名（如“仙器3”），二次检索时会去除名称中的数字进行匹配。
+ * 修复：补充锻造装备数据源（Duanzhaowuqi/Duanzhaohuju/Duanzhaobaowu），以解决如“华山魔砂”无法识别的问题。
+ * @param thingName 物品名称
+ * @returns 命中则返回物品对象；否则返回 false
+ */
 export async function foundthing(thingName: string): Promise<FoundThing | false> {
   const primaryGroups = [
     'equipment_list',
@@ -213,6 +223,10 @@ export async function foundthing(thingName: string): Promise<FoundThing | false>
     xianchon: await getDataList('Xianchon'),
     xianchonkouliang: await getDataList('Xianchonkouliang'),
     duanzhaocailiao: await getDataList('Duanzhaocailiao'),
+    // 补充锻造装备数据源，供二次检索使用
+    duanzhaowuqi: await getDataList('Duanzhaowuqi'),
+    duanzhaohuju: await getDataList('Duanzhaohuju'),
+    duanzhaobaowu: await getDataList('Duanzhaobaowu'),
     zalei: await getDataList('Zalei')
   };
   const hasName = (obj): obj is FoundThing => typeof obj === 'object' && obj !== null && 'name' in obj;
@@ -237,7 +251,8 @@ export async function foundthing(thingName: string): Promise<FoundThing | false>
       }
     }
   }
-  const simplifiedName = thingName.replace(/[0-9]+/g, '');
+  // 去除名称中的数字（例如“仙器3”→“仙器”），用于锻造装备与杂类的二次检索
+  const simplifiedName = thingName.replace(/[0-9]+/g, '').trim();
   const secondaryGroups = ['duanzhaowuqi', 'duanzhaohuju', 'duanzhaobaowu', 'zalei'] as const;
 
   for (const key of secondaryGroups) {
