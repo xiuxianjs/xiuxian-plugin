@@ -1,6 +1,6 @@
 {
   "name": "alemonjs-xiuxian",
-  "version": "0.0.142",
+  "version": "0.0.143",
   "description": "凡人修仙文字游戏",
   "author": "ningmengchongshui",
   "type": "module",
@@ -25,6 +25,24 @@
   "alemonjs": {
     "web": {
       "root": "dist"
+    },
+    "desktop": {
+      "logo": "antd.ProjectOutlined",
+      "platform": [],
+      "command": [
+        {
+          "name": "xiuxian",
+          "icon": "antd.ProjectOutlined",
+          "command": "open.xiuxian"
+        }
+      ],
+      "sidebars": [
+        {
+          "name": "xiuxian",
+          "icon": "antd.ProjectOutlined",
+          "command": "open.xiuxian"
+        }
+      ]
     }
   },
   "packageManager": "yarn@1.22.22"
