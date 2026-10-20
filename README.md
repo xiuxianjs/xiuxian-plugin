@@ -54,10 +54,12 @@ alemonjs-xiuxian:
 | [yunzaijs/1.2]🔗 | yunzaijs 版 修仙v1.2   |
 | [version/1.2]🔗  | yunzai-bot 版 修仙v1.2 |
 | [version/1.3]🔗  | yunzai-bot 版 修仙v1.3 |
+| [main]🔗  | alemonjs 版 修仙v1.4 |
 
 [yunzaijs/1.2]: https://github.com/xiuxianjs/xiuxian-plugin/tree/yunzaijs/1.2
 [version/1.2]: https://github.com/xiuxianjs/xiuxian-plugin/tree/version/1.2
 [version/1.3]: https://github.com/xiuxianjs/xiuxian-plugin/tree/version/1.3
+[main]: https://github.com/xiuxianjs/xiuxian-plugin/tree/main
 
 ## 贡献
 
